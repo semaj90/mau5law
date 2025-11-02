@@ -49,12 +49,12 @@
   }
   function handleDragOver(e: DragEvent) { e.preventDefault(); isDragOver = true, }
   function handleDragLeave(e: DragEvent) { e.preventDefault(); isDragOver = false, }
-  function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = $state(false); const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files), }
+  function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = false; const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files), }
   function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; if (target.files?.length) handleFileUpload(target.files), }
   function openFileDialog() { fileInput?.click(), }
   function cancelUpload() { canceled = true; currentXhr?.abort(); statusMessage = 'Upload canceled'; if (enableTelemetry) telemetry.emit('upload_canceled', { component: 'UploadZone' }), }
   async function handleFileUpload(files: FileList): Promise<any> {
-    lastError = null; canceled = $state(false); statusMessage = '';
+    lastError = null; canceled = false; statusMessage = '';
     try { validateFiles(files), } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return, }
     isUploading = true; uploadProgress = 0;
     const summary: UploadSummary = { count: files.length, totalBytes: 0, files: [] }
@@ -180,7 +180,7 @@
   </button>
 {:else}
   <div
-    class="upload-zone" border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver
+    class="upload-zone border-2 border-dashed" rounded p-6 text-center transition-colors select-none {isDragOver
       ? 'bg-gray-100 border-gray-400'
       : 'border-gray-300'}"
     ondragover={handleDragOver}

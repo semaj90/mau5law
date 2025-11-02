@@ -17,9 +17,7 @@ export interface AdminHealthResponse {
   data?: AdminHealthData;
 }
 
-export interface AdminHealthData {
-  cpu: number;
-  memory: number;
+export interface AdminHealthData { cpu: number;, memory: number;
   database: string | number;
   storage: number;
   uptime: number;
@@ -33,47 +31,35 @@ export type AdminHealth = AdminHealthResponse;
 // SYSTEM METRICS TYPES
 // ============================================================================
 
-export interface SystemMetrics {
-  cpu: CPUMetrics;
-  memory: MemoryMetrics;
+export interface SystemMetrics { cpu: CPUMetrics;, memory: MemoryMetrics;
   disk: DiskMetrics;
   network?: NetworkMetrics;
   uptime: number;
   timestamp: string | Date;
 }
 
-export interface CPUMetrics {
-  usage: number;
-  cores: number;
+export interface CPUMetrics { usage: number;, cores: number;
   model?: string;
   frequency?: number;
   temp?: number;
 }
 
-export interface MemoryMetrics {
-  total: number;
-  used: number;
+export interface MemoryMetrics { total: number;, used: number;
   free: number;
   percentage: number;
   swapTotal?: number;
   swapUsed?: number;
 }
 
-export interface DiskMetrics {
-  total: number;
-  used: number;
+export interface DiskMetrics { total: number;, used: number;
   free: number;
   percentage: number;
-  inode?: {
-    total: number;
-    used: number;
+  inode?: { total: number;, used: number;
     free: number;
   };
 }
 
-export interface NetworkMetrics {
-  bytesIn: number;
-  bytesOut: number;
+export interface NetworkMetrics { bytesIn: number;, bytesOut: number;
   packetsIn: number;
   packetsOut: number;
   errors: number;
@@ -84,25 +70,19 @@ export interface NetworkMetrics {
 // ADMIN STATUS RESPONSE TYPES
 // ============================================================================
 
-export interface AdminStatusResponse {
-  success: boolean;
-  status: AdminStatus;
+export interface AdminStatusResponse { success: boolean;, status: AdminStatus;
   metrics: SystemMetrics;
   services: ServiceHealthStatus;
   timestamp: string | Date;
   error?: string;
 }
 
-export interface AdminStatus {
-  state: 'operational' | 'degraded' | 'critical' | 'maintenance';
-  uptime: number;
+export interface AdminStatus { state: 'operational' | 'degraded' | 'critical' | 'maintenance';, uptime: number;
   version: string;
   environment: string;
 }
 
-export interface ServiceHealthStatus {
-  database: ServiceHealth;
-  cache: ServiceHealth;
+export interface ServiceHealthStatus { database: ServiceHealth;, cache: ServiceHealth;
   messageQueue?: ServiceHealth;
   vectorStore?: ServiceHealth;
   gpu?: ServiceHealth;
@@ -122,12 +102,8 @@ export interface ServiceHealth {
 // DATABASE STATUS TYPES
 // ============================================================================
 
-export interface DatabaseStatus {
-  connected: boolean;
-  version: string;
-  connectionPool: {
-    total: number;
-    active: number;
+export interface DatabaseStatus { connected: boolean;, version: string;
+  connectionPool: { total: number;, active: number;
     idle: number;
   };
   replication?: {
@@ -144,9 +120,7 @@ export interface DatabaseStatus {
   timestamp: string | Date;
 }
 
-export interface DatabaseQueryStats {
-  totalQueries: number;
-  successfulQueries: number;
+export interface DatabaseQueryStats { totalQueries: number;, successfulQueries: number;
   failedQueries: number;
   averageExecutionTime: number;
   slowQueries: number;
@@ -158,17 +132,11 @@ export interface DatabaseQueryStats {
 // CACHE STATUS TYPES
 // ============================================================================
 
-export interface CacheStatus {
-  type: 'redis' | 'memory' | 'hybrid';
-  connected: boolean;
-  memoryUsage: {
-    allocated: number;
-    used: number;
+export interface CacheStatus { type: 'redis' | 'memory' | 'hybrid';, connected: boolean;
+  memoryUsage: { allocated: number;, used: number;
     percentage: number;
   };
-  statistics: {
-    hits: number;
-    misses: number;
+  statistics: { hits: number;, misses: number;
     hitRate: number;
     evictions: number;
     operations: number;
@@ -182,22 +150,16 @@ export interface CacheStatus {
 // MESSAGE QUEUE STATUS TYPES
 // ============================================================================
 
-export interface MessageQueueStatus {
-  type: 'rabbitmq' | 'kafka' | 'redis';
-  connected: boolean;
+export interface MessageQueueStatus { type: 'rabbitmq' | 'kafka' | 'redis';, connected: boolean;
   queues: QueueInfo[];
-  statistics: {
-    totalMessages: number;
-    totalProcessed: number;
+  statistics: { totalMessages: number;, totalProcessed: number;
     totalFailed: number;
     averageProcessingTime: number;
   };
   timestamp: string | Date;
 }
 
-export interface QueueInfo {
-  name: string;
-  messageCount: number;
+export interface QueueInfo { name: string;, messageCount: number;
   consumerCount: number;
   durable: boolean;
   status: 'active' | 'stalled' | 'error';
@@ -208,12 +170,8 @@ export interface QueueInfo {
 // VECTOR STORE STATUS TYPES
 // ============================================================================
 
-export interface VectorStoreStatus {
-  type: 'pgvector' | 'qdrant' | 'faiss' | 'hybrid';
-  connected: boolean;
-  statistics: {
-    totalVectors: number;
-    totalDimensions: number;
+export interface VectorStoreStatus { type: 'pgvector' | 'qdrant' | 'faiss' | 'hybrid';, connected: boolean;
+  statistics: { totalVectors: number;, totalDimensions: number;
     indexSize: number;
     searchLatency: number;
   };
@@ -226,9 +184,7 @@ export interface VectorStoreStatus {
   timestamp: string | Date;
 }
 
-export interface IndexInfo {
-  name: string;
-  vectorCount: number;
+export interface IndexInfo { name: string;, vectorCount: number;
   dimensions: number;
   type: string;
   size: number;
@@ -239,16 +195,12 @@ export interface IndexInfo {
 // CONFIGURATION TYPES
 // ============================================================================
 
-export interface AdminConfigResponse {
-  success: boolean;
-  configuration: AdminConfiguration;
+export interface AdminConfigResponse { success: boolean;, configuration: AdminConfiguration;
   timestamp: string | Date;
   error?: string;
 }
 
-export interface AdminConfiguration {
-  database: DatabaseConfig;
-  cache: CacheConfig;
+export interface AdminConfiguration { database: DatabaseConfig;, cache: CacheConfig;
   messageQueue?: MessageQueueConfig;
   vectorStore?: VectorStoreConfig;
   gpu?: GPUConfig;
@@ -256,57 +208,41 @@ export interface AdminConfiguration {
   security?: SecurityConfig;
 }
 
-export interface DatabaseConfig {
-  host: string;
-  port: number;
+export interface DatabaseConfig { host: string;, port: number;
   database: string;
   ssl: boolean;
   poolSize: number;
   connectionTimeout: number;
 }
 
-export interface CacheConfig {
-  type: string;
-  host: string;
+export interface CacheConfig { type: string;, host: string;
   port: number;
   ttl: number;
   maxMemory: number;
 }
 
-export interface MessageQueueConfig {
-  type: string;
-  host: string;
+export interface MessageQueueConfig { type: string;, host: string;
   port: number;
   prefetch: number;
 }
 
-export interface VectorStoreConfig {
-  type: string;
-  dimensions: number;
+export interface VectorStoreConfig { type: string;, dimensions: number;
   indexType: string;
   gpuEnabled: boolean;
 }
 
-export interface GPUConfig {
-  enabled: boolean;
-  devices: Array<{
-    id: number;
-    name: string;
+export interface GPUConfig { enabled: boolean;, devices: Array<{ id: number;, name: string;
     memory: number;
   }>;
   cudaVersion?: string;
 }
 
-export interface StorageConfig {
-  type: string;
-  path: string;
+export interface StorageConfig { type: string;, path: string;
   maxSize: number;
   quotaPerUser?: number;
 }
 
-export interface SecurityConfig {
-  authEnabled: boolean;
-  encryptionEnabled: boolean;
+export interface SecurityConfig { authEnabled: boolean;, encryptionEnabled: boolean;
   tlsEnabled: boolean;
   certificatePath?: string;
 }
@@ -315,17 +251,13 @@ export interface SecurityConfig {
 // AUDIT LOG TYPES
 // ============================================================================
 
-export interface AuditLogResponse {
-  success: boolean;
-  logs: AuditLog[];
+export interface AuditLogResponse { success: boolean;, logs: AuditLog[];
   pagination: AuditLogPagination;
   timestamp: string | Date;
   error?: string;
 }
 
-export interface AuditLog {
-  id: string;
-  timestamp: string;
+export interface AuditLog { id: string;, timestamp: string;
   userId: string;
   action: string;
   resource: string;
@@ -336,9 +268,7 @@ export interface AuditLog {
   userAgent?: string;
 }
 
-export interface AuditLogPagination {
-  page: number;
-  pageSize: number;
+export interface AuditLogPagination { page: number;, pageSize: number;
   total: number;
   pages: number;
 }
@@ -347,18 +277,14 @@ export interface AuditLogPagination {
 // ADMIN ACTION RESPONSE TYPES
 // ============================================================================
 
-export interface AdminActionResponse {
-  success: boolean;
-  action: string;
+export interface AdminActionResponse { success: boolean;, action: string;
   result: Record<string, unknown>;
   duration: number;
   timestamp: string | Date;
   error?: string;
 }
 
-export interface DatabaseMaintenanceResponse extends AdminActionResponse {
-  action: 'vacuum' | 'analyze' | 'reindex' | 'backup' | 'restore';
-  result: {
+export interface DatabaseMaintenanceResponse extends AdminActionResponse { action: 'vacuum' | 'analyze' | 'reindex' | 'backup' | 'restore';, result: {
     affectedRows?: number;
     size?: number;
     duration: number;
@@ -366,17 +292,11 @@ export interface DatabaseMaintenanceResponse extends AdminActionResponse {
   };
 }
 
-export interface CacheClearResponse extends AdminActionResponse {
-  action: 'clear_cache' | 'clear_pattern';
-  result: {
-    keysDeleted: number;
-    memoryFreed: number;
+export interface CacheClearResponse extends AdminActionResponse { action: 'clear_cache' | 'clear_pattern';, result: { keysDeleted: number;, memoryFreed: number;
   };
 }
 
-export interface ServiceRestartResponse extends AdminActionResponse {
-  action: 'restart_service';
-  result: {
+export interface ServiceRestartResponse extends AdminActionResponse { action: 'restart_service';, result: {
     service: string;
     oldPid?: number;
     newPid?: number;

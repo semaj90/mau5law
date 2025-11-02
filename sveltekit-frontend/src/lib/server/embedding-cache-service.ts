@@ -5,36 +5,26 @@
 import { redisService } from './redis-service.js';
 import { dbPool } from './database-pool-service.js';
 
-interface EmbeddingCacheEntry {
-  text: string;
-  embedding: number[] | string;
+interface EmbeddingCacheEntry { text: string;, embedding: number[] | string;
   model: string;
   timestamp: number;
   accessCount: number;
   lastAccessed: number;
   compressed?: boolean;
 }
-interface QueryCacheEntry {
-  query: string;
-  results: any[];
+interface QueryCacheEntry { query: string;, results: any[];
   metadata: any;
   timestamp: number;
   ttl: number;
 }
-interface CacheStats {
-  embeddings: {
-    hits: number;
+interface CacheStats { embeddings: {, hits: number;
     misses: number;
     size: number;
   };
-  queries: {
-    hits: number;
-    misses: number;
+  queries: { hits: number;, misses: number;
     size: number;
   };
-  sessions: {
-    active: number;
-    total: number;
+  sessions: { active: number;, total: number;
   };
 }
 
@@ -67,14 +57,14 @@ class EmbeddingCacheService {
         model,
         timestamp: Date.now(),
         accessCount: 0,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       };
       // Store with compression for large embeddings
       const compressed = this.compressEmbedding(embedding);
       const cacheData = {
         ...entry,
         embedding: compressed,
-        compressed: true,
+        compressed: true
       };
       await redisService.set(`${this.EMBEDDING_PREFIX}${key}`, JSON.stringify(cacheData), this.EMBEDDING_TTL);
       await this.updateStats('embeddings', 'store');
@@ -140,10 +130,10 @@ class EmbeddingCacheService {
         metadata: {
           ...metadata,
           resultCount: results.length,
-          queryComplexity: this.calculateQueryComplexity(query),
+          queryComplexity: this.calculateQueryComplexity(query)
         },
         timestamp: Date.now(),
-        ttl,
+        ttl
       };
       await redisService.set(`${this.QUERY_PREFIX}${key}`, JSON.stringify(entry), ttl);
       await this.updateStats('queries', 'store');
@@ -186,7 +176,7 @@ class EmbeddingCacheService {
         `${this.SESSION_PREFIX}${sessionId}`,
         JSON.stringify({
           ...data,
-          lastUpdated: Date.now(),
+          lastUpdated: Date.now()
         }),
         this.SESSION_TTL
       );
@@ -199,7 +189,7 @@ class EmbeddingCacheService {
   /**
    * Batch cache multiple embeddings efficiently
    */
-  async batchCacheEmbeddings(items: Array<{ text: string; embedding: number[]; model?: string }>): Promise<void> {
+  async batchCacheEmbeddings(items: Array<{, text: string; embedding: number[]; model?: string }>): Promise<void> {
     if (!redisService.isHealthy() || !items || items.length === 0) return;
     try {
       // Use individual Redis operations for compatibility
@@ -214,7 +204,7 @@ class EmbeddingCacheService {
           timestamp: Date.now(),
           accessCount: 0,
           lastAccessed: Date.now(),
-          compressed: true,
+          compressed: true
         };
         await redisService.set(`${this.EMBEDDING_PREFIX}${key}`, JSON.stringify(entry), this.EMBEDDING_TTL);
         cached++;
@@ -260,29 +250,26 @@ class EmbeddingCacheService {
    * Get comprehensive cache statistics
    */
   async getStats(): Promise<CacheStats> {
-    const defaultStats: CacheStats = {
-      embeddings: { hits: 0, misses: 0, size: 0 },
+    const defaultStats: CacheStats = { embeddings: {, hits: 0, misses: 0, size: 0 },
       queries: { hits: 0, misses: 0, size: 0 },
-      sessions: { active: 0, total: 0 },
+      sessions: { active: 0, total: 0 }
     };
     if (!redisService.isHealthy()) return defaultStats;
     try {
       const stats = (await redisService.hgetall(`${this.STATS_PREFIX}all`)) || {};
-      return {
-        embeddings: {
-          hits: parseInt(stats['emb_hits'] || '0'),
+      return { embeddings: {, hits: parseInt(stats['emb_hits'] || '0'),
           misses: parseInt(stats['emb_misses'] || '0'),
-          size: await this.getCacheSize('embeddings'),
+          size: await this.getCacheSize('embeddings')
         },
         queries: {
           hits: parseInt(stats['query_hits'] || '0'),
           misses: parseInt(stats['query_misses'] || '0'),
-          size: await this.getCacheSize('queries'),
+          size: await this.getCacheSize('queries')
         },
         sessions: {
           active: parseInt(stats['session_active'] || '0'),
-          total: parseInt(stats['session_total'] || '0'),
-        },
+          total: parseInt(stats['session_total'] || '0')
+        }
       };
     } catch (error) {
       console.warn('Stats retrieval error:', error);

@@ -40,13 +40,13 @@ class PgVectorService {
         query: (sql: string, params?: any[]) => client.query(sql, params),
         release: () => {
           if (typeof client.release === 'function') client.release();
-        },
+        }
       };
     }
     // If pool itself has query (simple poolShim / client)
     if (this.pool && typeof this.pool.query === 'function') {
       return {
-        query: (sql: string, params?: any[]) => this.pool.query(sql, params),
+        query: (sql: string, params?: any[]) => this.pool.query(sql, params)
       };
     }
     // postgres-js clients are often callable functions: treat pgClient as query fn
@@ -55,7 +55,7 @@ class PgVectorService {
         query: async (sql: string, params?: any[]) => {
           // many postgres-js clients accept (sql, params) or tagged templates; try basic form
           return await (pgClient as any)(sql, params);
-        },
+        }
       };
     }
     return null;
@@ -94,7 +94,7 @@ class PgVectorService {
       // Basic validation
       if (!Array.isArray(embedding)) throw new Error('Invalid embedding');
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        return { success: false, error: `Invalid embedding dimension: ${embedding.length}` };
+        return { success: false, error: `Invalid embedding; dimension: ${embedding.length}' };
       }
       const embeddingStr = `[${embedding.join(',')}]`;
       const clientWrapper = await this.getQueryClient();
@@ -106,7 +106,7 @@ class PgVectorService {
         INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
         VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
         RETURNING id
-      `;
+      ';
       const params = [
         documentId,
         metadata.title || 'Untitled',
@@ -200,8 +200,8 @@ class PgVectorService {
             totalResults: result?.rowCount ?? (Array.isArray(rows) ? rows.length : null),
             distanceMetric,
             threshold: typeof threshold === 'number' ? threshold : null,
-            limit,
-          },
+            limit
+          }
         };
       } catch (e) {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
@@ -210,7 +210,7 @@ class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: (error as Error).message,
+        error: (error as Error).message
       };
     }
   }
@@ -219,10 +219,8 @@ class PgVectorService {
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-    documents: Array<{
-      documentId: string;
-      content: string;
-      embedding: number[];
+    documents: Array<{ documentId: string;, content: string;
+     , embedding: number[];
       metadata?: any;
     }>
   ): Promise<any> {
@@ -343,7 +341,7 @@ class PgVectorService {
         return { success: false, error: 'No DB client available for index creation' };
       }
       try {
-        await clientWrapper.query(`DROP INDEX IF EXISTS ${indexName}`);
+        await clientWrapper.query(`DROP INDEX IF EXISTS ${indexName}');
         const opClass =
           safeMetric === 'cosine'
             ? 'vector_cosine_ops'
@@ -366,8 +364,8 @@ class PgVectorService {
             metric: safeMetric,
             lists,
             creationTime: `${indexTime}ms`,
-            query: indexQuery,
-          },
+            query: indexQuery
+          }
         };
       } catch (e) {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
@@ -403,7 +401,7 @@ class PgVectorService {
           GROUP BY document_type
           ORDER BY count_per_type DESC
         `);
-        const additionalStats = await clientWrapper.query(`
+        const additionalStats = await clientWrapper.query('
           SELECT: 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
           UNION ALL
           SELECT: 'vector_metadata' as table_name, COUNT(*) as record_count FROM vector_metadata
@@ -434,9 +432,9 @@ class PgVectorService {
             connectionPool: {
               total: this.pool?.totalCount ?? null,
               idle: this.pool?.idleCount ?? null,
-              waiting: this.pool?.waitingCount ?? null,
-            },
-          },
+              waiting: this.pool?.waitingCount ?? null
+            }
+          }
         };
       } finally {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
@@ -444,7 +442,7 @@ class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: (error as Error).message,
+        error: (error as Error).message
       };
     }
   }

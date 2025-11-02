@@ -1,15 +1,11 @@
 // PostgreSQL Vector Service - Stub Implementation
 // Provides fallback functionality when vector database is not available
 import { browser } from '$app/environment';
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: { [key: string]: any };
 }
-export interface VectorDocument {
-  id: string;
-  content: string;
+export interface VectorDocument { id: string;, content: string;
   embedding?: number[];
   metadata?: { [key: string]: any };
 }
@@ -56,7 +52,7 @@ export class PostgreSQLVectorService {
           id: doc.id,
           content: doc.content,
           similarity: this.cosineSimilarity(queryEmbedding, doc.embedding || []),
-          metadata: doc.metadata,
+          metadata: doc.metadata
         }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, limit);
@@ -108,7 +104,7 @@ export class PostgreSQLVectorService {
     return {
       connected: this.isConnected,
       documentCount: this.documents.length,
-      fallbackMode: true,
+      fallbackMode: true
     };
   }
   async clearDocuments(): Promise<boolean> {
@@ -136,8 +132,8 @@ export class PostgreSQLVectorService {
           ...this.documents[existingIndex].metadata,
           ocrText: mapping.ocrText,
           analysisResults: mapping.analysisResults,
-          lastUpdated: new Date().toISOString(),
-        },
+          lastUpdated: new Date().toISOString()
+        }
       };
     } else {
       // Create new document
@@ -148,8 +144,8 @@ export class PostgreSQLVectorService {
         metadata: {
           ocrText: mapping.ocrText,
           analysisResults: mapping.analysisResults,
-          created: new Date().toISOString(),
-        },
+          created: new Date().toISOString()
+        }
       });
     }
     return true;
@@ -164,17 +160,16 @@ export class PostgreSQLVectorService {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'nomic-embed-text', // Using: 'nomic-embed-text' as per instructions
-          prompt: text,
-        }),
+          model: 'nomic-embed-text', // Using: 'nomic-embed-text' as per instructions; prompt: text
+        })
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error'}`);
+        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error' }`);
       }
 
       const data = await response.json();

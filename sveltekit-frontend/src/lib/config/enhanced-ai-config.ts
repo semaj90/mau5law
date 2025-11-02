@@ -13,13 +13,13 @@ export const ENHANCED_AI_CONFIG = {
   // helper to build headers for OpenAI requests (server-side)
   getOpenAIHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     };
     if (ENV_CONFIG.OPENAI_API_KEY) {
       headers.Authorization = `Bearer ${ENV_CONFIG.OPENAI_API_KEY}`;
     }
     return headers;
-  },
+  }
 } as const;
 export type EnhancedAIConfig = typeof ENHANCED_AI_CONFIG;
 export default ENHANCED_AI_CONFIG;

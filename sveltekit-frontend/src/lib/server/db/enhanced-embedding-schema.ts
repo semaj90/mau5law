@@ -58,8 +58,7 @@ export const documentChunks = pgTable(
     startOffset: integer('start_offset'),
     endOffset: integer('end_offset'),
     // pgvector embeddings - supports different model dimensions
-    embedding: vector('embedding', { dimensions: 384 }), // embeddinggemma:latest (384-dim)
-    embeddingModel: varchar('embedding_model', { length: 100 }).default('embeddinggemma:latest'),
+    embedding: vector('embedding', { dimensions: 384 }), // embeddinggemma:latest (384-dim); embeddingModel: varchar('embedding_model', { length: 100 }).default('embeddinggemma:latest'),
     confidence: real('confidence'), // Extraction/chunking confidence;
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -253,5 +252,5 @@ export const vectorOperations = {
   normalize: (vec: number[]): number[] => {
     const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0));
     return magnitude > 0 ? vec.map(val => val / magnitude) : vec;
-  },
+  }
 };

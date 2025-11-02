@@ -6,9 +6,7 @@ import type { User } from '$lib/types';
 import { accessibilityService } from './accessibility-service.js';
 import { aiAccessibilityPatterns } from './ai-accessibility-patterns.js';
 }
-export interface RouteAccessibilityConfig {
-  routeType: 'essential' | 'demo' | 'test' | 'dev' | 'showcase' | 'legal' | 'admin' | 'misc';
-  category: string;
+export interface RouteAccessibilityConfig { routeType: 'essential' | 'demo' | 'test' | 'dev' | 'showcase' | 'legal' | 'admin' | 'misc';, category: string;
   enhancedFeatures: {
     voiceCommands?: boolean;
     aiIntegration?: boolean;
@@ -34,7 +32,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: true,
       progressiveDisclosure: true,
       specialKeyboards: true,
-      customAnnouncements: true,
+      customAnnouncements: true
     },
     routeSpecificPatterns: {
       skipToContent: 'main-content',
@@ -61,7 +59,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: true,
       progressiveDisclosure: true,
       specialKeyboards: false,
-      customAnnouncements: true,
+      customAnnouncements: true
     },
     routeSpecificPatterns: {
       skipToContent: 'demo-content',
@@ -88,7 +86,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: false,
       progressiveDisclosure: true,
       specialKeyboards: true,
-      customAnnouncements: true,
+      customAnnouncements: true
     },
     routeSpecificPatterns: {
       skipToContent: 'test-content',
@@ -115,7 +113,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: true,
       progressiveDisclosure: true,
       specialKeyboards: true,
-      customAnnouncements: false,
+      customAnnouncements: false
     },
     routeSpecificPatterns: {
       skipToContent: 'dev-tools',
@@ -142,7 +140,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: false,
       progressiveDisclosure: true,
       specialKeyboards: false,
-      customAnnouncements: true,
+      customAnnouncements: true
     },
     routeSpecificPatterns: {
       skipToContent: 'showcase-content',
@@ -169,7 +167,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: true,
       progressiveDisclosure: true,
       specialKeyboards: true,
-      customAnnouncements: true,
+      customAnnouncements: true
     },
     routeSpecificPatterns: {
       skipToContent: 'legal-content',
@@ -196,7 +194,7 @@ const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = {
       aiIntegration: false,
       progressiveDisclosure: true,
       specialKeyboards: true,
-      customAnnouncements: true,
+      customAnnouncements: true
     },
     routeSpecificPatterns: {
       skipToContent: 'admin-content',
@@ -234,8 +232,8 @@ export class EnhancedRouteAccessibility {
     this.routeObserver.observe(document.body, {
       childList: true,
       subtree: true;
-      attributes: true,
-      attributeFilter: ['data-sveltekit-route'],
+     , attributes: true,
+      attributeFilter: ['data-sveltekit-route']
     });
     // Initial route detection
     this.detectAndEnhanceRoute();
@@ -330,7 +328,7 @@ export class EnhancedRouteAccessibility {
         progressiveDisclosure: config.enhancedFeatures.progressiveDisclosure,
         enhancedFocusIndicators: true,
         aiResultSummaries: true,
-        contextualHelp: true,
+        contextualHelp: true
       });
     }
     // Set up route-specific skip links
@@ -405,7 +403,7 @@ export class EnhancedRouteAccessibility {
         this.showAdminMenu();
         break;
       default:
-        console.log(`Custom action: ${action} (${keyCombo})`);
+        console.log(`Custom; action: ${action} (${keyCombo})`);
     }
   }
   /**
@@ -578,8 +576,7 @@ export class EnhancedRouteAccessibility {
       small: '14px',
       normal: '16px',
       large: '18px',
-      'extra-large': '20px'
-    }
+      'extra-large': '20px' }
     return sizes[size as keyof typeof sizes] || '16px';
   }
   /**

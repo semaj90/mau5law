@@ -11,7 +11,7 @@ const mockDb = {
     // eslint-disable-next-line no-console
     console.log('Mock DB Query:', sql);
     return { rows: [] };
-  },
+  }
 };
 
 // Mock data generators (small, valid implementations)
@@ -30,7 +30,7 @@ export const mockDataGenerators = {
         type,
         status: 'active',
         embedding: makeVec(),
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       });
     }
     return docs;
@@ -66,7 +66,7 @@ export const mockDataGenerators = {
       manifests.push({ id: `chr_${Date.now()}_${i}`, keys: [`k_${i}`] });
     }
     return manifests;
-  },
+  }
 };
 
 // Database sync operations (simplified mock)
@@ -111,7 +111,7 @@ export const databaseSync = {
       console.error('Failed to sync predictive asset cache:', err);
       return { success: false, error: err?.message ?? String(err), count: 0 };
     }
-  },
+  }
 };
 // (Intentionally no vectorSearch or orchestrator helpers here)
 // This file provides only small mock generators and sync helpers used in tests.

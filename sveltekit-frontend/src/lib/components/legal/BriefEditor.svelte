@@ -1,5 +1,8 @@
 <!-- Brief Editor - Enhanced-Bits Legal Component -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
 import type { Case } from '$lib/types';
   import { fade, scale, fly } from 'svelte/transition';
   import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
@@ -351,7 +354,7 @@ import type { Case } from '$lib/types';
           ></textarea>
           <!-- AI Suggestions Panel -->
           {#if currentSection.aiSuggestions && currentSection.aiSuggestions.length > 0}
-            <div class="suggestions-panel" transition:fly={{ x: 20, duration: 300 }}>
+            <div class="suggestions-panel" transitionfly={{ x: 20, duration: 300 }}>
               <h4>🤖 AI Suggestions</h4>
               <ul class="suggestions-list">
                 {#each Array.isArray(currentSection.aiSuggestions) ? currentSection.aiSuggestions : [] as suggestion}
@@ -401,7 +404,7 @@ import type { Case } from '$lib/types';
     </div>
     <!-- Citation Panel -->
     {#if citationPanel}
-      <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
+      <div class="citation-panel" transitionfly={{ x: 300, duration: 300 }}>
         <div class="panel-header">
           <h3>📚 All Citations</h3>
           <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>

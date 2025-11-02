@@ -3,9 +3,7 @@
 import { createMachine, assign } from 'xstate';
 import type { ActorRefFrom } from 'xstate';
 // Types for the graph cache system
-export interface GraphCacheContext {
-  query: string | null;
-  params: Record<string, unknown>;
+export interface GraphCacheContext { query: string | null;, params: Record<string, unknown>;
   result: any;
   source: 'indexeddb_cache' | 'wasm' | 'neo4j' | 'graph_service' | 'snapshot_fallback';
   isStale: boolean;
@@ -13,9 +11,7 @@ export interface GraphCacheContext {
   cacheHit: boolean;
   latency: number;
   queryHash: string | null;
-  telemetry: {
-    totalQueries: number;
-    cacheHits: number;
+  telemetry: { totalQueries: number;, cacheHits: number;
     cacheMisses: number;
     hitRate: number;
     avgLatencyMs: number;
@@ -30,20 +26,20 @@ export interface GraphCacheContext {
   maxRetries: number;
 }
 export type GraphCacheEvent =
-  | { type: 'QUERY'; query: string; params?: Record<string, unknown> }
-  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source']; latency: number }
-  | { type: 'CACHE_MISS'; queryHash: string }
-  | { type: 'WASM_RESULT'; result: any; latency: number }
-  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source']; latency: number }
-  | { type: 'BACKGROUND_REFRESH'; queryHash: string }
-  | { type: 'REFRESH_COMPLETE'; result: any }
-  | { type: 'REFRESH_FAILED'; error: string }
+  | { type: 'QUERY';, query: string; params?: Record<string, unknown> }
+  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source'];, latency: number }
+  | { type: 'CACHE_MISS';, queryHash: string }
+  | { type: 'WASM_RESULT'; result: any;, latency: number }
+  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source'];, latency: number }
+  | { type: 'BACKGROUND_REFRESH';, queryHash: string }
+  | { type: 'REFRESH_COMPLETE';, result: any }
+  | { type: 'REFRESH_FAILED';, error: string }
   | { type: 'ENABLE_BACKGROUND_REFRESH' }
   | { type: 'DISABLE_BACKGROUND_REFRESH' }
   | { type: 'RESET_TELEMETRY' }
   | { type: 'GET_TELEMETRY' }
   | { type: 'WORKER_READY' }
-  | { type: 'WORKER_ERROR'; error: string }
+  | { type: 'WORKER_ERROR';, error: string }
   | { type: 'INVALIDATE_CACHE'; key?: string }
   | { type: 'IDLE_CALLBACK' }
   | { type: 'RETRY' };
@@ -52,8 +48,7 @@ export const graphCacheMachine = createMachine(
   {
     id: 'graphCache',
     initial: 'initializing',
-    // Note: predictableActionArguments removed for version compatibility
-    context: {
+    // Note: predictableActionArguments removed for version compatibility; context: {
       query: null,
       params: {} as Record<string, unknown>,
       result: null,
@@ -70,22 +65,20 @@ export const graphCacheMachine = createMachine(
         hitRate: 0,
         avgLatencyMs: 0,
         p95LatencyMs: 0,
-        p99LatencyMs: 0,
+        p99LatencyMs: 0
       },
       worker: null,
       refreshJob: null,
       lastRefresh: 0,
       backgroundRefreshEnabled: true,
       retryCount: 0,
-      maxRetries: 3,
+      maxRetries: 3
     } satisfies GraphCacheContext,
-    states: {
-      initializing: {
-        entry: 'initializeWorker',
+    states: { initializing: {, entry: 'initializeWorker',
         on: {
           WORKER_READY: 'idle',
-          WORKER_ERROR: 'error',
-        },
+          WORKER_ERROR: 'error'
+        }
       },
       idle: {
         entry: 'scheduleIdleCallback',
@@ -99,24 +92,20 @@ export const graphCacheMachine = createMachine(
           IDLE_CALLBACK: [
             {
               target: 'backgroundRefreshing',
-              guard: 'shouldBackgroundRefresh',
+              guard: 'shouldBackgroundRefresh'
             },
-          ],
-        },
+          ]
+        }
       },
       querying: {
         entry: ['setQuery', 'incrementQueryCount'],
         initial: 'checkingCache',
-        states: {
-          checkingCache: {
-            entry: 'queryWorker',
-            on: {
-              CACHE_HIT: {
-                target: 'cacheHit',
-                actions: 'setCacheResult',
+        states: { checkingCache: {, entry: 'queryWorker',
+            on: { CACHE_HIT: {, target: 'cacheHit',
+                actions: 'setCacheResult'
               },
-              CACHE_MISS: 'cacheMiss',
-            },
+              CACHE_MISS: 'cacheMiss'
+            }
           },
           cacheHit: {
             entry: ['notifyCacheHit', 'updateTelemetry'],
@@ -124,96 +113,88 @@ export const graphCacheMachine = createMachine(
               100: [
                 {
                   target: '#graphCache.backgroundRefreshing',
-                  guard: 'isStaleResult',
+                  guard: 'isStaleResult'
                 },
                 {
-                  target: '#graphCache.idle',
+                  target: '#graphCache.idle'
                 },
-              ],
-            },
+              ]
+            }
           },
           cacheMiss: {
             entry: 'notifyCacheMiss',
             initial: 'wasmQuery',
-            states: {
-              wasmQuery: {
-                entry: 'queryWasmWorker',
-                on: {
-                  WASM_RESULT: {
-                    target: 'authoritativeQuery',
-                    actions: ['setWasmResult', 'notifyProvisionalResult'],
-                  },
+            states: { wasmQuery: {, entry: 'queryWasmWorker',
+                on: { WASM_RESULT: {, target: 'authoritativeQuery',
+                    actions: ['setWasmResult', 'notifyProvisionalResult']
+                  }
                 },
                 after: {
                   5000: 'authoritativeQuery', // Fallback if WASM times out
-                },
+                }
               },
               authoritativeQuery: {
                 entry: 'queryAuthoritativeSource',
-                on: {
-                  AUTHORITATIVE_RESULT: {
-                    target: '#graphCache.rehydrated',
-                    actions: 'setAuthoritativeResult',
+                on: { AUTHORITATIVE_RESULT: {, target: '#graphCache.rehydrated',
+                    actions: 'setAuthoritativeResult'
                   },
                   REFRESH_FAILED: [
                     {
                       target: 'authoritativeQuery',
                       guard: 'canRetry',
-                      actions: 'incrementRetry',
+                      actions: 'incrementRetry'
                     },
                     {
                       target: '#graphCache.error',
-                      actions: 'setError',
+                      actions: 'setError'
                     },
-                  ],
+                  ]
                 },
                 after: {
                   10000: [
                     {
                       target: 'authoritativeQuery',
                       guard: 'canRetry',
-                      actions: 'incrementRetry',
+                      actions: 'incrementRetry'
                     },
                     {
-                      target: '#graphCache.error',
+                      target: '#graphCache.error'
                     },
-                  ],
-                },
-              },
-            },
-          },
-        },
+                  ]
+                }
+              }
+            }
+          }
+        }
       },
       backgroundRefreshing: {
         entry: ['setRefreshJob', 'queryAuthoritativeSource'],
-        on: {
-          REFRESH_COMPLETE: {
-            target: 'revalidated',
-            actions: ['setAuthoritativeResult', 'clearRefreshJob'],
+        on: { REFRESH_COMPLETE: {, target: 'revalidated',
+            actions: ['setAuthoritativeResult', 'clearRefreshJob']
           },
           REFRESH_FAILED: {
             target: 'idle',
-            actions: 'clearRefreshJob',
-          },
+            actions: 'clearRefreshJob'
+          }
         },
         after: {
           15000: {
             target: 'idle',
-            actions: 'clearRefreshJob',
-          },
-        },
+            actions: 'clearRefreshJob'
+          }
+        }
       },
       rehydrated: {
         entry: ['notifyRehydration', 'updateCaches', 'updateTelemetry'],
         after: {
-          500: 'idle',
-        },
+          500: 'idle'
+        }
       },
       revalidated: {
         entry: ['notifyRevalidation', 'updateCaches', 'updateTelemetry'],
         after: {
-          500: 'idle',
-        },
+          500: 'idle'
+        }
       },
       error: {
         entry: 'notifyError',
@@ -222,24 +203,22 @@ export const graphCacheMachine = createMachine(
             {
               target: 'querying',
               cond: 'canRetry',
-              actions: 'incrementRetry',
+              actions: 'incrementRetry'
             },
             {
-              target: 'idle',
+              target: 'idle'
             },
           ],
-          QUERY: 'querying',
+          QUERY: 'querying'
         },
         after: {
           5000: 'idle', // Auto-recover after 5 seconds
-        },
-      },
-    },
+        }
+      }
+    }
   },
-  {
-    actions: {
-      initializeWorker: assign({
-        worker: () => {
+  { actions: {, initializeWorker: assign({
+       , worker: () => {
           if (typeof Worker !== 'undefined') {
             const worker = new Worker('/src/lib/workers/graph-worker.js');
             worker.onmessage = (event: MessageEvent) => {
@@ -250,7 +229,7 @@ export const graphCacheMachine = createMachine(
                   // Handle in machine (post WORKER_READY to parent machine if desired)
                   break;
                 case 'query_result': {
-                  const $data = (payload as { type: 'query_result'; data: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'query_result';, data: WorkerQueryResultData }).data;
                   // Example: if worker indicates a cache hit, you might post CACHE_HIT
                   if ($data?.cache_hit) {
                     // send an event into the machine from outside caller if needed
@@ -261,7 +240,7 @@ export const graphCacheMachine = createMachine(
                   break;
                 }
                 case 'query_result_authoritative': {
-                  const $data = (payload as { type: 'query_result_authoritative'; data: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'query_result_authoritative';, data: WorkerQueryResultData }).data;
                   // send AUTHORITATIVE_RESULT handling here
                   break;
                 }
@@ -271,19 +250,19 @@ export const graphCacheMachine = createMachine(
                   break;
                 }
                 case 'worker_error': {
-                  const err = (payload as { type: 'worker_error'; error: string }).error;
+                  const err = (payload as { type: 'worker_error';, error: string }).error;
                   console.error('Worker error:', err);
                   break;
                 }
                 default:
-                  // safety: log unknown messages
+                  //; safety: log unknown messages
                   console.log('Worker message (unknown type):', payload);
               }
             };
             return worker;
           }
           return null;
-        },
+        }
       }),
       // functional assign so event can be strongly typed and narrowed
       setQuery: assign((context, event: GraphCacheEvent) => {
@@ -301,14 +280,14 @@ export const graphCacheMachine = createMachine(
           query,
           params,
           queryHash: hash.toString(),
-          retryCount: 0,
+          retryCount: 0
         } as Partial<GraphCacheContext>;
       }),
       incrementQueryCount: assign({
         telemetry: context => ({
           ...context.telemetry,
-          totalQueries: context.telemetry.totalQueries + 1,
-        }),
+          totalQueries: context.telemetry.totalQueries + 1
+        })
       }),
       setCacheResult: assign((context, event: GraphCacheEvent) => {
         if (event.type !== 'CACHE_HIT') return {};
@@ -319,8 +298,8 @@ export const graphCacheMachine = createMachine(
           latency: event.latency ?? 0,
           telemetry: {
             ...context.telemetry,
-            cacheHits: context.telemetry.cacheHits + 1,
-          },
+            cacheHits: context.telemetry.cacheHits + 1
+          }
         } as Partial<GraphCacheContext>;
       }),
       setWasmResult: assign((_, event: GraphCacheEvent) => {
@@ -328,7 +307,7 @@ export const graphCacheMachine = createMachine(
         return {
           result: event.result,
           source: 'wasm' as const,
-          latency: event.latency ?? 0,
+          latency: event.latency ?? 0
         } as Partial<GraphCacheContext>;
       }),
       setAuthoritativeResult: assign((_, event: GraphCacheEvent) => {
@@ -338,25 +317,24 @@ export const graphCacheMachine = createMachine(
             result: event.result,
             source: src,
             isAuthoritative: true,
-            lastRefresh: Date.now(),
+            lastRefresh: Date.now()
           } as Partial<GraphCacheContext>;
         }
         return {};
       }),
       setRefreshJob: assign({
-        refreshJob: context => `refresh_${context.queryHash}_${Date.now()}`,
-      }),
+        refreshJob: context => `refresh_${context.queryHash}_${Date.now()}` }),
       clearRefreshJob: assign({
-        refreshJob: () => null,
+        refreshJob: () => null
       }),
       incrementRetry: assign({
-        retryCount: context => context.retryCount + 1,
+        retryCount: context => context.retryCount + 1
       }),
       enableBackgroundRefresh: assign({
-        backgroundRefreshEnabled: () => true,
+        backgroundRefreshEnabled: () => true
       }),
       disableBackgroundRefresh: assign({
-        backgroundRefreshEnabled: () => false,
+        backgroundRefreshEnabled: () => false
       }),
       updateTelemetry: assign({
         telemetry: context => {
@@ -366,27 +344,25 @@ export const graphCacheMachine = createMachine(
             hitRate: total > 0 ? (context.telemetry.cacheHits / total) * 100 : 0,
             // Additional metrics can be computed here
           };
-        },
+        }
       }),
-      resetTelemetry: assign({
-        telemetry: () => ({
-          totalQueries: 0,
+      resetTelemetry: assign({ telemetry: () => ({, totalQueries: 0,
           cacheHits: 0,
           cacheMisses: 0,
           hitRate: 0,
           avgLatencyMs: 0,
           p95LatencyMs: 0,
-          p99LatencyMs: 0,
-        }),
+          p99LatencyMs: 0
+        })
       }),
       queryWorker: context => {
         if (context.worker && context.query) {
           context.worker.postMessage({
             type: 'query',
             data: {
-              query: context.query,
-              params: context.params,
-            },
+             , query: context.query,
+              params: context.params
+            }
           });
         }
       },
@@ -440,7 +416,7 @@ export const graphCacheMachine = createMachine(
           const key = event.type === 'INVALIDATE_CACHE' ? event.key : undefined;
           context.worker.postMessage({
             type: 'cache_clear',
-            key,
+            key
           });
         }
       },
@@ -449,7 +425,7 @@ export const graphCacheMachine = createMachine(
       },
       setError: () => {
         console.error('❌ Query failed after max retries');
-      },
+      }
     },
     guards: {
       shouldBackgroundRefresh: context => {
@@ -462,8 +438,8 @@ export const graphCacheMachine = createMachine(
       },
       canRetry: context => {
         return context.retryCount < context.maxRetries;
-      },
-    },
+      }
+    }
   }
 );
 // Helper types for external usage
@@ -482,10 +458,10 @@ type WorkerQueryResultData = {
 };
 type WorkerToMainMessage =
   | { type: 'worker_ready' }
-  | { type: 'worker_error'; error: string }
-  | { type: 'query_result'; data: WorkerQueryResultData }
-  | { type: 'query_result_authoritative'; data: WorkerQueryResultData }
+  | { type: 'worker_error';, error: string }
+  | { type: 'query_result';, data: WorkerQueryResultData }
+  | { type: 'query_result_authoritative';, data: WorkerQueryResultData }
   | { type: 'refresh_complete'; data?: WorkerQueryResultData }
-  | { type: 'log'; message: string; level?: 'info' | 'warn' | 'error' }
+  | { type: 'log';, message: string; level?: 'info' | 'warn' | 'error` }
   // allow safe unknown extension points from worker
   | { type: string; [k: string]: any };

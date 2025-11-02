@@ -1,5 +1,6 @@
 <!-- Gaming Evidence Board Recreation - Enhanced-Bits + WebGPU -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
 import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { fade, scale, fly } from 'svelte/transition';

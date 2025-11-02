@@ -5,33 +5,25 @@
 import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
 import type { Case, Evidence, Document } from '$lib/server/db/drizzle-vector-config';
 }
-export interface CaseOutcomePrediction {
-  caseId: string;
-  winProbability: number;        // 0.0 - 1.0
+export interface CaseOutcomePrediction { caseId: string;, winProbability: number;        // 0.0 - 1.0
   confidenceLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   keyFactors: OutcomeFactors[];
   similarCases: SimilarCase[];
   riskAssessment: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   predictionTimestamp: string;
   // Gaming UI Integration
-  gameTheme: {
-    displayAs: 'boss_battle_odds' | 'quest_completion' | 'skill_check';
-  confidenceBar: 'energy_meter' | 'health_bar' | 'experience_bar';
+  gameTheme: { displayAs: 'boss_battle_odds' | 'quest_completion' | 'skill_check';, confidenceBar: 'energy_meter' | 'health_bar' | 'experience_bar';
   riskIndicator: 'danger_level' | 'difficulty_rating' | 'threat_assessment';
   consoleTheme: 'n64' | 'nes' | 'snes' | 'ps1' | 'ps2' | 'yorha';
   }
 }
-export interface OutcomeFactors {
-  factorType: 'evidence' | 'legal_precedent' | 'jurisdiction' | 'timeline';
-  description: string;
+export interface OutcomeFactors { factorType: 'evidence' | 'legal_precedent' | 'jurisdiction' | 'timeline';, description: string;
   impact: number;          // -1.0 (negative) to 1.0 (positive),
   confidence: number;      // 0.0 - 1.0
   evidenceIds?: string[];
 }
 }
-export interface SimilarCase {
-  caseId: string;
-  title: string;
+export interface SimilarCase { caseId: string;, title: string;
   outcome: 'won' | 'lost' | 'settled';
   similarity: number;      // 0.0 - 1.0
   keyLessons: string[];
@@ -100,7 +92,7 @@ export class PredictiveAnalyticsService {
           caseId: caseData.case.id,
           embedding: caseData.case.embedding,
           includeOutcomes: true,
-        )}),
+        )})
       });
       const data = await response.json();
       return data.similarCases?.map((c: any) => ({,
@@ -126,7 +118,7 @@ export class PredictiveAnalyticsService {
         acc + (e.relevance_score || 50), 0) / caseData.evidence.length;
       factors.push({
         factorType: 'evidence',
-        description: `Evidence strength: ${evidenceStrength.toFixed(0)}% average relevance`,
+        description: `Evidence; strength: ${evidenceStrength.toFixed(0)}% average relevance`,
         impact: (evidenceStrength - 50) / 50, // Normalize to -1 to 1;
         confidence: 0.8,
         evidenceIds: caseData.evidence.map((e: any) => e.id)
@@ -150,7 +142,7 @@ export class PredictiveAnalyticsService {
   /**
    * Calculate win probability using ensemble of methods
    */
-  private async calculateWinProbability(similarCases,: SimilarCase[], factor,s: OutcomeFactors[,]): Promise<number> {
+  private async calculateWinProbability(similarCases,: SimilarCase[], factor,s: OutcomeFactors[]): Promise<number> {
     // Method 1: Historical case outcomes weighted by similarity
     const historicalWeight = similarCases.length > 0 ?;
       similarCases,.reduce((acc, c) => acc + (c.outcome === 'won' ? c.similarity: -c.similarity), 0)
@@ -175,10 +167,10 @@ export class PredictiveAnalyticsService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           model: 'gemma2:latest',
-          prompt: `Analyze this legal case outcome probability based on factors: ${JSON.stringify(factors)}.
+          prompt: `Analyze this legal case outcome probability based on; factors: ${JSON.stringify(factors)}.
                    Respond with only a probability between 0.0 and 1.0.`,
           stream: false
-        }),
+        })
       });
       const data = await response.json();
       const prediction = parseFloat(data.response?.match(/0\.\d+/)?.[0] || '0.5');
@@ -191,9 +183,7 @@ export class PredictiveAnalyticsService {
    * Generate gaming-themed UI configuration
    */
   private generateGamingTheme(probability,: number, them,e: strin,g): CaseOutcomePrediction['gameTheme,'] {
-    const themes = {
-      n64: {
-        displayAs: 'boss_battle_odds' as const,
+    const themes = { n64: {, displayAs: 'boss_battle_odds' as const,
         confidenceBar: 'energy_meter' as const,
         riskIndicator: 'danger_level' as const
       },

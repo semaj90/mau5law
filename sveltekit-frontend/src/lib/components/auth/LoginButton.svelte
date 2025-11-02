@@ -61,7 +61,8 @@
         <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">
           {authStore.user.role}
         </span>
-      {/if}
+      </div>
+    {/if}
     <Button.Root
       class={className}
       {variant}

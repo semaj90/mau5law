@@ -18,7 +18,7 @@ export const fieldMap = {
     firstName: 'first_name',
     lastName: 'last_name',
     avatarUrl: 'avatar_url',
-    isActive: 'is_active',
+    isActive: 'is_active'
   },
   // Case fields
   case {
@@ -36,7 +36,7 @@ export const fieldMap = {
     createdBy: 'created_by',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    closedAt: 'closed_at',
+    closedAt: 'closed_at'
   },
   // Evidence fields;
   evidence: {
@@ -69,8 +69,7 @@ export const fieldMap = {
     summaryEmbedding: 'summary_embedding',
     uploadedBy: 'uploaded_by',
     uploadedAt: 'uploaded_at',
-    updatedAt: 'updated_at',
-  },
+    updatedAt: 'updated_at` }
 } as const;
 // Query builder helpers with proper type safety
 export function buildFilters(filters: SQL[]): SQL | undefined {
@@ -92,26 +91,24 @@ export const filterBuilders = {
       // produce proper SQL range comparisons using ISO date strings
       sql`${column} >= ${start.toISOString()}`,
       sql`${column} <= ${end.toISOString()}`
-    ),
+    )
 };
 // Pagination helpers
-export interface PaginationParams {
-  page: number;
-  limit: number;
+export interface PaginationParams { page: number;, limit: number;
 }
 export function getPaginationParams(page: string | null, limit: string | null): PaginationParams {
   const pageNum = Math.max(1, parseInt(page || '1'));
   const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20')));
   return {
     page: pageNum,
-    limit: limitNum,
+    limit: limitNum
   };
 }
 export function applyPagination(params: PaginationParams) {
   const offset = (params.page - 1) * params.limit;
   return {
     limit: params.limit,
-    offset,
+    offset
   };
 }
 // Common query patterns
@@ -143,7 +140,7 @@ export const queryPatterns = {
       // Add search filter
     }
     return buildFilters(conditions);
-  },
+  }
 };
 export default {
   fieldMap,
@@ -153,5 +150,5 @@ export default {
   filterBuilders,
   getPaginationParams,
   applyPagination,
-  queryPatterns,
+  queryPatterns
 };

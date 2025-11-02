@@ -159,7 +159,7 @@ export class ContextualUnderstandingService {
         value: match[0],
         confidence: 0.8,
         span: {
-          start: match.index,
+         , start: match.index,
           end: match.index + match[0].length
         }
       });
@@ -172,7 +172,7 @@ export class ContextualUnderstandingService {
         value: match[0],
         confidence: 0.9,
         span: {
-          start: match.index,
+         , start: match.index,
           end: match.index + match[0].length
         }
       });
@@ -185,7 +185,7 @@ export class ContextualUnderstandingService {
         value: match[0],
         confidence: 0.85,
         span: {
-          start: match.index,
+         , start: match.index,
           end: match.index + match[0].length
         }
       });
@@ -253,9 +253,7 @@ export class ContextualUnderstandingService {
   /**
    * Get statistics for analytics
    */
-  async getSessionStats(sessionId: string, userId: string): Promise<{
-    totalTurns: number;
-    uniqueEntities: number;
+  async getSessionStats(sessionId: string, userId: string): Promise<{ totalTurns: number;, uniqueEntities: number;
     averageConfidence: number;
     currentState: string;
     patternFrequency: number;

@@ -12,9 +12,7 @@ import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
 // CONFIGURATION & TYPES
 // ============================================================================
 
-export interface DocumentChange {
-  documentId: string;
-  changeType: 'content' | 'metadata' | 'analysis';
+export interface DocumentChange { documentId: string;, changeType: 'content' | 'metadata' | 'analysis';
   oldContent?: string;
   newContent: string;
   changeHash: string;
@@ -22,9 +20,7 @@ export interface DocumentChange {
   affectedChunks?: number[];
 }
 
-export interface ReembedResult {
-  documentId: string;
-  chunksUpdated: number;
+export interface ReembedResult { documentId: string;, chunksUpdated: number;
   chunksAdded: number;
   chunksRemoved: number;
   similarityImpact: number;
@@ -32,9 +28,7 @@ export interface ReembedResult {
   rerankedQueries: number;
 }
 
-export interface RerankingJob {
-  queryId: string;
-  query: string;
+export interface RerankingJob { queryId: string;, query: string;
   originalResults: Array<any>;
   newResults: Array<any>;
   improvement: number;
@@ -89,11 +83,11 @@ export class DocumentUpdateLoop {
 
     this.embeddings = new OllamaEmbeddings({
       baseUrl,
-      model,
+      model
     });
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
-      chunkOverlap: 200,
+      chunkOverlap: 200
     });
   }
 
@@ -136,7 +130,7 @@ export class DocumentUpdateLoop {
         newContent,
         changeHash: newHash,
         priority,
-        affectedChunks,
+        affectedChunks
       };
 
       console.log(
@@ -167,7 +161,7 @@ export class DocumentUpdateLoop {
       const existingChunks = await db
         .select({
           chunkIndex: documentVectors.chunkIndex,
-          content: documentVectors.content,
+          content: documentVectors.content
         })
         .from(documentVectors)
         .where(eq(documentVectors.documentId, documentId))
@@ -231,11 +225,11 @@ export class DocumentUpdateLoop {
         content: chunk,
         embedding: embeddings[index],
         metadata: {
-          reembeddedAt: new Date().toISOString(),
+         , reembeddedAt: new Date().toISOString(),
           changeHash: change.changeHash,
           chunkSize: chunk.length,
-          priority: change.priority,
-        },
+          priority: change.priority
+        }
       }));
 
       await db.insert(documentVectors).values(...vectorRecords);
@@ -250,8 +244,8 @@ export class DocumentUpdateLoop {
             lastReembedded: new Date().toISOString(),
             chunksCount: chunks.length,
             changeHash: change.changeHash,
-            priority: change.priority,
-          },
+            priority: change.priority
+          }
         })
         .where(eq(documents.id, change.documentId));
 
@@ -291,7 +285,7 @@ export class DocumentUpdateLoop {
           query: queryVectors.query,
           embedding: queryVectors.embedding,
           clickedResults: queryVectors.clickedResults,
-          createdAt: queryVectors.createdAt,
+          createdAt: queryVectors.createdAt
         })
         .from(queryVectors)
         .where(sql`${queryVectors.createdAt} > NOW() - INTERVAL: '7 days'`)
@@ -374,10 +368,10 @@ export class DocumentUpdateLoop {
         query: queryRecord.query,
         originalResults: queryRecord.clickedResults || [],
         newResults: newSearchResults,
-        improvement: improvement,
+        improvement: improvement
       };
     } catch (error: any) {
-      console.error(`❌ Failed to re-rank single query ${queryRecord.id}:`, formatError(error));
+      console.error(`❌ Failed to re-rank single query ${queryRecord.id}: ', formatError(error));
       return null;
     }
   }

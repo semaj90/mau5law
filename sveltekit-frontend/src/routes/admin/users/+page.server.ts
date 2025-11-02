@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         id: users.id,
         email: users.email,
         created_at: users.created_at,
-        updated_at: users.updated_at,
+        updated_at: users.updated_at
       })
       .from(users);
     // Add search filter if provided
@@ -50,9 +50,9 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         totalUsers,
         limit,
         hasNext: page < totalPages,
-        hasPrev: page > 1,
+        hasPrev: page > 1
       },
-      search,
+      search
     };
   } catch (err) {
     console.error('Error loading users:', err);
@@ -72,21 +72,21 @@ export const actions: Actions = {
       return {
         success: false,
         error: 'Email and password are required',
-        formData: { email },
+        formData: { email }
       };
     }
     if (password !== confirmPassword) {
       return {
         success: false,
         error: 'Passwords do not match',
-        formData: { email },
+        formData: { email }
       };
     }
     if (password.length < 8) {
       return {
         success: false,
         error: 'Password must be at least 8 characters',
-        formData: { email },
+        formData: { email }
       };
     }
     try {
@@ -96,7 +96,7 @@ export const actions: Actions = {
         return {
           success: false,
           error: 'Email already exists',
-          formData: { email },
+          formData: { email }
         };
       }
       // Hash password
@@ -104,14 +104,14 @@ export const actions: Actions = {
         memoryCost: 19456,
         timeCost: 2,
         outputLen: 32,
-        parallelism: 1,
+        parallelism: 1
       });
       // Create user
       const newUser = await db
         .insert(users)
         .values({
           email,
-          password_hash: passwordHash,
+          password_hash: passwordHash
         })
         .returning();
       return {
@@ -119,15 +119,15 @@ export const actions: Actions = {
         user: {
           id: newUser[0].id,
           email: newUser[0].email,
-          created_at: newUser[0].created_at,
-        },
+          created_at: newUser[0].created_at
+        }
       };
     } catch (err) {
       console.error('Error creating user:', err);
       return {
         success: false,
         error: 'Failed to create user',
-        formData: { email },
+        formData: { email }
       };
     }
   },
@@ -170,7 +170,7 @@ export const actions: Actions = {
       return { success: true, message: 'User status updated' };
     } catch (err) {
       console.error('Error updating user status:', err);
-      return { success: false, error: 'Failed to update user status' };
+      return { success: false, error: `Failed to update user status` };
     }
-  },
+  }
 };

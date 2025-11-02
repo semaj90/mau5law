@@ -27,31 +27,23 @@ function getErrorMessage(error: any): string {
 type LokiQuery<T> = Partial<Record<keyof T, unknown>> | ((obj: T) => boolean) | Record<string, unknown>;
 // Add a minimal local typing for Loki collections used in this file.
 // This avoids relying on a non-exported type from the lokijs package while keeping useful method signatures.
-type LokiCollection<T> = {
-  find: (query?: LokiQuery<T>) => T[];
-  count: () => number;
+type LokiCollection<T> = { find: (query?: LokiQuery<T>) => T[];, count: () => number;
   insert?: (doc: T) => T;
   insertOrUpdate?: (doc: T) => T;
   where?: (fn: (obj: T) => boolean) => T[];
   [key: string]: any;
 };
-export interface SemanticChunk {
-  id: string;
-  text: string;
+export interface SemanticChunk { id: string;, text: string;
   // Accept either a typed Float32Array or a plain number[] as Loki may store arrays
   embedding: Float32Array | number[];
-  metadata: {
-    timestamp: number;
-    source: string;
+  metadata: { timestamp: number;, source: string;
     relevance: number;
     semanticGroup: string;
   };
 }
 // New helper type for scored results
 type ScoredChunk = SemanticChunk & { score: number };
-export interface SIMDTensor {
-  data: Float32Array;
-  shape: number[];
+export interface SIMDTensor { data: Float32Array;, shape: number[];
   simdOps: {
     dotProduct: (a: Float32Array, b: Float32Array) => number;
     cosineDistance: (a: Float32Array, b: Float32Array) => number;
@@ -88,13 +80,13 @@ class FrontendRAGPipeline {
           // Provide options as unknown to avoid strict keyof checks for nested keys
           const coll = this.lokiDb?.addCollection('semantic_chunks', {
             indices: ['metadata.semanticGroup', 'metadata.relevance', 'metadata.timestamp'],
-            unique: ['id'],
+            unique: ['id']
           } as unknown as Record<string, unknown>);
           this.semanticCollection = coll as unknown as LokiCollection<SemanticChunk> | null;
         }
       },
       autosave: true,
-      autosaveInterval: 2000,
+      autosaveInterval: 2000
     });
   }
   private async initializePipelines() {
@@ -102,7 +94,7 @@ class FrontendRAGPipeline {
       // Initialize lightweight embedding pipeline
       this.embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
         device: 'cpu',
-        dtype: 'fp32',
+        dtype: 'fp32'
       });
       // Initialize text generation pipeline (lightweight)
       this.generationPipeline = await pipeline('text-generation', 'Xenova/gpt2', { device: 'cpu', dtype: 'fp16' });
@@ -142,7 +134,7 @@ class FrontendRAGPipeline {
       return {
         data: this.simdProcessor.optimize(embedding),
         shape: shapeArr,
-        simdOps: this.simdProcessor.getOperations(),
+        simdOps: this.simdProcessor.getOperations()
       };
     } catch (error: any) {
       console.error('Frontend embedding generation failed:', getErrorMessage(error));
@@ -159,7 +151,7 @@ class FrontendRAGPipeline {
     const contextWeights = this.contextSwitcher.getWeights(context);
     // Ensure typed candidate list
     const candidates = (this.semanticCollection?.find({
-      // query shape depends on Loki usage; using metadata key for clarity: 'metadata.semanticGroup': { $in: contextWeights.groups },
+      // query shape depends on Loki usage; using metadata key for clarity: 'metadata.semanticGroup': { $in: contextWeights.groups }
     }) ?? []) as SemanticChunk[];
     // SIMD-accelerated similarity computation with proper typing
     const scoredResults: ScoredChunk[] = candidates.map((chunk: SemanticChunk) => {
@@ -174,12 +166,8 @@ class FrontendRAGPipeline {
     return scoredResults.sort((a: ScoredChunk, b: ScoredChunk) => b.score - a.score).slice(0, limit);
   }
   // Get system statistics
-  getStats(): {
-    documentsIndexed: number;
-    memoryUsage: number;
-    pipelineStatus: {
-      embedding: boolean;
-      generation: boolean;
+  getStats(): { documentsIndexed: number;, memoryUsage: number;
+    pipelineStatus: { embedding: boolean;, generation: boolean;
     };
     simdOptimizations: boolean;
   } {
@@ -191,9 +179,9 @@ class FrontendRAGPipeline {
       memoryUsage: usedHeap,
       pipelineStatus: {
         embedding: !!this.embeddingPipeline,
-        generation: !!this.generationPipeline,
+        generation: !!this.generationPipeline
       },
-      simdOptimizations: this.simdProcessor.isOptimized(),
+      simdOptimizations: this.simdProcessor.isOptimized()
     };
   }
   /**
@@ -206,19 +194,17 @@ class FrontendRAGPipeline {
 }
 // Context switching for different domains
 class ContextSwitcher {
-  private contexts: Record<'legal' | 'technical' | 'general', { groups: string[]; boost: Record<string, number> }> = {
-    legal: {
-      groups: ['legal', 'regulatory', 'compliance'],
-      boost: { legal: 1.5, regulatory: 1.2, compliance: 1.3, general: 0.8 },
+  private contexts: Record<'legal' | 'technical' | 'general', { groups: string[];, boost: Record<string, number> }> = { legal: {, groups: ['legal', 'regulatory', 'compliance'],
+      boost: { legal: 1.5, regulatory: 1.2, compliance: 1.3, general: 0.8 }
     },
     technical: {
       groups: ['technical', 'development', 'documentation'],
-      boost: { technical: 1.5, development: 1.3, documentation: 1.2, general: 0.8 },
+      boost: { technical: 1.5, development: 1.3, documentation: 1.2, general: 0.8 }
     },
     general: {
       groups: ['general', 'legal', 'technical'],
-      boost: { general: 1.0, legal: 1.0, technical: 1.0 },
-    },
+      boost: { general: 1.0, legal: 1.0, technical: 1.0 }
+    }
   };
   getWeights(context: keyof typeof this.contexts) {
     return this.contexts[context] || this.contexts.general;
@@ -248,7 +234,7 @@ class SIMDProcessor {
     return {
       dotProduct: this.dotProduct.bind(this),
       cosineDistance: this.cosineDistance.bind(this),
-      normalize: this.normalize.bind(this),
+      normalize: this.normalize.bind(this)
     };
   }
   private dotProduct(a: Float32Array, b: Float32Array): number {
@@ -291,7 +277,7 @@ class G0llamaService {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       });
       // Use the standard Fetch Response type and read .ok directly (no `any`)
       this.isAvailable = (response as Response).ok === true;
@@ -315,11 +301,11 @@ class G0llamaService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
+         , prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,
-          temperature: options.temperature || 0.7,
+          temperature: options.temperature || 0.7
         }),
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(10000)
       });
       // Strongly type expected JSON shape to avoid `any`
       const data = (await response.json()) as {

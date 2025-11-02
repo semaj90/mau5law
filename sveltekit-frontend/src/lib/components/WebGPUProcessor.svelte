@@ -169,18 +169,18 @@
   		}
   	`;
   	// Component variables
-  let canvas: HTMLCanvasElement | null = $state(null);
+  let canvas: HTMLCanvasElement | null = null;
   let computePipelines = $state<Map<string, GPUComputePipeline>>(new Map());
   let bufferPool = $state<Map<string, GPUBuffer>>(new Map());
   let operationId = $state<number>(0);
-  let animationFrame: number | null = $state(null);
-  let attentionTracker: AttentionTracker | null = $state(null);
+  let animationFrame: number | null = null;
+  let attentionTracker: AttentionTracker | null = null;
   // Attention tracking class
   class AttentionTracker {
   		private mousePositions: { x: number; y: number; timestamp: number }[] = [];
   		private scrollPositions: { y: number; timestamp: number }[] = [];
   		private focusRegions: { element: HTMLElement; weight: number }[] = [];
-  		private isTracking = $state(false);
+  		private isTracking = false;
   		constructor(private container: HTMLElement) {
   			this.startTracking();
   		}
@@ -295,7 +295,7 @@
   			return regions.sort((a, b) => b.weight - a.weight);
   		}
   		destroy() {
-  			this.isTracking = $state(false);
+  			this.isTracking = false;
   			this.container.removeEventListener('mousemove', this.handleMouseMove.bind(this));
   			this.container.removeEventListener('scroll', this.handleScroll.bind(this));
   			this.container.removeEventListener('focusin', this.handleFocusIn.bind(this));
@@ -351,8 +351,8 @@
       console.log('✅ WebGPU initialized successfully');
     } catch (error) {
       console.error('❌ WebGPU initialization failed:', error);
-      webgpuContext.isSupported = $state(false);
-      webgpuContext.isInitialized = $state(false);
+      webgpuContext.isSupported = false;
+      webgpuContext.isInitialized = false;
     }
   }
   // Initialize compute pipelines

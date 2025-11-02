@@ -1,5 +1,6 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
   // Svelte 5 runes are auto-imported
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {

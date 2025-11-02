@@ -1,8 +1,6 @@
 import type { Document } from '$lib/types';
 // AI Analysis Service for Legal Evidence Processing
-export interface AnalysisResult {
-  summary: string;
-  keyPoints: string[];
+export interface AnalysisResult { summary: string;, keyPoints: string[];
   confidence: number;
   evidenceType: string;
   recommendations: string[];
@@ -18,13 +16,13 @@ export class AIAnalysisService {
       formData.append('file', file);
       const response = await fetch('/api/ai/analyze-evidence', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       if (!response.ok) {
         throw new Error('Analysis failed');
       }
       return await response.json();
-    } catch (error: any) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any'; to: 'unknown'
       console.error('AI Analysis error:', error);
       // Fallback analysis for development
       return {
@@ -55,15 +53,14 @@ export class AIAnalysisService {
       const response = await fetch('/api/ai/analyze-text', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ text }),
+          'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
       });
       if (!response.ok) {
         throw new Error('Text analysis failed');
       }
       return await response.json();
-    } catch (error: any) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any'; to: 'unknown'
       console.error('Text Analysis error:', error);
       // Fallback analysis for development
       return {

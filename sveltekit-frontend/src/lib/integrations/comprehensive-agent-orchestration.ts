@@ -39,29 +39,21 @@ export interface ComprehensiveAgentRequest {
 // --- Replace loose `any` uses with concrete types ---
 type Priority = 'low' | 'medium' | 'high' | 'critical';
 
-export type AgentResult = {
-  output: string;
-  score: number;
+export type AgentResult = { output: string;, score: number;
   metadata: Record<string, unknown>;
 };
 
-export interface ComprehensiveAgentResponse {
-  bestResult: {
-    output: string;
+export interface ComprehensiveAgentResponse { bestResult: {, output: string;
     score: number;
     agent: string;
     metadata: Record<string, unknown>;
   };
-  allResults: Array<{
-    agent: string;
-    output: string;
+  allResults: Array<{ agent: string;, output: string;
     score: number;
     metadata: Record<string, unknown>;
   }>;
   multicoreAnalysis?: MulticoreAnalysis;
-  systemStatus: {
-    agentsExecuted: number;
-    totalProcessingTime: number;
+  systemStatus: { agentsExecuted: number;, totalProcessingTime: number;
     multicoreTasksCompleted: number;
     errorReduction?: number;
   };
@@ -92,9 +84,7 @@ export interface MulticoreAnalysis {
 }
 
 // New: explicit result type for error analysis (replace `any`)
-export interface ErrorAnalysisResult {
-  analysis: any | null;
-  recommendations: string[];
+export interface ErrorAnalysisResult { analysis: any | null;, recommendations: string[];
   fixSuggestions: string[];
   taskId?: string;
   status?: TaskWaitResult['status'];
@@ -119,7 +109,7 @@ export class ComprehensiveAgentOrchestrator {
       enableLegalBert: true,
       enableGoLlama: true,
       maxConcurrentTasks: 25,
-      enableGPU: true,
+      enableGPU: true
     }) as unknown as Context7MulticoreService;
   }
   async initialize(): Promise<void> {
@@ -168,7 +158,7 @@ export class ComprehensiveAgentOrchestrator {
           agent: agentName,
           output: value.output,
           score: value.score,
-          metadata: value.metadata,
+          metadata: value.metadata
         };
         allResults.push(agentResult);
         if (value.score > bestScore) {
@@ -182,7 +172,7 @@ export class ComprehensiveAgentOrchestrator {
           agent: agentsToUse[index],
           output: `Error: ${reason?.message ?? String(reason)}`,
           score: 0,
-          metadata: { error: true },
+          metadata: { error: true }
         });
       }
     });
@@ -192,12 +182,10 @@ export class ComprehensiveAgentOrchestrator {
       errorReduction = this.calculateErrorReduction(multicoreAnalysis.errorPatterns);
     }
     const totalProcessingTime = Date.now() - startTime;
-    return {
-      bestResult: bestResult || {
-        output: 'No valid results obtained from agents',
+    return { bestResult: bestResult || {, output: 'No valid results obtained from agents',
         score: 0,
         agent: 'none',
-        metadata: {},
+        metadata: {}
       },
       allResults,
       multicoreAnalysis: multicoreAnalysis ?? undefined,
@@ -205,8 +193,8 @@ export class ComprehensiveAgentOrchestrator {
         agentsExecuted: agentsToUse.length,
         totalProcessingTime,
         multicoreTasksCompleted,
-        errorReduction,
-      },
+        errorReduction
+      }
     };
   }
 
@@ -229,12 +217,10 @@ export class ComprehensiveAgentOrchestrator {
       tasks.push(legalTask);
     }
     // Task 3: Generate recommendations
-    const recommendationRequest: RecommendationRequest = {
-      context: `Legal AI analysis request: ${request.prompt}`,
+    const recommendationRequest: RecommendationRequest = { context: `Legal AI analysis, request: ${request.prompt}`,
       errorType: request.options?.analysisType,
       codeSnippet: ((request.context ?? {}) as Record<string, unknown>)['codeSnippet'] as string | undefined,
-      priority: request.options?.priority || 'medium',
-    };
+      priority: request.options?.priority || 'medium` };
     const recommendationTask = await this.multicoreService.generateRecommendations(
       recommendationRequest,
       request.options?.priority || 'medium'
@@ -267,7 +253,7 @@ export class ComprehensiveAgentOrchestrator {
           : ['Context7 multicore analysis completed', 'Semantic patterns identified', 'Legal classification performed'],
       errorPatterns,
       performanceMetrics,
-      tasksCompleted,
+      tasksCompleted
     };
   }
 
@@ -279,7 +265,7 @@ export class ComprehensiveAgentOrchestrator {
     const baseOptions = {
       includeContext7: request.options?.includeContext7 || false,
       autoFix: request.options?.autoFix || false,
-      ...request.options,
+      ...request.options
     };
     // Enhance context with multicore analysis if available
     let enhancedContext: Record<string, unknown> = (request.context ?? {}) as Record<string, unknown>;
@@ -288,8 +274,8 @@ export class ComprehensiveAgentOrchestrator {
         ...enhancedContext,
         multicoreAnalysis: {
           recommendations: multicoreAnalysis.recommendations,
-          performanceMetrics: multicoreAnalysis.performanceMetrics,
-        },
+          performanceMetrics: multicoreAnalysis.performanceMetrics
+        }
       };
     }
     switch (agentName) {
@@ -297,7 +283,7 @@ export class ComprehensiveAgentOrchestrator {
         const claudeRequest: ClaudeAgentRequest = {
           prompt: request.prompt,
           context: enhancedContext,
-          options: baseOptions,
+          options: baseOptions
         };
         return await this.simulateClaudeAgent(claudeRequest);
       }
@@ -307,8 +293,8 @@ export class ComprehensiveAgentOrchestrator {
           context: enhancedContext,
           options: {
             ...baseOptions,
-            crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType),
-          },
+            crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType)
+          }
         };
         return await this.simulateCrewAIAgent(crewRequest);
       }
@@ -320,13 +306,13 @@ export class ComprehensiveAgentOrchestrator {
             ...baseOptions,
             analysisType: request.options?.analysisType,
             caseId: request.options?.caseId,
-            evidenceIds: request.options?.evidenceIds,
-          },
+            evidenceIds: request.options?.evidenceIds
+          }
         };
         return await this.simulateAutoGenAgent(autogenRequest);
       }
       default:
-        throw new Error(`Unknown agent: ${agentName}`);
+        throw new Error(`Unknown; agent: ${agentName}`);
     }
   }
 
@@ -360,7 +346,7 @@ export class ComprehensiveAgentOrchestrator {
         'Semantic analysis',
         'Recommendation generation',
         'Error analysis and reduction',
-      ],
+      ]
     };
   }
   // Method to handle error analysis specifically
@@ -383,8 +369,7 @@ export class ComprehensiveAgentOrchestrator {
       context: 'TypeScript/Svelte error analysis',
       errorType: 'compilation_errors',
       codeSnippet,
-      priority: 'high',
-    });
+      priority: 'high` });
 
     const result = await this.multicoreService.waitForTask(errorAnalysisTask.id, 30000);
     if (result.status === 'completed') {
@@ -406,7 +391,7 @@ export class ComprehensiveAgentOrchestrator {
           'Update UI library component usage',
         ],
         taskId: errorAnalysisTask.id,
-        status: result.status,
+        status: result.status
       };
     }
     return {
@@ -414,52 +399,49 @@ export class ComprehensiveAgentOrchestrator {
       recommendations: ['Error analysis failed - check multicore service'],
       fixSuggestions: ['Restart Context7 multicore service'],
       taskId: errorAnalysisTask.id,
-      status: result.status,
+      status: result.status
     };
   }
   /**
    * Simulate Claude Agent execution (fallback when agent not available)
    */
   private async simulateClaudeAgent(request: ClaudeAgentRequest): Promise<AgentResult> {
-    return {
-      output: `Simulated Claude response for: ${request.prompt.substring(0, 100)}...`,
+    return { output: `Simulated Claude response, for: ${request.prompt.substring(0, 100)}...`,
       score: 0.8,
       metadata: {
         success: true,
         agent: 'claude-simulated',
         reasoning: 'Simulated Claude reasoning based on prompt analysis',
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   }
   /**
    * Simulate CrewAI Agent execution (fallback when agent not available)
    */
   private async simulateCrewAIAgent(request: CrewAIAgentRequest): Promise<AgentResult> {
-    return {
-      output: `Simulated CrewAI response for: ${request.prompt.substring(0, 100)}...`,
+    return { output: `Simulated CrewAI response, for: ${request.prompt.substring(0, 100)}...`,
       score: 0.75,
       metadata: {
         success: true,
         agent: 'crewai-simulated',
         crewType: 'legal-analysis',
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   }
   /**
    * Simulate AutoGen Agent execution (fallback when agent not available)
    */
   private async simulateAutoGenAgent(request: AutoGenAgentRequest): Promise<AgentResult> {
-    return {
-      output: `Simulated AutoGen response for: ${request.prompt.substring(0, 100)}...`,
+    return { output: `Simulated AutoGen response, for: ${request.prompt.substring(0, 100)}...`,
       score: 0.7,
       metadata: {
         success: true,
         agent: 'autogen-simulated',
         analysisType: 'automated-review',
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   }
 }
@@ -473,17 +455,17 @@ export async function executeAgents(
   return await comprehensiveOrchestrator.executeComprehensiveAnalysis({
     prompt,
     options: {
-      agents: ['claude', 'crewai', 'autogen'],
+     , agents: ['claude', 'crewai', 'autogen'],
       useMulticoreAnalysis: true,
       includeContext7: true,
-      ...options,
-    },
+      ...options
+    }
   });
 }
 // Helper function for error-focused analysis
 export async function analyzeAndFixErrors(
   errorData: any
-): Promise<{ orchestrationResult: ComprehensiveAgentResponse; errorAnalysis: ErrorAnalysisResult }> {
+): Promise<{ orchestrationResult: ComprehensiveAgentResponse;, errorAnalysis: ErrorAnalysisResult }> {
   const snippet =
     typeof errorData === 'string'
       ? errorData
@@ -496,21 +478,20 @@ export async function analyzeAndFixErrors(
         })();
 
   const [orchestrationResult, errorAnalysis] = await Promise.all([
-    comprehensiveOrchestrator.executeComprehensiveAnalysis({
-      prompt: `Analyze and provide fixes for TypeScript/Svelte errors: ${snippet}...`,
+    comprehensiveOrchestrator.executeComprehensiveAnalysis({ prompt: `Analyze and provide fixes for TypeScript/Svelte, errors: ${snippet}...`,
       options: {
-        agents: ['claude', 'crewai'],
+       , agents: ['claude', 'crewai'],
         priority: 'high',
         useMulticoreAnalysis: true,
         errorAnalysis: true,
-        autoFix: true,
-      },
+        autoFix: true
+      }
     }),
     comprehensiveOrchestrator.analyzeErrors(errorData),
   ]);
   return {
     orchestrationResult,
-    errorAnalysis,
+    errorAnalysis
   };
 }
 export default comprehensiveOrchestrator;

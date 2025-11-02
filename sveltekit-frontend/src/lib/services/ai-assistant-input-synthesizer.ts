@@ -3,12 +3,8 @@
  * Processes and synthesizes user input for optimal AI assistant interaction
  */
 }
-export interface SynthesizedInput {
-  processedQuery: string;
-  context: any[];
-  metadata: {
-    originalQuery: string;
-    synthesizationTime: number;
+export interface SynthesizedInput { processedQuery: string;, context: any[];
+  metadata: { originalQuery: string;, synthesizationTime: number;
     confidence: number;
   }
 }

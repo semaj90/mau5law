@@ -40,18 +40,17 @@ export const GET: RequestHandler = async () => {
       redis: {
         healthy: isHealthy,
         connected: stats.connected,
-        status: stats.status,
+        status: stats.status
       },
       test: {
         setResult,
         getValue,
         deleteResult,
-        valueMatches: getValue === testValue,
+        valueMatches: getValue === testValue
       },
       timing: {
-        totalTime: `${(end - start).toFixed(2)}ms`,
-      },
-      timestamp: new Date().toISOString(),
+       , totalTime: `${(end - start).toFixed(2)}ms' },
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
@@ -61,7 +60,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         error: errMsg,
         stack: errStack,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

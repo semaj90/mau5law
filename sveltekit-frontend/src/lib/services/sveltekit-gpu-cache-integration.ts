@@ -11,74 +11,50 @@ import * as rpcModule from './gpu-cache-rpc-client.js';
 import { reinforcementLearningCacheOptimizer } from './reinforcement-learning-cache-optimizer.js';
 
 // === Client Cache Configuration ===
-export interface ClientCacheConfig {
-  indexedDB: {
-    dbName: string;
+export interface ClientCacheConfig { indexedDB: {, dbName: string;
     version: number;
     maxSizeMB: number;
     autoCleanup: boolean;
   };
-  lokiJS: {
-    enableMemoryCache: boolean;
-    maxMemoryMB: number;
+  lokiJS: { enableMemoryCache: boolean;, maxMemoryMB: number;
     persistInterval: number;
   };
-  prefetch: {
-    enabled: boolean;
-    maxConcurrentRequests: number;
+  prefetch: { enabled: boolean;, maxConcurrentRequests: number;
     predictiveThreshold: number;
   };
-  userHistory: {
-    trackingEnabled: boolean;
-    maxEntriesPerUser: number;
+  userHistory: { trackingEnabled: boolean;, maxEntriesPerUser: number;
     syncInterval: number;
   };
-  ssr: {
-    hydrateFromCache: boolean;
-    preloadCriticalData: boolean;
+  ssr: { hydrateFromCache: boolean;, preloadCriticalData: boolean;
     serverCacheTimeout: number;
   };
 }
 
 // === Cache Entry Types ===
-export interface ClientCacheEntry {
-  id: string;
-  data: any;
-  metadata: {
-    timestamp: number;
-    source: 'server' | 'client' | 'prefetch';
+export interface ClientCacheEntry { id: string;, data: any;
+  metadata: { timestamp: number;, source: 'server' | 'client' | 'prefetch';
     hitCount: number;
     lastAccessed: number;
     size: number;
     compressed: boolean;
     priority: number;
   };
-  tags: string[];
-  embedding?: Float32Array;
-  userContext?: {
-    userId: string;
-    sessionId: string;
+  tags: string[]; embedding?: Float32Array;
+  userContext?: { userId: string;, sessionId: string;
     preferences: any;
   };
 }
 
-export interface IndexedDBSchema {
-  cache_entries: {
-    key: string;
+export interface IndexedDBSchema { cache_entries: {, key: string;
     value: ClientCacheEntry;
     timestamp: number;
     tags: string[];
     userId?: string;
   };
-  user_history: {
-    id: string;
-    userId: string;
-    entries: any[];
-    lastSync: number;
+  user_history: { id: string;, userId: string;
+    entries: any[]; lastSync: number;
   };
-  prefetch_queue: {
-    id: string;
-    url: string;
+  prefetch_queue: { id: string;, url: string;
     priority: number;
     scheduledTime: number;
     completed: boolean;
@@ -97,26 +73,24 @@ export const cacheState = writable({
   hitRatio: 0,
   lastSync: 0,
   prefetchQueue: 0,
-  userHistorySize: 0,
+  userHistorySize: 0
 });
 
-export const cacheMetrics = writable({
-  performance: {
-    serverLatency: 0,
+export const cacheMetrics = writable({ performance: {, serverLatency: 0,
     clientLatency: 0,
     indexedDBLatency: 0,
-    compressionRatio: 0,
+    compressionRatio: 0
   },
   storage: {
-    indexedDBUsageMB: 0,
+   , indexedDBUsageMB: 0,
     lokiJSUsageMB: 0,
-    compressionSavingsMB: 0,
+    compressionSavingsMB: 0
   },
   predictions: {
-    prefetchAccuracy: 0,
+   , prefetchAccuracy: 0,
     rlOptimizationGain: 0,
-    userBehaviorPrediction: 0,
-  },
+    userBehaviorPrediction: 0
+  }
 });
 
 // Add a minimal RPC client type so TS knows expected methods
@@ -125,7 +99,7 @@ type GPUCacheRPCClient = {
   disconnect?: () => Promise<void>;
   retrieve?: (key: string, opts?: any) => Promise<any>;
   store?: (key: string, data: any, opts?: any) => Promise<void>;
-  updateUserHistory?: (userId: string, action: string, history: any[]) => Promise<void>;
+  updateUserHistory?: (userId: string, action: string; history: any[]) => Promise<void>;
 };
 
 // === SvelteKit GPU Cache Integration ===
@@ -140,15 +114,13 @@ export class SvelteKitGPUCacheIntegration {
   private serverConnected = $state(false);
 
   private memoryCache = new Map<string, ClientCacheEntry>();
-  private userHistory = new Map<string, any[]>();
-  private prefetchQueue = new Set<string>();
+  private userHistory = new Map<string, any[]>(); private prefetchQueue = new Set<string>();
 
-  private metrics = {
-    hits: { server: 0, client: 0, indexeddb: 0, memory: 0 },
+  private metrics = { hits: {, server: 0, client: 0, indexeddb: 0, memory: 0 },
     misses: 0,
     prefetchHits: 0,
     compressionSavings: 0,
-    averageLatency: { server: 0, client: 0, total: 0 },
+    averageLatency: { server: 0, client: 0, total: 0 }
   };
 
   constructor(config: ClientCacheConfig) {
@@ -263,7 +235,7 @@ export class SvelteKitGPUCacheIntegration {
 
       return data;
     } catch (error: any) {
-      console.error(`SSR data fetch error for ${key}:`, error);
+      console.error(`SSR data fetch error for ${key}: ', error);
       // fallback to fetcher and bubble only if fetcher fails
       return await fetcher();
     }
@@ -274,14 +246,14 @@ export class SvelteKitGPUCacheIntegration {
     console.log('🚀 Preloading critical data for SSR');
     const preloadPromises = routes.map(async route => {
       try {
-        const response = await fetch(route, { credentials: 'same-origin' });
+        const response = await fetch(route, { credentials: `same-origin` });
         if (response && response.ok) {
           const data = await response.json();
           console.log(`✅ Preloaded data for route: ${route}`);
           return data;
         }
       } catch (error: any) {
-        console.warn(`⚠️ Failed to preload route ${route}:`, error);
+        console.warn(`⚠️ Failed to preload route ${route}: ', error);
       }
       return null;
     });
@@ -330,7 +302,7 @@ export class SvelteKitGPUCacheIntegration {
         const serverEntry = await this.safeRpcRetrieve(key, {
           userId: options.userId,
           enhanceWithPageRank: true,
-          applyReinforcementLearning: true,
+          applyReinforcementLearning: true
         });
         if (serverEntry) {
           this.metrics.hits.server++;
@@ -344,7 +316,7 @@ export class SvelteKitGPUCacheIntegration {
               lastAccessed: Date.now(),
               size: JSON.stringify(serverEntry.data).length,
               compressed: false,
-              priority: options.priority === 'high' ? 1 : 0.5,
+              priority: options.priority === 'high' ? 1 : 0.5
             },
             tags: serverEntry.tags || [],
             embedding: serverEntry.embedding,
@@ -352,9 +324,9 @@ export class SvelteKitGPUCacheIntegration {
               ? {
                   userId: options.userId,
                   sessionId: this.generateSessionId(),
-                  preferences: {},
+                  preferences: {}
                 }
-              : undefined,
+              : undefined
           };
           this.memoryCache.set(key, clientEntry);
           if (browser) {
@@ -378,7 +350,7 @@ export class SvelteKitGPUCacheIntegration {
       console.log(`❌ Cache miss: ${key} (${latency.toFixed(2)}ms)`);
       return null;
     } catch (error: any) {
-      console.error(`Cache get error for ${key}:`, error);
+      console.error(`Cache get error for ${key}: ', error);
       return null;
     } finally {
       this.updateCacheState();
@@ -409,16 +381,16 @@ export class SvelteKitGPUCacheIntegration {
           lastAccessed: Date.now(),
           size,
           compressed: Boolean(options.compression),
-          priority: options.priority === 'high' ? 1 : options.priority === 'low' ? 0.2 : 0.5,
+          priority: options.priority === 'high' ? 1 : options.priority === 'low' ? 0.2 : 0.5
         },
         tags: options.tags || [],
         userContext: options.userId
           ? {
               userId: options.userId,
               sessionId: this.generateSessionId(),
-              preferences: {},
+              preferences: {}
             }
-          : undefined,
+          : undefined
       };
 
       this.memoryCache.set(key, clientEntry);
@@ -430,7 +402,7 @@ export class SvelteKitGPUCacheIntegration {
         await this.safeRpcStore(key, data, {
           tags: options.tags,
           userId: options.userId,
-          compressionLevel: options.compression ? 6 : undefined,
+          compressionLevel: options.compression ? 6 : undefined
         });
       }
 
@@ -440,7 +412,7 @@ export class SvelteKitGPUCacheIntegration {
 
       console.log(`💾 Stored in cache: ${key} (${size} bytes)`);
     } catch (error: any) {
-      console.error(`Cache set error for ${key}:`, error);
+      console.error(`Cache set error for ${key}: ', error);
       throw error;
     } finally {
       this.updateCacheState();
@@ -476,7 +448,7 @@ export class SvelteKitGPUCacheIntegration {
       console.log(`🔮 Executing prefetch for: ${key}`);
       const serverEntry = await this.safeRpcRetrieve(key, {
         userId,
-        enhanceWithPageRank: true,
+        enhanceWithPageRank: true
       });
       if (serverEntry) {
         const clientEntry: ClientCacheEntry = {
@@ -489,10 +461,10 @@ export class SvelteKitGPUCacheIntegration {
             lastAccessed: Date.now(),
             size: JSON.stringify(serverEntry.data).length,
             compressed: false,
-            priority: 0.3,
+            priority: 0.3
           },
           tags: serverEntry.tags || ['prefetch'],
-          embedding: serverEntry.embedding,
+          embedding: serverEntry.embedding
         };
         this.memoryCache.set(key, clientEntry);
         if (browser) {
@@ -502,7 +474,7 @@ export class SvelteKitGPUCacheIntegration {
         console.log(`✅ Prefetch successful: ${key}`);
       }
     } catch (error: any) {
-      console.warn(`⚠️ Prefetch failed for ${key}:`, error);
+      console.warn(`⚠️ Prefetch failed for ${key}: ', error);
     } finally {
       this.prefetchQueue.delete(key);
     }
@@ -519,7 +491,7 @@ export class SvelteKitGPUCacheIntegration {
       action,
       data,
       timestamp: Date.now(),
-      sessionId: this.generateSessionId(),
+      sessionId: this.generateSessionId()
     });
     if (history.length > this.config.userHistory.maxEntriesPerUser) {
       history.splice(0, history.length - this.config.userHistory.maxEntriesPerUser);
@@ -571,7 +543,7 @@ export class SvelteKitGPUCacheIntegration {
           historyStore.createIndex('lastSync', 'lastSync');
         }
         if (!db.objectStoreNames.contains('prefetch_queue')) {
-          const prefetchStore = db.createObjectStore('prefetch_queue', { keyPath: 'id' });
+          const prefetchStore = db.createObjectStore('prefetch_queue', { keyPath: `id` });
           prefetchStore.createIndex('scheduledTime', 'scheduledTime');
           prefetchStore.createIndex('priority', 'priority');
         }
@@ -608,7 +580,7 @@ export class SvelteKitGPUCacheIntegration {
           value: entry,
           timestamp: entry.metadata.timestamp,
           tags: entry.tags,
-          userId: entry.userContext?.userId,
+          userId: entry.userContext?.userId
         };
         const request = store.put(dbEntry);
         request.onerror = () => reject(request.error);
@@ -634,8 +606,7 @@ export class SvelteKitGPUCacheIntegration {
       const db = new Loki(dbName, {
         autosave: true,
         autosaveInterval: this.config.lokiJS.persistInterval,
-        persistenceMethod: 'localStorage',
-      });
+        persistenceMethod: `localStorage` });
 
       // Ensure collection exists for quick in-memory lookups
       let cacheColl = db.getCollection('cache_entries') as any;
@@ -701,8 +672,7 @@ export class SvelteKitGPUCacheIntegration {
 
   private async cleanupExpiredEntries(): Promise<void> {
     const now = Date.now();
-    const expiredKeys: string[] = [];
-    for (const [key, entry] of this.memoryCache.entries()) {
+    const expiredKeys: string[] = []; for (const [key, entry] of this.memoryCache.entries()) {
       const age = now - entry.metadata.timestamp;
       const ttl = 24 * 60 * 60 * 1000;
       if (age > ttl) {
@@ -747,7 +717,7 @@ export class SvelteKitGPUCacheIntegration {
         await Promise.allSettled(
           batch.map(async ([key, data]) => {
             try {
-              await this.set(String(key), data, { storeOnServer: false, priority: 'high' });
+              await this.set(String(key), data, { storeOnServer: false, priority: `high` });
             } catch (err) {
               console.warn(`⚠️ Failed to hydrate SSR entry ${key}:`, err);
             }
@@ -780,12 +750,12 @@ export class SvelteKitGPUCacheIntegration {
       seasonality: 0.5,
       compressionRatio: 0.7,
       vectorDimensionality: 384,
-      tagDensity: 0.6,
+      tagDensity: 0.6
     };
   }
 
   private updateLatencyMetrics(type: 'server' | 'client', latency: number): void {
-    this.metrics.averageLatency[type] = (this.metrics.averageLatency[type] + latency) / 2;
+    this.metrics.averageLatency[type] = (this.metrics.averageLatency[type], + latency) / 2;
     this.metrics.averageLatency.total = (this.metrics.averageLatency.server + this.metrics.averageLatency.client) / 2;
   }
 
@@ -803,28 +773,26 @@ export class SvelteKitGPUCacheIntegration {
       hitRatio: this.calculateHitRatio(),
       lastSync: Date.now(),
       prefetchQueue: this.prefetchQueue.size,
-      userHistorySize,
+      userHistorySize
     });
   }
 
   private updateCacheMetrics(): void {
-    cacheMetrics.set({
-      performance: {
-        serverLatency: this.metrics.averageLatency.server,
+    cacheMetrics.set({ performance: {, serverLatency: this.metrics.averageLatency.server,
         clientLatency: this.metrics.averageLatency.client,
         indexedDBLatency: 5,
-        compressionRatio: 0.7,
+        compressionRatio: 0.7
       },
       storage: {
-        indexedDBUsageMB: 0,
+       , indexedDBUsageMB: 0,
         lokiJSUsageMB: 0,
-        compressionSavingsMB: this.metrics.compressionSavings / (1024 * 1024),
+        compressionSavingsMB: this.metrics.compressionSavings / (1024 * 1024)
       },
       predictions: {
         prefetchAccuracy: this.metrics.prefetchHits / (this.prefetchQueue.size + this.metrics.prefetchHits || 1),
         rlOptimizationGain: 0.15,
-        userBehaviorPrediction: 0.82,
-      },
+        userBehaviorPrediction: 0.82
+      }
     });
   }
 
@@ -866,7 +834,7 @@ export class SvelteKitGPUCacheIntegration {
         const transformLike = cs as unknown as TransformStream<Uint8Array, Uint8Array>;
         const compressedStream = readable.pipeThrough(transformLike);
 
-        const chunks: Uint8Array[] = [];
+        const chunks: Uint8Array[], = [];
         const reader = compressedStream.getReader();
         // Read all chunks
         while (true) {
@@ -937,7 +905,7 @@ export class SvelteKitGPUCacheIntegration {
     try {
       return await this.rpcClient.retrieve(key, opts);
     } catch (err) {
-      console.warn(`⚠️ rpcClient.retrieve error for ${key}:`, err);
+      console.warn(`⚠️ rpcClient.retrieve error for ${key}: ', err);
       return null;
     }
   }
@@ -947,39 +915,37 @@ export class SvelteKitGPUCacheIntegration {
     try {
       await this.rpcClient.store(key, data, opts);
     } catch (err) {
-      console.warn(`⚠️ rpcClient.store warning for ${key}:`, err);
+      console.warn(`⚠️ rpcClient.store warning for ${key}: ', err);
     }
   }
 }
 
 // === Configuration Factory ===
-export const createDefaultClientCacheConfig = (): ClientCacheConfig => ({
-  indexedDB: {
-    dbName: 'legal_ai_cache',
+export const createDefaultClientCacheConfig = (): ClientCacheConfig => ({ indexedDB: {, dbName: 'legal_ai_cache',
     version: 1,
     maxSizeMB: 100,
-    autoCleanup: true,
+    autoCleanup: true
   },
   lokiJS: {
-    enableMemoryCache: true,
+   , enableMemoryCache: true,
     maxMemoryMB: 50,
-    persistInterval: 30000,
+    persistInterval: 30000
   },
   prefetch: {
     enabled: true,
     maxConcurrentRequests: 3,
-    predictiveThreshold: 0.7,
+    predictiveThreshold: 0.7
   },
   userHistory: {
     trackingEnabled: true,
     maxEntriesPerUser: 1000,
-    syncInterval: 60000,
+    syncInterval: 60000
   },
   ssr: {
-    hydrateFromCache: true,
+   , hydrateFromCache: true,
     preloadCriticalData: true,
-    serverCacheTimeout: 300000,
-  },
+    serverCacheTimeout: 300000
+  }
 });
 
 // === Singleton Instance ===
@@ -990,7 +956,7 @@ export function cacheAction(node: HTMLElement, cacheKey: string) {
   return {
     destroy() {
       // Cleanup if needed
-    },
+    }
   };
 }
 
@@ -1000,17 +966,17 @@ export const cacheLoader = derived([page], ([$page]) => {
       const cached = await svelteKitGPUCache.get(key, {
         userId: $page.data?.user?.id,
         useGPUCache: true,
-        enablePrefetch: true,
+        enablePrefetch: true
       });
       if (cached) return cached;
       const data = await fetcher();
       await svelteKitGPUCache.set(key, data, {
         userId: $page.data?.user?.id,
         storeOnServer: true,
-        compression: true,
+        compression: true
       });
       return data;
-    },
+    }
   };
 });
 

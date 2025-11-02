@@ -4,7 +4,7 @@
  * This AI-powered search endpoint has been integrated into /api/v2/evidence
  *
  * Migration:
- * OLD: POST /api/ai/evidence-search
+ *; OLD: POST /api/ai/evidence-search
  * NEW: GET /api/v2/evidence?action=search&q=your_query&vector=true
  *
  * The unified API automatically uses:
@@ -28,19 +28,19 @@ export const POST: RequestHandler = async () => {
       'AI-generated search suggestions',
       'Automatic fallback to basic search',
       'Combined PGVector + Qdrant results',
-    ],
+    ]
   }, {
     status: 410,
     headers: {
       'X-Deprecated': 'true',
-      'X-Migrate-To': '/api/v2/evidence?action=search',
-    },
+      'X-Migrate-To': '/api/v2/evidence?action=search'
+    }
   });
 };
 
 export const GET: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: 'Use GET /api/v2/evidence?action=search&q=xxx instead',
+    message: 'Use GET /api/v2/evidence?action=search&q=xxx instead'
   }, { status: 410 });
 };

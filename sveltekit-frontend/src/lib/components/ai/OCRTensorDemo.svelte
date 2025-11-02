@@ -11,7 +11,7 @@ import type { Document } from '$lib/types';
   // Svelte 5 runes for reactive state
   let initialized = $state<boolean>(false);
   let processing = $state<boolean>(false);
-  let uploadedFile: File | null = $state(null);
+  let uploadedFile: File | null = null;
   let results: ProcessingResult[] = $state([]);
   let logs: string[] = $state([]);
   let cacheStats = $state({

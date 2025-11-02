@@ -104,9 +104,7 @@ export function apiResponse<T>(snakeCaseData: { [key: string]: any } | { [key: s
 /**
  * Type-safe user transformer specifically for common User operations
  */
-export interface DatabaseUser {
-  id: string;
-  email: string;
+export interface DatabaseUser { id: string;, email: string;
   first_name?: string;
   last_name?: string;
   hashed_password?: string;
@@ -117,9 +115,7 @@ export interface DatabaseUser {
   avatar_url?: string;
   [key: string]: any;
 }
-export interface FrontendUser {
-  id: string;
-  email: string;
+export interface FrontendUser { id: string;, email: string;
   firstName?: string;
   lastName?: string;
   hashedPassword?: string;

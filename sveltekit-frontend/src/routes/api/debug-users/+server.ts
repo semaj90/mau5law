@@ -12,19 +12,19 @@ export async function GET(): Promise<any> {
         email: users.email,
         role: users.role,
         isActive: users.isActive,
-        hasPassword: users.hashedPassword,
+        hasPassword: users.hashedPassword
       })
       .from(users);
     return json({
       success: true,
       users: existingUsers,
-      count: existingUsers.length,
+      count: existingUsers.length
     });
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error.message,
+        error: error.message
       },
       { status: 500 }
     );
@@ -50,13 +50,13 @@ export async function POST(): Promise<any> {
     return json({
       success: true,
       message: 'Demo users updated with proper passwords',
-      users: [...updatedAdmin, ...updatedTest],
+      users: [...updatedAdmin, ...updatedTest]
     });
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error.message,
+        error: error.message
       },
       { status: 500 }
     );

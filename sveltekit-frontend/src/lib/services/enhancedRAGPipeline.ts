@@ -24,9 +24,7 @@ type SemanticSearchResultRow = {
 };
 
 // Define SearchDoc interface
-export interface SearchDoc {
-  id: string;
-  title: string;
+export interface SearchDoc { id: string;, title: string;
   content: string;
   tags?: string[];
   summary?: string;
@@ -73,26 +71,20 @@ function normalizeSourceType(t: any): RAGSourceType {
   }
 }
 
-export interface RAGQueryResult {
-  answer: string;
-  sources: RAGSource[];
+export interface RAGQueryResult { answer: string;, sources: RAGSource[];
   confidence: number;
   reasoning: string;
   suggestedActions: string[];
   embedding: number[];
 }
 
-export interface RAGSource {
-  id: string;
-  title: string;
+export interface RAGSource { id: string;, title: string;
   content: string;
   relevance: number;
   type: 'document' | 'case' | 'evidence' | 'precedent';
 }
 
-export interface RAGSynthesisOptions {
-  useSemanticSearch: boolean;
-  useMemoryGraph: boolean;
+export interface RAGSynthesisOptions { useSemanticSearch: boolean;, useMemoryGraph: boolean;
   useMultiAgent: boolean;
   maxSources: number;
   minConfidence: number;
@@ -101,25 +93,21 @@ export interface RAGSynthesisOptions {
 /**
  * XState machine for RAG pipeline workflow
  */
-type RagContext = {
-  query: string;
-  sources: RAGSource[];
+type RagContext = { query: string;, sources: RAGSource[];
   answer: string;
   confidence: number;
   error: string | null;
 };
 
-type RagEvent = { type: 'QUERY'; query: string } | { type: 'RETRY' } | { type: 'RESET' };
+type RagEvent = { type: 'QUERY';, query: string } | { type: 'RETRY' } | { type: 'RESET' };
 
 // Add a minimal interface for ollamaService to satisfy TypeScript
 interface OllamaService {
-  generate(options: {
-    model: string;
-    prompt: string;
-    format: string;
+  generate(options: { model: string;, prompt: string;
+   , format: string;
     stream?: boolean;
   }): Promise<{ response?: string; output?: string; [key: string]: any }>;
-  embed(options: { model: string; text: string }): Promise<number[]>;
+  embed(options: {, model: string; text: string }): Promise<number[]>;
 }
 
 export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
@@ -131,25 +119,19 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
       sources: [] as RAGSource[],
       answer: '',
       confidence: 0,
-      error: null,
+      error: null
     },
-    states: {
-      idle: {
-        on: {
-          QUERY: {
-            target: 'retrieving',
+    states: { idle: {, on: { QUERY: {, target: 'retrieving',
             actions: assign({
-              query: (_, event) => event.query, // event type inferred from RagEvent
+             , query: (_, event) => event.query, // event type inferred from RagEvent
               sources: () => [] as RAGSource[],
               answer: () => '',
-              error: () => null,
-            }),
-          },
-        },
+              error: () => null
+            })
+          }
+        }
       },
-      retrieving: {
-        invoke: {
-          src: 'retrieveDocuments',
+      retrieving: { invoke: {, src: 'retrieveDocuments',
           onDone: {
             target: 'ranking',
             actions: assign({ sources: (_, event) => event.data as RAGSource[] }), // event type inferred
@@ -162,13 +144,11 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
                 (e as Error).message ??
                 String(e) ??
                 'Retrieval failed', // Type assertion for error
-            }),
-          },
-        },
+            })
+          }
+        }
       },
-      ranking: {
-        invoke: {
-          src: 'rankSources',
+      ranking: { invoke: {, src: 'rankSources',
           onDone: {
             target: 'generating',
             actions: assign({ sources: (_, event) => event.data as RAGSource[] }), // event type inferred
@@ -181,20 +161,18 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
                 (e as Error).message ??
                 String(e) ??
                 'Ranking failed', // Type assertion for error
-            }),
-          },
-        },
+            })
+          }
+        }
       },
-      generating: {
-        invoke: {
-          src: 'generateAnswer',
+      generating: { invoke: {, src: 'generateAnswer',
           onDone: {
             target: 'complete',
             actions: assign({
               answer: (_, event) => (event.data as RAGQueryResult).answer, // event type inferred
               confidence: (_, event) => (event.data as RAGQueryResult).confidence, // event type inferred
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
           onError: {
             target: 'error',
@@ -204,20 +182,18 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
                 (e as Error).message ??
                 String(e) ??
                 'Answer failed', // Type assertion for error
-            }),
-          },
-        },
+            })
+          }
+        }
       },
-      complete: {
-        on: {
-          QUERY: {
+      complete: { on: {, QUERY: {
             target: 'retrieving',
             actions: assign({
               query: (_, event) => event.query, // event type inferred
               sources: () => [] as RAGSource[],
               answer: () => '',
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
           RESET: {
             target: 'idle',
@@ -226,14 +202,12 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
               sources: () => [] as RAGSource[],
               answer: () => '',
               confidence: () => 0,
-              error: () => null,
-            }),
-          },
-        },
+              error: () => null
+            })
+          }
+        }
       },
-      error: {
-        on: {
-          RETRY: 'retrieving',
+      error: { on: {, RETRY: 'retrieving',
           RESET: {
             target: 'idle',
             actions: assign({
@@ -241,12 +215,12 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
               sources: () => [] as RAGSource[],
               answer: () => '',
               confidence: () => 0,
-              error: () => null,
-            }),
-          },
-        },
-      },
-    },
+              error: () => null
+            })
+          }
+        }
+      }
+    }
   },
   {
     // wire named services to the instance methods on enhancedRAGPipeline
@@ -258,7 +232,7 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           useMemoryGraph: true,
           useMultiAgent: false,
           maxSources: 10,
-          minConfidence: 0.7,
+          minConfidence: 0.7
         };
         return enhancedRAGPipeline.retrieveDocuments(ctx.query, opts);
       },
@@ -268,33 +242,29 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           useMemoryGraph: true,
           useMultiAgent: false,
           maxSources: 10,
-          minConfidence: 0.7,
+          minConfidence: 0.7
         };
         return enhancedRAGPipeline.rankSources(ctx.sources ?? [], ctx.query, opts);
       },
       generateAnswer: async (ctx: RagContext) => {
         return enhancedRAGPipeline.generateAnswer(ctx.query, ctx.sources ?? []);
-      },
-    },
+      }
+    }
   }
 );
 
 // Add strict cluster types
-type ClusterItem = {
-  document: SearchDoc;
-  embedding: number[];
+type ClusterItem = { document: SearchDoc;, embedding: number[];
   clusterId: number;
 };
 
-type Cluster = {
-  clusterId: number;
-  items: ClusterItem[];
+type Cluster = { clusterId: number;, items: ClusterItem[];
 };
 
 // Define the EnhancedRAGPipeline class
 export class EnhancedRAGPipeline {
   private fuseIndex: Fuse<SearchDoc> | undefined;
-  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string; sourceIds: string[]; [key: string]: any }>();
+  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string;, sourceIds: string[]; [key: string]: any }>();
   private TRITON_CHECK_TTL_MS = 30_000; // Time-to-live for Triton health check cache (default: 30 seconds).
 
   // Triton / TensorRT configuration constants.
@@ -331,7 +301,7 @@ export class EnhancedRAGPipeline {
       keys: ['title', 'content', 'tags', 'summary'],
       threshold: 0.3,
       includeScore: true,
-      includeMatches: true,
+      includeMatches: true
     });
   }
 
@@ -345,7 +315,7 @@ export class EnhancedRAGPipeline {
       useMultiAgent: false,
       maxSources: 10,
       minConfidence: 0.7,
-      ...options,
+      ...options
     };
 
     try {
@@ -386,7 +356,7 @@ export class EnhancedRAGPipeline {
               content: String(r.description ?? r.content ?? ''), // Handle null/undefined
               // normalized & clamped relevance to avoid NaN/out-of-range values
               relevance: EnhancedRAGPipeline.parseSimilarity(r.similarity ?? r.score ?? 0.5),
-              type: normalizeSourceType(r.type),
+              type: normalizeSourceType(r.type)
             }))
           );
         }
@@ -405,7 +375,7 @@ export class EnhancedRAGPipeline {
             title: String(res.item?.title ?? 'Untitled'),
             content: String(res.item?.content ?? ''),
             relevance: 1 - Number(res.score ?? 1),
-            type: normalizeSourceType(res.item?.type),
+            type: normalizeSourceType(res.item?.type)
           }))
         );
       } catch (err) {
@@ -436,7 +406,7 @@ export class EnhancedRAGPipeline {
     // Apply custom ranking algorithm
     const scoredSources = uniqueSources.map(source => ({
       ...source,
-      relevance: this.calculateRelevanceScore(source, query),
+      relevance: this.calculateRelevanceScore(source, query)
     }));
 
     // Sort by relevance and filter by confidence threshold
@@ -467,7 +437,7 @@ export class EnhancedRAGPipeline {
       .join('\n');
 
     const prompt = `You are a legal AI assistant. Use the following sources to answer:
-  Query: ${query}
+ ; Query: ${query}
   Context:
   ${context}
   Return JSON with: answer, confidence, reasoning, suggestedActions.`;
@@ -505,13 +475,13 @@ export class EnhancedRAGPipeline {
           const ollamaApiUrl = getOllamaEndpoint();
           const r = await fetch(`${ollamaApiUrl}/api/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              model: 'gemma3-legal:latest',
+             , model: 'gemma3-legal:latest',
               prompt,
               format: 'json',
-              stream: false,
-            }),
+              stream: false
+            })
           });
           if (r.ok) {
             const json = await r.json();
@@ -562,7 +532,7 @@ export class EnhancedRAGPipeline {
         confidence: Math.min(Math.max(confidence, 0), 1),
         reasoning,
         suggestedActions,
-        embedding,
+        embedding
       };
     } catch (err: any) {
       console.error('Generation failed:', err);
@@ -572,7 +542,7 @@ export class EnhancedRAGPipeline {
         confidence: 0.3,
         reasoning: 'Fallback due to generation failure.',
         suggestedActions: ['Review evidence manually'],
-        embedding: [],
+        embedding: []
       };
     }
   }
@@ -589,8 +559,7 @@ export class EnhancedRAGPipeline {
           title: `Memory: ${key}`,
           content: JSON.stringify(value),
           relevance: 0.6,
-          type: 'document',
-        });
+          type: `document` });
       }
     }
     return results;
@@ -610,7 +579,7 @@ export class EnhancedRAGPipeline {
       answer: answer.answer,
       confidence: answer.confidence,
       timestamp: new Date().toISOString(),
-      sourceIds: sources.map(s => s.id),
+      sourceIds: sources.map(s => s.id)
     });
     // LRU eviction: remove oldest if over limit
     while (this.memoryGraph.size > 1000) {
@@ -702,18 +671,18 @@ export class EnhancedRAGPipeline {
             name: 'TEXT_INPUT',
             shape: [1],
             datatype: 'BYTES',
-            data: [String(text)],
+            data: [String(text)]
           },
-        ],
+        ]
       };
 
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(payload),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timer);
 
@@ -765,24 +734,24 @@ export class EnhancedRAGPipeline {
             name: 'EMBEDDINGS',
             shape: dims,
             datatype: 'FP32',
-            data: flatData,
+            data: flatData
           },
           {
             name: 'K',
             shape: [1],
             datatype: 'INT32',
-            data: [Number(k)],
+            data: [Number(k)]
           },
-        ],
+        ]
       };
 
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(payload),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timer);
 
@@ -810,7 +779,7 @@ export class EnhancedRAGPipeline {
 
       const clusters: Cluster[] = Array.from(clusterMap.entries()).map(([clusterId, items]) => ({
         clusterId,
-        items,
+        items
       }));
 
       return clusters;
@@ -835,21 +804,21 @@ export class EnhancedRAGPipeline {
             name: 'PROMPT',
             shape: [1],
             datatype: 'BYTES',
-            data: [String(prompt)],
+            data: [String(prompt)]
           },
         ],
         parameters: {
-          max_output_tokens: 512,
-        },
+          max_output_tokens: 512
+        }
       };
 
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 10_000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(payload),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timer);
 
@@ -893,8 +862,8 @@ export class EnhancedRAGPipeline {
       const ollamaApiUrl = getOllamaEndpoint(); // Use the imported utility
       const r = await fetch(`${ollamaApiUrl}/api/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'embeddinggemma:latest', text }), // Changed model
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, model: 'embeddinggemma:latest', text }), // Changed model
       });
       if (r.ok) {
         const j = await r.json().catch(() => null);
@@ -917,7 +886,7 @@ export class EnhancedRAGPipeline {
       return [
         {
           clusterId: 0,
-          items: embeddings.map((emb, i) => ({ document: documents[i], embedding: emb, clusterId: 0 })),
+          items: embeddings.map((emb, i) => ({ document: documents[i], embedding: emb, clusterId: 0 }))
         },
       ];
     }

@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Button component removed here to avoid Svelte 5 constructor/instance typing issues in this file.
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import {
     Upload,
     Move,

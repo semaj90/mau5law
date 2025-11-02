@@ -16,7 +16,7 @@ import {
   vectorSearchCache,
   aiProcessingQueue,
   type NewLegalDocument,
-  type LegalMetadata,
+  type LegalMetadata
 } from './schema-example-legal';
 import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from 'drizzle-orm';
 // ==================================================
@@ -187,7 +187,7 @@ export async function getDocumentsWithCaseInfo(caseId: string): Promise<any> {
   return db
     .select({
       document: legalDocuments,
-      case legalCases,
+      case legalCases
     })
     .from(legalDocuments)
     .leftJoin(legalCases, eq(legalDocuments.caseId, legalCases.id))
@@ -205,7 +205,7 @@ export async function getCaseWithDocuments(caseId: string): Promise<any> {
     .where(eq(legalDocuments.caseId, caseId));
   return {
     case caseData[0],
-    documents,
+    documents
   };
 }
 // ==================================================
@@ -226,15 +226,14 @@ export async function uploadAndQueueDocument(
     const tasks = taskTypes.map(taskType => ({
       documentId: document[0].id,
       taskType,
-      priority: 5,
+      priority: 5
     }));
     await tx.insert(aiProcessingQueue).values(tasks);
     // Update case document count
     await tx
       .update(legalCases)
       .set({
-        documentCount: sql`${legalCases.documentCount} + 1`,
-      })
+        documentCount: sql`${legalCases.documentCount} + 1` })
       .where(eq(legalCases.id, documentData.caseId));
     return document[0];
   });
@@ -319,8 +318,8 @@ export async function getPaginatedDocuments(
       page,
       pageSize,
       totalCount,
-      totalPages: Math.ceil(totalCount / pageSize),
-    },
+      totalPages: Math.ceil(totalCount / pageSize)
+    }
   };
 }
 // ==================================================
@@ -366,7 +365,7 @@ export async function getCachedSearch(queryHash: string): Promise<any> {
       .update(vectorSearchCache)
       .set({
         hitCount: sql`${vectorSearchCache.hitCount} + 1`,
-        lastUsedAt: new Date(),
+        lastUsedAt: new Date()
       })
       .where(eq(vectorSearchCache.id, result[0].id));
   }
@@ -381,15 +380,13 @@ export async function cleanExpiredCache(): Promise<any> {
 // ==================================================
 // 10. Real-world Example: Complete Document Upload Flow
 // ==================================================
-export async function completeDocumentUpload(params: {
-  caseId: string;
-  userId: string;
+export async function completeDocumentUpload(params: { caseId: string;, userId: string;
   title: string;
   content: string;
   documentType: string;
   fileUrl: string;
   fileSize: number;
-  fileHash: string;
+ , fileHash: string;
 }): Promise<any> {
   return db.transaction(async (tx) => {
     // 1. Create document
@@ -412,31 +409,30 @@ export async function completeDocumentUpload(params: {
             courtLevel: 'district',
             parties: [],
             datesFiled: [],
-            status: 'active',
+            status: 'active'
           },
           classification: {
             documentType: params.documentType as any,
             practiceArea: [],
             confidenceLevel: 0,
             riskLevel: 'low',
-            priority: 5,
+            priority: 5
           },
           processing: {
             extractedEntities: [],
             keyTerms: [],
             sentiment: 0,
             complexity: 0,
-            language: 'en',
-          },
+            language: 'en` },
           aiAnalysis: {
-            summary: '',
+           , summary: '',
             keyPoints: [],
             recommendations: [],
             relatedCases: [],
             confidence: 0,
             model: 'gemma3:legal-latest',
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         },
         chainOfCustody: {
           entries: [
@@ -447,11 +443,11 @@ export async function completeDocumentUpload(params: {
               userName: 'Unknown',
               ipAddress: '0.0.0.0',
               details: 'Initial upload',
-              hash: params.fileHash,
+              hash: params.fileHash
             },
-          ],
+          ]
         },
-        tags: [],
+        tags: []
       })
       .returning();
     // 2. Queue AI processing tasks
@@ -459,17 +455,17 @@ export async function completeDocumentUpload(params: {
       {
         documentId: document[0].id,
         taskType: 'embedding',
-        priority: 10,
+        priority: 10
       },
       {
         documentId: document[0].id,
         taskType: 'summary',
-        priority: 8,
+        priority: 8
       },
       {
         documentId: document[0].id,
         taskType: 'analysis',
-        priority: 5,
+        priority: 5
       },
     ]);
     return document[0];

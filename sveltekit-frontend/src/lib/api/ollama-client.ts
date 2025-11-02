@@ -59,7 +59,7 @@ export function buildOllamaUrl(
   context: 'server' | 'client' | 'docker' = 'client'
 ): string {
   const base = getOllamaEndpoint(context);
-  return `${base}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  return `${base}${endpoint.startsWith('/') ? endpoint : `/${endpoint}` }`;
 }
 
 /**
@@ -135,7 +135,7 @@ export async function ollamaGenerate(
  * Chat with Ollama
  */
 export async function ollamaChat(
-  messages: Array<{ role: string; content: string }>,
+  messages: Array<{, role: string; content: string }>,
   options: {
     model?: string;
     context?: 'server' | 'client' | 'docker';
@@ -184,7 +184,7 @@ export async function ollamaEmbed(
   
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({
       model,
       prompt: input[0], // Ollama expects single prompt for embeddings
@@ -217,6 +217,6 @@ export async function ollamaEmbed(
  * 
  * // Chat
  * const chat = await ollamaChat([
- *   { role: 'user', content: 'Explain contract formation' }
+ *   { role: 'user', content: `Explain contract formation` }
  * ]);
  */

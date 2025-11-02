@@ -24,50 +24,50 @@ const chatStore = (() => {
   let userActivity = $state<UserActivity[]>([]);
   let recommendations = $state<Recommendation[]>([]);
   return {
-    get sessions() { return sessions, },
-    set sessions(value) { sessions = value, },
-    get sessionMessages() { return sessionMessages, },
-    set sessionMessages(value) { sessionMessages = value, },
-    get currentSessionId() { return currentSessionId, },
-    set currentSessionId(value) { currentSessionId = value, },
-    get connectionStatus() { return connectionStatus, },
-    set connectionStatus(value) { connectionStatus = value, },
-    get isTyping() { return isTyping, },
-    set isTyping(value) { isTyping = value, },
-    get userActivity() { return userActivity, },
-    set userActivity(value) { userActivity = value, },
-    get recommendations() { return recommendations, },
-    set recommendations(value) { recommendations = value, }
+    get sessions() { return sessions },
+    set sessions(value) { sessions = value },
+    get sessionMessages() { return sessionMessages },
+    set sessionMessages(value) { sessionMessages = value },
+    get currentSessionId() { return currentSessionId },
+    set currentSessionId(value) { currentSessionId = value },
+    get connectionStatus() { return connectionStatus },
+    set connectionStatus(value) { connectionStatus = value },
+    get isTyping() { return isTyping },
+    set isTyping(value) { isTyping = value },
+    get userActivity() { return userActivity },
+    set userActivity(value) { userActivity = value },
+    get recommendations() { return recommendations },
+    set recommendations(value) { recommendations = value }
   }
 })();
 // Export individual properties for backward compatibility
 export const sessions = {
-  get value() { return chatStore.sessions, },
-  set value(val) { chatStore.sessions = val, }
+  get value() { return chatStore.sessions },
+  set value(val) { chatStore.sessions = val }
 }
 export const sessionMessages = {
-  get value() { return chatStore.sessionMessages, },
-  set value(val) { chatStore.sessionMessages = val, }
+  get value() { return chatStore.sessionMessages },
+  set value(val) { chatStore.sessionMessages = val }
 }
 export const currentSessionId = {
-  get value() { return chatStore.currentSessionId, },
-  set value(val) { chatStore.currentSessionId = val, }
+  get value() { return chatStore.currentSessionId },
+  set value(val) { chatStore.currentSessionId = val }
 }
 export const connectionStatus = {
-  get value() { return chatStore.connectionStatus, },
-  set value(val) { chatStore.connectionStatus = val, }
+  get value() { return chatStore.connectionStatus },
+  set value(val) { chatStore.connectionStatus = val }
 }
 export const isTyping = {
-  get value() { return chatStore.isTyping, },
-  set value(val) { chatStore.isTyping = val, }
+  get value() { return chatStore.isTyping },
+  set value(val) { chatStore.isTyping = val }
 }
 export const userActivity = {
-  get value() { return chatStore.userActivity, },
-  set value(val) { chatStore.userActivity = val, }
+  get value() { return chatStore.userActivity },
+  set value(val) { chatStore.userActivity = val }
 }
 export const recommendations = {
-  get value() { return chatStore.recommendations, },
-  set value(val) { chatStore.recommendations = val, }
+  get value() { return chatStore.recommendations },
+  set value(val) { chatStore.recommendations = val }
 }
 // Deriveds
 export const currentSession = $derived(
@@ -78,7 +78,7 @@ export const currentMessages = $derived(
 );
 // Session helpers
 export function createSession(input: {
-  id: string;
+ , id: string;
   title?: string;
   context?: RAGContext;
   created?: number;
@@ -129,7 +129,7 @@ export function clearStaleActivity(staleMs = 60_000) {
 }
 // Time-aware context window selection (recency + role weighting)
 export function getContextWindow(opts: {
-  sessionId: string;
+ , sessionId: string;
   maxTokens?: number; // soft budget
   maxMessages?: number;
   halfLifeMinutes?: number; // recency decay half-life
@@ -148,9 +148,7 @@ export function getContextWindow(opts: {
   }
   const roleWeight = (role: ChatMessage["role"]) =>
     role === "assistant" ? 1.0 : role === "user" ? 0.9 : 0.5;
-  const scored = messages.map((m) => ({
-    msg: m;
-    score: decay(m.timestamp) * roleWeight(m.role),
+  const scored = messages.map((m) => ({ msg: m;, score: decay(m.timestamp) * roleWeight(m.role),
     estTokens: Math.ceil(m.content.length / 4)
   });
   // Sort by weighted recency, then take until budgets hit

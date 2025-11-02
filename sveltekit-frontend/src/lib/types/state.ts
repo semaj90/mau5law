@@ -16,7 +16,7 @@ import type {
   PerformanceMetrics,
   AIModel,
   SearchFilters,
-  SearchFacets,
+  SearchFacets
 } from '$lib/types';
 
 // =====================================================
@@ -32,9 +32,7 @@ declare global {
 // =====================================================
 // STATE STORE TYPES
 // =====================================================
-export interface AppState {
-  user: User | null;
-  isAuthenticated: boolean;
+export interface AppState { user: User | null;, isAuthenticated: boolean;
   theme: 'light' | 'dark' | 'auto';
   sidebarOpen: boolean;
   currentPage: string;
@@ -42,33 +40,25 @@ export interface AppState {
   isLoading: boolean;
   error: string | null;
 }
-export interface ChatState {
-  sessions: ChatSession[];
-  currentSession: ChatSession | null;
+export interface ChatState { sessions: ChatSession[];, currentSession: ChatSession | null;
   isTyping: boolean;
   isConnected: boolean;
   messages: ChatMessage[];
   draft: string;
 }
-export interface FileUploadState {
-  files: UploadedFile[];
-  uploading: boolean;
+export interface FileUploadState { files: UploadedFile[];, uploading: boolean;
   progress: number;
   error: string | null;
   completed: number;
   total: number;
 }
-export interface SearchState {
-  query: string;
-  results: SearchResults | null;
+export interface SearchState { query: string;, results: SearchResults | null;
   isSearching: boolean;
   filters: SearchFilters;
   facets: SearchFacets;
   history: string[];
 }
-export interface AIState {
-  models: AIModel[];
-  currentModel: string;
+export interface AIState { models: AIModel[];, currentModel: string;
   isProcessing: boolean;
   responses: AIResponse[];
   usage: TokenUsage;
@@ -78,9 +68,7 @@ export interface AIState {
 // =====================================================
 // COMPONENT STATE TYPES
 // =====================================================
-export interface ComponentState {
-  mounted: boolean;
-  initialized: boolean;
+export interface ComponentState { mounted: boolean;, initialized: boolean;
   error: Error | null;
   loading: boolean;
   data: any;
@@ -93,16 +81,12 @@ export interface FormState {
   isSubmitting: boolean;
   isDirty: boolean;
 }
-export interface ModalState {
-  isOpen: boolean;
-  title: string;
+export interface ModalState { isOpen: boolean;, title: string;
   content: any;
   size: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   closable: boolean;
 }
-export interface ToastState {
-  toasts: Toast[];
-  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+export interface ToastState { toasts: Toast[];, position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   maxToasts: number;
 }
 
@@ -125,16 +109,12 @@ export interface AsyncStoreOptions<T> extends StoreOptions<T> {
 // =====================================================
 // XSTATE INTEGRATION TYPES
 // =====================================================
-export interface MachineState {
-  value: string;
-  context: any;
+export interface MachineState { value: string;, context: any;
   matches: (value: string) => boolean;
   can: (event: string) => boolean;
   send: (event: any) => void;
 }
-export interface MachineConfig {
-  id: string;
-  initial: string;
+export interface MachineConfig { id: string;, initial: string;
   states: { [key: string]: any };
   context?: any;
   on?: { [key: string]: any };
@@ -143,9 +123,7 @@ export interface MachineConfig {
 // =====================================================
 // FORM INTEGRATION TYPES
 // =====================================================
-export interface SuperFormsState<T = { [key: string]: any }> {
-  form: Writable<T>;
-  errors: Readable<Record<string, string[]>>;
+export interface SuperFormsState<T = { [key: string]: any }> { form: Writable<T>;, errors: Readable<Record<string, string[]>>;
   constraints: Readable<{ [key: string]: any }>;
   message: Writable<any>;
   submitting: Readable<boolean>;
@@ -164,24 +142,18 @@ export interface ValidationConfig {
 // =====================================================
 // PERFORMANCE MONITORING TYPES
 // =====================================================
-export interface PerformanceState {
-  metrics: PerformanceMetrics;
-  history: PerformanceEntry[];
+export interface PerformanceState { metrics: PerformanceMetrics;, history: PerformanceEntry[];
   alerts: PerformanceAlert[];
   thresholds: PerformanceThresholds;
 }
-export interface PerformanceAlert {
-  id: string;
-  type: 'warning' | 'error' | 'critical';
+export interface PerformanceAlert { id: string;, type: 'warning' | 'error' | 'critical';
   message: string;
   timestamp: string;
   metric: string;
   value: number;
   threshold: number;
 }
-export interface PerformanceThresholds {
-  responseTime: number;
-  memoryUsage: number;
+export interface PerformanceThresholds { responseTime: number;, memoryUsage: number;
   cpuUsage: number;
   errorRate: number;
 }
@@ -189,9 +161,7 @@ export interface PerformanceThresholds {
 // =====================================================
 // WEBSOCKET STATE TYPES
 // =====================================================
-export interface WebSocketState {
-  connected: boolean;
-  connecting: boolean;
+export interface WebSocketState { connected: boolean;, connecting: boolean;
   error: string | null;
   lastMessage: any;
   messageHistory: any[];
@@ -202,17 +172,13 @@ export interface WebSocketState {
 // =====================================================
 // NAVIGATION STATE TYPES
 // =====================================================
-export interface NavigationState {
-  currentPath: string;
-  previousPath: string;
+export interface NavigationState { currentPath: string;, previousPath: string;
   breadcrumbs: Breadcrumb[];
   canGoBack: boolean;
   canGoForward: boolean;
   isNavigating: boolean;
 }
-export interface Breadcrumb {
-  label: string;
-  path: string;
+export interface Breadcrumb { label: string;, path: string;
   icon?: string;
 }
 

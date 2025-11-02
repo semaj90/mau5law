@@ -212,7 +212,7 @@ export class LegalJsonbOperations {
       SELECT DISTINCT d.id, d.title, d.metadata
       FROM legal_documents_jsonb d,
            jsonb_array_elements(d.metadata->'parties') AS party
-      WHERE party->>'name' ILIKE ${`%${partyName}%`}
+      WHERE party->>'name' ILIKE ${`%${partyName}%` }
         ${roleFilter}
       ORDER BY d.updated_at DESC
     `;
@@ -274,8 +274,7 @@ export class LegalJsonbOperations {
               FROM jsonb_array_elements(metadata->'chainOfCustody') as custody_step
             ) t
             WHERE previous_step IS NOT NULL
-          ) THEN: 'VALID'
-          ELSE: 'INVALID'
+          ) THEN: 'VALID'; ELSE: 'INVALID'
         END as chain_validity,
         -- Count custody transfers
         jsonb_array_length(metadata->'chainOfCustody') as custody_count,
@@ -334,8 +333,7 @@ export class LegalJsonbOperations {
         CASE
           WHEN similarity_score >= 0.9 THEN: 'VERY_HIGH'
           WHEN similarity_score >= 0.7 THEN: 'HIGH'
-          WHEN similarity_score >= 0.5 THEN: 'MEDIUM'
-          ELSE: 'LOW'
+          WHEN similarity_score >= 0.5 THEN: 'MEDIUM'; ELSE: 'LOW'
         END as similarity_level
       FROM case_similarities
       WHERE similarity_score >= ${threshold}
@@ -375,8 +373,7 @@ export class LegalJsonbOperations {
         CASE
           WHEN frequency >= 5 THEN: 'CORE'
           WHEN frequency >= 3 THEN: 'IMPORTANT'
-          WHEN frequency >= 2 THEN: 'RELEVANT'
-          ELSE: 'PERIPHERAL'
+          WHEN frequency >= 2 THEN: 'RELEVANT'; ELSE: 'PERIPHERAL'
         END as importance_level
       FROM concept_counts
       ORDER BY frequency DESC, concept

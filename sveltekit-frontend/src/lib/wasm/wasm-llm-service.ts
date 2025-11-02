@@ -3,9 +3,7 @@
 // Client-side gemma3-legal:latest WebAssembly implementation with GPU acceleration
 import type { WASMLLMConfig, WASMLLMResponse } from '../types/vector-jobs.js';
 }
-export interface WASMModule {
-	_initialize: () => number;
-	_load_model: (modelPathPtr: number, modelPathLen: number) => number;
+export interface WASMModule { _initialize: () => number;, _load_model: (modelPathPtr: number, modelPathLen: number) => number;
 	_generate_text: (promptPtr: number, promptLen: number, maxTokens: number, temperature: number) => number;
 	_get_result: () => number;
 	_get_result_length: () => number;
@@ -71,9 +69,7 @@ export class WASMLLMService {
 			// Load the WASM binary (would be actual gemma3:legal model compiled to WASM)
 			const wasmBinary = await this.fetchWASMBinary();
 			// Instantiate the WASM module with memory and table
-			const wasmModule = await WebAssembly.instantiate(wasmBinary, {
-				env: {
-					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB;
+			const wasmModule = await WebAssembly.instantiate(wasmBinary, { env: {, memory: new WebAssembly.Memory({, initial: 256, maximum: 512 }), // 16MB - 32MB;
 					abort: (msg: number, file: number, line: number, column: number) => {
 						console.error('WASM abort:', msg, file, line, column);
 					},
@@ -237,7 +233,7 @@ export class WASMLLMService {
 		// Add jurisdiction context if detected
 		const jurisdictions = prompt.match(this.legalTokenPatterns.jurisdictions);
 		if (jurisdictions && jurisdictions.length > 0) {
-			return `${structuredPrompt}\nJurisdiction Context: ${jurisdictions.join(', ')}\n\nResponse:`;
+			return `${structuredPrompt}\nJurisdiction Context: ${jurisdictions.join(', ')}\n\nResponse: ';
 		}
 		return structuredPrompt;
 	}

@@ -1,9 +1,7 @@
 // Alert notification store for detective board
 import { writable } from 'svelte/store';
 }
-export interface Alert {
-  id: string;
-  message: string;
+export interface Alert { id: string;, message: string;
   type: 'info' | 'success' | 'error' | 'warning';
   timestamp?: number;
   duration?: number; // Auto-dismiss after this many ms

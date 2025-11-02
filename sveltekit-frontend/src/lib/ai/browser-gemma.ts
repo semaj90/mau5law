@@ -36,9 +36,7 @@ export interface GenerateOptions {
   systemPrompt?: string;
   stream?: boolean;
 }
-export interface StreamChunk {
-  text: string;
-  done: boolean;
+export interface StreamChunk { text: string;, done: boolean;
   tokenCount?: number;
 }
 export class BrowserGemma {
@@ -85,8 +83,7 @@ export class BrowserGemma {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM/CPU', gpuError);
         this.device = 'wasm';
         this.generator = await pipeline('text-generation', this.modelName, {
-          device: 'wasm'
-        });
+          device: `wasm` });
       }
       this.isInitialized = true;
       console.log(`✅ [Gemma Browser] Model loaded successfully (${this.device})`);
@@ -111,8 +108,7 @@ export class BrowserGemma {
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.'
-    } = options;
+      systemPrompt = 'You are a helpful legal AI assistant.` } = options;
     try {
       const startTime = performance.now();
       // Format prompt with system instruction (Gemma format)
@@ -152,8 +148,7 @@ export class BrowserGemma {
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.'
-    } = options;
+      systemPrompt = 'You are a helpful legal AI assistant.` } = options;
     const formattedPrompt = `<bos><start_of_turn>user\n${systemPrompt}\n\n${prompt}<end_of_turn>\n<start_of_turn>model\n`;
     let tokenCount = 0;
     try {
@@ -196,7 +191,7 @@ export class BrowserGemma {
    * Chat-style conversation with context
    */
   async chat(
-    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
+    messages: Array<{, role: 'user' | 'assistant' | 'system'; content: string }>,
     options: GenerateOptions = {}
   ): Promise<string> {
     // Convert messages to Gemma format
@@ -247,20 +242,18 @@ export class BrowserGemma {
       {
         maxTokens,
         temperature: 0.3, // Lower temp for factual summaries
-        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries of legal documents.'
-      }
+        systemPrompt: `You are a legal AI assistant. Provide accurate, professional summaries of legal documents.` }
     );
   }
   async extractLegalEntities(
     text: string
-  ): Promise<{ parties: string[]; dates: string[]; locations: string[] }> {
+  ): Promise<{ parties: string[]; dates: string[];, locations: string[] }> {
     const response = await this.generate(
       `Extract legal entities from this text. Return as JSON with keys: parties, dates, locations.\n\nText: ${text}`,
       {
         maxTokens: 200,
         temperature: 0.1,
-        systemPrompt: 'You are a legal entity extraction AI. Return valid JSON only.'
-      }
+        systemPrompt: `You are a legal entity extraction AI. Return valid JSON only.` }
     );
     try {
       return JSON.parse(response);
@@ -270,9 +263,9 @@ export class BrowserGemma {
   }
   async analyzeLegalRisk(
     caseDescription: string
-  ): Promise<{ riskLevel: 'low' | 'medium' | 'high'; analysis: string }> {
+  ): Promise<{ riskLevel: 'low' | 'medium' | 'high';, analysis: string }> {
     const response = await this.generate(
-      `Analyze the legal risk for this case. Return JSON with: "riskLevel" (low/medium/high) and: "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
+      `Analyze the legal risk for this case. Return JSON with: "riskLevel" (low/medium/high); and: "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
       {
         maxTokens: 150,
         temperature: 0.2,
@@ -282,7 +275,7 @@ export class BrowserGemma {
     try {
       return JSON.parse(response);
     } catch {
-      return { riskLevel: 'medium', analysis: 'Unable to analyze risk.' };
+      return { riskLevel: 'medium', analysis: `Unable to analyze risk.` };
     }
   }
   /**

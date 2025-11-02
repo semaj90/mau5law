@@ -46,8 +46,7 @@ export interface ServiceConfig {
 export interface ServiceDiscoveryResult {
   // The resolved URL
   url: string;
-  // How it was resolved ('env', 'discovery', or: 'fallback')
-  source: 'env' | 'discovery' | 'fallback';
+  // How it was resolved ('env', 'discovery', or: 'fallback'); source: 'env' | 'discovery' | 'fallback';
   // Whether the endpoint was verified reachable
   verified?: boolean;
 }
@@ -100,7 +99,7 @@ export class ServiceDiscovery {
       }
     } catch (error) {
       console.warn(
-        `[ServiceDiscovery] Error discovering ${serviceName}, using fallback:`,
+        `[ServiceDiscovery] Error discovering ${serviceName}, using fallback: ',
         error
       );
       url = config.fallback;
@@ -154,7 +153,7 @@ export class ServiceDiscovery {
   /**
    * Get cache statistics
    */
-  getCacheStats(): { size: number; entries: string[] } {
+  getCacheStats(): { size: number;, entries: string[] } {
     return {
       size: this.cache.size,
       entries: Array.from(this.cache.keys())
@@ -172,9 +171,7 @@ export function getServiceDiscovery(): ServiceDiscovery {
 /**
  * Pre-defined service configurations for common services
  */
-export const COMMON_SERVICES = {
-  minio: {
-    envVar: 'MINIO_ENDPOINT',
+export const COMMON_SERVICES = { minio: {, envVar: 'MINIO_ENDPOINT',
     fallback: 'http://localhost:9000',
     containerName: 'legal-ai-minio',
     port: 9000,

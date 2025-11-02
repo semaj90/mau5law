@@ -6,7 +6,7 @@ import {
   evidenceBoardItems,
   evidenceBoardConnections,
   evidence,
-  personsOfInterest,
+  personsOfInterest
 } from '$lib/database/enhanced-schema';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ const updateEvidenceBoardSchema = z.object({
   description: z.string().optional(),
   layout: z.any().optional(),
   settings: z.any().optional(),
-  isPublic: z.boolean().optional(),
+  isPublic: z.boolean().optional()
 });
 
 // GET /api/evidence-boards/[boardId] - Get evidence board with items and connections
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .select({
         item: evidenceBoardItems,
         evidence: evidence,
-        poi: personsOfInterest,
+        poi: personsOfInterest
       })
       .from(evidenceBoardItems)
       .leftJoin(evidence, eq(evidenceBoardItems.evidenceId, evidence.id))
@@ -62,8 +62,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       data: {
         board,
         items,
-        connections,
-      },
+        connections
+      }
     });
   } catch (error) {
     console.error('Error fetching evidence board:', error);
@@ -98,14 +98,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .update(evidenceBoards)
       .set({
         ...validatedData,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(evidenceBoards.id, boardId))
       .returning();
 
     return json({
       success: true,
-      data: updatedBoard,
+      data: updatedBoard
     });
   } catch (error) {
     console.error('Error updating evidence board:', error);
@@ -141,7 +141,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .update(evidenceBoards)
       .set({
         isActive: false,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(evidenceBoards.id, boardId));
 
@@ -150,7 +150,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .update(evidenceBoardItems)
       .set({
         isVisible: false,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(evidenceBoardItems.boardId, boardId));
 
@@ -159,13 +159,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .update(evidenceBoardConnections)
       .set({
         isVisible: false,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(evidenceBoardConnections.boardId, boardId));
 
     return json({
       success: true,
-      message: 'Evidence board deleted successfully',
+      message: 'Evidence board deleted successfully'
     });
   } catch (error) {
     console.error('Error deleting evidence board:', error);

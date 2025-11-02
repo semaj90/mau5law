@@ -1,8 +1,7 @@
 <script module lang="ts">
-import type { Case } from '$lib/types';
 // Enable SSR for this page (SvelteKit 2) and control prerender behavior
 export const ssr = true;
-export const prerender = $state(false); // adjust if this page should be prerendered
+export const prerender = false; // adjust if this page should be prerendered
 
 // Minimal typed wrapper for page data — extend as your load() returns more fields
 export interface PageData {
@@ -18,22 +17,24 @@ import '$lib/styles/bits-ui.css';
 </script>
 
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
-  import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
-  import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
-  import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
-  import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
-  import DialogRoot from '$lib/components/ui/dialog/DialogRoot.svelte';
-  import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
-  import DropdownMenuContent from '$lib/components/ui/dropdown-menu/DropdownMenuContent.svelte';
-  import DropdownMenuItem from '$lib/components/ui/dropdown-menu/DropdownMenuItem.svelte';
-  import DropdownMenuRoot from '$lib/components/ui/dropdown-menu/DropdownMenuRoot.svelte';
-  import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/DropdownMenuSeparator.svelte';
-  import DropdownMenuTrigger from '$lib/components/ui/dropdown-menu/DropdownMenuTrigger.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
+  import { Button } from '$lib/components/ui/button';
+  import { Card } from '$lib/components/ui/card';
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+  } from '$lib/components/ui/dialog';
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+  } from '$lib/components/ui/dropdown-menu';
+  import { Input } from '$lib/components/ui/input';
   // NOTE: lucide-svelte named exports caused type/import issues in this project;
   // use a small inline icon map (emoji placeholders) to avoid breaking the build.
   // import Copy from 'lucide-svelte';
@@ -267,11 +268,6 @@ import '$lib/styles/bits-ui.css';
   $effect(() => {
     if (!editingDialogOpen) editingCitation = null;
   });
-
-  // Workaround: some UI components declare strict required props in their typings
-  // which are not necessary for our runtime usage. Render them as dynamic
-  // components via an `any` alias to avoid TypeScript complaining about missing props.
-  const DialogContentAny: any = DialogContent;
 </script>
 
 <svelte:head>
@@ -288,7 +284,7 @@ import '$lib/styles/bits-ui.css';
     <div class="mb-4 p-3 border rounded bg-white/5">
       <h2 class="text-sm font-semibold">📡 Live Report Updates</h2>
       <ul>
-        {#each Array.isArray($liveReports.slice(0,5)) ? $liveReports.slice(0,5) : [] as update}
+        {#each Array.isArray($liveReports) ? $liveReports.slice(0, 5) : [] as update}
           <li class="text-xs">
             <strong>{update.title}</strong>
             <div class="text-muted">{update.updatedAt}</div>
@@ -324,11 +320,11 @@ import '$lib/styles/bits-ui.css';
         class="pl-8 w-full" /> <!-- Add pl-8 for icon padding -->
     </div>
     <select bind:value={selectedCategory} class="p-2 border rounded"> <!-- Clean up select styling -->
-      {#each Array.isArray(categories) ? categories : [] as category}
+      {#each categories as category}
         <option value={category.value}>{category.label}</option>
       {/each}
     </select>
-    <Button.Root
+    <Button
       class="nes-citation-control n64-enhanced lod-optimized retro-add-btn"
       onclick={() => (showAddDialog = true)}
       aria-label="Open dialog to add a new legal citation"
@@ -339,7 +335,7 @@ import '$lib/styles/bits-ui.css';
     >
       <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
       Add Citation
-    </Button.Root>
+    </Button>
     <div id="add-citation-help" class="sr-only">
       Create a new legal citation with title, content, source, and tags
     </div>
@@ -347,12 +343,12 @@ import '$lib/styles/bits-ui.css';
   <!-- Citations Grid -->
   <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"> <!-- Use grid for citations -->
     {#each filteredCitations as citation (citation.id)}
-      <Card.Root class="citation-nier-bits-card">
+      <Card class="citation-nier-bits-card">
         <div class="yorha-panel-header citation-header flex justify-between items-start"> <!-- Use flex for header layout -->
           <h3 class="text-lg font-semibold">{citation.title}</h3>
-          <DropdownMenuRoot>
+          <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button.Root
+              <Button
                 class="nes-citation-control n64-enhanced lod-optimized retro-menu-btn"
                 variant="ghost"
                 size="sm"
@@ -363,26 +359,26 @@ import '$lib/styles/bits-ui.css';
                 data-citation-id={citation.id}
               >
                 <span class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon">{ICON.moreVertical}</span>
-              </Button.Root>
+              </Button>
               <div id="citation-menu-help" class="sr-only">
                 Access citation actions: favorite, copy, edit, or delete
               </div>
             </DropdownMenuTrigger>
 
             <!-- Pass required collisionBoundary prop (cast for type-checking) -->
-            <DropdownMenuContent collisionBoundary={menuCollisionBoundary as Element}>
+            <DropdownMenuContent>
               <!-- Use component props onclick/onselect expected by the generated typings -->
-              <DropdownMenuItem href="#" onclick={() => toggleFavorite(citation)} onselect={() => toggleFavorite(citation)}>
+              <DropdownMenuItem href="#" onclick={() => toggleFavorite(citation)}>
                 <span class="w-4 h-4 mr-2">{ICON.star}</span>
                 {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               </DropdownMenuItem>
 
-              <DropdownMenuItem href="#" onclick={() => copyCitation(citation)} onselect={() => copyCitation(citation)}>
+              <DropdownMenuItem href="#" onclick={() => copyCitation(citation)}>
                 <span class="w-4 h-4 mr-2">{ICON.copy}</span>
                 Copy citation
               </DropdownMenuItem>
 
-              <DropdownMenuItem href="#" onclick={() => editCitation(citation)} onselect={() => editCitation(citation)}>
+              <DropdownMenuItem href="#" onclick={() => editCitation(citation)}>
                 <span class="w-4 h-4 mr-2">{ICON.edit}</span>
                 Edit
               </DropdownMenuItem>
@@ -390,12 +386,12 @@ import '$lib/styles/bits-ui.css';
               <DropdownMenuSeparator />
 
               <!-- provide className (typing expects className) and onclick/onselect -->
-              <DropdownMenuItem href="#" className="text-destructive" onclick={() => deleteCitation(citation.id)} onselect={() => deleteCitation(citation.id)}>
+              <DropdownMenuItem href="#" class="text-destructive" onclick={() => deleteCitation(citation.id)}>
                 <span class="w-4 h-4 mr-2">{ICON.trash2}</span>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenuRoot>
+          </DropdownMenu>
         </div>
 
         <div class="flex gap-2 mb-2"> <!-- Use flex and gap for category/favorite badges -->
@@ -419,7 +415,7 @@ import '$lib/styles/bits-ui.css';
           {/if}
           {#if citation.tags.length > 0}
             <div class="flex flex-wrap gap-2"> <!-- Use flex-wrap and gap for tags -->
-              {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
+              {#each citation.tags as tag}
                 <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
                   <span class="w-3 h-3 mr-1">{ICON.tag}</span>
                   {tag}
@@ -436,7 +432,7 @@ import '$lib/styles/bits-ui.css';
             {/if}
           </div>
         </div>
-      </Card.Root>
+      </Card>
     {/each}
 
     <!-- No-citations / Filters: close Clear filters Button and move help div outside -->
@@ -445,7 +441,7 @@ import '$lib/styles/bits-ui.css';
         {#if searchQuery || selectedCategory !== 'all'}
           <h3 class="text-xl font-semibold">No citations found</h3>
           <p class="text-gray-600">No citations match your current search criteria.</p>
-          <Button.Root
+          <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
             variant="secondary"
             onclick={() => {
@@ -459,7 +455,7 @@ import '$lib/styles/bits-ui.css';
             data-operation="clear-filters"
           >
             Clear filters
-          </Button.Root>
+          </Button>
           <div id="clear-filters-help" class="sr-only">
             Remove search query and category filters to display all saved citations
           </div>
@@ -469,7 +465,7 @@ import '$lib/styles/bits-ui.css';
             You haven't saved any citations yet. Start by adding citations from reports or create
             new ones.
           </p>
-          <Button.Root
+          <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
             onclick={() => (showAddDialog = true)}
             aria-label="Create your first legal citation"
@@ -480,7 +476,7 @@ import '$lib/styles/bits-ui.css';
           >
             <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
             Add your first citation
-          </Button.Root>
+          </Button>
           <div id="first-citation-help" class="sr-only">
             Start your citation collection by creating your first legal citation with source and notes
           </div>
@@ -490,9 +486,9 @@ import '$lib/styles/bits-ui.css';
   </div>
 
   <!-- Add Citation Dialog -->
-  <DialogRoot bind:open={showAddDialog}>
+  <Dialog bind:open={showAddDialog}>
     <div class="sm:max-w-[425px]">
-      <DialogContentAny>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Citation</DialogTitle>
           <DialogDescription>Create a new citation to save for future reference.</DialogDescription>
@@ -521,7 +517,7 @@ import '$lib/styles/bits-ui.css';
             <div class="grid gap-2">
               <label for="category" class="text-sm font-medium">Category</label>
               <select id="category" bind:value={newCitation.category} class="p-2 border rounded">
-                {#each Array.isArray(categories.slice(1)) ? categories.slice(1) : [] as category}
+                {#each categories.slice(1) as category}
                   <option value={category.value}>{category.label}</option>
                 {/each}
               </select>
@@ -543,16 +539,16 @@ import '$lib/styles/bits-ui.css';
           </div>
         </div>
         <DialogFooter>
-          <Button.Root
+          <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
             variant="secondary"
             onclick={() => (showAddDialog = false)}
             aria-label="Cancel citation creation and close dialog"
             role="button"
             data-nes-theme="dialog-secondary"
-          >Cancel</Button.Root>
+          >Cancel</Button>
 
-          <Button.Root
+          <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
             onclick={() => saveCitation()}
             disabled={!newCitation.title || !newCitation.content}
@@ -564,21 +560,21 @@ import '$lib/styles/bits-ui.css';
             data-operation="save-citation"
           >
             Save Citation
-          </Button.Root>
+          </Button>
 
           <div id="save-citation-help" class="sr-only">
             Save the new citation with all entered information to your collection
           </div>
         </DialogFooter>
-      </DialogContentAny>
+      </DialogContent>
     </div>
-  </DialogRoot>
+  </Dialog>
 
   <!-- Edit Citation Dialog -->
   {#if editingCitation}
-    <DialogRoot bind:open={editingDialogOpen}>
+    <Dialog bind:open={editingDialogOpen}>
       <div class="sm:max-w-[425px]">
-        <DialogContentAny>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Citation</DialogTitle>
           </DialogHeader>
@@ -604,7 +600,7 @@ import '$lib/styles/bits-ui.css';
               <div class="grid gap-2">
                 <label for="edit-category" class="text-sm font-medium">Category</label>
                 <select id="edit-category" bind:value={editingCitation.category} class="p-2 border rounded">
-                  {#each Array.isArray(categories.slice(1)) ? categories.slice(1) : [] as category}
+                  {#each categories.slice(1) as category}
                     <option value={category.value}>{category.label}</option>
                   {/each}
                 </select>
@@ -625,16 +621,16 @@ import '$lib/styles/bits-ui.css';
             </div>
           </div>
           <DialogFooter>
-            <Button.Root
+            <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
               variant="secondary"
               onclick={() => (editingCitation = null)}
               aria-label="Cancel editing and close dialog"
               role="button"
               data-nes-theme="dialog-secondary"
-            >Cancel</Button.Root>
+            >Cancel</Button>
 
-            <Button.Root
+            <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
               onclick={() => updateCitation()}
               aria-label="Save changes to citation"
@@ -642,15 +638,15 @@ import '$lib/styles/bits-ui.css';
               role="button"
               data-nes-theme="dialog-primary"
               data-operation="update-citation"
-            >Update Citation</Button.Root>
+            >Update Citation</Button>
 
             <div id="update-citation-help" class="sr-only">
               Apply changes to the citation and update your collection
             </div>
           </DialogFooter>
-        </DialogContentAny>
+        </DialogContent>
       </div>
-    </DialogRoot>
+    </Dialog>
   {/if}
 
   <!-- categoryCounts used for accessibility/inspection to avoid: "declared but never read" -->

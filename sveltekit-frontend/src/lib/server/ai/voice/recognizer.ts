@@ -64,7 +64,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
       const resp = await fetch(TRANSCRIBE_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream' },
-        body: bodyArrayBuffer,
+        body: bodyArrayBuffer
       });
       if (resp.ok) {
         const json = await resp.json().catch(() => null);
@@ -105,5 +105,5 @@ export async function transcribeBuffer(buf: ArrayBuffer | Uint8Array, ext = '.wa
 
 export default {
   transcribeAudio,
-  transcribeBuffer,
+  transcribeBuffer
 };

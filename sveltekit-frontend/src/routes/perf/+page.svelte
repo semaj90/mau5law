@@ -150,18 +150,18 @@
   let historyMemUsedSeries = $state<number[]>([]);
   let historyLoad1Series = $state<number[]>([]);
   let historyRedisMemSeries = $state<number[]>([]);
-  let anomalyStats: AnomalyStats | null = $state(null);
+  let anomalyStats: AnomalyStats | null = null;
   let activeHistoryTab = $state<'gpu'|'jobs'|'system'|'redis'|'anomaly'>('gpu');
   // New tabs for profiling & engines
   let showGpuEngines = $state<boolean>(false);
   let showWorkers = $state<boolean>(false);
   let showProfiling = $state<boolean>(false);
   // Backend (cuda-service) new endpoints data
-  let gpuEngines: GpuEngines | null = $state(null);
+  let gpuEngines: GpuEngines | null = null;
   let workerStats: WorkerStat[] = $state([]);
-  let profilingSnapshot: ProfilingSnapshot | null = $state(null);
+  let profilingSnapshot: ProfilingSnapshot | null = null;
   let profilingHistory: ProfilingHistoryEntry[] = $state([]);
-  let lastProfilingFetched: number | null = $state(null);
+  let lastProfilingFetched: number | null = null;
   async function fetchCudaEndpoint(path: string): Promise<Response> {
     try {
       const r = await fetch(`/api/cuda${path}`);
@@ -1179,14 +1179,14 @@
     <h2 class="font-medium mb-3">🏥 Service Health Matrix</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       {#each Array.isArray($serviceHealth) ? $serviceHealth : [] as service}
-      <div class="p-3" bg-gray-50 rounded border-l-4 {
+      <div class="p-3 bg-gray-50 rounded border-l-4" {
         service.health === 'excellent' ? 'border-green-500' :
         service.health === 'good' ? 'border-blue-500' :
         service.health === 'fair' ? 'border-yellow-500' : 'border-red-500'
       }">
         <div class="flex items-center justify-between mb-2">
           <span class="font-medium text-sm">{service.name}</span>
-          <span class="text-xs" px-2 py-1 rounded {
+          <span class="text-xs px-2 py-1 rounded" {
             service.status === 'running' ? 'bg-green-100 text-green-800' :
             'bg-red-100 text-red-800'
           }">

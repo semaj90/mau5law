@@ -29,9 +29,7 @@ export type Metadata = {
   allowAnonymous?: boolean; // explicit field for anonymous fallback
 };
 
-export interface SaveSummaryRequest {
-  caseId: string;
-  summary: string;
+export interface SaveSummaryRequest { caseId: string;, summary: string;
   metadata?: Metadata;
 }
 export const POST: RequestHandler = async event => {
@@ -45,7 +43,7 @@ export const POST: RequestHandler = async event => {
 
     // Authentication check - allow conditional anonymous fallback if requested
     const { user } = await getUser(event);
-    let effectiveUser = user as { id: string; role: string; legalSpecialties?: string[] } | null;
+    let effectiveUser = user as { id: string;, role: string; legalSpecialties?: string[] } | null;
     if (!effectiveUser) {
       // Allow fallback if metadata.allowAnonymous === true or ?allowAnon=true in query params
       const url = new URL(request.url);
@@ -62,8 +60,7 @@ export const POST: RequestHandler = async event => {
     // Validate required fields
     if (!caseId || !summary) {
       return json(
-        {
-          error: 'Missing required fields: caseId, summary',
+        { error: 'Missing required, fields: caseId, summary'
         },
         { status: 400 }
       );
@@ -92,11 +89,11 @@ export const POST: RequestHandler = async event => {
         tokenCount: metadata.tokenCount || 0,
         sources: metadata.sources || [],
         metadata: {
-          userRole: effectiveUser.role,
+         , userRole: effectiveUser.role,
           userSpecialties: effectiveUser.legalSpecialties || [],
           timestamp: new Date().toISOString(),
-          ...metadata,
-        },
+          ...metadata
+        }
       })
       .returning();
 
@@ -105,7 +102,7 @@ export const POST: RequestHandler = async event => {
       .update(cases)
       .set({
         updatedAt: new Date(),
-        lastAnalysisAt: new Date(),
+        lastAnalysisAt: new Date()
       })
       .where(eq(cases.id, caseId));
 
@@ -116,15 +113,14 @@ export const POST: RequestHandler = async event => {
       userId: effectiveUser.id,
       model: metadata?.model || 'unknown',
       confidence: metadata.confidence,
-      anonymousFallback: effectiveUser.id === 'anonymous',
+      anonymousFallback: effectiveUser.id === 'anonymous'
     });
 
     // Return success response
     return json({
       success: true,
       analysisId: analysisRecord[0].id,
-      message: 'Summary saved successfully',
-    });
+      message: `Summary saved successfully` });
   } catch (error: any) {
     // Normalize unknown error to a safe string/message
     const normalizedErrorMessage =
@@ -145,7 +141,7 @@ export const POST: RequestHandler = async event => {
     return json(
       {
         error: 'Failed to save summary',
-        details: typeof error === 'string' ? error : error instanceof Error ? error.message : String(error),
+        details: typeof error === 'string' ? error : error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

@@ -3,25 +3,19 @@
  * Mimics N64 cartridge progressive loading for legal document visualization
  *
  * LOD Levels:
- * 0: 64x64 - High detail (active document view)
+ *; 0: 64x64 - High detail (active document view)
  * 1: 32x32 - Medium detail (document preview)
  * 2: 16x16 - Low detail (timeline view)
  * 3: 8x8  - Minimal detail (overview/scrolling)
  */
-interface LODLevel {
-  level: number;
-  resolution: { width: number; height: number }
+interface LODLevel { level: number;, resolution: { width: number;, height: number }
   textureSize: number;
   maxDistance: number;
   description: string;
 }
-interface LODAsset {
-  id: string;
-  baseTexture: ImageData | HTMLImageElement;
+interface LODAsset { id: string;, baseTexture: ImageData | HTMLImageElement;
   mipmaps: Map<number, ArrayBuffer>; // LOD level -> texture data
-  metadata: {
-    documentType: 'contract' | 'evidence' | 'brief' | 'timeline';
-  priority: number;
+  metadata: { documentType: 'contract' | 'evidence' | 'brief' | 'timeline';, priority: number;
   size: number;
   }
 }
@@ -65,11 +59,9 @@ export class N64LODManager {
   /**
    * Calculate LOD for legal document context
    */
-  calculateDocumentLOD(context: {
-    pageDistance: number;
-    readingMode: 'active' | 'preview' | 'timeline' | 'overview';
+  calculateDocumentLOD(context: { pageDistance: number;, readingMode: 'active' | 'preview' | 'timeline' | 'overview';
     documentImportance: 'critical' | 'high' | 'medium' | 'low';
-    userInteraction: boolean);
+   , userInteraction: boolean);
   }): number {
     let baseLOD = this.calculateLOD(context.pageDistance);
     // Adjust based on reading mode
@@ -97,8 +89,7 @@ export class N64LODManager {
    * Generate NES-style mipmaps from base texture
    */
   async generateMipmaps()
-    baseTexture: ImageData | HTMLImageElement
-    assetId: string;
+    baseTexture: ImageData | HTMLImageElement; assetId: string;
   ): Promise<LODAsset> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d'),!;
@@ -139,8 +130,7 @@ export class N64LODManager {
    * Stream texture chunk at specified LOD level
    */
   async streamTexture()
-    assetId: string
-    lodLevel: number
+    assetId: string; lodLevel: number
     priority: 'immediate' | 'background', = 'background';
   ): Promise<ArrayBuffer | null> {
     // Check if we need bank switching
@@ -180,7 +170,7 @@ export class N64LODManager {
       await this.storeinCHRROM(cacheKey, textureData);
       return textureData;
     } catch (error) {
-      console.error(`Failed to stream texture ${assetId} at LOD ${lodLevel}:`, error);
+      console.error(`Failed to stream texture ${assetId} at LOD ${lodLevel}: ', error);
       return null;
     } finally {
       this.activeStreams.delete(assetId);
@@ -190,8 +180,7 @@ export class N64LODManager {
    * Progressive texture streaming - loads LOD levels progressively
    */
   async *streamTextureProgressive()
-    assetId: string
-    targetLOD: number;
+    assetId: string; targetLOD: number;
   ): AsyncGenerator {
     // Start with lowest quality and stream up to target
     for (let lod = 3; lod >= targetLOD; lod--) {
@@ -205,8 +194,7 @@ export class N64LODManager {
    * Generate mipmap at specific resolution
    */
   private async generateMipmap()
-    source: ImageData
-    targetSize: { width: number); height: number }
+    source: ImageData; targetSize: { width: number);, height: number }
   ): Promise<ImageData> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d'),!;
@@ -445,9 +433,7 @@ export class N64LODManager {
   /**
    * Get current CHR-ROM statistics
    */
-  getStats(),: {
-    memoryUsage: number;
-    maxMemory: number;
+  getStats(),: { memoryUsage: number;, maxMemory: number;
     activeBankId: number;
     textureCount: number;
     activeStreams: number;

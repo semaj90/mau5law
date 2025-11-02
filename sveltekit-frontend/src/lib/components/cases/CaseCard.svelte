@@ -17,7 +17,7 @@ import type { Case } from '$lib/types';
     CheckCircle
   } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import { Badge } from '$lib/components/ui/badge.svelte';
   interface CaseData {
     id: string

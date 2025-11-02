@@ -3,9 +3,7 @@ import { RABBITMQ_URL } from '$env/static/private';
 import type { Connection, Channel, Replies, ConsumeMessage } from 'amqplib';
 
 // --- TYPES ---
-export interface DocumentProcessingJob {
-  documentId: string;
-  s3Key: string;
+export interface DocumentProcessingJob { documentId: string;, s3Key: string;
   s3Bucket: string;
   caseId?: string;
   userId?: string;
@@ -17,25 +15,19 @@ export interface DocumentProcessingJob {
   timestamp?: string;
 }
 
-export interface RabbitMQConfig {
-  url: string;
-  queues: {
-    documentProcessing: string;
-    ocrProcessing: string;
+export interface RabbitMQConfig { url: string;, queues: { documentProcessing: string;, ocrProcessing: string;
     embeddingProcessing: string;
     summarization: string;
     deadLetter: string;
   };
-  exchanges: {
-    documents: string;
-    deadLetter: string;
+  exchanges: { documents: string;, deadLetter: string;
   };
 }
 
 export interface IRabbitMQService {
   initialize(retries?: number, delay?: number): Promise<void>;
   publishDocumentProcessingJob(job: DocumentProcessingJob): Promise<boolean>;
-  publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }>;
+  publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number;, failed: number }>;
   getQueueStats(): Promise<Record<string, any>>;
   purgeQueue(queueType: keyof RabbitMQConfig['queues']): Promise<boolean>;
   close(): Promise<void>;
@@ -95,12 +87,12 @@ class RabbitMQService implements IRabbitMQService {
         ocrProcessing: 'ocr_processing_queue',
         embeddingProcessing: 'embedding_processing_queue',
         summarization: 'summarization_queue',
-        deadLetter: 'dead_letter_queue',
+        deadLetter: 'dead_letter_queue'
       },
       exchanges: {
         documents: 'documents_exchange',
-        deadLetter: 'dead_letter_exchange',
-      },
+        deadLetter: 'dead_letter_exchange'
+      }
     };
   }
 
@@ -136,7 +128,7 @@ class RabbitMQService implements IRabbitMQService {
         console.log('✅ RabbitMQ connected and configured');
         return;
       } catch (err) {
-        console.error(`RabbitMQ connect attempt ${attempt}/${maxRetries} failed:`, err);
+        console.error(`RabbitMQ connect attempt ${attempt}/${maxRetries} failed: ', err);
         if (attempt < maxRetries) {
           await new Promise(r => setTimeout(r, retryDelay));
         } else {
@@ -160,8 +152,8 @@ class RabbitMQService implements IRabbitMQService {
     const queueOptions = {
       durable: true,
       arguments: {
-        'x-dead-letter-exchange': this.config.exchanges.deadLetter,
-      },
+        'x-dead-letter-exchange': this.config.exchanges.deadLetter
+      }
     };
 
     // create main queues (skip deadLetter queue)
@@ -190,7 +182,7 @@ class RabbitMQService implements IRabbitMQService {
         persistent: true,
         priority: job.priority ?? 5,
         messageId: job.documentId,
-        correlationId: job.documentId,
+        correlationId: job.documentId
       };
 
       let routingKey = 'doc.process';
@@ -224,7 +216,7 @@ class RabbitMQService implements IRabbitMQService {
     }
   }
 
-  async publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }> {
+  async publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number;, failed: number }> {
     const results = { success: 0, failed: 0 };
     for (const job of jobs) {
       (await this.publishDocumentProcessingJob(job)) ? results.success++ : results.failed++;
@@ -281,7 +273,7 @@ class RabbitMQService implements IRabbitMQService {
       console.log(`🗑️ Queue purged: ${queueName}`);
       return true;
     } catch (err) {
-      console.error(`Error purging queue ${String(queueType)}:`, err);
+      console.error(`Error purging queue ${String(queueType)}: ', err);
       return false;
     }
   }
@@ -355,6 +347,6 @@ export function createDocumentProcessingJob(
     userId: options.userId,
     processingType: options.processingType || 'full_analysis',
     priority: options.priority ?? 5,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }

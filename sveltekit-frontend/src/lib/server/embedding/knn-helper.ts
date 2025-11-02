@@ -46,9 +46,9 @@ export function euclideanDistance(a: Vector, b: Vector): number {
 export function topKNearest<T extends string | number | symbol = string>(
   query: Vector,
   // allow optional / nullable embedding to model missing data without using `any`
-  items: Array<{ id: T; embedding?: Vector | null }>,
+  items: Array<{, id: T; embedding?: Vector | null }>,
   k = 5
-): { id: T; score: number }[] {
+): { id: T;, score: number }[] {
   // guard: invalid query vector
   if (!Array.isArray(query) || query.length === 0) return [];
 

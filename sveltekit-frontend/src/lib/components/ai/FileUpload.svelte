@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { Label } from '$lib/components/ui/label.svelte';
   import { Progress } from '$lib/components/ui/progress.svelte';
   import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte';
@@ -13,9 +13,9 @@ import type { Document } from '$lib/types';
 
   // Replace Svelte 5 $state runes with plain typed local variables to avoid parsing issues during migration.
   let files: FileList | null = null;
-  let verboseMode: boolean = $state(false);
-  let thinkingMode: boolean = $state(false);
-  let isUploading: boolean = $state(false);
+  let verboseMode: boolean = false;
+  let thinkingMode: boolean = false;
+  let isUploading: boolean = false;
   let uploadProgress: number = 0;
   let error: string | null = null;
   let analysisResult: any = null;

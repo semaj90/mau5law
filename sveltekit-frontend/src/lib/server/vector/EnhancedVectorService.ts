@@ -25,10 +25,8 @@ interface HybridSearchOptions {
 
 type CaseSelect = typeof cases.$inferSelect;
 
-interface KeywordSearchResult {
-  id: string;
-  score: number;
-  metadata: { type: string; title: string };
+interface KeywordSearchResult { id: string;, score: number;
+  metadata: { type: string;, title: string };
   content: string;
 }
 
@@ -38,9 +36,7 @@ interface QdrantPayload {
   [key: string]: any;
 }
 
-interface QdrantVectorSearchResult {
-  id: string;
-  score: number;
+interface QdrantVectorSearchResult { id: string;, score: number;
   payload: QdrantPayload;
   vector?: number[]; // Qdrant may return the vector if requested
   version?: number; // Qdrant may include a version field
@@ -49,10 +45,8 @@ interface QdrantVectorSearchResult {
 } // Corrected closing brace for QdrantVectorSearchResult
 
 // Represents a unified result from both vector and keyword search, including document metadata and content.
-interface CombinedSearchResult {
-  id: string;
-  score: number;
-  metadata: { type: string; title: string };
+interface CombinedSearchResult { id: string;, score: number;
+  metadata: { type: string;, title: string };
   content: string;
 }
 export class EnhancedVectorService {
@@ -63,7 +57,7 @@ export class EnhancedVectorService {
   constructor() {
     // Removed duplicate constructor
     this.qdrant = createQdrantWrapper({
-      url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
+      url: import.meta.env.QDRANT_URL || 'http://localhost:6333'
     });
     // Create a local ioredis instance if project helper isn't exported
     const redisUrl = (import.meta.env.REDIS_URL as string) || 'redis://:redis@localhost:6379/0';
@@ -74,9 +68,8 @@ export class EnhancedVectorService {
     // single typed exists declaration (no duplicate)
     const exists = collections.collections.some((c: { name?: string }) => c.name === this.collectionName);
     if (!exists) {
-      await this.qdrant.createCollection(this.collectionName, {
-        vectors: { size: 768, distance: 'Cosine' },
-        optimizers_config: { default_segment_number: 2 },
+      await this.qdrant.createCollection(this.collectionName, { vectors: {, size: 768, distance: `Cosine` },
+        optimizers_config: {, default_segment_number: 2 }
       });
       try {
         // Note: createPayloadIndex method doesn't exist in current Qdrant client
@@ -102,11 +95,11 @@ export class EnhancedVectorService {
       const response: Response = await fetch(ollamaUrl, {
         // Added type for response
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'embeddinggemma:latest',
-          prompt: text,
-        }),
+         , model: 'embeddinggemma:latest',
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -124,11 +117,11 @@ export class EnhancedVectorService {
       const fallbackResponse: Response = await fetch(ollamaUrl, {
         // Added type for fallbackResponse
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'nomic-embed-text',
-          prompt: text,
-        }),
+         , model: 'nomic-embed-text',
+          prompt: text
+        })
       });
 
       if (!fallbackResponse.ok) {
@@ -152,13 +145,13 @@ export class EnhancedVectorService {
     await this.qdrant.upsert(this.collectionName, {
       wait: true, // Changed semicolon to comma
       points: [
-        // Removed: ')'
+        //, Removed: ')'
         {
           id,
           vector: embedding, // Corrected syntax
           payload: { content, ...metadata }, // Added comma for consistency
         },
-      ],
+      ]
     });
   }
   async hybridSearch(query: string, options: HybridSearchOptions = {}): Promise<CombinedSearchResult[]> {
@@ -168,7 +161,7 @@ export class EnhancedVectorService {
       vector: queryEmbedding,
       limit,
       score_threshold: threshold,
-      with_payload: true,
+      with_payload: true
     });
     const keywordResults: KeywordSearchResult[] = await this.keywordSearch(query, limit);
     // Combine results
@@ -178,7 +171,7 @@ export class EnhancedVectorService {
     const caseResults = await db
       .select()
       .from(cases)
-      .where(sql`${cases.title} ILIKE ${'%' + query + '%'} OR ${cases.description} ILIKE ${'%' + query + '%'}`)
+      .where(sql`${cases.title} ILIKE ${'%' + query + '%'} OR ${cases.description} ILIKE ${'%' + query + '%` }`)
       .limit(limit);
 
     // Use typed access via CaseSelect and safe coercions instead of `any` casts
@@ -192,7 +185,7 @@ export class EnhancedVectorService {
         id,
         score: 0.8, // Placeholder score, could be improved with text similarity
         metadata: { type: 'case', title: String(title) },
-        content: `${String(title)} ${String(description)}`.trim(),
+        content: `${String(title)} ${String(description)}`.trim()
       } as KeywordSearchResult;
     });
   }
@@ -210,7 +203,7 @@ export class EnhancedVectorService {
         id: String(r.id),
         score: (typeof r.score === 'number' ? r.score : 0) * 0.7,
         metadata: { type, title },
-        content,
+        content
       });
     });
     keywordResults.forEach(r => {

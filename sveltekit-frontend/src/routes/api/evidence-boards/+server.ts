@@ -13,7 +13,7 @@ const createEvidenceBoardSchema = z.object({
   description: z.string().optional(),
   layout: z.any().optional(),
   settings: z.any().optional(),
-  isPublic: z.boolean().default(false),
+  isPublic: z.boolean().default(false)
 });
 
 // GET /api/evidence-boards - List evidence boards
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     let query = db
       .select({
         board: evidenceBoards,
-        case cases,
+        case cases
       })
       .from(evidenceBoards)
       .innerJoin(cases, eq(evidenceBoards.caseId, cases.id))
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     return json({
       success: true,
-      data: boards,
+      data: boards
     });
   } catch (error) {
     console.error('Error fetching evidence boards:', error);
@@ -76,14 +76,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .insert(evidenceBoards)
       .values({
         ...validatedData,
-        createdBy: session.user.id,
+        createdBy: session.user.id
       })
       .returning();
 
     return json(
       {
         success: true,
-        data: newBoard,
+        data: newBoard
       },
       { status: 201 }
     );

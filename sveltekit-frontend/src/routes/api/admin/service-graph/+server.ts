@@ -7,9 +7,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-interface Service {
-  id: string;
-  label: string;
+interface Service { id: string;, label: string;
   type: string;
   port: number;
   description: string;
@@ -21,18 +19,12 @@ interface Service {
   uptime?: number;
 }
 
-interface Edge {
-  source: string;
-  target: string;
+interface Edge { source: string;, target: string;
   type: string;
 }
 
-interface ServiceGraph {
-  nodes: Service[];
-  edges: Edge[];
-  metadata: {
-    totalServices: number;
-    totalConnections: number;
+interface ServiceGraph { nodes: Service[];, edges: Edge[];
+  metadata: { totalServices: number;, totalConnections: number;
     generated: string;
     lastUpdated?: string;
   };
@@ -456,7 +448,7 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
 async function checkServiceHealth(
   serviceId: string,
   port: number
-): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }> {
+): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }> {
   const startTime = Date.now();
   try {
     const url = `http://localhost:${port}/health`;
@@ -537,7 +529,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       const healthResults = await Promise.allSettled(healthPromises);
-      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }>();
+      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }>();
 
       healthResults.forEach((result) => {
         if (result.status === 'fulfilled') {
@@ -606,7 +598,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Service analysis error:', error);
     return json(
-      { error: 'Failed to analyze services' },
+      { error: `Failed to analyze services` },
       { status: 500 }
     );
   }

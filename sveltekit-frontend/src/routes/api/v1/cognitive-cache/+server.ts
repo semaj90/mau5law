@@ -25,9 +25,7 @@ interface CognitiveGetOptions {
   [k: string]: any;
 }
 
-interface CognitiveGetRequest {
-  key: string;
-  type: CacheType;
+interface CognitiveGetRequest { key: string;, type: CacheType;
   context?: CognitiveGetContext;
   options?: CognitiveGetOptions;
 }
@@ -45,9 +43,7 @@ interface CognitiveGetResult {
   predictions?: any;
 }
 
-interface CognitiveMetrics {
-  totalRequests: number;
-  cacheHits: number;
+interface CognitiveMetrics { totalRequests: number;, cacheHits: number;
   averageLatency?: number;
   cognitiveAccuracy?: number;
   cognitiveHits?: number;
@@ -63,9 +59,7 @@ interface CognitiveCache {
 }
 
 // Add typed structures for metrics response
-type CognMetricsPerformance = {
-  totalRequests: number;
-  cacheHits: number;
+type CognMetricsPerformance = { totalRequests: number;, cacheHits: number;
   hitRate: number;
   averageLatency?: number;
   cognitiveAccuracy?: number;
@@ -78,9 +72,7 @@ type Distribution = {
   shaderRatio?: number;
 };
 
-type Learning = {
-  reinforcementActive: boolean;
-  adaptationRate: number;
+type Learning = { reinforcementActive: boolean;, adaptationRate: number;
   predictionImprovement: number;
   cognitiveEvolutionScore: number;
 };
@@ -88,9 +80,7 @@ type Learning = {
 type Detailed = {
   cacheStatistics?: Record<string, unknown>;
   memoryUsage?: Record<string, string>;
-  physicsState?: {
-    momentum: number[];
-    temperature: number;
+  physicsState?: { momentum: number[];, temperature: number;
     pressure: number;
   };
 };
@@ -101,9 +91,7 @@ type Predictions = {
   recommendedActions?: string[];
 };
 
-type CognitiveMetricsResponse = {
-  performance: CognMetricsPerformance;
-  distribution: Distribution;
+type CognitiveMetricsResponse = { performance: CognMetricsPerformance;, distribution: Distribution;
   learning: Learning;
   detailed?: Detailed;
   predictions?: Predictions;
@@ -116,14 +104,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { key, data, type = 'legal-data', context = {}, options = {} } = body;
     if (!key || !data) {
-      return json({ error: 'Missing required fields: key, data' }, { status: 400 });
+      return json({ error: 'Missing required, fields: key, data' }, { status: 400 });
     }
     // Enhance context with request metadata
     const enhancedContext = {
       ...context,
       requestTime: Date.now(),
       dataType: typeof data,
-      dataSize: JSON.stringify(data).length,
+      dataSize: JSON.stringify(data).length
     };
 
     // Build metadata/options properly and call set(meta, data)
@@ -135,8 +123,8 @@ export const POST: RequestHandler = async ({ request }) => {
         ...options,
         distributeAcrossCaches: options.distribute !== false,
         cognitiveValue: options.cognitiveValue,
-        shaderMetadata: options.shaderMetadata,
-      },
+        shaderMetadata: options.shaderMetadata
+      }
     };
 
     const success = await cognitiveIntegration.cognitiveCacheManager.set(meta, data);
@@ -149,11 +137,11 @@ export const POST: RequestHandler = async ({ request }) => {
           key,
           type,
           cognitiveAnalysis: {
-            routingDecision: 'optimal',
+           , routingDecision: 'optimal',
             confidenceScore: 0.85,
-            distributedAcrossCaches: options.distribute !== false,
+            distributedAcrossCaches: options.distribute !== false
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         },
         { status: 200 }
       );
@@ -166,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to store in cognitive cache',
-        details: dev ? errMsg : undefined,
+        details: dev ? errMsg : undefined
       },
       { status: 500 }
     );
@@ -179,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const parts = url.pathname.split('/');
     const key = parts[parts.length - 1];
     if (!key) {
-      return json({ error: 'Missing cache key' }, { status: 400 });
+      return json({ error: `Missing cache key` }, { status: 400 });
     }
     // Parse query parameters (strongly typed)
     const cacheType = (url.searchParams.get('type') || 'legal-data') as CacheType;
@@ -205,12 +193,12 @@ export const GET: RequestHandler = async ({ url }) => {
         workflowStep,
         documentType,
         priority,
-        semanticTags,
+        semanticTags
       },
       options: {
         enablePredictive,
-        enablePhysics: true,
-      },
+        enablePhysics: true
+      }
     };
 
     // Use a typed cognitiveCache reference instead of `as any`
@@ -225,15 +213,15 @@ export const GET: RequestHandler = async ({ url }) => {
           key,
           data: typed.data,
           cacheInfo: {
-            source: typed.source,
+           , source: typed.source,
             confidence: typed.confidence,
             processingTime: typed.processingTime,
             cognitiveScore: typed.metadata?.cognitiveScore,
-            reinforcementReward: typed.metadata?.reinforcementReward,
+            reinforcementReward: typed.metadata?.reinforcementReward
           },
           predictions: typed.predictions,
           metadata: typed.metadata,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         },
         { status: 200 }
       );
@@ -247,7 +235,7 @@ export const GET: RequestHandler = async ({ url }) => {
             'Data may not be cached yet',
             'Try adjusting semantic tags or context',
             'Consider enabling predictive loading',
-          ],
+          ]
         },
         { status: 404 }
       );
@@ -258,7 +246,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to retrieve from cognitive cache',
-        details: dev ? errMsg : undefined,
+        details: dev ? errMsg : undefined
       },
       { status: 500 }
     );
@@ -287,20 +275,20 @@ export const PUT: RequestHandler = async ({ request }) => {
             frequency: Math.random(),
             recentAccess: Date.now() - Math.random() * 86400000,
             userContexts: ['legal-analyst', 'prosecutor'],
-            workflowSteps: ['doc-load', 'evidence-view', 'analysis'],
+            workflowSteps: ['doc-load', 'evidence-view', 'analysis']
           },
           predictions: {
             futureAccess: 0.8,
             optimalCacheLayer: 'hybrid',
-            recommendedActions: ['Increase priority weight', 'Preload related content', 'Update semantic tags'],
+            recommendedActions: ['Increase priority weight', 'Preload related content', 'Update semantic tags']
           },
           physicsMetrics: {
             memoryMomentum: [0.3, 0.7, 0.1],
             cacheTemperature: 0.6,
-            accessPressure: 0.4,
+            accessPressure: 0.4
           },
           // echo received options for diagnostics and to mark it as used
-          receivedOptions,
+          receivedOptions
         };
         return json({ success: true, analysis, timestamp: Date.now() }, { status: 200 });
       }
@@ -312,14 +300,14 @@ export const PUT: RequestHandler = async ({ request }) => {
           memoryReduction: Math.random() * 0.2 + 0.05,
           learningProgress: Math.random() * 0.1 + 0.02,
           // record options used for optimization run
-          usedOptions: receivedOptions,
+          usedOptions: receivedOptions
         };
         return json(
           {
             success: true,
             optimization: optimizationResult,
             message: 'Cognitive optimization completed',
-            timestamp: Date.now(),
+            timestamp: Date.now()
           },
           { status: 200 }
         );
@@ -335,11 +323,11 @@ export const PUT: RequestHandler = async ({ request }) => {
           confidenceScores: [0.85, 0.72, 0.68],
           estimatedLatency: Math.random() * 50 + 10,
           // include options for traceability
-          optionsUsed: receivedOptions,
+          optionsUsed: receivedOptions
         };
         return json({ success: true, predictions, timestamp: Date.now() }, { status: 200 });
       }
-      default: return json({ error: 'Invalid action. Use: analyze, optimize, predict' }, { status: 400 });
+      default: return json({ error: 'Invalid action., Use: analyze, optimize, predict' }, { status: 400 });
     }
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
@@ -347,7 +335,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to perform cognitive analysis',
-        details: dev ? errMsg : undefined,
+        details: dev ? errMsg : undefined
       },
       { status: 500 }
     );
@@ -365,18 +353,18 @@ export const DELETE: RequestHandler = async ({ url }) => {
           success: true,
           cleared: 'all',
           result: {
-            clearedEntries: Math.floor(Math.random() * 1000) + 500,
+           , clearedEntries: Math.floor(Math.random() * 1000) + 500,
             memoryReclaimed: Math.floor(Math.random() * 100) + 50,
-            cognitiveStateReset: true,
+            cognitiveStateReset: true
           },
           message: 'All cognitive caches cleared',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         },
         { status: 200 }
       );
     }
     if (!key) {
-      return json({ error: 'Cache key required' }, { status: 400 });
+      return json({ error: `Cache key required` }, { status: 400 });
     }
     // Intelligent invalidation with dependency analysis
     const invalidationResult = {
@@ -384,14 +372,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
       invalidated: true,
       relatedKeys: [`${key}_related_1`, `${key}_related_2`],
       dependentEntries: Math.floor(Math.random() * 5),
-      cognitiveImpact: Math.random() * 0.1 + 0.02,
+      cognitiveImpact: Math.random() * 0.1 + 0.02
     };
     return json(
       {
         success: true,
         invalidation: invalidationResult,
-        message: `Cache entry ${key} intelligently invalidated`,
-        timestamp: Date.now(),
+        message: `Cache entry ${key} intelligently invalidated',
+        timestamp: Date.now()
       },
       { status: 200 }
     );
@@ -401,7 +389,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to invalidate cache entry',
-        details: dev ? errMsg : undefined,
+        details: dev ? errMsg : undefined
       },
       { status: 500 }
     );
@@ -416,31 +404,29 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
 
     const metrics = cognitiveCache.getMetrics?.() ?? {
       totalRequests: 0,
-      cacheHits: 0,
+      cacheHits: 0
     };
     const statistics = (await cognitiveCache.getStatistics?.()) ?? {};
 
     // Use a proper typed response instead of `any`
-    const response: CognitiveMetricsResponse = {
-      performance: {
-        totalRequests: metrics.totalRequests,
+    const response: CognitiveMetricsResponse = { performance: {, totalRequests: metrics.totalRequests,
         cacheHits: metrics.cacheHits,
         hitRate: metrics.totalRequests > 0 ? metrics.cacheHits / metrics.totalRequests : 0,
         averageLatency: metrics.averageLatency,
-        cognitiveAccuracy: metrics.cognitiveAccuracy,
+        cognitiveAccuracy: metrics.cognitiveAccuracy
       },
       distribution: {
         cognitiveHits: metrics.cognitiveHits,
         shaderHits: metrics.shaderHits,
         cognitiveRatio: metrics.totalRequests > 0 ? (metrics.cognitiveHits ?? 0) / metrics.totalRequests : 0,
-        shaderRatio: metrics.totalRequests > 0 ? (metrics.shaderHits ?? 0) / metrics.totalRequests : 0,
+        shaderRatio: metrics.totalRequests > 0 ? (metrics.shaderHits ?? 0) / metrics.totalRequests : 0
       },
       learning: {
         reinforcementActive: true,
         adaptationRate: 0.85,
         predictionImprovement: 0.12,
-        cognitiveEvolutionScore: 0.73,
-      },
+        cognitiveEvolutionScore: 0.73
+      }
     };
 
     if (includeDetailed) {
@@ -449,20 +435,19 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         memoryUsage: {
           reinforcementCache: '45 MB',
           shaderCache: '128 MB',
-          totalMemory: '173 MB',
-        },
+          totalMemory: `173 MB` },
         physicsState: {
           momentum: [0.4, 0.6, 0.2],
           temperature: 0.65,
-          pressure: 0.35,
-        },
+          pressure: 0.35
+        }
       };
     }
     if (includePredictions) {
       response.predictions = {
         nextOptimization: Date.now() + 3600000, // 1 hour
         expectedImprovement: 0.08,
-        recommendedActions: ['Increase exploration rate', 'Update semantic embeddings', 'Optimize physics parameters'],
+        recommendedActions: ['Increase exploration rate', 'Update semantic embeddings', 'Optimize physics parameters']
       };
     }
     return json({ success: true, metrics: response, timestamp: Date.now() }, { status: 200 });
@@ -472,7 +457,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get cognitive cache metrics',
-        details: dev ? errMsg : undefined,
+        details: dev ? errMsg : undefined
       },
       { status: 500 }
     );

@@ -24,7 +24,7 @@ export const GET: RequestHandler = async () => {
     return json({
       ok: true,
       users: { count: userCount, sample },
-      sessions: { count: sessionCount },
+      sessions: {, count: sessionCount },
       joinOk,
       joinError
     })

@@ -13,7 +13,7 @@ import {
   evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
-  validateFileType,
+  validateFileType
 } from '$lib/schemas/evidence-upload.js';
 import { db, cases, evidence, helpers } from '$lib/server/db';
 import type { PageServerLoad, Actions } from './$types.js';
@@ -28,20 +28,20 @@ export const load: PageServerLoad = async ({ locals }) => {
         id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
-        status: cases.status,
+        status: cases.status
       })
       .from(cases)
       .where(helpers.eq(cases.status, 'active') as any)
       .orderBy(cases.created_at);
     return {
       form,
-      cases: userCases,
+      cases: userCases
     };
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
-      cases: [],
+      cases: []
     };
   }
 };
@@ -58,8 +58,8 @@ export const actions: Actions = {
       return fail(400, {
         form: {
           ...form,
-          errors: { file: ['Please select a file to upload'] },
-        },
+          errors: {, file: ['Please select a file to upload'] }
+        }
       });
     }
     // Validate file size
@@ -67,8 +67,8 @@ export const actions: Actions = {
       return fail(400, {
         form: {
           ...form,
-          errors: { file: ['File size exceeds the maximum limit of 100MB'] },
-        },
+          errors: {, file: ['File size exceeds the maximum limit of 100MB'] }
+        }
       });
     }
     // Determine evidence type from file if not specified
@@ -81,8 +81,8 @@ export const actions: Actions = {
       return fail(400, {
         form: {
           ...form,
-          errors: { file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] },
-        },
+          errors: {, file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] }
+        }
       });
     }
     try {
@@ -97,8 +97,8 @@ export const actions: Actions = {
           return fail(400, {
             form: {
               ...form,
-              errors: { case_id: ['Selected case not found'] },
-            },
+              errors: {, case_id: ['Selected case not found'] }
+            }
           });
         }
       }
@@ -119,7 +119,7 @@ export const actions: Actions = {
       // Generate file hash for integrity
       const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
       // Generate file URL (relative to static assets)
-      const fileUrl = `/uploads/evidence/${form.data.case_id || 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
+      const fileUrl = `/uploads/evidence/${form.data.case_id || 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;
       // OCR Processing for supported file types
       let ocrResult: any = null;
       if (form.data.enableOcr && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
@@ -129,7 +129,7 @@ export const actions: Actions = {
           ocrFormData.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
           const ocrResponse = await fetch('/api/ocr/extract', {
             method: 'POST',
-            body: ocrFormData,
+            body: ocrFormData
           });
           if (ocrResponse.ok) {
             ocrResult = await ocrResponse.json();
@@ -138,7 +138,7 @@ export const actions: Actions = {
               pages: ocrResult.pages,
               averageConfidence: ocrResult.averageConfidence,
               legalConceptsFound: ocrResult.legalConcepts?.length || 0,
-              citationsFound: ocrResult.citations?.length || 0,
+              citationsFound: ocrResult.citations?.length || 0
             });
           } else {
             console.warn('OCR processing failed:', ocrResponse.statusText);
@@ -156,8 +156,8 @@ export const actions: Actions = {
           enableAiAnalysis: form.data.enableAiAnalysis,
           enableOcr: form.data.enableOcr,
           enableEmbeddings: form.data.enableEmbeddings,
-          enableSummarization: form.data.enableSummarization,
-        },
+          enableSummarization: form.data.enableSummarization
+        }
       };
       switch (evidenceType) {
         case 'PDF':
@@ -170,7 +170,7 @@ export const actions: Actions = {
             extractedText: ocrResult?.text,
             legalConcepts: ocrResult?.legalConcepts || [],
             citations: ocrResult?.citations || [],
-            ocrConfidence: ocrResult?.averageConfidence,
+            ocrConfidence: ocrResult?.averageConfidence
           };
           break;
         case 'IMAGE':
@@ -181,7 +181,7 @@ export const actions: Actions = {
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
-            ocrConfidence: ocrResult?.averageConfidence,
+            ocrConfidence: ocrResult?.averageConfidence
           };
           break;
         case 'VIDEO':
@@ -192,7 +192,7 @@ export const actions: Actions = {
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
           break;
         case 'AUDIO':
@@ -203,7 +203,7 @@ export const actions: Actions = {
             sampleRate: 44100,
             channels: 2,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
           break;
         case 'TEXT':
@@ -215,14 +215,14 @@ export const actions: Actions = {
             characterCount: textContent.length,
             language: 'unknown', // Could detect with a language detection library,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
           break;
         default:
           metadata = {
             kind: 'UNKNOWN',
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
       }
       // Insert evidence record into database with unified schema
@@ -254,10 +254,10 @@ export const actions: Actions = {
                   confidence: ocrResult.averageConfidence,
                   legalConcepts: ocrResult.legalConcepts,
                   citations: ocrResult.citations,
-                  pageCount: ocrResult.pages,
+                  pageCount: ocrResult.pages
                 }
-              : null,
-          },
+              : null
+          }
         })
         .returning();
       console.log('Evidence uploaded successfully:', {
@@ -265,8 +265,7 @@ export const actions: Actions = {
         title: evidenceRecord[0].title,
         type: evidenceRecord[0].evidence_type,
         size: file.size,
-        hash: fileHash.substring(0, 8) + '...',
-      });
+        hash: fileHash.substring(0, 8) + '...` });
       // Trigger Go Upload Service for additional processing
       try {
         console.log('📤 Sending file to Go upload service for processing...');
@@ -278,7 +277,7 @@ export const actions: Actions = {
         uploadFormData.append('evidenceType', evidenceType);
         const goServiceResponse = await fetch('http://localhost:5173/api/upload/go-service', {
           method: 'POST',
-          body: uploadFormData,
+          body: uploadFormData
         });
         if (goServiceResponse.ok) {
           const goResult = await goServiceResponse.json();
@@ -290,8 +289,8 @@ export const actions: Actions = {
               goServiceProcessing: {
                 embeddings: goResult.embeddings,
                 analysis: goResult.analysis,
-                processedAt: new Date().toISOString(),
-              },
+                processedAt: new Date().toISOString()
+              }
             };
           }
         } else {
@@ -308,11 +307,11 @@ export const actions: Actions = {
       return fail(500, {
         form: {
           ...form,
-          errors: { file: ['Failed to upload file. Please try again.'] },
-        },
+          errors: {, file: ['Failed to upload file. Please try again.'] }
+        }
       });
     }
     // Redirect to evidence list or case details
     throw redirect(302, `/cases/${form.data.case_id}/evidence`);
-  },
+  }
 };

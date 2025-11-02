@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       valid: Boolean(valid),
       feedback: feedback ?? null,
       corrections: corrections ?? null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     aiAnalysis.validations = aiAnalysis.validations ?? [];
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const updateData: Partial<Record<string, unknown>> = {
       aiAnalysis: JSON.stringify(aiAnalysis),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     if (corrections?.summary) {
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       validation,
       updatedAnalysis: aiAnalysis,
-      message: valid ? 'Validation recorded successfully' : 'Correction recorded successfully',
+      message: valid ? 'Validation recorded successfully' : 'Correction recorded successfully'
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: 'Failed to record validation',
-        details: message,
+        details: message
       },
       { status: 500 }
     );
@@ -170,7 +170,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       validations,
       validationScore: aiAnalysis.validationScore ?? 0,
       totalValidations: validations.length,
-      validValidations,
+      validValidations
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       {
         success: false,
         error: 'Failed to retrieve validations',
-        details: message,
+        details: message
       },
       { status: 500 }
     );

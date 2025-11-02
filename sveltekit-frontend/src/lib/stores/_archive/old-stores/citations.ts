@@ -1,8 +1,6 @@
 import { writable } from 'svelte/store';
 
-export interface Citation {
-  id: string;
-  title: string;
+export interface Citation { id: string;, title: string;
   content: string;
   author?: string;
   date?: string;
@@ -15,9 +13,7 @@ export interface Citation {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface CitationStore {
-  citations: Citation[];
-  recentCitations: Citation[];
+export interface CitationStore { citations: Citation[];, recentCitations: Citation[];
   searchQuery: string;
   selectedCategories: string[];
 }
@@ -42,7 +38,7 @@ function createCitationStore() {
     citations: [],
     recentCitations: [],
     searchQuery: '',
-    selectedCategories: [],
+    selectedCategories: []
   });
 
   return {
@@ -55,7 +51,7 @@ function createCitationStore() {
         ...citation,
         id: generateId(),
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       };
       update(store => ({
         ...store,
@@ -70,7 +66,7 @@ function createCitationStore() {
         ...store,
         citations: store.citations.map(citation =>
           citation.id === id ? { ...citation, ...updates, updatedAt: new Date() } : citation
-        ),
+        )
       }));
     },
     // Delete a citation
@@ -78,14 +74,14 @@ function createCitationStore() {
       update(store => ({
         ...store,
         citations: store.citations.filter(citation => citation.id !== id),
-        recentCitations: store.recentCitations.filter(citation => citation.id !== id),
+        recentCitations: store.recentCitations.filter(citation => citation.id !== id)
       }));
     },
     // Search citations
     searchCitations: (query: string) => {
       update(store => ({
         ...store,
-        searchQuery: query,
+        searchQuery: query
       }));
     },
     // Get filtered citations (pure helper; not a subscriber)
@@ -121,7 +117,7 @@ function createCitationStore() {
           const updatedRecent = [citation, ...store.recentCitations.filter(c => c.id !== id)].slice(0, 10);
           return {
             ...store,
-            recentCitations: updatedRecent,
+            recentCitations: updatedRecent
           };
         }
         return store;
@@ -136,7 +132,7 @@ function createCitationStore() {
           update(store => ({
             ...store,
             citations: data.citations || [],
-            recentCitations: data.recentCitations || [],
+            recentCitations: data.recentCitations || []
           }));
         }
       } catch (error: any) {
@@ -150,13 +146,13 @@ function createCitationStore() {
         const response = await fetch('/api/citations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(citation),
+          body: JSON.stringify(citation)
         });
         if (response.ok) {
           const savedCitation = await response.json();
           update(store => ({
             ...store,
-            citations: store.citations.map(c => (c.id === citation.id ? savedCitation : c)),
+            citations: store.citations.map(c => (c.id === citation.id ? savedCitation : c))
           }));
           return savedCitation;
         }
@@ -165,7 +161,7 @@ function createCitationStore() {
         console.error('Failed to save citation:', message);
       }
       return null;
-    },
+    }
   };
 }
 export const citationStore = createCitationStore();
@@ -183,7 +179,7 @@ const sampleCitations: Citation[] = [
     type: 'case',
     tags: ['criminal procedure', 'constitutional law', 'miranda rights'],
     createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15')
   },
   {
     id: '2',
@@ -194,7 +190,7 @@ const sampleCitations: Citation[] = [
     type: 'statute',
     tags: ['evidence', 'character evidence', 'federal rules'],
     createdAt: new Date('2024-01-16'),
-    updatedAt: new Date('2024-01-16'),
+    updatedAt: new Date('2024-01-16')
   },
   {
     id: '3',
@@ -207,7 +203,7 @@ const sampleCitations: Citation[] = [
     type: 'case',
     tags: ['expert testimony', 'scientific evidence', 'daubert standard'],
     createdAt: new Date('2024-01-17'),
-    updatedAt: new Date('2024-01-17'),
+    updatedAt: new Date('2024-01-17')
   },
 ];
 
@@ -216,7 +212,7 @@ if (typeof window !== 'undefined' && !localStorage.getItem('citations-initialize
   citationStore.update(store => ({
     ...store,
     citations: sampleCitations,
-    recentCitations: sampleCitations.slice(0, 3),
+    recentCitations: sampleCitations.slice(0, 3)
   }));
   localStorage.setItem('citations-initialized', 'true');
 }

@@ -32,13 +32,13 @@ export const POST: RequestHandler = async ({ request }) => {
         email: authRequest.email,
         name: 'Test User',
         roles: ['user'],
-        createdAt: { seconds: Math.floor(Date.now() / 1000), nanos: 0 },
+        createdAt: {, seconds: Math.floor(Date.now() / 1000), nanos: 0 },
         updatedAt: { seconds: Math.floor(Date.now() / 1000), nanos: 0 },
         preferences: {
           theme: 'nier',
           language: 'en',
           notificationsEnabled: true,
-          analyticsOptIn: false,
+          analyticsOptIn: false
         }
       })
       const authResponse = legal.api.AuthResponse.create({
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         token: 'jwt_token_here',
         user: {
-          id: 'user_123',
+         , id: 'user_123',
           email,
           name: 'Test User',
           roles: ['user'],
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
             theme: 'nier',
             language: 'en',
             notifications_enabled: true,
-            analytics_opt_in: false,
+            analytics_opt_in: false
           }
         },
         expires_at: Date.now() + (24 * 60 * 60 * 1000)

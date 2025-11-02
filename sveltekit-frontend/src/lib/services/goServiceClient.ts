@@ -3,9 +3,7 @@
  * Integrates with Enhanced RAG (8094), Upload Service (8093), and Kratos Server (50051)
  */
 
-export interface GoServiceConfig {
-  enhancedRagUrl: string;
-  uploadServiceUrl: string;
+export interface GoServiceConfig { enhancedRagUrl: string;, uploadServiceUrl: string;
   kratosServerUrl: string;
   timeout: number;
 }
@@ -17,14 +15,10 @@ export interface RAGRequest {
   caseId?: string;
 }
 
-export interface RAGResponse {
-  response: string;
-  confidence: number;
+export interface RAGResponse { response: string;, confidence: number;
   sources: string[];
   embedding?: number[];
-  metadata: {
-    model: string;
-    processingTime: number;
+  metadata: { model: string;, processingTime: number;
     tokensUsed: number;
   };
 }
@@ -45,13 +39,13 @@ export class GoServiceClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
-        signal: AbortSignal.timeout(this.config.timeout),
+        signal: AbortSignal.timeout(this.config.timeout)
       });
       if (!response.ok) throw new Error(`RAG service error: ${response.status}`);
       return await response.json();
     } catch (error) {
       console.error('RAG query failed:', error);
-      throw new Error(`RAG query failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`RAG query failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
@@ -64,26 +58,26 @@ export class GoServiceClient {
       const response = await fetch(`${this.config.uploadServiceUrl}/upload`, {
         method: 'POST',
         body: formData,
-        signal: AbortSignal.timeout(this.config.timeout),
+        signal: AbortSignal.timeout(this.config.timeout)
       });
       if (!response.ok) throw new Error(`Upload service error: ${response.status}`);
       return await response.json();
     } catch (error) {
       console.error('File upload failed:', error);
-      throw new Error(`File upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`File upload failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
-  async checkHealth(): Promise<{ rag: boolean; upload: boolean; kratos: boolean }> {
+  async checkHealth(): Promise<{ rag: boolean; upload: boolean;, kratos: boolean }> {
     const results = await Promise.allSettled([
       fetch(`${this.config.enhancedRagUrl}/health`, { signal: AbortSignal.timeout(5000) }),
       fetch(`${this.config.uploadServiceUrl}/health`, { signal: AbortSignal.timeout(5000) }),
-      fetch(`${this.config.kratosServerUrl}/health`, { signal: AbortSignal.timeout(5000) }),
+      fetch(`${this.config.kratosServerUrl}/health`, { signal: AbortSignal.timeout(5000) })
     ]);
     return {
       rag: results[0].status === 'fulfilled' && results[0].value.ok,
       upload: results[1].status === 'fulfilled' && results[1].value.ok,
-      kratos: results[2].status === 'fulfilled' && results[2].value.ok,
+      kratos: results[2].status === 'fulfilled' && results[2].value.ok
     };
   }
 
@@ -93,17 +87,17 @@ export class GoServiceClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, userId, ...options }),
-        signal: AbortSignal.timeout(this.config.timeout),
+        signal: AbortSignal.timeout(this.config.timeout)
       });
       if (!response.ok) throw new Error(`Semantic search error: ${response.status}`);
       return await response.json();
     } catch (error) {
       console.error('Semantic search failed:', error);
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
-  async checkServiceHealth(): Promise<{ rag: boolean; upload: boolean; kratos: boolean }> {
+  async checkServiceHealth(): Promise<{ rag: boolean; upload: boolean;, kratos: boolean }> {
     return this.checkHealth();
   }
 
@@ -113,7 +107,7 @@ export class GoServiceClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-        signal: AbortSignal.timeout(this.config.timeout),
+        signal: AbortSignal.timeout(this.config.timeout)
       });
       if (!response.ok) throw new Error(`Accept patch error: ${response.status}`);
       return await response.json();
@@ -129,7 +123,7 @@ export class GoServiceClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-        signal: AbortSignal.timeout(this.config.timeout),
+        signal: AbortSignal.timeout(this.config.timeout)
       });
       if (!response.ok) throw new Error(`Rate suggestion error: ${response.status}`);
       return await response.json();
@@ -144,7 +138,7 @@ export const goServiceClient = new GoServiceClient({
   enhancedRagUrl: 'http://localhost:8094',
   uploadServiceUrl: 'http://localhost:8093',
   kratosServerUrl: 'http://localhost:50051',
-  timeout: 30000,
+  timeout: 30000
 });
 
 export default goServiceClient;

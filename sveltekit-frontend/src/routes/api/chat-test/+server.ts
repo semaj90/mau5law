@@ -23,15 +23,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const submitResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/submit`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
         type: 'inference',
         priority: 5,
         payload: {
-          prompt: lastUserMessage.content,
-        },
-      }),
+         , prompt: lastUserMessage.content
+        }
+      })
     });
     if (!submitResponse.ok) {
       throw new Error(`CUDA server error: ${submitResponse.status}`);
@@ -58,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: 0.8,
         tokensPerSecond: (result as { text?: any; tokens_per_second?: any }).tokens_per_second || 0,
         taskId,
-        cudaResult: resultData,
+        cudaResult: resultData
       });
     }
     if (resultData.error) {
@@ -67,14 +66,13 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       message: 'Task is still processing',
       taskId,
-      status: 'processing',
-    });
+      status: 'processing` });
   } catch (error: any) {
     console.error('❌ Chat test API error:', error);
     return json(
       {
         error: 'Failed to process chat request',
-        details: error.message,
+        details: error.message
       },
       { status: 500 }
     );

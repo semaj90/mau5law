@@ -6,31 +6,21 @@ import path from 'path';
 
 // --- Type relaxations & cleanup ---
 // changed models fields from narrow literals to general strings to accept runtime names
-export interface DeploymentConfig {
-  enforceGemma3Legal: boolean;
-  enableFlashAttention: boolean;
+export interface DeploymentConfig { enforceGemma3Legal: boolean;, enableFlashAttention: boolean;
   gpuOptimization: boolean;
   mcpIntegration: boolean;
   orchestratorPort: number;
   errorProcessorPort: number;
-  models: {
-    primary: string;
-    embedding: string;
+  models: { primary: string;, embedding: string;
     blocked: string[];
   };
 }
-export interface DeploymentStatus {
-  orchestrator: 'running' | 'stopped' | 'error';
-  errorProcessor: 'running' | 'stopped' | 'error';
+export interface DeploymentStatus { orchestrator: 'running' | 'stopped' | 'error';, errorProcessor: 'running' | 'stopped' | 'error';
   flashAttention: 'enabled' | 'disabled' | 'error';
   mcp: 'connected' | 'disconnected' | 'error';
-  models: {
-    gemma3Legal: 'available' | 'missing' | 'loading';
-    nomicEmbed: 'available' | 'missing' | 'loading';
+  models: { gemma3Legal: 'available' | 'missing' | 'loading';, nomicEmbed: 'available' | 'missing' | 'loading';
   };
-  gpu: {
-    device: string;
-    memory: string;
+  gpu: { device: string;, memory: string;
     utilization: number;
   };
 }
@@ -81,9 +71,9 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
     models: {
       primary: 'gemma3-legal',
       embedding: 'nomic-embed-text',
-      blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*', 'gemma*'],
+      blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*', 'gemma*']
     },
-    ...config,
+    ...config
   };
   console.log('🔧 Deploying GPU-accelerated orchestration system...');
   try {
@@ -105,7 +95,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
       message: 'GPU-accelerated orchestration system deployed successfully',
       config: deploymentConfig,
       status,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (deployError: any) {
     console.error('❌ Deployment failed:', deployError);
@@ -113,7 +103,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
       {
         success: false,
         error: (deployError as Error).message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -132,7 +122,7 @@ async function validateModelConstraints(config: DeploymentConfig): Promise<void>
       throw new Error('Ollama service not available');
     }
     const models = await ollamaResponse.json();
-    const modelNames = models.models?.map((m: { name: string }) => m.name) || [];
+    const modelNames = models.models?.map((m: {, name: string }) => m.name) || [];
     // Check for allowed models
     const hasGemma3Legal = modelNames.some((name: string) => name.includes('gemma3-legal'));
     const hasNomicEmbed = modelNames.some((name: string) => name.includes('nomic-embed'));
@@ -236,31 +226,29 @@ async function verifyFlashAttentionGPU(): Promise<void> {
 async function updateDeploymentReport(config: DeploymentConfig): Promise<void> {
   console.log('📝 Updating deployment report...');
   const reportPath = path.resolve(process.cwd(), '.vscode/gpu-mcp-orchestra-report.json');
-  const report = {
-    deployment: {
-      timestamp: new Date().toISOString(),
+  const report = { deployment: {, timestamp: new Date().toISOString(),
       version: '2.0.0',
       config,
-      status: 'deployed',
+      status: 'deployed'
     },
     orchestration: {
       nodeJSOrchestrator: 'active',
       mcpIntegration: 'configured',
       modelEnforcement: 'active',
-      flashAttention: 'enabled',
+      flashAttention: 'enabled'
     },
     models: {
       primary: config.models.primary,
       embedding: config.models.embedding,
       blocked: config.models.blocked,
-      validated: true,
+      validated: true
     },
     gpu: {
       device: 'RTX3060Ti',
       flashAttentionEnabled: config.enableFlashAttention,
       memoryOptimization: 'balanced',
-      errorProcessing: 'active',
-    },
+      errorProcessing: 'active'
+    }
   };
   try {
     await writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -280,11 +268,9 @@ async function startOrchestrationSystem(): Promise<Response> {
     // Check Go services
     const services = [
       { name: 'Enhanced RAG', port: 8094, path: '../go-microservice/bin/enhanced-rag.exe' },
-      { name: 'Upload Service', port: 8093, path: '../go-microservice/bin/upload-service.exe' },
+      { name: 'Upload Service', port: 8093, path: `../go-microservice/bin/upload-service.exe` }
     ];
-    const serviceStatus: Array<{
-      name: string;
-      port: number;
+    const serviceStatus: Array<{ name: string;, port: number;
       status: 'running' | 'stopped' | 'error';
       available: boolean;
       path?: string;
@@ -292,13 +278,13 @@ async function startOrchestrationSystem(): Promise<Response> {
     for (const service of services) {
       try {
         const response = await fetch(`http://localhost:${service.port}/health`, {
-          signal: AbortSignal.timeout(2000),
+          signal: AbortSignal.timeout(2000)
         });
         serviceStatus.push({
           name: service.name,
           port: service.port,
           status: response.ok ? 'running' : 'error',
-          available: true,
+          available: true
         });
       } catch (_err: any) {
         serviceStatus.push({
@@ -306,7 +292,7 @@ async function startOrchestrationSystem(): Promise<Response> {
           port: service.port,
           status: 'stopped',
           available: existsSync(service.path),
-          path: service.path,
+          path: service.path
         });
       }
     }
@@ -314,7 +300,7 @@ async function startOrchestrationSystem(): Promise<Response> {
       success: true,
       message: 'Orchestration system startup initiated',
       services: serviceStatus,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('❌ Failed to start orchestration system:', err);
@@ -322,7 +308,7 @@ async function startOrchestrationSystem(): Promise<Response> {
       {
         success: false,
         error: (err as Error).message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -337,7 +323,7 @@ async function stopOrchestrationSystem(): Promise<Response> {
   return json({
     success: true,
     message: 'Orchestration system stop initiated',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 /*
@@ -351,18 +337,18 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
     mcp: 'disconnected',
     models: {
       gemma3Legal: 'missing',
-      nomicEmbed: 'missing',
+      nomicEmbed: 'missing'
     },
     gpu: {
       device: 'RTX3060Ti',
       memory: '8GB',
-      utilization: 0,
-    },
+      utilization: 0
+    }
   };
   try {
     // Check NodeJS orchestrator
     const orchestratorResponse = await fetch('http://localhost:8094/health', {
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(2000)
     });
     status.orchestrator = orchestratorResponse.ok ? 'running' : 'error';
   } catch {
@@ -371,7 +357,7 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
   try {
     // Check error processor
     const errorProcessorResponse = await fetch('http://localhost:8095/health', {
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(2000)
     });
     status.errorProcessor = errorProcessorResponse.ok ? 'running' : 'error';
   } catch {
@@ -409,19 +395,16 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
         : 'missing';
     }
   } catch {
-    // Models status remains: 'missing'
-  }
+    // Models status remains: `missing` }
   return status;
 }
 /*
  * Deploy complete system with auto-start
  * NOTE: make this internal (not exported) to comply with SvelteKit exports
  */
-async function $deployCompleteLocal(): Promise<{
-  success: boolean;
-  completedSteps: number;
+async function $deployCompleteLocal(): Promise<{ success: boolean;, completedSteps: number;
   totalSteps: number;
-  results: Array<{ step: string; status: 'success' | 'error'; error?: string }>;
+  results: Array<{ step: string;, status: 'success' | 'error'; error?: string }>;
   status: DeploymentStatus;
 }> {
   console.log('🎯 Deploying complete GPU orchestration system...');
@@ -437,11 +420,11 @@ async function $deployCompleteLocal(): Promise<{
           orchestratorPort: 8094,
           errorProcessorPort: 8095,
           models: {
-            primary: 'gemma3-legal',
+           , primary: 'gemma3-legal',
             embedding: 'nomic-embed-text',
-            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*'],
-          },
-        }),
+            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
+          }
+        })
     },
     {
       name: 'Orchestrator Init',
@@ -454,11 +437,11 @@ async function $deployCompleteLocal(): Promise<{
           orchestratorPort: 8094,
           errorProcessorPort: 8095,
           models: {
-            primary: 'gemma3-legal',
+           , primary: 'gemma3-legal',
             embedding: 'nomic-embed-text',
-            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*'],
-          },
-        }),
+            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
+          }
+        })
     },
     {
       name: 'Error Processor',
@@ -471,11 +454,11 @@ async function $deployCompleteLocal(): Promise<{
           orchestratorPort: 8094,
           errorProcessorPort: 8095,
           models: {
-            primary: 'gemma3-legal',
+           , primary: 'gemma3-legal',
             embedding: 'nomic-embed-text',
-            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*'],
-          },
-        }),
+            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
+          }
+        })
     },
     {
       name: 'MCP Integration',
@@ -488,27 +471,27 @@ async function $deployCompleteLocal(): Promise<{
           orchestratorPort: 8094,
           errorProcessorPort: 8095,
           models: {
-            primary: 'gemma3-legal',
+           , primary: 'gemma3-legal',
             embedding: 'nomic-embed-text',
-            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*'],
-          },
-        }),
+            blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
+          }
+        })
     },
-    { name: 'FlashAttention GPU', action: verifyFlashAttentionGPU },
+    { name: 'FlashAttention GPU', action: verifyFlashAttentionGPU }
   ];
-  const results: Array<{ step: string; status: 'success' | 'error'; error?: string }> = [];
+  const results: Array<{ step: string;, status: 'success' | 'error'; error?: string }> = [];
   for (const step of deploymentSteps) {
     try {
       console.log(`⚡ Executing: ${step.name}`);
       await step.action();
-      results.push({ step: step.name, status: 'success' });
+      results.push({ step: step.name, status: `success` });
       console.log(`✅ ${step.name} completed`);
     } catch (err: any) {
-      console.error(`❌ ${step.name} failed:`, err);
+      console.error(`❌ ${step.name} failed: ', err);
       results.push({
         step: step.name,
         status: 'error',
-        error: (err as Error).message,
+        error: (err as Error).message
       });
     }
   }
@@ -519,6 +502,6 @@ async function $deployCompleteLocal(): Promise<{
     completedSteps: successCount,
     totalSteps,
     results,
-    status: await getOrchestrationStatus(),
+    status: await getOrchestrationStatus()
   };
 }

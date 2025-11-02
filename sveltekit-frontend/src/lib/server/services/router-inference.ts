@@ -14,9 +14,7 @@ export type RouterFeatures = {
   [key: string]: number | undefined;
 };
 
-export interface RouterDecision {
-  useGPU: boolean;
-  useQUIC: boolean;
+export interface RouterDecision { useGPU: boolean;, useQUIC: boolean;
   useCache: boolean;
   score?: number; // optional confidence score from model (0..1)
 }
@@ -45,7 +43,7 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ features }),
-      signal: controller.signal as AbortSignal,
+      signal: controller.signal as AbortSignal
     });
     clearTimeout(timeout);
 
@@ -59,7 +57,7 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
         useGPU: Boolean(obj['useGPU'] === true || obj['useGPU'] === 'true'),
         useQUIC: Boolean(obj['useQUIC'] === true || obj['useQUIC'] === 'true'),
         useCache: Boolean(obj['useCache'] === true || obj['useCache'] === 'true'),
-        score: typeof obj['score'] === 'number' ? (obj['score'] as number) : undefined,
+        score: typeof obj['score'] === 'number' ? (obj['score'] as number) : undefined
       };
       return normalized;
     }

@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         health,
         allSystemsOperational: Object.values(health).every(s => s),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         analytics,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       message: 'Unified Vector endpoint (stub)',
       availableActions: ['health', 'analytics'],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });

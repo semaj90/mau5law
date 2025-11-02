@@ -16,18 +16,14 @@ import { postgresqlQdrantSync } from './postgresql-qdrant-sync.js';
 import { vertexBufferImageAnalyzer } from './vertex-buffer-image-analyzer.js';
 
 // WebAssembly inference types
-export interface WASMInferenceConfig {
-  modelPath: string; // Path to the .wasm model file
-  threads: number;
+export interface WASMInferenceConfig { modelPath: string; // Path to the .wasm model file, threads: number;
   contextLength: number;
   enableGPU: boolean;
   batchSize: number;
   quantization: 'q4_0' | 'q4_1' | 'q8_0' | 'f16' | 'f32';
 }
 
-export interface WASMInferenceRequest {
-  id: string;
-  prompt: string;
+export interface WASMInferenceRequest { id: string;, prompt: string;
   maxTokens: number;
   temperature: number;
   stopSequences?: string[];
@@ -37,21 +33,15 @@ export interface WASMInferenceRequest {
   priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export interface WASMInferenceResult {
-  id: string;
-  text: string;
+export interface WASMInferenceResult { id: string;, text: string;
   tokens: number;
   processingTime: number;
   memoryUsage: number;
   cacheHit: boolean;
-  ragContext?: {
-    documentsUsed: number;
-    relevanceScores: number[];
+  ragContext?: { documentsUsed: number;, relevanceScores: number[];
     sources: string[];
   } | null;
-  metadata: {
-    model: string;
-    quantization: string;
+  metadata: { model: string;, quantization: string;
     threads: number;
     wasmVersion: string;
   };
@@ -59,14 +49,11 @@ export interface WASMInferenceResult {
 
 export interface WASMRAGContext {
   // wasmModule: WebAssembly.Module | null; // Removed: Managed internally by service
-  // wasmInstance: WebAssembly.Instance | null; // Removed: Managed internally by service
-  isInitialized: boolean;
+  // wasmInstance: WebAssembly.Instance | null; // Removed: Managed internally by service; isInitialized: boolean;
   config: WASMInferenceConfig;
   activeRequests: Map<string, WASMInferenceRequest>;
   results: Map<string, WASMInferenceResult>;
-  performanceMetrics: {
-    totalInferences: number;
-    averageLatency: number;
+  performanceMetrics: { totalInferences: number;, averageLatency: number;
     cacheHitRate: number;
     memoryPeak: number;
   };
@@ -74,9 +61,7 @@ export interface WASMRAGContext {
 }
 
 // Add top-level RAGDocument interface (was incorrectly declared inside the class)
-export interface RAGDocument {
-  id: string;
-  content: string;
+export interface RAGDocument { id: string;, content: string;
   score?: number;
   text?: string;
   [key: string]: any;
@@ -108,12 +93,12 @@ export const wasmInferenceMachine = createMachine(
     context: {
       isInitialized: false,
       config: {
-        modelPath: '/models/gemma3-legal-q4.wasm',
+       , modelPath: '/models/gemma3-legal-q4.wasm',
         threads: 8,
         contextLength: 4096,
         enableGPU: true,
         batchSize: 4,
-        quantization: 'q4_0',
+        quantization: 'q4_0'
       } as WASMInferenceConfig,
       activeRequests: new Map<string, WASMInferenceRequest>(),
       results: new Map<string, WASMInferenceResult>(),
@@ -121,13 +106,11 @@ export const wasmInferenceMachine = createMachine(
         totalInferences: 0,
         averageLatency: 0,
         cacheHitRate: 0,
-        memoryPeak: 0,
+        memoryPeak: 0
       },
-      error: null,
+      error: null
     } as WASMRAGContext,
-    states: {
-      initializing: {
-        invoke: {
+    states: { initializing: {, invoke: {
           id: 'initializeWASM',
           // use async src instead of fromPromise
           src: async (context: any) => {
@@ -138,38 +121,32 @@ export const wasmInferenceMachine = createMachine(
             target: 'ready',
             actions: assign({
               isInitialized: () => true,
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
               error: (_, event: any) => (event.data as Error)?.message || 'Initialization failed',
-              isInitialized: () => false,
-            }),
-          },
-        },
+              isInitialized: () => false
+            })
+          }
+        }
       },
       ready: {
         initial: 'idle',
-        states: {
-          idle: {
-            on: {
-              INFERENCE_REQUEST: {
-                target: 'processing',
+        states: { idle: {, on: { INFERENCE_REQUEST: {, target: 'processing',
                 actions: assign({
                   activeRequests: ({ activeRequests }, event: any) => {
                     const newMap = new Map(activeRequests);
                     newMap.set(event.request.id, event.request as WASMInferenceRequest);
                     return newMap;
-                  },
-                }),
-              },
-            },
+                  }
+                })
+              }
+            }
           },
-          processing: {
-            invoke: {
-              id: 'processInference',
+          processing: { invoke: {, id: 'processInference',
               // async src reads from context.activeRequests directly
               src: async (context: any) => {
                 const request = Array.from(context.activeRequests.values())[0] as WASMInferenceRequest;
@@ -204,12 +181,12 @@ export const wasmInferenceMachine = createMachine(
                       return {
                         ...performanceMetrics,
                         totalInferences: total,
-                        averageLatency: avg,
+                        averageLatency: avg
                       };
-                    },
+                    }
                   }),
                   'publishResult',
-                ],
+                ]
               },
               onError: {
                 target: 'idle',
@@ -221,53 +198,51 @@ export const wasmInferenceMachine = createMachine(
                       const firstKey = Array.from(newMap.keys())[0];
                       if (firstKey) newMap.delete(firstKey);
                       return newMap;
-                    },
+                    }
                   }),
                   'publishError',
-                ],
-              },
-            },
-          },
-        },
+                ]
+              }
+            }
+          }
+        }
       },
-      error: {
-        on: {
-          RETRY_INIT: {
+      error: { on: {, RETRY_INIT: {
             target: 'initializing',
             actions: assign({
-              error: () => null,
-            }),
-          },
-        },
-      },
-    },
+              error: () => null
+            })
+          }
+        }
+      }
+    }
   },
   {
     actions: {
       // use underscore prefix for unused context and provide typed event
-      publishResult: (_context: WASMRAGContext, event: { data: WASMInferenceResult }) => {
+      publishResult: (_context: WASMRAGContext, event: {, data: WASMInferenceResult }) => {
         const output = event.data;
         void publishToRabbitMQ({
           type: 'ai_analysis',
           payload: {
-            result: output,
-            success: true,
+           , result: output,
+            success: true
           },
-          priority: 7,
+          priority: 7
         }).catch(console.error);
       },
-      publishError: (_context: WASMRAGContext, event: { data: any }) => {
+      publishError: (_context: WASMRAGContext, event: {, data: any }) => {
         const errMsg = (event.data && (event.data as Error).message) || 'unknown';
         void publishToRabbitMQ({
           type: 'error_recovery',
           payload: {
-            error: errMsg,
-            service: 'wasm_inference_rag',
+           , error: errMsg,
+            service: 'wasm_inference_rag'
           },
-          priority: 9,
+          priority: 9
         }).catch(console.error);
-      },
-    },
+      }
+    }
   }
 );
 
@@ -282,7 +257,7 @@ export class WASMInferenceRAGService {
     contextLength: 4096,
     enableGPU: true,
     batchSize: 4,
-    quantization: 'q4_0',
+    quantization: 'q4_0'
   };
   private static textEncoder = new TextEncoder();
   private static textDecoder = new TextDecoder();
@@ -352,7 +327,7 @@ export class WASMInferenceRAGService {
           ragContext = {
             documentsUsed: similarDocs.length,
             relevanceScores: similarDocs.map((doc: any) => doc.score || 0),
-            sources: similarDocs.map((doc: any) => doc.id || ''),
+            sources: similarDocs.map((doc: any) => doc.id || '')
           };
           console.log(`📖 Enhanced prompt with ${similarDocs.length} context documents`);
         }
@@ -384,7 +359,7 @@ export class WASMInferenceRAGService {
           quantization: this._config.quantization,
           threads: this._config.threads,
           wasmVersion: '1.0.0', // Assuming a version
-        },
+        }
       };
 
       // Store inference result for future RAG improvements (best-effort)
@@ -401,7 +376,7 @@ export class WASMInferenceRAGService {
                 inferenceId: request.id,
                 model: 'gemma3-legal-wasm',
                 processingTime,
-                ragContext,
+                ragContext
               }
             );
             console.log(`📝 Stored WASM inference result for future RAG improvements`);
@@ -431,7 +406,7 @@ export class WASMInferenceRAGService {
       // Ensure searchForWASMInference is available and correctly typed
       const results =
         (await postgresqlQdrantSync.searchForWASMInference?.(queryEmbedding, limit, 0.7, {
-          type: ['evidence', 'document'],
+          type: ['evidence', 'document']
         })) ?? [];
       console.log(`📚 Retrieved ${results.length} relevant documents for WASM inference`);
       return results as RAGDocument[];
@@ -441,13 +416,13 @@ export class WASMInferenceRAGService {
       try {
         const response = await fetch('http://localhost:8094/api/rag/search', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             query,
             limit,
             enableHybrid: true,
-            includeMetadata: true,
-          }),
+            includeMetadata: true
+          })
         });
         if (response.ok) {
           const json = await response.json();
@@ -455,7 +430,7 @@ export class WASMInferenceRAGService {
           return json.documents || [];
         }
       } catch (fallbackError) {
-        console.warn('⚠️ Fallback RAG search also failed:', fallbackError);
+        console.warn('⚠️ Fallback RAG search also failed: `, fallbackError);
       }
       return [];
     }
@@ -497,7 +472,7 @@ export class WASMInferenceRAGService {
     maxTokens: number,
     temperature: number,
     stopSequences?: string[]
-  ): Promise<{ text: string; tokens: number }> {
+  ): Promise<{ text: string;, tokens: number }> {
     if (!this._wasmInstance) {
       // fallback: return mock generation for dev
       const text = `Mock response for prompt: ${prompt.slice(0, 200)}`;
@@ -555,10 +530,9 @@ export class WASMInferenceRAGService {
           inferenceId,
           generatedText,
           requiresTagging: true,
-          source: 'wasm_inference',
-        },
+          source: 'wasm_inference` },
         priority: priority === 'critical' ? 10 : priority === 'high' ? 8 : 5,
-        correlationId: inferenceId,
+        correlationId: inferenceId
       });
       console.log(`🏷️ Triggered auto-tagging for inference: ${inferenceId}`);
     } catch (error: any) {
@@ -581,8 +555,7 @@ export class WASMInferenceRAGService {
         // e.g., console.log, performance.now, etc., if exposed by the WASM build
         // For llama.cpp, you might need specific `llama_` prefixed functions if not fully self-contained
       },
-      // If using WASI, you might need a: 'wasi_snapshot_preview1' object here
-      wasi_snapshot_preview1: {
+      // If using WASI, you might need a: 'wasi_snapshot_preview1' object here; wasi_snapshot_preview1: {
         proc_exit: () => {
           /* no-op */
         },
@@ -593,7 +566,7 @@ export class WASMInferenceRAGService {
         environ_sizes_get: () => 0,
         environ_get: () => 0,
         // Add other WASI functions as required by the WASM module
-      },
+      }
     };
 
     // Add specific imports for multi-threading if enabled
@@ -676,9 +649,7 @@ export class WASMInferenceRAGService {
   /**
    * Health check
    */
-  static getHealthStatus(): {
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    wasm: boolean;
+  static getHealthStatus(): { status: 'healthy' | 'degraded' | 'unhealthy';, wasm: boolean;
     rag: boolean;
     messaging: boolean;
   } {

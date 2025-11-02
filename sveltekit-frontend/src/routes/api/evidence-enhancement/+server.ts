@@ -11,23 +11,19 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 import postgres from 'postgres';
 import { z } from 'zod';
 // Configuration
-const CONFIG = {
-  database: {
-    connectionString: `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test'}`,
-  },
+const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test` }' },
   redis: {
-    url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+    url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
   },
   ollama: {
     url: ENV_CONFIG.OLLAMA_URL,
     model: import.meta.env.LLM_MODEL || 'gemma3-legal:latest',
-    embeddingModel: 'nomic-embed-text',
-  },
+    embeddingModel: 'nomic-embed-text` },
   enhancement: {
     minConfidence: 0.6,
     maxSuggestions: 10,
-    similarityThreshold: 0.7,
-  },
+    similarityThreshold: 0.7
+  }
 };
 // Validation schemas
 const EvidenceEnhancementRequestSchema = z.object({
@@ -39,7 +35,7 @@ const EvidenceEnhancementRequestSchema = z.object({
       jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
       case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
       charges: z.array(z.string()).optional(),
-      defendant_name: z.string().optional(),
+      defendant_name: z.string().optional()
     })
     .optional(),
   enhancement_options: z
@@ -48,23 +44,21 @@ const EvidenceEnhancementRequestSchema = z.object({
       extract_entities: z.boolean().optional(),
       find_similar: z.boolean().optional(),
       prosecution_analysis: z.boolean().optional(),
-      fact_checking: z.boolean().optional(),
+      fact_checking: z.boolean().optional()
     })
-    .optional(),
+    .optional()
 });
-const EvidenceEnhancementResponseSchema = z.object({
-  analysis: z.object({
-    evidence_type: z.string(),
+const EvidenceEnhancementResponseSchema = z.object({ analysis: z.object({, evidence_type: z.string(),
     confidence_score: z.number(),
     prosecution_strength: z.number(),
-    legal_relevance: z.number(),
+    legal_relevance: z.number()
   }),
   suggested_labels: z.array(
     z.object({
       label: z.string(),
       confidence: z.number(),
       category: z.string(),
-      justification: z.string(),
+      justification: z.string()
     })
   ),
   extracted_entities: z.array(
@@ -72,7 +66,7 @@ const EvidenceEnhancementResponseSchema = z.object({
       entity: z.string(),
       type: z.string(),
       confidence: z.number(),
-      context: z.string(),
+      context: z.string()
     })
   ),
   similar_evidence: z.array(
@@ -80,20 +74,20 @@ const EvidenceEnhancementResponseSchema = z.object({
       document_id: z.string(),
       similarity_score: z.number(),
       relevant_phrases: z.array(z.string()),
-      prosecution_outcome: z.string(),
+      prosecution_outcome: z.string()
     })
   ),
   prosecution_insights: z.object({
     strengths: z.array(z.string()),
     weaknesses: z.array(z.string()),
     recommendations: z.array(z.string()),
-    precedent_support: z.number(),
+    precedent_support: z.number()
   }),
   metadata: z.object({
     processing_time_ms: z.number(),
     enhancement_version: z.string(),
-    data_sources: z.array(z.string()),
-  }),
+    data_sources: z.array(z.string())
+  })
 });
 // Insert these type declarations just after the imports and before CONFIG
 type Jurisdiction = 'federal' | 'state' | 'local' | 'international';
@@ -107,44 +101,34 @@ type CaseContext = {
   defendant_name?: string;
 };
 
-type AnalysisResult = {
-  evidence_type: string;
-  confidence_score: number;
+type AnalysisResult = { evidence_type: string;, confidence_score: number;
   prosecution_strength: number;
   legal_relevance: number;
 };
 
-type SuggestedLabel = {
-  label: string;
-  confidence: number;
+type SuggestedLabel = { label: string;, confidence: number;
   category: string;
   justification: string;
 };
 
-type Entity = {
-  entity: string;
-  type: string;
+type Entity = { entity: string;, type: string;
   confidence: number;
   context: string;
 };
 
-type SimilarEvidenceItem = {
-  document_id: string;
-  similarity_score: number;
+type SimilarEvidenceItem = { document_id: string;, similarity_score: number;
   relevant_phrases: string[];
   prosecution_outcome: string;
 };
 
-type ProsecutionInsights = {
-  strengths: string[];
-  weaknesses: string[];
+type ProsecutionInsights = { strengths: string[];, weaknesses: string[];
   recommendations: string[];
   precedent_support: number;
 };
 
 // Add a minimal Redis-like client type to avoid `any` while remaining flexible
 type RedisLike = {
-  setex?: (key: string, seconds: number, value: string) => Promise<unknown> | unknown;
+  setex?: (key: string, seconds: number; value: string) => Promise<unknown> | unknown;
   set?: (...args: any[]) => Promise<unknown> | unknown;
   // allow index signature for other methods used elsewhere if needed
   [key: string]: any;
@@ -179,7 +163,7 @@ function getDB() {
 
       // Fallback: single row object
       return { rows: [raw] as unknown[] };
-    },
+    }
   } as const;
 }
 async function getRedis(): Promise<RedisLike> {
@@ -211,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       find_similar: true,
       prosecution_analysis: true,
       fact_checking: false,
-      ...validatedRequest.enhancement_options,
+      ...validatedRequest.enhancement_options
     };
     // Parallel processing of different enhancement tasks
     const [analysisResult, suggestedLabels, extractedEntities, similarEvidence, prosecutionInsights] =
@@ -230,7 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
               strengths: [],
               weaknesses: [],
               recommendations: [],
-              precedent_support: 0,
+              precedent_support: 0
             }),
       ]);
     // Compile results
@@ -242,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
               evidence_type: validatedRequest.evidence_type,
               confidence_score: 0.5,
               prosecution_strength: 50,
-              legal_relevance: 0.5,
+              legal_relevance: 0.5
             },
       suggested_labels: suggestedLabels.status === 'fulfilled' ? suggestedLabels.value : [],
       extracted_entities: extractedEntities.status === 'fulfilled' ? extractedEntities.value : [],
@@ -254,13 +238,13 @@ export const POST: RequestHandler = async ({ request }) => {
               strengths: [],
               weaknesses: [],
               recommendations: [],
-              precedent_support: 0,
+              precedent_support: 0
             },
       metadata: {
         processing_time_ms: Date.now() - startTime,
         enhancement_version: '2.0.0',
-        data_sources: ['legal_documents_processed', 'semantic_phrases_ranking'],
-      },
+        data_sources: ['legal_documents_processed', 'semantic_phrases_ranking']
+      }
     };
     // Validate response
     const validatedResponse = EvidenceEnhancementResponseSchema.parse(response);
@@ -273,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           message: 'Invalid request format',
-          errors: err.errors,
+          errors: err.errors
         },
         { status: 400 }
       );
@@ -282,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         message: 'Evidence enhancement service temporarily unavailable',
-        details: message,
+        details: message
       },
       { status: 500 }
     );
@@ -308,16 +292,16 @@ Consider:
 - Rate the overall quality and reliability`;
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: CONFIG.ollama?.model || 'unknown',
         prompt: analysisPrompt,
         stream: false,
         options: {
-          temperature: 0.2,
-          top_p: 0.8,
-        },
-      }),
+         , temperature: 0.2,
+          top_p: 0.8
+        }
+      })
     });
     if (response.ok) {
       const data = await response.json();
@@ -335,7 +319,7 @@ Consider:
     evidence_type: evidenceType,
     confidence_score: 0.7,
     prosecution_strength: 65,
-    legal_relevance: 0.6,
+    legal_relevance: 0.6
   };
 }
 async function suggestLabels(evidenceText: string, caseContext?: CaseContext): Promise<SuggestedLabel[]> {
@@ -354,7 +338,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
                 spr.avg_prosecution_score >= 60
                 AND (
                     $1 ILIKE: '%' || spr.phrase || '%'
-                    OR spr.phrase ILIKE: '%' || $2 || '%'
+                    OR spr.phrase, ILIKE: '%' || $2 || '%'
                 )
             ORDER BY spr.avg_prosecution_score DESC, spr.frequency DESC
             LIMIT 20
@@ -391,8 +375,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
           label: phraseText,
           confidence,
           category: categorizeLegalPhrase(phraseText),
-          justification: `High prosecution correlation (${avgScore}%) based on ${freq} similar cases`,
-        });
+          justification: `High prosecution correlation (${avgScore}%) based on ${freq} similar cases` });
       }
     }
     // --- end changes ---
@@ -401,11 +384,10 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
     if (caseContext?.charges) {
       for (const charge of caseContext.charges) {
         labels.push({
-          label: `Supports '${charge}' charge`,
+          label: 'Supports '${charge}' charge`,
           confidence: 0.8,
           category: 'charge_support',
-          justification: 'Evidence directly relates to stated charges',
-        });
+          justification: 'Evidence directly relates to stated charges` });
       }
     }
     return labels.slice(0, CONFIG.enhancement.maxSuggestions);
@@ -429,16 +411,16 @@ Text to analyze:
 ${evidenceText}`;
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: CONFIG.ollama?.model || 'unknown',
         prompt: entityPrompt,
         stream: false,
         options: {
-          temperature: 0.1,
-          top_p: 0.7,
-        },
-      }),
+         , temperature: 0.1,
+          top_p: 0.7
+        }
+      })
     });
     if (response.ok) {
       const data = await response.json();
@@ -463,7 +445,7 @@ function extractEntitiesWithRegex(text: string): Entity[] {
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
     AMOUNT: /\$[\d]+(?:\.\d{2})?/g,
     CASE_NUMBER: /\b\d{2,4}-\w{2,4}-\d{4,6}\b/g,
-    STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g,
+    STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g
   };
   for (const [type, pattern] of Object.entries(patterns)) {
     const matches = text.match(pattern);
@@ -473,7 +455,7 @@ function extractEntitiesWithRegex(text: string): Entity[] {
           entity: match,
           type,
           confidence: 0.7,
-          context: getContext(text, match),
+          context: getContext(text, match)
         });
       }
     }
@@ -562,22 +544,21 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
           document_id: String(doc.document_id ?? 'unknown'),
           similarity_score: similarity,
           relevant_phrases: Array.isArray(phrases) ? (phrases as string[]).slice(0, 5) : [],
-          prosecution_outcome: String(doc.judgement_outcome ?? 'Unknown'),
+          prosecution_outcome: String(doc.judgement_outcome ?? 'Unknown')
         });
       }
     }
     return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5);
   } catch (error: any) {
-    console.error('Similar evidence search failed:', error);
+    console.error('Similar evidence search failed: `, error);
     return [];
   }
 }
 async function analyzeProsecutionValue(evidenceText: string, caseContext?: CaseContext): Promise<ProsecutionInsights> {
   try {
-    const analysisPrompt = `As a prosecution strategist, analyze this evidence for its prosecution value:
-Evidence:
+    const analysisPrompt = `As a prosecution strategist, analyze this evidence for its prosecution value:; Evidence:
 ${evidenceText}
-${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : ''}
+${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : `` }
 Respond with ONLY a JSON object:
 {
   "strengths": ["strength1", "strength2"],
@@ -592,16 +573,16 @@ Focus on:
 - How well does this align with legal precedents?`;
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: CONFIG.ollama?.model || 'unknown',
         prompt: analysisPrompt,
         stream: false,
         options: {
-          temperature: 0.3,
-          top_p: 0.9,
-        },
-      }),
+         , temperature: 0.3,
+          top_p: 0.9
+        }
+      })
     });
     if (response.ok) {
       const data = await response.json();
@@ -619,18 +600,18 @@ Focus on:
     strengths: ['Documentary evidence', 'Clear factual content'],
     weaknesses: ['May require corroboration', 'Context dependent'],
     recommendations: ['Verify authenticity', 'Gather supporting evidence'],
-    precedent_support: 0.6,
+    precedent_support: 0.6
   };
 }
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: CONFIG.ollama.embeddingModel,
-        prompt: text,
-      }),
+        prompt: text
+      })
     });
     if (response.ok) {
       const data = await response.json();
@@ -674,7 +655,7 @@ async function cacheEnhancementResults(evidenceText: string, results: any): Prom
     const cacheKey = `enhancement:${Buffer.from(evidenceText).toString('base64').substring(0, 32)}`;
     const payload = JSON.stringify({
       results,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     // Support multiple Redis client APIs (setex or set with EX)
@@ -758,12 +739,12 @@ export const GET: RequestHandler = async () => {
         total_documents: totalDocuments,
         average_prosecution_score: averageProsecutionScore,
         jurisdictions_covered: jurisdictionsCovered,
-        case_types_covered: caseTypesCovered,
+        case_types_covered: caseTypesCovered
       },
       phrase_stats: {
-        total_phrases: totalPhrases,
+       , total_phrases: totalPhrases,
         high_value_phrases: highValuePhrases,
-        average_frequency: averageFrequency,
+        average_frequency: averageFrequency
       },
       enhancement_options: [
         'suggest_labels',
@@ -771,7 +752,7 @@ export const GET: RequestHandler = async () => {
         'find_similar',
         'prosecution_analysis',
         'fact_checking',
-      ],
+      ]
     });
   } catch (err: any) {
     console.error('Enhancement stats error:', err);

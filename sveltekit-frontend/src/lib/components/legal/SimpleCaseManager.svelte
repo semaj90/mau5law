@@ -279,7 +279,7 @@ await loadCases();
             <!-- Badges -->
             <div class="flex gap-2 mb-3">
               <span
-                class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
+                class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'priority',
                   caseData.priority || 'medium'
                 )}"
@@ -287,7 +287,7 @@ await loadCases();
                 {priorityConfig[caseData.priority || 'medium']?.label}
               </span>
               <span
-                class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
+                class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'status',
                   caseData.status || 'open'
                 )}"

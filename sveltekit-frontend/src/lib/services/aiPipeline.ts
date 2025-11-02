@@ -10,30 +10,24 @@ interface IOllamaService {
   analyzeDocument(content: string, type: 'summary' | 'entities' | 'sentiment' | 'classification'): Promise<string>;
   embedDocument(
     content: string,
-    options: { documentId: string; chunkSize?: number; chunkOverlap?: number }
-  ): Promise<{ chunks: Array<{ content: string; embedding: number[]; metadata: Record<string, unknown> }> }>;
+    options: {, documentId: string; chunkSize?: number; chunkOverlap?: number }
+  ): Promise<{ chunks: Array<{ content: string; embedding: number[];, metadata: Record<string, unknown> }> }>;
   generateEmbedding(text: string): Promise<number[]>;
 }
 
 // Assert the type of ollamaService
 const ollamaService: IOllamaService = originalOllamaService as IOllamaService;
 
-export interface PipelineResult {
-  success: boolean;
-  documentId: string;
+export interface PipelineResult { success: boolean;, documentId: string;
   summary?: string;
   entities?: string[];
   sentiment?: string;
   classification?: string;
-  embeddings?: {
-    count: number;
-    dimension: number;
+  embeddings?: { count: number;, dimension: number;
   };
   error?: string;
 }
-export interface SearchResult {
-  id: string;
-  content: string;
+export interface SearchResult { id: string;, content: string;
   score: number;
   metadata: { [key: string]: any };
 }
@@ -46,19 +40,19 @@ export class AIPipeline {
     documentId: string,
     content: string,
     options: DocumentProcessingOptions = {
-      extractText: true,
+     , extractText: true,
       generateEmbeddings: true,
       generateSummary: true,
       extractEntities: true,
       analyzeSentiment: true,
       classifyDocument: true,
       chunkSize: 1000,
-      chunkOverlap: 200,
+      chunkOverlap: 200
     }
   ): Promise<PipelineResult> {
     const result: PipelineResult = {
       success: false,
-      documentId,
+      documentId
     };
     try {
       // 1. Extract text if needed (already done in this case)
@@ -113,7 +107,7 @@ export class AIPipeline {
     content: string,
     chunkSize: number,
     chunkOverlap: number
-  ): Promise<{ count: number; dimension: number }> {
+  ): Promise<{ count: number;, dimension: number }> {
     const { chunks } = await ollamaService.embedDocument(content, { documentId, chunkSize, chunkOverlap });
     // Store each chunk with its embedding
     for (const chunk of chunks) {
@@ -126,7 +120,7 @@ export class AIPipeline {
     }
     return {
       count: chunks.length,
-      dimension: chunks[0]?.embedding.length || 384,
+      dimension: chunks[0]?.embedding.length || 384
     };
   }
 
@@ -155,7 +149,7 @@ export class AIPipeline {
     const entities: string[] = [];
     const lines = entitiesText.split('\n');
     for (const line of lines) {
-      // Look for patterns like: "- Person: John Doe" or: "Person: John Doe"
+      // Look for patterns like: "- Person: John Doe"; or: "Person: John Doe"
       const match = line.match(/[-•*]?\s*(?:Person|Organization|Location|Date):\s*(.+)/i);
       if (match) {
         entities.push(match[1].trim());

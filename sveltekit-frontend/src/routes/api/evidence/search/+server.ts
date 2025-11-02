@@ -106,18 +106,14 @@ function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
   return [];
 }
 
-type Match = {
-  id: string;
-  filename: string | null;
+type Match = { id: string;, filename: string | null;
   content: string;
   similarity: number;
   tags: any;
   prosecutionScore: number;
 };
 
-type EvidenceRow = {
-  id: string;
-  fileName: string | null;
+type EvidenceRow = { id: string;, fileName: string | null;
   summary: string | null;
   aiSummary: string | null;
   tags: any;
@@ -163,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 tags: Array.isArray(meta.tags) ? meta.tags : (r.tags ?? null),
                 prosecutionScore: safeProsecutionScore(
                   meta.prosecutionScore ?? meta.aiAnalysis ?? meta.analysis ?? r.prosecutionScore ?? r.aiAnalysis
-                ),
+                )
               };
             });
           }
@@ -181,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
           summary: evidence.summary,
           aiSummary: evidence.aiSummary,
           tags: evidence.tags,
-          prosecutionScore: evidence.aiAnalysis,
+          prosecutionScore: evidence.aiAnalysis
         })
         .from(evidence)
         .where(
@@ -196,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
       matches = rows.map((row: EvidenceRow) => {
         const tags = Array.isArray(row.tags) ? row.tags : [];
         const prosecutionScore = safeProsecutionScore(row.prosecutionScore);
-        const combined = `${row.fileName ?? ''} ${row.summary ?? ''} ${row.aiSummary ?? ''}`;
+        const combined = `${row.fileName ?? ''} ${row.summary ?? ''} ${row.aiSummary ?? '` }`;
         const similarity = textScore(query, combined);
         return {
           id: String(row.id),
@@ -204,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
           content: row.summary ?? row.aiSummary ?? '',
           similarity,
           tags,
-          prosecutionScore,
+          prosecutionScore
         };
       });
     }

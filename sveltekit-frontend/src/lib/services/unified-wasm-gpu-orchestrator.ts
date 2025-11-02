@@ -7,21 +7,15 @@
 // import type { CanvasState } from '$lib/stores/canvas-states'
 // import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker'
 // Define interfaces locally
-export interface CanvasState {
-  width: number;
-  height: number;
+export interface CanvasState { width: number;, height: number;
   data?: Uint8ClampedArray;
   pixels?: number[][];
   format?: string;
 }
-export interface MultiDimArray {
-  data: Float32Array | Uint8Array | Int32Array;
-  shape: number[];
+export interface MultiDimArray { data: Float32Array | Uint8Array | Int32Array;, shape: number[];
   dtype: string;
 }
-export interface GPUProcessingStats {
-  totalProcessingTime: number;
-  gpuUtilization: number;
+export interface GPUProcessingStats { totalProcessingTime: number;, gpuUtilization: number;
   memoryUsage: number;
   operationsCompleted: number;
 }
@@ -35,9 +29,7 @@ const browser = typeof window !== 'undefined';
 const DEFAULT_OLLAMA_PORT = 11434;
 
 // Integration Configuration
-export interface UnifiedWASMGPUConfig {
-  enableNESBridge: boolean;
-  enableOllamaIntegration: boolean;
+export interface UnifiedWASMGPUConfig { enableNESBridge: boolean;, enableOllamaIntegration: boolean;
   enableYoRHaProcessor: boolean;
   enableQUICGateway: boolean;
   enableGPUFallbacks: boolean;
@@ -47,9 +39,7 @@ export interface UnifiedWASMGPUConfig {
   performanceProfile: 'balanced' | 'speed' | 'memory' | 'quality';
 }
 // Task Types
-export interface WASMGPUTask {
-  id: string;
-  type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
+export interface WASMGPUTask { id: string;, type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
   priority: 'low' | 'medium' | 'high' | 'critical';
   data: any;
   targetService: 'nes_bridge' | 'ollama_llama' | 'yorha_neural' | 'gpu_compute' | 'quic_gateway' | 'auto';
@@ -65,25 +55,19 @@ export interface WASMGPUTask {
   };
 }
 // Processing Results
-export interface WASMGPUResult {
-  taskId: string;
-  success: boolean;
+export interface WASMGPUResult { taskId: string;, success: boolean;
   serviceUsed: string;
   result?: any;
   error?: string;
   processingTime: number;
   memoryUsed: number;
   cacheHit: boolean;
-  performanceMetrics: {
-    throughput: number;
-    efficiency: number;
+  performanceMetrics: { throughput: number;, efficiency: number;
     accuracy?: number;
   };
 }
 // Service Status
-export interface ServiceStatus {
-  serviceName: string;
-  available: boolean;
+export interface ServiceStatus { serviceName: string;, available: boolean;
   healthy: boolean;
   responseTime: number;
   errorRate: number;
@@ -91,9 +75,7 @@ export interface ServiceStatus {
   capabilities: string[];
 }
 // Performance Metrics
-export interface UnifiedPerformanceMetrics {
-  totalTasks: number;
-  succeededTasks: number;
+export interface UnifiedPerformanceMetrics { totalTasks: number;, succeededTasks: number;
   failedTasks: number;
   averageLatency: number;
   throughputPerSecond: number;
@@ -108,8 +90,8 @@ export interface UnifiedPerformanceMetrics {
  * Small typed helpers to avoid `any`
  */
 interface OllamaService {
-  generateCompletion?: (opts: { prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
-  generate?: (opts: { prompt: string }) => Promise<unknown>;
+  generateCompletion?: (opts: {, prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
+  generate?: (opts: {, prompt: string }) => Promise<unknown>;
   getStatus?: () => unknown;
   shutdown?: () => Promise<void>;
 }
@@ -135,8 +117,7 @@ type GPUComputeInstance = {
   ) => unknown;
   attention?: (
     query: Float32Array | number[][] | ArrayLike<number>,
-    key: Float32Array | number[][] | ArrayLike<number>,
-    value: Float32Array | number[][] | ArrayLike<number>,
+    key: Float32Array | number[][] | ArrayLike<number>; value: Float32Array | number[][] | ArrayLike<number>,
     seq_len?: number,
     dim?: number
   ) => unknown;
@@ -198,7 +179,7 @@ export class UnifiedWASMGPUOrchestrator {
     memoryEfficiency: 0,
     cacheHitRate: 0,
     serviceDistribution: {},
-    errorDistribution: {},
+    errorDistribution: {}
   });
   public serviceStatuses = writable<ServiceStatus[]>([]);
   public queueLength = writable<number>(0);
@@ -213,7 +194,7 @@ export class UnifiedWASMGPUOrchestrator {
       taskTimeoutMs: 30000,
       memoryLimitMB: 512,
       performanceProfile: 'balanced',
-      ...config,
+      ...config
     };
     this.initialize();
   }
@@ -375,7 +356,7 @@ export class UnifiedWASMGPUOrchestrator {
       responseTime: 0,
       errorRate: 0,
       queueLength: this.taskQueue.length,
-      capabilities: ['canvas', 'gpu'],
+      capabilities: ['canvas', 'gpu']
     });
 
     // Ollama / LLM wrapper status (best-effort HTTP health check)
@@ -401,7 +382,7 @@ export class UnifiedWASMGPUOrchestrator {
         responseTime,
         errorRate: healthy ? 0 : 1,
         queueLength: 0,
-        capabilities: ['completions', 'embeddings'],
+        capabilities: ['completions', 'embeddings']
       });
     } catch (e) {
       // keep minimal noise
@@ -413,7 +394,7 @@ export class UnifiedWASMGPUOrchestrator {
         responseTime: 0,
         errorRate: 1,
         queueLength: 0,
-        capabilities: ['completions', 'embeddings'],
+        capabilities: ['completions', 'embeddings']
       });
     }
 
@@ -425,7 +406,7 @@ export class UnifiedWASMGPUOrchestrator {
       responseTime: 0,
       errorRate: 0,
       queueLength: 0,
-      capabilities: ['neural_inference', 'document_processing'],
+      capabilities: ['neural_inference', 'document_processing']
     });
 
     // GPU compute (WASM) status
@@ -437,7 +418,7 @@ export class UnifiedWASMGPUOrchestrator {
       responseTime: 0,
       errorRate: hasGpuCompute ? 0 : 1,
       queueLength: 0,
-      capabilities: ['matmul', 'conv2d', 'fft', 'attention'],
+      capabilities: ['matmul', 'conv2d', 'fft', 'attention']
     });
 
     // QUIC gateway (best-effort; may not be present in all deployments)
@@ -448,7 +429,7 @@ export class UnifiedWASMGPUOrchestrator {
       responseTime: 0,
       errorRate: this.config.enableQUICGateway ? 0 : 1,
       queueLength: 0,
-      capabilities: ['quic_stream'],
+      capabilities: ['quic_stream']
     });
 
     // Update reactive store and return
@@ -500,7 +481,7 @@ export class UnifiedWASMGPUOrchestrator {
         const result = await this.executeTask(task);
         this.taskResults.set(task.id, result);
       } catch (error: any) {
-        console.error(`❌ Task ${task.id} execution failed:`, this.getErrorMessage(error));
+        console.error(`❌ Task ${task.id} execution failed: ', this.getErrorMessage(error));
         this.taskResults.set(task.id, {
           taskId: task.id,
           success: false,
@@ -509,7 +490,7 @@ export class UnifiedWASMGPUOrchestrator {
           processingTime: 0,
           memoryUsed: 0,
           cacheHit: false,
-          performanceMetrics: { throughput: 0, efficiency: 0 },
+          performanceMetrics: { throughput: 0, efficiency: 0 }
         });
       }
       this.activeTasks.delete(task.id);
@@ -561,7 +542,7 @@ export class UnifiedWASMGPUOrchestrator {
               result = await this.ollamaService.generateCompletion({
                 prompt,
                 maxTokens: 1024,
-                temperature: 0.3,
+                temperature: 0.3
               });
             } else if (this.ollamaService.generate) {
               result = await this.ollamaService.generate({ prompt });
@@ -619,7 +600,7 @@ export class UnifiedWASMGPUOrchestrator {
                 break;
               }
               default:
-                throw new Error(`Unknown GPU operation: ${String(op)}`);
+                throw new Error(`Unknown GPU; operation: ${String(op)}`);
             }
             success = true;
           } else {
@@ -628,7 +609,7 @@ export class UnifiedWASMGPUOrchestrator {
           break;
         }
         default:
-          throw new Error(`Unknown service: ${serviceUsed}`);
+          throw new Error(`Unknown; service: ${serviceUsed}`);
       }
       // Try fallbacks if primary service failed
       if (!success && task.fallbackServices && task.fallbackServices.length > 0) {
@@ -644,7 +625,7 @@ export class UnifiedWASMGPUOrchestrator {
         }
       }
     } catch (error: any) {
-      console.error(`Service ${serviceUsed} failed:`, this.getErrorMessage(error));
+      console.error(`Service ${serviceUsed} failed: ', this.getErrorMessage(error));
       success = false;
       result = null;
     }
@@ -661,8 +642,8 @@ export class UnifiedWASMGPUOrchestrator {
       cacheHit: false,
       performanceMetrics: {
         throughput: success ? (processingTime > 0 ? 1000 / processingTime : 0) : 0,
-        efficiency: success ? 1 : 0,
-      },
+        efficiency: success ? 1 : 0
+      }
     };
   }
   /**
@@ -816,7 +797,7 @@ export class UnifiedWASMGPUOrchestrator {
           cacheHitRate: Number(cacheHitRate.toFixed(3)),
           serviceDistribution,
           errorDistribution,
-          p95Latency: Number(p95.toFixed(2)),
+          p95Latency: Number(p95.toFixed(2))
         };
 
         // Update store atomically
@@ -871,7 +852,7 @@ export class UnifiedWASMGPUOrchestrator {
             const res = await fetch(`${endpoint}/completions`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ model: 'gemma3', prompt, max_tokens: maxTokens, temperature }),
+              body: JSON.stringify({, model: 'gemma3', prompt, max_tokens: maxTokens, temperature })
             });
             if (!res.ok) throw new Error(`Ollama HTTP ${res.status}`);
             return await res.json();
@@ -883,7 +864,7 @@ export class UnifiedWASMGPUOrchestrator {
         getStatus: () => ({ initialized: true, ready: true }),
         shutdown: async () => {
           this.ollamaService = null;
-        },
+        }
       };
       console.log('✅ Ollama service wrapper initialized');
     } catch (e) {
@@ -909,18 +890,17 @@ export class UnifiedWASMGPUOrchestrator {
         const instance = new InstanceCtor();
         this.yorhaProcessor = {
           processDocument: instance.processDocument?.bind(instance),
-          neuralInference: instance.neuralInference?.bind(instance),
+          neuralInference: instance.neuralInference?.bind(instance)
         };
         this.wasmModules.set('yorha', module);
         console.log('✅ YoRHa WASM processor initialized');
       } else {
         // safe stub fallback - deterministic and quick
-        this.yorhaProcessor = {
-          processDocument: async (doc: string) => ({ stub: true, text: String(doc).slice(0, 200) }),
+        this.yorhaProcessor = { processDocument: async (doc: string) => ({, stub: true, text: String(doc).slice(0, 200) }),
           neuralInference: async (input: number[] | Float32Array) => ({
             stub: true,
-            length: Array.isArray(input) ? input.length : (input as Float32Array).length,
-          }),
+            length: Array.isArray(input) ? input.length : (input as Float32Array).length
+          })
         };
         console.warn('⚠️ YoRHa WASM not available, using stub processor');
       }
@@ -942,7 +922,7 @@ export class UnifiedWASMGPUOrchestrator {
           matmul(a: MatMulPayload['a'], b: MatMulPayload['b'], m?: number, n?: number, k?: number) {
             return {
               matmul: true,
-              meta: { m, n, k, aLength: getLength(a), bLength: getLength(b) },
+              meta: { m, n, k, aLength: getLength(a), bLength: getLength(b) }
             };
           }
           conv2d(
@@ -954,7 +934,7 @@ export class UnifiedWASMGPUOrchestrator {
           ) {
             return {
               conv2d: true,
-              meta: { width, height, kernel_size, inputLength: getLength(input), kernelLength: getLength(kernel) },
+              meta: { width, height, kernel_size, inputLength: getLength(input), kernelLength: getLength(kernel) }
             };
           }
           attention(
@@ -966,13 +946,13 @@ export class UnifiedWASMGPUOrchestrator {
           ) {
             return {
               attention: true,
-              meta: { seq_len, dim, qLen: getLength(query), kLen: getLength(key), vLen: getLength(value) },
+              meta: { seq_len, dim, qLen: getLength(query), kLen: getLength(key), vLen: getLength(value) }
             };
           }
           fft(input: FFTPayload['input']) {
             return { fft: true, length: getLength(input) };
           }
-        },
+        }
       };
       this.wasmModules.set('gpu_compute', gpuStub);
       console.log('✅ WASM modules initialized (gpu_compute stub)');
@@ -1014,23 +994,17 @@ export class UnifiedWASMGPUOrchestrator {
 }
 
 /* ===== ADD: GPU operation payload shapes used by the stub and executor ===== */
-interface MatMulPayload {
-  a: Float32Array | number[][] | ArrayLike<number>;
-  b: Float32Array | number[][] | ArrayLike<number>;
+interface MatMulPayload { a: Float32Array | number[][] | ArrayLike<number>;, b: Float32Array | number[][] | ArrayLike<number>;
   m?: number;
   n?: number;
   k?: number;
 }
-interface Conv2DPayload {
-  input: Float32Array | number[][] | ArrayLike<number>;
-  kernel: Float32Array | number[][] | ArrayLike<number>;
+interface Conv2DPayload { input: Float32Array | number[][] | ArrayLike<number>;, kernel: Float32Array | number[][] | ArrayLike<number>;
   width?: number;
   height?: number;
   kernel_size?: number;
 }
-interface AttentionPayload {
-  query: Float32Array | number[][] | ArrayLike<number>;
-  key: Float32Array | number[][] | ArrayLike<number>;
+interface AttentionPayload { query: Float32Array | number[][] | ArrayLike<number>;, key: Float32Array | number[][] | ArrayLike<number>;
   value: Float32Array | number[][] | ArrayLike<number>;
   seq_len?: number;
   dim?: number;

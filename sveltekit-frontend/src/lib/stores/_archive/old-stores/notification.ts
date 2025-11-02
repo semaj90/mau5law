@@ -25,7 +25,7 @@ export interface NotificationState {
   notifications: Notification[];
 }
 const initialState: NotificationState = {
-  notifications: [],
+  notifications: []
 };
 function createNotificationStore() {
   const { subscribe, set, update } = writable<NotificationState>(initialState);
@@ -38,10 +38,10 @@ function createNotificationStore() {
       const newNotification: Notification = {
         ...notification,
         id,
-        duration: notification.duration ?? 5000,
+        duration: notification.duration ?? 5000
       };
       update(state => ({
-        notifications: [...state.notifications, newNotification],
+        notifications: [...state.notifications, newNotification]
       }));
       // Auto-remove after duration (unless duration is 0)
       if ((newNotification.duration ?? 0) > 0) {
@@ -54,7 +54,7 @@ function createNotificationStore() {
     // Remove a notification
     remove: (id: string) => {
       update(state => ({
-        notifications: state.notifications.filter(n => n.id !== id),
+        notifications: state.notifications.filter(n => n.id !== id)
       }));
     },
     // Clear all notifications
@@ -71,7 +71,7 @@ function createNotificationStore() {
         title,
         message,
         duration: 0,
-        ...options,
+        ...options
       });
     },
     warning: (title: string, message?: string, options?: Partial<Notification>) => {
@@ -81,9 +81,7 @@ function createNotificationStore() {
       return store.add({ type: 'info', title, message, ...options });
     },
     // Legacy compatibility methods that accept objects without title
-    addLegacy: (notification: {
-      type: 'success' | 'error' | 'warning' | 'info';
-      message: string;
+    addLegacy: (notification: {, type: 'success' | 'error' | 'warning' | 'info';, message: string;
       timeout?: number;
       duration?: number;
     }) => {
@@ -93,9 +91,9 @@ function createNotificationStore() {
         type,
         title,
         message: notification.message,
-        duration: notification.timeout ?? notification.duration,
+        duration: notification.timeout ?? notification.duration
       });
-    },
+    }
   };
   return store;
 }

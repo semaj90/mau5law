@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'; // You might need to install: 'uuid' and: '@types/uuid'
+import { v4 as uuidv4 } from 'uuid'; // You might need to install: 'uuid'; and: '@types/uuid'
 
 export function createAITask(
   type: string,
@@ -12,6 +12,6 @@ export function createAITask(
     category,
     payload,
     priority,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString()
   };
 }

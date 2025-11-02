@@ -65,18 +65,14 @@ export interface LlamaRequest {
   priority?: 'low' | 'normal' | 'high' | 'urgent';
 }
 }
-export interface LlamaResponse {
-  text: string;
-  tokens_generated: number;
+export interface LlamaResponse { text: string;, tokens_generated: number;
   finish_reason: 'length' | 'stop' | 'error';
   generation_time_ms: number;
   tokens_per_second: number;
   model_used: string;
   gpu_used: number[];
   request_id: string;
-  metadata: {
-    prompt_tokens: number;
-  completion_tokens: number;
+  metadata: { prompt_tokens: number;, completion_tokens: number;
   total_tokens: number;
   cached_tokens: number;
   }
@@ -179,9 +175,7 @@ export class NvidiaLlamaService {
         top_k: request.top_k || 40,
         stop_sequences: request.stop_sequences || [],
         stream: request.stream || false,
-        request_id: requestId
-        priority: request.priority || 'normal'
-      }, {
+        request_id: requestId; priority: request.priority || 'normal' }, {
         timeout: 120000, // 2 minutes for long generations
         forceTier: ServiceTier.HIGH_PERF // Use gRPC for high performance
       )});
@@ -193,12 +187,10 @@ export class NvidiaLlamaService {
         text: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).text,
         tokens_generated: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).tokens_generated,
         finish_reason: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).finish_reason,
-        generation_time_ms: generationTime
-        tokens_per_second: tokensPerSecond
+        generation_time_ms: generationTime; tokens_per_second: tokensPerSecond
         model_used: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).model_used || 'legal-llama-7b',
         gpu_used: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).gpu_used || [0],
-        request_id: requestId
-        metadata: {
+        request_id: requestId; metadata: {
           prompt_tokens: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).prompt_tokens || 0,
           completion_tokens: (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).tokens_generated,
           total_tokens: ((response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).prompt_tokens || 0) + (response as { success?: any; error?: any; tokens_generated?: any; text?: any; finish_reason?: any; model_used?: any; gpu_used?: any; prompt_tokens?: any; cached_tokens?: any; embeddings?: any; results?: any; metrics?: any }).tokens_generated,
@@ -207,7 +199,7 @@ export class NvidiaLlamaService {
       }
     } catch (error: any) {
       console.error('NVIDIA Llama generation failed:', error);
-      throw new Error(`,Generation failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`,Generation failed: ${error instanceof Error ? error.message: 'Unknown error' }`);
     }
   }
   /**
@@ -240,7 +232,7 @@ export class NvidiaLlamaService {
       const response = await productionServiceClient.execute('nvidia_llama.batch_generate', {
         requests,
         batch_config: {
-          max_batch_size: 16,
+         , max_batch_size: 16,
           timeout_per_request: 60000,
           parallel_processing: true
         }
@@ -254,16 +246,12 @@ export class NvidiaLlamaService {
   /**
    * Fine-tune model for legal domain
    */
-  async fineTune(trainingData: {
-    prompts: string[];
-    completions: string[];
-    categories: string[]);
+  async fineTune(trainingData: { prompts: string[];, completions: string[];
+   , categories: string[]);
   }): Promise<any> {
     try {
-      const response = await productionServiceClient.execute('nvidia_llama.fine_tune', {
-        training_data: trainingData
-        fine_tune_config: {
-          learning_rate: 2e-5,
+      const response = await productionServiceClient.execute('nvidia_llama.fine_tune', { training_data: trainingData, fine_tune_config: {
+         , learning_rate: 2e-5,
           batch_size: 4,
           num_epochs: 3,
           warmup_steps: 100,

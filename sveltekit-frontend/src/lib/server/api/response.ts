@@ -12,14 +12,10 @@ export interface StandardApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: ApiError;
-  meta?: {
-    timestamp: string;
-    requestId: string;
+  meta?: { timestamp: string;, requestId: string;
     processingTime: number;
     version: string;
-    pagination?: {
-      page: number;
-      limit: number;
+    pagination?: { page: number;, limit: number;
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
@@ -62,8 +58,8 @@ export function apiSuccess<T>(
       requestId,
       processingTime,
       version: '2.0',
-      ...(pagination && { pagination }),
-    },
+      ...(pagination && { pagination })
+    }
   };
   return json(response);
 }
@@ -80,20 +76,20 @@ export function apiError(
       code: error.code,
       message: error.message,
       details: error.details,
-      timestamp: error.timestamp,
+      timestamp: error.timestamp
     };
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
       message: error.message,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
       message: typeof error === 'string' ? error : 'Unknown error occurred',
-      timestamp: new Date(),
+      timestamp: new Date()
     };
   }
   // Add fallback data for legal API endpoints
@@ -101,7 +97,7 @@ export function apiError(
     success: false,
     error: {
       ...apiErrorData,
-      message: 'failure default to mock',
+      message: 'failure default to mock'
     },
     data: generateMockFallbackData(apiErrorData.code),
     meta: {
@@ -109,8 +105,8 @@ export function apiError(
       requestId,
       processingTime,
       version: '2.0',
-      mockData: true,
-    },
+      mockData: true
+    }
   };
   return json(response, { status: statusCode });
 }
@@ -129,39 +125,39 @@ export function validationError(
     {} as Record<string, string>
   );
   const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
-    fields: details,
+    fields: details
   });
   return apiError(apiErr, requestId, processingTime);
 }
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
   data: T,
-  metadata: { processingTimeMs: number; requestId: string }
+  metadata: {, processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: true,
     data,
-    metadata: { ...metadata, timestamp: new Date().toISOString() },
+    metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
 export function buildErrorResponse(
   code: string,
   message: string,
-  metadata: { processingTimeMs: number; requestId: string }
+  metadata: {, processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: false,
     error: { code, message },
-    metadata: { ...metadata, timestamp: new Date().toISOString() },
+    metadata: { ...metadata, timestamp: new Date().toISOString() }
   } as UnifiedAPIResponse;
 }
 export function buildFormSubmissionResult(
   result: any,
-  metadata: { processingTimeMs: number; requestId: string }
+  metadata: {, processingTimeMs: number; requestId: string }
 ): any {
   return {
     ...(result as Record<string, unknown>),
-    metadata: { ...metadata, timestamp: new Date().toISOString() },
+    metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
 // Request ID generator
@@ -173,7 +169,7 @@ function generateMockFallbackData(errorCode: string): any {
   const baseData = {
     mockData: true,
     fallbackReason: 'Service temporarily unavailable',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   // Context-aware mock data generation
   switch (errorCode) {
@@ -191,7 +187,7 @@ function generateMockFallbackData(errorCode: string): any {
             priority: 'medium',
             createdBy: 'mock-user',
             createdAt: new Date(Date.now() - 86400000).toISOString(),
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           },
         ],
         evidence: [
@@ -201,7 +197,7 @@ function generateMockFallbackData(errorCode: string): any {
             description: 'Mock evidence provided during service fallback',
             evidenceType: 'document',
             analyzed: false,
-            dateCreated: new Date().toISOString(),
+            dateCreated: new Date().toISOString()
           },
         ],
         pagination: {
@@ -209,8 +205,8 @@ function generateMockFallbackData(errorCode: string): any {
           limit: 50,
           total: 1,
           hasNext: false,
-          hasPrev: false,
-        },
+          hasPrev: false
+        }
       };
     case 'NOT_FOUND':
       return {
@@ -220,9 +216,9 @@ function generateMockFallbackData(errorCode: string): any {
             id: 'mock-suggestion-1',
             title: 'Similar Legal Case',
             description: 'Mock suggestion for similar case',
-            relevance: 0.75,
+            relevance: 0.75
           },
-        ],
+        ]
       };
     case 'UNAUTHORIZED':
     case 'FORBIDDEN':
@@ -230,7 +226,7 @@ function generateMockFallbackData(errorCode: string): any {
         ...baseData,
         demoMode: true,
         availableFeatures: ['case-viewing', 'evidence-browsing'],
-        restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis'],
+        restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis']
       };
     default: return baseData;
   }
@@ -256,13 +252,13 @@ export async function withApiHandler<T>(
         name: 'Dev User',
         role: 'admin',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
       (event.locals as Record<string, unknown>).user = demoUser;
       // Optionally inject a minimal session if consumers expect it
       (event.locals as Record<string, unknown>).session = {
         userId: 'dev-bypass-user',
-        expires: new Date(Date.now() + 3600 * 1000),
+        expires: new Date(Date.now() + 3600 * 1000)
       };
       console.warn('[DEV_BYPASS_AUTH] Injected development demo user into event.locals');
     }
@@ -286,7 +282,7 @@ export async function withApiHandler<T>(
       stack: error instanceof Error ? error.stack : undefined,
       url: event.url.pathname,
       method: event.request.method,
-      processingTime,
+      processingTime
     });
     return apiError(error as Error, requestId, processingTime);
   }
@@ -310,7 +306,7 @@ export const CommonErrors = {
       details as Record<string, unknown>
     ),
   ValidationFailed: (field: string, reason: string) =>
-    new ApiErrorClass(`Validation failed for field: '${field}': ${reason}`, 'VALIDATION_ERROR', 400, { field, reason }),
+    new ApiErrorClass(`Validation failed for field: '${field}': ${reason}`, 'VALIDATION_ERROR', 400, { field, reason })
 } as const;
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(request: Request, schema: z.ZodSchema<T>): Promise<T> {
@@ -335,6 +331,6 @@ export function createPagination(page: number, limit: number, total: number) {
     total,
     hasNext,
     hasPrev,
-    offset,
+    offset
   };
 }

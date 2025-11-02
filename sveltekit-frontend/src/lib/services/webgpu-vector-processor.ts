@@ -12,7 +12,7 @@ class QdrantService {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          points: [
+         , points: [
             {
               id,
               vector: embedding,
@@ -20,11 +20,11 @@ class QdrantService {
                 ...metadata,
                 tags: metadata.tags || [],
                 case_id: metadata.caseId,
-                evidence_type: metadata.type,
-              },
+                evidence_type: metadata.type
+              }
             },
-          ],
-        }),
+          ]
+        })
       });
     } catch (error: any) {
       console.error('Qdrant upsert failed:', error);
@@ -37,11 +37,11 @@ class QdrantService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          vector: queryVector,
+         , vector: queryVector,
           filter: filters,
           limit,
-          with_payload: true,
-        }),
+          with_payload: true
+        })
       });
       return await (response as { json?: any }).json();
     } catch (error: any) {
@@ -60,9 +60,9 @@ class GPUVectorProcessor {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'nomic-embed-text',
-            prompt: text,
-          }),
+           , model: 'nomic-embed-text',
+            prompt: text
+          })
         });
         const result = await (response as { json?: any }).json();
         embeddings.push((result as { embedding?: any }).embedding);
@@ -113,19 +113,19 @@ export class WebGPUVectorProcessor {
       // Create GPU buffers
       const queryBuffer = this.device.createBuffer({
         size: vectorSize * 4, // 4 bytes per float32
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       const candidatesBuffer = this.device.createBuffer({
         size: numCandidates * vectorSize * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       const resultsBuffer = this.device.createBuffer({
         size: numCandidates * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const stagingBuffer = this.device.createBuffer({
         size: numCandidates * 4,
-        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
       });
       // Upload data to GPU
       this.queue!.writeBuffer(queryBuffer, 0, new Float32Array(queryVector));
@@ -147,15 +147,14 @@ export class WebGPUVectorProcessor {
             }
             results[index] = dot_product;
           }
-        `,
-      });
+        ' });
       // Create compute pipeline
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shaderModule,
-          entryPoint: 'main',
-        },
+         , module: shaderModule,
+          entryPoint: 'main'
+        }
       });
       // Create bind group
       const bindGroup = this.device.createBindGroup({
@@ -163,8 +162,8 @@ export class WebGPUVectorProcessor {
         entries: [
           { binding: 0, resource: { buffer: queryBuffer } },
           { binding: 1, resource: { buffer: candidatesBuffer } },
-          { binding: 2, resource: { buffer: resultsBuffer } },
-        ],
+          { binding: 2, resource: { buffer: resultsBuffer } }
+        ]
       });
       // Execute compute shader
       const commandEncoder = this.device.createCommandEncoder();
@@ -225,11 +224,11 @@ export class WebGPUVectorProcessor {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'nomic-embed-text',
-          prompt: text,
-        }),
+         , model: 'nomic-embed-text',
+          prompt: text
+        })
       });
       const result = await (response as { json?: any }).json();
       return (result as { embedding?: any }).embedding;
@@ -267,7 +266,7 @@ export class WebGPUVectorProcessor {
           caseId,
           fileName: file.name,
           fileType: file.type,
-          tags: ['batch_processed'],
+          tags: ['batch_processed']
         });
       }
       results.push({
@@ -275,7 +274,7 @@ export class WebGPUVectorProcessor {
         fileName: file.name,
         embeddingDimensions: embedding.length,
         processed: true,
-        clientSideProcessing: true,
+        clientSideProcessing: true
       });
     }
     return results;

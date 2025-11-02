@@ -4,23 +4,17 @@
  * Client-side GPU acceleration for legal AI operations
  */
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
-export interface WebGPUTensorConfig {
-	deviceType: 'discrete' | 'integrated' | 'auto';
-	powerPreference: 'high-performance' | 'low-power';
+export interface WebGPUTensorConfig { deviceType: 'discrete' | 'integrated' | 'auto';, powerPreference: 'high-performance' | 'low-power';
 	enableDebug: boolean;
 	maxBufferSize: number;
 	shaderCacheEnabled: boolean;
 }
-export interface TensorOperation {
-	id: string;
-	type: 'vectorSimilarity' | 'embedding' | 'reduction' | 'transform';
+export interface TensorOperation { id: string;, type: 'vectorSimilarity' | 'embedding' | 'reduction' | 'transform';
 	inputShapes: number[][];
 	outputShape: number[];
 	parameters: Record<string, unknown>;
 }
-export interface GPUMetrics {
-	memoryUsage: number;
-	computeUtilization: number;
+export interface GPUMetrics { memoryUsage: number;, computeUtilization: number;
 	operationsPerSecond: number;
 	averageLatency: number;
 	totalOperations: number;
@@ -40,7 +34,7 @@ export class WebGPUTensorAccelerator {
     operationsPerSecond: 0,
     averageLatency: 0,
     totalOperations: 0,
-    errorCount: 0,
+    errorCount: 0
   };
   private isInitialized = $state(false);
   private operationQueue: TensorOperation[] = [];
@@ -52,7 +46,7 @@ export class WebGPUTensorAccelerator {
       enableDebug: false,
       maxBufferSize: 256 * 1024 * 1024, // 256MB
       shaderCacheEnabled: true,
-      ...config,
+      ...config
     };
   }
   async initialize(): Promise<boolean> {
@@ -66,7 +60,7 @@ export class WebGPUTensorAccelerator {
       this.adapter =
         (await webgpuNav.gpu?.requestAdapter({
           powerPreference: this.config.powerPreference,
-          forceFallbackAdapter: false,
+          forceFallbackAdapter: false
         })) ?? null;
       if (!this.adapter) {
         throw new Error('Failed to get WebGPU adapter');
@@ -75,7 +69,7 @@ export class WebGPUTensorAccelerator {
       const adapterMeta = this.adapter as unknown as Record<string, unknown>;
       console.log('📊 WebGPU Adapter Info:', {
         info: adapterMeta.info ?? null,
-        limits: adapterMeta.limits ?? null,
+        limits: adapterMeta.limits ?? null
       });
       // Request GPU device using typed API
       const requiredFeatures: GPUFeatureName[] = [];
@@ -86,10 +80,10 @@ export class WebGPUTensorAccelerator {
       this.device = await this.adapter.requestDevice({
         requiredFeatures,
         requiredLimits: {
-          maxBufferSize: this.config.maxBufferSize,
+         , maxBufferSize: this.config.maxBufferSize,
           maxStorageBufferBindingSize: this.config.maxBufferSize,
-          maxComputeWorkgroupStorageSize: 32768,
-        },
+          maxComputeWorkgroupStorageSize: 32768
+        }
       });
       this.queue = this.device.queue;
       // Set up error handling with typed event
@@ -239,12 +233,11 @@ export class WebGPUTensorAccelerator {
             result[row * N + col] = sum;
           }
         }
-      `,
-    };
+      ` };
     for (const [name, source] of Object.entries(shaders)) {
       const shader = this.device.createShaderModule({
         label: `${name}Shader`,
-        code: source,
+        code: source
       });
       if (this.config.shaderCacheEnabled) {
         this.shaderCache.set(name, shader);
@@ -262,20 +255,19 @@ export class WebGPUTensorAccelerator {
       const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
       const resultBuffer = this.device.createBuffer({
         size: size * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const paramsBuffer = this.device.createBuffer({
         size: 16,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
       this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]));
       const shader = this.shaderCache.get('vectorSimilarity')!;
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
-          module: shader,
-          entryPoint: 'main',
-        },
+         , module: shader,
+          entryPoint: 'main` }
       });
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
@@ -283,8 +275,8 @@ export class WebGPUTensorAccelerator {
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
           { binding: 2, resource: { buffer: resultBuffer } },
-          { binding: 3, resource: { buffer: paramsBuffer } },
-        ],
+          { binding: 3, resource: { buffer: paramsBuffer } }
+        ]
       });
       const commandEncoder = this.device.createCommandEncoder();
       const computePass = commandEncoder.beginComputePass();
@@ -294,7 +286,7 @@ export class WebGPUTensorAccelerator {
       computePass.end();
       const stagingBuffer = this.device.createBuffer({
         size: size * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
       commandEncoder.copyBufferToBuffer(resultBuffer, 0, stagingBuffer, 0, size * 4);
       this.queue!.submit([commandEncoder.finish()]);
@@ -406,7 +398,7 @@ export class WebGPUTensorAccelerator {
             avgConfidence,
             compressionRatio,
             memoryRegions,
-            simdMetrics,
+            simdMetrics
           };
           const confidenceBoost = Math.min(0.1, (avgConfidence || 0) * 0.05); // Max 10% boost
           const enhancedSimilarity = standardSimilarity * (1 + confidenceBoost);
@@ -428,7 +420,7 @@ export class WebGPUTensorAccelerator {
               standardSimilarity,
               confidenceBoost,
               tilingEnabled: true,
-              device: adapterName,
+              device: adapterName
             },
             tilingMeta,
             performanceMetrics: {
@@ -436,7 +428,7 @@ export class WebGPUTensorAccelerator {
               simdTime,
               gpuTime,
               throughput: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
-            },
+            }
           } as Record<string, unknown>;
         } catch (tilingError: any) {
           const tmsg = tilingError instanceof Error ? tilingError.message : String(tilingError);
@@ -457,14 +449,14 @@ export class WebGPUTensorAccelerator {
         gpuMeta: {
           standardSimilarity,
           tilingEnabled: false,
-          device: adapterName,
+          device: adapterName
         },
         performanceMetrics: {
           totalTime,
           simdTime,
           gpuTime,
           throughput: (vectorA.byteLength + vectorB.byteLength) / 1024 / 1024 / (totalTime / 1000), // MB/s
-        },
+        }
       } as Record<string, unknown>;
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -514,11 +506,11 @@ export class WebGPUTensorAccelerator {
     const weightsBuffer = this.createBuffer(weights, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
     const outputBuffer = this.device.createBuffer({
       size: tokens.length * embeddingDim * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Upload parameters
     this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([tokens.length, embeddingDim, vocabSize, 0]));
@@ -527,9 +519,8 @@ export class WebGPUTensorAccelerator {
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
-        module: shader,
-        entryPoint: 'main',
-      },
+       , module: shader,
+        entryPoint: 'main` }
     });
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
@@ -537,8 +528,8 @@ export class WebGPUTensorAccelerator {
         { binding: 0, resource: { buffer: tokensBuffer } },
         { binding: 1, resource: { buffer: weightsBuffer } },
         { binding: 2, resource: { buffer: outputBuffer } },
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
     const commandEncoder = this.device.createCommandEncoder();
     const computePass = commandEncoder.beginComputePass();
@@ -549,7 +540,7 @@ export class WebGPUTensorAccelerator {
     // Copy and read result
     const stagingBuffer = this.device.createBuffer({
       size: tokens.length * embeddingDim * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, tokens.length * embeddingDim * 4);
     this.queue!.submit([commandEncoder.finish()]);
@@ -578,7 +569,7 @@ export class WebGPUTensorAccelerator {
     const buffer = this.device!.createBuffer({
       size: data.byteLength,
       usage,
-      mappedAtCreation: false,
+      mappedAtCreation: false
     });
     this.queue!.writeBuffer(buffer, 0, data);
     return buffer;
@@ -609,7 +600,7 @@ export class WebGPUTensorAccelerator {
       adapterInfo: adapterMeta?.info ?? null,
       limits: adapterMeta?.limits ?? null,
       features: this.adapter ? Array.from((this.adapter.features ?? []) as Iterable<string>) : [],
-      shaderCacheSize: this.shaderCache.size,
+      shaderCacheSize: this.shaderCache.size
     };
   }
   async cleanup(): Promise<void> {
@@ -632,7 +623,7 @@ export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator | null
     tensorAccelerator = new WebGPUTensorAccelerator({
       powerPreference: 'high-performance',
       enableDebug: true,
-      shaderCacheEnabled: true,
+      shaderCacheEnabled: true
     });
     const success = await tensorAccelerator.initialize();
     if (!success) {

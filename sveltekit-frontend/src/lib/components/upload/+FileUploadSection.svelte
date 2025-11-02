@@ -6,8 +6,8 @@ import type { Case } from '$lib/types';
   let selectedCase: string = $state('');
   let selectedPoi: string = $state('');
   let file: File | null = null;
-  let summarize: boolean = $state(false);
-  let tag: boolean = $state(false);
+  let summarize: boolean = false;
+  let tag: boolean = false;
   const handleFileChange = (event: Event) => {
     const input = event.target as HTMLInputElement;
     if (input && input.files && input.files[0]) {

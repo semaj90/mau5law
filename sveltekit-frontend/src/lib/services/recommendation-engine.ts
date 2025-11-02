@@ -18,16 +18,12 @@ export interface RecommendationRequest {
   algorithmPreference?: 'semantic' | 'collaborative' | 'hybrid' | 'temporal';
 }
 
-export interface RecommendationResult {
-  id: string;
-  score: number;
+export interface RecommendationResult { id: string;, score: number;
   confidence: number;
   title: string;
   snippet: string;
   fullResponse: string;
-  metadata: {
-    semanticSimilarity: number;
-    temporalScore: number;
+  metadata: { semanticSimilarity: number;, temporalScore: number;
     contextRelevance: number;
     userPreference: number;
     usageScore: number;
@@ -36,30 +32,21 @@ export interface RecommendationResult {
     createdAt: Date;
     lastAccessed: Date;
   };
-  reasoning: {
-    algorithm: string;
-    factors: Array<any>;
+  reasoning: { algorithm: string;, factors: Array<any>;
     explanation: string;
   };
 }
 
-export interface PersonalizedProfile {
-  userId: string;
-  preferences: {
-    legalDomains: Array<{ domain: string; affinity: number }>;
+export interface PersonalizedProfile { userId: string;, preferences: { legalDomains: Array<{ domain: string;, affinity: number }>;
     responseStyles: Array<any>;
     averageRatings: { [domain: string]: number };
     commonQueries: string[];
   };
-  learningHistory: {
-    totalInteractions: number;
-    avgSessionTime: number;
+  learningHistory: { totalInteractions: number;, avgSessionTime: number;
     topCategories: string[];
     improvementAreas: string[];
   };
-  recommendationSettings: {
-    algorithm: string;
-    temporalWeight: number;
+  recommendationSettings: { algorithm: string;, temporalWeight: number;
     semanticWeight: number;
     personalWeight: number;
   };
@@ -402,7 +389,7 @@ export class LegalRecommendationEngine {
       const resp = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text.slice(0, 2048) })
+        body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text.slice(0, 2048) })
       });
       if (resp.ok) {
         const data = await resp.json();
@@ -492,8 +479,7 @@ export class LegalRecommendationEngine {
           responseId,
           userId,
           userRating: rating,
-          feedbackType: 'interaction'
-        });
+          feedbackType: 'interaction' });
       }
     } catch (error) {
       console.error('Failed to record interaction:', error);

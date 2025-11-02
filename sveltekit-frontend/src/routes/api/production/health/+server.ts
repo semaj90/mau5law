@@ -6,20 +6,14 @@ import { json } from '@sveltejs/kit'
  * Comprehensive system status for all services
  */
 
-export interface ServiceStatus {
-  name: string
-  status: 'healthy' | 'warning' | 'error'
+export interface ServiceStatus { name: string, status: 'healthy' | 'warning' | 'error'
   response_time?: number
   details?: any
 }
 export interface HealthResponse {
   overall_status: 'healthy' | 'warning' | 'error',
-  timestamp: string
-  services: ServiceStatus[]
-  system_info: {
-    nodejs_version: string
-    memory_usage: NodeJS.MemoryUsage
-    uptime: number
+  timestamp: string; services: ServiceStatus[]
+  system_info: { nodejs_version: string, memory_usage: NodeJS.MemoryUsage; uptime: number
   }
 }
 async function checkService(name: string, url: string, timeout = 5000): Promise<ServiceStatus> {
@@ -118,8 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
-        'Expires': '0'
-      }
+        'Expires': `0` }
     })
   } catch (error: any) {
     return json({

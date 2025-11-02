@@ -514,7 +514,7 @@
   function setTool(toolId: string) {
     canvasState.update((s: any) => ({ ...s, tool: toolId }));
     if (!canvas) return;
-    canvas.isDrawingMode = $state(false);
+    canvas.isDrawingMode = false;
     canvas.selection = toolId === "select";
     switch (toolId) {
       case "pan": canvas.defaultCursor = "grab"; break;

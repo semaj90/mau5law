@@ -36,9 +36,9 @@ import type { Case } from '$lib/types';
 
   // Local state
   let currentMessage: string = "";
-  let isGenerating: boolean = $state(false);
+  let isGenerating: boolean = false;
   let selectedMode: string = "professional";
-  let showModeSelector: boolean = $state(false);
+  let showModeSelector: boolean = false;
   let componentError: Error | null = null;
   let messagesContainer: HTMLElement | null = null;
   let messageInput: HTMLTextAreaElement | null = null;

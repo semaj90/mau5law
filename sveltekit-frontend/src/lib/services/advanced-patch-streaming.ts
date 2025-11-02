@@ -4,18 +4,14 @@
  */
 import type { Operation } from 'fast-json-patch';
 
-export interface StreamingPatchConfig {
-  maxBufferSize: number; // Maximum buffer size before flush
-  flushInterval: number; // Auto-flush interval in ms
+export interface StreamingPatchConfig { maxBufferSize: number; // Maximum buffer size before flush, flushInterval: number; // Auto-flush interval in ms
   enableCompression: boolean; // Compress patches
   batchOperations: boolean; // Batch multiple operations
   retryAttempts: number; // Retry failed patches
   connectionTimeout: number; // WebSocket timeout
 }
 
-export interface PatchStreamEvent {
-  id: string;
-  timestamp: number;
+export interface PatchStreamEvent { id: string;, timestamp: number;
   patches: Operation[];
   target: string;
   metadata?: {
@@ -25,14 +21,10 @@ export interface PatchStreamEvent {
   };
 }
 
-export interface StreamingContext {
-  connectionId: string;
-  activeStreams: Map<string, ReadableStream<string>>;
+export interface StreamingContext { connectionId: string;, activeStreams: Map<string, ReadableStream<string>>;
   patchBuffer: PatchStreamEvent[];
   lastFlush: number;
-  metrics: {
-    patchesSent: number;
-    patchesReceived: number;
+  metrics: { patchesSent: number;, patchesReceived: number;
     bytesTransferred: number;
     connectionUptime: number;
   };
@@ -52,7 +44,7 @@ export class AdvancedPatchStreamer {
       batchOperations: true,
       retryAttempts: 3,
       connectionTimeout: 30000,
-      ...config,
+      ...config
     };
   }
 
@@ -66,19 +58,19 @@ export class AdvancedPatchStreamer {
             query,
             status: 'fetching_documents',
             progress: 0,
-            documents: documents.map(doc => ({ ...doc, status: 'pending' })),
+            documents: documents.map(doc => ({ ...doc, status: `pending` })),
             response: '',
             metadata: {
               startTime: Date.now(),
-              contextId: currentContextId,
-            },
+              contextId: currentContextId
+            }
           };
 
           controller.enqueue(
             JSON.stringify({
               type: 'patch',
-              patches: [{ op: 'replace', path: '', value: ragState }],
-              timestamp: Date.now(),
+              patches: [{, op: 'replace', path: '', value: ragState }],
+              timestamp: Date.now()
             }) + '\n'
           );
 
@@ -87,13 +79,13 @@ export class AdvancedPatchStreamer {
             await new Promise(resolve => setTimeout(resolve, 100));
             const progressPatches: Operation[] = [
               { op: 'replace', path: `/documents/${i}/status`, value: 'processed' },
-              { op: 'replace', path: '/progress', value: ((i + 1) / documents.length) * 50 },
+              { op: 'replace', path: '/progress', value: ((i + 1) / documents.length) * 50 }
             ];
             controller.enqueue(
               JSON.stringify({
                 type: 'patch',
                 patches: progressPatches,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }) + '\n'
             );
           }
@@ -104,39 +96,38 @@ export class AdvancedPatchStreamer {
           const responsePatches: Operation[] = [
             { op: 'replace', path: '/status', value: 'generating_response' },
             { op: 'replace', path: '/progress', value: 75 },
-            { op: 'replace', path: '/response', value: aiResponse },
+            { op: 'replace', path: '/response', value: aiResponse }
           ];
           controller.enqueue(
             JSON.stringify({
               type: 'patch',
               patches: responsePatches,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             }) + '\n'
           );
 
           // Generate summary (simulated)
           await new Promise(resolve => setTimeout(resolve, 200));
           const summaryPatches: Operation[] = [
-            { op: 'replace', path: '/status', value: 'completed' },
+            { op: 'replace', path: '/status', value: `completed` },
             {
               op: 'replace',
               path: '/summary',
-              value: `Analysis of ${documents.length} documents completed. Key insights identified.`,
-            },
-            { op: 'replace', path: '/metadata/completedAt', value: Date.now() },
+              value: `Analysis of ${documents.length} documents completed. Key insights identified.` },
+            { op: 'replace', path: '/metadata/completedAt', value: Date.now() }
           ];
           controller.enqueue(
             JSON.stringify({
               type: 'patch',
               patches: summaryPatches,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             }) + '\n'
           );
           controller.close();
         } catch (error: any) {
           controller.error(error);
         }
-      },
+      }
     });
   }
 
@@ -162,20 +153,20 @@ export class AdvancedPatchStreamer {
               sentiment: null,
               topics: [],
               legal_concepts: [],
-              relationships: [],
+              relationships: []
             },
             metadata: {
               startTime: Date.now(),
               analysisTypes: options.analysisTypes || ['entities', 'sentiment', 'topics'],
               contextId: contextId, // Added contextId to metadata
-            },
+            }
           };
           // Send initial state
           controller.enqueue(
             JSON.stringify({
               type: 'patch',
-              patches: [{ op: 'replace', path: '', value: analysis }],
-              timestamp: Date.now(),
+              patches: [{, op: 'replace', path: '', value: analysis }],
+              timestamp: Date.now()
             }) + '\n'
           );
           // Progressive analysis simulation
@@ -186,13 +177,13 @@ export class AdvancedPatchStreamer {
               result: [
                 { text: 'John Doe', type: 'PERSON', confidence: 0.95 },
                 { text: 'Acme Corp', type: 'ORGANIZATION', confidence: 0.88 },
-                { text: 'New York', type: 'LOCATION', confidence: 0.92 },
-              ],
+                { text: 'New York', type: 'LOCATION', confidence: 0.92 }
+              ]
             },
             {
               type: 'sentiment',
               delay: 200,
-              result: { score: 0.15, magnitude: 0.8, label: 'NEUTRAL' },
+              result: { score: 0.15, magnitude: 0.8, label: `NEUTRAL` }
             },
             {
               type: 'topics',
@@ -200,8 +191,8 @@ export class AdvancedPatchStreamer {
               result: [
                 { topic: 'contract law', confidence: 0.87 },
                 { topic: 'liability', confidence: 0.73 },
-                { topic: 'intellectual property', confidence: 0.65 },
-              ],
+                { topic: 'intellectual property', confidence: 0.65 }
+              ]
             },
           ];
           for (let i = 0; i < analysisSteps.length; i++) {
@@ -209,33 +200,33 @@ export class AdvancedPatchStreamer {
             await new Promise(resolve => setTimeout(resolve, step.delay));
             const patches: Operation[] = [
               { op: 'replace', path: '/progress', value: ((i + 1) / analysisSteps.length) * 100 },
-              { op: 'replace', path: `/results/${step.type}`, value: step.result },
+              { op: 'replace', path: `/results/${step.type}`, value: step.result }
             ];
             controller.enqueue(
               JSON.stringify({
                 type: 'patch',
                 patches,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }) + '\n'
             );
           }
           // Complete analysis
           const completionPatches: Operation[] = [
-            { op: 'replace', path: '/status', value: 'completed' },
-            { op: 'replace', path: '/metadata/completedAt', value: Date.now() },
+            { op: 'replace', path: '/status', value: `completed` },
+            { op: 'replace', path: '/metadata/completedAt', value: Date.now() }
           ];
           controller.enqueue(
             JSON.stringify({
               type: 'patch',
               patches: completionPatches,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             }) + '\n'
           );
           controller.close();
         } catch (error: any) {
           controller.error(error);
         }
-      },
+      }
     });
   }
   private async setupWebSocketConnection(
@@ -276,8 +267,8 @@ export class AdvancedPatchStreamer {
       metadata: {
         source: 'server',
         version: 1,
-        checksum: this.calculateChecksum([{ op: 'replace', path: '', value: data }]),
-      },
+        checksum: this.calculateChecksum([{ op: 'replace', path: '', value: data }])
+      }
     };
     await writer.write(this.serializePatchEvent(initialEvent));
   }
@@ -332,7 +323,7 @@ export class AdvancedPatchStreamer {
           type: 'patch_batch',
           contextId,
           events: context.patchBuffer,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         };
         this.websocket.send(JSON.stringify(batchedEvent));
       }
@@ -353,7 +344,7 @@ export class AdvancedPatchStreamer {
         console.log(`[PatchStreamer] Received patch for context ${contextId}:`, event);
       }
     } catch (error: any) {
-      console.error(`[PatchStreamer] Failed to handle incoming patch:`, error);
+      console.error(`[PatchStreamer] Failed to handle incoming patch: ', error);
     }
   }
   private buildWebSocketURL(contextId: string): string {
@@ -375,7 +366,7 @@ export class AdvancedPatchStreamer {
       try {
         await stream.cancel();
       } catch (error: any) {
-        console.warn(`[PatchStreamer] Failed to close stream for target ${target}:`, error);
+        console.warn(`[PatchStreamer] Failed to close stream for target ${target}: ', error);
       }
     }
     // Close WebSocket

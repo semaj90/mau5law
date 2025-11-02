@@ -21,8 +21,8 @@ import type { Document } from '$lib/types';
   // Automation configuration
   let selectedAutomationType: string = $state('');
   let selectedSource: string = $state('');
-  let enableAutoProcessing: boolean = $state(false);
-  let enableGPUAcceleration: boolean = $state(true);
+  let enableAutoProcessing: boolean = false;
+  let enableGPUAcceleration: boolean = true;
   let batchSize: number = $state(50);
   let confidenceThreshold: number = $state(0.85);
   // State management

@@ -6,9 +6,7 @@ import type { RouteDefinition } from '$lib/data/routes-config';
 import { allRoutes } from '$lib/data/routes-config';
 import { error } from '@sveltejs/kit';
 }
-export interface DynamicRouteConfig {
-  pattern: string;
-  template: string;
+export interface DynamicRouteConfig { pattern: string;, template: string;
   component?: string;
   layout?: string;
   params?: { [key: string]: any }
@@ -16,15 +14,11 @@ export interface DynamicRouteConfig {
   ssr?: boolean;
   hydrate?: boolean;
 }
-export interface GeneratedRoute {
-  id: string;
-  path: string;
+export interface GeneratedRoute { id: string;, path: string;
   component: string;
   layout?: string;
   params: { [key: string]: any }
-  metadata: {
-    category: string;
-    status: string;
+  metadata: { category: string;, status: string;
     tags: string[];
     preload: boolean;
     ssr: boolean;
@@ -53,7 +47,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/demo/+layout.svelte',
       preload: true,
       ssr: true;
-      hydrate: true
+     , hydrate: true
     });
     // AI route pattern
     this.patterns.set('ai', {
@@ -63,7 +57,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/ai/+layout.svelte',
       preload: true,
       ssr: false;
-      hydrate: true
+     , hydrate: true
     });
     // Legal route pattern
     this.patterns.set('legal', {
@@ -73,7 +67,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/legal/+layout.svelte',
       preload: true,
       ssr: true;
-      hydrate: true
+     , hydrate: true
     });
     // Admin route pattern
     this.patterns.set('admin', {
@@ -83,7 +77,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/admin/+layout.svelte',
       preload: false,
       ssr: true;
-      hydrate: true
+     , hydrate: true
     });
     // Dev tools pattern
     this.patterns.set('dev', {
@@ -93,7 +87,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/dev/+layout.svelte',
       preload: false,
       ssr: false;
-      hydrate: true
+     , hydrate: true
     });
   }
   /**
@@ -164,10 +158,7 @@ export class DynamicRouteGenerator {
         const paramName = match.slice(1, -1); // Remove brackets
         const isOptional = paramName.startsWith('...');
         const name = isOptional ? paramName.slice(3) : paramName;
-        params[name] = {
-          optional: isOptional;
-          type: 'string'
-        }
+        params[name] = { optional: isOptional;, type: `string` }
       });
     }
     return params;
@@ -304,7 +295,7 @@ export class DynamicRouteGenerator {
         types += '  }\n';
       }
     }
-    types += '}\n\n';
+    types += ` }\n\n';
     types += 'export type RouteId = \n';
     const routeIds = this.getAllRoutes().map(r => `  | '${r.id}'`);
     types += routeIds.join('\n');
@@ -321,7 +312,7 @@ export const dynamicRouteGenerator = new DynamicRouteGenerator();
 // Export helper functions
 export function generateDynamicRoute(
   id: string;
-  path: string,
+ , path: string,
   options?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {
   return dynamicRouteGenerator.generateRoute(id, path, options);

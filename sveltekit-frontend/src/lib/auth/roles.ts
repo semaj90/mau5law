@@ -39,9 +39,7 @@ export type Permission =
   | 'configure_system'
   | 'view_audit_logs'
   | 'manage_integrations';
-export interface RoleDefinition {
-  name: UserRole;
-  displayName: string;
+export interface RoleDefinition { name: UserRole;, displayName: string;
   description: string;
   permissions: Permission[];
   hierarchyLevel: number; // Higher number = more authority,
@@ -49,9 +47,7 @@ export interface RoleDefinition {
   maxCasesAssigned?: number;
 }
 // Role definitions with complete permission sets
-export const ROLES: Record<UserRole, RoleDefinition> = {
-  admin: {
-    name: 'admin',
+export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin',
     displayName: 'System Administrator',
     description: 'Full system access with all administrative privileges',
     hierarchyLevel: 100,
@@ -85,7 +81,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'configure_system',
       'view_audit_logs',
       'manage_integrations',
-    ],
+    ]
   },
   lead_prosecutor: {
     name: 'lead_prosecutor',
@@ -115,7 +111,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'view_criminals',
       'assign_cases',
       'approve_reports',
-    ],
+    ]
   },
   prosecutor: {
     name: 'prosecutor',
@@ -140,7 +136,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'graph_analysis',
       'view_criminals',
       'edit_criminals',
-    ],
+    ]
   },
   paralegal: {
     name: 'paralegal',
@@ -160,7 +156,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'ai_analysis',
       'vector_search',
       'view_criminals',
-    ],
+    ]
   },
   investigator: {
     name: 'investigator',
@@ -181,7 +177,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'manage_criminals',
       'edit_criminals',
       'view_criminals',
-    ],
+    ]
   },
   analyst: {
     name: 'analyst',
@@ -200,7 +196,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'vector_search',
       'graph_analysis',
       'view_criminals',
-    ],
+    ]
   },
   viewer: {
     name: 'viewer',
@@ -208,34 +204,32 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     description: 'Read-only access for supervisors and auditors',
     hierarchyLevel: 10,
     canDelegate: false,
-    permissions: ['view_case', 'view_evidence', 'view_report', 'view_users', 'view_criminals'],
-  },
+    permissions: ['view_case', 'view_evidence', 'view_report', 'view_users', 'view_criminals']
+  }
 };
 // Permission categories for UI organization
-export const PERMISSION_CATEGORIES = {
-  case_management: {
-    name: 'Case Management',
-    permissions: ['create_case', 'edit_case', 'delete_case', 'view_case', 'assign_cases'] as Permission[],
+export const PERMISSION_CATEGORIES = { case_management: {, name: 'Case Management',
+    permissions: ['create_case', 'edit_case', 'delete_case', 'view_case', 'assign_cases'] as Permission[]
   },
   evidence_management: {
     name: 'Evidence Management',
-    permissions: ['upload_evidence', 'edit_evidence', 'delete_evidence', 'view_evidence'] as Permission[],
+    permissions: ['upload_evidence', 'edit_evidence', 'delete_evidence', 'view_evidence'] as Permission[]
   },
   report_management: {
     name: 'Report Management',
-    permissions: ['generate_report', 'edit_report', 'delete_report', 'view_report', 'approve_reports'] as Permission[],
+    permissions: ['generate_report', 'edit_report', 'delete_report', 'view_report', 'approve_reports'] as Permission[]
   },
   user_management: {
     name: 'User Management',
-    permissions: ['manage_users', 'view_users'] as Permission[],
+    permissions: ['manage_users', 'view_users'] as Permission[]
   },
   criminal_records: {
     name: 'Criminal Records',
-    permissions: ['manage_criminals', 'edit_criminals', 'view_criminals'] as Permission[],
+    permissions: ['manage_criminals', 'edit_criminals', 'view_criminals'] as Permission[]
   },
   ai_tools: {
     name: 'AI Tools',
-    permissions: ['ai_analysis', 'vector_search', 'graph_analysis'] as Permission[],
+    permissions: ['ai_analysis', 'vector_search', 'graph_analysis'] as Permission[]
   },
   system_admin: {
     name: 'System Administration',
@@ -245,12 +239,12 @@ export const PERMISSION_CATEGORIES = {
       'configure_system',
       'view_audit_logs',
       'manage_integrations',
-    ] as Permission[],
+    ] as Permission[]
   },
   data_export: {
     name: 'Data Export',
-    permissions: ['export_data'] as Permission[],
-  },
+    permissions: ['export_data'] as Permission[]
+  }
 };
 // Access control utility functions
 export class AccessControl {
@@ -368,7 +362,7 @@ export class AccessControl {
       access_admin_panel: 'Access the administration panel',
       configure_system: 'Configure system settings and parameters',
       view_audit_logs: 'View system audit logs and activity',
-      manage_integrations: 'Manage external system integrations',
+      manage_integrations: 'Manage external system integrations'
     };
     return descriptions[permission] || permission.replace(/_/g, ' ').toLowerCase();
   }

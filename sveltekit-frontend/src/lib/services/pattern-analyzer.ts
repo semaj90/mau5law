@@ -47,9 +47,7 @@ if (!browser) {
   }
 }
 // Enhanced types for multimodal pattern analysis
-interface UserDocument {
-  id: number;
-  userId: string;
+interface UserDocument { id: number;, userId: string;
   source: string | null;
   content: string;
   contentType?: string | null;
@@ -58,17 +56,13 @@ interface UserDocument {
   createdAt: Date;
   needs_embedding?: boolean;
 }
-interface PatternResult {
-  id: number;
-  source: string | null;
+interface PatternResult { id: number;, source: string | null;
   content: string;
   distance: number;
   pattern_type?: 'document' | 'cluster' | 'trend' | 'cross_modal';
   confidence?: number;
 }
-interface MultimodalPatternResult {
-  id: number;
-  source: string | null;
+interface MultimodalPatternResult { id: number;, source: string | null;
   content: string;
   contentType?: string;
   distance: number;
@@ -79,7 +73,7 @@ interface MultimodalPatternResult {
     ocrText?: string;
     audioLength?: number;
     frameCount?: number;
-    imageSize?: { width: number; height: number }
+    imageSize?: { width: number;, height: number }
   }
 }
 interface EnhancedPatternAnalyzerOptions {
@@ -90,7 +84,7 @@ interface EnhancedPatternAnalyzerOptions {
   clusterResults?: boolean; // Apply k-means clustering to results
   crossModalSearch?: boolean; // Enable cross-modal similarity search
   contentTypes?: string[]; // Filter by content types
-  timeRange?: { start: Date; end: Date } // Time range filter
+  timeRange?: { start: Date;, end: Date } // Time range filter
   minConfidence?: number; // Minimum similarity confidence
   useWorkerPool?: boolean; // Use worker pool for processing
   useIndexedDB?: boolean; // Use IndexedDB for offline caching
@@ -115,13 +109,9 @@ const patternAnalysisMachine = createMachine({
     error: null as Error | null
   },
   initial: 'idle',
-  states: {
-    idle: {
-      on: { START: 'generating_embedding' }
+  states: { idle: {, on: { START: 'generating_embedding' }
     },
-    generating_embedding: {
-      invoke: {
-        src: fromPromise(async ({ input }: any) => {
+    generating_embedding: {, invoke: {, src: fromPromise(async ({ input }: any) => {
           if (!input.queryContent) {
             const recentDocs = await db.execute(sql`
               SELECT content FROM user_documents
@@ -146,9 +136,7 @@ const patternAnalysisMachine = createMachine({
         }
       }
     },
-    vector_search: {
-      invoke: {
-        src: fromPromise(async ({ input }: any) => {
+    vector_search: { invoke: {, src: fromPromise(async ({ input }: any) => {
           const results = await db.execute(sql`
             SELECT id, source, content, content_type, metadata,
                    (embedding <-> ${JSON.stringify(input.queryEmbedding)}::vector) AS distance
@@ -178,9 +166,7 @@ const patternAnalysisMachine = createMachine({
         }
       }
     },
-    cross_modal_search: {
-      invoke: {
-        src: fromPromise(async ({ input }: any) => {
+    cross_modal_search: { invoke: {, src: fromPromise(async ({ input }: any) => {
           if (!input.options.crossModalSearch) return [];
           return await PatternAnalyzer.performCrossModalSearch(
             input.userId,
@@ -195,9 +181,7 @@ const patternAnalysisMachine = createMachine({
         }
       }
     },
-    clustering: {
-      invoke: {
-        src: fromPromise(async ({ input }: any) => {
+    clustering: { invoke: {, src: fromPromise(async ({ input }: any) => {
           const merged = PatternAnalyzer.mergeCrossModalResults(
             input.vectorResults,
             input.crossModalResults
@@ -211,9 +195,7 @@ const patternAnalysisMachine = createMachine({
         }
       }
     },
-    caching: {
-      invoke: {
-        src: fromPromise(async ({ input }: any) => {
+    caching: { invoke: {, src: fromPromise(async ({ input }: any) => {
           // Cache in IndexedDB if enabled (browser-side)
           if (browser && input.options.useIndexedDB) {
             await PatternAnalyzer.cacheInIndexedDB(input.userId, input.clusteredResults);
@@ -292,7 +274,7 @@ async function openIndexedDB(): Promise<IDBDatabase> {
     request.onupgradeneeded = (event: any) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains(PATTERNS_STORE)) {
-        const store = db.createObjectStore(PATTERNS_STORE, { keyPath: 'userId' });
+        const store = db.createObjectStore(PATTERNS_STORE, { keyPath: `userId` });
         store.createIndex('timestamp', 'timestamp', { unique: false });
       }
     };
@@ -572,7 +554,7 @@ export class PatternAnalyzer {
           FROM user_documents
           WHERE user_id = ${userId}
             AND embedding IS NOT NULL
-            ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql``}
+            ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql`` }
           ORDER BY distance ASC
           LIMIT ${k * 2}
         `);
@@ -636,7 +618,7 @@ export class PatternAnalyzer {
       return results;
     } catch (error: any) {
       console.error('Error in getUserPatterns:', error);
-      throw new Error(`Pattern analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Pattern analysis failed: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
 

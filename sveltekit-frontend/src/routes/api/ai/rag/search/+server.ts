@@ -12,7 +12,7 @@ const ragSearchSchema = z.object({
     .object({
       documentType: z.string().optional(),
       jurisdiction: z.string().optional(),
-      practiceArea: z.string().optional(),
+      practiceArea: z.string().optional()
     })
     .optional(),
   options: z
@@ -21,9 +21,9 @@ const ragSearchSchema = z.object({
       verbose: z.boolean().optional(),
       maxRetrievedDocs: z.number().min(1).max(50).optional(),
       confidenceThreshold: z.number().min(0).max(1).optional(),
-      useEnhancedSemanticSearch: z.boolean().optional(),
+      useEnhancedSemanticSearch: z.boolean().optional()
     })
-    .optional(),
+    .optional()
 });
 
 /**
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async event => {
       verbose: options?.verbose ?? false,
       maxRetrievedDocs: options?.maxRetrievedDocs ?? 5,
       confidenceThreshold: options?.confidenceThreshold ?? 0.7,
-      useEnhancedSemanticSearch: options?.useEnhancedSemanticSearch ?? true,
+      useEnhancedSemanticSearch: options?.useEnhancedSemanticSearch ?? true
     });
 
     const processingTime = performance.now() - startTime;
@@ -71,8 +71,8 @@ export const POST: RequestHandler = async event => {
         jurisdiction: doc.metadata?.jurisdiction,
         practiceArea: doc.metadata?.practiceArea,
         chunkIndex: doc.metadata?.chunkIndex,
-        source: doc.metadata?.source || 'vector_store',
-      },
+        source: doc.metadata?.source || 'vector_store'
+      }
     }));
 
     return json({
@@ -82,15 +82,15 @@ export const POST: RequestHandler = async event => {
       results,
       confidence: result.confidence,
       metadata: {
-        userId: auth.user.id,
+       , userId: auth.user.id,
         processingTime,
         retrievedChunks: result.metadata.retrievedChunks,
         usedThinkingMode: result.metadata.usedThinkingMode,
         usedCompression: result.metadata.usedCompression,
         enhancedSemanticSearch: result.metadata.enhancedSemanticSearch,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
-      _testMode: auth.isTestMode,
+      _testMode: auth.isTestMode
     });
   } catch (error) {
     console.error('RAG search error:', error);
@@ -101,9 +101,9 @@ export const POST: RequestHandler = async event => {
           success: false,
           error: 'Invalid request parameters',
           details: error.errors.map(e => ({
-            field: e.path.join('.'),
-            message: e.message,
-          })),
+           , field: e.path.join('.'),
+            message: e.message
+          }))
         },
         { status: 400 }
       );
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async event => {
       {
         success: false,
         error: 'RAG search failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -141,14 +141,14 @@ export const GET: RequestHandler = async event => {
         documentTypes: ['contract', 'litigation', 'patent', 'trademark', 'motion', 'brief'],
         supportedFormats: ['pdf', 'doc', 'docx', 'txt', 'html'],
         features: {
-          semanticSearch: true,
+         , semanticSearch: true,
           thinkingMode: true,
           verboseMode: true,
           metadataFiltering: true,
-          enhancedSemanticSearch: true,
-        },
+          enhancedSemanticSearch: true
+        }
       },
-      _testMode: auth.isTestMode,
+      _testMode: auth.isTestMode
     });
   } catch (error) {
     console.error('RAG health check error:', error);
@@ -157,8 +157,7 @@ export const GET: RequestHandler = async event => {
       {
         success: false,
         error: 'Health check failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
+        message: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

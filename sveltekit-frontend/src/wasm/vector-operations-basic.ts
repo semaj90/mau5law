@@ -75,7 +75,7 @@ export function computeBatchSimilarity(
   resultsPtr: usize,
   vectorDim: i32,
   vectorCount: i32,
-  algorithm: i32 // 0: cosine, 1: euclidean, 2: dot, 3: manhattan
+  algorithm: i32 //; 0: cosine, 1: euclidean, 2: dot, 3: manhattan
 ): void {
   for (let i = 0; i < vectorCount; i++) {
     const vectorPtr = vectorsPtr + i * vectorDim * 4; // 4 bytes per f32

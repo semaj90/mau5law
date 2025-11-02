@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
       role="listbox"
     >
       <!-- CommandMenu API may vary; provide a callback prop that CommandMenu can call -->
-      <CommandMenu {triggerChar} on:select={(e) => insertCommandText(e.detail?.text ?? e.detail ?? '')} onclose={closeCommandMenu} />
+      <CommandMenu {triggerChar} onselect={(e) => insertCommandText(e.detail?.text ?? e.detail ?? '')} onclose={closeCommandMenu} />
     {/if}
 </div>
 <style>

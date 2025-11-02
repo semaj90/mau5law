@@ -13,9 +13,7 @@ import type { legalCaseManagementMachine } from './legal-case-management.js';
 export type VectorEmbedding = number[];
 
 /** Document chunk stored in pgvector and Qdrant */
-export interface DocumentChunk {
-  id: string;
-  content: string;
+export interface DocumentChunk { id: string;, content: string;
   embedding: VectorEmbedding;
   metadata: DocumentMetadata;
   createdAt: Date;
@@ -23,9 +21,7 @@ export interface DocumentChunk {
 }
 
 /** Metadata attached to document chunks */
-export interface DocumentMetadata {
-  documentId: string;
-  chunkIndex: number;
+export interface DocumentMetadata { documentId: string;, chunkIndex: number;
   sourceFile?: string;
   caseId?: string;
   tags?: string[];
@@ -33,17 +29,13 @@ export interface DocumentMetadata {
 }
 
 /** Qdrant search result */
-export interface QdrantSearchResult {
-  id: string;
-  score: number;
+export interface QdrantSearchResult { id: string;, score: number;
   payload: DocumentMetadata;
   vector?: VectorEmbedding;
 }
 
 /** PostgreSQL pgvector search result */
-export interface PgVectorSearchResult {
-  id: string;
-  content: string;
+export interface PgVectorSearchResult { id: string;, content: string;
   embedding: VectorEmbedding;
   similarity: number;
   metadata: DocumentMetadata;
@@ -83,9 +75,7 @@ export type CacheKeyPattern =
   | `case:${string}`;
 
 /** Redis cache value with TTL */
-export interface CachedValue<T = unknown> {
-  data: T;
-  expiresAt: number;
+export interface CachedValue<T = unknown> { data: T;, expiresAt: number;
   metadata?: Record<string, unknown>;
 }
 
@@ -133,17 +123,13 @@ export interface ApiResponse<T = unknown> {
 // ============================================================================
 
 /** Pagination parameters */
-export interface PaginationParams {
-  page: number;
-  pageSize: number;
+export interface PaginationParams { page: number;, pageSize: number;
   offset?: number;
   limit?: number;
 }
 
 /** Paginated result wrapper */
-export interface PaginatedResult<T> {
-  items: T[];
-  total: number;
+export interface PaginatedResult<T> { items: T[];, total: number;
   page: number;
   pageSize: number;
   hasMore: boolean;
@@ -159,9 +145,7 @@ export interface VectorSearchParams {
 }
 
 /** Vector search result */
-export interface VectorSearchResult {
-  chunks: DocumentChunk[];
-  scores: number[];
+export interface VectorSearchResult { chunks: DocumentChunk[];, scores: number[];
   total: number;
   queryEmbedding?: VectorEmbedding;
 }
@@ -195,9 +179,7 @@ export interface ErrorResponse {
 }
 
 /** Validation error */
-export interface ValidationError {
-  field: string;
-  message: string;
+export interface ValidationError { field: string;, message: string;
   value?: any;
 }
 

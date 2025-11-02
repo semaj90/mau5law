@@ -8,12 +8,8 @@ export interface VectorResult {
     score: number;
     metadata: { [key: string]: any } & { source: string }
 }
-export interface VectorSearchResponse {
-    query: string;
-  results: VectorResult[];
-  metadata: {
-        totalResults: number;
-  sources: Record<string, number>;
+export interface VectorSearchResponse { query: string;, results: VectorResult[];
+  metadata: { totalResults: number;, sources: Record<string, number>;
     }
 }
 export async function searchVectors(
@@ -27,7 +23,7 @@ export async function searchVectors(
     const res = await fetch('/api/search/vector', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: query.trim(), limit }),
+        body: JSON.stringify({, query: query.trim(), limit }),
         signal
     });
     const payload = await res.json().catch(() => ({}));
@@ -43,9 +39,7 @@ export { rabbitmqService, QUEUES, type MessageHandler } from '../server/messagin
 // AI Services
 export type { JobType, JobDefinition } from '../../types/xstate.d';
 // SOM Configuration Types
-export interface SOMConfig {
-  algorithm: 'kohonen' | 'neural-graph' | 'growing-neuralgrphas';
-  gridWidth: number;
+export interface SOMConfig { algorithm: 'kohonen' | 'neural-graph' | 'growing-neuralgrphas';, gridWidth: number;
   gridHeight: number;
   k: number;
   dimensions: number;
@@ -54,20 +48,14 @@ export interface SOMConfig {
   iterations: number;
 }
 // SIMD Processing Types
-export interface SIMDProcessingResult {
-  processedTiles: SIMDTile[];
-  compressionRatio: number;
+export interface SIMDProcessingResult { processedTiles: SIMDTile[];, compressionRatio: number;
   processingTime: number;
   compressedData?: ArrayBuffer;
-  compressionStats?: {
-    originalSize: number;
-  compressedSize: number;
+  compressionStats?: { originalSize: number;, compressedSize: number;
   ratio: number;
   }
 }
-export interface SIMDTile {
-  x: number;
-  y: number;
+export interface SIMDTile { x: number;, y: number;
   width: number;
   height: number;
   data: Float32Array;

@@ -13,9 +13,7 @@ const client = postgres(connectionString);
 const db = drizzle(client);
 
 // --- Added types to avoid `any` and improve safety ---
-type LegalDocument = {
-  id: number;
-  title: string;
+type LegalDocument = { id: number;, title: string;
   content: string;
   documentType: string;
   practiceArea?: string | null;
@@ -37,9 +35,7 @@ type LegalDocument = {
 
 type SearchResultDocument = LegalDocument & { similarity: number };
 
-type SimilarityQueryLog = {
-  queryText: string;
-  queryEmbedding: number[];
+type SimilarityQueryLog = { queryText: string;, queryEmbedding: number[];
   userId?: string;
   sessionId?: string;
   practiceAreaFilter?: string;
@@ -52,9 +48,7 @@ type SimilarityQueryLog = {
   userSatisfaction?: number;
 };
 
-type LegalAnalysisCache = {
-  id: number;
-  inputHash: string;
+type LegalAnalysisCache = { id: number;, inputHash: string;
   promptText: string;
   contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
   analysisType: string;
@@ -100,9 +94,7 @@ PRODUCTION TODOs
 */
 
 // Lightweight runtime validation & error codes (suitable for quick wins; replace with schema validators in prod)
-class ServiceError extends Error {
-  code: string;
-  status: number;
+class ServiceError extends Error { code: string;, status: number;
   details?: any;
   constructor(code: string, message: string, status = 400, details?: any) {
     super(message);
@@ -117,8 +109,7 @@ const ERR = {
   INVALID_INPUT: 'INVALID_INPUT',
   NOT_FOUND: 'NOT_FOUND',
   DB_ERROR: 'DB_ERROR',
-  RATE_LIMIT: 'RATE_LIMIT',
-} as const;
+  RATE_LIMIT: 'RATE_LIMIT` } as const;
 
 function validateEmbedding(embedding: any, minDim = 16, maxDim = 4096) {
   if (!Array.isArray(embedding) || embedding.length === 0) {
@@ -188,7 +179,7 @@ function normalizeDocumentRow(row: Record<string, unknown>): LegalDocument {
     mimeType: toStringOrNull(row.mimeType),
     createdAt: toDateOrNull(row.createdAt),
     updatedAt: toDateOrNull(row.updatedAt),
-    lastAccessedAt: toDateOrNull(row.lastAccessedAt),
+    lastAccessedAt: toDateOrNull(row.lastAccessedAt)
   };
 }
 
@@ -196,7 +187,7 @@ function normalizeSearchResultRow(row: Record<string, unknown>): SearchResultDoc
   const base = normalizeDocumentRow(row);
   return {
     ...base,
-    similarity: toNumberOrNull(row.similarity) ?? 0,
+    similarity: toNumberOrNull(row.similarity) ?? 0
   };
 }
 
@@ -213,7 +204,7 @@ function normalizeAnalysisCacheRow(row: Record<string, unknown>): LegalAnalysisC
     tokenCount: toNumberOrNull(row.tokenCount) ?? 0,
     expiresAt: toDateOrNull(row.expiresAt),
     accessCount: toNumberOrNull(row.accessCount) ?? 0,
-    lastAccessedAt: toDateOrNull(row.lastAccessedAt),
+    lastAccessedAt: toDateOrNull(row.lastAccessedAt)
   };
 }
 // --- end new helpers ---
@@ -224,9 +215,7 @@ export class LegalVectorService {
   /**
    * Store document with embedding from gemma3-legal:latest
    */
-  async storeDocumentWithEmbedding(document: {
-    title: string;
-    content: string;
+  async storeDocumentWithEmbedding(document: { title: string;, content: string;
     documentType: string;
     embedding: number[]; // From TensorRT-LLM gemma3-legal:latest
     practiceArea?: string;
@@ -237,7 +226,7 @@ export class LegalVectorService {
     originalFilename?: string;
     fileSize?: number;
     mimeType?: string;
-    processingTimeMs: number;
+   , processingTimeMs: number;
   }): Promise<LegalDocument> {
     // Basic input validation (throws ServiceError on invalid inputs)
     if (!document || typeof document !== 'object') {
@@ -284,7 +273,7 @@ export class LegalVectorService {
         documentHash,
         originalFilename: document.originalFilename,
         fileSize: document.fileSize,
-        mimeType: document.mimeType,
+        mimeType: document.mimeType
       })
       .returning();
 
@@ -322,7 +311,7 @@ export class LegalVectorService {
     const threshold = typeof options.threshold === 'number' ? options.threshold : 0.7;
     const limit = validatePositiveInt(options.limit, 10);
 
-    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`;
+    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector` })`;
 
     const baseSelect = this.database
       .select({
@@ -345,7 +334,7 @@ export class LegalVectorService {
         createdAt: legalDocuments.createdAt,
         updatedAt: legalDocuments.updatedAt,
         lastAccessedAt: legalDocuments.lastAccessedAt,
-        similarity: similarityExpr,
+        similarity: similarityExpr
       })
       .from(legalDocuments);
 
@@ -421,7 +410,7 @@ export class LegalVectorService {
       similarityThreshold: query.similarityThreshold,
       topResults: query.topResults,
       queryIntent: query.queryIntent,
-      userSatisfaction: query.userSatisfaction,
+      userSatisfaction: query.userSatisfaction
     });
   }
 
@@ -445,8 +434,7 @@ export class LegalVectorService {
         .update(legalAnalysisCache)
         .set({
           accessCount: sql`${legalAnalysisCache.accessCount} + 1`,
-          lastAccessedAt: sql`NOW()`,
-        })
+          lastAccessedAt: sql`NOW()` })
         .where(eq(legalAnalysisCache.id, results[0].id));
 
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
@@ -458,15 +446,13 @@ export class LegalVectorService {
   /**
    * Store legal analysis in cache
    */
-  async storeCachedAnalysis(analysis: {
-    inputHash: string;
-    promptText: string;
+  async storeCachedAnalysis(analysis: { inputHash: string;, promptText: string;
     contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
     analysisType: string;
     analysisContent: string;
     analysisEmbedding?: number[];
     processingTimeMs: number;
-    tokenCount: number;
+   , tokenCount: number;
     expiresInHours?: number;
   }) {
     // Basic validation
@@ -497,7 +483,7 @@ export class LegalVectorService {
       analysisEmbedding: analysis.analysisEmbedding ? sql`${JSON.stringify(analysis.analysisEmbedding)}::vector` : null,
       processingTimeMs: analysis.processingTimeMs,
       tokenCount: analysis.tokenCount,
-      expiresAt,
+      expiresAt
     });
   }
 
@@ -513,8 +499,7 @@ export class LegalVectorService {
         practiceAreas: sql<Record<string, number>>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`,
         avgProcessingTime: sql<number>`AVG(${legalDocuments.processingTimeMs})`,
         totalFileSize: sql<number>`SUM(${legalDocuments.fileSize})`,
-        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL: '24 hours')`,
-      })
+        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL: '24 hours')` })
       .from(legalDocuments)
       .where(eq(legalDocuments.documentStatus, 'active'));
 
@@ -530,14 +515,12 @@ export class LegalVectorService {
       threshold?: number;
       limit?: number;
       // Restrict filters to allowed keys and concrete types
-      filters?: Partial<{
-        documentType: string;
-        practiceArea: string;
+      filters?: Partial<{ documentType: string;, practiceArea: string;
         jurisdiction: string;
         caseId: string;
         clientId: string;
         confidentialityLevel: string;
-        excludeDocumentIds: number[];
+       , excludeDocumentIds: number[];
       }>;
     }>
   ): Promise<Array<Array<SearchResultDocument>>> {
@@ -615,8 +598,7 @@ export class LegalVectorService {
           .set({
             embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`,
             modelVersion,
-            updatedAt: sql`NOW()`,
-          })
+            updatedAt: sql`NOW()` })
           .where(eq(legalDocuments.id, id))
           .returning({ id: legalDocuments.id, title: legalDocuments.title });
 

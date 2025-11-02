@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!sessionId || !userId) {
       return json(
-        { error: 'Missing required parameters: sessionId, userId' },
+        { error: 'Missing required, parameters: sessionId, userId' },
         { status: 400 }
       );
     }
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: {
-          code: 'PREDICTION_ERROR',
+         , code: 'PREDICTION_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error'
         }
       },

@@ -8,7 +8,7 @@ export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): P
     topic,
     {
       format: 'typescript',
-      tokens: 12000,
+      tokens: 12000
     },
     fetchFn
   );
@@ -20,7 +20,7 @@ export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Prom
     topic,
     {
       format: 'typescript',
-      tokens: 10000,
+      tokens: 10000
     },
     fetchFn
   );
@@ -32,7 +32,7 @@ export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): 
     topic,
     {
       format: 'typescript',
-      tokens: 8000,
+      tokens: 8000
     },
     fetchFn
   );
@@ -44,7 +44,7 @@ export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Pro
     topic,
     {
       format: 'typescript',
-      tokens: 8000,
+      tokens: 8000
     },
     fetchFn
   );
@@ -56,7 +56,7 @@ export async function getMessageQueueRedisBestPractices(fetchFn?: typeof fetch):
     'integration-patterns',
     {
       format: 'typescript',
-      tokens: 15000,
+      tokens: 15000
     },
     fetchFn
   );

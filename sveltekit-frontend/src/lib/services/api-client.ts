@@ -28,26 +28,22 @@ import type { Case } from '$lib/types';
 // Temporary stub types
 export type CreateCaseData = { title: string; description?: string };
 export type UpdateCaseData = { id: string; title?: string; description?: string };
-export type CreateEvidenceData = {
-  title: string;
-  caseId: string;
+export type CreateEvidenceData = { title: string;, caseId: string;
   evidenceType?: string;
   description?: string;
   contentText?: string;
   metadata?: Record<string, unknown>;
 };
 export type UpdateEvidenceData = { id: string; title?: string };
-export type CreateReportData = { title: string; content: string };
+export type CreateReportData = { title: string;, content: string };
 export type UpdateReportData = { id: string; title?: string; content?: string };
-export type CreatePersonOfInterestData = { name: string; role: string };
+export type CreatePersonOfInterestData = { name: string;, role: string };
 export type UpdatePersonOfInterestData = { id: string; name?: string; role?: string };
 export type PaginationOptions = { page?: number; limit?: number };
-export type PaginationResult<T> = { data: T[]; total: number; page: number; limit: number };
+export type PaginationResult<T> = { data: T[]; total: number; page: number;, limit: number };
 
 // Entity Types
-export interface Case {
-  id: string;
-  title: string;
+export interface Case { id: string;, title: string;
   description?: string;
   status: 'open' | 'closed' | 'pending' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -55,9 +51,7 @@ export interface Case {
   updatedAt: string;
 }
 
-export interface Evidence {
-  id: string;
-  caseId: string;
+export interface Evidence { id: string;, caseId: string;
   title: string;
   evidenceType?: string;
   description?: string;
@@ -79,9 +73,7 @@ export interface Report {
   updatedAt: string;
 }
 
-export interface PersonOfInterest {
-  id: string;
-  name: string;
+export interface PersonOfInterest { id: string;, name: string;
   role: string;
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
   status?: 'active' | 'inactive' | 'archived';
@@ -95,9 +87,7 @@ interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
-  pagination?: {
-    page: number;
-    limit: number;
+  pagination?: { page: number;, limit: number;
     total: number;
     totalPages: number;
     hasNext: boolean;
@@ -111,53 +101,35 @@ interface APIResponse<T = unknown> {
 }
 
 // === OCR Types ===
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   wordCount: number;
   processingTime: number; // ms
   format?: string;
 }
-export interface OCRBatchItem extends OCRResult {
-  fileName: string;
-  success: boolean;
+export interface OCRBatchItem extends OCRResult { fileName: string;, success: boolean;
   error?: string;
 }
-export interface OCRBatchResult {
-  results: OCRBatchItem[];
-  total: number;
+export interface OCRBatchResult { results: OCRBatchItem[];, total: number;
   processed: number;
   failed: number;
   processingTime: number;
 }
-export interface OCRHealthStatus {
-  service: 'OCR Service';
-  status: 'operational' | 'degraded' | 'offline';
+export interface OCRHealthStatus { service: 'OCR Service';, status: 'operational' | 'degraded' | 'offline';
   port: number;
   features: string[];
-  performance: {
-    avgProcessingTime: number;
-    documentsProcessed: number;
+  performance: { avgProcessingTime: number;, documentsProcessed: number;
     errorRate: number;
   };
 }
 
 // === External Service Types ===
-export interface UltraJSONParseResult<T> {
-  data: T;
-  performance: {
-    parseTime: number; // in ms
-    isFastPath: boolean;
+export interface UltraJSONParseResult<T> { data: T;, performance: { parseTime: number; // in ms, isFastPath: boolean;
   };
 }
-export interface WasmClusterPoint {
-  id: string;
-  vector: number[];
+export interface WasmClusterPoint { id: string;, vector: number[];
   metadata?: Record<string, unknown>;
 }
-export interface WasmClusterResult {
-  clusters: {
-    centroid: number[];
+export interface WasmClusterResult { clusters: {, centroid: number[];
     points: WasmClusterPoint[];
   }[];
   noise: WasmClusterPoint[];
@@ -165,18 +137,11 @@ export interface WasmClusterResult {
     computationTime: number; // in ms
   };
 }
-export interface NesGpuTask {
-  taskId: string;
-  shader: string;
-  inputBuffers: Record<string, unknown>; // Using: 'any' for GPUBuffer to avoid browser/node conflicts
-  outputBufferSize: number;
+export interface NesGpuTask { taskId: string;, shader: string;
+  inputBuffers: Record<string, unknown>; // Using: 'any' for GPUBuffer to avoid browser/node conflicts; outputBufferSize: number;
 }
-export interface NesGpuResult {
-  taskId: string;
-  outputBuffer: ArrayBuffer;
-  performance: {
-    gpuTime: number; // in ms
-    dataTransferTime: number; // in ms
+export interface NesGpuResult { taskId: string;, outputBuffer: ArrayBuffer;
+  performance: { gpuTime: number; // in ms, dataTransferTime: number; // in ms
   };
 }
 
@@ -194,9 +159,9 @@ export class LegalAIApiClient {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
-          ...options.headers,
+          ...options.headers
         },
-        ...options,
+        ...options
       });
       const data = await response.json();
       if (!response.ok) {
@@ -204,7 +169,7 @@ export class LegalAIApiClient {
       }
       return data;
     } catch (error: any) {
-      console.error(`API Error [${endpoint}]:`, error);
+      console.error(`API Error [${endpoint}]: ', error);
       throw error;
     }
   }
@@ -241,7 +206,7 @@ export class LegalAIApiClient {
     const validatedData = data;
     return this.apiRequest('/cases', {
       method: 'POST',
-      body: JSON.stringify(validatedData),
+      body: JSON.stringify(validatedData)
     });
   }
   /**
@@ -254,7 +219,7 @@ export class LegalAIApiClient {
     const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/cases/${caseId}`, {
       method: 'PUT',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
   }
   /**
@@ -262,8 +227,7 @@ export class LegalAIApiClient {
    */
   async deleteCase(caseId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/cases/${caseId}`, {
-      method: 'DELETE',
-    });
+      method: 'DELETE` });
   }
   // ==== EVIDENCE API ====
   /**
@@ -298,7 +262,7 @@ export class LegalAIApiClient {
     const validatedData = data;
     return this.apiRequest('/evidence', {
       method: 'POST',
-      body: JSON.stringify(validatedData),
+      body: JSON.stringify(validatedData)
     });
   }
   /**
@@ -310,7 +274,7 @@ export class LegalAIApiClient {
     const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/evidence/${evidenceId}`, {
       method: 'PUT',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
   }
   /**
@@ -318,8 +282,7 @@ export class LegalAIApiClient {
    */
   async deleteEvidence(evidenceId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/evidence/${evidenceId}`, {
-      method: 'DELETE',
-    });
+      method: 'DELETE` });
   }
   // ==== REPORTS API ====
   /**
@@ -354,7 +317,7 @@ export class LegalAIApiClient {
     const validatedData = data;
     return this.apiRequest('/reports', {
       method: 'POST',
-      body: JSON.stringify(validatedData),
+      body: JSON.stringify(validatedData)
     });
   }
   /**
@@ -366,7 +329,7 @@ export class LegalAIApiClient {
     const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/reports/${reportId}`, {
       method: 'PUT',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
   }
   /**
@@ -374,8 +337,7 @@ export class LegalAIApiClient {
    */
   async deleteReport(reportId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/reports/${reportId}`, {
-      method: 'DELETE',
-    });
+      method: 'DELETE` });
   }
   // ==== PERSONS OF INTEREST API ====
   /**
@@ -410,7 +372,7 @@ export class LegalAIApiClient {
     const validatedData = data;
     return this.apiRequest('/persons-of-interest', {
       method: 'POST',
-      body: JSON.stringify(validatedData),
+      body: JSON.stringify(validatedData)
     });
   }
   /**
@@ -425,7 +387,7 @@ export class LegalAIApiClient {
     const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/persons-of-interest/${personId}`, {
       method: 'PUT',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
   }
   /**
@@ -433,8 +395,7 @@ export class LegalAIApiClient {
    */
   async deletePersonOfInterest(personId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/persons-of-interest/${personId}`, {
-      method: 'DELETE',
-    });
+      method: 'DELETE` });
   }
 
   // ==== AI & VECTOR SERVICES ====
@@ -445,24 +406,22 @@ export class LegalAIApiClient {
   async generateEmbeddings(
     texts: string[],
     model = 'nomic-embed-text'
-  ): Promise<APIResponse<{ embeddings: number[][]; model: string }>> {
+  ): Promise<APIResponse<{ embeddings: number[][];, model: string }>> {
     return this.apiRequest('/ai/embeddings', {
       method: 'POST',
-      body: JSON.stringify({ texts, model }),
+      body: JSON.stringify({ texts, model })
     });
   }
 
   /**
    * Index a document in the vector database (e.g., Qdrant).
    */
-  async indexDocument(document: {
-    id: string;
-    content: string;
-    metadata: Record<string, unknown>;
-  }): Promise<APIResponse<{ success: boolean; id: string }>> {
+  async indexDocument(document: { id: string;, content: string;
+   , metadata: Record<string, unknown>;
+  }): Promise<APIResponse<{ success: boolean;, id: string }>> {
     return this.apiRequest('/vector/index', {
       method: 'POST',
-      body: JSON.stringify(document),
+      body: JSON.stringify(document)
     });
   }
 
@@ -476,7 +435,7 @@ export class LegalAIApiClient {
   ): Promise<APIResponse<WasmClusterPoint[]>> {
     return this.apiRequest('/vector/search', {
       method: 'POST',
-      body: JSON.stringify({ vector: queryVector, limit, collection }),
+      body: JSON.stringify({, vector: queryVector, limit, collection })
     });
   }
 
@@ -484,27 +443,26 @@ export class LegalAIApiClient {
   /**
    * Get a value from the Redis cache.
    */
-  async getCache(key: string): Promise<APIResponse<{ key: string; value: any }>> {
+  async getCache(key: string): Promise<APIResponse<{ key: string;, value: any }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`);
   }
 
   /**
    * Set a value in the Redis cache with an optional TTL (in seconds).
    */
-  async setCache(key: string, value: any, ttl?: number): Promise<APIResponse<{ key: string; success: boolean }>> {
+  async setCache(key: string, value: any, ttl?: number): Promise<APIResponse<{ key: string;, success: boolean }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
       method: 'POST',
-      body: JSON.stringify({ value, ttl }),
+      body: JSON.stringify({ value, ttl })
     });
   }
 
   /**
    * Invalidate/delete a cache key from Redis.
    */
-  async invalidateCache(key: string): Promise<APIResponse<{ key: string; success: boolean }>> {
+  async invalidateCache(key: string): Promise<APIResponse<{ key: string;, success: boolean }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
-      method: 'DELETE',
-    });
+      method: 'DELETE` });
   }
 
   // ==== UTILITY METHODS ====
@@ -533,13 +491,13 @@ export class LegalAIApiClient {
 
     const response = await fetch(`${this.ocrBase()}/extract`, {
       method: 'POST',
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
       // normalize error into APIResponse shape for OCRResult
       const err = await response.json().catch(() => ({ message: response.statusText }));
-      return { success: false, message: err?.message || 'OCR service error' };
+      return { success: false, message: err?.message || 'OCR service error` };
     }
 
     return (await response.json()) as APIResponse<OCRResult>;
@@ -551,12 +509,12 @@ export class LegalAIApiClient {
 
     const response = await fetch(`${this.ocrBase()}/batch-extract`, {
       method: 'POST',
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
-      return { success: false, message: err?.message || 'OCR batch service error' } as APIResponse<OCRBatchResult>;
+      return { success: false, message: err?.message || 'OCR batch service error` } as APIResponse<OCRBatchResult>;
     }
 
     return (await response.json()) as APIResponse<OCRBatchResult>;
@@ -567,7 +525,7 @@ export class LegalAIApiClient {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
-      return { success: false, message: err?.message || 'OCR health check failed' } as APIResponse<OCRHealthStatus>;
+      return { success: false, message: err?.message || 'OCR health check failed` } as APIResponse<OCRHealthStatus>;
     }
 
     return (await response.json()) as APIResponse<OCRHealthStatus>;
@@ -584,7 +542,7 @@ export class LegalAIApiClient {
       return {
         success: false,
         message: ocr.message || 'OCR processing failed',
-        data: undefined,
+        data: undefined
       };
     }
 
@@ -599,9 +557,9 @@ export class LegalAIApiClient {
         ocr: {
           confidence: ocr.data.confidence,
           wordCount: ocr.data.wordCount,
-          processingTime: ocr.data.processingTime,
-        },
-      },
+          processingTime: ocr.data.processingTime
+        }
+      }
     });
   }
 }
@@ -614,7 +572,7 @@ export const reactiveApiClient = {
     console.warn('reactiveApiClient.subscribe is a placeholder and not fully implemented.');
     return () => {}; // unsubscribe function
   },
-  ...apiClient,
+  ...apiClient
 };
 
 // Export for custom instances

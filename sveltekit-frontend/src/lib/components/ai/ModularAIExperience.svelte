@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex flex-wrap gap-2">
         {#each Array.isArray(['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute']) ? ['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute'] : [] as module}
           <button
-            class="px-4" py-2 rounded-lg border transition-colors {currentModule === module
+            class="px-4 py-2 rounded-lg" border transition-colors {currentModule === module
               ? 'bg-blue-600 text-white border-blue-600'
               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
             onclick={() => switchModule(module)}
@@ -310,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         onclick={processComputation}
         disabled={isProcessing}
-        class="w-full" mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold
+        class="w-full mt-6 px-4" py-3 bg-blue-600 text-white rounded-lg font-semibold
                disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
       >
         {#if isProcessing}
@@ -347,7 +347,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-1">
                 {#each Array.isArray(results.recommendations) ? results.recommendations : [] as rec}
                   <button
-                    class="block" w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100
+                    class="block w-full text-left" p-2 text-sm bg-blue-50 hover:bg-blue-100
                            rounded border border-blue-200 transition-colors"
                     onclick={() => applyRecommendation(rec)}
                   >

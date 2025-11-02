@@ -6,7 +6,7 @@
 export type XStateService = any;
 // Core file upload state types
 export interface FileUploadState {
-  status:
+  status:;
     | 'idle'
     | 'uploading'
     | 'processing'
@@ -25,9 +25,7 @@ export interface FileUploadState {
   metadata?: FileMetadata;
   analysis?: UploadAnalysisResult;
 }
-export interface ProcessingStage {
-  current: 'upload' | 'ocr' | 'yolo-detection' | 'content-extraction' | 'embedding' | 'storage' | 'indexing';
-  total: number;
+export interface ProcessingStage { current: 'upload' | 'ocr' | 'yolo-detection' | 'content-extraction' | 'embedding' | 'storage' | 'indexing';, total: number;
   completed: number;
   details?: string;
 }
@@ -43,9 +41,7 @@ export interface GPUUploadConfig {
   cudaSupport?: boolean;
 }
 // RAG Pipeline Integration
-export interface RAGPipelineConfig {
-  enabled: boolean;
-  extractText: boolean;
+export interface RAGPipelineConfig { enabled: boolean;, extractText: boolean;
   generateEmbeddings: boolean;
   storeVectors: boolean;
   updateIndex: boolean;
@@ -55,9 +51,7 @@ export interface RAGPipelineConfig {
   vectorStorage?: 'qdrant' | 'pgvector' | 'neo4j';
 }
 // OCR and Content Extraction
-export interface OCRConfig {
-  enabled: boolean;
-  engines: ('tesseract' | 'langextract' | 'google-vision' | 'azure-ocr')[];
+export interface OCRConfig { enabled: boolean;, engines: ('tesseract' | 'langextract' | 'google-vision' | 'azure-ocr')[];
   languages: string[];
   confidenceThreshold?: number;
   preprocessImages?: boolean;
@@ -75,16 +69,12 @@ export interface YOLOConfig {
   detectTextRegions?: boolean;
 }
 // Enhanced processing pipeline
-export interface ProcessingPipeline {
-  gpu: GPUUploadConfig;
-  rag: RAGPipelineConfig;
+export interface ProcessingPipeline { gpu: GPUUploadConfig;, rag: RAGPipelineConfig;
   ocr: OCRConfig;
   yolo: YOLOConfig;
   customSteps?: ProcessingStep[];
 }
-export interface ProcessingStep {
-  id: string;
-  name: string;
+export interface ProcessingStep { id: string;, name: string;
   description: string;
   enabled: boolean;
   order: number;
@@ -95,22 +85,18 @@ export interface ProcessingStep {
 export interface FileMetadata {
   mimeType: string;
   encoding?: string;
-  dimensions?: { width: number; height: number };
+  dimensions?: { width: number;, height: number };
   pageCount?: number;
   language?: string;
   documentType?: 'contract' | 'deed' | 'evidence' | 'report' | 'correspondence' | 'unknown';
   classification?: DocumentClassification;
 }
-export interface DocumentClassification {
-  type: string;
-  confidence: number;
+export interface DocumentClassification { type: string;, confidence: number;
   categories: string[];
   legalEntities?: string[];
   keyTerms?: string[];
 }
-export interface UploadProcessingResult {
-  contentExtracted: boolean;
-  textLength: number;
+export interface UploadProcessingResult { contentExtracted: boolean;, textLength: number;
   embeddingsGenerated: boolean;
   objectsDetected?: DetectedObject[];
   ocrResults?: OCRResult[];
@@ -118,57 +104,41 @@ export interface UploadProcessingResult {
   processingTime: number;
   processingSteps: CompletedStep[];
 }
-export interface DetectedObject {
-  type: 'table' | 'signature' | 'seal' | 'text-block' | 'image' | 'diagram';
-  confidence: number;
-  boundingBox: { x: number; y: number; width: number; height: number };
+export interface DetectedObject { type: 'table' | 'signature' | 'seal' | 'text-block' | 'image' | 'diagram';, confidence: number;
+  boundingBox: { x: number; y: number; width: number;, height: number };
   page?: number;
   extractedText?: string;
 }
-export interface OCRResult {
-  engine: string;
-  page: number;
+export interface OCRResult { engine: string;, page: number;
   text: string;
   confidence: number;
   words: OCRWord[];
   processingTime: number;
 }
-export interface OCRWord {
-  text: string;
-  confidence: number;
-  boundingBox: { x: number; y: number; width: number; height: number };
+export interface OCRWord { text: string;, confidence: number;
+  boundingBox: { x: number; y: number; width: number;, height: number };
 }
-export interface UploadAnalysisResult {
-  documentType: string;
-  parties: string[];
+export interface UploadAnalysisResult { documentType: string;, parties: string[];
   keyDates: Date[];
   obligations: string[];
   risks: string[];
   compliance: ComplianceCheck[];
   summary: string;
 }
-export interface ComplianceCheck {
-  rule: string;
-  status: 'compliant' | 'non-compliant' | 'unclear';
+export interface ComplianceCheck { rule: string;, status: 'compliant' | 'non-compliant' | 'unclear';
   details: string;
 }
-export interface CompletedStep {
-  stepId: string;
-  status: 'success' | 'failed' | 'skipped';
+export interface CompletedStep { stepId: string;, status: 'success' | 'failed' | 'skipped';
   duration: number;
   error?: string;
   result?: any;
 }
 // XState Machine Integration for Complex Upload Workflows
-export interface XStateUploadMachine {
-  currentState: string;
-  context: UploadMachineContext;
+export interface XStateUploadMachine { currentState: string;, context: UploadMachineContext;
   events: UploadMachineEvent[];
   services?: Record<string, XStateService>;
 }
-export interface UploadMachineContext {
-  files: FileUploadState[];
-  pipeline: ProcessingPipeline;
+export interface UploadMachineContext { files: FileUploadState[];, pipeline: ProcessingPipeline;
   totalSteps: number;
   completedSteps: number;
   errors: string[];
@@ -179,14 +149,14 @@ export interface UploadMachineContext {
   caseId?: string;
 }
 export type UploadMachineEvent =
-  | { type: 'UPLOAD_START'; files: File[] }
-  | { type: 'UPLOAD_PROGRESS'; fileId: string; progress: number }
-  | { type: 'UPLOAD_COMPLETE'; fileId: string }
-  | { type: 'PROCESSING_START'; fileId: string }
-  | { type: 'PROCESSING_STEP'; fileId: string; step: string; progress: number }
-  | { type: 'PROCESSING_COMPLETE'; fileId: string; result: UploadAnalysisResult }
-  | { type: 'ERROR'; fileId?: string; error: string }
-  | { type: 'RETRY'; fileId: string }
+  | { type: 'UPLOAD_START';, files: File[] }
+  | { type: 'UPLOAD_PROGRESS'; fileId: string;, progress: number }
+  | { type: 'UPLOAD_COMPLETE';, fileId: string }
+  | { type: 'PROCESSING_START';, fileId: string }
+  | { type: 'PROCESSING_STEP'; fileId: string; step: string;, progress: number }
+  | { type: 'PROCESSING_COMPLETE'; fileId: string;, result: UploadAnalysisResult }
+  | { type: 'ERROR'; fileId?: string;, error: string }
+  | { type: 'RETRY';, fileId: string }
   | { type: 'CANCEL'; fileId?: string }
   | { type: 'RESET' };
 // Cache Strategy for Upload Components

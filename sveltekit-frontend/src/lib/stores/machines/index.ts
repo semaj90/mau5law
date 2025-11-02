@@ -28,8 +28,8 @@ export const aiTaskCreators = {
     type,
     payload,
     priority,
-    timestamp: Date.now(),
-  }),
+    timestamp: Date.now()
+  })
 };
 
 export const createAITask = (
@@ -42,7 +42,7 @@ export const createAITask = (
   type,
   payload,
   priority,
-  timestamp: Date.now(),
+  timestamp: Date.now()
 });
 
 // types.ts can contain broad names that collide; pick safe, explicit exports only

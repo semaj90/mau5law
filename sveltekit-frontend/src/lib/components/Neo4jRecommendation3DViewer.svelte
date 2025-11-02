@@ -43,7 +43,7 @@ import type { Case } from '$lib/types';
   let mounted = $state<boolean>(false); // Use $state for reactive primitive
   let initialLoadDone = $state<boolean>(false); // New state to track initial load
   // Reactive state
-  let currentGraph: RecommendationGraph | null = $state(null);
+  let currentGraph: RecommendationGraph | null = null;
   let isLoading = $state<boolean>(false);
   let progress = $state<number>(0);
   let error = $state<string | null>(null);
@@ -193,7 +193,7 @@ import type { Case } from '$lib/types';
       if (index >= progressAnimation.segments.length) return;
       progressAnimation.segments[index].active = true;
       setTimeout(() => {
-        progressAnimation.segments[index].active = $state(false);
+        progressAnimation.segments[index].active = false;
         animateSegment(index + 1);
       }, 100);
     }

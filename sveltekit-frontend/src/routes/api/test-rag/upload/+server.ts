@@ -60,7 +60,7 @@ async function extractTextFromFile(
       const response = await fetchFn(`${OCR_SERVICE_URL}/ocr`, {
         method: 'POST',
         body: formData,
-        signal: AbortSignal.timeout(60000),
+        signal: AbortSignal.timeout(60000)
       });
 
       if (!response.ok) {
@@ -79,13 +79,12 @@ async function extractTextFromFile(
       return {
         text: first.text || '',
         entities: (first.entities as OcrExtractedEntities) || undefined, // Explicitly cast to OcrExtractedEntities
-        embedding: first.embedding || undefined,
+        embedding: first.embedding || undefined
       };
     } catch (error: any) {
-      console.error('[Test RAG] GPU OCR service error:', error);
+      console.error('[Test RAG] GPU OCR service error: ', error);
       return {
-        text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.`,
-      };
+        text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.` };
     }
   }
 
@@ -100,13 +99,13 @@ const handler: RequestHandler = async ({ request, fetch }) => {
     const files = formData.getAll('files') as File[];
 
     if (files.length === 0) {
-      return json({ error: 'No files uploaded' }, { status: 400 });
+      return json({ error: `No files uploaded` }, { status: 400 });
     }
 
     for (const file of files) {
       const result: UploadResult = {
         success: false,
-        filename: file.name,
+        filename: file.name
       };
 
       try {
@@ -144,19 +143,18 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             content: extractedText,
             originalContent: extractedText,
             metadata: {
-              fileType: file.type,
+             , fileType: file.type,
               fileSize: file.size,
               uploadedAt: new Date().toISOString(),
-              tags: [],
+              tags: []
             },
             confidence: 0.85,
             legalAnalysis: ocrResult.entities
-              ? {
-                  entities: Array.isArray(ocrResult.entities.entities) // Access .entities safely without: 'any'
+              ? { entities: Array.isArray(ocrResult.entities.entities) // Access .entities safely, without: 'any'
                     ? ocrResult.entities.entities
-                    : [],
+                    : []
                 }
-              : null,
+              : null
           })
           .returning();
 
@@ -174,8 +172,8 @@ const handler: RequestHandler = async ({ request, fetch }) => {
               chunkIndex: 0,
               chunkCount: 1,
               modelUsed: 'embeddinggemma:latest',
-              generatedAt: new Date().toISOString(),
-            },
+              generatedAt: new Date().toISOString()
+            }
           });
           result.pgvectorStored = true;
           console.log('✅ [Test RAG] Embedding stored in pgvector');
@@ -193,11 +191,11 @@ const handler: RequestHandler = async ({ request, fetch }) => {
                 tags: [],
                 metadata: {
                   fileType: file.type,
-                  fileSize: file.size,
+                  fileSize: file.size
                 },
                 confidence: 0.85,
-                timestamp: new Date().toISOString(),
-              },
+                timestamp: new Date().toISOString()
+              }
             };
 
             await QdrantVectorService.upsertVector(String(vectorPoint.id), vectorPoint.vector, vectorPoint.payload);
@@ -214,7 +212,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       } catch (fileErr: any) {
         result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
-        console.error(`❌ [Test RAG] Failed to process file ${file.name}:`, fileErr);
+        console.error(`❌ [Test RAG] Failed to process file ${file.name}: ', fileErr);
       }
 
       results.push(result);
@@ -229,11 +227,10 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       failureCount: files.length - successCount,
       results,
       pipeline: {
-        ocr: '✅ Surya GPU OCR',
+       , ocr: '✅ Surya GPU OCR',
         entities: '✅ langextract-go',
         embeddings: '✅ Ollama embeddinggemma (768-dim)',
-        storage: '✅ PostgreSQL pgvector + Qdrant',
-      },
+        storage: `✅ PostgreSQL pgvector + Qdrant` }
     });
   } catch (error: any) {
     console.error('[Test RAG] Upload error:', error);
@@ -247,7 +244,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
 export const POST = withValidationAndRate(handler, null, {
   capacity: 20,
   refillPerSecond: 0.5,
-  keyPrefix: 'rl:test-rag:upload:',
+  keyPrefix: `rl:test-rag:upload: `
 });
 
 /**
@@ -273,7 +270,7 @@ export const GET: RequestHandler = async () => {
         .from(testRagDocuments)
         .limit(1)) as Array<{ count: number }>;
       const embCountRows = (await db
-        .select({ count: sql<number>`COUNT(*)` })
+        .select({ count: sql<number>`COUNT(*)' })
         .from(testRagEmbeddings)
         .limit(1)) as Array<{ count: number }>;
       docCount = Array.isArray(docCountRows) && docCountRows[0] ? Number(docCountRows[0].count) : 0;
@@ -287,16 +284,15 @@ export const GET: RequestHandler = async () => {
       success: true,
       healthy: qdrantHealthy && dbConnected,
       services: {
-        qdrant: qdrantHealthy,
+       , qdrant: qdrantHealthy,
         postgres: dbConnected,
         gpu: true,
-        ocr: 'http://localhost:8090/v1 (Surya + langextract-go)',
-      },
+        ocr: `http://localhost:8090/v1 (Surya + langextract-go)` },
       stats: {
         documents: docCount,
-        embeddings: embCount,
+        embeddings: embCount
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(

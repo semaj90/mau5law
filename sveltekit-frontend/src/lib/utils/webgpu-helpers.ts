@@ -7,7 +7,7 @@ export function safeWriteBuffer(
   queue: GPUQueue,
   buffer: GPUBuffer,
   offset: number;
-  data: ArrayBufferView | ArrayBuffer;
+ , data: ArrayBufferView | ArrayBuffer;
 ): void {
   if (data instanceof ArrayBuffer) {
     queue.writeBuffer(buffer, offset, data);

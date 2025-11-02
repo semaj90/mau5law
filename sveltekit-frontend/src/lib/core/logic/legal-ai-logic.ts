@@ -2,25 +2,19 @@
  * Pure Legal AI Logic Layer
  * No rendering concerns - only business logic
  */
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content: string;
   confidence: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
   metadata: Record<string, unknown>;
 }
-export interface EvidenceItem {
-  id: string;
-  title: string;
+export interface EvidenceItem { id: string;, title: string;
   type: "document" | "image" | "video" | "audio" | "transcript";
   priority: "critical" | "high" | "medium" | "low";
   confidence: number;
   metadata?: Record<string, unknown>;
 }
-export interface AIAnalysis {
-  confidence: number;
-  entities: Array<any>;
+export interface AIAnalysis { confidence: number;, entities: Array<any>;
   themes: Array<any>;
   summary: string;
 }
@@ -32,8 +26,7 @@ export class LegalAILogic {
       confidence: Math.random(),
       entities: [],
       themes: [],
-      summary: `Analysis of ${document.title}`
-    }
+      summary: `Analysis of ${document.title}` }
   }
   static categorizeEvidence(evidence: EvidenceItem[]): Record<string, EvidenceItem[]> {
     // Pure categorization logic

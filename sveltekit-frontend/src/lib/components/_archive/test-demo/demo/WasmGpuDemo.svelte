@@ -20,7 +20,7 @@ import type { Document } from '$lib/types';
   let benchmarkResults: { operation: string; time: number; throughput: number }[] = $state([]);
   let testVectorCount = $state<number>(100);
   let testDimensions = $state<number>(384);
-  let similarityResults: Float32Array | null = $state(null);
+  let similarityResults: Float32Array | null = null;
   // Legal AI test scenarios
   const legalTestScenarios = [
     {

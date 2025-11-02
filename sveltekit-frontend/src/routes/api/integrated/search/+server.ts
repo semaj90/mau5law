@@ -9,7 +9,7 @@ import type { RequestHandler } from './$types';
 import {
   initializeIntegratedRAG,
   searchSimilarDocuments,
-  getDocumentRecommendations,
+  getDocumentRecommendations
 } from '$lib/server/services/integrated-rag-service';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -42,16 +42,16 @@ export const POST: RequestHandler = async ({ request }) => {
       query: query || null,
       documentId: documentId || null,
       results: results.map(r => ({
-        content: r.content,
+       , content: r.content,
         similarity: Math.round(r.similarity * 100) / 100,
         source: r.metadata?.source_file,
-        chunkIndex: r.metadata?.chunkIndex,
+        chunkIndex: r.metadata?.chunkIndex
       })),
       recommendations: recommendations.map(r => ({
         filename: r.filename,
-        similarity: Math.round(r.similarity * 100) / 100,
+        similarity: Math.round(r.similarity * 100) / 100
       })),
-      count: results.length + recommendations.length,
+      count: results.length + recommendations.length
     });
   } catch (error) {
     console.error('❌ Search failed:', error);
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Search failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '5');
 
     if (!query) {
-      return json({ error: 'Query parameter: "q" is required' }, { status: 400 });
+      return json({ error: 'Query, parameter: "q" is required' }, { status: 400 });
     }
 
     const results = await searchSimilarDocuments(query, limit);
@@ -84,11 +84,11 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       query,
       results: results.map(r => ({
-        content: r.content.slice(0, 300) + '...',
+       , content: r.content.slice(0, 300) + '...',
         similarity: Math.round(r.similarity * 100) / 100,
-        source: r.metadata?.source_file,
+        source: r.metadata?.source_file
       })),
-      count: results.length,
+      count: results.length
     });
   } catch (error) {
     console.error('❌ Search failed:', error);
@@ -97,8 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Search failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

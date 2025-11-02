@@ -32,7 +32,7 @@ const noopHandler = {
   get(_target: any) {
     // Return an async no-op function for any function access
     return async (..._args: any[]) => undefined;
-  },
+  }
 };
 
 // Helper to get the Redis client (or no-op proxy) without throwing
@@ -48,45 +48,35 @@ async function callRedis<T>(client: IORedis, command: string, ...args: any[]): P
     const result = await client[command](...args);
     return result as T;
   } catch (error) {
-    console.error(`Error calling Redis command: '${command}':`, error);
+    console.error(`Error calling Redis command: '${command}': ', error);
     return undefined;
   }
 }
 
 // Define interfaces for stats
-export interface LLMCacheStats {
-  hit_rate_estimate: number;
-  memory_usage: string;
+export interface LLMCacheStats { hit_rate_estimate: number;, memory_usage: string;
   total_entries: number;
   last_cleared: string;
 }
 
-export interface AgentMemoryStats {
-  active_sessions: number;
-  total_memory_keys: number;
+export interface AgentMemoryStats { active_sessions: number;, total_memory_keys: number;
   memory_usage: string;
 }
 
-export interface TaskQueueStats {
-  queued_tasks: number;
-  processing_tasks: number;
+export interface TaskQueueStats { queued_tasks: number;, processing_tasks: number;
   completed_tasks_count: number;
   failed_tasks_count: number;
   total_tasks_processed: number;
   average_processing_time_ms: number;
 }
 
-export interface RedisOrchestratorStats {
-  llm_cache: LLMCacheStats;
-  agent_memory: AgentMemoryStats;
+export interface RedisOrchestratorStats { llm_cache: LLMCacheStats;, agent_memory: AgentMemoryStats;
   task_queue: TaskQueueStats;
   redis_memory_info: string; // Raw info from Redis INFO command
 }
 
 // Define missing interfaces for the second set of classes
-export interface LLMCacheEntry {
-  response: string;
-  confidence: number;
+export interface LLMCacheEntry { response: string;, confidence: number;
   model_used: string;
   processing_time: number;
   sources?: any[];
@@ -94,21 +84,15 @@ export interface LLMCacheEntry {
   cache_key: string;
 }
 
-export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp: number;
 }
 
-export interface AgentMemoryEntry {
-  messages: ChatMessage[];
-  context: Record<string, unknown>;
+export interface AgentMemoryEntry { messages: ChatMessage[];, context: Record<string, unknown>;
   summary?: string;
 }
 
-export interface ComplexLegalTask {
-  id: string;
-  type: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment';
+export interface ComplexLegalTask { id: string;, type: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment';
   query: string;
   metadata: Record<string, unknown>;
   priority: number;
@@ -116,9 +100,7 @@ export interface ComplexLegalTask {
   status: 'queued' | 'processing' | 'completed' | 'failed';
 }
 
-export interface CompletedTaskResult {
-  taskId: string;
-  result: any;
+export interface CompletedTaskResult { taskId: string;, result: any;
   processingTime: number;
   completed_at: number;
   status: 'completed' | 'failed';
@@ -188,8 +170,7 @@ export class RedisLLMCache {
       query: query.trim().toLowerCase(),
       caseId: context.caseId || 'global',
       legalCategory: context.legalCategory || 'general',
-      practiceArea: context.practiceArea || 'default',
-    };
+      practiceArea: context.practiceArea || 'default` };
     const hashInput = JSON.stringify(normalized);
     return createHash('sha256').update(hashInput).digest('hex');
   }
@@ -230,10 +211,8 @@ export class RedisLLMCache {
   static async cacheResponse(
     query: string,
     response: string,
-    metadata: {
-      confidence: number;
-      model_used: string;
-      processing_time: number;
+    metadata: { confidence: number;, model_used: string;
+     , processing_time: number;
       sources?: any[];
       context?: Record<string, unknown>;
     }
@@ -249,7 +228,7 @@ export class RedisLLMCache {
         processing_time: metadata.processing_time,
         sources: metadata.sources || [],
         timestamp: Date.now(),
-        cache_key: cacheKey,
+        cache_key: cacheKey
       };
 
       // Prefer set with EX, otherwise try setex, otherwise set+expire
@@ -324,8 +303,8 @@ export class RedisAgentMemory {
         messages: messages.slice(-this.MAX_MESSAGES),
         context: {
           ...context,
-          lastActivity: Date.now(),
-        },
+          lastActivity: Date.now()
+        }
       };
       // try set with EX first
       const setResult = await callRedis(client, 'set', redisKey, JSON.stringify(memoryEntry), 'EX', this.MEMORY_TTL);
@@ -421,11 +400,11 @@ export class RedisAgentMemory {
       return {
         active_sessions: keys.length,
         total_memory_keys: keys.length,
-        memory_usage: String(memoryInfo),
+        memory_usage: String(memoryInfo)
       };
     } catch (error) {
       console.error('🎮 Redis agent memory stats failed:', error);
-      return { active_sessions: 0, total_memory_keys: 0, memory_usage: '0MB' };
+      return { active_sessions: 0, total_memory_keys: 0, memory_usage: `0MB` };
     }
   }
 }
@@ -462,13 +441,12 @@ export class RedisTaskQueue {
         metadata,
         priority,
         timestamp: Date.now(),
-        status: 'queued',
-      };
+        status: `queued` };
       // Use sorted set for priority queue; many redis clients expose zadd or zAdd
       const zaddResult = await callRedis(client, 'zadd', this.QUEUE_KEY, priority, JSON.stringify(task));
       if (zaddResult === undefined) {
         const zAddResult = await callRedis(client, 'zAdd', this.QUEUE_KEY, [
-          { score: priority, value: JSON.stringify(task) },
+          { score: priority, value: JSON.stringify(task) }
         ]);
         if (zAddResult === undefined) {
           await callRedis(client, 'rpush', this.QUEUE_KEY, JSON.stringify(task));
@@ -526,7 +504,7 @@ export class RedisTaskQueue {
       const processingRecord = {
         ...task,
         status: 'processing',
-        processing_started: Date.now(),
+        processing_started: Date.now()
       };
 
       // Prefer hSet/hset if available, otherwise set + expire
@@ -570,8 +548,7 @@ export class RedisTaskQueue {
         result,
         processingTime,
         completed_at: Date.now(),
-        status: success ? 'completed' : 'failed',
-      };
+        status: success ? 'completed' : `failed` };
       // Remove from processing, add to completed
       await callRedis(client, 'hdel', this.PROCESSING_KEY, taskId);
       await callRedis(client, 'del', `${this.PROCESSING_KEY}:${taskId}`);
@@ -602,7 +579,7 @@ export class RedisTaskQueue {
       await callRedis(client, 'set', this.AVG_PROCESSING_TIME_KEY, newAvg.toFixed(2));
 
       console.log(
-        `🎮 [REDIS TASK ${success ? 'COMPLETED' : 'FAILED'}] Task ${taskId} completed in ${processingTime}ms`
+        `🎮 [REDIS TASK ${success ? 'COMPLETED' : `FAILED` }] Task ${taskId} completed in ${processingTime}ms`
       );
     } catch (error) {
       console.error('🎮 Redis task completion failed:', error);
@@ -658,7 +635,7 @@ export class RedisTaskQueue {
         completed_tasks_count: completedTasksCount,
         failed_tasks_count: failedTasksCount,
         total_tasks_processed: totalTasksProcessed,
-        average_processing_time_ms: average_processing_time_ms,
+        average_processing_time_ms: average_processing_time_ms
       };
     } catch (err) {
       console.error('🎮 Redis getQueueStats failed:', err);
@@ -668,7 +645,7 @@ export class RedisTaskQueue {
         completed_tasks_count: 0,
         failed_tasks_count: 0,
         total_tasks_processed: 0,
-        average_processing_time_ms: 0,
+        average_processing_time_ms: 0
       };
     }
   }

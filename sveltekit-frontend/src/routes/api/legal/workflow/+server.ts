@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required fields: content, documentType, caseId',
+          error: 'Missing required; fields: content, documentType, caseId'
         },
         { status: 400 }
       );
@@ -47,11 +47,11 @@ export const POST: RequestHandler = async ({ request }) => {
         submittedAt: new Date().toISOString(),
         source: 'api',
         contentLength: content.length,
-        ...body.metadata,
+        ...body.metadata
       },
       priority: priority as LegalDocumentMessage['priority'],
       retryCount: 0,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     // Publish to RabbitMQ for processing
     const published = await rabbitmqService.publishDocumentForAnalysis(documentMessage);
@@ -59,8 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Failed to queue document for processing',
-        },
+          error: 'Failed to queue document for processing` },
         { status: 500 }
       );
     }
@@ -73,14 +72,14 @@ export const POST: RequestHandler = async ({ request }) => {
       queuedAt: new Date().toISOString(),
       expectedProcessingTime: priority === 'urgent' ? '2-5 minutes' : '5-15 minutes',
       responseTime: `${responseTime}ms`,
-      message: 'Document queued for legal analysis workflow',
+      message: 'Document queued for legal analysis workflow'
     });
   } catch (error) {
     logger.error('[Legal Workflow API] Error processing request:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
+        error: error instanceof Error ? error.message : 'Internal server error'
       },
       { status: 500 }
     );
@@ -98,25 +97,20 @@ export const GET: RequestHandler = async () => {
     }, 0);
     return json({
       status: 'operational',
-      services: {
-        rabbitmq: {
-          connected: rabbitmqService.connected,
+      services: { rabbitmq: {, connected: rabbitmqService.connected,
           queues: queueStats,
-          totalMessages,
+          totalMessages
         },
         xstate: {
           status: 'ready',
-          machineTypes: ['legalDocumentWorkflow', 'contractAnalysis', 'evidenceProcessing'],
-        },
+          machineTypes: ['legalDocumentWorkflow', 'contractAnalysis', 'evidenceProcessing']
+        }
       },
       endpoints: {
-        submit: 'POST /api/legal/workflow',
+       , submit: 'POST /api/legal/workflow',
         status: 'GET /api/legal/workflow',
-        managementUI: 'http://localhost:15672 (legal_admin:123456)',
-      },
-      usage: {
-        submitDocument: {
-          method: 'POST',
+        managementUI: 'http://localhost:15672 (legal_admin:123456)` },
+      usage: { submitDocument: {, method: 'POST',
           url: '/api/legal/workflow',
           body: {
             content: 'Document content here...',
@@ -125,12 +119,12 @@ export const GET: RequestHandler = async () => {
             priority: 'low | normal | high | urgent',
             metadata: {
               fileName: 'optional-file-name.pdf',
-              tags: ['contract', 'employment'],
-            },
-          },
-        },
+              tags: ['contract', 'employment']
+            }
+          }
+        }
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     logger.error('[Legal Workflow API] Error getting status:', error);
@@ -138,7 +132,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

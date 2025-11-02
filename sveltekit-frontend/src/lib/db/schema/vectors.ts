@@ -118,8 +118,7 @@ export const vectorOperations = {
     sql`SELECT * FROM ${table} ORDER BY embedding <=> ${embedding} LIMIT ${limit}`,
   // Hybrid search combining vector and keyword search
   hybridSearch: (vectorScore: any, textScore: any, vectorWeight: number = 0.7) =>
-    sql`(${vectorScore} * ${vectorWeight} + ${textScore} * ${1 - vectorWeight})`
-};
+    sql`(${vectorScore} * ${vectorWeight} + ${textScore} * ${1 - vectorWeight})` };
 // Export types
 export type DocumentVector = typeof documentVectors.$inferSelect;
 export type NewDocumentVector = typeof documentVectors.$inferInsert;

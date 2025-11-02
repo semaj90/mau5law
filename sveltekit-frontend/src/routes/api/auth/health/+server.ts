@@ -17,14 +17,10 @@ declare global {
   var __lucia_instance: Lucia | undefined;
 }
 
-interface HealthWarning {
-  code: string;
-  message: string;
+interface HealthWarning { code: string;, message: string;
 }
 
-interface RecentSession {
-  id: string;
-  user_id: string;
+interface RecentSession { id: string;, user_id: string;
   created_at: Date;
   expires_at: Date;
 }
@@ -43,14 +39,14 @@ export const GET: RequestHandler = async () => {
     status = 'degraded';
     warnings.push({
       code: 'SCHEMA_IDENTITY_MISMATCH',
-      message: 'Detected different users/sessions table object identity – potential duplicate import path.',
+      message: 'Detected different users/sessions table object identity – potential duplicate import path.'
     });
   }
   if (!luciaInstanceReused) {
     status = 'degraded';
     warnings.push({
       code: 'LUCIA_INSTANCE_NOT_REUSED',
-      message: 'Lucia instance not stored globally (HMR duplication?)',
+      message: 'Lucia instance not stored globally (HMR duplication?)'
     });
   }
 
@@ -73,7 +69,7 @@ export const GET: RequestHandler = async () => {
         id: sessions.id,
         user_id: sessions.user_id,
         created_at: sessions.created_at,
-        expires_at: sessions.expires_at,
+        expires_at: sessions.expires_at
       })
       .from(sessions)
       .orderBy(desc(sessions.created_at))
@@ -93,32 +89,32 @@ export const GET: RequestHandler = async () => {
       durationMs,
       adapter: {
         sessionCookieName: lucia.sessionCookieName,
-        luciaInstanceReused,
+        luciaInstanceReused
       },
       schemaIdentity: {
         usersSameRef,
-        sessionsSameRef,
+        sessionsSameRef
       },
       counts: {
         userCount,
         sessionCount,
         recentSessions,
-        countsError,
+        countsError
       },
       environment: {
         nodeVersion: process.version,
         pid: process.pid,
         uptime: process.uptime(),
-        platform: process.platform,
+        platform: process.platform
       },
-      warnings,
+      warnings
     },
     {
       status: status === 'healthy' ? 200 : status === 'degraded' ? 206 : 503,
       headers: {
         'Cache-Control': 'no-cache',
-        'X-Auth-Health': status,
-      },
+        'X-Auth-Health': status
+      }
     }
   );
 };

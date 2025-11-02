@@ -5,18 +5,14 @@ import { RabbitMQXStateIntegration } from '$lib/messaging/rabbitmq-xstate-integr
 // Minimal local type declarations to avoid: 'any' and keep defensive calls typed
 type RabbitMQIntegration = {
   publishEvent?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
-  enqueue?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
+  enqueue?: (topic: string; payload: Record<string, unknown>) => Promise<unknown> | unknown;
 };
 type ExtendedConfig = typeof CONFIG & { LOKI_INGEST_URL?: string };
-type SystemLoad = {
-  gpu: number;
-  cpu: number;
+type SystemLoad = { gpu: number;, cpu: number;
   memory: number;
   rabbitmqDepth: number;
 };
-type AnalyticsEvent = {
-  timestamp: string;
-  type: string;
+type AnalyticsEvent = { timestamp: string;, type: string;
   caseId?: string;
   payload?: Record<string, unknown>;
 };
@@ -43,7 +39,7 @@ export class AIAnalyticsService {
         gpu,
         cpu: typeof os.loadavg === 'function' ? os.loadavg()[0] : 0,
         memory: process.memoryUsage().heapUsed / 1024 / 1024,
-        rabbitmqDepth,
+        rabbitmqDepth
       };
     } catch (e: any) {
       console.debug('Failed to read system load', e);
@@ -86,17 +82,17 @@ export class AIAnalyticsService {
         void fetch(lokiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ streams: [{ stream: { service: 'ai-analytics' }, values: [[evt.timestamp, JSON.stringify(evt)]] }] }),
+          body: JSON.stringify({ streams: [{, stream: {, service: `ai-analytics` }, values: [[evt.timestamp, JSON.stringify(evt)]] }] })
         });
       }
     } catch {
       // non-fatal
     }
   }
-  async getSignalsForCase(caseId: string): Promise<{ hotness: number; confidenceDrift: number }> {
+  async getSignalsForCase(caseId: string): Promise<{ hotness: number;, confidenceDrift: number }> {
     try {
       const raw = await redis.get(`ai:analytics:case:${caseId}:signals`);
-      if (raw) return JSON.parse(raw) as { hotness: number; confidenceDrift: number };
+      if (raw) return JSON.parse(raw) as { hotness: number;, confidenceDrift: number };
     } catch (e: any) {
       console.debug('getSignalsForCase failed', e);
     }
@@ -106,7 +102,7 @@ export class AIAnalyticsService {
     // Placeholder: connect to a dedicated analytics store in production (Loki/ClickHouse)
     console.debug(`Retrieving historical analytics for case ${caseId} metric ${metricType}`);
     if (metricType === 'embedding_latency') {
-      return [{ timestamp: new Date().toISOString(), value: Math.random() * 100, strategy: 'ollama_cpu' }];
+      return [{ timestamp: new Date().toISOString(), value: Math.random() * 100, strategy: `ollama_cpu` }];
     }
     return [];
   }

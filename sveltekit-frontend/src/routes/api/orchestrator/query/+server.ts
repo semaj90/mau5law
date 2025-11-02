@@ -12,22 +12,13 @@ interface QueryRequest {
     priority?: 'low' | 'normal' | 'high';
   };
 }
-interface QueryResponse {
-  answer: string
-  model_used: string
-  cache_hit: boolean
-  memory_bank_used: string
-  response_time_ms: number
+interface QueryResponse { answer: string, model_used: string; cache_hit: boolean
+  memory_bank_used: string; response_time_ms: number
   cost_saved: number
-  classification?: {
-    type: string
-    confidence: number;
+  classification?: { type: string, confidence: number;
     reasoning: string
   }
-  nintendo_diagnostics?: {
-    bank_switches: number
-    memory_pressure: 'low' | 'medium' | 'high'
-    cache_efficiency: number
+  nintendo_diagnostics?: { bank_switches: number, memory_pressure: 'low' | 'medium' | 'high'; cache_efficiency: number
   }
 }
 // Simulated LLM clients (in production, these would connect to actual vLLM/tensorRT-llm services)
@@ -80,18 +71,14 @@ const fastRouter = new MockLLMClient('http://localhost:8001', 'gemma-3-270m', [2
 const legalExpert = new MockLLMClient('http://localhost:8000', 'gemma-3-legal-2b', [800, 2500])
 const embeddingService = new MockLLMClient('http://localhost:11434', 'embeddinggemma', [300, 600])
 // Simple in-memory cache (in production, this would be Redis)
-const queryCache = new Map<string, { response: string; timestamp: number; model: string }>()
+const queryCache = new Map<string, { response: string; timestamp: number;, model: string }>()
 const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
 function generateCacheKey(query: string, context?: any[]): string {
   const contextStr = context ? JSON.stringify(context) : ''
   return `query:${Buffer.from(query + contextStr)
     .toString('base64')
-    .slice(0, 32)}`
-}
-function classifyQuery(query: string): {
-  type: 'simple' | 'complex_legal' | 'embedding'
-  confidence: number
-  reasoning: string
+    .slice(0, 32)}' }
+function classifyQuery(query: string): { type: 'simple' | 'complex_legal' | 'embedding', confidence: number; reasoning: string
 } {
   const legalKeywords = [
     'contract',
@@ -124,8 +111,7 @@ function classifyQuery(query: string): {
     return {
       type: 'embedding',
       confidence: 0.9,
-      reasoning: 'Query contains embedding/similarity keywords'
-    }
+      reasoning: `Query contains embedding/similarity keywords` }
   }
   // Check for legal complexity
   const legalMatches = legalKeywords.filter((keyword) => queryLower.includes(keyword)).length
@@ -134,8 +120,7 @@ function classifyQuery(query: string): {
     return {
       type: 'complex_legal',
       confidence: 0.8 + legalMatches * 0.05,
-      reasoning: `Found ${legalMatches} legal keywords in ${queryLength}-word query`
-    }
+      reasoning: 'Found ${legalMatches} legal keywords in ${queryLength}-word query' }
   }
   if (legalMatches >= 1 && queryLength <= 10) {
     return {
@@ -217,8 +202,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default:
         answer = await fastRouter.chat(query)
         modelUsed = 'gemma-3-270m'
-        memoryBank = 'L1_GPU_VRAM_ROUTER'
-    }
+        memoryBank = 'L1_GPU_VRAM_ROUTER' }
     // Phase 4: Cache result (Nintendo L3 Memory Bank)
     queryCache.set(cacheKey, {
       response: answer,
@@ -261,8 +245,7 @@ export const POST: RequestHandler = async ({ request }) => {
       memory_bank_used: 'none',
       response_time_ms: Date.now() - startTime,
       cost_saved: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+      error: error instanceof Error ? error.message : `Unknown error` };
     return json(errResp, { status: 500 });
   }
 }

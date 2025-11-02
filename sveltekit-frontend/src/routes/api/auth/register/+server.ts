@@ -8,9 +8,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { authService, auth } from '$lib/server/auth';
 import { isAuthError, formatErrorResponse } from '$lib/server/errors';
 
-interface RegisterRequest {
-  email: string;
-  password: string;
+interface RegisterRequest { email: string;, password: string;
   firstName?: string;
   lastName?: string;
   displayName?: string;
@@ -31,7 +29,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         password: formData.get('password') as string,
         firstName: formData.get('firstName') as string | undefined,
         lastName: formData.get('lastName') as string | undefined,
-        displayName: formData.get('displayName') as string | undefined,
+        displayName: formData.get('displayName') as string | undefined
       };
     } else {
       throw new Error('Invalid content type');
@@ -42,10 +40,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         {
           success: false,
           error: {
-            message: 'Email and password are required',
+           , message: 'Email and password are required',
             code: 'INVALID_REQUEST',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -57,7 +55,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       password: data.password,
       firstName: data.firstName,
       lastName: data.lastName,
-      displayName: data.displayName,
+      displayName: data.displayName
     });
 
     // Create session for new user
@@ -67,7 +65,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const sessionCookie = auth.createSessionCookie(session.id);
     cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      path: '/',
+      path: '/'
     });
 
     // Return success with user data
@@ -80,12 +78,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           role: newUser.role,
-          avatarUrl: newUser.avatarUrl,
+          avatarUrl: newUser.avatarUrl
         },
         session: {
-          id: session.id,
-          expiresAt: session.expiresAt,
-        },
+         , id: session.id,
+          expiresAt: session.expiresAt
+        }
       },
       { status: 201 }
     );
@@ -103,10 +101,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       {
         success: false,
         error: {
-          message: 'Registration failed. Please try again.',
+         , message: 'Registration failed. Please try again.',
           code: 'UNKNOWN_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );

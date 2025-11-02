@@ -11,7 +11,7 @@ interface CacheOptions {
  * Uses gzip compression for embeddings and large payloads
  */
 export class CacheService {
-  private memoryCache = new Map<string, { value: any; expires: number }>();
+  private memoryCache = new Map<string, { value: any;, expires: number }>();
   private redisClient: Redis | null = null;
   private useRedis = $state(false);
   constructor() {
@@ -137,7 +137,7 @@ export class CacheService {
     const info: Record<string, unknown> = {
       backend: this.useRedis ? 'Redis' : 'Memory',
       memoryEntries: this.memoryCache.size,
-      redisConnected: this.useRedis,
+      redisConnected: this.useRedis
     };
     if (this.useRedis && this.redisClient) {
       try {
@@ -148,7 +148,7 @@ export class CacheService {
           redisKeyCount: keyCount,
           redisMemoryInfo: redisInfo
             .split('\r\n')
-            .filter((line: string) => line.includes('used_memory') || line.includes('maxmemory')),
+            .filter((line: string) => line.includes('used_memory') || line.includes('maxmemory'))
         }
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
@@ -199,7 +199,7 @@ export async function cacheSearchResults(query: string, type: string, results: a
   const key = `search:${type}:${Buffer.from(query).toString('base64')}:${filtersHash}`;
   await cacheService.set(key, results, {
     ttlMs: 30 * 60 * 1000, // 30 minutes for search results
-    compress: true,
+    compress: true
   });
 }
 // Legacy export for compatibility

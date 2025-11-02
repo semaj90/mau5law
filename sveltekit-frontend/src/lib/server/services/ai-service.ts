@@ -15,9 +15,7 @@ type OllamaClient = {
   ): Promise<string>;
   generateEmbedding(text: string): Promise<number[]>;
 };
-export interface AIAnalysisResult {
-  summary: string;
-  tags: string[];
+export interface AIAnalysisResult { summary: string;, tags: string[];
   confidence: number;
   entities?: string[];
   keywords?: string[];
@@ -30,23 +28,17 @@ export interface AIQueryOptions {
   includeContext?: boolean;
   saveQuery?: boolean;
 }
-export interface VectorSearchResult {
-  content: string;
-  similarity: number;
+export interface VectorSearchResult { content: string;, similarity: number;
   metadata: Record<string, unknown>; // changed from `{ [key: string]: any }`
   documentId: string;
 }
 // Add local types for embedding cache rows/inserts
-type EmbeddingCacheRow = {
-  id: string;
-  textHash: string;
+type EmbeddingCacheRow = { id: string;, textHash: string;
   embedding: string | number[] | null;
   model?: string | null;
   createdAt?: string | null;
 };
-type NewEmbeddingCache = {
-  id: string;
-  textHash: string;
+type NewEmbeddingCache = { id: string;, textHash: string;
   // Drizzle insert expects a concrete non-optional string for this column.
   // We store embeddings as JSON strings, so make this a required string.
   embedding: string;
@@ -70,14 +62,14 @@ export class AIService {
     userId: string,
     caseId?: string,
     options: AIQueryOptions = {}
-  ): Promise<{ response: string; confidence: number; contextUsed: string[]; queryId?: string }> {
+  ): Promise<{ response: string; confidence: number;, contextUsed: string[]; queryId?: string }> {
     const startTime = Date.now();
     const {
       model = 'gemma3-legal',
       temperature = 0.7,
       maxTokens = 2000,
       includeContext = true,
-      saveQuery = true,
+      saveQuery = true
     } = options;
     try {
       // Get relevant context if requested
@@ -96,7 +88,7 @@ export class AIService {
       const response = await this.ollama.generateCompletion(query, {
         systemPrompt,
         temperature,
-        maxTokens,
+        maxTokens
       });
       const processingTime = Date.now() - startTime;
       const confidence = this.calculateConfidence(response, contextDocuments.length);
@@ -113,14 +105,14 @@ export class AIService {
           confidence,
           processingTime,
           contextUsed,
-          embedding: await this.ollama.generateEmbedding(query),
+          embedding: await this.ollama.generateEmbedding(query)
         });
       }
       return {
         response,
         confidence,
         contextUsed,
-        queryId,
+        queryId
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -138,7 +130,7 @@ export class AIService {
             processingTime: Date.now() - startTime,
             contextUsed: [],
             isSuccessful: false,
-            errorMessage: msg,
+            errorMessage: msg
           });
         } catch (logErr: any) {
           const lmsg = logErr instanceof Error ? logErr.message : String(logErr);
@@ -172,7 +164,7 @@ Format your response as JSON with the following structure:
       const response = await this.ollama.generateCompletion(content, {
         systemPrompt,
         temperature: 0.3,
-        maxTokens: 1000,
+        maxTokens: 1000
       });
       // Parse AI response
       let analysis: AIAnalysisResult;
@@ -202,17 +194,13 @@ Format your response as JSON with the following structure:
       // Select stored embeddings so we can compute similarity locally (defensive)
       const rows = (await db.execute(
         sql`SELECT id, document_id, content, metadata, embedding FROM document_chunks LIMIT ${limit}`
-      )) as Array<{
-        id: string;
-        document_id: string;
+      )) as Array<{ id: string;, document_id: string;
         content: string;
         metadata: any;
         embedding: string | number[] | null;
       }>;
       // Normalize and compute similarity
-      const results: Array<{
-        content: string;
-        similarity: number;
+      const results: Array<{ content: string;, similarity: number;
         metadata: Record<string, unknown>;
         documentId: string;
       }> = []; // updated metadata type
@@ -233,7 +221,7 @@ Format your response as JSON with the following structure:
               content: row.content,
               similarity: sim,
               metadata: (row.metadata ?? {}) as Record<string, unknown>,
-              documentId: row.document_id,
+              documentId: row.document_id
             });
           }
         } catch {
@@ -257,18 +245,18 @@ Format your response as JSON with the following structure:
     queryEmbedding: number[],
     userId?: string,
     limit = 5
-  ): Promise<Array<{ query: string; response: string; similarity: number }>> {
+  ): Promise<Array<{ query: string; response: string;, similarity: number }>> {
     try {
       // Simplified: return recent queries for the user or a global sample.
       if (userId) {
         const rows = (await db.execute(
           sql`SELECT query, response, 0.0 as similarity FROM user_ai_queries WHERE user_id = ${userId} ORDER BY created_at DESC LIMIT ${limit}`
-        )) as Array<{ query: string; response: string; similarity: number }>;
+        )) as Array<{ query: string; response: string;, similarity: number }>;
         return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
       } else {
         const rows = (await db.execute(
           sql`SELECT query, response, 0.0 as similarity FROM user_ai_queries ORDER BY created_at DESC LIMIT ${limit}`
-        )) as Array<{ query: string; response: string; similarity: number }>;
+        )) as Array<{ query: string; response: string;, similarity: number }>;
         return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
       }
     } catch (error: any) {
@@ -290,7 +278,7 @@ Format your response as JSON with the following structure:
           textHash: embeddingCache.textHash,
           embedding: embeddingCache.embedding,
           model: embeddingCache.model,
-          createdAt: embeddingCache.createdAt,
+          createdAt: embeddingCache.createdAt
         })
         .from(embeddingCache)
         .where(eq(embeddingCache.textHash, textHash))
@@ -312,7 +300,7 @@ Format your response as JSON with the following structure:
         textHash,
         embedding: JSON.stringify(embedding),
         model: 'gemmaembedding:latest',
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       await db.insert(embeddingCache).values(insertData);
       return embedding;
@@ -333,7 +321,7 @@ Format your response as JSON with the following structure:
     model: string;
     confidence: number;
     processingTime: number;
-    contextUsed: string[];
+   , contextUsed: string[];
     embedding?: number[]; // accept number[] here, convert for DB below
     isSuccessful?: boolean;
     errorMessage?: string;
@@ -361,7 +349,7 @@ Format your response as JSON with the following structure:
         isSuccessful: data.isSuccessful !== false,
         errorMessage: data.errorMessage ?? null,
         // timestamp - include to satisfy possible required column
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       } as NewUserAiQuery;
       // Ensure we have a concrete string fallback id (NewUserAiQuery.id may be optional in the type).
       const generatedId: string = queryData.id ?? generateIdFromEntropySize(10);
@@ -408,7 +396,7 @@ Format your response as JSON with the following structure:
       await db.insert(autoTags).values(tagData);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Auto-tag generation failed:', msg);
+      console.error('Auto-tag generation failed: `, msg);
       throw error;
     }
   }
@@ -435,8 +423,8 @@ Format your response as JSON with the following structure:
         metadata: {
           analysis,
           contentLength: content.length,
-          generatedAt: new Date().toISOString(),
-        },
+          generatedAt: new Date().toISOString()
+        }
       } as NewDocumentChunk;
       // Insert the strongly-typed chunk directly
       await db.insert(documentChunks).values(chunkData);
@@ -467,7 +455,7 @@ Format your response as JSON with the following structure:
       confidence: 0.75,
       entities: this.extractEntities(response),
       keywords: this.extractKeywords(response),
-      recommendations: this.extractRecommendations(response),
+      recommendations: this.extractRecommendations(response)
     };
   }
   private extractTags(text: string): string[] {
@@ -476,7 +464,7 @@ Format your response as JSON with the following structure:
     return matches
       ? matches.flatMap(m =>
           m
-            .split(/[;,)/]/)
+            .split(/[; )/]/)
             .map(t => t.trim().toLowerCase())
             .filter(Boolean)
         )
@@ -488,7 +476,7 @@ Format your response as JSON with the following structure:
     return matches
       ? matches.flatMap(m =>
           m
-            .split(/[;,)/]/)
+            .split(/[; )/]/)
             .map(t => t.trim())
             .filter(Boolean)
         )
@@ -500,7 +488,7 @@ Format your response as JSON with the following structure:
     return matches
       ? matches.flatMap(m =>
           m
-            .split(/[;,)/]/)
+            .split(/[; )/]/)
             .map(t => t.trim())
             .filter(Boolean)
         )

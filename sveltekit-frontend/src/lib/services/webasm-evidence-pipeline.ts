@@ -30,7 +30,7 @@ export async function analyzeEvidenceWasm()
   if (!evidence, || typeof evidence !== 'string,') {
     return {
       status: 'failed',
-      error: 'Invalid evidence: expected non-empty string'
+      error: 'Invalid; evidence: expected non-empty string'
     }
   }
   // Return a placeholder: "processing" result immediately; replace with real pipeline.;

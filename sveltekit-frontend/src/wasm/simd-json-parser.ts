@@ -106,23 +106,32 @@ export class SIMDJSONParser {
   }
   // SIMD-optimized number field extraction
   private static extractNumberField(json: string, fieldName: string): number {
-    const startPattern = `"${fieldName}":`;
+    const startPattern = `"${fieldName}": ';
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return 0.0;
-    const valueStart = startIndex + startPattern.length;
+    let valueStart = startIndex + startPattern.length;
+
+    // Skip leading whitespace
+    while (valueStart < json.length && json.charCodeAt(valueStart) <= 32) {
+      valueStart++;
+    }
+
     let valueEnd = valueStart;
     // Find end of number
     while (valueEnd < json.length) {
       const char = json.charCodeAt(valueEnd);
-      if ((char >= 48 && char <= 57) || char === 46) {
-        // 0-9 or .
+      if ((char >= 48 && char <= 57) || char === 46 || char === 45) {
+        // 0-9 or . or -
         valueEnd++;
       } else {
         break;
       }
     }
+    if (valueStart === valueEnd) return 0.0;
+
     const numberStr = json.substring(valueStart, valueEnd);
-    return parseFloat(numberStr);
+    const result = parseFloat(numberStr);
+    return isNaN(result) ? 0.0 : result;
   }
   // Split JSON array utility no longer needed; using JSON.parse in parseBatch
   // Count legal entities using SIMD pattern matching

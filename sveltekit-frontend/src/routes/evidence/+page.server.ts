@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     return {
       evidence: [],
       caseId: url.searchParams.get('caseId'),
-      user: null,
+      user: null
     };
   }
   try {
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     return {
       evidence: evidenceData,
       caseId,
-      user,
+      user
     };
   } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';

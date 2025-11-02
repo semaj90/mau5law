@@ -7,9 +7,7 @@ import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js'
 import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist
 declare const self: DedicatedWorkerGlobalScope;
 
-export interface AIProviderConfig {
-  id: string;
-  type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
+export interface AIProviderConfig { id: string;, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
   endpoint: string;
   timeout: number;
   retries: number;
@@ -72,28 +70,28 @@ class AIServiceWorker {
       type: 'ollama',
       endpoint: getOllamaEndpoint(),
       timeout: 30000,
-      retries: 2,
+      retries: 2
     });
     this.providers.set('llamacpp', {
       id: 'llamacpp',
       type: 'llamacpp',
       endpoint: 'http://localhost:8000',
       timeout: 15000,
-      retries: 3,
+      retries: 3
     });
     this.providers.set('autogen', {
       id: 'autogen',
       type: 'autogen',
       endpoint: 'http://localhost:8001',
       timeout: 45000,
-      retries: 1,
+      retries: 1
     });
     this.providers.set('crewai', {
       id: 'crewai',
       type: 'crewai',
       endpoint: 'http://localhost:8002',
       timeout: 60000,
-      retries: 1,
+      retries: 1
     });
   }
 
@@ -115,7 +113,7 @@ class AIServiceWorker {
             this.updateProviderConfig(payload as Partial<AIProviderConfig>);
             break;
           default:
-            console.warn('Unknown message type:', type);
+            console.warn('Unknown message; type:', type);
         }
       } catch (error) {
         this.sendError(taskId, error as Error);
@@ -130,7 +128,7 @@ class AIServiceWorker {
       this.sendMessage({
         type: 'TASK_QUEUED',
         taskId,
-        payload: { position: this.requestQueue.length },
+        payload: {, position: this.requestQueue.length }
       });
       return;
     }
@@ -143,13 +141,13 @@ class AIServiceWorker {
       this.sendMessage({
         type: 'TASK_STARTED',
         taskId,
-        payload: { providerId: task.providerId },
+        payload: {, providerId: task.providerId }
       });
       const result = await this.executeAITask(task, abortController.signal);
       this.sendMessage({
         type: 'TASK_COMPLETED',
         taskId,
-        payload: result,
+        payload: result
       });
     } catch (error) {
       const err = error as Error;
@@ -157,7 +155,7 @@ class AIServiceWorker {
         this.sendMessage({
           type: 'TASK_CANCELLED',
           taskId,
-          payload: null,
+          payload: null
         });
       } else {
         this.sendError(taskId, err);
@@ -212,7 +210,7 @@ class AIServiceWorker {
           // If llamacpp needs a dedicated handler, implement similar to ollama
           return await this.callOllama(provider, task, combinedSignal);
         default:
-          throw new Error(`Unsupported provider type: ${provider.type}`);
+          throw new Error(`Unsupported provider; type: ${provider.type}`);
       }
     } finally {
       clearTimeout(timeoutId);
@@ -230,13 +228,13 @@ class AIServiceWorker {
         system: ollamaTask.systemPrompt,
         stream: false,
         options: {
-          temperature: ollamaTask.temperature ?? 0.1,
+         , temperature: ollamaTask.temperature ?? 0.1,
           top_p: ollamaTask.topP ?? 0.9,
           top_k: ollamaTask.topK ?? 40,
-          repeat_penalty: ollamaTask.repeatPenalty ?? 1.05,
-        },
+          repeat_penalty: ollamaTask.repeatPenalty ?? 1.05
+        }
       }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -253,8 +251,8 @@ class AIServiceWorker {
       metadata: {
         evalCount: data.eval_count,
         evalDuration: data.eval_duration,
-        loadDuration: data.load_duration,
-      },
+        loadDuration: data.load_duration
+      }
     };
   }
 
@@ -264,12 +262,12 @@ class AIServiceWorker {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        agents: autoGenTask.agents ?? ['assistant'],
+       , agents: autoGenTask.agents ?? ['assistant'],
         message: task.prompt,
         max_rounds: autoGenTask.maxRounds ?? 5,
-        context: autoGenTask.context ?? {},
+        context: autoGenTask.context ?? {}
       }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -286,8 +284,8 @@ class AIServiceWorker {
       metadata: {
         rounds: data.rounds,
         agents: data.agent_responses,
-        conversationId: data.conversation_id,
-      },
+        conversationId: data.conversation_id
+      }
     };
   }
 
@@ -297,12 +295,12 @@ class AIServiceWorker {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        crew_id: crewAITask.crewId ?? 'legal-analysis-crew',
+       , crew_id: crewAITask.crewId ?? 'legal-analysis-crew',
         task: task.prompt,
         context: crewAITask.context ?? {},
-        agents: crewAITask.agents ?? ['researcher', 'analyst', 'writer'],
+        agents: crewAITask.agents ?? ['researcher', 'analyst', 'writer']
       }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -319,8 +317,8 @@ class AIServiceWorker {
       metadata: {
         taskId: data.task_id,
         agents: data.agent_outputs,
-        executionTime: data.execution_time,
-      },
+        executionTime: data.execution_time
+      }
     };
   }
 
@@ -355,11 +353,11 @@ class AIServiceWorker {
       type: 'STATUS_UPDATE',
       taskId: 'status',
       payload: {
-        activeRequests: this.activeRequestCount,
+       , activeRequests: this.activeRequestCount,
         queueLength: this.requestQueue.length,
         providers: Array.from(this.providers.values()),
-        maxConcurrent: this.maxConcurrentRequests,
-      },
+        maxConcurrent: this.maxConcurrentRequests
+      }
     });
   }
 
@@ -372,10 +370,10 @@ class AIServiceWorker {
       type: 'TASK_ERROR',
       taskId,
       payload: {
-        name: error.name,
+       , name: error.name,
         message: error.message,
-        stack: error.stack,
-      },
+        stack: error.stack
+      }
     });
   }
 

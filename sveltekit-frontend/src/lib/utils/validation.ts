@@ -7,9 +7,7 @@ import type { Case } from '$lib/types';
 // NOTE: removed unused `Case` import
 
 // Basic validation types
-export interface ValidationResult {
-  isValid: boolean;
-  errors: string[];
+export interface ValidationResult { isValid: boolean;, errors: string[];
   warnings: string[];
   value?: any;
 }
@@ -54,7 +52,7 @@ export function createValidationResult(
 
 export function isValidEmail(email: string): boolean {
   // simple but practical RFC-like check
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2}$/i;
   return re.test(String(email).trim());
 }
 
@@ -89,7 +87,7 @@ export function isValidDate(date: string): boolean {
 export function validateField(value: any, config: FormFieldConfig): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-  const label = config.label ? `${config.label}: ` : '';
+  const label = config.label ? `${config.label}: ' : '';
 
   // required
   if (config.required) {

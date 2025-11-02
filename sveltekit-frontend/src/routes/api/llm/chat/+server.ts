@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       response,
       context: context || {},
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('LLM chat error:', error);

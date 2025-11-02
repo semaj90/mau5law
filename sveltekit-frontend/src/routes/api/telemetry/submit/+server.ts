@@ -2,9 +2,7 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 
-type TelemetryEntry = {
-  ts: number;
-  latency: number;
+type TelemetryEntry = { ts: number;, latency: number;
   frameDelta?: number;
   gpuActive: boolean;
   fallbackMode: boolean;

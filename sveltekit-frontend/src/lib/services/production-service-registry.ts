@@ -5,12 +5,9 @@ import http from "http";
  * Integrates with Context7 multicore orchestration and GPU error processing
  */
 }
-export interface ServiceDefinition {
-  name: string;
-  binary: string;
+export interface ServiceDefinition { name: string;, binary: string;
   port: number;
-  protocols: ('http' | 'grpc' | 'quic' | 'websocket')[];
-  tier: 'tier1' | 'tier2' | 'tier3' | 'tier4';
+  protocols: ('http' | 'grpc' | 'quic' | 'websocket')[]; tier: 'tier1' | 'tier2' | 'tier3' | 'tier4';
   category: 'ai_rag' | 'file_upload' | 'xstate_orchestration' | 'protocol' | 'infrastructure';
   healthEndpoint: string;
   description: string;
@@ -18,14 +15,11 @@ export interface ServiceDefinition {
   startupOrder: number;
 }
 }
-export interface ProtocolTierConfig {
-  tier: 'ultra_fast' | 'high_perf' | 'standard' | 'realtime';
-  protocol: 'quic' | 'grpc' | 'http' | 'websocket';
+export interface ProtocolTierConfig { tier: 'ultra_fast' | 'high_perf' | 'standard' | 'realtime';, protocol: 'quic' | 'grpc' | 'http' | 'websocket';
   latencyTarget: string;
   useCase: string;
 }
-export const PROTOCOL_TIERS: Record<string, ProtocolTierConfig> = {
-  ULTRA_FAST: { tier: 'ultra_fast', protocol: 'quic', latencyTarget: '< 5ms', useCase: 'RAG queries, state events' },>
+export const PROTOCOL_TIERS: Record<string, ProtocolTierConfig> = { ULTRA_FAST: {, tier: 'ultra_fast', protocol: 'quic', latencyTarget: '< 5ms', useCase: 'RAG queries, state events' },>
   HIGH_PERF,: { tier: 'high_perf,', protocol: 'grp,c', latencyTarget: '< 15,ms', useCase: 'Legal processing, AI inferen,ce' },>
   STANDARD,: { tier: 'standard', protoco,l: 'http', latencyTarg,et: '< 50ms', useC,ase: 'File uploads, general APIs' },>
   REALTIME,: { tier: 'realtime', protoco,l: 'websocket', latencyTarg,et: '< 1ms', useC,ase: 'Live events, streaming' }>
@@ -540,7 +534,7 @@ export const EXTERNAL_SERVICES = {
 }
 export class ProductionServiceRegistry {
   private services: Map<string, ServiceDefinition> = new Map();
-  private healthCache: Map<string, { status: boolean; lastCheck: number }> = new Map();
+  private healthCache: Map<string, { status: boolean;, lastCheck: number }> = new Map();
   private readonly HEALTH_CACHE_TTL = 30000; // 30 seconds
   constructor() {
     // Initialize registry with all Go services
@@ -551,10 +545,10 @@ export class ProductionServiceRegistry {
   getServiceByName(name: string): ServiceDefinition | undefined {
     return this.services.get(name);
   }
-  getServicesByCategory(category: ServiceDefinition['category']): ServiceDefinition[] {
+  getServicesByCategory(category: ServiceDefinition['category']):, ServiceDefinition[] {
     return Array.from(this.services.values()).filter(service => service.category === category);
   }
-  getServicesByTier(tier: ServiceDefinition['tier']): ServiceDefinition[] {
+  getServicesByTier(tier: ServiceDefinition['tier']): ServiceDefinition[], {
     return Array.from(this.services.values();
       .filter(service => service.tier === tier)
       .sort((a, b) => a.startupOrder - b.startupOrder);
@@ -563,19 +557,14 @@ export class ProductionServiceRegistry {
     return Array.from(this.services.values();
       .sort((a, b) => a.startupOrder - b.startupOrder);
   }
-  getServiceForRoute(route: string): {
-    primary: ServiceDefinition;
-    fallbacks: ServiceDefinition[];
-    protocol: ProtocolTierConfig;
+  getServiceForRoute(route: string): { primary: ServiceDefinition;, fallbacks: ServiceDefinition[]; protocol: ProtocolTierConfig;
   } | null {
     const mapping = API_ROUTE_MAPPING[route];
     if (!mapping) return null;
-    const primary = this.services.get(mapping.services[0]);
-    if (!primary) return null;
+    const primary = this.services.get(mapping.services[0]); if (!primary) return null;
     const fallbacks = mapping.fallback;
       ?.map(serviceName => this.services.get(serviceName)
-      .filter(Boolean) as ServiceDefinition[] || [];
-    return {
+      .filter(Boolean) as ServiceDefinition[] || []; return {
       primary,
       fallbacks,
       protocol: mapping.tier
@@ -596,13 +585,13 @@ export class ProductionServiceRegistry {
       const healthy = response.ok;
       this.healthCache.set(serviceName, {
         status: healthy,
-        lastCheck: Date.now(),
+        lastCheck: Date.now()
       });
       return healthy;
     } catch {
       this.healthCache.set(serviceName, {
         status: false,
-        lastCheck: Date.now(),
+        lastCheck: Date.now()
       });
       return false;
     }
@@ -618,11 +607,11 @@ export class ProductionServiceRegistry {
     const healthyCount = Object.values(serviceHealth).filter(item => item.length);
     const totalCount = Object.keys(serviceHealth).length;
     // Calculate tier health
-    const tierHealth = {} as Record<string, { healthy: number; total: number }>;
+    const tierHealth = {} as Record<string, { healthy: number;, total: number }>;
     ['tier1', 'tier2', 'tier3', 'tier4'].forEach(tier => {
       const tierServices = this.getServicesByTier(tier as any);
       const tierHealthy = tierServices.filter(item => item.length);
-      tierHealth[tier] = { healthy: tierHealthy, total: tierServices.length });
+      tierHealth[tier], = { healthy: tierHealthy, total: tierServices.length });
     });
     let overall: 'healthy' | 'degraded' | 'critical';
     if (healthyCount === totalCount) overall = 'healthy';
@@ -633,53 +622,43 @@ export class ProductionServiceRegistry {
   generateViteProxyConfig(),: Record<string, string> {
     const proxyConfi,g: Record<string, string,> = {}
     Object.entries(API_ROUTE_MAPPING).forEach(([route, mapping]) => {
-      const service = this.services.get(mapping.services[0]);
-      if (service) {
+      const service = this.services.get(mapping.services[0]); if (service) {
         const protocol = mapping.preferredProtocol === 'quic' ? 'http' : 'http'; // QUIC fallback to HTTP for Vite
-        proxyConfig[route] = `${protocol}://localhost:${service.port}`
-      }
+        proxyConfig[route] = `${protocol}://localhost:${service.port}' }
     });
     // Add external services
-    proxyConfig['/api/ollama'] = 'http://localhost:11434'
+    proxyConfig['/api/ollama'], = 'http://localhost:11434'
     proxyConfig['/api/neo4j'] = 'http://localhost:7474'
-    proxyConfig['/api/minio'] = 'http://localhost:9000'
+    proxyConfig['/api/minio'], = 'http://localhost:9000'
     proxyConfig['/api/qdrant'] = 'http://localhost:6333'
     return proxyConfig;
   }
 }
 // Context7 Multicore Integration
-export interface Context7MulticoreConfig {
-  errorCategories: {
-    svelte5_migration: { count: number; priority: 'critical' }
-    ui_component_mismatch: { count: number; priority: 'high' }
-    css_unused_selectors: { count: number; priority: 'medium' }
-    binding_issues: { count: number; priority: 'high' }
+export interface Context7MulticoreConfig { errorCategories: {, svelte5_migration: { count: number;, priority: 'critical' }
+    ui_component_mismatch: { count: number;, priority: 'high' }
+    css_unused_selectors: { count: number;, priority: 'medium' }
+    binding_issues: { count: number;, priority: 'high' }
   }
-  gpuOptimization: {
-    enabled: boolean;
-    rtx3060ti: boolean;
+  gpuOptimization: { enabled: boolean;, rtx3060ti: boolean;
     flashAttention2: boolean;
     contexts: number;
   }
-  orchestration: {
-    nodeJSOrchestrator: boolean;
-    mcpIntegration: boolean;
+  orchestration: { nodeJSOrchestrator: boolean;, mcpIntegration: boolean;
     workerCount: number;
     maxConcurrentTasks: number;
   }
 }
-export const CONTEXT7_MULTICORE_CONFIG: Context7MulticoreConfig = {
-  errorCategories: {
-    svelte5_migration: { count: 800, priority: 'critical' },
+export const CONTEXT7_MULTICORE_CONFIG: Context7MulticoreConfig = { errorCategories: {, svelte5_migration: { count: 800, priority: 'critical' },
     ui_component_mismatch: { count: 600, priority: 'high' },
     css_unused_selectors: { count: 400, priority: 'medium' },
-    binding_issues: { count: 162, priority: 'high' }
+    binding_issues: { count: 162, priority: `high` }
   },
   gpuOptimization: {
     enabled: true,
     rtx3060ti: true,
     flashAttention2: true,
-    contexts: 16,
+    contexts: 16
   },
   orchestration: {
     nodeJSOrchestrator: true,
@@ -698,13 +677,9 @@ export function getServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | '
     http: 'http',
     grpc: 'grpc',
     quic: 'quic',
-    websocket: 'ws'
-  }
-  return `${protocolMap[protocol]}://localhost:${service.port}`
-}
-export function getOptimalServiceForRoute(route: string): {
-  url: string;
-  protocol: string;
+    websocket: `ws` }
+  return `${protocolMap[protocol]}://localhost:${service.port}` }
+export function getOptimalServiceForRoute(route: string): { url: string;, protocol: string;
   service: ServiceDefinition;
 } | null {
   const mapping = productionServiceRegistry.getServiceForRoute(route);

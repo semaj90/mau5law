@@ -149,7 +149,7 @@ import type { Case } from '$lib/types';
   <!-- Dropdown Menu -->
   <DropdownMenu.Portal forceMount>
     {#if open}
-      <DropdownMenu.Content class="ai-menu" transition:fly={{ duration: 150, y: -8 }}>
+      <DropdownMenu.Content class="ai-menu" transitionfly={{ duration: 150, y: -8 }}>
         <!-- Report Generation Section -->
         <DropdownMenu.Group class="ai-menu__section">
           <DropdownMenu.Label class="ai-menu__header">

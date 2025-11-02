@@ -72,16 +72,16 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
       } else {
         node.removeAttribute('aria-describedby');
       }
-    },
+    }
   };
 };
 /**
  * Specialized variant for button-like interactions
- */ export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
+ */ export function accessibleButton(element: HTMLElement, params: {, handler: (e: Event) => void; label?: string }) {
   return accessibleClick(element, { role: 'button', ...params });
 }
 /**
  * Specialized variant for menu items
- */ export function accessibleMenuItem(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
+ */ export function accessibleMenuItem(element: HTMLElement, params: {, handler: (e: Event) => void; label?: string }) {
   return accessibleClick(element, { role: 'menuitem', ...params });
 }

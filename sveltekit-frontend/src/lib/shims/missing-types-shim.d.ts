@@ -5,7 +5,7 @@ import type { Case } from '$lib/types';
 import type {
   AITask as ProperAITask,
   AIResponse as ProperAIResponse,
-  WorkerStatus as ProperWorkerStatus,
+  WorkerStatus as ProperWorkerStatus
 } from '../types/svelte5-patterns';
 // AI/LLM Types - Using proper definitions
 declare global {
@@ -15,9 +15,7 @@ declare global {
   type AITask = ProperAITask;
   type AIResponse<T = unknown> = ProperAIResponse<T>;
   type WorkerStatus = ProperWorkerStatus;
-  type WorkerMessage = {
-    taskId: string;
-    type: 'status' | 'result' | 'error';
+  type WorkerMessage = { taskId: string;, type: 'status' | 'result' | 'error';
     data: any;
     timestamp: Date;
   };
@@ -43,9 +41,7 @@ declare global {
     fallbackUsed?: boolean;
     error?: string;
   };
-  type ErrorProcessingPipeline = {
-    processErrors: (errors: Error[]) => Promise<Array<unknown>>;
-    analyzeError: (error: Error) => Promise<unknown>;
+  type ErrorProcessingPipeline = { processErrors: (errors: Error[]) => Promise<Array<unknown>>;, analyzeError: (error: Error) => Promise<unknown>;
   };
 }
 // API Request/Response Types - Using proper definitions
@@ -57,7 +53,7 @@ import type {
   EvidenceCreateRequest as ProperEvidenceCreateRequest,
   EvidenceSearchRequest as ProperEvidenceSearchRequest,
   BulkOperationResponse as ProperBulkOperationResponse,
-  FormSubmissionResult as ProperFormSubmissionResult,
+  FormSubmissionResult as ProperFormSubmissionResult
 } from '../types/svelte5-patterns';
 declare global {
   type CaseCreateRequest = ProperCaseCreateRequest;
@@ -71,9 +67,7 @@ declare global {
     filters?: Record<string, unknown>;
     limit?: number;
   };
-  type CommandSearchResponse = {
-    results: Array<unknown>;
-    total: number;
+  type CommandSearchResponse = { results: Array<unknown>;, total: number;
   };
   type BulkOperationResponse = ProperBulkOperationResponse;
   type FormSubmissionResult<T = unknown> = ProperFormSubmissionResult<T>;
@@ -83,12 +77,10 @@ import type {
   CaseState,
   EvidenceState,
   VectorSearchResult as ProperVectorSearchResult,
-  VectorSearchOptions as ProperVectorSearchOptions,
+  VectorSearchOptions as ProperVectorSearchOptions
 } from '../types/svelte5-patterns';
 declare module '$lib/types/database' {
-  export type LegalDocument = {
-    id: string;
-    title: string;
+  export type LegalDocument = { id: string;, title: string;
     content: string;
     fileType: 'PDF' | 'TEXT' | 'DOCX' | 'HTML';
     uploadedAt: Date;
@@ -96,25 +88,19 @@ declare module '$lib/types/database' {
     metadata: Record<string, unknown>;
     embedding?: number[];
   };
-  export type DocumentChunk = {
-    id: string;
-    documentId: string;
+  export type DocumentChunk = { id: string;, documentId: string;
     chunkIndex: number;
     content: string;
     embedding?: number[];
     metadata: Record<string, unknown>;
   };
-  export type UserAiQuery = {
-    id: string;
-    userId: string;
+  export type UserAiQuery = { id: string;, userId: string;
     query: string;
     response?: string;
     createdAt: Date;
     embedding?: number[];
   };
-  export type AutoTag = {
-    id: string;
-    entityId: string;
+  export type AutoTag = { id: string;, entityId: string;
     entityType: 'case' | 'evidence' | 'document';
     tag: string;
     confidence: number;
@@ -136,9 +122,7 @@ declare global {
     delete?: (options?: any) => Promise<void>;
     [key: string]: any;
   };
-  type QueryResult = {
-    content: string;
-    score: number;
+  type QueryResult = { content: string;, score: number;
     sources?: any[];
   };
 }
@@ -154,12 +138,10 @@ declare global {
 }
 // External Library Types
 declare module '$lib/types' {
-  // Duplicate removed: // Duplicate removed: export type Case = any
+  // Duplicate removed: // Duplicate; removed: export type Case = any
 }
 declare global {
-  type GGUFInferenceRequest = {
-    prompt: string;
-    maxTokens: number;
+  type GGUFInferenceRequest = { prompt: string;, maxTokens: number;
     temperature: number;
     topP: number;
     topK: number;

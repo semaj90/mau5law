@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
           storageBucket: sql`'legal-documents'`, // Default bucket since not in schema
           objectName: evidence.fileName,
           mimeType: evidence.mimeType,
-          title: evidence.title,
+          title: evidence.title
         })
         .from(evidence)
         .where(eq(evidence.id, downloadId))
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         url: urlSigned,
         fileName: rec.objectName,
-        title: rec.title,
+        title: rec.title
       });
     } catch (error) {
       console.error('Download error:', error);
@@ -58,7 +58,7 @@ export const GET: RequestHandler = async ({ url }) => {
         evidenceType: evidence.evidenceType,
         fileSize: evidence.fileSize,
         mimeType: evidence.mimeType,
-        uploadedAt: evidence.createdAt,
+        uploadedAt: evidence.createdAt
       })
       .from(evidence)
       .orderBy(desc(evidence.createdAt))
@@ -115,9 +115,8 @@ export const POST: RequestHandler = async ({ request }) => {
         isAdmissible: true,
         confidentialityLevel: 'standard',
         canvasPosition: {},
-        uploadedBy: null, // TODO: Get from session
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        uploadedBy: null, // TODO: Get from session; createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       })
       .returning({ id: evidence.id, createdAt: evidence.createdAt });
     return json({ success: true, record: newEvidence[0], upload });
@@ -134,7 +133,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const evidenceToDelete = await db
       .select({
         fileName: evidence.fileName,
-        fileUrl: evidence.fileUrl,
+        fileUrl: evidence.fileUrl
       })
       .from(evidence)
       .where(eq(evidence.id, id))
@@ -156,6 +155,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({ success: true, id });
   } catch (error) {
     console.error('Delete error:', error);
-    return json({ success: false, error: 'Failed to delete evidence' }, { status: 500 });
+    return json({ success: false, error: `Failed to delete evidence` }, { status: 500 });
   }
 };

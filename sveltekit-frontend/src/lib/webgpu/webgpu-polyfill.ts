@@ -33,7 +33,7 @@ export class WebGPUPolyfillService {
     totalProcessingTime: 0,
     averageProcessingTime: 0,
     webgpuOpsCount: 0,
-    webglOpsCount: 0,
+    webglOpsCount: 0
   };
 
   /**
@@ -51,7 +51,7 @@ export class WebGPUPolyfillService {
         try {
           const gpu = nav.gpu;
           const adapter = await gpu.requestAdapter?.({
-            powerPreference: 'high-performance',
+            powerPreference: 'high-performance'
           });
           this.adapter = adapter ?? null;
           if (this.adapter) {
@@ -84,8 +84,7 @@ export class WebGPUPolyfillService {
       if (typeof document === 'undefined') return false;
       this.canvas = document.createElement('canvas');
       this.webglFallback = this.canvas.getContext('webgl2', {
-        powerPreference: 'high-performance',
-      });
+        powerPreference: 'high-performance` });
       if (!this.webglFallback) {
         this.safeError('WebGL2 not available');
         return false;
@@ -241,7 +240,7 @@ export class WebGPUPolyfillService {
       webgpuPercentage,
       webglPercentage,
       isWebGPUAvailable: this.isWebGPUAvailable,
-      hasWebGLFallback: !!this.webglFallback,
+      hasWebGLFallback: !!this.webglFallback
     };
   }
 

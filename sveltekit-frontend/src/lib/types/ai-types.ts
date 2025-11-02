@@ -40,9 +40,7 @@ export interface EnhancedSearchOptions {
     [key: string]: any;
   };
 }
-export interface EnhancedSearchResult {
-  id: string;
-  title: string;
+export interface EnhancedSearchResult { id: string;, title: string;
   content: string;
   similarity: number;
   practiceArea: PracticeArea;
@@ -57,9 +55,7 @@ export interface EnhancedSearchResult {
     createdAt?: Date;
     updatedAt?: Date;
   };
-  highlights?: {
-    field: string;
-    matches: string[];
+  highlights?: { field: string;, matches: string[];
   }[];
   confidence: number;
   relevanceScore: number;
@@ -69,9 +65,7 @@ export interface EnhancedSearchResult {
     recommendations?: string[];
   };
 }
-export interface AIAnalysisResult {
-  summary: string;
-  keyPoints: string[];
+export interface AIAnalysisResult { summary: string;, keyPoints: string[];
   legalConcepts: string[];
   citations: string[];
   recommendations: string[];
@@ -86,9 +80,7 @@ export interface VectorSearchOptions {
   filters?: Record<string, unknown>;
   includeMetadata?: boolean;
 }
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata: Record<string, unknown>;
 }
@@ -122,13 +114,9 @@ export interface AIModelConfig {
   systemPrompt?: string;
 }
 // Legal-specific AI types
-export interface LegalDocumentAnalysis {
-  documentType: string;
-  practiceArea: PracticeArea;
+export interface LegalDocumentAnalysis { documentType: string;, practiceArea: PracticeArea;
   jurisdiction: Jurisdiction;
-  keyEntities: {
-    persons: string[];
-    organizations: string[];
+  keyEntities: { persons: string[];, organizations: string[];
     locations: string[];
     dates: string[];
     amounts: string[];
@@ -139,9 +127,7 @@ export interface LegalDocumentAnalysis {
   recommendations: string[];
   confidenceScore: number;
 }
-export interface CaseAnalysis {
-  caseId: string;
-  title: string;
+export interface CaseAnalysis { caseId: string;, title: string;
   summary: string;
   precedents: string[];
   legalIssues: string[];

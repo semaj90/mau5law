@@ -5,14 +5,10 @@
  */
 import Redis from 'ioredis';
 import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
-export interface CHRROMPattern {
-  id: string;
-  patternType: 'ui_component' | 'document_layout' | 'visualization' | 'text_pattern';
+export interface CHRROMPattern { id: string;, patternType: 'ui_component' | 'document_layout' | 'visualization' | 'text_pattern';
   bankId: number; // 0-7, like NES CHR-ROM banks
   tileData: Uint8Array; // 8x8 pixel patterns like NES tiles,
-  metadata: {
-    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  metadata: { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, riskLevel: 'low' | 'medium' | 'high' | 'critical';
     cacheHits: number;
     lastAccessed: number;
     compressionRatio: number;
@@ -27,17 +23,13 @@ export interface CHRROMCache {
   patterns: Map<string, CHRROMPattern>;
   banks: ArrayBuffer[]; // 8 banks, 8KB each (like NES)
   hotPatterns: string[]; // Most frequently accessed patterns,
-  metrics: {
-    cacheHits: number;
-    cacheMisses: number;
+  metrics: { cacheHits: number;, cacheMisses: number;
     totalRequests: number;
     averageResponseTime: number;
     bankUtilization: number[];
   };
 }
-export interface PatternGenerationOptions {
-  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+export interface PatternGenerationOptions { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, riskLevel: 'low' | 'medium' | 'high' | 'critical';
   visualStyle: 'modern' | 'classic' | 'minimal' | 'detailed';
   colorScheme: 'default' | 'accessibility' | 'high_contrast' | 'colorblind';
   animated: boolean;
@@ -54,7 +46,7 @@ export class CHRROMPatternCache {
       redisConfig || {
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD,
+        password: process.env.REDIS_PASSWORD
       }
     );
     this.cache = {
@@ -68,8 +60,8 @@ export class CHRROMPatternCache {
         cacheMisses: 0,
         totalRequests: 0,
         averageResponseTime: 0,
-        bankUtilization: Array(this.MAX_BANKS).fill(0),
-      },
+        bankUtilization: Array(this.MAX_BANKS).fill(0)
+      }
     };
     this.initializeBanks();
     this.startMetricsCollection();
@@ -148,7 +140,7 @@ export class CHRROMPatternCache {
       console.log(`❌ CHR-ROM cache miss for pattern: ${patternId} (${responseTime.toFixed(2)}ms)`);
       return null;
     } catch (error) {
-      console.error('❌ CHR-ROM pattern cache error:', error);
+      console.error('❌ CHR-ROM pattern cache error: ', error);
       return null;
     }
   }
@@ -178,9 +170,9 @@ export class CHRROMPatternCache {
           riskLevel: options.riskLevel,
           cacheHits: 0,
           lastAccessed: Date.now(),
-          compressionRatio: this.calculateCompressionRatio(tileData),
+          compressionRatio: this.calculateCompressionRatio(tileData)
         },
-        renderData,
+        renderData
       };
       // Store in CHR-ROM bank
       await this.storePattternInBank(pattern);
@@ -188,7 +180,7 @@ export class CHRROMPatternCache {
       const redisKey = `${this.CACHE_PREFIX}pattern:${patternId}`;
       const serializedPattern = this.serializePattern(pattern);
       if (this.redis) {
-        // ioredis typings prefer `set` with EX option instead of `setex`
+        // ioredis typings prefer `set` with EX option instead of `setex'
         await this.redis.set(redisKey, serializedPattern, 'EX', 3600); // 1 hour TTL
       }
       // Store in L1 cache
@@ -215,7 +207,7 @@ export class CHRROMPatternCache {
       contract: this.generateContractPattern(_options.riskLevel),
       evidence: this.generateEvidencePattern(_options.riskLevel),
       brief: this.generateBriefPattern(_options.riskLevel),
-      citation: this.generateCitationPattern(_options.riskLevel),
+      citation: this.generateCitationPattern(_options.riskLevel)
     };
     let basePattern = basePatterns[_options.documentType];
     // Apply risk level modifications
@@ -350,7 +342,7 @@ export class CHRROMPatternCache {
       low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
       medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
       high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
-      critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number],
+      critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
     };
     return colors[riskLevel] || colors.low;
   }
@@ -473,7 +465,7 @@ export class CHRROMPatternCache {
       totalPatterns: this.cache.patterns.size,
       hotPatterns: [...this.cache.hotPatterns],
       hitRate:
-        this.cache.metrics.totalRequests > 0 ? this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0,
+        this.cache.metrics.totalRequests > 0 ? this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0
     };
   }
   /**

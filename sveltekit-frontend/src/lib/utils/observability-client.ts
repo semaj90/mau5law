@@ -7,18 +7,14 @@ import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';
 }
-export interface ObservabilityConfig {
-  enableMetrics: boolean;
-  enablePerformanceTracking: boolean;
+export interface ObservabilityConfig { enableMetrics: boolean;, enablePerformanceTracking: boolean;
   enableWebVitals: boolean;
   metricsEndpoint: string;
   batchSize: number;
   flushInterval: number;
   debugMode: boolean;
 }
-export interface RouteMetrics {
-  routeId: string;
-  pathname: string;
+export interface RouteMetrics { routeId: string;, pathname: string;
   loadTime: number;
   renderTime: number;
   hydrationTime?: number;
@@ -115,9 +111,7 @@ class ObservabilityClient {
   /**
    * Track API call performance
    */
-  trackAPICall(endpoint: string, method: string = 'GET'): {
-    start: () => void;
-    end: (response?: Response) => void;
+  trackAPICall(endpoint: string, method: string = 'GET'): { start: () => void;, end: (response?: Response) => void;
   } {
     let startTime: number;
     let requestId: string;
@@ -157,9 +151,7 @@ class ObservabilityClient {
   /**
    * Get current performance snapshot
    */
-  getPerformanceSnapshot(): {
-    timing: TimingMetrics;
-    route: string | undefined;
+  getPerformanceSnapshot(): { timing: TimingMetrics;, route: string | undefined;
     memory?: any;
     connection?: any;
   } {
@@ -190,8 +182,7 @@ class ObservabilityClient {
       const response = await fetch(this.config.metricsEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({,
           metrics: metricsToSend,
           timestamp: Date.now(),
@@ -276,7 +267,7 @@ if (browser) {
     debugMode,
     enableMetrics: true,
     enablePerformanceTracking: true,
-    enableWebVitals: true,
+    enableWebVitals: true
   });
 }
 // SvelteKit integration helpers

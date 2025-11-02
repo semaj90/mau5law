@@ -26,7 +26,7 @@
     responsive?: boolean;
     class?: string;
   }
-  export const resizable: boolean = $state(false);
+  export const resizable: boolean = false;
   const gapClasses = {
     none: 'gap-0',
     sm: 'gap-2',

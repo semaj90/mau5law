@@ -19,12 +19,12 @@ export const POST: RequestHandler = async (event) => {
     const sessionCookie = auth.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes,
+      ...sessionCookie.attributes
     });
 
     return json({
       success: true,
-      message: 'Logged out successfully',
+      message: 'Logged out successfully'
     });
   } catch (error) {
     console.error('Error during logout:', error);
@@ -32,10 +32,10 @@ export const POST: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to logout',
+         , message: 'Failed to logout',
           code: 'LOGOUT_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async (event) => {
     const sessionCookie = auth.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes,
+      ...sessionCookie.attributes
     });
 
     return redirect(303, '/');

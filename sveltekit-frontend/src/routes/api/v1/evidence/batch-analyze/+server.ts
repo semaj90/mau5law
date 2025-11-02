@@ -27,9 +27,9 @@ const BatchAnalysisSchema = z.object({
           .object({
             fileSize: z.number().optional(),
             uploadDate: z.string().datetime().optional(),
-            source: z.string().optional(),
+            source: z.string().optional()
           })
-          .optional(),
+          .optional()
       })
     )
     .min(1, 'At least one file is required'),
@@ -41,9 +41,9 @@ const BatchAnalysisSchema = z.object({
       generateSummary: z.boolean().default(true),
       parallelProcessing: z.boolean().default(true),
       confidenceThreshold: z.number().min(0).max(1).default(0.7),
-      maxConcurrency: z.number().min(1).max(10).default(4),
+      maxConcurrency: z.number().min(1).max(10).default(4)
     })
-    .default({}),
+    .default({})
 });
 
 // Configuration
@@ -74,9 +74,7 @@ type AnalysisResult = {
   [key: string]: any;
 };
 
-type IndividualResult = {
-  fileId: string;
-  filename: string;
+type IndividualResult = { fileId: string;, filename: string;
   success: boolean;
   analysis: AnalysisResult | null;
   error: string | null;
@@ -124,7 +122,7 @@ async function processBatchParallel(files: EvidenceFile[], model: string, option
           filename: file.filename,
           success: result.status === 'fulfilled',
           analysis: result.status === 'fulfilled' ? (result.value as AnalysisResult) : null,
-          error: errorMessage,
+          error: errorMessage
         } as IndividualResult;
       })
     );
@@ -144,7 +142,7 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
         filename: file.filename,
         success: true,
         analysis,
-        error: null,
+        error: null
       });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -153,7 +151,7 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
         filename: file.filename,
         success: false,
         analysis: null,
-        error: msg,
+        error: msg
       });
     }
   }
@@ -163,10 +161,9 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
 
 async function analyzeSingleDocument(file: EvidenceFile, model: string): Promise<AnalysisResult> {
   const analysisPrompt = `Analyze this legal evidence document and provide comprehensive analysis:
-
-DOCUMENT: ${file.filename}
+; DOCUMENT: ${file.filename}
 TYPE: ${file.type}
-CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : ''}
+CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `` }
 
 Provide analysis in this exact JSON format:
 {
@@ -189,18 +186,18 @@ Provide analysis in this exact JSON format:
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt: analysisPrompt,
         stream: false,
         options: {
-          temperature: 0.1,
+         , temperature: 0.1,
           top_p: 0.9,
           num_predict: 1536,
-          num_ctx: 6144,
-        },
-      }),
+          num_ctx: 6144
+        }
+      })
     });
 
     if (!response.ok) {
@@ -239,7 +236,7 @@ Provide analysis in this exact JSON format:
         evidence_strength: 0.5,
         recommendations: ['Manual legal review required'],
         cross_references: [],
-        timeline_events: [],
+        timeline_events: []
       };
     }
 
@@ -281,20 +278,18 @@ async function performCrossDocumentAnalysis(analysisResults: IndividualResult[])
     .filter(([_, count]) => count > 1)
     .map(([issue, count]) => ({ issue, frequency: count }));
 
-  return {
-    correlation_analysis: {
-      common_entities: commonEntities,
+  return { correlation_analysis: {, common_entities: commonEntities,
       date_patterns: datePatterns,
       common_legal_issues: commonIssues,
-      document_relationships: generateDocumentRelationships(analysisResults),
+      document_relationships: generateDocumentRelationships(analysisResults)
     },
     unified_timeline: generateUnifiedTimeline(analysisResults),
     summary_insights: {
       total_documents: analysisResults.length,
       successful_analyses: analysisResults.filter(r => r.success).length,
       key_correlations: commonEntities.length + commonIssues.length,
-      timeline_events: datePatterns.length,
-    },
+      timeline_events: datePatterns.length
+    }
   };
 }
 
@@ -323,8 +318,8 @@ function generateDocumentRelationships(analysisResults: IndividualResult[]) {
           relationship_strength: (commonEntities.length + commonIssues.length) / 10,
           common_elements: {
             entities: commonEntities,
-            legal_issues: commonIssues,
-          },
+            legal_issues: commonIssues
+          }
         });
       }
     }
@@ -339,7 +334,7 @@ function generateUnifiedTimeline(analysisResults: IndividualResult[]) {
     .flatMap(result =>
       (result.analysis?.timeline_events || []).map(event => ({
         ...(event as TimelineEvent),
-        source_document: result.filename,
+        source_document: result.filename
       }))
     )
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -348,9 +343,9 @@ function generateUnifiedTimeline(analysisResults: IndividualResult[]) {
     events: allTimelineEvents,
     date_range: {
       earliest: allTimelineEvents[0]?.date || null,
-      latest: allTimelineEvents[allTimelineEvents.length - 1]?.date || null,
+      latest: allTimelineEvents[allTimelineEvents.length - 1]?.date || null
     },
-    event_count: allTimelineEvents.length,
+    event_count: allTimelineEvents.length
   };
 }
 
@@ -379,7 +374,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication (allow test mode)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
     if (!isTestMode && (!locals.session || !locals.user)) {
-      return json({ message: 'Authentication required' }, { status: 401 });
+      return json({ message: `Authentication required` }, { status: 401 });
     }
 
     const body = await request.json();
@@ -412,15 +407,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             successful_analyses: successCount,
             failed_analyses: files.length - successCount,
             processing_time_ms: processingTime,
-            analysis_options: analysisOptions,
+            analysis_options: analysisOptions
           },
           metadata: {
-            model_used: await getOptimalModel(),
+           , model_used: await getOptimalModel(),
             processed_at: new Date().toISOString(),
-            user_id: isTestMode ? 'test-user' : getUserId(locals),
-          },
-        },
-      },
+            user_id: isTestMode ? 'test-user' : getUserId(locals)
+          }
+        }
+      }
     });
   } catch (err: any) {
     // Log raw error for diagnostics (keeps type-safety)
@@ -431,7 +426,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json(
         {
           message: 'Invalid batch analysis request',
-          details: err.errors,
+          details: err.errors
         },
         { status: 400 }
       );
@@ -443,8 +438,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         message: 'Batch analysis failed',
-        details: message || 'Unknown error',
-      },
+        details: message || 'Unknown error` },
       { status: 500 }
     );
   }

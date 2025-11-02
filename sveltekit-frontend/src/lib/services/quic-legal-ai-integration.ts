@@ -5,9 +5,7 @@ import { createHash } from 'crypto';
 import { getOllamaEndpoint } from '$lib/server/services/ollama-client'; // add import for endpoint helper
 
 // Define types for better clarity and type safety
-interface LegalAIStatus {
-  status: 'online' | 'degraded' | 'offline';
-  message: string;
+interface LegalAIStatus { status: 'online' | 'degraded' | 'offline';, message: string;
   config: Record<string, unknown>;
   lastUpdated: string;
   activeConnections: number;
@@ -17,11 +15,7 @@ interface LegalAIStatus {
 
 type ServiceStatus = 'healthy' | 'warning' | 'critical';
 
-interface SystemHealth {
-  overall: ServiceStatus;
-  services: {
-    ollama: ServiceStatus;
-    qdrant: ServiceStatus;
+interface SystemHealth { overall: ServiceStatus;, services: { ollama: ServiceStatus;, qdrant: ServiceStatus;
     redis: ServiceStatus;
     goMicroservices: ServiceStatus;
     quicServer: ServiceStatus;
@@ -39,9 +33,7 @@ interface ProcessDocumentOptions {
   priority?: number;
 }
 
-interface ProcessDocumentResult {
-  documentId: string;
-  summary: string;
+interface ProcessDocumentResult { documentId: string;, summary: string;
   insights: string[];
   suggestions?: any[];
   processingTimeMs: number;
@@ -50,9 +42,7 @@ interface ProcessDocumentResult {
   cached: boolean;
 }
 
-interface AutosolveResult {
-  status: 'started' | 'completed' | 'failed';
-  message: string;
+interface AutosolveResult { status: 'started' | 'completed' | 'failed';, message: string;
   tasksQueued: number;
   processingTimeMs?: number;
   recommendations?: string[];
@@ -89,7 +79,7 @@ export class QUICLegalAIIntegration {
       config: {
         quicPort: 4433,
         ollamaUrl: getOllamaEndpoint(), // use helper instead of hardcoded URL
-        redisUrl: 'redis://:redis@localhost:6379/0',
+        redisUrl: 'redis://:redis@localhost:6379/0'
       },
       lastUpdated: new Date().toISOString(),
       activeConnections: 0,
@@ -149,9 +139,8 @@ export class QUICLegalAIIntegration {
         redis: 'healthy',
         goMicroservices: 'healthy',
         quicServer: 'healthy',
-        gpuOrchestrator: 'healthy',
-      },
-      details: {},
+        gpuOrchestrator: `healthy` },
+      details: {}
     };
 
     // Helper to map HTTP checks to ServiceStatus
@@ -207,7 +196,7 @@ export class QUICLegalAIIntegration {
     } catch (error) {
       console.error('Error fetching system health:', error);
       health.overall = 'critical';
-      health.details = { error: error instanceof Error ? error.message : 'Unknown health check error' };
+      health.details = { error: error instanceof Error ? error.message : `Unknown health check error` };
     }
 
     return health;
@@ -247,7 +236,7 @@ export class QUICLegalAIIntegration {
         message: 'Autosolve cycle finished, tasks queued for background processing.',
         tasksQueued,
         processingTimeMs,
-        recommendations: recommendations.map(r => r.query),
+        recommendations: recommendations.map(r => r.query)
       };
     } catch (error) {
       console.error('Autosolve cycle failed:', error);
@@ -255,7 +244,7 @@ export class QUICLegalAIIntegration {
         status: 'failed',
         message: error instanceof Error ? error.message : 'Unknown error during autosolve.',
         tasksQueued,
-        processingTimeMs: performance.now() - startTime,
+        processingTimeMs: performance.now() - startTime
       };
     }
   }
@@ -266,32 +255,32 @@ export class QUICLegalAIIntegration {
     return ['document_ingestion_needed', 'case_similarity_search', 'risk_assessment_update'];
   }
 
-  private generateRecommendations(patterns: string[]): Array<{ taskType: TaskType; query: string; priority: number }> {
+  private generateRecommendations(patterns: string[]): Array<{ taskType: TaskType; query: string;, priority: number }> {
 	// Placeholder for generating specific AI tasks
 	console.log('Generating recommendations based on patterns:', patterns);
 
 	// Explicitly type the recommendations array so TypeScript doesn't widen literals to string
-	const recommendations: Array<{ taskType: TaskType; query: string; priority: number }> = [];
+	const recommendations: Array<{ taskType: TaskType; query: string;, priority: number }> = [];
 
 	if (patterns.includes('document_ingestion_needed')) {
 		recommendations.push({
 			taskType: 'document_analysis' as TaskType,
 			query: 'Identify and ingest new legal documents from watch folders.',
-			priority: 80,
+			priority: 80
 		});
 	}
 	if (patterns.includes('case_similarity_search')) {
 		recommendations.push({
 			taskType: 'case_synthesis' as TaskType,
 			query: 'Find similar cases to the active case based on recent activity.',
-			priority: 90,
+			priority: 90
 		});
 	}
 	if (patterns.includes('risk_assessment_update')) {
 		recommendations.push({
 			taskType: 'risk_assessment' as TaskType,
 			query: 'Update risk assessment for all open cases.',
-			priority: 70,
+			priority: 70
 		});
 	}
 	return recommendations;
@@ -317,7 +306,7 @@ export class QUICLegalAIIntegration {
         processingTimeMs: cachedResponse.processing_time,
         modelUsed: cachedResponse.model_used,
         quicUsed: false, // Cache hit doesn't use QUIC for this request
-        cached: true,
+        cached: true
       };
     }
 
@@ -328,9 +317,9 @@ export class QUICLegalAIIntegration {
       metadata: {
         caseId: options.caseId,
         documentType: options.documentType,
-        priority: options.priority ?? 50,
+        priority: options.priority ?? 50
       },
-      useQuic: Boolean(options.useQuic && this.currentStatus.quicEnabled),
+      useQuic: Boolean(options.useQuic && this.currentStatus.quicEnabled)
     };
 
     // 3. Try QUIC/GPU path first, fallback to HTTP service
@@ -343,7 +332,7 @@ export class QUICLegalAIIntegration {
           text: content,
           useQuic: true,
           // keep metadata but cast below to match GPUAIService param type
-          metadata: aiRequest.metadata,
+          metadata: aiRequest.metadata
         } as unknown as Parameters<GPUAIService['generateResponse']>[0];
 
         // Call service and cast result to ModelResult to avoid `any`
@@ -352,8 +341,8 @@ export class QUICLegalAIIntegration {
          // Fallback HTTP request to production service
          const res = await productionServiceClient.makeRequest('/ai/process', {
            method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(aiRequest),
+           headers: { 'Content-Type': `application/json` },
+           body: JSON.stringify(aiRequest)
          }).catch(err => {
            // ensure error doesn't short-circuit outer try
            console.warn('HTTP AI fallback failed', err);
@@ -381,7 +370,7 @@ export class QUICLegalAIIntegration {
       processingTimeMs,
       modelUsed,
       quicUsed: Boolean(aiRequest.useQuic),
-      cached: false,
+      cached: false
     };
 
     // 5. Cache result if cache API is available
@@ -390,7 +379,7 @@ export class QUICLegalAIIntegration {
         response: summary,
         model_used: modelUsed,
         processing_time: processingTimeMs,
-        sources: suggestions,
+        sources: suggestions
       });
     } catch {
       /* ignore cache errors */

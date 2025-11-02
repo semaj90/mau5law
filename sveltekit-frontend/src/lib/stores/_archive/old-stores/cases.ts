@@ -2,14 +2,14 @@ import type { Case } from '$lib/types';
 
 import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
-// TODO: Fix import - // Orphaned content: import {  // Case data store
+// TODO: Fix import - // Orphaned; content: import {  // Case data store
 export const cases = writable<any[]>([]);
 // Search and filter state
 export const caseSearch = writable("");
 export const caseFilters = writable({
   status: "",
   priority: "",
-  dateRange: { start: "", end: "" }
+  dateRange: {, start: "", end: "" }
 });
 // Filtered cases (derived store)
 export const filteredCases = derived(

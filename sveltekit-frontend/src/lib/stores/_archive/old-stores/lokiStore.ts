@@ -42,7 +42,7 @@ async function initLoki(): Promise<void> {
       autoload: true,
       autoloadCallback: databaseInitialize,
       autosave: true,
-      autosaveInterval: 5000,
+      autosaveInterval: 5000
     } as Record<string, unknown>);
   } catch (error: any) {
     console.error('Failed to initialize Loki:', error);
@@ -55,7 +55,7 @@ function databaseInitialize() {
   if (!evidenceCollection && lokiDb) {
     evidenceCollection = lokiDb.addCollection<Evidence>('evidence', {
       indices: ['id', 'caseId', 'type', 'tags'],
-      unique: ['id'],
+      unique: ['id']
     });
   }
   // Canvas states collection
@@ -63,7 +63,7 @@ function databaseInitialize() {
   if (!canvasStateCollection && lokiDb) {
     canvasStateCollection = lokiDb.addCollection<Record<string, unknown>>('canvasStates', {
       indices: ['reportId'],
-      unique: ['reportId'],
+      unique: ['reportId']
     });
   }
   // Notes collection
@@ -71,7 +71,7 @@ function databaseInitialize() {
   if (!notesCollection && lokiDb) {
     notesCollection = lokiDb.addCollection<Record<string, unknown>>('notes', {
       indices: ['id', 'reportId', 'type', 'tags'],
-      unique: ['id'],
+      unique: ['id']
     });
   }
 }
@@ -81,7 +81,7 @@ export const lokiStore = writable({
   initialized: false,
   evidence: [] as Evidence[],
   canvasStates: [] as Record<string, unknown>[],
-  notes: [] as Record<string, unknown>[],
+  notes: [] as Record<string, unknown>[]
 });
 // Loki operations
 export const loki = {
@@ -114,10 +114,10 @@ export const loki = {
       if (!evidenceCollection || !query) return this.getAll();
       return evidenceCollection.find({
         $or: [
-          { fileName: { $regex: new RegExp(query, 'i') } },
-          { description: { $regex: new RegExp(query, 'i') } },
-          { tags: { $contains: query } },
-        ],
+          {, fileName: {, $regex: new RegExp(query, 'i') } },
+          { description: {, $regex: new RegExp(query, 'i') } },
+          { tags: {, $contains: query } }
+        ]
       });
     },
     remove(id: string) {
@@ -128,9 +128,9 @@ export const loki = {
     refreshStore() {
       lokiStore.update(state => ({
         ...state,
-        evidence: this.getAll(),
+        evidence: this.getAll()
       }));
-    },
+    }
   },
   // Canvas state operations
   canvasState: {
@@ -140,7 +140,7 @@ export const loki = {
       const stateData = {
         reportId,
         canvasData,
-        lastModified: new Date().toISOString(),
+        lastModified: new Date().toISOString()
       };
       if (existing) {
         canvasStateCollection.update({ ...existing, ...stateData });
@@ -174,9 +174,9 @@ export const loki = {
     refreshStore() {
       lokiStore.update(state => ({
         ...state,
-        canvasStates: this.getAll(),
+        canvasStates: this.getAll()
       }));
-    },
+    }
   },
   // Convenience methods for API compatibility
   async saveCanvasState(canvasState: Record<string, unknown>) {
@@ -189,7 +189,7 @@ export const loki = {
         ...canvasState,
         id: (canvasState.id as string) || crypto.randomUUID(),
         createdAt: (canvasState.createdAt as string) || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       });
     }
     this.canvasState.refreshStore();
@@ -215,7 +215,7 @@ export const loki = {
           ...note,
           id: (note.id as string) || crypto.randomUUID(),
           createdAt: (note.createdAt as string) || new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         });
       }
       this.refreshStore();
@@ -228,10 +228,10 @@ export const loki = {
       if (!notesCollection || !query) return this.getAll();
       return notesCollection.find({
         $or: [
-          { title: { $regex: new RegExp(query, 'i') } },
-          { content: { $regex: new RegExp(query, 'i') } },
-          { tags: { $contains: query } },
-        ],
+          {, title: {, $regex: new RegExp(query, 'i') } },
+          { content: {, $regex: new RegExp(query, 'i') } },
+          { tags: {, $contains: query } }
+        ]
       });
     },
     getAll() {
@@ -246,9 +246,9 @@ export const loki = {
     refreshStore() {
       lokiStore.update(state => ({
         ...state,
-        notes: this.getAll(),
+        notes: this.getAll()
       }));
-    },
+    }
   },
   // Clear all data
   clearAll() {
@@ -259,7 +259,7 @@ export const loki = {
       ...state,
       evidence: [],
       canvasStates: [],
-      notes: [],
+      notes: []
     }));
-  },
+  }
 };

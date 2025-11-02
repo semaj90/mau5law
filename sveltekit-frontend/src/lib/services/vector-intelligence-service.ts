@@ -31,10 +31,10 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
     const res = await fetch(`${this.config.ollamaEndpoint}/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: this.state.embeddingModel, input: text }),
+      body: JSON.stringify({, model: this.state.embeddingModel, input: text })
     });
     const json = await res.json().catch(() => ({}));
-    // common shapes: { embedding: [...]} or { data: [{ embedding: [...] }] } or { embeddings: [...] }
+    // common shapes: { embedding: [...]} or { data: [{, embedding: [...] }] } or { embeddings: [...] }
     const raw =
       json.embedding ??
       json.embeddings ??
@@ -66,9 +66,7 @@ export interface AITask {
   priority?: number | string;
 }
 
-export interface DocumentRecord {
-  id: string;
-  content: string;
+export interface DocumentRecord { id: string;, content: string;
   metadata: Record<string, unknown>;
 }
 
@@ -80,16 +78,12 @@ export interface VectorSearchOptions {
   contextFilter?: {
     caseId?: string;
     evidenceType?: string;
-    dateRange?: {
-      start: Date;
-      end: Date;
+    dateRange?: { start: Date;, end: Date;
     };
   };
 }
 
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: Record<string, unknown>;
   source: "document" | "case" | "evidence" | "note";
@@ -116,44 +110,34 @@ export interface RecommendationRequest {
   };
 }
 
-export interface IntelligenceRecommendation {
-  id: string;
-  type: "action" | "insight" | "warning" | "opportunity";
+export interface IntelligenceRecommendation { id: string;, type: "action" | "insight" | "warning" | "opportunity";
   title: string;
   description: string;
   confidence: number;
   priority: "low" | "medium" | "high" | "critical";
-  category:
+  category:;
     | "investigation"
     | "legal_analysis"
     | "evidence_review"
     | "case_strategy"
     | "workflow";
   supportingEvidence: VectorSearchResult[];
-  actionItems: {
-    immediate: string[];
-    shortTerm: string[];
+  actionItems: { immediate: string[];, shortTerm: string[];
     longTerm: string[];
   };
-  estimatedImpact: {
-    timeToComplete: number;
-    successProbability: number;
+  estimatedImpact: { timeToComplete: number;, successProbability: number;
     riskFactors: string[];
     benefits: string[];
   };
   relatedRecommendations: string[];
 }
 
-export interface SemanticAnalysisResult {
-  entities: {
-    type: "person" | "organization" | "location" | "date" | "legal_concept";
+export interface SemanticAnalysisResult { entities: {, type: "person" | "organization" | "location" | "date" | "legal_concept";
     text: string;
     confidence: number;
     mentions: number;
   }[];
-  themes: {
-    topic: string;
-    weight: number;
+  themes: { topic: string;, weight: number;
     relevantDocuments: string[];
   }[];
   relationships: {
@@ -162,20 +146,14 @@ export interface SemanticAnalysisResult {
     type: string;
     strength: number;
   }[];
-  sentiment: {
-    overall: number;
-    aspects: Record<string, number>;
+  sentiment: { overall: number;, aspects: Record<string, number>;
   };
-  complexity: {
-    readability: number;
-    technicalLevel: number;
+  complexity: { readability: number;, technicalLevel: number;
     legalComplexity: number;
   };
 }
 
-export interface VectorIntelligenceState {
-  isInitialized: boolean;
-  embeddingModel: string;
+export interface VectorIntelligenceState { isInitialized: boolean;, embeddingModel: string;
   vectorDimensions: number;
   indexedDocuments: number;
   lastUpdateTime: number;
@@ -191,7 +169,7 @@ class VectorIntelligenceService {
     indexedDocuments: 0,
     lastUpdateTime: 0,
     modelConfidence: 0.0,
-    systemHealth: "fair",
+    systemHealth: "fair"
   };
 
   private vectorCache = new Map<string, Float32Array>();
@@ -202,8 +180,7 @@ class VectorIntelligenceService {
     ollamaEndpoint: (process?.env?.OLLAMA_URL as string) || 'http://localhost:11434',
     qdrantUrl: (process?.env?.QDRANT_URL as string) || 'http://localhost:6333',
     qdrantCollection: 'documents',
-    enqueueApi: '/api/queues/enqueue'
-  };
+    enqueueApi: `/api/queues/enqueue` };
 
   async initialize(): Promise<void> {
     try {
@@ -271,7 +248,7 @@ class VectorIntelligenceService {
           id: getRandomId(8),
           type: "analyze",
           data: { content },
-          priority: "medium",
+          priority: "medium"
         };
         const taskId = await aiWorkerManager.submitTask(task);
         const result = await aiWorkerManager.waitForTask(taskId);
@@ -359,7 +336,7 @@ class VectorIntelligenceService {
           id: getRandomId(8),
           type: "embed",
           data: { text },
-          priority: "medium",
+          priority: "medium"
         };
         const taskId = await aiWorkerManager.submitTask(task);
         const result = await aiWorkerManager.waitForTask(taskId);
@@ -403,7 +380,7 @@ class VectorIntelligenceService {
       const qUrl = `${this.config.qdrantUrl}/collections/${this.config.qdrantCollection}/points/search`;
       const res = await fetch(qUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(body)
       });
       if (res.ok) {
@@ -425,7 +402,7 @@ class VectorIntelligenceService {
       console.warn('Qdrant search failed, falling back to local search:', e);
     }
 
-    // 2) fallback: brute-force cosine over in-memory vectorCache (keys like: 'doc_<id>')
+    // 2) fallback: brute-force cosine over in-memory vectorCache (keys; like: 'doc_<id>')
     try {
       const results: VectorSearchResult[] = [];
       for (const [key, vec] of this.vectorCache) {
@@ -466,7 +443,7 @@ class VectorIntelligenceService {
     return results.map((r) => ({
       ...r,
       relevanceScore: this.calculateRelevanceScore(r, query),
-      highlights: this.extractHighlights(r.content, query),
+      highlights: this.extractHighlights(r.content, query)
     }));
   }
 
@@ -474,12 +451,12 @@ class VectorIntelligenceService {
     const contextResults = await this.semanticSearch({
       query: request.context,
       limit: 20,
-      threshold: 0.6,
+      threshold: 0.6
     });
     return {
       contextResults,
       patterns: this.identifyPatterns(contextResults),
-      insights: this.extractInsights(contextResults, request),
+      insights: this.extractInsights(contextResults, request)
     };
   }
 
@@ -494,7 +471,7 @@ class VectorIntelligenceService {
       ...rec,
       confidence: this.adjustConfidenceForUser(rec.confidence, userProfile),
       priority: this.adjustPriorityForUser(rec.priority, userProfile),
-      description: this.personalizeDescription(rec.description, userProfile),
+      description: this.personalizeDescription(rec.description, userProfile)
     }));
   }
 
@@ -516,7 +493,7 @@ class VectorIntelligenceService {
       themes: [{ topic: "general_content", weight: 0.5, relevantDocuments: [] }],
       relationships: [],
       sentiment: { overall: 0, aspects: {} },
-      complexity: { readability: 0.5, technicalLevel: 0.5, legalComplexity: 0.5 },
+      complexity: { readability: 0.5, technicalLevel: 0.5, legalComplexity: 0.5 }
     };
   }
 
@@ -657,14 +634,14 @@ class VectorIntelligenceService {
         const qUrl = `${this.config.qdrantUrl}/collections/${this.config.qdrantCollection}/points?wait=true`;
         await fetch(qUrl, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ points: [point] })
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify({, points: [point] })
         }).catch((err) => {
           // swallow network errors but log for diagnostics
           console.warn('storeVector: Qdrant upsert failed (ignored):', err);
         });
       } catch (qerr) {
-        console.warn('storeVector: Qdrant push failed:', qerr);
+        console.warn('storeVector: Qdrant push; failed:', qerr);
       }
     } catch (err) {
       console.warn('storeVector encountered an error:', err);

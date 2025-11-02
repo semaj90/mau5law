@@ -5,14 +5,12 @@ import {
   apiSuccess,
   validateRequest,
   withErrorHandling,
-  getRequestId,
+  getRequestId
 } from '$lib/server/api/standard-response';
 import type { RequestEvent } from '@sveltejs/kit'; // Import RequestEvent for getRequestId typing
 
-// Define specific types for the: 'data' payload based on the: 'channel'
-interface EvidenceUpdatePayload {
-  evidenceId: string;
-  fileName: string;
+// Define specific types for the: 'data' payload based on; the: 'channel'
+interface EvidenceUpdatePayload { evidenceId: string;, fileName: string;
   caseId: string;
   userId: string;
 }
@@ -23,9 +21,7 @@ interface CaseUpdatePayload {
   userId: string;
 }
 
-interface CanvasUpdatePayload {
-  type: 'CANVAS_NODE_ADDED'; // Discriminating property for canvas updates
-  caseId: string;
+interface CanvasUpdatePayload { type: 'CANVAS_NODE_ADDED'; // Discriminating property for canvas updates, caseId: string;
   nodeData: Record<string, unknown>; // 'nodeData' can be any object
   userId: string;
 }
@@ -47,8 +43,8 @@ const postHandler: RequestHandler = async ({ request, locals }) => {
     return apiError(validationError, 400, 'VALIDATION_ERROR', undefined, requestId);
   }
 
-  // Use the union type for: 'data' instead of: 'any'
-  const { channel, data } = body as { channel: string; data: RedisPublishData };
+  // Use the union type for: 'data' instead; of: 'any'
+  const { channel, data } = body as { channel: string;, data: RedisPublishData };
 
   const redisService = getRedisService();
   if (!redisService.isConnectedToRedis()) {

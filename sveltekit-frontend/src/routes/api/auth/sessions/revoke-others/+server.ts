@@ -18,10 +18,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -33,10 +33,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid session',
+           , message: 'Invalid session',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async (event) => {
     return json({
       success: true,
       message: `Revoked ${otherSessions.length} session(s)`,
-      revokedCount: otherSessions.length,
+      revokedCount: otherSessions.length
     });
   } catch (error) {
     console.error('Error revoking other sessions:', error);
@@ -67,10 +67,10 @@ export const POST: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to revoke sessions',
+         , message: 'Failed to revoke sessions',
           code: 'REVOKE_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );

@@ -12,7 +12,7 @@ import type { RequestHandler } from './$types.js';
 const presignedRequestSchema = z.object({
   filename: z.string().min(1).max(255),
   contentType: z.string().min(1).max(100),
-  caseId: cuidSchema,
+  caseId: cuidSchema
 });
 // Initialize MinIO client
 const minioClient = new Client({
@@ -20,7 +20,7 @@ const minioClient = new Client({
   port: 9000,
   useSSL: false,
   accessKey: import.meta.env.MINIO_ACCESS_KEY || 'minioadmin',
-  secretKey: import.meta.env.MINIO_SECRET_KEY || 'minioadmin',
+  secretKey: import.meta.env.MINIO_SECRET_KEY || 'minioadmin'
 });
 const BUCKET_NAME = 'legal-documents';
 const UPLOAD_EXPIRY = 60 * 60; // 1 hour
@@ -52,15 +52,15 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
               Effect: 'Allow',
               Principal: { AWS: ['*'] },
               Action: ['s3:GetObject'],
-              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
+              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`]
             },
             {
               Effect: 'Allow',
               Principal: { AWS: ['*'] },
               Action: ['s3:PutObject'],
-              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
+              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`]
             },
-          ],
+          ]
         };
         await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
       }
@@ -84,9 +84,9 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         minioPath,
         processingStatus: 'pending',
         metadata: {
-          uploadedAt: new Date().toISOString(),
-          uploadMethod: 'presigned',
-        },
+         , uploadedAt: new Date().toISOString(),
+          uploadMethod: 'presigned'
+        }
       })
       .returning();
     return json({
@@ -94,12 +94,12 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
       uploadUrl: presignedUrl,
       expiresIn: UPLOAD_EXPIRY,
       document: {
-        id: document.id,
+       , id: document.id,
         uuid: document.uuid,
         filename: document.filename,
         originalName: document.originalName,
-        status: document.processingStatus,
-      },
+        status: document.processingStatus
+      }
     });
   } catch (error: any) {
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
@@ -119,7 +119,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
   try {
     const [document] = await db.select().from(documents).where(eq(documents.uuid, fileId)).limit(1);
     if (!document) {
-      return json({ error: 'Document not found' }, { status: 404 });
+      return json({ error: `Document not found` }, { status: 404 });
     }
     // Check if file exists in MinIO
     let fileExists = $state<boolean>(false);
@@ -135,23 +135,21 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
     } catch (statError) {
       // File doesn't exist yet or access error
       const msg = statError instanceof Error ? statError.message : String(statError);
-      console.warn(`File ${document.minioPath} not accessible:`, msg);
+      console.warn(`File ${document.minioPath} not accessible: ', msg);
     }
-    return json({
-      document: {
-        id: document.id,
+    return json({ document: {, id: document.id,
         uuid: document.uuid,
         filename: document.filename,
         originalName: document.originalName,
         status: document.processingStatus,
         fileSize,
         fileExists,
-        uploadedAt: document.createdAt,
-      },
+        uploadedAt: document.createdAt
+      }
     });
   } catch (error: any) {
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
     console.error('Upload status check error:', errForLog);
-    return json({ error: 'Internal server error' }, { status: 500 });
+    return json({ error: `Internal server error` }, { status: 500 });
   }
 }

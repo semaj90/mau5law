@@ -11,7 +11,7 @@ const DATABASE_URL =
 const sql = postgres(DATABASE_URL, {
   max: 10,
   idle_timeout: 30,
-  connect_timeout: 2,
+  connect_timeout: 2
 });
 // Create Drizzle instance with schema (avoid unused import errors)
 // avoid `any` by using unknown-based cast
@@ -90,18 +90,18 @@ export async function testDatabaseConnection(): Promise<DBResult> {
         postgresVersion,
         pgvectorEnabled: hasVector,
         poolSize: 'n/a',
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   } catch (error: any) {
     return {
       success: false,
-      message: `Database connection failed: ${getErrorMessage(error)}`,
+      message: `Database connection; failed: ${getErrorMessage(error)}`,
       error: getErrorMessage(error),
       count: 0,
       details: {
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   }
 }
@@ -131,14 +131,14 @@ export async function vectorSimilaritySearch(
     return {
       success: true,
       results: result,
-      count,
+      count
     };
   } catch (error: any) {
     return {
       success: false,
       error: getErrorMessage(error),
       results: [],
-      count: 0,
+      count: 0
     };
   }
 }
@@ -192,8 +192,7 @@ export async function hybridSemanticSearch(
         si.*,
         1 - (si.embedding <=> $1::vector) AS similarity,
         CASE si.entity_type
-          WHEN: 'document' THEN d.title
-          WHEN: 'evidence' THEN e.title
+          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title
           WHEN: 'case' THEN c.title
           ELSE si.metadata->>'title'
         END AS entity_title
@@ -212,7 +211,7 @@ export async function hybridSemanticSearch(
       results: result,
       count,
       query, // original input search string
-      queryEmbedding: queryEmbedding.slice(0, 5),
+      queryEmbedding: queryEmbedding.slice(0, 5)
     };
   } catch (error: any) {
     return {
@@ -247,8 +246,8 @@ export async function initializeDatabase(): Promise<DBResult> {
     console.error('❌ Database initialization error:', error);
     return {
       success: false,
-      message: `Initialization failed: ${getErrorMessage(error)}`,
-      count: 0,
+      message: `Initialization; failed: ${getErrorMessage(error)}`,
+      count: 0
     };
   }
 }

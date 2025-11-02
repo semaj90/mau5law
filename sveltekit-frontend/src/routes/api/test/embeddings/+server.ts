@@ -2,9 +2,7 @@ import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-export interface TestResult {
-  test: string;
-  status: 'success' | 'error' | 'warning';
+export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
   data?: any;
   error?: string;
   duration?: number;
@@ -30,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
           enableGpuAcceleration: true,
           enableCaching: true,
           chunkSize: 1000,
-          chunkOverlap: 200,
+          chunkOverlap: 200
         };
         results.push({
           test: 'embedding_service_config',
@@ -39,16 +37,16 @@ export const GET: RequestHandler = async ({ url }) => {
             ...config,
             ollama_url: 'http://localhost:11434',
             gpu_optimization: 'RTX 3060 Ti optimized',
-            legal_analysis: 'sentence-transformer integration',
+            legal_analysis: 'sentence-transformer integration'
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (err: any) {
         results.push({
           test: 'embedding_service_config',
           status: 'error',
           error: getErrorMessage(err),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -68,22 +66,22 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'embedding_generation',
           status: 'success',
           data: {
-            text_length: sampleText.length,
+           , text_length: sampleText.length,
             embedding_dimensions: normalizedEmbedding.length,
             is_normalized:
               Math.abs(Math.sqrt(normalizedEmbedding.reduce((sum, val) => sum + val * val, 0)) - 1) < 0.001,
             sample_values: normalizedEmbedding.slice(0, 5).map(v => Math.round(v * 1000) / 1000),
             model: 'nomic-embed-text',
-            processing_mode: 'batch_optimized',
+            processing_mode: 'batch_optimized'
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (err: any) {
         results.push({
           test: 'embedding_generation',
           status: 'error',
           error: getErrorMessage(err),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -105,7 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Simulate chunking (1000 chars with 200 overlap)
         const chunkSize = 1000;
         const chunkOverlap = 200;
-        const chunks: { index: number; content: string; startIndex: number; endIndex: number; length: number }[] = [];
+        const chunks: { index: number; content: string; startIndex: number; endIndex: number;, length: number }[] = [];
         let startIndex = 0;
         while (startIndex < sampleDocument.length) {
           const endIndex = Math.min(startIndex + chunkSize, sampleDocument.length);
@@ -115,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
             content: chunk.trim(),
             startIndex,
             endIndex,
-            length: chunk.trim().length,
+            length: chunk.trim().length
           });
           startIndex = endIndex - chunkOverlap;
           if (startIndex >= sampleDocument.length - chunkOverlap) break;
@@ -129,19 +127,18 @@ export const GET: RequestHandler = async ({ url }) => {
             chunk_size: chunkSize,
             chunk_overlap: chunkOverlap,
             chunks: chunks.map(c => ({
-              index: c.index,
+             , index: c.index,
               length: c.length,
-              preview: c.content.substring(0, 50) + '...',
-            })),
+              preview: c.content.substring(0, 50) + '...` }))
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (err: any) {
         results.push({
           test: 'document_chunking',
           status: 'error',
           error: getErrorMessage(err),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -154,9 +151,8 @@ export const GET: RequestHandler = async ({ url }) => {
         const query = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
         const documents = Array.from({ length: 5 }, (_, i) => ({
           id: `doc_${i + 1}`,
-          embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
-          content: `Sample legal document ${i + 1} containing relevant legal information.`,
-        }));
+          embedding: Array.from({, length: 768 }, () => Math.random() * 2 - 1),
+          content: `Sample legal document ${i + 1} containing relevant legal information.' }));
 
         // Calculate cosine similarities
         const similarities = documents.map(doc => {
@@ -167,7 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return {
             id: doc.id,
             content: doc.content,
-            similarity: Math.round(similarity * 1000) / 1000,
+            similarity: Math.round(similarity * 1000) / 1000
           };
         });
         // Sort by similarity descending
@@ -176,20 +172,20 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'similarity_search',
           status: 'success',
           data: {
-            query_dimensions: query.length,
+           , query_dimensions: query.length,
             document_count: documents.length,
             threshold: 0.7,
             results: similarities,
-            top_match: similarities[0],
+            top_match: similarities[0]
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (err: any) {
         results.push({
           test: 'similarity_search',
           status: 'error',
           error: getErrorMessage(err),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -207,26 +203,26 @@ export const GET: RequestHandler = async ({ url }) => {
           keywords: ['summary_judgment', '42_usc_1983', 'material_facts'],
           entities: ['defendant', 'plaintiff', 'court'],
           citations: ['42 U.S.C. § 1983'],
-          document_type: 'judicial_order',
+          document_type: 'judicial_order'
         };
         results.push({
           test: 'legal_analysis_integration',
           status: 'success',
           data: {
-            text_length: legalText.length,
+           , text_length: legalText.length,
             analysis,
             embedding_enhanced: true,
             semantic_enrichment: 'legal NLP pipeline integration',
-            vector_dimensions: 384,
+            vector_dimensions: 384
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (err: any) {
         results.push({
           test: 'legal_analysis_integration',
           status: 'error',
           error: getErrorMessage(err),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -244,20 +240,20 @@ export const GET: RequestHandler = async ({ url }) => {
           memory_usage: '128MB for 10,000 cached embeddings',
           gpu_utilization: '85% RTX 3060 Ti',
           model_loading_time: '2.3 seconds',
-          average_embedding_time: '6.7ms per text',
+          average_embedding_time: '6.7ms per text'
         };
         results.push({
           test: 'performance_metrics',
           status: 'success',
           data: performanceData,
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (err: any) {
         results.push({
           test: 'performance_metrics',
           status: 'error',
           error: getErrorMessage(err),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -274,7 +270,7 @@ export const GET: RequestHandler = async ({ url }) => {
         warnings: results.filter(item => item.status === 'warning').length,
         avg_duration: results.length
           ? Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length)
-          : 0,
+          : 0
       },
       configuration: {
         model: 'nomic-embed-text:latest',
@@ -284,22 +280,21 @@ export const GET: RequestHandler = async ({ url }) => {
         legal_analysis: 'sentence-transformer integration',
         caching: 'in-memory with TTL',
         database_integration: 'PostgreSQL pgvector',
-        chunking_strategy: 'legal-aware with overlap',
+        chunking_strategy: 'legal-aware with overlap'
       },
       integration_status: {
         qdrant_service: 'compatible',
         som_clustering: 'compatible',
         nes_cache: 'compatible',
         postgresql_sync: 'ready',
-        vector_dimensions: '768 (corrected)',
-      },
+        vector_dimensions: '768 (corrected)` }
     });
   } catch (err: any) {
     return json(
       {
         success: false,
         error: getErrorMessage(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -326,26 +321,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
         metadata_summary: {
           present: !!metadata,
           keys: metadata ? Object.keys(metadata).slice(0, 10) : [],
-          count: metadata ? Object.keys(metadata).length : 0,
+          count: metadata ? Object.keys(metadata).length : 0
         },
         legal_analysis: {
           complexity: 'moderate',
           domain: ['contract_law'],
-          keywords: ['agreement', 'terms', 'conditions'],
-        },
+          keywords: ['agreement', 'terms', 'conditions']
+        }
       };
       return json({
         success: true,
         action: 'process_document',
         result,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json(
       {
         success: false,
-        error: 'Invalid action. Supported actions: process_document',
-        timestamp: new Date().toISOString(),
+        error: 'Invalid action. Supported; actions: process_document',
+        timestamp: new Date().toISOString()
       },
       { status: 400 }
     );
@@ -354,7 +349,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         success: false,
         error: getErrorMessage(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

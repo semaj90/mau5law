@@ -27,7 +27,7 @@ export const LEGAL_COMPONENTS = {
   EvidenceBoard: () => import('./EvidenceBoard.svelte'),
   EvidenceCard: () => import('./EvidenceCard.svelte'),
   CaseManager: () => import('./CaseManager.svelte'),
-  LegalDocumentViewer: () => import('./LegalDocumentViewer.svelte'),
+  LegalDocumentViewer: () => import('./LegalDocumentViewer.svelte')
 } as const;
 /**
  * AI & Chat Components - Conversational Interfaces
@@ -36,7 +36,7 @@ export const AI_COMPONENTS = {
   EmbeddingGemmaChat: () => import('./EmbeddingGemmaChat.svelte'),
   EnhancedRAGStudio: () => import('./EnhancedRAGStudio.svelte'),
   AIDialog: () => import('../AIDialog.svelte'),
-  ChatMessage: () => import('../ChatMessage.svelte'),
+  ChatMessage: () => import('../ChatMessage.svelte')
 } as const;
 /**
  * Gaming & Theme Components - NES/Retro Styling
@@ -45,7 +45,7 @@ export const GAMING_COMPONENTS = {
   NESButton: () => import('./gaming/NESButton.svelte'),
   NESContainer: () => import('./gaming/NESContainer.svelte'),
   PixelCard: () => import('./gaming/PixelCard.svelte'),
-  RetroLoadingSpinner: () => import('./gaming/RetroLoadingSpinner.svelte'),
+  RetroLoadingSpinner: () => import('./gaming/RetroLoadingSpinner.svelte')
 } as const;
 /**
  * Advanced UI Components - Complex Interactions
@@ -56,7 +56,7 @@ export const ADVANCED_COMPONENTS = {
   DialogWrapper: () => import('../DialogWrapper.svelte'),
   Select: () => import('../Select.svelte'),
   YoRHaSearchBar: () => import('./YoRHaSearchBar.svelte'),
-  ThemeToggle: () => import('./ThemeToggle.svelte'),
+  ThemeToggle: () => import('./ThemeToggle.svelte')
 } as const;
 // ======================================
 // COMPOUND COMPONENT PATTERNS
@@ -65,22 +65,18 @@ export const ADVANCED_COMPONENTS = {
  * shadcn/ui style compound exports
  * Import as: import * as Card from '$lib/components/ui/enhanced-bits/compound/card.svelte'
  */
-export const CompoundComponents = {
-  Card: {
-    Root: Card,
+export const CompoundComponents = { Card: {, Root: Card,
     Header: CardHeader,
     Title: CardTitle,
     Description: CardDescription,
     Content: CardContent,
-    Footer: CardFooter,
-  },
+    Footer: CardFooter
+  }
 } as const;
 // ======================================
 // DYNAMIC COMPONENT LOADER
 // ======================================
-export interface ComponentLoadOptions {
-  category: 'legal' | 'ai' | 'gaming' | 'advanced';
-  priority: 'immediate' | 'lazy' | 'background';
+export interface ComponentLoadOptions { category: 'legal' | 'ai' | 'gaming' | 'advanced';, priority: 'immediate' | 'lazy' | 'background';
   cache: boolean;
 }
 class ComponentLoader {
@@ -171,7 +167,7 @@ class ComponentLoader {
     return {
       loadedComponents: this.loadedComponents.size,
       currentlyLoading: this.loadingPromises.size,
-      cachedComponentNames: Array.from(this.loadedComponents.keys()),
+      cachedComponentNames: Array.from(this.loadedComponents.keys())
     }
   }
   clearCache() {
@@ -236,8 +232,7 @@ export function getComponentBundleInfo() {
       legal: '~45KB',
       ai: '~38KB',
       gaming: '~22KB',
-      advanced: '~31KB'
-    },
+      advanced: '~31KB' },
     totalEstimatedSize: '~151KB',
     treShakeableCore: true
   }

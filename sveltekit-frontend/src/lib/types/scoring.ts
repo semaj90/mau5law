@@ -1,8 +1,6 @@
 // Scoring types for CaseScoringService
 
-export interface CaseScoringRequest {
-  caseId: string;
-  userId: string;
+export interface CaseScoringRequest { caseId: string;, userId: string;
   title: string;
   description: string;
   evidenceItems?: string[];
@@ -15,17 +13,13 @@ export interface CaseScoringRequest {
   criteria?: ScoringCriteria;
   temperature?: number;
 }
-export interface ScoringCriteria {
-  evidence_strength: number;
-  witness_reliability: number;
+export interface ScoringCriteria { evidence_strength: number;, witness_reliability: number;
   legal_precedent: number;
   public_interest: number;
   case_complexity: number;
   resource_requirements: number;
 }
-export interface CaseScoringResult {
-  caseId: string;
-  score: number;
+export interface CaseScoringResult { caseId: string;, score: number;
   confidence: number;
   criteria: ScoringCriteria;
   explanation: string;
@@ -46,12 +40,8 @@ export interface CaseScoringResult {
     accuracy?: number;
   }
 }
-export interface ScoringAnalysis {
-  overallScore: number;
-  criteriaScores: ScoringCriteria;
-  strengthsWeaknesses: {
-    strengths: string[];
-    weaknesses: string[];
+export interface ScoringAnalysis { overallScore: number;, criteriaScores: ScoringCriteria;
+  strengthsWeaknesses: { strengths: string[];, weaknesses: string[];
     riskFactors: string[];
   }
   recommendations: string[];

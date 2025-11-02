@@ -5,9 +5,7 @@
  */
 import { logger } from '$lib/server/ai/logger.js';
 }
-export interface MCPWorkerCore {
-  id: string;
-  port: number;
+export interface MCPWorkerCore { id: string;, port: number;
   status: 'online' | 'offline' | 'busy' | 'error';
   capabilities: string[];
   currentLoad: number;
@@ -17,25 +15,19 @@ export interface MCPWorkerCore {
   processingQueue: number;
   averageResponseTime: number;
 }
-export interface MCPTask {
-  id: string;
-  type: 'embedding' | 'generation' | 'analysis' | 'search' | 'workflow';
+export interface MCPTask { id: string;, type: 'embedding' | 'generation' | 'analysis' | 'search' | 'workflow';
   priority: 'low' | 'normal' | 'high' | 'critical';
   payload: any;
   assignedCore?: string;
   startTime?: number;
   estimatedDuration?: number;
 }
-export interface MCPResponse {
-  success: boolean;
-  taskId: string;
+export interface MCPResponse { success: boolean;, taskId: string;
   coreId: string;
   result: any;
   processingTime: number;
   error?: string;
-  metadata?: {
-    model: string;
-    tokens: number;
+  metadata?: { model: string;, tokens: number;
     cacheHit: boolean;
     gpuAccelerated: boolean;
   }
@@ -130,7 +122,7 @@ export class MCPMultiCoreClient {
         }
       } catch (error) {
         core.status = 'offline';
-        logger.warn(`[MCP Multi-Core] Core ${core.id} health check failed:`, error);
+        logger.warn(`[MCP Multi-Core] Core ${core.id} health check failed: ', error);
       }
     });
     await Promise.allSettled(healthPromises);
@@ -190,15 +182,14 @@ export class MCPMultiCoreClient {
     } catch (error) {
       // Clean up on error
       this.activeTasks.delete(task.id);
-      logger.error(`[MCP Multi-Core] Task ${task.id} failed:`, error);
+      logger.error(`[MCP Multi-Core] Task ${task.id} failed: ', error);
       return {
         success: false,
         taskId: task.id,
         coreId: task.assignedCore || 'unknown',
         result: null,
         processingTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message: 'Unknown error'
-      }
+        error: error instanceof Error ? error.message: 'Unknown error' }
     }
   }
   /**
@@ -262,8 +253,7 @@ export class MCPMultiCoreClient {
           coreId: 'unknown',
           result: null,
           processingTime: 0,
-          error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed'
-        }
+          error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed' }
       }
     });
   }

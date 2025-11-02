@@ -8,23 +8,17 @@ import { writable, derived, type Readable } from 'svelte/store';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 import { browser } from '$app/environment';
 // Simple state interfaces for UI consumption
-export interface LangChainState {
-  isProcessing: boolean;
-  isAvailable: boolean;
+export interface LangChainState { isProcessing: boolean;, isAvailable: boolean;
   error: string | null;
   models: string[];
 }
-export interface DocumentProcessingState {
-  isProcessing: boolean;
-  progress: number;
+export interface DocumentProcessingState { isProcessing: boolean;, progress: number;
   result: ProcessedDocument | null;
   error: string | null;
   sessionId: string | null;
   documentId: string | null;
 }
-export interface ProcessedDocument {
-  id: string;
-  summary: string;
+export interface ProcessedDocument { id: string;, summary: string;
   keyTerms: string[];
   entities: any[];
   contractTerms: any[];
@@ -32,9 +26,7 @@ export interface ProcessedDocument {
   cacheHit: boolean;
   sessionId: string;
 }
-export interface ChatState {
-  messages: Array<any>;
-  isTyping: boolean;
+export interface ChatState { messages: Array<any>;, isTyping: boolean;
   error: string | null;
 }
 // Internal reactive stores
@@ -42,7 +34,7 @@ const langchainState = writable<LangChainState>({
   isProcessing: false,
   isAvailable: false,
   error: null,
-  models: [],
+  models: []
 });
 const documentProcessingState = writable<DocumentProcessingState>({
   isProcessing: false,
@@ -50,12 +42,12 @@ const documentProcessingState = writable<DocumentProcessingState>({
   result: null,
   error: null,
   sessionId: null,
-  documentId: null,
+  documentId: null
 });
 const chatState = writable<ChatState>({
   messages: [],
   isTyping: false,
-  error: null,
+  error: null
 });
 /**
  * Logic Layer: LangChain Service Operations
@@ -82,7 +74,7 @@ class LangChainServiceLogic {
         isProcessing: false,
         isAvailable,
         error: null,
-        models,
+        models
       });
       this.initialized = true;
     } catch (error) {
@@ -90,7 +82,7 @@ class LangChainServiceLogic {
         isProcessing: false,
         isAvailable: false,
         error: error instanceof Error ? error.message : 'Initialization failed',
-        models: [],
+        models: []
       });
     }
   }
@@ -105,7 +97,7 @@ class LangChainServiceLogic {
       ...state,
       isProcessing: true,
       progress: 0,
-      error: null,
+      error: null
     }));
     try {
       // Step 1: Send request to API endpoint
@@ -113,14 +105,14 @@ class LangChainServiceLogic {
       const response = await fetch('/api/legal-processing', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           text,
           documentType,
           practiceArea,
-          sessionId,
-        }),
+          sessionId
+        })
       });
       documentProcessingState.update(state => ({ ...state, progress: 75 }));
       if (!(response as any).ok) {
@@ -138,7 +130,7 @@ class LangChainServiceLogic {
         result,
         error: null,
         sessionId: (result as { sessionId?: any; id?: any }).sessionId,
-        documentId: (result as { sessionId?: any; id?: any }).id,
+        documentId: (result as { sessionId?: any; id?: any }).id
       });
     } catch (error) {
       documentProcessingState.set({
@@ -147,7 +139,7 @@ class LangChainServiceLogic {
         result: null,
         error: error instanceof Error ? error.message : 'Document processing failed',
         sessionId: null,
-        documentId: null,
+        documentId: null
       });
     }
   }
@@ -167,31 +159,29 @@ class LangChainServiceLogic {
         result:
           sessionData.documents && sessionData.documents.length > 0
             ? {
-                id: sessionData.documents[0].id,
+               , id: sessionData.documents[0].id,
                 summary: `Session with ${sessionData.documents.length} documents`,
                 keyTerms: sessionData.documents.flatMap((doc: any) => doc.keyTerms || []),
                 entities: [],
                 contractTerms: [],
                 processingTime: 0,
                 cacheHit: true,
-                sessionId: sessionData.id,
+                sessionId: sessionData.id
               }
-            : null,
+            : null
       }));
     } catch (error) {
       documentProcessingState.update(state => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message : 'Failed to load session',
-      }));
+        error: error instanceof Error ? error.message : `Failed to load session` }));
     }
   }
   async deleteDocument(documentId: string): Promise<void> {
     if (!browser) return;
     try {
       const response = await fetch(`/api/legal-processing/${documentId}`, {
-        method: 'DELETE',
-      });
+        method: `DELETE` });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).ok) {
         throw new Error(
           `Failed to delete document: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`
@@ -203,7 +193,7 @@ class LangChainServiceLogic {
           return {
             ...state,
             result: null,
-            documentId: null,
+            documentId: null
           };
         }
         return state;
@@ -211,7 +201,7 @@ class LangChainServiceLogic {
     } catch (error) {
       documentProcessingState.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message : 'Failed to delete document',
+        error: error instanceof Error ? error.message : 'Failed to delete document'
       }));
     }
   }
@@ -220,7 +210,7 @@ class LangChainServiceLogic {
       ...state,
       messages: [...state.messages, { role: 'user', content: message }],
       isTyping: true,
-      error: null,
+      error: null
     }));
     try {
       // Simple request - no complex callback managers
@@ -228,14 +218,13 @@ class LangChainServiceLogic {
       chatState.update(state => ({
         ...state,
         messages: [...state.messages, { role: 'assistant', content: '' }],
-        isTyping: false,
+        isTyping: false
       }));
     } catch (error) {
       chatState.update(state => ({
         ...state,
         isTyping: false,
-        error: error instanceof Error ? error.message : 'Chat message failed',
-      }));
+        error: error instanceof Error ? error.message : `Chat message failed` }));
     }
   }
   clearDocumentProcessing(): void {
@@ -245,14 +234,14 @@ class LangChainServiceLogic {
       result: null,
       error: null,
       sessionId: null,
-      documentId: null,
+      documentId: null
     });
   }
   clearChat(): void {
     chatState.set({
       messages: [],
       isTyping: false,
-      error: null,
+      error: null
     });
   }
 }
@@ -260,13 +249,13 @@ class LangChainServiceLogic {
 export const langchainServiceLogic = new LangChainServiceLogic();
 // Read-only stores for UI consumption
 export const langchainService: Readable<LangChainState> = {
-  subscribe: langchainState.subscribe,
+  subscribe: langchainState.subscribe
 };
 export const documentProcessing: Readable<DocumentProcessingState> = {
-  subscribe: documentProcessingState.subscribe,
+  subscribe: documentProcessingState.subscribe
 };
 export const chatService: Readable<ChatState> = {
-  subscribe: chatState.subscribe,
+  subscribe: chatState.subscribe
 };
 // Derived computed states
 export const isLangChainReady = derived(

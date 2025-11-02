@@ -63,9 +63,9 @@ export interface ErrorTrackingStats {
   /** Error count by source */
   bySource: Record<string, number>;
   /** Top 10 error codes */
-  topErrorCodes: Array<{ code: string; count: number }>;
+  topErrorCodes: Array<{ code: string;, count: number }>;
   /** Top 10 affected files */
-  topFiles: Array<{ path: string; count: number }>;
+  topFiles: Array<{ path: string;, count: number }>;
   /** Average resolution time (ms) */
   avgResolutionTimeMs: number;
   /** Last monitoring timestamp */
@@ -125,8 +125,7 @@ export class ViteErrorTracker {
       enablePgvector: config.enablePgvector ?? true,
       embeddingUrl: config.embeddingUrl ?? 'http://localhost:11434',
       embeddingModel: config.embeddingModel ?? 'embeddinggemma:latest',
-      buildCommand: config.buildCommand ?? 'npm run check:ultra-fast',
-    };
+      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast` };
   }
 
   /**
@@ -140,7 +139,7 @@ export class ViteErrorTracker {
       await mcpSIMDParser.initialize({
         workers: 4,
         enableSIMD: true,
-        enableMulticore: true,
+        enableMulticore: true
       });
 
       // Initialize Qdrant auto-tagger
@@ -148,7 +147,7 @@ export class ViteErrorTracker {
         await qdrantAutoTagger.initialize({
           name: 'vite_errors',
           vectorSize: 768,
-          quantization: true,
+          quantization: true
         });
       }
 
@@ -257,7 +256,7 @@ export class ViteErrorTracker {
         totalErrors: currentTotal,
         newErrors: Math.max(0, currentTotal - previousTotal),
         resolvedErrors: Math.max(0, previousTotal - currentTotal),
-        delta: currentTotal - previousTotal,
+        delta: currentTotal - previousTotal
       };
 
       console.log(`✅ Tracking complete: ${errors.length} errors processed`);
@@ -302,11 +301,11 @@ export class ViteErrorTracker {
 
         const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            model: this.config.embeddingModel,
-            prompt: text,
-          }),
+           , model: this.config.embeddingModel,
+            prompt: text
+          })
         });
 
         if (!response.ok) {
@@ -361,7 +360,7 @@ export class ViteErrorTracker {
               occurrenceCount: sql`${viteErrors.occurrenceCount} + 1`,
               lastSeen: new Date().toISOString(),
               isActive: true,
-              updatedAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
             })
             .where(eq(viteErrors.id, existing[0].id));
         } else {
@@ -378,10 +377,10 @@ export class ViteErrorTracker {
             rawText: error.rawText,
             embedding: embedding ? JSON.stringify(embedding) : null,
             metadata: {
-              tags: qdrantAutoTagger.autoTag(error),
+              tags: qdrantAutoTagger.autoTag(error)
             },
             isActive: true,
-            occurrenceCount: 1,
+            occurrenceCount: 1
           };
 
           await db.insert(viteErrors).values(newError);
@@ -406,7 +405,7 @@ export class ViteErrorTracker {
         .set({
           isActive: false,
           resolvedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         })
         .where(eq(viteErrors.isActive, true));
 
@@ -459,10 +458,9 @@ export class ViteErrorTracker {
         topFiles,
         buildMetadata: {
           command: this.config.buildCommand,
-          duration: 0, // TODO: Track build duration
-          exitCode: errors.length > 0 ? 1 : 0,
-          timestamp: new Date().toISOString(),
-        },
+          duration: 0, // TODO: Track build duration; exitCode: errors.length > 0 ? 1 : 0,
+          timestamp: new Date().toISOString()
+        }
       };
 
       await db.insert(errorHistory).values(snapshot);
@@ -539,7 +537,7 @@ export class ViteErrorTracker {
         topErrorCodes,
         topFiles,
         avgResolutionTimeMs,
-        lastMonitored: this.lastSnapshot?.timestamp || new Date(),
+        lastMonitored: this.lastSnapshot?.timestamp || new Date()
       };
     } catch (error) {
       console.error('❌ Failed to get stats:', error);
@@ -571,7 +569,7 @@ export class ViteErrorTracker {
           totalErrors: current.totalErrors,
           newErrors: previous ? Math.max(0, current.totalErrors - previous.totalErrors) : 0,
           resolvedErrors: previous ? Math.max(0, previous.totalErrors - current.totalErrors) : 0,
-          delta: previous ? current.totalErrors - previous.totalErrors : 0,
+          delta: previous ? current.totalErrors - previous.totalErrors : 0
         });
       }
 
@@ -609,11 +607,11 @@ export class ViteErrorTracker {
       const text = `${sample[0].errorCode}: ${sample[0].message}`;
       const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.config.embeddingModel,
-          prompt: text,
-        }),
+         , model: this.config.embeddingModel,
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -627,7 +625,7 @@ export class ViteErrorTracker {
       return await qdrantAutoTagger.hybridSearch({
         queryVector,
         limit,
-        scoreThreshold: 0.7,
+        scoreThreshold: 0.7
       });
     } catch (error) {
       console.error('❌ Similar error search failed:', error);

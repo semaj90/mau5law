@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!sessionId || !userId) {
       return json(
-        { error: 'Missing required parameters: sessionId, userId' },
+        { error: 'Missing required, parameters: sessionId, userId' },
         { status: 400 }
       );
     }
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: {
-          code: 'STATE_ERROR',
+         , code: 'STATE_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error'
         }
       },
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: {
-          code: 'UPDATE_ERROR',
+         , code: 'UPDATE_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error'
         }
       },
@@ -107,7 +107,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     if (!sessionId) {
       return json(
-        { error: 'Missing required parameter: sessionId' },
+        { error: 'Missing required, parameter: sessionId' },
         { status: 400 }
       );
     }
@@ -125,7 +125,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: {
-          code: 'DELETE_ERROR',
+         , code: 'DELETE_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error'
         }
       },

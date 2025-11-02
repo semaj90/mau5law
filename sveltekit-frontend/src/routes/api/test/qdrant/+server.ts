@@ -11,27 +11,21 @@ type HealthInfo = {
   [key: string]: any;
 };
 
-export interface TestResult {
-  test: string;
-  status: 'success' | 'error' | 'warning';
+export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
   data?: any;
   error?: string;
   duration?: number;
 }
 
 // more specific search result shape (avoid `any`)
-interface QdrantSearchResult {
-  results: any[];
-  stats: {
+interface QdrantSearchResult { results: any[];, stats: {
     searchTimeMs: number;
     [key: string]: any;
   };
   [key: string]: any;
 }
 
-interface UpsertVector {
-  id: string;
-  vector: number[];
+interface UpsertVector { id: string;, vector: number[];
   payload?: Record<string, unknown>;
 }
 
@@ -58,7 +52,7 @@ const qdrant: OptimizedQdrantServiceType = optimizedQdrantService as unknown as 
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
 
-// NOTE: If you encounter: "Property 'methodName' does not exist on type: 'OptimizedQdrantService'" errors,
+// NOTE: If you encounter: "Property 'methodName' does not exist on; type: 'OptimizedQdrantService'" errors,
 // it means the type definition for `optimizedQdrantService` in `$lib/services/optimized-qdrant-service.ts`
 // needs to be updated to include the missing methods (e.g., healthCheck, searchVectors, upsertVectors, syncFromPostgreSQL).
 // This fix cannot be applied from this file.
@@ -76,14 +70,14 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'qdrant_health_check',
           status: health.status === 'healthy' ? 'success' : 'warning',
           data: health,
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'qdrant_health_check',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -95,15 +89,15 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'collection_setup',
           status: 'success',
-          data: { message: 'Collection ensured with 768-dimensional nomic-embed vectors' },
-          duration: Date.now() - startTime,
+          data: {, message: `Collection ensured with 768-dimensional nomic-embed vectors` },
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'collection_setup',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -116,24 +110,24 @@ export const GET: RequestHandler = async ({ url }) => {
           limit: 5,
           threshold: 0.1,
           useCache: true,
-          enableSOM: true,
+          enableSOM: true
         });
         results.push({
           test: 'vector_search',
           status: 'success',
           data: {
-            results_count: searchResult.results.length,
+           , results_count: searchResult.results.length,
             stats: searchResult.stats,
-            sample_vector_dim: sampleVector.length,
+            sample_vector_dim: sampleVector.length
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'vector_search',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -149,8 +143,8 @@ export const GET: RequestHandler = async ({ url }) => {
               type: 'test',
               title: 'Test Document 1',
               content: 'Sample legal document for testing vector operations',
-              created_at: new Date().toISOString(),
-            },
+              created_at: new Date().toISOString()
+            }
           },
           {
             id: `test_${Date.now()}_2`,
@@ -159,8 +153,8 @@ export const GET: RequestHandler = async ({ url }) => {
               type: 'test',
               title: 'Test Document 2',
               content: 'Another sample legal document for testing',
-              created_at: new Date().toISOString(),
-            },
+              created_at: new Date().toISOString()
+            }
           },
         ];
         const upsertResult = await qdrant.upsertVectors(sampleVectors);
@@ -168,18 +162,18 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'vector_upsert',
           status: 'success',
           data: {
-            vectors_inserted: sampleVectors.length,
+           , vectors_inserted: sampleVectors.length,
             upsert_result: upsertResult,
-            vector_dimensions: sampleVectors[0].vector.length,
+            vector_dimensions: sampleVectors[0].vector.length
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'vector_upsert',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -193,19 +187,18 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'postgresql_sync_test',
           status: 'success',
           data: {
-            message: 'Sync service initialized and ready',
+           , message: 'Sync service initialized and ready',
             qdrant_status: health.status,
             memory_usage: health.memoryUsage,
-            note: 'Use POST /api/test/qdrant?action=sync for full PostgreSQL sync',
-          },
-          duration: Date.now() - startTime,
+            note: `Use POST /api/test/qdrant?action=sync for full PostgreSQL sync` },
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'postgresql_sync_test',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -221,7 +214,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return await qdrant.searchVectors(vector, {
             limit: 3,
             useCache: true,
-            enableSOM: true,
+            enableSOM: true
           });
         });
         const searchResults: QdrantSearchResult[] = await Promise.all(searchPromises); // Explicitly typed searchResults
@@ -230,7 +223,7 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'performance_test',
           status: 'success',
           data: {
-            memory_usage_mb: Math.round((health.memoryUsage ?? 0 / 1024 / 1024) * 100) / 100,
+           , memory_usage_mb: Math.round((health.memoryUsage ?? 0 / 1024 / 1024) * 100) / 100,
             cache_entries: health.cacheHits,
             cache_hit_rate: `${cacheHits.length}/3`, // Corrected to use cacheHits.length
             avg_search_time: Math.round(
@@ -239,14 +232,14 @@ export const GET: RequestHandler = async ({ url }) => {
             ),
             som_clusters_used: searchResults.filter(item => item.results.length > 0).length, // Corrected filter logic and added .length
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'performance_test',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -260,7 +253,7 @@ export const GET: RequestHandler = async ({ url }) => {
         passed: results.filter(item => item.status === 'success'), // Corrected filter logic
         failed: results.filter(item => item.status === 'error'), // Corrected filter logic
         warnings: results.filter(item => item.status === 'warning'), // Corrected filter logic
-        avg_duration: Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length),
+        avg_duration: Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length)
       },
       configuration: {
         vector_dimensions: 384,
@@ -268,15 +261,15 @@ export const GET: RequestHandler = async ({ url }) => {
         som_clustering: 'enabled',
         nes_cache: 'enabled',
         batching: 'enabled',
-        memory_limit_mb: 32,
-      },
+        memory_limit_mb: 32
+      }
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -292,14 +285,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const options: SyncOptions = {
         fullSync: body.fullSync || false,
         batchSize: body.batchSize || 50,
-        sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined,
+        sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined
       };
       const syncResult = await qdrant.syncFromPostgreSQL(options);
       return json({
         success: true,
         action: 'postgresql_sync',
         result: syncResult,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       return json(
@@ -307,7 +300,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: false,
           action: 'postgresql_sync',
           error: error instanceof Error ? error.message : String(error),
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 500 }
       );
@@ -316,8 +309,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
   return json(
     {
       success: false,
-      error: 'Invalid action. Supported actions: sync',
-      timestamp: new Date().toISOString(),
+      error: 'Invalid action. Supported; actions: sync',
+      timestamp: new Date().toISOString()
     },
     { status: 400 }
   );

@@ -61,7 +61,7 @@ export const SIMD_INTEGRATION_POINTS = {
   // 🏗️ INFRASTRUCTURE - System operations
   HEALTH_CHECKS: '/api/*/health',
   METRICS_COLLECTION: '/api/metrics/*',
-  CONFIGURATION: '/api/config/*',
+  CONFIGURATION: '/api/config/*'
 } as const;
 /**
  * Message payload types that benefit most from SIMD parsing
@@ -72,36 +72,36 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
     fields: ['payload', 'metadata', 'dependencies'],
     avgSize: '2-10KB',
     frequency: 'very_high',
-    impact: 'critical',
+    impact: 'critical'
   },
   // Vector/tensor data
   VECTOR_EMBEDDINGS: {
     fields: ['embeddings', 'vectors', 'similarities'],
     avgSize: '50-500KB',
     frequency: 'high',
-    impact: 'critical',
+    impact: 'critical'
   },
   // Legal document data
   LEGAL_DOCUMENTS: {
     fields: ['content', 'metadata', 'entities', 'analysis'],
     avgSize: '10-100KB',
     frequency: 'high',
-    impact: 'high',
+    impact: 'high'
   },
   // Cache payloads
   CACHE_ENTRIES: {
     fields: ['data', 'metadata', 'tags'],
     avgSize: '1-50KB',
     frequency: 'very_high',
-    impact: 'medium',
+    impact: 'medium'
   },
   // Batch operations
   BATCH_REQUESTS: {
     fields: ['documents', 'operations', 'results'],
     avgSize: '100KB-5MB',
     frequency: 'medium',
-    impact: 'critical',
-  },
+    impact: 'critical'
+  }
 } as const;
 /**
  * SIMD JSON performance metrics collector
@@ -114,7 +114,7 @@ class SIMDMetrics {
     totalFallbackTime: 0,
     avgSIMDTime: 0,
     avgFallbackTime: 0,
-    speedupRatio: 1,
+    speedupRatio: 1
   };
   recordSIMDParse(timeMs: number) {
     this.stats.simdParses++;
@@ -144,7 +144,7 @@ class SIMDMetrics {
       totalFallbackTime: 0,
       avgSIMDTime: 0,
       avgFallbackTime: 0,
-      speedupRatio: 1,
+      speedupRatio: 1
     };
   }
 }
@@ -209,7 +209,7 @@ export async function enhanceRabbitMQMessage(message: any): Promise<any> {
         }
       } catch (error) {
         // Keep original value if parsing fails
-        console.warn(`Failed to parse JSON field ${field}:`, error);
+        console.warn(`Failed to parse JSON field ${field}: ', error);
       }
     }
   }
@@ -267,7 +267,7 @@ export function getSIMDStatus() {
     environmentFlag: USE_SIMDJSON,
     metrics: simdMetrics.getStats(),
     integrationPoints: Object.keys(SIMD_INTEGRATION_POINTS).length,
-    optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length,
+    optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length
   };
 }
 /**
@@ -278,21 +278,20 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
   const testObj = {
     jobId: 'test-job-123',
     type: 'wasm_vector_operations',
-    payload: {
-      vectors: Array.from({ length: 100 }, () => Array.from({ length: 768 }, () => Math.random())),
+    payload: { vectors: Array.from({, length: 100 }, () => Array.from({ length: 768 }, () => Math.random())),
       metadata: {
         userId: 'user-123',
         timestamp: Date.now(),
         source: 'legal_document_analysis',
-        priority: 2,
-      },
+        priority: 2
+      }
     },
     analysis: {
       entities: ['contract', 'party_a', 'party_b', 'signature'],
       sentiment: 0.75,
       complexity: 0.62,
-      riskFactors: ['missing_clause', 'unusual_terms'],
-    },
+      riskFactors: ['missing_clause', 'unusual_terms']
+    }
   };
   const testData = JSON.stringify(testObj);
   // Benchmark standard JSON.parse
@@ -310,16 +309,13 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
     }
     simdTime = performance.now() - simdStart;
   }
-  return {
-    simd: {
-      avgTime: simdTime / iterations,
-      totalTime: simdTime,
+  return { simd: {, avgTime: simdTime / iterations,
+      totalTime: simdTime
     },
     standard: {
       avgTime: standardTime / iterations,
-      totalTime: standardTime,
+      totalTime: standardTime
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 0,
-    testData: `${Math.round(testData.length / 1024)}KB test payload`,
-  };
+    testData: `${Math.round(testData.length / 1024)}KB test payload' };
 }

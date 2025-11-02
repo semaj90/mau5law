@@ -6,9 +6,7 @@
 import { writable, get, derived } from 'svelte/store';
 import { selectedCase } from './case-store.js';
 // Core Evidence Interface
-export interface Evidence {
-  id: string;
-  caseId: string;
+export interface Evidence { id: string;, caseId: string;
   title: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'digital_forensic' | 'physical_item';
   content: string; // URL for files, text for notes
@@ -51,9 +49,7 @@ export interface Evidence {
   notes?: EvidenceNote[];
   tags?: string[];
 }
-export interface ChainOfCustodyEntry {
-  id: string;
-  timestamp: string;
+export interface ChainOfCustodyEntry { id: string;, timestamp: string;
   action: 'collected' | 'transferred' | 'accessed' | 'analyzed' | 'duplicated' | 'sealed' | 'unsealed';
   person: string;
   organization?: string;
@@ -63,27 +59,21 @@ export interface ChainOfCustodyEntry {
   witness?: string;
   notes?: string;
 }
-export interface AccessLogEntry {
-  timestamp: string;
-  user_id: string;
+export interface AccessLogEntry { timestamp: string;, user_id: string;
   user_name: string;
   action: 'view' | 'download' | 'edit' | 'delete' | 'share' | 'print';
   ip_address?: string;
   user_agent?: string;
   purpose?: string;
 }
-export interface AnalysisResult {
-  id: string;
-  type: 'ocr' | 'image_analysis' | 'audio_transcription' | 'video_analysis' | 'forensic_analysis';
+export interface AnalysisResult { id: string;, type: 'ocr' | 'image_analysis' | 'audio_transcription' | 'video_analysis' | 'forensic_analysis';
   result: any;
   confidence: number;
   timestamp: string;
   tool_used: string;
   version?: string;
 }
-export interface EvidenceNote {
-  id: string;
-  content: string;
+export interface EvidenceNote { id: string;, content: string;
   author: string;
   timestamp: string;
   type: 'observation' | 'analysis' | 'legal_note' | 'technical_note';
@@ -93,16 +83,14 @@ export interface EvidenceFilter {
   type?: string[];
   confidentiality_level?: string[];
   priority?: string[];
-  date_range?: { start: string; end: string };
+  date_range?: { start: string;, end: string };
   collected_by?: string[];
   tags?: string[];
   search_text?: string;
   processed_only?: boolean;
   unprocessed_only?: boolean;
 }
-export interface EvidenceStats {
-  total_count: number;
-  by_type: Record<string, number>;
+export interface EvidenceStats { total_count: number;, by_type: Record<string, number>;
   by_priority: Record<string, number>;
   by_confidentiality: Record<string, number>;
   processed_count: number;
@@ -112,9 +100,7 @@ export interface EvidenceStats {
   average_relevance_score: number;
 }
 // Store State Interface
-export interface EvidenceStoreState {
-  evidence: Evidence[];
-  filtered_evidence: Evidence[];
+export interface EvidenceStoreState { evidence: Evidence[];, filtered_evidence: Evidence[];
   current_filter: EvidenceFilter | null;
   selected_evidence: Evidence | null;
   isLoading: boolean;
@@ -124,9 +110,7 @@ export interface EvidenceStoreState {
   chain_of_custody_log: ChainOfCustodyEntry[];
   security_alerts: SecurityAlert[];
 }
-export interface SecurityAlert {
-  id: string;
-  type: 'unauthorized_access' | 'integrity_check_failed' | 'chain_break' | 'encryption_error';
+export interface SecurityAlert { id: string;, type: 'unauthorized_access' | 'integrity_check_failed' | 'chain_break' | 'encryption_error';
   evidence_id: string;
   message: string;
   timestamp: string;
@@ -145,7 +129,7 @@ const createEvidenceStore = () => {
     processing_queue: [],
     stats: null,
     chain_of_custody_log: [],
-    security_alerts: [],
+    security_alerts: []
   });
   const fetchEvidence = async (caseId: string | null): Promise<void> => {
     if (!caseId) {
@@ -159,7 +143,7 @@ const createEvidenceStore = () => {
         processing_queue: [],
         stats: null,
         chain_of_custody_log: [],
-        security_alerts: [],
+        security_alerts: []
       });
       return;
     }
@@ -168,8 +152,7 @@ const createEvidenceStore = () => {
       const response = await fetch(`/api/evidence/list?caseId=${caseId}`, {
         headers: {
           'Content-Type': 'application/json',
-          'X-Legal-Request': 'true',
-        },
+          'X-Legal-Request': `true` }
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -189,7 +172,7 @@ const createEvidenceStore = () => {
         filtered_evidence: evidenceList,
         stats,
         isLoading: false,
-        error: null,
+        error: null
       }));
       // Log access for audit trail
       await logEvidenceAccess(caseId, 'case_evidence_accessed');
@@ -201,14 +184,12 @@ const createEvidenceStore = () => {
         evidence: [],
         filtered_evidence: [],
         isLoading: false,
-        error: message,
+        error: message
       }));
     }
   };
   // QUIC tensor streaming for evidence embeddings (browser-only, no-SSR)
-  type TensorEnvelope = {
-    kind: 'embedding';
-    evidenceId: string;
+  type TensorEnvelope = { kind: 'embedding';, evidenceId: string;
     caseId: string;
     dim: number;
     // Keep as raw numbers for simplicity; server can convert to Float32
@@ -287,7 +268,7 @@ const createEvidenceStore = () => {
         caseId: caseId as string, // Explicitly cast caseId to string
         dim: ev.embedding.length,
         vector: ev.embedding,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       streamedEmbeddingIds.add(ev.id);
       quicStream.sendEnvelope(envelope).catch(() => {
@@ -310,8 +291,7 @@ const createEvidenceStore = () => {
     subscribe,
     fetchEvidence,
     // Add new evidence with comprehensive metadata
-    addEvidence: async (
-      newEvidenceData: Omit<
+    addEvidence: async (; newEvidenceData: Omit<
         Evidence,
         'id' | 'x' | 'y' | 'caseId' | 'created_at' | 'updated_at' | 'chain_of_custody' | 'access_log'
       >
@@ -332,8 +312,7 @@ const createEvidenceStore = () => {
           person: newEvidenceData.collected_by,
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
-          notes: `Evidence "${newEvidenceData.title}" added to case system`,
-        };
+          notes: `Evidence "${newEvidenceData.title}" added to case system' };
         const evidencePayload = {
           ...newEvidenceData,
           caseId: currentCaseId,
@@ -342,15 +321,14 @@ const createEvidenceStore = () => {
           x: Math.random() * 500, // Default canvas position;
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
         const response = await fetch('/api/evidence', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
-          },
-          body: JSON.stringify(evidencePayload),
+            'X-Legal-Request': `true` },
+          body: JSON.stringify(evidencePayload)
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -361,7 +339,7 @@ const createEvidenceStore = () => {
           ...state,
           evidence: [...state.evidence, createdEvidence],
           filtered_evidence: applyFilter([...state.evidence, createdEvidence], state.current_filter),
-          isLoading: false,
+          isLoading: false
         }));
         // Log evidence addition
         await logEvidenceAccess(createdEvidence.id, 'evidence_added');
@@ -371,19 +349,16 @@ const createEvidenceStore = () => {
         update(state => ({
           ...state,
           isLoading: false,
-          error: message,
+          error: message
         }));
         console.error('Error adding evidence:', error);
         throw error;
       }
     },
     // Update evidence with optimistic updates and chain of custody
-    updateEvidence: async (
-      evidenceId: string,
+    updateEvidence: async (; evidenceId: string,
       updates: Partial<Omit<Evidence, 'id' | 'caseId' | 'created_at'>>,
-      chainOfCustodyAction?: {
-        action: ChainOfCustodyEntry['action'];
-        person: string;
+      chainOfCustodyAction?: { action: ChainOfCustodyEntry['action'];, person: string;
         purpose?: string;
         notes?: string;
       }
@@ -397,14 +372,14 @@ const createEvidenceStore = () => {
             const updated = {
               ...item,
               ...updates,
-              updated_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
             };
             // Add chain of custody entry if provided
             if (chainOfCustodyAction) {
               const chainEntry: ChainOfCustodyEntry = {
                 id: `chain_${Date.now()}`,
                 timestamp: new Date().toISOString(),
-                ...chainOfCustodyAction,
+                ...chainOfCustodyAction
               };
               updated.chain_of_custody = [...updated.chain_of_custody, chainEntry];
             }
@@ -415,7 +390,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           evidence: updatedEvidence,
-          filtered_evidence: applyFilter(updatedEvidence, state.current_filter),
+          filtered_evidence: applyFilter(updatedEvidence, state.current_filter)
         };
       });
       try {
@@ -427,9 +402,8 @@ const createEvidenceStore = () => {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
-          },
-          body: JSON.stringify(payload),
+            'X-Legal-Request': `true` },
+          body: JSON.stringify(payload)
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -449,7 +423,7 @@ const createEvidenceStore = () => {
               state.evidence.map(item => (item.id === evidenceId ? original : item)),
               state.current_filter
             ),
-            error: error instanceof Error ? error.message : String(error),
+            error: error instanceof Error ? error.message : String(error)
           }));
         }
         throw error;
@@ -465,7 +439,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           evidence: newList, // Added comma
-          filtered_evidence: applyFilter(newList, state.current_filter),
+          filtered_evidence: applyFilter(newList, state.current_filter)
         };
       });
       try {
@@ -473,9 +447,8 @@ const createEvidenceStore = () => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
-          },
-          body: JSON.stringify({ reason }),
+            'X-Legal-Request': `true` },
+          body: JSON.stringify({ reason })
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -490,7 +463,7 @@ const createEvidenceStore = () => {
           ...state,
           evidence: originalList, // Added comma
           filtered_evidence: applyFilter(originalList, state.current_filter),
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         }));
         throw error;
       }
@@ -499,16 +472,15 @@ const createEvidenceStore = () => {
     processEvidence: async (evidenceId: string, processingType: 'ocr' | 'analysis' | 'forensic') => {
       update(state => ({
         ...state,
-        processing_queue: [...state.processing_queue, evidenceId],
+        processing_queue: [...state.processing_queue, evidenceId]
       }));
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/process`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
-          },
-          body: JSON.stringify({ type: processingType }),
+            'X-Legal-Request': `true` },
+          body: JSON.stringify({, type: processingType })
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -522,7 +494,7 @@ const createEvidenceStore = () => {
             state.evidence.map(item => (item.id === evidenceId ? processedEvidence : item)),
             state.current_filter
           ),
-          processing_queue: state.processing_queue.filter(id => id !== evidenceId),
+          processing_queue: state.processing_queue.filter(id => id !== evidenceId)
         }));
         // Log evidence processing
         await logEvidenceAccess(evidenceId, 'evidence_processed', { type: processingType });
@@ -531,7 +503,7 @@ const createEvidenceStore = () => {
         update(state => ({
           ...state,
           processing_queue: state.processing_queue.filter(id => id !== evidenceId),
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         }));
         throw error;
       }
@@ -543,7 +515,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           current_filter: filter, // Added comma
-          filtered_evidence: filtered,
+          filtered_evidence: filtered
         };
       });
     },
@@ -583,7 +555,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           filtered_evidence: filtered,
-          current_filter: { search_text: query },
+          current_filter: { search_text: query }
         };
       }); // Correctly close the update call
     }, // Correctly close the searchEvidence method and separate it from the next one
@@ -609,9 +581,9 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
+            'X-Legal-Request': 'true'
           },
-          body: JSON.stringify(entry),
+          body: JSON.stringify(entry)
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -625,7 +597,7 @@ const createEvidenceStore = () => {
           filtered_evidence: applyFilter(
             state.evidence.map(item => (item.id === evidenceId ? updatedEvidence : item)),
             state.current_filter
-          ),
+          )
         }));
         return updatedEvidence;
       } catch (err: any) {
@@ -641,9 +613,8 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
-          },
-          body: JSON.stringify({ evidenceIds, reportType }),
+            'X-Legal-Request': `true` },
+          body: JSON.stringify({ evidenceIds, reportType })
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -661,7 +632,7 @@ const createEvidenceStore = () => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/validate`, {
           method: 'POST',
-          headers: { 'X-Legal-Request': 'true' },
+          headers: { 'X-Legal-Request': `true` }
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -680,9 +651,9 @@ const createEvidenceStore = () => {
                 message: validation.message || 'Evidence integrity check failed',
                 timestamp: new Date().toISOString(),
                 severity: 'high',
-                resolved: false,
+                resolved: false
               },
-            ],
+            ]
           }));
         }
         return validation;
@@ -700,7 +671,7 @@ const createEvidenceStore = () => {
       update(state => ({
         ...state,
         current_filter: null, // Added comma
-        filtered_evidence: state.evidence,
+        filtered_evidence: state.evidence
       }));
     },
     refreshStats: async () => {
@@ -708,7 +679,7 @@ const createEvidenceStore = () => {
       if (!currentCaseId) return;
       try {
         const response = await fetch(`/api/evidence/stats?caseId=${currentCaseId}`, {
-          headers: { 'X-Legal-Request': 'true' },
+          headers: { 'X-Legal-Request': 'true' }
         });
         if (response.ok) {
           const stats = await response.json();
@@ -725,9 +696,8 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true',
-          },
-          body: JSON.stringify({ evidenceIds, format }),
+            'X-Legal-Request': `true` },
+          body: JSON.stringify({ evidenceIds, format })
         });
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}) as { message?: string });
@@ -739,7 +709,7 @@ const createEvidenceStore = () => {
         update(state => ({ ...state, error: message }));
         throw err;
       }
-    },
+    }
   };
 };
 // Helper functions
@@ -823,14 +793,13 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Legal-Request': 'true',
-      },
+        'X-Legal-Request': `true` },
       body: JSON.stringify({
-        evidence_id: evidenceId, // Added comma
+       , evidence_id: evidenceId, // Added comma
         action,
         timestamp: new Date().toISOString(),
-        metadata,
-      }),
+        metadata
+      })
     });
   } catch (error: any) {
     console.error('Failed to log evidence access:', error);
@@ -861,7 +830,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
     unprocessed_count: 0,
     encrypted_count: 0,
     total_file_size: 0,
-    average_relevance_score: 0,
+    average_relevance_score: 0
   };
   let totalRelevanceScore = 0;
   let relevanceScoreCount = 0;
@@ -882,7 +851,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   stats.average_relevance_score = relevanceScoreCount > 0 ? totalRelevanceScore / relevanceScoreCount : 0;
   return stats;
 }
-export function validateChainOfCustody(evidence: Evidence): { valid: boolean; issues: string[] } {
+export function validateChainOfCustody(evidence: Evidence): { valid: boolean;, issues: string[] } {
   const issues: string[] = [];
   const chain = evidence.chain_of_custody;
   if (chain.length === 0) {

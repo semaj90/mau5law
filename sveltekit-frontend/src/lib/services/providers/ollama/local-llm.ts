@@ -29,13 +29,9 @@ export interface OllamaResponse {
 }
 
 // New interfaces for specific Ollama API responses
-export interface OllamaModelInfo {
-  modelfile: string;
-  parameters: string;
+export interface OllamaModelInfo { modelfile: string;, parameters: string;
   template: string;
-  details: {
-    parent_model: string;
-    format: string;
+  details: { parent_model: string;, format: string;
     family: string;
     families: string[];
     parameter_size: string;
@@ -51,17 +47,13 @@ export interface OllamaPullResponse {
   error?: string;
 }
 
-export interface OllamaHealthCheckResponse {
-  status: 'healthy' | 'unavailable';
-  available: boolean;
+export interface OllamaHealthCheckResponse { status: 'healthy' | 'unavailable';, available: boolean;
   models: string[];
   loaded: string[];
 }
 
 // Generic interface for fetch response properties used for type assertions
-interface FetchResponseCommon {
-  ok: boolean;
-  statusText: string;
+interface FetchResponseCommon { ok: boolean;, statusText: string;
   body: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>; // Changed from Promise<any> to Promise<unknown>
 }
@@ -70,14 +62,14 @@ export class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel = 'gemma3-legal:latest';
   private availableModels = new Map<string, OllamaModel>();
-  private modelCache = new Map<string, { loaded: boolean; lastUsed: number }>();
+  private modelCache = new Map<string, { loaded: boolean;, lastUsed: number }>();
 
   private resolveEndpoint(endpoint: OllamaEndpoint): string {
     return getOllamaEndpoint(endpoint, this.baseUrl);
   }
 
   private buildUrl(path: string): string {
-    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path}' }`;
   }
 
   constructor(baseUrl = OLLAMA_CONFIG.baseUrl) {
@@ -147,7 +139,7 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, prompt: options.prompt, ...options.options }),
+        body: JSON.stringify({ model, prompt: options.prompt, ...options.options })
       });
       if (!resp.ok) throw new Error(`Generation failed: ${resp.status}`);
       const result = await resp.json();
@@ -165,7 +157,7 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('embeddings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: m, input: text }),
+        body: JSON.stringify({ model: m, input: text })
       });
       if (!resp.ok) throw new Error(`Embedding failed: ${resp.status}`);
       const data = await resp.json();
@@ -186,7 +178,7 @@ export class OllamaLocalLLM {
       const resp = await fetch(this.resolveEndpoint('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: m, messages, stream: false }),
+        body: JSON.stringify({ model: m, messages, stream: false })
       });
       if (!resp.ok) throw new Error(`Chat failed: ${resp.status}`);
       const data = await resp.json();
@@ -222,7 +214,7 @@ export class OllamaLocalLLM {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to unload model ${model}:`, error.message);
       } else {
-        logger.error(`[OllamaLLM] Failed to unload model ${model}:`, error);
+        logger.error(`[OllamaLLM] Failed to unload model ${model}: ', error);
       }
     }
   }
@@ -316,7 +308,7 @@ export class OllamaLocalLLM {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to pull model ${model}:`, error.message);
       } else {
-        logger.error(`[OllamaLLM] Failed to pull model ${model}:`, error);
+        logger.error(`[OllamaLLM] Failed to pull model ${model}: ', error);
       }
       return false;
     }

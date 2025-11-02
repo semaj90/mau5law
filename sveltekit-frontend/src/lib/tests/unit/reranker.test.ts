@@ -6,7 +6,7 @@ describe('Server Reranker', () => {
     const query = 'contract breach';
     const candidates = [
       { id: '1', text: 'This contract has a breach clause.' },
-      { id: '2', text: 'Unrelated legal text' },
+      { id: '2', text: 'Unrelated legal text' }
     ];
     const result = await serverRerank({ query, candidates } as any);
     expect(result.length).toBeGreaterThan(0);

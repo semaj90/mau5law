@@ -41,7 +41,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   lastAccessedAt: timestamp('last_accessed_at', { withTimezone: true }),
   // MinIO integration for large assets
   minioPath: text('minio_path'), // Optional path for large shader assets
-  assetBundle: jsonb('asset_bundle').$type<Record<string, unknown> | null>(),
+  assetBundle: jsonb('asset_bundle').$type<Record<string, unknown> | null>()
 });
 export const shaderUserPatterns = pgTable('shader_user_patterns', {
   id: serial('id').primaryKey(),
@@ -65,7 +65,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding
   reward: real('reward'), // Computed reward for this access
   reinforcement_data: jsonb('reinforcement_data').$type<Record<string, unknown> | null>(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 });
 export const shaderPreloadRules = pgTable('shader_preload_rules', {
   // ML model weights and thresholds
@@ -89,7 +89,7 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   learningRate: real('learning_rate').default(0.01),
   lastTriggered: timestamp('last_triggered', { withTimezone: true }),
   lastUpdated: timestamp('last_updated', { withTimezone: true }).defaultNow(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 });
 export const shaderDependencies = pgTable('shader_dependencies', {
   id: serial('id').primaryKey(),
@@ -111,7 +111,7 @@ export const shaderDependencies = pgTable('shader_dependencies', {
   coUsageFrequency: real('co_usage_frequency'), // 0-1 how often used together
   lastCoUsed: timestamp('last_co_used', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });
 // Define valid status values as a union type
 export type ShaderCompilationStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
@@ -146,7 +146,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   retryCount: integer('retry_count').default(0),
   maxRetries: integer('max_retries').default(3),
   nextRetryAt: timestamp('next_retry_at', { withTimezone: true }),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });
 /**
  * shaderRecommendationsView is a regular table (not a database view or materialized view).
@@ -168,7 +168,7 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
   // Performance tracking
   timesRecommended: integer('times_recommended').default(0),
   timesAccepted: integer('times_accepted').default(0),
-  averageUserSatisfaction: real('average_user_satisfaction'),
+  averageUserSatisfaction: real('average_user_satisfaction')
 });
 // ============================================================================
 // EXPORT TYPES FOR TYPESCRIPT

@@ -13,7 +13,7 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   ListObjectsV2Command,
-  HeadObjectCommand,
+  HeadObjectCommand
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Readable } from 'stream';
@@ -30,19 +30,13 @@ interface MinIOConfig {
   forcePathStyle?: boolean;
 }
 
-export interface FileMetadata {
-  key: string;
-  size: number;
+export interface FileMetadata { key: string;, size: number;
   lastModified: Date;
   contentType?: string;
   bucket: string;
 }
 
-export interface TextExtractionResult {
-  content: string;
-  metadata: {
-    originalSize: number;
-    extractedSize: number;
+export interface TextExtractionResult { content: string;, metadata: { originalSize: number;, extractedSize: number;
     contentType: string | null;
     processingTime: number;
   };
@@ -58,17 +52,17 @@ const createClient = (): S3Client => {
     region: process.env.MINIO_REGION || 'us-east-1',
     accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
-    forcePathStyle: true,
+    forcePathStyle: true
   };
 
   return new S3Client({
     endpoint: cfg.endpoint,
     region: cfg.region,
     credentials: {
-      accessKeyId: cfg.accessKeyId,
-      secretAccessKey: cfg.secretAccessKey,
+     , accessKeyId: cfg.accessKeyId,
+      secretAccessKey: cfg.secretAccessKey
     },
-    forcePathStyle: cfg.forcePathStyle,
+    forcePathStyle: cfg.forcePathStyle
   });
 };
 
@@ -109,7 +103,7 @@ function detectFileType(key: string, contentType?: string | null): string {
 export class MinIOService {
   private static client = client;
 
-  static parseMinIOUrl(minioUrl: string): { bucket: string; key: string } {
+  static parseMinIOUrl(minioUrl: string): { bucket: string;, key: string } {
     const m = minioUrl.match(/^minio:\/\/([^/]+)\/(.+)$/);
     if (!m) throw new Error(`Invalid MinIO URL. Expected format: minio://bucket/key`);
     return { bucket: m[1], key: m[2] };
@@ -148,8 +142,8 @@ export class MinIOService {
         originalSize: buf.length,
         extractedSize: Buffer.byteLength(content, 'utf-8'),
         contentType: res.ContentType ?? null,
-        processingTime: Date.now() - start,
-      },
+        processingTime: Date.now() - start
+      }
     };
   }
 
@@ -182,7 +176,7 @@ export class MinIOService {
       Key: key,
       Body: content,
       ContentType: 'text/plain',
-      Metadata: metadata,
+      Metadata: metadata
     });
     await this.client.send(cmd);
     return `minio://${bucket}/${key}`;
@@ -197,11 +191,10 @@ export class MinIOService {
     const upload = new Upload({
       client: this.client,
       params: {
-        Bucket: bucket,
+       , Bucket: bucket,
         Key: key,
         Body: content,
-        ContentType: contentType || 'application/octet-stream',
-      },
+        ContentType: contentType || 'application/octet-stream` }
     });
     await upload.done();
     return `minio://${bucket}/${key}`;
@@ -219,10 +212,10 @@ export class MinIOService {
         size: item.Size || 0,
         lastModified: item.LastModified || new Date(),
         contentType: undefined, // Not available in listObjects response
-        bucket,
+        bucket
       }));
     } catch (error) {
-      console.error(`Failed to list MinIO objects:`, error);
+      console.error(`Failed to list MinIO objects: ', error);
       throw error;
     }
   }
@@ -249,7 +242,7 @@ export class MinIOService {
         size: res.ContentLength || 0,
         lastModified: res.LastModified || new Date(),
         contentType: res.ContentType || undefined,
-        bucket,
+        bucket
       };
     } catch (error) {
       if (error instanceof Error && (error as any).name === 'NotFound') {

@@ -10,9 +10,7 @@ export enum ServiceTier {
   REALTIME = 'websocket', // Event-driven
 }
 
-export interface ServiceEndpoints {
-  http: {
-    enhancedRAG: string;
+export interface ServiceEndpoints { http: {, enhancedRAG: string;
     uploadService: string;
     aiSummary: string;
     clusterManager: string;
@@ -20,23 +18,17 @@ export interface ServiceEndpoints {
     xstateManager: string;
     loadBalancer: string;
   };
-  grpc: {
-    kratosServer: string;
-    grpcServer: string;
+  grpc: { kratosServer: string;, grpcServer: string;
   };
   quic: {
     ragQuicProxy: string;
   };
-  ws: {
-    liveAgent: string;
-    enhancedRAG: string;
+  ws: { liveAgent: string;, enhancedRAG: string;
   };
 }
 
 export interface ServiceRouting {
-  [operation: string]: {
-    tier: ServiceTier;
-    endpoint: string;
+  [operation: string]: { tier: ServiceTier;, endpoint: string;
     fallback?: string;
   };
 }
@@ -44,63 +36,61 @@ export interface ServiceRouting {
 export class ProductionServiceClient {
   private endpoints: ServiceEndpoints;
   private routing: ServiceRouting;
-  private healthCache: Map<string, { healthy: boolean; lastCheck: number }>;
+  private healthCache: Map<string, { healthy: boolean;, lastCheck: number }>;
 
   constructor() {
-    this.endpoints = {
-      http: {
-        enhancedRAG: 'http://localhost:8094',
+    this.endpoints = { http: {, enhancedRAG: 'http://localhost:8094',
         uploadService: 'http://localhost:8093',
         aiSummary: 'http://localhost:8096',
         clusterManager: 'http://localhost:8213',
         legalAI: 'http://localhost:8202',
         xstateManager: 'http://localhost:8212',
-        loadBalancer: 'http://localhost:8222',
+        loadBalancer: 'http://localhost:8222'
       },
       grpc: {
         kratosServer: 'localhost:50051',
-        grpcServer: 'localhost:50052',
+        grpcServer: 'localhost:50052'
       },
       quic: {
-        ragQuicProxy: 'localhost:8216',
+        ragQuicProxy: 'localhost:8216'
       },
       ws: {
         liveAgent: 'ws://localhost:8200/ws',
-        enhancedRAG: 'ws://localhost:8094/ws',
-      },
+        enhancedRAG: 'ws://localhost:8094/ws'
+      }
     };
 
     this.routing = {
       'rag.query': {
         tier: ServiceTier.ULTRA_FAST,
         endpoint: this.endpoints.quic.ragQuicProxy,
-        fallback: this.endpoints.http.enhancedRAG,
+        fallback: this.endpoints.http.enhancedRAG
       },
       'legal.process': {
         tier: ServiceTier.HIGH_PERF,
         endpoint: this.endpoints.grpc.kratosServer,
-        fallback: this.endpoints.http.legalAI,
+        fallback: this.endpoints.http.legalAI
       },
       'file.upload': {
         tier: ServiceTier.STANDARD,
-        endpoint: this.endpoints.http.uploadService,
+        endpoint: this.endpoints.http.uploadService
       },
       'ai.live': {
         tier: ServiceTier.REALTIME,
-        endpoint: this.endpoints.ws.liveAgent,
+        endpoint: this.endpoints.ws.liveAgent
       },
       'ai.summary': {
         tier: ServiceTier.STANDARD,
-        endpoint: this.endpoints.http.aiSummary,
+        endpoint: this.endpoints.http.aiSummary
       },
       'cluster.health': {
         tier: ServiceTier.STANDARD,
-        endpoint: this.endpoints.http.clusterManager,
+        endpoint: this.endpoints.http.clusterManager
       },
       'xstate.event': {
         tier: ServiceTier.HIGH_PERF,
-        endpoint: this.endpoints.http.xstateManager,
-      },
+        endpoint: this.endpoints.http.xstateManager
+      }
     };
 
     this.healthCache = new Map();
@@ -131,7 +121,7 @@ export class ProductionServiceClient {
         case ServiceTier.REALTIME:
           return await this.executeWebSocket<T>(route.endpoint, operation, data);
         default:
-          throw new Error(`Unsupported tier: ${tier}`);
+          throw new Error(`Unsupported; tier: ${tier}`);
       }
     } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
@@ -157,10 +147,9 @@ export class ProductionServiceClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Client': 'SvelteKit-Production',
-        },
+          'X-Client': `SvelteKit-Production` },
         body: JSON.stringify(data),
-        signal: controller.signal,
+        signal: controller.signal
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
@@ -184,10 +173,9 @@ export class ProductionServiceClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/grpc+json',
-          'X-Client': 'SvelteKit-gRPC',
-        },
+          'X-Client': `SvelteKit-gRPC` },
         body: JSON.stringify(data),
-        signal: controller.signal,
+        signal: controller.signal
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
@@ -212,10 +200,9 @@ export class ProductionServiceClient {
         headers: {
           'Content-Type': 'application/quic+json',
           'X-Client': 'SvelteKit-QUIC',
-          'X-Protocol': 'HTTP/3',
-        },
+          'X-Protocol': `HTTP/3` },
         body: JSON.stringify(data),
-        signal: controller.signal,
+        signal: controller.signal
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
@@ -290,7 +277,7 @@ export class ProductionServiceClient {
       { name: 'ai-summary', url: `${this.endpoints.http.aiSummary}/health` },
       { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health` },
       { name: 'legal-ai', url: `${this.endpoints.http.legalAI}/health` },
-      { name: 'xstate-manager', url: `${this.endpoints.http.xstateManager}/health` },
+      { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health' }
     ];
 
     const results = await Promise.allSettled(
@@ -318,13 +305,13 @@ export class ProductionServiceClient {
    * Get service performance metrics
    */
   async getPerformanceMetrics(): Promise<
-    Array<{ tier: ServiceTier; avgLatency: number; successRate: number; endpoint: string }>
+    Array<{ tier: ServiceTier; avgLatency: number; successRate: number;, endpoint: string }>
   > {
     return [
       { tier: ServiceTier.ULTRA_FAST, avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy' },
       { tier: ServiceTier.HIGH_PERF, avgLatency: 15, successRate: 0.98, endpoint: 'grpc-server' },
       { tier: ServiceTier.STANDARD, avgLatency: 45, successRate: 0.97, endpoint: 'enhanced-rag' },
-      { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: 'live-agent' },
+      { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: `live-agent` }
     ];
   }
 
@@ -359,5 +346,5 @@ export const services = {
   },
   async triggerXStateEvent(eventType: string, data?: any): Promise<unknown> {
     return productionServiceClient.execute('xstate.event', { type: eventType, data });
-  },
+  }
 };

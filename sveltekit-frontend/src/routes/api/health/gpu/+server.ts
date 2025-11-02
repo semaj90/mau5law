@@ -12,10 +12,10 @@ export const GET: RequestHandler = async () => {
         service: 'gpu',
         message: 'GPU acceleration available',
         details: {
-          cudaVisible: process.env.CUDA_VISIBLE_DEVICES || 'all',
-          enabled: true,
+         , cudaVisible: process.env.CUDA_VISIBLE_DEVICES || 'all',
+          enabled: true
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } else {
       return json(
@@ -24,10 +24,10 @@ export const GET: RequestHandler = async () => {
           service: 'gpu',
           message: 'GPU acceleration not configured',
           details: {
-            enabled: false,
-            fallback: 'CPU processing',
+           , enabled: false,
+            fallback: 'CPU processing'
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 503 }
       );
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async () => {
         status: 'error',
         service: 'gpu',
         error: error.message || 'Health check failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

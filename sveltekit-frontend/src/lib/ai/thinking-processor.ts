@@ -1,13 +1,9 @@
 import type { Document } from '$lib/types';
 // Enhanced thinking style processor for legal AI
-export interface ThinkingAnalysis {
-  thinking: string;
-  analysis: any;
+export interface ThinkingAnalysis { thinking: string;, analysis: any;
   confidence: number;
   reasoning_steps: string[];
-  metadata: {
-    model_used: string;
-    processing_time: number;
+  metadata: { model_used: string;, processing_time: number;
     thinking_enabled: boolean;
   };
 }
@@ -38,7 +34,7 @@ export class ThinkingProcessor {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         text,
@@ -46,8 +42,8 @@ export class ThinkingProcessor {
         userId: enhancedOptions.userId,
         userRole: enhancedOptions.userRole,
         enableRecommendations: enhancedOptions.enableRecommendations || false,
-        ...options,
-      }),
+        ...options
+      })
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Analysis failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -90,8 +86,8 @@ export class ThinkingProcessor {
             .analysis.temporal_score,
           structured_reasoning: (
             result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }
-          ).analysis.structured_reasoning,
-        },
+          ).analysis.structured_reasoning
+        }
       };
     }
     // Standard analysis response
@@ -107,7 +103,7 @@ export class ThinkingProcessor {
       reasoning_steps:
         (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis
           .reasoning_steps || [],
-      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata,
+      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
     };
   }
   /**
@@ -138,8 +134,8 @@ export class ThinkingProcessor {
         metadata: {
           model_used: 'quick',
           processing_time: 0,
-          thinking_enabled: false,
-        },
+          thinking_enabled: false
+        }
       };
     }
     const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
@@ -153,8 +149,8 @@ export class ThinkingProcessor {
       metadata: {
         model_used: 'thinking',
         processing_time: 0,
-        thinking_enabled: true,
-      },
+        thinking_enabled: true
+      }
     };
   }
   /**
@@ -259,12 +255,12 @@ export const LegalAnalysisUtils = {
   /**
    * Gets the confidence level description
    */
-  getConfidenceLabel(confidence: number): { label: string; color: string } {
+  getConfidenceLabel(confidence: number): { label: string;, color: string } {
     if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
     if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
     if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b' };
     if (confidence >= 0.6) return { label: 'Fair', color: '#ef4444' };
-    return { label: 'Low', color: '#6b7280' };
+    return { label: 'Low', color: `#6b7280` };
   },
   /**
    * Formats processing time for display
@@ -298,31 +294,23 @@ export const LegalAnalysisUtils = {
       'overruled',
     ];
     return legalTerms.filter(term => text.includes(term));
-  },
+  }
 };
 /**
  * Document analysis result from thinking processor
  */
-export interface DocumentAnalysisResult {
-  id: string;
-  document_type: string;
+export interface DocumentAnalysisResult { id: string;, document_type: string;
   analysis_type: string;
   key_findings: string[];
   legal_implications: string[];
   recommendations: string[];
   confidence: number;
-  risk_assessment?: {
-    level: 'low' | 'medium' | 'high';
-    factors: string[];
+  risk_assessment?: { level: 'low' | 'medium' | 'high';, factors: string[];
   };
-  compliance_status?: {
-    compliant: boolean;
-    violations: string[];
+  compliance_status?: { compliant: boolean;, violations: string[];
     recommendations: string[];
   };
-  chain_of_custody?: {
-    complete: boolean;
-    gaps: string[];
+  chain_of_custody?: { complete: boolean;, gaps: string[];
     verification_status: string;
   };
 }
@@ -336,7 +324,7 @@ export const QuickAnalysis = {
   async classifyEvidence(evidenceId: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'classification',
-      useThinkingStyle: useThinking,
+      useThinkingStyle: useThinking
     });
   },
   /**
@@ -354,7 +342,7 @@ export const QuickAnalysis = {
   async assessCaseStrength(caseId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeCase(caseId, {
       analysisType: 'reasoning',
-      useThinkingStyle: useThinking,
+      useThinkingStyle: useThinking
     });
   },
   /**
@@ -364,7 +352,7 @@ export const QuickAnalysis = {
     return ThinkingProcessor.analyzeDocument(text, {
       documentType: 'legal_document',
       analysisType: 'compliance',
-      useThinkingStyle: useThinking,
+      useThinkingStyle: useThinking
     });
-  },
+  }
 };

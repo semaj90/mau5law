@@ -73,9 +73,7 @@ export interface SearchQuery {
   filters?: Record<string, unknown>;
 }
 
-export interface AIRequest {
-  operation: 'chat' | 'analyze' | 'summarize' | 'train_som' | 'xstate_event';
-  data: any;
+export interface AIRequest { operation: 'chat' | 'analyze' | 'summarize' | 'train_som' | 'xstate_event';, data: any;
 }
 
 export interface UploadData {
@@ -140,8 +138,7 @@ class LegalPlatformClient {
         if (response.status >= 500) {
           await handleApiError?.(error, fullUrl, {
             ...context,
-            action: `${method} ${endpoint}`
-          });
+            action: `${method} ${endpoint}` });
         } else if (response.status === 401 || response.status === 403) {
           await errorHandler.handleAuthError?.(errorMessage, {
             ...context,
@@ -179,13 +176,11 @@ class LegalPlatformClient {
         await handleNetworkError?.(err, {
           ...context,
           endpoint: fullUrl,
-          action: `${method} ${endpoint}`
-        });
+          action: `${method} ${endpoint}` });
       } else if (err instanceof Error) {
         await handleApiError?.(err, fullUrl, {
           ...context,
-          action: `${method} ${endpoint}`
-        });
+          action: '${method} ${endpoint}' });
       } else {
         await errorHandler.logWarn?.('Unknown error during API call', {
           ...context,
@@ -195,8 +190,7 @@ class LegalPlatformClient {
       }
       return {
         success: false,
-        error: msg || 'Unknown error'
-      };
+        error: msg || 'Unknown error` };
     }
   }
 
@@ -289,15 +283,14 @@ class LegalPlatformClient {
       const response = await fetch(`${this.baseUrl}/uploads`, {
         method: 'POST',
         body: formData
-        // Note: DO NOT set Content-Type header for FormData; browser sets it including boundary
+        //, Note: DO NOT set Content-Type header for FormData; browser sets it including boundary
       });
       const json = await response.json();
       return json as ApiResponse<unknown>;
     } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed'
-      };
+        error: error instanceof Error ? error.message : `Upload failed` };
     }
   }
 
@@ -337,8 +330,7 @@ class LegalPlatformClient {
     } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Health check failed'
-      };
+        error: error instanceof Error ? error.message : `Health check failed` };
     }
   }
 

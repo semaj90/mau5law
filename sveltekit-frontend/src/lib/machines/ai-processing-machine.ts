@@ -1,37 +1,30 @@
 import { createMachine, assign, fromPromise } from 'xstate';
-interface AIProcessingContext {
-  task: { id: string; type: string; payload: any } | null;
+interface AIProcessingContext { task: { id: string; type: string;, payload: any } | null;
   result: any | null;
   error: string | null;
 }
 type AIProcessingEvent =
-  | { type: 'START_PROCESSING'; task: { id: string; type: string; payload: any } }
-  | { type: 'PROCESSING_SUCCESS'; result: any }
-  | { type: 'PROCESSING_FAILURE'; error: string };
+  | { type: 'START_PROCESSING'; task: { id: string; type: string;, payload: any } }
+  | { type: 'PROCESSING_SUCCESS';, result: any }
+  | { type: 'PROCESSING_FAILURE';, error: string };
 export const aiProcessingMachine = createMachine<AIProcessingContext, AIProcessingEvent>({
   id: 'aiProcessing',
   context: {
     task: null,
     result: null,
-    error: null,
+    error: null
   },
   initial: 'idle',
-  states: {
-    idle: {
-      on: {
-        START_PROCESSING: {
-          target: 'processing',
+  states: { idle: {, on: { START_PROCESSING: {, target: 'processing',
           actions: assign({
-            task: ({ event }) => event.task,
+           , task: ({ event }) => event.task,
             result: null,
-            error: null,
-          }),
-        },
-      },
+            error: null
+          })
+        }
+      }
     },
-    processing: {
-      invoke: {
-        id: 'processAITask',
+    processing: { invoke: {, id: 'processAITask',
         src: fromPromise(async ({ context }) => {
           if (!context.task) {
             throw new Error('No task to process');
@@ -46,29 +39,27 @@ export const aiProcessingMachine = createMachine<AIProcessingContext, AIProcessi
           target: 'idle',
           actions: assign({
             result: ({ event }) => event.output,
-            error: null,
-          }),
+            error: null
+          })
         },
         onError: {
           target: 'error',
           actions: assign({
             error: ({ event }) => event.error.message,
-            result: null,
-          }),
-        },
-      },
+            result: null
+          })
+        }
+      }
     },
-    error: {
-      on: {
-        START_PROCESSING: {
+    error: { on: {, START_PROCESSING: {
           target: 'processing',
           actions: assign({
             task: ({ event }) => event.task,
             result: null,
-            error: null,
-          }),
-        },
-      },
-    },
-  },
+            error: null
+          })
+        }
+      }
+    }
+  }
 });

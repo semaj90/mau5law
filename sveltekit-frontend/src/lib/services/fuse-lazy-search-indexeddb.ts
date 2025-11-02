@@ -12,13 +12,11 @@ import Fuse from '$lib/utils/fuse-import';
 type FuseResult<T> = ReturnType<typeof Fuse.prototype.search>[number] & { item: T };
 type FuseJsResult<T> = FuseResult<T>; // Use FuseResult directly
 
-export interface SearchableItem {
-  id: string;
-  title: string;
+export interface SearchableItem { id: string;, title: string;
   content: string;
   keywords: string[];
   embedding?: Float32Array;
-  metadata?: { [key: string]: any }; // Changed: 'any' to: 'unknown'
+  metadata?: { [key: string]: any }; // Changed: 'any'; to: 'unknown'
   timestamp?: number;
 }
 
@@ -37,7 +35,7 @@ export interface SearchResult {
   matches?: any[];
   similarity?: number;
   refIndex: number;
-  combinedScore?: number; // Added to fix: 'combinedScore' does not exist on type: 'SearchResult'
+  combinedScore?: number; // Added to fix: 'combinedScore' does not exist on; type: 'SearchResult'
 }
 /**
  * Enhanced search service with Fuse.js, IndexedDB, and vector embeddings
@@ -66,7 +64,7 @@ export class FuseLazySearchService {
       this.isInitialized = true;
       console.log(`✅ Fuse lazy search initialized with ${this.items.length} items`);
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Failed to initialize Fuse lazy search:', error);
       throw error;
     }
@@ -81,7 +79,7 @@ export class FuseLazySearchService {
       request.onsuccess = () => {
         this.db = request.result;
         resolve();
-      }; // Changed: ')' to: ';'
+      }; // Changed: ')'; to: ';'
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db = (event.target as IDBOpenDBRequest).result;
         // Create object store with auto-incrementing key
@@ -121,7 +119,7 @@ export class FuseLazySearchService {
       keys: [
         { name: 'title', weight: 0.3 },
         { name: 'content', weight: 0.4 },
-        { name: 'keywords', weight: 0.3 },
+        { name: 'keywords', weight: 0.3 }
       ],
       threshold: 0.4,
       includeScore: true,
@@ -129,7 +127,7 @@ export class FuseLazySearchService {
       minMatchCharLength: 2,
       findAllMatches: true,
       ignoreLocation: true,
-      useExtendedSearch: true,
+      useExtendedSearch: true
     };
     this.fuse = new Fuse(this.items, fuseOptions);
     console.log('⚡ Fuse.js search engine initialized');
@@ -208,7 +206,7 @@ export class FuseLazySearchService {
       useEmbeddings: false,
       maxResults: 50,
       cached: true,
-      ...options,
+      ...options
     };
     console.log(`🔍 Searching for: "${query}" (${this.items.length} items)`);
     try {
@@ -224,7 +222,7 @@ export class FuseLazySearchService {
         item: result.item,
         score: result.score,
         matches: result.matches,
-        refIndex: result.refIndex,
+        refIndex: result.refIndex
       }));
       // Add vector similarity if embeddings are available and requested
       if (searchOptions.useEmbeddings) {
@@ -239,7 +237,7 @@ export class FuseLazySearchService {
       console.log(`📊 Search complete: ${results.length} results`);
       return results.slice(0, searchOptions.maxResults);
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Search failed:', error);
       return [];
     }
@@ -259,7 +257,7 @@ export class FuseLazySearchService {
       }
       return textResults;
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Vector enhancement failed:', error);
       return textResults;
     }
@@ -345,7 +343,7 @@ export class FuseLazySearchService {
             item,
             similarity,
             score: 1 - similarity,
-            refIndex: i,
+            refIndex: i
           });
         }
       }
@@ -371,7 +369,7 @@ export class FuseLazySearchService {
     for (const result of textResults) {
       combinedResults.set(result.item.id, {
         ...result,
-        combinedScore: (result.score || 1) * 0.6,
+        combinedScore: (result.score || 1) * 0.6
       });
     }
     for (const result of vectorResults) {
@@ -382,7 +380,7 @@ export class FuseLazySearchService {
       } else {
         combinedResults.set(result.item.id, {
           ...result,
-          combinedScore: (1 - (result.similarity || 0)) * 0.8,
+          combinedScore: (1 - (result.similarity || 0)) * 0.8
         });
       }
     }
@@ -417,7 +415,7 @@ export class FuseLazySearchService {
       itemsWithEmbeddings: this.items.filter(item => item.embedding).length,
       dbSize: this.db ? 'connected' : 'disconnected',
       fuseInitialized: !!this.fuse,
-      isReady: this.isInitialized,
+      isReady: this.isInitialized
     };
   }
 
@@ -443,7 +441,7 @@ export class LegalSearchUtils {
       title,
       content,
       keywords: LegalSearchUtils.extractLegalKeywords(content),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     await fuseLazySearch.addItem(item);
     console.log(`⚖️ Indexed legal document: ${title}`);
@@ -495,7 +493,7 @@ export class LegalSearchUtils {
     return fuseLazySearch.search(query, {
       threshold: 0.3,
       useEmbeddings: true,
-      maxResults: 20,
+      maxResults: 20
     });
   }
 
@@ -503,7 +501,7 @@ export class LegalSearchUtils {
     return fuseLazySearch.search(query, {
       threshold: 0.4,
       useEmbeddings: true,
-      maxResults: 30,
+      maxResults: 30
     });
   }
 }

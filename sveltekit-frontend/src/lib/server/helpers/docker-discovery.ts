@@ -39,15 +39,14 @@ interface DiscoveryResult {
   host: string;
   // Mapped port on host
   port: number;
-  // Full URL (http://host:port)
-  url: string;
+  // Full URL (http://host:port); url: string;
   // Container ID for debugging
   containerId: string;
   // Container name for debugging
   containerName: string;
 }
 // Cache results in memory (TTL: 5 minutes)
-const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult; timestamp: number }>();
+const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult;, timestamp: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 // Docker client (lazy-initialized)
 let dockerClient: Docker | null = null;
@@ -57,7 +56,7 @@ let dockerClient: Docker | null = null;
 function getDockerClient(): Docker {
   if (!dockerClient) {
     // On Windows/Mac with Docker Desktop, Unix socket is usually:
-    // - Windows: npipe:////./pipe/docker_engine
+    // - Windows:; npipe:////./pipe/docker_engine
     // - Mac: /var/run/docker.sock
     // dockerode auto-detects in most cases
     dockerClient = new Docker();
@@ -87,7 +86,7 @@ function isDevEnvironment(): boolean {
 function getPortMapping(
   container: Docker.ContainerInspectInfo,
   targetPort: number
-): { host: string; port: number } | null {
+): { host: string;, port: number } | null {
   try {
     const portKey = `${targetPort}/tcp`;
     const portBindings = container.NetworkSettings?.Ports?.[portKey];
@@ -228,8 +227,7 @@ async function discoverContainerPort(
     port: portMapping.port,
     url: `http://${portMapping.host}:${portMapping.port}`,
     containerId: container.Id.substring(0, 12),
-    containerName: container.Name || 'unknown'
-  };
+    containerName: container.Name || 'unknown' };
   // Cache result
   DISCOVERY_CACHE.set(cacheKey, { result, timestamp: Date.now() });
   return result;
@@ -244,9 +242,7 @@ async function discoverContainerPort(
 export async function discoverMultipleServices(
   services: Record<
     string,
-    {
-      fallbackUrl: string;
-      options: DiscoveryOptions;
+    { fallbackUrl: string;, options: DiscoveryOptions;
     }
   >
 ): Promise<Record<string, string>> {
@@ -286,25 +282,23 @@ export async function verifyServiceEndpoint(
  * Debug: List all running containers and their ports
  */
 export async function listRunningContainers(): Promise<
-  Array<{
-    name: string;
-    image: string;
-    ports: Record<number, { host: string; port: number }>;
+  Array<{ name: string;, image: string;
+    ports: Record<number, { host: string;, port: number }>;
   }>
 > {
   try {
     const docker = getDockerClient();
     const containers = await docker.listContainers({ all: false });
     const results = await Promise.all(
-      containers.map(async (c) => {
+      containers.map(async (c: Docker.ContainerInfo) => {
+        // Fix: Explicitly type 'c'
         const full = await docker.getContainer(c.Id).inspect();
-        const ports: Record<number, { host: string; port: number }> = {};
+        const ports: Record<number, { host: string;, port: number }> = {};
         if (full.NetworkSettings?.Ports) {
-          for (const [portKey, bindings] of Object.entries(
-            full.NetworkSettings.Ports
-          )) {
+          for (const [portKey, bindings] of Object.entries(full.NetworkSettings.Ports)) {
             const port = parseInt(portKey.split('/')[0], 10);
-            if (bindings && bindings.length > 0) {
+            // Fix: Ensure bindings is an array before checking length
+            if (bindings && Array.isArray(bindings) && bindings.length > 0) {
               ports[port] = {
                 host: bindings[0].HostIp || 'localhost',
                 port: parseInt(bindings[0].HostPort, 10)

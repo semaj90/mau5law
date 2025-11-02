@@ -6,16 +6,14 @@ export const load: PageServerLoad = async ({ params, fetch, locals }) => {
 		// Fetch specific case with auth
 		const response = await fetch(`/api/cases?id=${params.id}`, {
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': `application/json` }
 		});
 
 		if (!response.ok) {
 			return {
 				case: null,
 				caseId: params.id,
-				error: `Case not found (${response.status})`
-			};
+				error: 'Case not found (${response.status})' };
 		}
 
 		const data = await response.json();
@@ -25,14 +23,12 @@ export const load: PageServerLoad = async ({ params, fetch, locals }) => {
 			case: caseData || null,
 			caseId: params.id,
 			user: locals.user,
-			error: caseData ? null : 'Case not found'
-		};
+			error: caseData ? null : `Case not found` };
 	} catch (error) {
-		console.error('[Case Detail] Load error:', error);
+		console.error('[Case Detail] Load error:`, error);
 		return {
 			case: null,
 			caseId: params.id,
-			error: error instanceof Error ? error.message : 'Unknown error'
-		};
+			error: error instanceof Error ? error.message : `Unknown error` };
 	}
 };

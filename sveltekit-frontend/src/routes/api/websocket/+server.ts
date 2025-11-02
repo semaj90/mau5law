@@ -8,16 +8,12 @@ type RawWebSocket = {
 };
 
 // Enhanced WebSocket message types
-export interface WebSocketMessage {
-  type: 'evidence_processing' | 'ai_result' | 'vector_match' | 'graph_update' | 'system_health' | 'cache_update';
-  data: any;
+export interface WebSocketMessage { type: 'evidence_processing' | 'ai_result' | 'vector_match' | 'graph_update' | 'system_health' | 'cache_update';, data: any;
   timestamp: Date;
   clientId?: string;
   priority?: number;
 }
-export interface ConnectedClient {
-  id: string;
-  ws: RawWebSocket;
+export interface ConnectedClient { id: string;, ws: RawWebSocket;
   subscriptions: Set<string>;
   lastSeen: Date;
   metadata?: {
@@ -39,19 +35,19 @@ class EnhancedWebSocketManager {
       ws,
       subscriptions: new Set(['system', 'processing']), // Default subscriptions
       lastSeen: new Date(),
-      metadata,
+      metadata
     };
     this.clients.set(clientId, client);
     // Send welcome message with current system status
     this.sendToClient(clientId, {
       type: 'system_health',
       data: {
-        message: 'Connected to Enhanced Legal AI System',
+       , message: 'Connected to Enhanced Legal AI System',
         clientId,
         serverTime: new Date(),
-        connectedClients: this.clients.size,
+        connectedClients: this.clients.size
       },
-      timestamp: new Date(),
+      timestamp: new Date()
     });
     console.log(`WebSocket client connected: ${clientId} (Total: ${this.clients.size})`);
   }
@@ -102,10 +98,10 @@ class EnhancedWebSocketManager {
       this.sendToClient(clientId, {
         type: 'system_health',
         data: {
-          message: 'Subscriptions updated',
-          subscriptions: Array.from(client.subscriptions),
+         , message: 'Subscriptions updated',
+          subscriptions: Array.from(client.subscriptions)
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       });
     }
   }
@@ -124,9 +120,9 @@ class EnhancedWebSocketManager {
           evidenceId,
           stage,
           result,
-          status: (result as { status?: string; confidence?: number })?.status || 'processing',
+          status: (result as { status?: string; confidence?: number })?.status || 'processing'
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       client => client.subscriptions.has('processing')
     );
@@ -140,9 +136,9 @@ class EnhancedWebSocketManager {
           evidenceId,
           resultType, // 'embedding', 'tagging', 'analysis'
           result,
-          confidence: (result as { confidence?: number })?.confidence ?? 0,
+          confidence: (result as { confidence?: number })?.confidence ?? 0
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       client => client.subscriptions.has('ai_results')
     );
@@ -157,11 +153,11 @@ class EnhancedWebSocketManager {
           matches: (matches as Array<Record<string, unknown>>).map(match => ({
             id: (match as any).id,
             similarity: (match as any).similarity,
-            content: ((match as any).content as string | undefined)?.slice(0, 100) + '...',
+            content: ((match as any).content as string | undefined)?.slice(0, 100) + '...'
           })),
-          totalMatches: matches.length,
+          totalMatches: matches.length
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       client => client.subscriptions.has('vector_search')
     );
@@ -177,11 +173,11 @@ class EnhancedWebSocketManager {
             from (rel as any).from || (rel as any).fromId,
             to: (rel as any).to || (rel as any).toId,
             type: (rel as any).type,
-            strength: (rel as any).strength ?? (rel as any).confidence,
+            strength: (rel as any).strength ?? (rel as any).confidence
           })),
-          totalRelationships: relationships.length,
+          totalRelationships: relationships.length
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       client => client.subscriptions.has('graph_updates')
     );
@@ -194,9 +190,9 @@ class EnhancedWebSocketManager {
         data: {
           ...(healthData as Record<string, unknown>),
           connectedClients: this.clients.size,
-          serverUptime: process.uptime(),
+          serverUptime: process.uptime()
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       client => client.subscriptions.has('system')
     );
@@ -207,7 +203,7 @@ class EnhancedWebSocketManager {
       {
         type: 'cache_update',
         data: cacheStats,
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       client => client.subscriptions.has('cache_stats')
     );
@@ -230,11 +226,11 @@ class EnhancedWebSocketManager {
       this.broadcast({
         type: 'system_health',
         data: {
-          ping: 'health_check',
+         , ping: 'health_check',
           serverTime: now,
-          connectedClients: this.clients.size,
+          connectedClients: this.clients.size
         },
-        timestamp: now,
+        timestamp: now
       });
     }, 60000); // Every minute
   }
@@ -263,7 +259,7 @@ class EnhancedWebSocketManager {
           return acc;
         },
         {} as Record<string, number>
-      ),
+      )
     };
   }
 }
@@ -294,15 +290,14 @@ export const GET: RequestHandler = async ({ request, url }) => {
           'cache_update',
         ],
         instructions: {
-          connect: 'ws://localhost:5173/api/websocket',
+         , connect: 'ws://localhost:5173/api/websocket',
           subscribe: 'Send: {"action": "subscribe", "types": ["processing", "ai_results"]}',
-          unsubscribe: 'Send: {"action": "unsubscribe", "types": ["processing"]}',
-        },
+          unsubscribe: 'Send: {"action": "unsubscribe", "types": ["processing"]}'
+        }
       }),
       {
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` }
       }
     );
   } catch (error: any) {
@@ -322,5 +317,5 @@ export const _webSocketHelpers = {
     wsManager.broadcastGraphUpdate(evidenceId, relationships),
   broadcastSystemHealth: (healthData: any) => wsManager.broadcastSystemHealth(healthData),
   broadcastCacheUpdate: (cacheStats: any) => wsManager.broadcastCacheUpdate(cacheStats),
-  getStats: () => wsManager.getStats(),
+  getStats: () => wsManager.getStats()
 };

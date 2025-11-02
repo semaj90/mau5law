@@ -90,18 +90,14 @@ declare const autoGenService: any;
 declare function secureDataExport(...args: any[]): any;
 declare function logSecurityEvent(...args: any[]): any;
 // WebAssembly and WebLlama types
-declare interface WebLlamaResponse {
-  text: string;
-  tokensGenerated: number;
+declare interface WebLlamaResponse { text: string;, tokensGenerated: number;
   processingTime: number;
   confidence: number;
   fromCache: boolean;
   cacheHit?: boolean;
   processingPath: 'cache' | 'fallback' | 'wasm' | 'worker';
 }
-declare interface WebAssemblyInstantiateResult {
-  module: WebAssembly.Module;
-  instance: WebAssembly.Instance;
+declare interface WebAssemblyInstantiateResult { module: WebAssembly.Module;, instance: WebAssembly.Instance;
 }
 declare interface LlamaGenerationParams {
   prompt: string;
@@ -110,28 +106,20 @@ declare interface LlamaGenerationParams {
 }
 // Namespace declarations for AI services
 declare namespace QdrantClient {
-  interface Client {
-    search: any;
-    upsert: any;
+  interface Client { search: any;, upsert: any;
     count: any;
   }
 }
 declare namespace QdrantClientType {
-  interface Client {
-    search: any;
-    upsert: any;
+  interface Client { search: any;, upsert: any;
     count: any;
   }
 }
 declare namespace MultiLayerCache {
-  interface CacheConfig {
-    maxSize: number;
-    ttl: number;
+  interface CacheConfig { maxSize: number;, ttl: number;
     layers: number;
   }
-  interface CacheInstance {
-    get: any;
-    set: any;
+  interface CacheInstance { get: any;, set: any;
     clear: any;
   }
 }
@@ -144,12 +132,9 @@ type PoolClient = any;
 declare interface ActivationIdentifier extends string {
   readonly __brand: 'ActivationIdentifier';
 }
-declare interface TensorSlice {
-  data: Float32Array;
-  dimensions: number[];
+declare interface TensorSlice { data: Float32Array;, dimensions: number[];
 }
-declare interface SOMConfig {
-  gridSize: { width: number; height: number };
+declare interface SOMConfig { gridSize: { width: number;, height: number };
   learningRate: number;
   neighborhoodRadius: number;
   epochs: number;
@@ -157,31 +142,23 @@ declare interface SOMConfig {
   inputDimension: number;
   decayRate: number;
 }
-declare interface RerankResult {
-  id: string;
-  content: string;
+declare interface RerankResult { id: string;, content: string;
   score: number;
   metadata?: any;
 }
-declare interface UserContext {
-  sessionId: string;
-  preferences: any;
+declare interface UserContext { sessionId: string;, preferences: any;
   history: any[];
 }
 // Processing path types for routing
 type ProcessingPath = 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' | 'ollama-fallback';
 // Route decision interface
-interface RouteDecision {
-  engine: string;
-  reasoning: string;
+interface RouteDecision { engine: string;, reasoning: string;
   expectedLatency: number;
   fallbackChain: any[];
   confidence: number;
 }
 // Texture region types
-interface TextureRegion {
-  offset: number;
-  size: number;
+interface TextureRegion { offset: number;, size: number;
   format: string;
 }
 // SvelteKit component interfaces

@@ -13,31 +13,20 @@ import type { Case } from '$lib/types';
 import { getRedisMetricsCache } from '../cache/redis-metrics';
 import type { RedisMetricsCache } from '../cache/redis-metrics';
 import crypto from 'crypto';
-export interface CacheConfig {
-  redis: {
-    enabled: boolean;
-    defaultTTL: number;      // Default: 3600s (1 hour)
-    maxTTL: number;          // Max: 86400s (24 hours)
+export interface CacheConfig { redis: {, enabled: boolean;
+    defaultTTL: number;      // Default: 3600s (1 hour); maxTTL: number;          // Max: 86400s (24 hours)
   };
-  semantic: {
-    enabled: boolean;
-    similarityThreshold: number;  // 0.0-1.0, default: 0.95
+  semantic: { enabled: boolean;, similarityThreshold: number;  // 0.0-1.0, default: 0.95
   };
-  warming: {
-    enabled: boolean;
-    patterns: string[];      // Common query patterns to pre-cache
+  warming: { enabled: boolean;, patterns: string[];      // Common query patterns to pre-cache
   };
 }
-export interface CachedQuery<T = any> {
-  data: T;
-  cachedAt: string;
+export interface CachedQuery<T = any> { data: T;, cachedAt: string;
   ttl: number;
   queryHash: string;
   semanticKey?: string;
 }
-export interface CacheHit {
-  hit: boolean;
-  source: 'redis' | 'semantic' | 'fallback' | 'miss';
+export interface CacheHit { hit: boolean;, source: 'redis' | 'semantic' | 'fallback' | 'miss';
   latency: number;
   cachedAt?: string;
 }
@@ -52,15 +41,13 @@ export class QueryCache {
   private semanticIndex = new Map<string, string[]>(); // pattern → [queryHashes]
   constructor(config?: Partial<CacheConfig>) {
     this.redis = getRedisMetricsCache();
-    this.config = {
-      redis: {
-        enabled: config?.redis?.enabled ?? true,
+    this.config = { redis: {, enabled: config?.redis?.enabled ?? true,
         defaultTTL: config?.redis?.defaultTTL ?? 3600,
-        maxTTL: config?.redis?.maxTTL ?? 86400,
+        maxTTL: config?.redis?.maxTTL ?? 86400
       },
       semantic: {
         enabled: config?.semantic?.enabled ?? true,
-        similarityThreshold: config?.semantic?.similarityThreshold ?? 0.95,
+        similarityThreshold: config?.semantic?.similarityThreshold ?? 0.95
       },
       warming: {
         enabled: config?.warming?.enabled ?? true,
@@ -68,8 +55,8 @@ export class QueryCache {
           'recent-cases',
           'evidence-by-case',
           'legal-documents',
-        ],
-      },
+        ]
+      }
     };
   }
   /**
@@ -83,7 +70,7 @@ export class QueryCache {
       namespace?: string;
       bypassCache?: boolean;
     }
-  ): Promise<{ data: T; cacheHit: CacheHit }> {
+  ): Promise<{ data: T;, cacheHit: CacheHit }> {
     const startTime = performance.now();
     // Bypass cache if requested
     if (options?.bypassCache || !this.config.redis.enabled) {
@@ -93,8 +80,8 @@ export class QueryCache {
         cacheHit: {
           hit: false,
           source: 'miss',
-          latency: performance.now() - startTime,
-        },
+          latency: performance.now() - startTime
+        }
       };
     }
     // Generate cache key
@@ -112,8 +99,8 @@ export class QueryCache {
             hit: true,
             source: 'redis',
             latency: performance.now() - startTime,
-            cachedAt: parsed.cachedAt,
-          },
+            cachedAt: parsed.cachedAt
+          }
         };
       } catch (error) {
         console.warn('Failed to parse cached query, fetching fresh data');
@@ -129,8 +116,8 @@ export class QueryCache {
             hit: true,
             source: 'semantic',
             latency: performance.now() - startTime,
-            cachedAt: semanticResult.cachedAt,
-          },
+            cachedAt: semanticResult.cachedAt
+          }
         };
       }
     }
@@ -149,8 +136,8 @@ export class QueryCache {
       cacheHit: {
         hit: false,
         source: 'miss',
-        latency,
-      },
+        latency
+      }
     };
   }
   /**
@@ -161,7 +148,7 @@ export class QueryCache {
       data,
       cachedAt: new Date().toISOString(),
       ttl,
-      queryHash,
+      queryHash
     };
     await this.redis.set(key, JSON.stringify(cachedQuery), ttl);
   }
@@ -246,7 +233,7 @@ export class QueryCache {
   /**
    * Cache warming: Pre-cache common queries
    */
-  async warmCache(): Promise<{ warmed: number; failed: number }> {
+  async warmCache(): Promise<{ warmed: number;, failed: number }> {
     if (!this.config.warming.enabled || this.warmingInProgress) {
       return { warmed: 0, failed: 0 };
     }
@@ -283,14 +270,14 @@ export class QueryCache {
         totalHashes: Array.from(this.semanticIndex.values()).reduce(
           (sum, hashes) => sum + hashes.length,
           0
-        ),
+        )
       },
       warming: {
         enabled: this.config.warming.enabled,
         patterns: this.config.warming.patterns.length,
-        inProgress: this.warmingInProgress,
+        inProgress: this.warmingInProgress
       },
-      insights,
+      insights
     };
   }
 }
@@ -303,10 +290,9 @@ export class QueryCache {
  */
 export class VectorSearchCache extends QueryCache {
   constructor() {
-    super({
-      redis: { enabled: true, defaultTTL: 1800 }, // 30 minutes
+    super({ redis: {, enabled: true, defaultTTL: 1800 }, // 30 minutes
       semantic: { enabled: true, similarityThreshold: 0.98 }, // High similarity
-      warming: { enabled: true, patterns: ['top-vectors', 'recent-searches'] },
+      warming: {, enabled: true, patterns: ['top-vectors', 'recent-searches'] }
     });
   }
   /**
@@ -316,17 +302,16 @@ export class VectorSearchCache extends QueryCache {
     queryEmbedding: number[],
     searchFn: () => Promise<T>,
     options?: { ttl?: number; caseId?: string }
-  ): Promise<{ data: T; cacheHit: CacheHit }> {
+  ): Promise<{ data: T;, cacheHit: CacheHit }> {
     // Create query object with rounded embeddings for deduplication
     const query = {
       embedding: queryEmbedding.map(v => Math.round(v * 1000) / 1000), // Round to 3 decimals
       caseId: options?.caseId,
-      type: 'vector-search',
+      type: 'vector-search'
     };
     return this.getOrQuery(query, searchFn, {
       ttl: options?.ttl,
-      namespace: 'vector-search',
-    });
+      namespace: `vector-search` });
   }
 }
 /**
@@ -335,10 +320,9 @@ export class VectorSearchCache extends QueryCache {
  */
 export class CaseQueryCache extends QueryCache {
   constructor() {
-    super({
-      redis: { enabled: true, defaultTTL: 3600 }, // 1 hour
+    super({ redis: {, enabled: true, defaultTTL: 3600 }, // 1 hour
       semantic: { enabled: false }, // Exact matches only for legal data
-      warming: { enabled: true, patterns: ['active-cases', 'recent-evidence'] },
+      warming: {, enabled: true, patterns: ['active-cases', 'recent-evidence'] }
     });
   }
   /**
@@ -349,16 +333,15 @@ export class CaseQueryCache extends QueryCache {
     queryType: string,
     queryFn: () => Promise<T>,
     options?: { ttl?: number }
-  ): Promise<{ data: T; cacheHit: CacheHit }> {
+  ): Promise<{ data: T;, cacheHit: CacheHit }> {
     const query = {
       caseId,
       type: queryType,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     return this.getOrQuery(query, queryFn, {
       ttl: options?.ttl,
-      namespace: `case:${caseId}`,
-    });
+      namespace: `case:${caseId}` });
   }
   /**
    * Invalidate all cache for a specific case
@@ -373,10 +356,9 @@ export class CaseQueryCache extends QueryCache {
  */
 export class RAGQueryCache extends QueryCache {
   constructor() {
-    super({
-      redis: { enabled: true, defaultTTL: 600 }, // 10 minutes (fresh AI responses)
+    super({ redis: {, enabled: true, defaultTTL: 600 }, // 10 minutes (fresh AI responses)
       semantic: { enabled: true, similarityThreshold: 0.95 },
-      warming: { enabled: true, patterns: ['common-legal-questions'] },
+      warming: { enabled: true, patterns: ['common-legal-questions'] }
     });
   }
   /**
@@ -387,16 +369,15 @@ export class RAGQueryCache extends QueryCache {
     contextIds: string[],
     ragFn: () => Promise<T>,
     options?: { ttl?: number }
-  ): Promise<{ data: T; cacheHit: CacheHit }> {
+  ): Promise<{ data: T;, cacheHit: CacheHit }> {
     const query = {
       query: userQuery.toLowerCase().trim(),
       contextIds: contextIds.sort(), // Sort for consistent hashing
-      type: 'rag-query',
+      type: 'rag-query'
     };
     return this.getOrQuery(query, ragFn, {
       ttl: options?.ttl,
-      namespace: 'rag',
-    });
+      namespace: `rag` });
   }
 }
 // Export singleton instances
@@ -416,9 +397,9 @@ const { data, cacheHit } = await defaultQueryCache.getOrQuery(
     // Expensive database query
     return await db.select().from(evidence).where(eq(evidence.caseId, '123'));
   },
-  { ttl: 3600, namespace: 'evidence' }
+  { ttl: 3600, namespace: `evidence` }
 );
-console.log(\`Cache \${cacheHit.hit ? 'HIT' : 'MISS'} (\${cacheHit.source})\`);
+console.log(\`Cache \${cacheHit.hit ? 'HIT' : `MISS` } (\${cacheHit.source})\`);
 console.log(\`Latency: \${cacheHit.latency.toFixed(2)}ms\`);
 // 2. VECTOR SEARCH CACHING
 import { vectorSearchCache } from '$lib/server/optimize/query-cache';
@@ -428,7 +409,7 @@ const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSea
     // Expensive vector search
     return await faissGPU.search(queryEmbedding, 50);
   },
-  { ttl: 1800, caseId: '123' }
+  { ttl: 1800, caseId: `123` }
 );
 // 3. RAG QUERY CACHING
 import { ragQueryCache } from '$lib/server/optimize/query-cache';

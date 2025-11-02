@@ -8,7 +8,7 @@ import type {
   Context7McpResponse,
   Context7Integration,
   MissingImportAnalysis,
-  CodeSnippet,
+  CodeSnippet
 } from '$lib/types/automated-resolution';
 
 type LibraryDocs = {
@@ -21,9 +21,7 @@ type LibraryDocs = {
   apiReference: ApiRefEntry[];
 };
 
-type ApiRefEntry = {
-  name: string;
-  type: string;
+type ApiRefEntry = { name: string;, type: string;
   signature: string;
   description: string;
   library: string;
@@ -48,7 +46,7 @@ export class Context7MissingImportsFetcher {
       svelteComplete: null,
       drizzleOrmDocs: null,
       xStateDocs: null,
-      bestPractices: new Map(),
+      bestPractices: new Map()
     };
     try {
       // Fetch Svelte 5 complete documentation for missing runes/components
@@ -83,8 +81,8 @@ export class Context7MissingImportsFetcher {
           ({
             library: 'svelte',
             content: '',
-            metadata: { tokenCount: 0, topics: svelteTopics, confidence: 0.0 },
-            snippets: [],
+            metadata: {, tokenCount: 0, topics: svelteTopics, confidence: 0.0 },
+            snippets: []
           }) as Context7McpResponse
       );
       return {
@@ -94,7 +92,7 @@ export class Context7MissingImportsFetcher {
         documentation: response.content,
         examples: response.snippets ?? [],
         bestPractices: this.extractSvelteBestPractices(response),
-        apiReference: this.parseApiReference(response, 'svelte'),
+        apiReference: this.parseApiReference(response, 'svelte')
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -113,8 +111,8 @@ export class Context7MissingImportsFetcher {
           ({
             library: 'drizzle-orm',
             content: '',
-            metadata: { tokenCount: 0, topics: drizzleTopics, confidence: 0.0 },
-            snippets: [],
+            metadata: {, tokenCount: 0, topics: drizzleTopics, confidence: 0.0 },
+            snippets: []
           }) as Context7McpResponse
       );
       return {
@@ -123,7 +121,7 @@ export class Context7MissingImportsFetcher {
         documentation: response.content,
         examples: response.snippets ?? [],
         bestPractices: this.extractDrizzleBestPractices(response),
-        apiReference: this.parseApiReference(response, 'drizzle'),
+        apiReference: this.parseApiReference(response, 'drizzle')
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -142,8 +140,8 @@ export class Context7MissingImportsFetcher {
           ({
             library: 'xstate',
             content: '',
-            metadata: { tokenCount: 0, topics: xstateTopics, confidence: 0.0 },
-            snippets: [],
+            metadata: {, tokenCount: 0, topics: xstateTopics, confidence: 0.0 },
+            snippets: []
           }) as Context7McpResponse
       );
       return {
@@ -152,7 +150,7 @@ export class Context7MissingImportsFetcher {
         documentation: response.content,
         examples: response.snippets ?? [],
         bestPractices: this.extractXStateBestPractices(response),
-        apiReference: this.parseApiReference(response, 'xstate'),
+        apiReference: this.parseApiReference(response, 'xstate')
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -178,10 +176,10 @@ export class Context7MissingImportsFetcher {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          context7CompatibleLibraryID: libraryId,
+         , context7CompatibleLibraryID: libraryId,
           topics: topics.join('|'),
-          tokens: maxTokens,
-        }),
+          tokens: maxTokens
+        })
       });
       if (!response.ok) {
         throw new Error(`Context7 API error: ${response.status}`);
@@ -194,13 +192,13 @@ export class Context7MissingImportsFetcher {
       const topicsMeta = topics;
       return {
         library: libraryId.split('/').pop() || libraryId,
-        content: `# ${libraryId} Documentation\n\nDocumentation for ${topics.join(', ')} topics.`,
+        content: '# ${libraryId} Documentation\n\nDocumentation for ${topics.join(', ')} topics.`,
         metadata: {
           tokenCount: 1000,
           topics: topicsMeta,
-          confidence: 0.7,
+          confidence: 0.7
         },
-        snippets: [],
+        snippets: []
       };
     }
   }
@@ -377,14 +375,14 @@ export class Context7MissingImportsFetcher {
     const apiRef: ApiRefEntry[] = [];
     const contentLines = response && typeof response.content === 'string' ? response.content.split(/\r?\n/) : [];
     for (const line of contentLines) {
-      if (line.includes('function ') || line.includes('export const: ') || line.includes('export function: ')) {
+      if (line.includes('function ') || line.includes('export const: ') || line.includes('export; function: ')) {
         const nameMatch = line.match(/(?:function|const|export function|export const)\s+([A-ZaZ0-9_]+)/);
         apiRef.push({
           name: nameMatch?.[1] ?? 'unknown',
           type: 'function',
           signature: line.trim(),
           description: `${library} API function`,
-          library,
+          library
         });
       }
     }
@@ -421,7 +419,7 @@ export class Context7MissingImportsFetcher {
         'Use $derived for computed values',
         'Use $effect for side effects',
       ],
-      apiReference: [],
+      apiReference: []
     };
   }
   private createFallbackDrizzleDoc(_analysis: MissingImportAnalysis): LibraryDocs {
@@ -445,7 +443,7 @@ export class Context7MissingImportsFetcher {
         'Use query operators for type safety',
         'Define relationships with foreign keys',
       ],
-      apiReference: [],
+      apiReference: []
     };
   }
   private createFallbackXStateDoc(_analysis: MissingImportAnalysis): LibraryDocs {
@@ -466,7 +464,7 @@ export class Context7MissingImportsFetcher {
         'Use createActor for machine instances',
         'Use assign for context updates',
       ],
-      apiReference: [],
+      apiReference: []
     };
   }
   private initializeLibraryMappings(): void {

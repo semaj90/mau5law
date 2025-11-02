@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -20,16 +20,12 @@ import { json } from '@sveltejs/kit';
 import { qdrantService } from '$lib/server/services/qdrant-service';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
-interface ScoreFactor {
-  category: string;
-  weight: number;
+interface ScoreFactor { category: string;, weight: number;
   impact: number; // 0-1 scaled,
   description: string;
   confidence: number;
 }
-interface CaseScore {
-  id: string;
-  title: string;
+interface CaseScore { id: string;, title: string;
   description: string;
   score: number; // 0-100
   priority: 'critical' | 'high' | 'medium' | 'low';
@@ -63,35 +59,35 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
       weight: 0.3,
       impact: Math.random(),
       description: 'Strength and reliability of evidence collection',
-      confidence: 70 + Math.round(Math.random() * 25),
+      confidence: 70 + Math.round(Math.random() * 25)
     },
     {
       category: 'Witness Credibility',
       weight: 0.25,
       impact: Math.random(),
       description: 'Reliability and consistency of witness testimony',
-      confidence: 65 + Math.round(Math.random() * 30),
+      confidence: 65 + Math.round(Math.random() * 30)
     },
     {
       category: 'Legal Precedent',
       weight: 0.2,
       impact: Math.random(),
       description: 'Supporting case law and legal precedents',
-      confidence: 60 + Math.round(Math.random() * 35),
+      confidence: 60 + Math.round(Math.random() * 35)
     },
     {
       category: 'Defendant History',
       weight: 0.15,
       impact: Math.random(),
       description: 'Prior criminal history and background factors',
-      confidence: 60 + Math.round(Math.random() * 30),
+      confidence: 60 + Math.round(Math.random() * 30)
     },
     {
       category: 'Case Complexity',
       weight: 0.1,
       impact: Math.random(),
       description: 'Overall complexity and jurisdictional factors',
-      confidence: 65 + Math.round(Math.random() * 25),
+      confidence: 65 + Math.round(Math.random() * 25)
     },
   ];
   const recommendations = [
@@ -113,7 +109,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
     lastUpdated: now.toISOString(),
     factors,
     recommendations,
-    riskLevel: deriveRisk(score),
+    riskLevel: deriveRisk(score)
   };
 }
 const originalGETHandler: RequestHandler = async () => {
@@ -132,22 +128,21 @@ const originalGETHandler: RequestHandler = async () => {
     critical: cases.filter(item => item.priority === 'critical'),
     high: cases.filter(item => item.priority === 'high'),
     medium: cases.filter(item => item.priority === 'medium'),
-    low: cases.filter(item => item.priority === 'low'),
+    low: cases.filter(item => item.priority === 'low')
   };
   return json({
     cases,
     summary: {
-      total_cases: totalCases,
+     , total_cases: totalCases,
       average_risk_score: avgRiskScore,
       priority_breakdown: priorityBreakdown,
       last_analysis: new Date().toISOString(),
-      analysis_confidence: 0.89,
+      analysis_confidence: 0.89
     },
     metadata: {
       response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
-      cache_status: 'hit',
-    },
+      cache_status: 'hit` }
   });
 };
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -174,14 +169,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({
       score,
       breakdown: {
-        admissibility: Math.round(score * 0.25),
+       , admissibility: Math.round(score * 0.25),
         relevance: Math.round(score * 0.25),
         quality: Math.round(score * 0.25),
-        strategic: Math.round(score * 0.25),
+        strategic: Math.round(score * 0.25)
       },
       reasoning: await generateScoreReasoning(score, evidenceType),
       confidence: score > 70 ? 0.85 : score > 50 ? 0.75 : 0.65,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     });
   } catch (error: any) {
     const details =

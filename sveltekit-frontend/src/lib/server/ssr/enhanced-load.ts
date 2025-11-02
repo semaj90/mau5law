@@ -9,20 +9,18 @@ import { cases, evidence } from '../db/schema-postgres.js';
 type $Case = typeof cases.$inferSelect;
 type $Evidence = typeof evidence.$inferSelect;
 // Performance monitoring for SSR
-export interface SSRMetrics {
-  loadTime: number;
-  dbQueries: number;
+export interface SSRMetrics { loadTime: number;, dbQueries: number;
   cacheHits: number;
   errors: string[];
 }
 // Enhanced cache with TTL
 class SSRCache {
-  private static cache = new Map<string, { data: any; expires: number }>();
+  private static cache = new Map<string, { data: any;, expires: number }>();
   private static readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
   static set(_key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
     this.cache.set(_key, {
       data,
-      expires: Date.now() + ttl,
+      expires: Date.now() + ttl
     });
   }
   static get(_key: string): any | null {
@@ -37,10 +35,10 @@ class SSRCache {
   static clear(): void {
     this.cache.clear();
   }
-  static getStats(): { size: number; entries: number } {
+  static getStats(): { size: number;, entries: number } {
     return {
       size: this.cache.size,
-      entries: Array.from(this.cache.values()).filter(entry => Date.now() <= entry.expires).length,
+      entries: Array.from(this.cache.values()).filter(entry => Date.now() <= entry.expires).length
     };
   }
   static delete(_key: string): boolean {
@@ -91,7 +89,7 @@ export const createEnhancedLayoutLoad = () => {
           session,
           user,
           hydrationContext: createHydrationContext(url, request, user),
-          _metrics: { ...metrics, loadTime: Date.now() - startTime },
+          _metrics: { ...metrics, loadTime: Date.now() - startTime }
         };
       }
       // Database health check (cached globally)
@@ -111,13 +109,13 @@ export const createEnhancedLayoutLoad = () => {
           total: 0,
           open: 0,
           investigating: 0,
-          closed: 0,
+          closed: 0
         },
         systemStatus: {
           apiHealthy: true,
           pgvectorEnabled: dbHealth.pgvectorEnabled,
-          aiServicesOnline: false,
-        },
+          aiServicesOnline: false
+        }
       };
       // Load user-specific data if authenticated
       if (user) {
@@ -126,7 +124,7 @@ export const createEnhancedLayoutLoad = () => {
           const { cases: userCases } = await DbCaseOperations.search({
             assignedTo: user.id,
             limit: 10,
-            offset: 0,
+            offset: 0
           });
           metrics.dbQueries++;
           layoutData.userCases = userCases;
@@ -137,7 +135,7 @@ export const createEnhancedLayoutLoad = () => {
           // Get recent evidence
           const { evidence: recentEvidence } = await DbEvidenceOperations.search({
             limit: 5,
-            offset: 0,
+            offset: 0
           });
           metrics.dbQueries++;
           layoutData.recentEvidence = recentEvidence;
@@ -163,7 +161,7 @@ export const createEnhancedLayoutLoad = () => {
         session,
         user,
         hydrationContext: createHydrationContext(url, request, user),
-        _metrics: metrics,
+        _metrics: metrics
       };
     } catch (error: any) {
       console.error('Layout load error:', error);
@@ -177,7 +175,7 @@ export const createEnhancedLayoutLoad = () => {
           connected: false,
           pgvectorEnabled: false,
           queryTime: 0,
-          errors: ['Database unavailable'],
+          errors: ['Database unavailable']
         },
         userCases: [],
         recentEvidence: [],
@@ -185,8 +183,7 @@ export const createEnhancedLayoutLoad = () => {
         systemStatus: { apiHealthy: false, pgvectorEnabled: false, aiServicesOnline: false },
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics,
-        _error: error instanceof Error ? error.message : 'Unknown error',
-      };
+        _error: error instanceof Error ? error.message : 'Unknown error` };
     }
   };
 };
@@ -216,7 +213,7 @@ export const createEnhancedCasePageLoad = () => {
         return {
           ...parentData,
           ...cachedData,
-          _metrics: metrics,
+          _metrics: metrics
         };
       }
       // Load case with relations
@@ -229,13 +226,13 @@ export const createEnhancedCasePageLoad = () => {
       const { evidence: caseEvidence } = await DbEvidenceOperations.search({
         caseId,
         limit: 50,
-        offset: 0,
+        offset: 0
       });
       metrics.dbQueries++;
       const caseData = {
         case caseWithRelations,
         evidence: caseEvidence,
-        canEdit: caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id,
+        canEdit: caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id
       };
       // Cache the case data
       SSRCache.set(cacheKey, caseData, 180000); // 3 minute cache
@@ -243,7 +240,7 @@ export const createEnhancedCasePageLoad = () => {
       return {
         ...parentData,
         ...caseData,
-        _metrics: metrics,
+        _metrics: metrics
       };
     } catch (error: any) {
       console.error('Case page load error:', error);
@@ -265,14 +262,14 @@ function createHydrationContext(url: URL, request: Request, user: User | null) {
       phi: 1.618,
       containerWidth: 1200,
       mainContentRatio: 0.618,
-      sidebarRatio: 0.382,
+      sidebarRatio: 0.382
     },
     // AI system status for client hydration
     aiSystemStatus: {
       localLLMEnabled: true,
       ragEnabled: true,
       vectorSearchEnabled: true,
-      streamingEnabled: true,
+      streamingEnabled: true
     },
     // Theme and UI preferences
     uiPreferences: {
@@ -281,18 +278,16 @@ function createHydrationContext(url: URL, request: Request, user: User | null) {
       accessibility: {
         highContrast: false,
         reducedMotion: false,
-        screenReader: false,
-      },
+        screenReader: false
+      }
     },
     // Cache statistics for debugging
-    cacheStats: SSRCache.getStats(),
+    cacheStats: SSRCache.getStats()
   };
 }
 
 // Define the interface for case statistics
-interface CaseStatistics {
-  total: number;
-  open: number;
+interface CaseStatistics { total: number;, open: number;
   investigating: number;
   closed: number;
 }
@@ -306,7 +301,7 @@ async function getCaseStatistics(_userId: string): Promise<CaseStatistics> {
       total: 15,
       open: 8,
       investigating: 4,
-      closed: 3,
+      closed: 3
     };
   } catch (error: any) {
     console.error('Error getting case statistics:', error);
@@ -314,7 +309,7 @@ async function getCaseStatistics(_userId: string): Promise<CaseStatistics> {
       total: 0,
       open: 0,
       investigating: 0,
-      closed: 0,
+      closed: 0
     };
   }
 }
@@ -327,7 +322,7 @@ export const SSRCacheUtils = {
   },
   invalidateCase: (caseId: string, userId: string) => {
     SSRCache.delete(`case_${caseId}_${userId}`);
-  },
+  }
 };
 // Export the SSRCache for external use
 export { SSRCache };

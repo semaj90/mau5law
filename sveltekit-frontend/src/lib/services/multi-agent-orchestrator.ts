@@ -8,7 +8,7 @@ export const multiAgentOrchestrator = {
       id: workflowId,
       status: 'completed',
       progress: 100,
-      results: { [key,: strin,g]: any },
+      results: { [key,: strin,g]: any }
     }
   },
   async listWorkflows() {
@@ -42,7 +42,7 @@ export const multiAgentOrchestrator = {
     return { success: true, workflowId: `workflow_${Date.now()}` }
   },
   async executeWorkflow(workflowId: string, data?: any) {
-    return { success: true, results: { [key,: strin,g]: any } },
+    return { success: true, results: { [key,: strin,g]: any } }
   },
   async cancelWorkflow(workflowId: string) {
     return { success: true, cancelled: true }

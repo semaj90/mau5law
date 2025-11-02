@@ -56,18 +56,14 @@ interface VectorPipelineRequest {
   metadata?: Record<string, unknown>;
   force_reprocess?: boolean;
 }
-interface ProcessingResult {
-  success: boolean;
-  processed_count: number;
+interface ProcessingResult { success: boolean;, processed_count: number;
   failed_count: number;
   embeddings_generated: number;
   processing_time: number;
   results: EmbeddingResult[];
   errors?: string[];
 }
-interface EmbeddingResult {
-  document_id: string;
-  chunk_id: string;
+interface EmbeddingResult { document_id: string;, chunk_id: string;
   text: string;
   embedding: number[];
   metadata: Record<string, unknown>;
@@ -76,9 +72,7 @@ interface EmbeddingResult {
 }
 
 // Add missing SimilarityResult type to satisfy TypeScript and match returned shape
-interface SimilarityResult {
-  document_id: string;
-  chunk_id: string;
+interface SimilarityResult { document_id: string;, chunk_id: string;
   content: string;
   metadata: Record<string, unknown>;
   model_used: string;
@@ -90,9 +84,7 @@ interface SimilarityResult {
 interface PipelineStats {
   database_stats: Record<string, unknown> | null;
   fastembed_service: any;
-  pipeline_config: {
-    fastembed_url: string;
-    cuda_enabled: boolean;
+  pipeline_config: { fastembed_url: string;, cuda_enabled: boolean;
   };
 }
 class VectorPipelineService {
@@ -137,7 +129,7 @@ class VectorPipelineService {
         embeddings_generated: results.length,
         processing_time: processingTime, // <-- added comma
         results,
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       };
     } catch (err) {
       console.error('Vector pipeline processing failed:', err);
@@ -181,17 +173,16 @@ class VectorPipelineService {
       text: chunk,
       embedding: embeddings[index],
       metadata: {
-        source_bucket: bucketName,
+       , source_bucket: bucketName,
         source_key: objectKey,
         chunk_index: index,
         chunk_size: chunk.length,
         processed_at: new Date().toISOString(),
         cuda_enabled: this.cudaEnabled,
-        ...request.metadata,
+        ...request.metadata
       },
       processing_time: 0, // <-- Added missing comma here
-      model_used: request.embed_model || 'embeddinggemma:latest',
-    }));
+      model_used: request.embed_model || 'embeddinggemma:latest` }));
     // Store in database
     await this.storeEmbeddings(results);
     return results;
@@ -266,8 +257,7 @@ class VectorPipelineService {
             texts,
             model,
             normalize: true,
-            device: this.cudaEnabled ? 'cuda' : 'cpu',
-          });
+            device: this.cudaEnabled ? 'cuda' : `cpu` });
           // embeddingService may return number[][] or { embeddings: number[][] }
           if (Array.isArray(maybeResult) && maybeResult.length > 0 && Array.isArray(maybeResult[0])) {
             return maybeResult as number[][];
@@ -291,14 +281,13 @@ class VectorPipelineService {
       const response = await fetch(`${this.fastEmbedUrl}/embed`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           texts,
           model,
           normalize: true,
-          device: this.cudaEnabled ? 'cuda' : 'cpu',
-        }),
+          device: this.cudaEnabled ? 'cuda' : `cpu` })
       });
       if (!response.ok) {
         throw new Error(`FastEmbed API error: ${response.status} ${response.statusText}`);
@@ -396,7 +385,7 @@ class VectorPipelineService {
           embedding: parseVectorString(row['embedding']),
           metadata,
           processing_time: 0,
-          model_used: modelUsed,
+          model_used: modelUsed
         } as EmbeddingResult;
       });
     } catch (err) {
@@ -467,7 +456,7 @@ class VectorPipelineService {
 				1 - (embedding <=> $1::vector) as similarity
 			FROM document_embeddings
 			${whereClause}
-			${whereClause ? 'AND' : 'WHERE'} 1 - (embedding <=> $1::vector) > ${similarityThreshold}
+			${whereClause ? 'AND' : `WHERE` } 1 - (embedding <=> $1::vector) > ${similarityThreshold}
 			ORDER BY embedding <=> $1::vector
 			LIMIT $2
 		`;
@@ -502,7 +491,7 @@ class VectorPipelineService {
           similarity:
             typeof row['similarity'] === 'string'
               ? parseFloat(row['similarity'] as string)
-              : Number(row['similarity'] ?? 0),
+              : Number(row['similarity'] ?? 0)
         } as SimilarityResult;
       });
     } catch (err) {
@@ -539,8 +528,8 @@ class VectorPipelineService {
         fastembed_service: fastEmbedHealth,
         pipeline_config: {
           fastembed_url: this.fastEmbedUrl,
-          cuda_enabled: this.cudaEnabled,
-        },
+          cuda_enabled: this.cudaEnabled
+        }
       };
     } catch (err) {
       throw new Error(`Failed to get stats: ${err}`);
@@ -549,9 +538,7 @@ class VectorPipelineService {
 }
 
 // Add a typed embedding service interface and a runtime type-guard
-type EmbedParams = {
-  texts: string[];
-  model: string;
+type EmbedParams = { texts: string[];, model: string;
   normalize?: boolean;
   device?: string;
 };
@@ -568,12 +555,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as VectorPipelineRequest;
     // Validate required fields
     if (!body.bucket_name) {
-      throw error(400, 'bucket_name is required'); // changed from `return error(...)`
-    }
+      throw error(400, 'bucket_name is required'); // changed from `return error(...)` }
     const result = await vectorPipelineService.processDocuments(body);
     return json({
       success: true,
-      result,
+      result
     });
   } catch (err) {
     console.error('Vector pipeline processing error:', err);
@@ -588,8 +574,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'search': {
         if (!query) {
-          throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)`
-        }
+          throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)` }
         // declarations inside a braced block to avoid lexical-declaration-in-case-block errors
         const limit = parseInt(url.searchParams.get('limit') || '10', 10);
         const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
@@ -606,13 +591,13 @@ export const GET: RequestHandler = async ({ url }) => {
           limit,
           threshold,
           model,
-          filters: Object.keys(filters).length > 0 ? (filters as Record<string, unknown>) : undefined,
+          filters: Object.keys(filters).length > 0 ? (filters as Record<string, unknown>) : undefined
         });
         return json({
           query,
           results: searchResults,
           count: searchResults.length,
-          options: { limit, threshold, model, filters },
+          options: { limit, threshold, model, filters }
         });
       }
       case 'stats': {
@@ -620,8 +605,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(stats);
       }
       default:
-        throw error(400, 'Invalid action. Use ?action=search&q=query or ?action=stats'); // changed from `return error(...)`
-    }
+        throw error(400, 'Invalid action. Use ?action=search&q=query or ?action=stats'); // changed from `return error(...)` }
   } catch (err) {
     console.error('Vector pipeline GET error:', err);
     throw error(500, `Request failed: ${String(err)}`);

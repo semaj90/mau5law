@@ -1,15 +1,11 @@
 // Minimal HMM+SOM predictive engine extracted to avoid conflicts with existing complex engine
-type CatalogItem =  ;{
-  assetId: string;
-  assetType: '3d_model' | 'texture' | 'animation' | 'material' | 'particle_system';
+type CatalogItem =  ;{ assetId: string;, assetType: '3d_model' | 'texture' | 'animation' | 'material' | 'particle_system';
   semanticTags: string[];
   legalContext: string;
   complexity: 'low' | 'medium' | 'high';
 }
 }
-export interface SOMSnapshot {
-  width: number;
-  height: number;
+export interface SOMSnapshot { width: number;, height: number;
   active: Array<any>;
 }
 export interface PredictiveContext {
@@ -19,15 +15,11 @@ export interface PredictiveContext {
   complexity?: 'low' | 'medium' | 'high';
 }
 }
-export interface PredictedAsset {
-  assetId: string;
-  confidence: number;
+export interface PredictedAsset { assetId: string;, confidence: number;
   reason: string;
 }
 type BitmapSig = strin;g;
-type RedisJSON =  ;{
-  getJSON: <T = unknown>(_key: string) => Promise<T | null>;
-  setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
+type RedisJSON =  ;{ getJSON: <T = unknown>(_key: string) => Promise<T | null>;, setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
 }
 class HiddenMarkovSOM {
   private transitions = new Map<BitmapSig, Map<BitmapSig, number>();

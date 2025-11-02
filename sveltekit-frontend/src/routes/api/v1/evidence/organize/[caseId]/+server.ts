@@ -11,10 +11,10 @@ const OrganizationRequestSchema = z.object({
       minClusterSize: z.number().optional(),
       maxClusters: z.number().optional(),
       similarityThreshold: z.number().optional(),
-      method: z.string().optional(),
+      method: z.string().optional()
     })
     .optional(),
-  includeAnalytics: z.boolean().optional(),
+  includeAnalytics: z.boolean().optional()
 });
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json({
       success: true,
       data: { caseId, organizationMode, structure, analytics },
-      meta: { timestamp: new Date().toISOString() },
+      meta: {, timestamp: new Date().toISOString() }
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

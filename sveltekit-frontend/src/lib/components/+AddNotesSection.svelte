@@ -11,7 +11,7 @@ import type { Case } from '$lib/types';
   let caseOptions: Option[] = $state([]);
   let poiOptions: Option[] = $state([]);
   let optionsLoading = $state<boolean>(false);
-  let optionsError: string | null = $state(null);
+  let optionsError: string | null = null;
   // Original dummy fallbacks
   const defaultCaseOptions: Option[] = [
     { value: 'case1', label: 'Case 2023-001' },

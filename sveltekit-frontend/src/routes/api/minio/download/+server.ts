@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
     // Check if object exists
     try {
@@ -38,14 +38,14 @@ export const GET: RequestHandler = async ({ url }) => {
       bucket: bucketName,
       object_path: objectPath,
       expires_in: 3600,
-      generated_at: new Date().toISOString(),
+      generated_at: new Date().toISOString()
     });
   } catch (error) {
     console.error('MinIO download error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Download failed',
+        error: error instanceof Error ? error.message : 'Download failed'
       },
       { status: 500 }
     );
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
     // Get object and stream it
     const objectStream = await minioClient.getObject(bucketName, objectPath);
@@ -83,19 +83,18 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': stat.metaData['content-type'] || 'application/octet-stream',
         'Content-Length': stat.size.toString(),
-        'Content-Disposition': `attachment; filename="${objectPath.split('/').pop()}"`,
+        'Content-Disposition': 'attachment; filename="${objectPath.split('/').pop()}"`,
         'x-amz-meta-original-name': stat.metaData['x-amz-meta-original-name'] || '',
         'x-amz-meta-case-id': stat.metaData['x-amz-meta-case-id'] || '',
-        'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || '',
-      },
+        'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || ''
+      }
     });
   } catch (error) {
     console.error('MinIO download error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Download failed',
-      },
+        error: error instanceof Error ? error.message : 'Download failed` },
       { status: 500 }
     );
   }

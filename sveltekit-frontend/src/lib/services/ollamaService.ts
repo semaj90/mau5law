@@ -21,9 +21,7 @@ async function getRedisClient(): Promise<any | null> {
 	}
 }
 
-type HealthCheckResult = {
-  status: 'healthy' | 'unhealthy';
-  embedModel: boolean;
+type HealthCheckResult = { status: 'healthy' | 'unhealthy';, embedModel: boolean;
   llmModel: boolean;
   models: string[];
 };
@@ -68,9 +66,8 @@ export class OllamaService {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: this.embedModel,
-          input: text.slice(0, 8192), // Ollama embeddings expect: 'input'
-        }),
+         , model: this.embedModel,
+          input: text.slice(0, 8192), // Ollama embeddings expect: 'input' })
       });
       if (!response.ok) {
         throw new Error(`Embedding generation failed: ${response.statusText}`);
@@ -152,11 +149,11 @@ export class OllamaService {
   ): Promise<string> {
     let {
       temperature = 0.7,
-      maxTokens = 2000, // Note: mapped to: 'max_tokens' in payload for API compatibility
+      maxTokens = 2000, // Note: mapped; to: 'max_tokens' in payload for API compatibility
       systemPrompt,
       stream = false,
       onChunk,
-      cacheKey,
+      cacheKey
     } = options;
 
     // Validate temperature and maxTokens
@@ -186,7 +183,7 @@ export class OllamaService {
         temperature,
         max_tokens: maxTokens,
         max_new_tokens: maxTokens,
-        stream,
+        stream
       };
 
       // Prefer streaming MIME type when requesting a stream; otherwise request JSON.
@@ -195,7 +192,7 @@ export class OllamaService {
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: acceptHeader },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
@@ -282,7 +279,7 @@ export class OllamaService {
               try {
                 onChunk(decoded);
               } catch (cbErr) {
-                console.warn('OllamaService: onChunk callback error:', cbErr);
+                console.warn('OllamaService: onChunk callback; error:', cbErr);
               }
             }
             if (cacheKey) {
@@ -330,7 +327,7 @@ export class OllamaService {
                   try {
                     onChunk(decoded);
                   } catch (cbErr) {
-                    console.warn('OllamaService: onChunk callback error:', cbErr);
+                    console.warn('OllamaService: onChunk callback; error:', cbErr);
                   }
                 }
                 if (cacheKey) {
@@ -427,7 +424,7 @@ export class OllamaService {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: {, Accept: 'application/json' }
       });
       if (!response.ok) return false;
 
@@ -500,7 +497,7 @@ export class OllamaService {
       userId?: string;
       timestamp?: Date;
     }
-  ): Promise<{ embedding: number[]; metadata: Record<string, unknown> }> {
+  ): Promise<{ embedding: number[];, metadata: Record<string, unknown> }> {
     // Enhance text with context for better embeddings
     const contextualText = context.documentType
       ? `[${context.documentType}] ${text}`
@@ -618,7 +615,7 @@ export class OllamaService {
    * Parse JSON using worker threads (Node) or synchronous fallback.
    * Returns parsed object and an entropy estimate. Designed for large payloads to avoid blocking main thread in Node.
    */
-  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any; entropy: number }> {
+  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any;, entropy: number }> {
     // If running in Node and worker_threads is available, offload parsing.
     if (isNode) {
       try {
@@ -795,9 +792,7 @@ export class OllamaService {
    * MatrixRange: lightweight bucketed routing and frequency structures.
    * Build an index which buckets vectors by centroid and tracks frequency.
    */
-  static MatrixRange = class {
-    centroids: number[][] = [];
-    buckets: Map<number, { ids: Array<string | number>; freq: Map<string | number, number>; vectors: number[][] }> = new Map();
+  static MatrixRange = class { centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>;, freq: Map<string | number, number>; vectors: number[][] }> = new Map();
 
     constructor() {}
 
@@ -841,7 +836,7 @@ export class OllamaService {
       const centroidIdx = OllamaService.MatrixUtils.routeToClosestCentroid(embedding, this.centroids);
       const bucket = this.buckets.get(centroidIdx);
       if (!bucket) return [];
-      const results: Array<{ id: string | number; dist: number }> = [];
+      const results: Array<{ id: string | number;, dist: number }> = [];
       for (let i = 0; i < bucket.vectors.length; i++) {
         const v = bucket.vectors[i];
         const d = OllamaService.MatrixUtils.euclidean(embedding, v);

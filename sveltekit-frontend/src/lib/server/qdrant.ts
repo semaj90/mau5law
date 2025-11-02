@@ -6,9 +6,9 @@ export async function fetchEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'embeddinggemma:latest',
-        prompt: text,
-      }),
+       , model: 'embeddinggemma:latest',
+        prompt: text
+      })
     });
     if (!response.ok) {
       throw new Error(`Ollama embedding failed: ${response.statusText}`);

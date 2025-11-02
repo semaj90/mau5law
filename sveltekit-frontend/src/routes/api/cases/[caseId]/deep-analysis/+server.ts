@@ -37,7 +37,7 @@ type QdrantSearchHit = {
 };
 type CaseActivityRow = { title?: string; [k: string]: any };
 type EvidenceRow = { fileName?: string; title?: string; [k: string]: any };
-type LLMResponse = { source: string; data: any; ok: boolean };
+type LLMResponse = { source: string; data: any;, ok: boolean };
 
 // small helper to centralize Ollama endpoint
 function getOllamaEndpoint(): string {
@@ -116,8 +116,8 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     try {
       const embeddingResponse = await fetch(`${NLP_SERVICE_URL}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: queryText }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, text: queryText })
       });
       if (embeddingResponse.ok) {
         queryEmbedding = (await embeddingResponse.json()).embedding;
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
         const ollamaEmbed = await fetch(`${getOllamaEndpoint()}/embed`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: queryText, model: 'embeddinggemma' }),
+          body: JSON.stringify({ text: queryText, model: `embeddinggemma` })
         });
         if (!ollamaEmbed.ok) throw new Error('Ollama embed failed');
         queryEmbedding = (await ollamaEmbed.json()).embedding;
@@ -144,14 +144,14 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       qdrantClient.search('prosecutor_text_fragments', {
         vector: queryEmbedding,
         limit: 3,
-        filter: { must: [{ key: 'caseId', match: { value: caseId } }] },
-        with_payload: true,
+        filter: { must: [{, key: 'caseId', match: {, value: caseId } }] },
+        with_payload: true
       }),
       qdrantClient.search('prosecutor_evidence', {
         vector: queryEmbedding,
         limit: 3,
-        filter: { must: [{ key: 'caseId', match: { value: caseId } }] },
-        with_payload: true,
+        filter: { must: [{, key: 'caseId', match: {, value: caseId } }] },
+        with_payload: true
       }),
     ];
     const [qdrantFragmentResults, qdrantEvidenceResults] = (await Promise.allSettled(rawSearchPromises)) as [
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
                 .join(', ') || 'None'
             }
             Relevant Case Fragments: ${relevantFragments || 'None'}
-            Relevant Evidence Summaries: ${relevantEvidenceSummaries || 'None'}
+            Relevant Evidence Summaries: ${relevantEvidenceSummaries || 'None` }
         `.trim();
     const basePrompt = `
             Analyze the following query in the context of a legal case. Provide actionable insights and recommendations.
@@ -224,13 +224,13 @@ ws ::= ([ \t\n]*)
     promises.push(
       fetch(`${getOllamaEndpoint()}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
           prompt: basePrompt + '\n\nReturn JSON with "summary" and "recommendations".',
           max_tokens: 2024,
-          grammar: jsonGrammar,
-        }),
+          grammar: jsonGrammar
+        })
       }).then(async res => {
         const data = await res.json().catch(() => ({}));
         return { source: 'ollama', data, ok: res.ok };
@@ -244,13 +244,12 @@ ws ::= ([ \t\n]*)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
-          },
+            Authorization: `Bearer ${OPENAI_API_KEY}` },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: basePrompt }],
-            max_tokens: 512,
-          }),
+            messages: [{, role: 'user', content: basePrompt }],
+            max_tokens: 512
+          })
         }).then(async res => {
           const data = await res.json().catch(() => ({}));
           return { source: 'openai', data, ok: res.ok };
@@ -265,12 +264,10 @@ ws ::= ([ \t\n]*)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${GEMINI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            prompt: { text: basePrompt },
-            maxOutputTokens: 512,
-          }),
+            Authorization: `Bearer ${GEMINI_API_KEY}' },
+          body: JSON.stringify({, prompt: {, text: basePrompt },
+            maxOutputTokens: 512
+          })
         }).then(async res => {
           const data = await res.json().catch(() => ({}));
           return { source: 'gemini', data, ok: res.ok };
@@ -285,13 +282,13 @@ ws ::= ([ \t\n]*)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': CLAUDE_API_KEY,
+            'x-api-key': CLAUDE_API_KEY
           },
           body: JSON.stringify({
-            model: 'claude-2',
+           , model: 'claude-2',
             prompt: basePrompt,
-            max_tokens_to_sample: 512,
-          }),
+            max_tokens_to_sample: 512
+          })
         }).then(async res => {
           const data = await res.json().catch(() => ({}));
           return { source: 'claude', data, ok: res.ok };
@@ -311,7 +308,7 @@ ws ::= ([ \t\n]*)
           const text = extractTextFromLLM(value.data);
           analysisResults[value.source] = {
             output: text ?? value.data,
-            source: value.source + (text ? ' (extracted text)' : ' (raw)'),
+            source: value.source + (text ? ' (extracted text)' : ' (raw)')
           };
         } else {
           const detail = (value.data as { detail?: any })?.detail;
@@ -326,6 +323,6 @@ ws ::= ([ \t\n]*)
     return json({ success: true, analysisResults });
   } catch (error: any) {
     console.error('Error in deep analysis endpoint:', error);
-    return json({ error: 'Failed to perform deep analysis' }, { status: 500 });
+    return json({ error: `Failed to perform deep analysis` }, { status: 500 });
   }
 };

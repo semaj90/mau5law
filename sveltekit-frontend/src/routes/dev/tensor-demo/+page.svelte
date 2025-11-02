@@ -3,8 +3,8 @@
   import { onMount } from 'svelte';
   import { embedText } from '$lib/ai/tensor-client';
   let input = $state<string>('Contracts and liabilities in commercial agreements.');
-  let result: any = $state(null);
-  let error: string | null = $state(null);
+  let result: any = null;
+  let error: string | null = null;
   let busy = $state<boolean>(false);
   async function run(): Promise<any> {
     busy = true; error = null; result = null;

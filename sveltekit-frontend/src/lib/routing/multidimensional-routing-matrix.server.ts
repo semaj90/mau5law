@@ -4,9 +4,7 @@ import type { Document } from '$lib/types';
  * @file Defines a data structure for routing cognitive tasks based on multiple dimensions.
  * This is a server-only module with: '.server.ts' extension.
  */
-interface Route {
-  tool: string;
-  cost: number;
+interface Route { tool: string;, cost: number;
   latency: number; // in ms,
   quality: number; // 0-1 score
   throughput: number; // requests per second,
@@ -50,7 +48,7 @@ class MultidimensionalRoutingMatrix {
         latency: 500,
         quality: 0.95,
         throughput: 100,
-        reliability: 0.98,
+        reliability: 0.98
       },
       {
         tool: 'legal-document-analyzer-rest-api',
@@ -58,7 +56,7 @@ class MultidimensionalRoutingMatrix {
         latency: 1500,
         quality: 0.85,
         throughput: 50,
-        reliability: 0.95,
+        reliability: 0.95
       },
       {
         tool: 'legal-document-analyzer-quic',
@@ -66,7 +64,7 @@ class MultidimensionalRoutingMatrix {
         latency: 200,
         quality: 0.97,
         throughput: 200,
-        reliability: 0.99,
+        reliability: 0.99
       },
     ]);
     // Vector Search Routes
@@ -77,7 +75,7 @@ class MultidimensionalRoutingMatrix {
         latency: 100,
         quality: 0.9,
         throughput: 500,
-        reliability: 0.99,
+        reliability: 0.99
       },
       {
         tool: 'qdrant-vector-db',
@@ -85,7 +83,7 @@ class MultidimensionalRoutingMatrix {
         latency: 50,
         quality: 0.95,
         throughput: 1000,
-        reliability: 0.97,
+        reliability: 0.97
       },
       {
         tool: 'redis-vector-search',
@@ -93,7 +91,7 @@ class MultidimensionalRoutingMatrix {
         latency: 30,
         quality: 0.85,
         throughput: 800,
-        reliability: 0.98,
+        reliability: 0.98
       },
     ]);
     // Evidence Processing Routes
@@ -104,7 +102,7 @@ class MultidimensionalRoutingMatrix {
         latency: 2000,
         quality: 0.8,
         throughput: 10,
-        reliability: 0.95,
+        reliability: 0.95
       },
       {
         tool: 'gpu-accelerated-ocr',
@@ -112,7 +110,7 @@ class MultidimensionalRoutingMatrix {
         latency: 300,
         quality: 0.95,
         throughput: 100,
-        reliability: 0.98,
+        reliability: 0.98
       },
       {
         tool: 'cloud-vision-api',
@@ -120,7 +118,7 @@ class MultidimensionalRoutingMatrix {
         latency: 800,
         quality: 0.98,
         throughput: 200,
-        reliability: 0.99,
+        reliability: 0.99
       },
     ]);
     // Case Management Routes
@@ -131,7 +129,7 @@ class MultidimensionalRoutingMatrix {
         latency: 50,
         quality: 0.95,
         throughput: 1000,
-        reliability: 0.99,
+        reliability: 0.99
       },
       {
         tool: 'neo4j-graph-queries',
@@ -139,7 +137,7 @@ class MultidimensionalRoutingMatrix {
         latency: 200,
         quality: 0.98,
         throughput: 300,
-        reliability: 0.97,
+        reliability: 0.97
       },
     ]);
   }
@@ -209,7 +207,7 @@ class MultidimensionalRoutingMatrix {
       task,
       route,
       timestamp: Date.now(),
-      success,
+      success
     });
     // Keep only recent history (last 1000 decisions)
     if (this.routingHistory.length > 1000) {
@@ -237,9 +235,7 @@ class MultidimensionalRoutingMatrix {
   }
   /**
    * Get routing statistics and analytics
-   */ getRoutingStats(): {
-    totalRoutes: number;
-    totalDecisions: number;
+   */ getRoutingStats(): { totalRoutes: number;, totalDecisions: number;
     efficiencyScore: number;
     routeDistribution: Record<string, number>;
     averageLatencyByTool: Record<string, number>;
@@ -266,7 +262,7 @@ class MultidimensionalRoutingMatrix {
       totalDecisions: this.routingHistory.length,
       efficiencyScore: this.efficiencyScore,
       routeDistribution,
-      averageLatencyByTool,
+      averageLatencyByTool
     };
   }
   /**
@@ -307,7 +303,7 @@ class MultidimensionalRoutingMatrix {
       status,
       availableRoutes,
       totalRoutes,
-      issues,
+      issues
     };
   }
 }

@@ -1,19 +1,13 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-interface SecurityValidationRequest {
-  email: string;
-  password: string;
+interface SecurityValidationRequest { email: string;, password: string;
   firstName?: string;
   lastName?: string;
   organizationName?: string;
   validationType: 'registration' | 'login' | 'password_reset';
 }
-interface SecurityValidationResponse {
-  success: boolean;
-  validationId: string;
-  progress: {
-    stage: string;
-    percentage: number;
+interface SecurityValidationResponse { success: boolean;, validationId: string;
+  progress: { stage: string;, percentage: number;
     message: string;
   };
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -34,13 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
       progress: {
         stage: 'initializing',
         percentage: 0,
-        message: 'Starting security validation process...',
-      },
+        message: `Starting security validation process...` },
       riskLevel: 'low',
       warnings: [],
       recommendations: [],
-      wsEndpoint: `ws://localhost:5173/api/security/validate/ws/${validationId}`,
-    };
+      wsEndpoint: `ws://localhost:5173/api/security/validate/ws/${validationId}` };
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -56,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       hasLowercase: /[a-z]/.test(password),
       hasNumbers: /\d/.test(password),
       // Use a simpler, safe regex that matches any non-word, non-space char (covers punctuation/special chars)
-      hasSpecialChars: /[^\w\s]/.test(password),
+      hasSpecialChars: /[^\w\s]/.test(password)
     };
 
     // Count how many checks passed (booleans) instead of using `.length` on booleans
@@ -76,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
     response.progress = {
       stage: 'ai_analysis',
       percentage: 25,
-      message: 'Running AI-powered security analysis...',
+      message: 'Running AI-powered security analysis...'
     };
     // Check against Enhanced RAG service for threat intelligence
     try {
@@ -86,9 +78,9 @@ export const POST: RequestHandler = async ({ request }) => {
         body: JSON.stringify({
           email,
           domain: email.split('@')[1],
-          validationType,
+          validationType
         }),
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (ragResponse.ok) {
         const ragData = await ragResponse.json();
@@ -105,8 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
     response.progress = {
       stage: 'completed',
       percentage: 100,
-      message: 'Security validation completed successfully',
-    };
+      message: `Security validation completed successfully` };
     // Add context-specific recommendations
     if (validationType === 'registration') {
       response.recommendations.push('Enable two-factor authentication after registration');
@@ -116,13 +107,13 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 200,
       headers: {
         'Cache-Control': 'no-store',
-        'X-Validation-Id': validationId,
-      },
+        'X-Validation-Id': validationId
+      }
     });
   } catch (error: any) {
     const errMessage =
       error instanceof Error
-        ? `${error.message}${error.stack ? `\n${error.stack}` : ''}`
+        ? `${error.message}${error.stack ? `\n${error.stack}` : `` }`
         : String(error ?? 'Unknown error');
     console.error('Security validation error:', errMessage);
     return json(
@@ -130,13 +121,12 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         validationId: 'error',
         progress: {
-          stage: 'error',
+         , stage: 'error',
           percentage: 0,
-          message: 'Security validation failed',
-        },
+          message: `Security validation failed` },
         riskLevel: 'critical',
         warnings: ['Validation service temporarily unavailable'],
-        recommendations: ['Please try again later'],
+        recommendations: ['Please try again later']
       } as SecurityValidationResponse,
       { status: 500 }
     );

@@ -60,7 +60,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }: Props = $props();
 
   let searchInput: HTMLInputElement | undefined = $state();
-  let selectedItem: EvidenceAny | null = $state(null);
+  let selectedItem: EvidenceAny | null = null;
   let gridData = $state<any>(undefined);
   let filteredData = $state<EvidenceAny[]>([]);
   // Subscribe to store changes

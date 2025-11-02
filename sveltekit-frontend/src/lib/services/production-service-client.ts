@@ -16,9 +16,7 @@ export type ServiceResponse<T = unknown> = {
   service: string;
 };
 
-export interface ServiceHealth {
-  service: string;
-  status: 'healthy' | 'unhealthy' | 'unknown';
+export interface ServiceHealth { service: string;, status: 'healthy' | 'unhealthy' | 'unknown';
   protocols: Record<ProtocolType, boolean>;
   lastCheck: Date;
   latency: number;
@@ -49,9 +47,7 @@ export interface SemanticSearchOptions {
   [key: string]: any;
 }
 
-export interface SemanticSearchResult {
-  id: string;
-  score: number;
+export interface SemanticSearchResult { id: string;, score: number;
   contentSnippet: string;
   metadata: Record<string, unknown>;
   [key: string]: any;
@@ -66,9 +62,7 @@ export interface UploadFileOptions {
   [key: string]: any;
 }
 
-export interface FileUploadResult {
-  file_url: string;
-  storage_key: string;
+export interface FileUploadResult { file_url: string;, storage_key: string;
   file_hash: string;
   file_size: string; // Matches evidence-upload.ts schema
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
@@ -94,7 +88,7 @@ class ProductionServiceClient {
         method: options?.method || 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...options?.headers,
+          ...options?.headers
         },
         body: data ? JSON.stringify(data) : undefined,
         signal: AbortSignal.timeout(requestTimeout || this.timeout), // Use provided timeout or default
@@ -106,7 +100,7 @@ class ProductionServiceClient {
         data: result,
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: endpoint,
+        service: endpoint
       };
     } catch (error) {
       return {
@@ -114,7 +108,7 @@ class ProductionServiceClient {
         error: error instanceof Error ? error.message : 'Unknown error',
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: endpoint,
+        service: endpoint
       };
     }
   }
@@ -151,7 +145,7 @@ class ProductionServiceClient {
       const response = await fetch(`${this.baseUrl}/api/upload`, {
         method: 'POST',
         body: formData,
-        signal: AbortSignal.timeout(this.timeout),
+        signal: AbortSignal.timeout(this.timeout)
       });
 
       const result = await response.json();
@@ -160,7 +154,7 @@ class ProductionServiceClient {
         data: result as FileUploadResult, // Type assertion for the specific result
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: '/api/upload',
+        service: '/api/upload'
       };
     } catch (error) {
       return {
@@ -168,8 +162,7 @@ class ProductionServiceClient {
         error: error instanceof Error ? error.message : 'Unknown error',
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: '/api/upload',
-      };
+        service: '/api/upload` };
     }
   }
 
@@ -183,7 +176,7 @@ class ProductionServiceClient {
         const startTime = Date.now();
         try {
           const response = await fetch(`http://localhost:8080/api/health/`, {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const isHealthy = response.ok;
           return {
@@ -192,7 +185,7 @@ class ProductionServiceClient {
             protocols: { http: isHealthy, grpc: false, quic: false, ws: false },
             lastCheck: new Date(),
             latency: Date.now() - startTime,
-            errorCount: isHealthy ? 0 : 1,
+            errorCount: isHealthy ? 0 : 1
           } as ServiceHealth;
         } catch (error) {
           return {
@@ -201,7 +194,7 @@ class ProductionServiceClient {
             protocols: { http: false, grpc: false, quic: false, ws: false },
             lastCheck: new Date(),
             latency: Date.now() - startTime,
-            errorCount: 1,
+            errorCount: 1
           } as ServiceHealth;
         }
       })

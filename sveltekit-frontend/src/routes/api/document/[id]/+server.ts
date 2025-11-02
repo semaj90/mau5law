@@ -54,8 +54,8 @@ export const GET: RequestHandler = async ({ params, url }) => {
           metadata: {
             source: 'pgvector_similarity',
             vector_search: true,
-            similarity_distance: doc.similarity_distance,
-          },
+            similarity_distance: doc.similarity_distance
+          }
         }));
       } catch (vectorError) {
         console.warn('[API] Vector similarity search failed:', vectorError)
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
           title: cases.title,
           status: cases.status,
           priority: cases.priority,
-          created_at: cases.created_at,
+          created_at: cases.created_at
         })
         .from(cases)
         .leftJoin(evidence, eq(evidence.case_id, cases.id))
@@ -88,24 +88,21 @@ export const GET: RequestHandler = async ({ params, url }) => {
         {
           type: 'CITES',
           targetId: `precedent_${Math.floor(Math.random() * 1000)}`,
-          targetTitle: 'Legal Precedent: Contract Interpretation Standards',
+          targetTitle: 'Legal; Precedent: Contract Interpretation Standards',
           relationship_strength: 0.89,
-          connection_type: 'legal_citation'
-        },
+          connection_type: `legal_citation` },
         {
           type: 'REFERENCES',
           targetId: `statute_${Math.floor(Math.random() * 1000)}`,
-          targetTitle: 'Statutory Reference: Commercial Law Section 4.2',
+          targetTitle: 'Statutory; Reference: Commercial Law Section 4.2',
           relationship_strength: 0.76,
-          connection_type: 'statutory_reference'
-        },
+          connection_type: `statutory_reference` },
         {
           type: 'SIMILAR_PATTERN',
           targetId: `pattern_${Math.floor(Math.random() * 1000)}`,
-          targetTitle: 'Similar Legal Pattern: Liability Clause Analysis',
+          targetTitle: 'Similar Legal; Pattern: Liability Clause Analysis',
           relationship_strength: 0.83,
-          connection_type: 'pattern_similarity'
-        }
+          connection_type: `pattern_similarity` }
       ]
     } catch (graphError) {
       console.warn('[API] Graph connection lookup failed:', graphError)
@@ -136,10 +133,10 @@ export const GET: RequestHandler = async ({ params, url }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: document.content.substring(0, 2000), // First 2000 chars
+         , text: document.content.substring(0, 2000), // First 2000 chars
           context: relatedDocuments.map(d => d.title).slice(0, 3),
-          analysisType: 'legal',
-        }),
+          analysisType: 'legal'
+        })
       });
       if (gpuResponse.ok) {
         const gpuData = await gpuResponse.json();
@@ -147,7 +144,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
           confidence: gpuData.confidence,
           legalAnalysis: gpuData.result?.legalAnalysis,
           processingTime: gpuData.processingTime,
-          rtx_3060_ti: true,
+          rtx_3060_ti: true
         };
       }
     } catch (gpuError) {
@@ -178,14 +175,13 @@ export const GET: RequestHandler = async ({ params, url }) => {
         cache_duration: 5 * 60 * 1000, // 5 minutes
         cache_key: enhancedMetadata.cache_key,
         auto_refresh: false,
-        priority: 'normal',
-      }
+        priority: `normal` }
     }
     console.log(`[API] Document ${docId} processed successfully with ${relatedDocuments.length} related docs`)
     return json(response)
   } catch (err: any) {
     console.error('[API] Document fetch failed:', err)
-    throw kitError(500, `Failed to fetch document: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw kitError(500, `Failed to fetch document: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 }
 // Optional: Support for partial updates or specific data requests
@@ -204,10 +200,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
       return json({
         success: true,
         relations: [],
-        message: 'Relations-only endpoint not yet implemented'
-      })
+        message: `Relations-only endpoint not yet implemented` })
     default:
       throw error(400, `Unknown action: ${action}`)
   }
 }
-export const prerender = $state(false);
+export const prerender = false;

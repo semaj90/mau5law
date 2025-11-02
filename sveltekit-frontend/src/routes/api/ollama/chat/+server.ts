@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action') || 'health';
     if (action === 'health') {
       const healthCheck = await fetch('http://localhost:11434/api/version', {
-        signal: AbortSignal.timeout(3000),
+        signal: AbortSignal.timeout(3000)
       });
       if (!healthCheck.ok) {
         throw new Error('Ollama service unavailable');
@@ -26,10 +26,10 @@ export const GET: RequestHandler = async ({ url }) => {
         model: 'legal:latest',
         version: version.version || 'unknown',
         endpoints: {
-          chat: '/api/ollama/chat',
-          stream: '/api/ollama/chat?stream=true',
+         , chat: '/api/ollama/chat',
+          stream: '/api/ollama/chat?stream=true'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     if (action === 'models') {
@@ -39,13 +39,13 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         models: modelsData.models || [],
         default: 'legal:latest',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json(
       {
         success: false,
-        error: 'Invalid action. Use ?action=health or ?action=models',
+        error: 'Invalid action. Use ?action=health or ?action=models'
       },
       { status: 400 }
     );
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         status: 'unhealthy',
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
       systemPrompt,
       conversationId,
       useVectorSearch: reqUseVectorSearch,
-      context = [],
+      context = []
     } = body;
     // Environment-backed defaults (check your .env for these keys)
     // OLLAMA_MODEL, OLLAMA_TEMPERATURE, OLLAMA_MAX_TOKENS, OLLAMA_STREAM, OLLAMA_USE_VECTOR_SEARCH
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
               systemPrompt,
               conversationId,
               useVectorSearch,
-              context,
+              context
             });
             for await (const chunk of streamGenerator) {
               const data = `data: ${JSON.stringify(chunk)}\n\n`;
@@ -117,20 +117,19 @@ export const POST: RequestHandler = async ({ request }) => {
             console.error('Streaming error:', error);
             const errorChunk = {
               text: 'An error occurred while processing your request.',
-              metadata: { type: 'error', error: error.message },
+              metadata: { type: 'error', error: error.message }
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();
           }
-        },
+        }
       });
       return new Response(readable, {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*',
-        },
+          'Access-Control-Allow-Origin': '*` }
       });
     }
     // For non-streaming responses
@@ -145,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
       systemPrompt,
       conversationId,
       useVectorSearch,
-      context,
+      context
     });
     for await (const chunk of streamGenerator) {
       if (chunk.metadata?.type === 'sources') {
@@ -163,8 +162,8 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence,
         sources,
         conversationId,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     console.error('Chat API error:', error);
@@ -172,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

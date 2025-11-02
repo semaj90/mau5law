@@ -19,9 +19,7 @@ const INACTIVE_TTL_SECONDS = 7200;  // 2 hours of inactivity
 const CONTEXT_TTL_SECONDS = 3600;   // 1 hour for context cache
 const SUMMARY_TTL_SECONDS = 86400;  // 24 hours for conversation summaries
 
-export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: number;
   metadata?: {
     caseId?: string;
@@ -47,9 +45,7 @@ export interface ConversationContext {
   legalEntities: string[];
 }
 
-export interface ChatMemoryStats {
-  totalConversations: number;
-  activeConversations: number;
+export interface ChatMemoryStats { totalConversations: number;, activeConversations: number;
   totalMessages: number;
   cacheHitRate: number;
   avgResponseTime: number;
@@ -69,7 +65,7 @@ export class LegalChatMemoryService {
     cacheHitRate: 0,
     avgResponseTime: 0,
     memoryUsage: 0,
-    topLegalCategories: {},
+    topLegalCategories: {}
   };
 
   constructor() {
@@ -81,7 +77,7 @@ export class LegalChatMemoryService {
       sharingPolicy: 'shared',
       updateFrequency: 'realtime',
       priority: 170,
-      estimatedUsage: 1024 * 1024,
+      estimatedUsage: 1024 * 1024
     });
 
     // Start periodic cleanup
@@ -226,16 +222,16 @@ export class LegalChatMemoryService {
         messageCount: messages.length,
         timespan: {
           start: messages[0]?.timestamp,
-          end: messages[messages.length - 1]?.timestamp,
+          end: messages[messages.length - 1]?.timestamp
         },
         legalContext: {
           caseIds: Array.from(caseIds),
           categories: Array.from(categories),
-          entities: Array.from(legalEntities).slice(0, 10),
+          entities: Array.from(legalEntities).slice(0, 10)
         },
         keyTopics: await this.extractKeyTopics(messages),
         userQueries: messages.filter(m => m.role === 'user').slice(-5).map(m => m.content.substring(0, 100)),
-        aiResponses: messages.filter(m => m.role === 'assistant').slice(-3).map(m => m.content.substring(0, 200)),
+        aiResponses: messages.filter(m => m.role === 'assistant').slice(-3).map(m => m.content.substring(0, 200))
       };
 
       const serialized = JSON.stringify(summary);
@@ -269,7 +265,7 @@ export class LegalChatMemoryService {
         const embedding = await generateEmbedding(message.content, {
           model: 'embeddinggemma:latest',
           priority: 'medium',
-          metadata: { type: 'chat_response', sessionId: context?.sessionId },
+          metadata: {, type: 'chat_response', sessionId: context?.sessionId }
         });
         enhanced.metadata.embeddings = embedding;
       } catch (err) {
@@ -301,7 +297,7 @@ export class LegalChatMemoryService {
           activeReview: true,
           lastAccessed: new Date(),
           fileSize: 1000,
-          isEvidenceCritical: false,
+          isEvidenceCritical: false
         };
         const priority = calculateDocumentPriority(mockDocument);
         const memoryBank = selectMemoryBank(priority);
@@ -312,7 +308,7 @@ export class LegalChatMemoryService {
           lastActivity: Date.now(),
           messageCount: 0,
           keyTopics: [],
-          legalEntities: [],
+          legalEntities: []
         };
       }
 
@@ -408,8 +404,7 @@ export class LegalChatMemoryService {
       corporate: '#0000ff',
       criminal: '#ff8800',
       intellectual_property: '#8800ff',
-      employment: '#00ff88',
-    };
+      employment: '#00ff88` };
     const color = colors[category] ?? '#888888';
     return `<div style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence}; border: 1px solid #000;"></div>`;
   }
@@ -499,7 +494,7 @@ export class LegalChatMemoryService {
         cacheHitRate: 0,
         avgResponseTime: 0,
         memoryUsage: 0,
-        topLegalCategories: {},
+        topLegalCategories: {}
       };
     } catch (error) {
       console.error('🎮 Failed to clear chat history:', error);

@@ -6,42 +6,32 @@
 import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
 import { chrRomPatternCache } from '../cache/chr-rom-pattern-cache.js';
 import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
-export interface GlyphTexture {
-  char: string;
-  charCode: number;
+export interface GlyphTexture { char: string;, charCode: number;
   nesPattern: Uint8Array; // 8x8 NES-style pattern,
   quantizedData: Float32Array; // Quantized representation
   textureData: ImageData | null; // Rendered texture,
   chrRomBankId: number; // CHR-ROM bank assignment
   cacheTimestamp: number;
   accessCount: number;
-  renderMetrics: {
-    width: number;
-    height: number;
+  renderMetrics: { width: number;, height: number;
     pixelDensity: number;
     colorDepth: number;
   }
 }
-export interface GlyphFont {
-  fontName: string;
-  fontSize: number;
+export interface GlyphFont { fontName: string;, fontSize: number;
   fontStyle: 'classic' | 'modern' | 'legal' | 'retro';
   glyphs: Map<string, GlyphTexture>;
   totalGlyphs: number;
   cacheSize: number; // In bytes
   lastOptimized: number;
 }
-export interface GlyphCacheMetrics {
-  totalGlyphs: number;
-  cacheHitRate: number;
+export interface GlyphCacheMetrics { totalGlyphs: number;, cacheHitRate: number;
   memoryUsage: number;
   renderingTime: number;
   compressionRatio: number;
   nesPatternEfficiency: number;
 }
-export interface SynthesizedGlyph {
-  original: string;
-  synthesized: string;
+export interface SynthesizedGlyph { original: string;, synthesized: string;
   confidence: number;
   didYouMean: string[];
   llmGenerated: boolean;
@@ -348,8 +338,7 @@ export class GlyphCacheSystem {
         scalingMethod: 'sigmoid',
         targetLength: 64,
         cudaThreads: 32,
-        cacheStrategy: 'aggressive'
-      });
+        cacheStrategy: 'aggressive' });
       return quantizationResult.quantizedData as Float32Array;
     } catch (error) {
       console.error(`❌ Glyph quantization failed for: '${char}':`, error);
@@ -382,7 +371,7 @@ export class GlyphCacheSystem {
       });
       console.log(`🎮 Stored glyph: '${glyph.char}' to CHR-ROM bank ${glyph.chrRomBankId}`);
     } catch (error) {
-      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}':`, error);
+      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}': ', error);
     }
   }
   private updateMetrics(renderTime: number, _cacheHit: boolean): void {
@@ -421,7 +410,7 @@ export class GlyphCacheSystem {
     // If memory still exceeds threshold, perform aggressive trim (least-accessed)
     if (this.metrics.memoryUsage > this.MAX_CACHE_SIZE) {
       console.log('⚠️ Memory exceeds MAX_CACHE_SIZE, performing aggressive trim');
-      const allGlyphs: { fontKey: string; char: string; access: number }[] = [];
+      const allGlyphs: { fontKey: string; char: string;, access: number }[] = [];
       this.fonts.forEach((font, fontKey) => {
         font.glyphs.forEach((g, c) => allGlyphs.push({ fontKey, char: c, access: g.accessCount }));
       });
@@ -516,7 +505,7 @@ export class GlyphCacheSystem {
     return canvas.toDataURL();
   }
   /**
-   * LLM Integration - Get: "did you mean" suggestions from gemma3:legal-latest
+   * LLM Integration - Get: "did you mean" suggestions from; gemma3:legal-latest
    */
   async getLLMSuggestions(inputText: string): Promise<string[]> {
     const cacheKey = `suggestions_${inputText}`;
@@ -526,7 +515,7 @@ export class GlyphCacheSystem {
     try {
       const payload = {
         model: 'gemma3:legal-latest',
-        prompt: `Given the text: "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
+        prompt: `Given the; text: "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
         stream: false,
         options: {
           temperature: 0.3,

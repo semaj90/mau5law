@@ -4,15 +4,13 @@ import {
   copilotOrchestrator,
   mcpMemoryReadGraph,
   semanticSearch,
-  generateMCPPrompt,
+  generateMCPPrompt
 } from '$lib/optimization/comprehensive-orchestrator';
 import type { OrchestrationOptions, MCPToolRequest, EnhancedRAGEngine } from '$lib/types/ai';
 import type { StatelessAPICoordinator } from './stateless-api-coordinator.js';
 
 // --- Types ---
-export interface MCPSemanticResult {
-  id: string;
-  content: string;
+export interface MCPSemanticResult { id: string;, content: string;
   relevance: number;
   source: 'context7' | 'local' | 'hybrid';
   metadata: {
@@ -28,9 +26,7 @@ export interface MCPSemanticResult {
   };
 }
 
-export interface MCPMemoryNode {
-  id: string;
-  type: 'CONCEPT' | 'ENTITY' | 'RELATIONSHIP' | 'PRACTICE' | 'PATTERN';
+export interface MCPMemoryNode { id: string;, type: 'CONCEPT' | 'ENTITY' | 'RELATIONSHIP' | 'PRACTICE' | 'PATTERN';
   content: string;
   connections: string[];
   weight: number;
@@ -45,25 +41,19 @@ export interface MCPMemoryNode {
   };
 }
 
-export interface MCPAgentRecommendation {
-  id: string;
-  agent: 'context7' | 'autogen' | 'crewai' | 'copilot' | 'claude' | string;
+export interface MCPAgentRecommendation { id: string;, agent: 'context7' | 'autogen' | 'crewai' | 'copilot' | 'claude' | string;
   recommendation: string;
   confidence: number;
   reasoning: string;
   actionType: 'SEARCH' | 'ANALYSIS' | 'INTEGRATION' | 'OPTIMIZATION' | 'WORKFLOW' | string;
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   estimatedImpact: number;
-  metadata: {
-    processingTime: number;
-    dataPoints: number;
+  metadata: { processingTime: number;, dataPoints: number;
     contextRelevance: number;
   };
 }
 
-export interface MCPBestPractice {
-  id: string;
-  category: 'PERFORMANCE' | 'SECURITY' | 'UI_UX' | 'ARCHITECTURE' | 'LEGAL_COMPLIANCE';
+export interface MCPBestPractice { id: string;, category: 'PERFORMANCE' | 'SECURITY' | 'UI_UX' | 'ARCHITECTURE' | 'LEGAL_COMPLIANCE';
   title: string;
   description: string;
   implementation: string;
@@ -77,9 +67,7 @@ export interface MCPBestPractice {
   sourceLibraries: string[];
 }
 
-export interface Context7IntegrationConfig {
-  enableSemanticSearch: boolean;
-  enableMemoryGraph: boolean;
+export interface Context7IntegrationConfig { enableSemanticSearch: boolean;, enableMemoryGraph: boolean;
   enableAgentOrchestration: boolean;
   enableBestPractices: boolean;
   enableRealTimeUpdates: boolean;
@@ -91,9 +79,7 @@ export interface Context7IntegrationConfig {
 }
 
 // add a concrete type for the integration status store
-type IntegrationStatus = {
-  semanticSearch: string;
-  memoryGraph: string;
+type IntegrationStatus = { semanticSearch: string;, memoryGraph: string;
   agentOrchestration: string;
   bestPractices: string;
   overall: string;
@@ -165,7 +151,7 @@ export class Context7Phase13Integration {
     agentOrchestrationTime: [] as number[],
     totalQueries: 0,
     cacheHitRate: 0,
-    errorCount: 0,
+    errorCount: 0
   };
 
   // stores
@@ -178,15 +164,14 @@ export class Context7Phase13Integration {
      memoryGraph: 'IDLE',
      agentOrchestration: 'IDLE',
      bestPractices: 'IDLE',
-     overall: 'HEALTHY',
-   });
+     overall: 'HEALTHY` });
    public performanceStats = writable({
      averageSemanticSearchTime: 0,
      averageMemoryGraphTime: 0,
      averageAgentTime: 0,
      totalQueries: 0,
      cacheHitRate: 0,
-     errorRate: 0,
+     errorRate: 0
    });
 
   // --- small type-safe helpers (avoids `any` usage) ---
@@ -228,7 +213,7 @@ export class Context7Phase13Integration {
       agentOrchestrationConcurrency: 3,
       bestPracticesRefreshRate: 300000,
       cacheExpiration: 600000,
-      ...config,
+      ...config
     };
     this.ragEngine = ragEngine;
     this.apiCoordinator = apiCoordinator;
@@ -408,9 +393,9 @@ export class Context7Phase13Integration {
         context: {
           queryType: 'semantic_search',
           maxResults: getOptionValue<number>(options, 'maxResults'),
-          timeout: getOptionValue<number>(options, 'timeout', this.config.semanticSearchTimeout),
+          timeout: getOptionValue<number>(options, 'timeout', this.config.semanticSearchTimeout)
         },
-        ...(options || {}),
+        ...(options || {})
       } as Partial<OrchestrationOptions> | Record<string, unknown>;
 
       const orchestrationResult = await this.callOrchestratorSafe(`Enhanced semantic search: ${query}`, safeOpts);
@@ -428,9 +413,9 @@ export class Context7Phase13Integration {
               libraryId: obj.libraryId as string | undefined,
               documentType: obj.type as string | undefined,
               confidence: (obj.confidence as number) ?? 0.7,
-              processingTime: Date.now() - startTime,
+              processingTime: Date.now() - startTime
             },
-            enhancedData: {},
+            enhancedData: {}
           });
         }
       }
@@ -446,7 +431,7 @@ export class Context7Phase13Integration {
             relevance: item?.relevance ?? 0.3,
             source: 'local' as const,
             metadata: { confidence: 0.5, processingTime: Date.now() - startTime },
-            enhancedData: {},
+            enhancedData: {}
           }) as MCPSemanticResult
       );
     }
@@ -487,7 +472,7 @@ export class Context7Phase13Integration {
           relevance: Math.min(1, node.weight),
           source: 'hybrid',
           metadata: { confidence: node.metadata.confidence ?? 0.7, processingTime: 0 },
-          enhancedData: { networkPosition: node.connections.length },
+          enhancedData: { networkPosition: node.connections.length }
         });
       }
     } catch (err: any) {
@@ -527,9 +512,9 @@ export class Context7Phase13Integration {
         synthesizeOutputs: true,
         agents: options.agents || ['context7', 'copilot', 'claude'],
         context: {
-          priority: options.priority,
-          includeImplementation: options.includeImplementationPlan,
-        },
+         , priority: options.priority,
+          includeImplementation: options.includeImplementationPlan
+        }
       } as Partial<OrchestrationOptions> | Record<string, unknown>);
 
       const recommendations: MCPAgentRecommendation[] = [];
@@ -549,8 +534,8 @@ export class Context7Phase13Integration {
             metadata: {
               processingTime: Date.now() - startTime,
               dataPoints: this.getNumber(res.dataPoints, 1),
-              contextRelevance: this.getNumber(res.contextRelevance, 0.7),
-            },
+              contextRelevance: this.getNumber(res.contextRelevance, 0.7)
+            }
           });
         }
       }
@@ -607,8 +592,8 @@ export class Context7Phase13Integration {
               confidence: this.getNumber(rec.confidence, 0.7),
               caseId: this.getString(rec.caseId, undefined as unknown as string | undefined),
               userId: this.getString(rec.userId, undefined as unknown as string | undefined),
-              sessionId: this.getString(rec.sessionId, undefined as unknown as string | undefined),
-            },
+              sessionId: this.getString(rec.sessionId, undefined as unknown as string | undefined)
+            }
           };
           this.memoryGraph.set(node.id, node);
         }
@@ -630,12 +615,12 @@ export class Context7Phase13Integration {
       for (const category of categories) {
         const mcpRequest: MCPToolRequest = {
           tool: 'generate-best-practices',
-          area: category.toLowerCase().replace('_', '-') as any,
+          area: category.toLowerCase().replace('_', '-') as any
         };
         const prompt = generateMCPPrompt(mcpRequest);
         const orchestrationResult = await this.callOrchestratorSafe(`Context7 ${prompt}`, {
           useSemanticSearch: true,
-          synthesizeOutputs: true,
+          synthesizeOutputs: true
         } as Partial<OrchestrationOptions> | Record<string, unknown>);
 
         const practices: MCPBestPractice[] = [];
@@ -659,7 +644,7 @@ export class Context7Phase13Integration {
                 | 'EXPERT',
               estimatedTime: this.getNumber(rec.estimatedTime, 30),
               lastUpdated: Date.now(),
-              sourceLibraries: this.getStringArray(rec.sourceLibraries ?? []),
+              sourceLibraries: this.getStringArray(rec.sourceLibraries ?? [])
             });
           }
         }
@@ -726,7 +711,7 @@ export class Context7Phase13Integration {
       cacheHitRate: this.performanceMetrics.cacheHitRate,
       errorRate: this.performanceMetrics.totalQueries
         ? this.performanceMetrics.errorCount / this.performanceMetrics.totalQueries
-        : 0,
+        : 0
     });
   }
 
@@ -785,7 +770,7 @@ export function createContext7Phase13Integration(
       activeRecommendations: integration.activeRecommendations,
       bestPractices: integration.bestPractices,
       integrationStatus: integration.integrationStatus,
-      performanceStats: integration.performanceStats,
+      performanceStats: integration.performanceStats
     },
     derived: {
       isHealthy: derived(integration.integrationStatus, $status => $status.overall === 'HEALTHY'),
@@ -795,13 +780,13 @@ export function createContext7Phase13Integration(
       ),
       highPriorityRecommendations: derived(integration.activeRecommendations, $recommendations =>
         ($recommendations ?? []).filter((r: any) => r.priority === 'HIGH' || r.priority === 'CRITICAL')
-      ),
+      )
     },
     search: integration.search.bind(integration),
     getRecommendations: integration.getRecommendations.bind(integration),
     getBestPractices: integration.getBestPractices.bind(integration),
     getMemoryGraph: integration.getMemoryGraph.bind(integration),
-    destroy: integration.destroy.bind(integration),
+    destroy: integration.destroy.bind(integration)
   };
 }
 

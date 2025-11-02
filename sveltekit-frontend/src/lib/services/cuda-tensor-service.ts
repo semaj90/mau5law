@@ -4,27 +4,21 @@
  * Optimized for: Multi-dimensional tensor splicing, batch processing, VRAM efficiency
  */
 }
-export interface CUDAConfig {
-  deviceId: number;
-  maxBatchSize: number;
+export interface CUDAConfig { deviceId: number;, maxBatchSize: number;
   tensorDimensions: number;
   vramLimit: number; // MB
   enableTensorCore: boolean;
   cudaStreams: number;
 }
 }
-export interface TensorOperation {
-  id: string;
-  operation: 'embedding' | 'similarity' | 'clustering' | 'reduction';
+export interface TensorOperation { id: string;, operation: 'embedding' | 'similarity' | 'clustering' | 'reduction';
   inputTensor: Float32Array;
   dimensions: [number, number];
   batchSize: number;
   priority: 'low' | 'normal' | 'high';
 }
 }
-export interface CUDAResult {
-  id: string;
-  outputTensor: Float32Array;
+export interface CUDAResult { id: string;, outputTensor: Float32Array;
   processingTime: number;
   vramUsed: number;
   cudaStream: number;
@@ -42,7 +36,7 @@ export class CUDATensorService {
     tensorDimensions: 768,
     vramLimit: 12288, // 12GB VRAM
     enableTensorCore: true,
-    cudaStreams: 4,
+    cudaStreams: 4
   }
   constructor(config?: Partial<CUDAConfig>) {
     this.config = { ...this.RTX_3060_CONFIG, ...config }
@@ -59,7 +53,7 @@ export class CUDATensorService {
       console.log(`✅ CUDA Device ${deviceInfo.id}: ${deviceInfo.name}`);
       console.log(`💾 VRAM Available: ${deviceInfo.memory} MB`);
       console.log(`🧮 CUDA Cores: ${deviceInfo.cores}`);
-      console.log(`⚡ Tensor Cores: ${deviceInfo.tensorCores ? 'Enabled' : 'Disabled'}`);
+      console.log(`⚡ Tensor Cores: ${deviceInfo.tensorCores ? 'Enabled' : `Disabled` }`);
     } catch (error) {
       console.error('❌ CUDA initialization failed:', error);
       throw new Error('CUDA not available or misconfigured');
@@ -73,16 +67,13 @@ export class CUDATensorService {
       memory: 12288,
       cores: 3584,
       tensorCores: true,
-      computeCapability: '8.6',
-    }
+      computeCapability: `8.6` }
   }
   /**
    * 2️⃣ Multi-dimensional Tensor Splicing for VRAM Efficiency
    * Split large tensors into smaller chunks that fit in RTX 3060 VRAM
    */
-  spliceTensorForGPU(tensor: Float32Array, maxVRAMPerTensor = 256): {
-    slices: Float32Array[];
-    metadata: any;
+  spliceTensorForGPU(tensor: Float32Array, maxVRAMPerTensor = 256): { slices: Float32Array[];, metadata: any;
   } {
     const elementSizeBytes = 4; // Float32 = 4 bytes
     const maxElementsPerSlice = (maxVRAMPerTensor * 1024 * 1024) / elementSizeBytes;
@@ -138,7 +129,7 @@ export class CUDATensorService {
         const result = await this.executeTensorOperation(operation, streamId);
         results.push(result);
       } catch (error) {
-        console.error(`❌ Stream ${streamId} operation ${operation.id} failed:`, error);
+        console.error(`❌ Stream ${streamId} operation ${operation.id} failed: ', error);
         results.push({
           id: operation.id,
           outputTensor: new Float32Array(0),
@@ -146,8 +137,7 @@ export class CUDATensorService {
           vramUsed: 0,
           cudaStream: streamId,
           errorCode: -1,
-          errorMessage: error instanceof Error ? error.message: 'Unknown error'
-        });
+          errorMessage: error instanceof Error ? error.message: `Unknown error` });
       }
     }
     return results;
@@ -175,7 +165,7 @@ export class CUDATensorService {
         outputTensor = await this.cudaReductionOperation(slices, streamId);
         break;
       default:
-        throw new Error(`Unknown operation: ${operation.operation}`);
+        throw new Error(`Unknown; operation: ${operation.operation}`);
     }
     const processingTime = performance.now() - startTime;
     const vramUsed = metadata.totalVRAM;

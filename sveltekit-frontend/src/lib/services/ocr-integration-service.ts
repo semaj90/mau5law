@@ -10,9 +10,7 @@ import type { EvidenceWithRelations } from '$lib/server/db/schema';
 // OCR Processing Methods
 type OCRMethod = 'wasm_simd' | 'cuda_tensorrt' | 'agentic_controller';
 
-interface OCRResult {
-  text: string;
-  confidence: number;
+interface OCRResult { text: string;, confidence: number;
   regions: Array<{
     bbox: [number, number, number, number];
     text: string;
@@ -33,7 +31,7 @@ export class OCRIntegrationService {
   private tensorProcessor?: OCRTensorProcessor;
   private initialized = $state(false);
   private workerPool: Worker[] = [];
-  private activeJobs = new Map<string, { resolve: Function; reject: Function; startTime: number }>();
+  private activeJobs = new Map<string, { resolve: Function; reject: Function;, startTime: number }>();
 
   constructor() {
     // Initialize client-side processor if in browser
@@ -53,8 +51,7 @@ export class OCRIntegrationService {
     for (let i = 0; i < Math.min(workerCount, 8); i++) {
       try {
         const worker = new Worker('/workers/ocr-service-worker.js', {
-          type: 'module',
-        });
+          type: `module` });
 
         worker.onmessage = this.handleWorkerMessage.bind(this);
         worker.onerror = this.handleWorkerError.bind(this);
@@ -124,7 +121,7 @@ export class OCRIntegrationService {
       enableEmbedding = true,
       useCache = true,
       minioUpload = true,
-      collaborativeSession,
+      collaborativeSession
     } = options;
 
     // Generate cache key from image hash
@@ -141,7 +138,7 @@ export class OCRIntegrationService {
           await this.broadcastToSession(collaborativeSession, {
             type: 'ocr_cache_hit',
             cacheKey,
-            result: cachedResult,
+            result: cachedResult
           });
         }
 
@@ -166,7 +163,7 @@ export class OCRIntegrationService {
             method: 'wasm_simd',
             confidenceThreshold,
             enableEmbedding,
-            startTime,
+            startTime
           });
           break;
 
@@ -174,7 +171,7 @@ export class OCRIntegrationService {
           result = await this.processWithConcurrentGPU(imageData, {
             confidenceThreshold,
             enableEmbedding,
-            startTime,
+            startTime
           });
           break;
 
@@ -183,12 +180,12 @@ export class OCRIntegrationService {
             confidenceThreshold,
             enableEmbedding,
             startTime,
-            evidenceId: options.evidenceId,
+            evidenceId: options.evidenceId
           });
           break;
 
         default:
-          throw new Error(`Unknown processing method: ${selectedMethod}`);
+          throw new Error(`Unknown processing; method: ${selectedMethod}`);
       }
 
       // 5. Cache result in Redis (fire-and-forget)
@@ -212,13 +209,13 @@ export class OCRIntegrationService {
           type: 'ocr_completed',
           cacheKey,
           result,
-          method: selectedMethod,
+          method: selectedMethod
         });
       }
 
       return result;
     } catch (error) {
-      console.error(`❌ OCR processing failed with ${selectedMethod}:`, error);
+      console.error(`❌ OCR processing failed with ${selectedMethod}: ', error);
 
       // Intelligent fallback chain (avoid infinite recursion)
       if (selectedMethod !== 'agentic_controller') {
@@ -227,7 +224,7 @@ export class OCRIntegrationService {
           confidenceThreshold,
           enableEmbedding,
           startTime,
-          evidenceId: options.evidenceId,
+          evidenceId: options.evidenceId
         });
       }
 
@@ -256,7 +253,7 @@ export class OCRIntegrationService {
 
   private async processWithWasm(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     if (!this.tensorProcessor || !this.initialized) {
       throw new Error('WASM processor not initialized');
@@ -288,14 +285,14 @@ export class OCRIntegrationService {
         modelUsed: result.modelUsed || 'tesseract_wasm',
         lodLevel: result.lodLevel,
         tensorOptimization: result.tensorOptimization,
-        gpuAccelerated: false,
-      },
+        gpuAccelerated: false
+      }
     };
   }
 
   private async processWithCuda(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     // Call CUDA service worker endpoint
     const formData = new FormData();
@@ -306,13 +303,13 @@ export class OCRIntegrationService {
       formData.append('imagePath', imageData);
     } else {
       // Convert Uint8Array to blob
-      const blob = new Blob([imageData], { type: 'image/png' });
+      const blob = new Blob([imageData], { type: `image/png` });
       formData.append('image', blob);
     }
 
     const response = await fetch('/api/v1/cuda/ocr', {
       method: 'POST',
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
@@ -337,17 +334,15 @@ export class OCRIntegrationService {
       processingTime,
       metadata: {
         modelUsed: 'tensorrt_gemma',
-        gpuAccelerated: true,
-      },
+        gpuAccelerated: true
+      }
     };
   }
 
   private async processWithAgentic(
     imageData: any,
-    options: {
-      confidenceThreshold: number;
-      enableEmbedding: boolean;
-      startTime: number;
+    options: { confidenceThreshold: number;, enableEmbedding: boolean;
+     , startTime: number;
       evidenceId?: number;
     }
   ): Promise<OCRResult> {
@@ -360,11 +355,11 @@ export class OCRIntegrationService {
       // Image path - trigger analysis directly
       const response = await fetch('/api/v1/agentic', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           action: 'analyze-image',
-          data: { imagePath: imageData },
-        }),
+          data: {, imagePath: imageData }
+        })
       });
 
       if (!response.ok) {
@@ -383,18 +378,18 @@ export class OCRIntegrationService {
         processingTime,
         metadata: {
           modelUsed: 'tesseract_gemma',
-          gpuAccelerated: true,
-        },
+          gpuAccelerated: true
+        }
       };
     } else {
       // Convert Uint8Array to blob
-      const blob = new Blob([imageData], { type: 'image/png' });
+      const blob = new Blob([imageData], { type: `image/png` });
       formData.append('screenshot', blob, 'ocr-image.png');
     }
 
     const response = await fetch('/api/v1/agentic', {
       method: 'POST',
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
@@ -417,8 +412,8 @@ export class OCRIntegrationService {
       metadata: {
         modelUsed: 'tesseract_gemma',
         gpuAccelerated: true,
-        asyncProcessing: true,
-      },
+        asyncProcessing: true
+      }
     };
   }
 
@@ -431,9 +426,8 @@ export class OCRIntegrationService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: text,
-          model: 'embeddinggemma:latest',
-        }),
+         , text: text,
+          model: `embeddinggemma:latest` })
       });
 
       if (!response.ok) {
@@ -455,17 +449,17 @@ export class OCRIntegrationService {
     try {
       const response = await fetch(`/api/v1/evidence/${evidenceId}/ocr`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          ocrText: ocrResult.text,
+         , ocrText: ocrResult.text,
           ocrConfidence: ocrResult.confidence,
           ocrRegions: ocrResult.regions,
           ocrEmbedding: ocrResult.embedding,
           tensorProcessed: true,
           processingMethod: ocrResult.processingMethod,
           ocrMetadata: ocrResult.metadata,
-          processedAt: new Date().toISOString(),
-        }),
+          processedAt: new Date().toISOString()
+        })
       });
 
       if (!response.ok) {
@@ -488,12 +482,12 @@ export class OCRIntegrationService {
 
       const response = await fetch('/api/v1/evidence/similar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          embedding: embedding,
+         , embedding: embedding,
           limit: limit,
           threshold: 0.7, // Similarity threshold
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -566,7 +560,7 @@ export class OCRIntegrationService {
    */
   private async processWithWorkerPool(
     imageData: any,
-    options: { method: string; confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+    options: { method: string; confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     return new Promise((resolve, reject) => {
       // Find available worker or queue if all busy
@@ -592,7 +586,7 @@ export class OCRIntegrationService {
         imageData: this.serializeImageData(imageData),
         method: options.method,
         confidenceThreshold: options.confidenceThreshold,
-        enableEmbedding: options.enableEmbedding,
+        enableEmbedding: options.enableEmbedding
       });
 
       // Timeout after 60 seconds
@@ -610,7 +604,7 @@ export class OCRIntegrationService {
    */
   private async processWithConcurrentGPU(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     // Check GPU queue status via Redis
     const queueLength = await this.getGPUQueueLength();
@@ -619,7 +613,7 @@ export class OCRIntegrationService {
       console.log('🔄 GPU queue full, switching to worker pool');
       return this.processWithWorkerPool(imageData, {
         method: 'wasm_simd',
-        ...options,
+        ...options
       });
     }
 
@@ -685,9 +679,9 @@ export class OCRIntegrationService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'get',
-          key: cacheKey,
-        }),
+         , action: 'get',
+          key: cacheKey
+        })
       });
 
       if (response.ok) {
@@ -706,11 +700,11 @@ export class OCRIntegrationService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'set',
+         , action: 'set',
           key: cacheKey,
           value: JSON.stringify(result),
           ttl: 3600, // 1 hour cache
-        }),
+        })
       });
     } catch (error) {
       console.warn('Redis cache write failed:', error);
@@ -728,7 +722,7 @@ export class OCRIntegrationService {
       if (imageData instanceof File) {
         formData.append('file', imageData);
       } else {
-        const blob = new Blob([imageData], { type: 'image/png' });
+        const blob = new Blob([imageData], { type: `image/png` });
         formData.append('file', blob, `${cacheKey}.png`);
       }
 
@@ -737,7 +731,7 @@ export class OCRIntegrationService {
 
       const response = await fetch('/api/v1/storage/minio/upload', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (response.ok) {
@@ -760,12 +754,12 @@ export class OCRIntegrationService {
     try {
       await fetch('/api/v1/collaboration/broadcast', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           sessionId,
           type: 'ocr_update',
-          data,
-        }),
+          data
+        })
       });
     } catch (error) {
       console.warn('Collaborative broadcast failed:', error);
@@ -786,9 +780,7 @@ export class OCRIntegrationService {
     }
   }
 
-  private async getSystemLoadMetrics(): Promise<{
-    gpuQueueLength: number;
-    workerPoolUtilization: number;
+  private async getSystemLoadMetrics(): Promise<{ gpuQueueLength: number;, workerPoolUtilization: number;
     redisConnections: number;
   }> {
     try {
@@ -799,7 +791,7 @@ export class OCRIntegrationService {
       return {
         gpuQueueLength: 0,
         workerPoolUtilization: 0.5,
-        redisConnections: 1,
+        redisConnections: 1
       };
     }
   }
@@ -825,12 +817,12 @@ export class OCRIntegrationService {
     } else if (imageData instanceof Uint8Array) {
       return {
         type: 'uint8array',
-        data: Array.from(imageData),
+        data: Array.from(imageData)
       };
     } else {
       return {
         type: 'string',
-        data: imageData,
+        data: imageData
       };
     }
   }

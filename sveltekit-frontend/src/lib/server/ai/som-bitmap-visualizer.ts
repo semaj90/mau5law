@@ -10,9 +10,7 @@ export interface SOMBitmapOptions {
   includeSvg?: boolean;
   cellPadding?: number;
 }
-export interface SOMBitmapResult {
-  width: number;
-  height: number;
+export interface SOMBitmapResult { width: number;, height: number;
   heatmap: Float32Array;
   rgba?: Uint8ClampedArray;
   palette?: SOMBitmapPalette;
@@ -28,8 +26,7 @@ export interface SOMBitmapResult {
     [key: string]: any;
   };
 }
-const paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = {
-  grayscale: Array.from({ length: 256 }, (_, i) => [i, i, i]),
+const paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = { grayscale: Array.from({, length: 256 }, (_, i) => [i, i, i]),
   blueprint: Array.from({ length: 256 }, (_, i) => [
     Math.round(i * 0.4),
     Math.round(i * 0.7),

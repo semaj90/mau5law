@@ -17,18 +17,16 @@ const metrics = {
   progressMessages: 0,
   resultMessages: 0,
   errorMessages: 0,
-  lastMessageAt: null as string | null,
+  lastMessageAt: null as string | null
 };
 // Initialize WebSocket server and Redis subscriber
 function initializeWebSocket() {
   if (io) return io;
   // Create Socket.IO server
-  io = new Server({
-    cors: {
-      origin: dev ? 'http://localhost:5173' : false,
-      methods: ['GET', 'POST'],
+  io = new Server({ cors: {, origin: dev ? 'http://localhost:5173' : false,
+      methods: ['GET', 'POST']
     },
-    transports: ['websocket', 'polling'],
+    transports: ['websocket', 'polling']
   });
   // Initialize Redis subscriber for job progress
   // Initialize Redis primary (non-subscriber) for auxiliary commands (get/set)
@@ -74,19 +72,19 @@ function initializeWebSocket() {
     // Handle attention tracking
     socket.on(
       'user-attention',
-      (data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }) => {
+      (data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }) => {
         // Track user attention for AI context switching
         trackUserAttention(socket.id, data);
       }
     );
     // Handle real-time collaboration
-    socket.on('document-edit', (data: { documentId: string; change: any; userId: string }) => {
+    socket.on('document-edit', (data: { documentId: string; change: any;, userId: string }) => {
       // Destructure and forward unknown change payload as-is
       const { documentId, change, userId } = data;
       socket.to(`doc-${documentId}`).emit('document-change', {
         change,
         userId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     });
     socket.on('disconnect', () => {
@@ -104,7 +102,7 @@ function setupRedisSubscriptions() {
   if (!io || pubSub) return;
   pubSub = createPubSubHelper({
     patterns: ['progress:*', 'result:*', 'error:*'],
-    onMessage: ({ channel, message }: { channel: any; message: any }) => {
+    onMessage: ({ channel, message }: { channel: any;, message: any }) => {
       metrics.pubsubMessages++;
       metrics.lastMessageAt = new Date().toISOString();
       try {
@@ -128,14 +126,14 @@ function setupRedisSubscriptions() {
             server.to(`upload-${uploadId}`).emit('upload-progress', {
               uploadId,
               ...data,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             });
           }
           if (data.caseId && server) {
             server.to(`case-${String(data.caseId)}`).emit('case-progress', {
               uploadId,
               ...data,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             });
           }
         } else if (chan.startsWith('result:')) {
@@ -145,7 +143,7 @@ function setupRedisSubscriptions() {
             server.to(`tensor-${jobId}`).emit('tensor-result', {
               jobId,
               result: data,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             });
           }
         } else if (chan.startsWith('error:')) {
@@ -155,26 +153,26 @@ function setupRedisSubscriptions() {
             server.to(`upload-${uploadId}`).emit('upload-error', {
               uploadId,
               error: data,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             });
           }
         }
       } catch (e) {
         console.error('❌ Failed to parse Redis message:', e);
       }
-    },
+    }
   });
 }
 // Track user attention for AI context switching
 async function trackUserAttention(
   socketId: string,
-  data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }
+  data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }
 ): Promise<void> {
   if (!redisPrimary) return;
   const attentionEvent = {
     socketId,
     ...data,
-    serverTimestamp: new Date().toISOString(),
+    serverTimestamp: new Date().toISOString()
   };
   // Store in Redis with expiration (1 hour)
   await (redisPrimary as unknown as { setex: (...args: any[]) => Promise<unknown> }).setex(
@@ -198,8 +196,8 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
       body: JSON.stringify({
         query,
         socketId,
-        timestamp: new Date().toISOString(),
-      }),
+        timestamp: new Date().toISOString()
+      })
     });
     if (contextResponse.ok) {
       const context = await contextResponse.json();
@@ -208,7 +206,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
         query,
         suggestions: context.suggestions,
         relevantDocuments: context.documents,
-        confidence: context.confidence,
+        confidence: context.confidence
       });
     }
   } catch (error: any) {
@@ -237,7 +235,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, progress: a
     uploadId,
     caseId,
     ...(progress as Record<string, unknown>),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   // Emit to upload-specific room
   io.to(`upload-${uploadId}`).emit('upload-progress', progressData);
@@ -250,7 +248,7 @@ export function _broadcastTensorResult(jobId: string, result: any) {
   io.to(`tensor-${jobId}`).emit('tensor-result', {
     jobId,
     result,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 // Broadcast search results in real-time
@@ -259,7 +257,7 @@ export function _broadcastSearchResults(searchId: string, results: any) {
   io.to(`search-${searchId}`).emit('search-results', {
     searchId,
     results,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 // HTTP handler for WebSocket endpoint
@@ -277,10 +275,10 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         'AI context switching',
         'Document collaboration',
         'Search result streaming',
-      ],
+      ]
     }),
     {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     }
   );
 };

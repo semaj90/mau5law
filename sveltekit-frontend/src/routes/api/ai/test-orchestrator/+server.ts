@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit';
 import {
   testOrchestratorIntegration,
   quickHealthCheck,
-  testSpecificOrchestrator,
+  testSpecificOrchestrator
 } from '$lib/server/ai/orchestrator-test.js';
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
 // add these type imports (use the bridge module's types so TS doesn't attempt a risky conversion)
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         type: 'full_integration_test',
         ...testResults,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     if (testType === 'specific' && orchestrator) {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
         type: 'specific_orchestrator_test',
         orchestrator,
         ...result,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     // Default: Quick health check
@@ -70,24 +70,23 @@ export const GET: RequestHandler = async ({ url }) => {
       activeRequests: {
         count: activeRequests.length,
         requests: activeRequests.map(req => ({
-          id: req.id,
+         , id: req.id,
           type: req.type,
           priority: req.options?.priority,
-          timestamp: req.metadata?.timestamp,
-        })),
+          timestamp: req.metadata?.timestamp
+        }))
       },
       endpoints: {
         fullTest: '/api/ai/test-orchestrator?test=full',
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
-        healthCheck: '/api/ai/test-orchestrator',
-      },
+        healthCheck: '/api/ai/test-orchestrator` }
     });
   } catch (error) {
     return json(
       {
         type: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -156,19 +155,19 @@ export const POST: RequestHandler = async ({ request }) => {
         legalDomain:
           typeof testRequest['legalDomain'] === 'string' ? (testRequest['legalDomain'] as string) : undefined,
         documentType:
-          typeof testRequest['documentType'] === 'string' ? (testRequest['documentType'] as string) : undefined,
+          typeof testRequest['documentType'] === 'string' ? (testRequest['documentType'] as string) : undefined
       },
       options: {
         model: modelValidated,
         priority: priorityValidated,
         temperature,
         maxTokens,
-        useGPU: typeof testRequest['useGPU'] === 'boolean' ? (testRequest['useGPU'] as boolean) : true,
+        useGPU: typeof testRequest['useGPU'] === 'boolean' ? (testRequest['useGPU'] as boolean) : true
       },
       metadata: {
         source: 'api',
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     const startTime = Date.now();
@@ -227,40 +226,40 @@ export const POST: RequestHandler = async ({ request }) => {
       modelUsed: getString(bridgeRespUnknown, 'modelUsed', 'model'),
       confidence: getNumber(bridgeRespUnknown, 'confidence'),
       executionMetrics: getRecord(bridgeRespUnknown, 'metrics', 'executionMetrics', 'execution_metrics') ?? {},
-      error: getString(bridgeRespUnknown, 'error') ?? null,
+      error: getString(bridgeRespUnknown, 'error') ?? null
     };
 
     return json({
       type: 'custom_test',
       request: {
         ...bridgeRequest,
-        metadata: undefined,
+        metadata: undefined
       },
       result: {
-        success: result?.success,
+       , success: result?.success,
         response: result?.response,
         orchestratorUsed: result?.orchestratorUsed,
         modelUsed: result?.modelUsed,
         confidence: result?.confidence,
         executionMetrics: {
           ...(result?.executionMetrics || {}),
-          apiLatency,
+          apiLatency
         },
-        error: result?.error,
+        error: result?.error
       },
       analysis: {
         routingReason: getRoutingReason(result?.orchestratorUsed as string, type, orchestrator),
         performanceGrade: getPerformanceGrade(result?.executionMetrics?.totalLatency ?? Infinity),
-        recommendedOptimizations: getOptimizationRecommendations(result),
+        recommendedOptimizations: getOptimizationRecommendations(result)
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
       {
         type: 'custom_test_error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -328,7 +327,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization` }
   });
 };

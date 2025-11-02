@@ -50,8 +50,7 @@ export class BrowserEmbeddings {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
         this.embedder = await pipeline('feature-extraction', this.modelName, {
-          device: 'wasm'
-        });
+          device: `wasm` });
       }
       this.isInitialized = true;
       console.log(`✅ [BrowserML] Model loaded successfully (${this.device})`);
@@ -113,9 +112,9 @@ export class BrowserEmbeddings {
    */
   async findSimilar(
     query: string,
-    documents: Array<{ text: string; metadata?: any }>,
+    documents: Array<{, text: string; metadata?: any }>,
     topK: number = 5
-  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
+  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
     const queryEmbedding = await this.embed(query) as number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts) as number[][];

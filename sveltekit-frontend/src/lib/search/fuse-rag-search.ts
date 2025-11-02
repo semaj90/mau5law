@@ -3,9 +3,7 @@
  * Provides client-side fuzzy search capabilities with tag filtering
  */
 import Fuse from 'fuse.js';
-export interface RAGDocument {
-  id: number | string;
-  filename: string;
+export interface RAGDocument { id: number | string;, filename: string;
   content: string;
   tags: string[];
   fileType: string;
@@ -30,16 +28,16 @@ export interface FuseSearchResult extends RAGDocument {
 export function createFuseSearch(documents: RAGDocument[]) {
   const fuse = new Fuse(documents, {
     keys: [
-      { name: 'filename', weight: 0.3 },
+      {, name: 'filename', weight: 0.3 },
       { name: 'content', weight: 0.5 },
-      { name: 'tags', weight: 0.2 },
+      { name: 'tags', weight: 0.2 }
     ],
     threshold: 0.4,
     includeScore: true,
     minMatchCharLength: 2,
     ignoreLocation: true,
     useExtendedSearch: true,
-    findAllMatches: true,
+    findAllMatches: true
   });
   return fuse;
 }
@@ -63,15 +61,15 @@ export function fuseSearch(
   // Create Fuse instance with filtered documents
   const fuse = new Fuse(filteredDocs, {
     keys: [
-      { name: 'filename', weight: 0.3 },
+      {, name: 'filename', weight: 0.3 },
       { name: 'content', weight: 0.5 },
-      { name: 'tags', weight: 0.2 },
+      { name: 'tags', weight: 0.2 }
     ],
     threshold,
     includeScore,
     minMatchCharLength: 2,
     ignoreLocation: true,
-    useExtendedSearch: true,
+    useExtendedSearch: true
   });
   // Perform search
   const results = fuse.search(query);
@@ -80,7 +78,7 @@ export function fuseSearch(
     ...result.item,
     fuseScore: result.score || 0,
     matchScore: 1 - (result.score || 0), // Convert to 0-1 where higher is better
-    highlights: extractHighlights(result.item, query),
+    highlights: extractHighlights(result.item, query)
   }));
 }
 /**
@@ -150,7 +148,7 @@ export function hybridSearch(
     const combinedScore = fuseResult.matchScore * fusionWeight + vectorScore * (1 - fusionWeight);
     return {
       ...fuseResult,
-      matchScore: combinedScore,
+      matchScore: combinedScore
     };
   });
   // Sort by combined score and return top results

@@ -10,14 +10,12 @@ export class CognitiveRoutingOrchestrator {
     console.log('🛑 Cognitive routing orchestrator shutdown');
   }
   getLearningState() {
-    return {
-      memoryState: {
-        episodicMemorySize: 150,
+    return { memoryState: {, episodicMemorySize: 150,
         semanticMemorySize: 200,
-        proceduralMemorySize: 100,
+        proceduralMemorySize: 100
       },
       learningRate: 0.85,
-      adaptationScore: 0.75,
+      adaptationScore: 0.75
     };
   }
   updateLearningState(state: any) {

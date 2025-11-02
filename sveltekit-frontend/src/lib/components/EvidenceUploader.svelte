@@ -8,7 +8,7 @@
   }
   // Svelte 5 props with event handlers
   let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props();
-  let files: FileList | null = $state(null);
+  let files: FileList | null = null;
   let dragActive = $state<boolean>(false);
   let componentError = $state<Error | null>(null);
   let uploading = $state<boolean>(false);

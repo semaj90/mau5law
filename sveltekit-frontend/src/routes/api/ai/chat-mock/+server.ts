@@ -9,13 +9,13 @@ import type { User } from '$lib/types';
  * Redis Type: aiChat
  *
  * NES Architecture Pattern:
- * - CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
+ * -; CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
  * - Cache Strategy: Aggressive Redis caching (Nintendo-level performance)
  * - Pattern Banks: Legal domain patterns stored like NES tile maps
- * - Sprite Caching: Frequently accessed legal concepts cached as: "sprites"
+ * - Sprite Caching: Frequently accessed legal concepts cached; as: "sprites"
  *
  * Performance Impact:
- * - Cache hits: ~2ms (NES PPU sprite fetch speed)
+ * - Cache; hits: ~2ms (NES PPU sprite fetch speed)
  * - Fresh queries: 50-500ms (Ollama GPU = NES expansion chip)
  * - RAG retrieval: 2-5ms (Qdrant HNSW = NES sprite DMA)
  * - Background processing: Async like NES APU audio
@@ -82,7 +82,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     stream: rawStream,
     useRAG: rawUseRAG,
     model: modelRaw,
-    sessionId: sessionIdRaw,
+    sessionId: sessionIdRaw
   } = body as ChatRequestBody;
 
   // runtime-normalize into narrow vars (preserve mutability where needed)
@@ -101,9 +101,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     payload?: { title?: string; content?: string };
   };
 
-  type RAGSource = {
-    type: string;
-    score: number;
+  type RAGSource = { type: string;, score: number;
     title: string;
     id: string;
   };
@@ -132,7 +130,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           similarDocs
             .map(
               (doc: SimilarDoc, idx: number) =>
-                `[Pattern ${idx + 1}] ${doc.payload?.title ?? 'Untitled'}: ${doc.payload?.content?.substring(0, 200) ?? 'No content'}...`
+                `[Pattern ${idx + 1}] ${doc.payload?.title ?? 'Untitled'}: ${doc.payload?.content?.substring(0, 200) ?? 'No content` }...`
             )
             .join('\n\n');
 
@@ -140,7 +138,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           type: 'Vector Database (CHR_ROM)',
           score: doc.score ?? doc.similarity ?? 0,
           title: doc.payload?.title ?? 'Legal Document',
-          id: doc.id,
+          id: doc.id
         }));
 
         console.log(`✅ CHR_ROM: Retrieved ${similarDocs.length} patterns in ${ragTimeMs}ms (sprite DMA complete)`);
@@ -159,21 +157,19 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: message,
+         , query: message,
           context: context || {},
           sessionId,
           includeVectorSearch: true,
-          includeCitations: true,
+          includeCitations: true
         }),
-        signal: controller.signal,
+        signal: controller.signal
       });
       if (ragResponse.ok) {
         const ragData = await ragResponse.json();
         const executionTime = Date.now() - startTime;
         clearTimeout(timeout);
-        return json({
-          message: {
-            id: messageId,
+        return json({ message: {, id: messageId,
             content: ragData.response || ragData.answer || 'Enhanced RAG response received',
             role: 'assistant',
             timestamp: new Date().toISOString(),
@@ -183,13 +179,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
               confidence: ragData.confidence || 0.92,
               executionTime,
               fromCache: ragData.fromCache || false,
-              vectorMatches: ragData.vectorMatches || 0,
-            },
+              vectorMatches: ragData.vectorMatches || 0
+            }
           },
           success: true,
           production: true,
-          service: 'enhanced-rag',
-        });
+          service: `enhanced-rag` });
       }
     } finally {
       clearTimeout(timeout);
@@ -208,14 +203,14 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         content: [
           'You are a specialized legal AI assistant powered by NES-style CHR_ROM pattern matching.',
           'Provide accurate, well-reasoned legal information while noting that your responses constitute general guidance, not specific legal advice.',
-          ragContext ? `\n\nUse the following retrieved legal patterns to enhance your response:${ragContext}` : '',
+          ragContext ? `\n\nUse the following retrieved legal patterns to enhance your response:${ragContext}` : ''
         ]
           .filter(Boolean)
-          .join(' '),
+          .join(' ')
       },
       {
         role: 'user',
-        content: message,
+        content: message
       },
     ];
 
@@ -223,17 +218,14 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     if (context && Object.keys(context).length > 0) {
       messages.splice(1, 0, {
         role: 'system',
-        content: `Additional context (sprite metadata): ${JSON.stringify(context)}`,
-      });
+        content: `Additional context (sprite metadata): ${JSON.stringify(context)}` });
     }
 
     // Use centralized Ollama service (PRG_ROM execution)
     const response = (await generateChatResponse(messages, stream || false)) as string;
     const executionTime = Date.now() - startTime;
 
-    return json({
-      message: {
-        id: messageId,
+    return json({ message: {, id: messageId,
         content: response,
         role: 'assistant',
         timestamp: new Date().toISOString(),
@@ -241,8 +233,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           {
             type: 'Ollama Legal AI (PPU)',
             score: 0.92,
-            title: `${targetModel} with RAG Enhancement`,
-          },
+            title: `${targetModel} with RAG Enhancement' },
           ...ragSources,
         ],
         metadata: {
@@ -256,8 +247,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           ragSourcesCount: ragSources.length,
           ragTimeMs,
           memoryBank: 'CHR_ROM',
-          cachingStrategy: 'aggressive',
-        },
+          cachingStrategy: `aggressive` }
       },
       success: true,
       production: true,
@@ -267,8 +257,8 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         ppuCycles: executionTime,
         spriteComposition: messages.length,
         vramReady: true,
-        ragRetrievalMs: ragTimeMs,
-      },
+        ragRetrievalMs: ragTimeMs
+      }
     });
   } catch (ollamaError) {
     console.warn('🎮 PPU rendering failed, using NES fallback patterns:', ollamaError);
@@ -282,7 +272,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     criminal: /criminal|defendant|prosecution|arrest|charge/i,
     civil: /civil|plaintiff|contract|tort|liability/i,
     constitutional: /constitutional|amendment|rights|due process/i,
-    procedure: /procedure|motion|filing|court|hearing/i,
+    procedure: /procedure|motion|filing|court|hearing/i
   };
   let intelligentResponse = "I understand you're seeking legal assistance. ";
   let detectedArea = 'general';
@@ -302,7 +292,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     detectedArea = 'civil';
     confidence = 0.82;
     intelligentResponse +=
-      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather than: 'beyond reasonable doubt.'";
+      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather; than: 'beyond reasonable doubt.'";
   } else if (legalPatterns.constitutional.test(message)) {
     detectedArea = 'constitutional';
     confidence = 0.9;
@@ -328,19 +318,16 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       detectedArea,
       sources: [
         {
-          type: 'Legal Knowledge Base',
+         , type: 'Legal Knowledge Base',
           score: confidence,
-          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis`,
-        },
+          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` },
       ],
       production: false,
-      fallback: true,
+      fallback: true
     });
   }
 
-  return json({
-    message: {
-      id: messageId,
+  return json({ message: {, id: messageId,
       content: intelligentResponse,
       role: 'assistant',
       timestamp: new Date().toISOString(),
@@ -348,8 +335,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         {
           type: 'Legal Knowledge Base',
           score: confidence,
-          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis`,
-        },
+          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis' },
       ],
       metadata: {
         model: 'intelligent-fallback',
@@ -357,13 +343,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         executionTime,
         fromCache: false,
         detectedArea,
-        patternMatched: true,
-      },
+        patternMatched: true
+      }
     },
     success: true,
     production: false,
     fallback: true,
-    message_note: 'AI services unavailable - using intelligent pattern matching',
-  });
+    message_note: `AI services unavailable - using intelligent pattern matching` });
 });
 export const POST = redisOptimized.aiChat(originalPOSTHandler);

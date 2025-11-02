@@ -2,15 +2,11 @@ import { createMachine, assign, setup, fromPromise } from 'xstate'; // removed u
 // ============================================================================
 // 1. TYPES - Define a single source of truth for all types
 // ============================================================================
-type Analytics = {
-  totalResults: number;
-  searchTime: number;
+type Analytics = { totalResults: number;, searchTime: number;
   relevanceScore: number;
 };
 // The machine's context (its "extended state")
-export type SearchContext = {
-  query: string;
-  filters: Record<string, unknown>;
+export type SearchContext = { query: string;, filters: Record<string, unknown>;
   results: any[];
   searchHistory: string[];
   analytics: Analytics;
@@ -19,8 +15,8 @@ export type SearchContext = {
 };
 // The events that can be sent to the machine
 export type SearchEvent =
-  | { type: 'UPDATE_QUERY'; query: string }
-  | { type: 'UPDATE_FILTERS'; filters: Record<string, unknown> }
+  | { type: 'UPDATE_QUERY';, query: string }
+  | { type: 'UPDATE_FILTERS';, filters: Record<string, unknown> }
   | { type: 'SEARCH' }
   | { type: 'LOAD_HISTORY' }
   | { type: 'CLEAR' }
@@ -43,7 +39,7 @@ const actors = {
     }
   }),
   validateSearchInput: fromPromise(
-    async ({ input }: { input: { query: string; filters: Record<string, unknown> } }) => {
+    async ({ input }: { input: {, query: string; filters: Record<string, unknown> } }) => {
       const errors: Record<string, string[]> = {};
       if (!input.query?.trim() && Object.keys(input.filters).length === 0) {
         errors.general = ['Please enter a search query or select a filter.'];
@@ -67,7 +63,7 @@ const actors = {
     }
   ),
   performSearchApiCall: fromPromise(
-    async ({ input }: { input: { query: string; filters: Record<string, unknown> } }) => {
+    async ({ input }: { input: {, query: string; filters: Record<string, unknown> } }) => {
       const startTime = Date.now();
       const searchParams = new URLSearchParams();
       if (input.query) {
@@ -91,15 +87,13 @@ const actors = {
         analytics: {
           totalResults: data.total || 0,
           searchTime,
-          relevanceScore: data.averageRelevance || 0,
-        },
+          relevanceScore: data.averageRelevance || 0
+        }
       };
     }
-  ),
+  )
 };
-const actions = {
-  saveHistoryToStorage: assign({
-    searchHistory: context => {
+const actions = { saveHistoryToStorage: assign({, searchHistory: context => {
       const query = context.query ?? '';
       if (!query.trim()) {
         return context.searchHistory; // Don't save empty queries
@@ -110,33 +104,28 @@ const actions = {
         localStorage.setItem('legal-ai:search-history', JSON.stringify(newHistory));
       }
       return newHistory;
-    },
-  }),
+    }
+  })
 };
 // ============================================================================
 // 3. MACHINE DEFINITION - Create the machine using setup() for full type safety
 // ============================================================================
 export const searchMachine = setup({
   // Provide the types and implementations for actors and actions
-  types: {} as {
-    context: SearchContext;
-    events: SearchEvent;
-    actors: {
-      loadHistoryFromStorage: { output: string[]; error: Error };
-      validateSearchInput: {
-        input: { query: string; filters: Record<string, unknown> };
-        output: { query: string; filters: Record<string, unknown> };
+  types: {} as { context: SearchContext;, events: SearchEvent;
+    actors: { loadHistoryFromStorage: { output: string[];, error: Error };
+      validateSearchInput: { input: { query: string;, filters: Record<string, unknown> };
+        output: { query: string;, filters: Record<string, unknown> };
         error: Record<string, string[]>;
       };
-      performSearchApiCall: {
-        input: { query: string; filters: Record<string, unknown> };
-        output: { results: any[]; analytics: Analytics };
-        error: Error;
+      performSearchApiCall: { input: { query: string;, filters: Record<string, unknown> };
+        output: { results: any[];, analytics: Analytics };
+       , error: Error;
       };
     };
   },
   actors,
-  actions,
+  actions
 }).createMachine({
   id: 'search',
   initial: 'idle',
@@ -147,61 +136,50 @@ export const searchMachine = setup({
     searchHistory: [],
     analytics: { totalResults: 0, searchTime: 0, relevanceScore: 0 },
     validationErrors: {},
-    error: null,
+    error: null
   },
-  states: {
-    idle: {
-      on: {
-        UPDATE_QUERY: {
-          actions: assign({
-            query: (context, event) => (event as any).query,
-          }),
+  states: { idle: {, on: { UPDATE_QUERY: {, actions: assign({
+           , query: (context, event) => (event as any).query
+          })
         },
-        UPDATE_FILTERS: {
-          actions: assign({
-            filters: (context, event) => ({ ...context.filters, ...((event as any).filters || {}) }),
-          }),
+        UPDATE_FILTERS: { actions: assign({, filters: (context, event) => ({ ...context.filters, ...((event as any).filters || {}) })
+          })
         },
         SEARCH: 'validating',
-        LOAD_HISTORY: 'loadingHistory',
-      },
+        LOAD_HISTORY: 'loadingHistory'
+      }
     },
-    loadingHistory: {
-      invoke: {
-        src: 'loadHistoryFromStorage',
+    loadingHistory: { invoke: {, src: 'loadHistoryFromStorage',
         onDone: {
           target: 'idle',
           actions: assign({
-            searchHistory: (context, event) => (event as any).output as string[],
-          }),
+            searchHistory: (context, event) => (event as any).output as string[]
+          })
         },
         onError: {
           target: 'idle',
           actions: assign({
-            error: () => 'Failed to load search history.',
-          }),
-        },
-      },
+            error: () => 'Failed to load search history.'
+          })
+        }
+      }
     },
-    validating: {
-      invoke: {
-        src: 'validateSearchInput',
+    validating: { invoke: {, src: 'validateSearchInput',
         input: ({ context }) => ({ query: context.query, filters: context.filters }),
         onDone: {
           target: 'searching',
           actions: assign({
             validationErrors: () => ({}) as Record<string, string[]>,
-            error: () => null,
-          }),
+            error: () => null
+          })
         },
         onError: {
           target: 'idle',
           actions: assign({
             validationErrors: (context, event) => (event as any).error as Record<string, string[]>,
-            error: () => 'Search input is invalid.',
-          }),
-        },
-      },
+            error: () => 'Search input is invalid.` })
+        }
+      }
     },
     searching: {
       tags: ['loading'],
@@ -214,10 +192,10 @@ export const searchMachine = setup({
           actions: [
             assign({
               results: (context, event) => (event as any).output.results as unknown[],
-              analytics: (context, event) => (event as any).output.analytics as Analytics,
+              analytics: (context, event) => (event as any).output.analytics as Analytics
             }),
             'saveHistoryToStorage',
-          ],
+          ]
         },
         onError: {
           target: 'error',
@@ -225,23 +203,17 @@ export const searchMachine = setup({
             error: (context, event) => {
               const err = (event as any).error;
               return err?.message ?? String(err ?? 'Unknown error');
-            },
-          }),
-        },
-      },
+            }
+          })
+        }
+      }
     },
-    results: {
-      on: {
-        SEARCH: 'validating',
-        UPDATE_QUERY: {
-          actions: assign({
-            query: (context, event) => (event as any).query,
-          }),
+    results: { on: {, SEARCH: 'validating',
+        UPDATE_QUERY: { actions: assign({, query: (context, event) => (event as any).query
+          })
         },
-        UPDATE_FILTERS: {
-          actions: assign({
-            filters: (context, event) => ({ ...context.filters, ...((event as any).filters || {}) }),
-          }),
+        UPDATE_FILTERS: { actions: assign({, filters: (context, event) => ({ ...context.filters, ...((event as any).filters || {}) })
+          })
         },
         CLEAR: {
           target: 'idle',
@@ -251,25 +223,23 @@ export const searchMachine = setup({
             results: () => [],
             analytics: () => ({ totalResults: 0, searchTime: 0, relevanceScore: 0 }),
             validationErrors: () => ({}) as Record<string, string[]>,
-            error: () => null,
-          }),
-        },
-      },
+            error: () => null
+          })
+        }
+      }
     },
-    error: {
-      on: {
-        RETRY: 'searching',
+    error: { on: {, RETRY: 'searching',
         SEARCH: 'validating', // Allow a new search to clear the error
         UPDATE_QUERY: {
           // When user types, clear the error and update query
           target: 'idle',
           actions: assign({
             query: (context, event) => (event as any).query,
-            error: () => null,
-          }),
-        },
-      },
-    },
-  },
+            error: () => null
+          })
+        }
+      }
+    }
+  }
 });
 export default searchMachine;

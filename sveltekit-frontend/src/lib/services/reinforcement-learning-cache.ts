@@ -12,9 +12,7 @@ type RLValue = unknown;
 class ReinforcementLearningCache {
 	private store = new Map<
 		string,
-		{
-			value: RLValue;
-			lastAccess: number;
+		{ value: RLValue;, lastAccess: number;
 			freq: number;
 			created: number;
 		}

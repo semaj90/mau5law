@@ -8,9 +8,7 @@ interface WorkerMessage {
   error?: string;
 }
 
-interface PendingRequest {
-  resolve: (value: any) => void;
-  reject: (error: Error) => void;
+interface PendingRequest { resolve: (value: any) => void;, reject: (error: Error) => void;
   timestamp: number;
 }
 
@@ -74,8 +72,7 @@ export class EmbeddingsService {
       // Create worker pool
       for (let i = 0; i < this.maxWorkers; i++) {
         const worker = new Worker(new URL('../workers/embeddings-worker.ts', import.meta.url), {
-          type: 'module',
-        });
+          type: 'module` });
         worker.addEventListener('message', this.handleWorkerMessage.bind(this));
         worker.addEventListener('error', this.handleWorkerError.bind(this));
         this.workers.push(worker);
@@ -112,7 +109,7 @@ export class EmbeddingsService {
         pendingRequest.resolve(data);
         break;
       default:
-        pendingRequest.reject(new Error(`Unknown response type: ${type}`));
+        pendingRequest.reject(new Error(`Unknown response; type: ${type}`));
     }
   }
 
@@ -140,7 +137,7 @@ export class EmbeddingsService {
           clearTimeout(timeoutId);
           reject(error);
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       try {
@@ -169,9 +166,7 @@ export class EmbeddingsService {
     return this.sendWorkerMessage<EmbeddingResponse>(worker, 'generate_embedding', request);
   }
 
-  async generateBatchEmbeddings(texts: string[]): Promise<{
-    embeddings: number[][];
-    count: number;
+  async generateBatchEmbeddings(texts: string[]): Promise<{ embeddings: number[][];, count: number;
     dimension: number;
     processingTime: number;
   }> {
@@ -218,16 +213,12 @@ export class EmbeddingsService {
       embeddings: allEmbeddings,
       count: allEmbeddings.length,
       dimension,
-      processingTime: totalProcessingTime,
+      processingTime: totalProcessingTime
     };
   }
 
-  async preprocessText(text: string): Promise<{
-    cleanText: string;
-    tokens: string[];
-    metadata: {
-      originalLength: number;
-      cleanedLength: number;
+  async preprocessText(text: string): Promise<{ cleanText: string;, tokens: string[];
+    metadata: { originalLength: number;, cleanedLength: number;
       tokenCount: number;
       hasSpecialChars: boolean;
     };
@@ -236,12 +227,8 @@ export class EmbeddingsService {
       await this.initialize();
     }
     const worker = this.getNextWorker();
-    return this.sendWorkerMessage<{
-      cleanText: string;
-      tokens: string[];
-      metadata: {
-        originalLength: number;
-        cleanedLength: number;
+    return this.sendWorkerMessage<{ cleanText: string;, tokens: string[];
+      metadata: { originalLength: number;, cleanedLength: number;
         tokenCount: number;
         hasSpecialChars: boolean;
       };
@@ -295,7 +282,7 @@ export class EmbeddingsService {
     return {
       totalWorkers: this.workers.length,
       pendingRequests: this.pendingRequests.size,
-      initialized: this.isInitialized,
+      initialized: this.isInitialized
     };
   }
 

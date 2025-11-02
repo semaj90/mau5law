@@ -55,9 +55,7 @@ export interface VectorSearchOptions {
   filter?: Record<string, any>; // optional metadata filter
 }
 
-export interface VectorSearchResult<TMeta = Record<string, any>> {
-  id: string;
-  score: number;
+export interface VectorSearchResult<TMeta = Record<string, any>> { id: string;, score: number;
   payload?: TMeta;
 }
 
@@ -119,7 +117,7 @@ export interface IRedisCacheService {
 
 export interface IQdrantVectorService {
   upsertVector(id: string, vector: Float32Array | number[], metadata?: Record<string, any>): Promise<void>;
-  upsertBatch(items: { id: string; vector: Float32Array | number[]; metadata?: Record<string, any> }[]): Promise<void>;
+  upsertBatch(items: {, id: string; vector: Float32Array | number[]; metadata?: Record<string, any> }[]): Promise<void>;
 
   /**
    * Search a vector and return top-K results with optional payload/metadata.

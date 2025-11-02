@@ -4,9 +4,7 @@ import type { RequestHandler } from './$types.js';
 import { error, json } from '@sveltejs/kit'; // import 'json' and: 'error' from '@sveltejs/kit'
 
 // Define an interface for the Tesseract.js recognition result data
-interface OCRResultData {
-  text: string;
-  confidence: number;
+interface OCRResultData { text: string;, confidence: number;
   // Add other properties if needed, e.g., words, lines, etc.
 }
 
@@ -45,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: pageText,
           confidence: 95, // High confidence for extractable text
-          method: 'text_extraction',
+          method: 'text_extraction'
         });
         totalCharacters += pageText.length;
         totalConfidence += 95;
@@ -57,13 +55,13 @@ export const POST: RequestHandler = async ({ request }) => {
         await page.render({
           canvas: canvas,
           canvasContext: context,
-          viewport: viewport,
+          viewport: viewport
         }).promise;
         // Initialize Tesseract worker
         const worker = await createWorker({
           // Removed: 'eng', 1 arguments
           workerPath: '/tesseract-worker.js',
-          corePath: '/tesseract-core.js',
+          corePath: '/tesseract-core.js'
         });
         await worker.load(); // Load the Tesseract.js core
         await worker.loadLanguage('eng'); // Load the English language
@@ -75,8 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: ocrData.text,
           confidence: ocrData.confidence,
-          method: 'ocr',
-        });
+          method: 'ocr` });
         totalCharacters += ocrData.text.length;
         totalConfidence += ocrData.confidence;
       }
@@ -99,8 +96,8 @@ export const POST: RequestHandler = async ({ request }) => {
       extractedAt: new Date().toISOString(),
       processingStats: {
         ocrPages: ocrResults.filter(item => item.length),
-        extractedPages: ocrResults.filter(item => item.length),
-      },
+        extractedPages: ocrResults.filter(item => item.length)
+      }
     };
     return json(result);
   } catch (err: any) {

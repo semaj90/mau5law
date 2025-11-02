@@ -43,7 +43,7 @@
   }
   function collapse() {
     if (state.expanded) {
-      state.expanded = $state(false);
+      state.expanded = false;
       onexpand?.();
     }
   }

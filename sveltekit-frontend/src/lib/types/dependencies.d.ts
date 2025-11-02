@@ -154,5 +154,5 @@ declare module '$lib/schemas/forms' {
 
 // Database schema types
 declare module '$lib/database/enhanced-schema' {
-  export const vector: (name: string, options: { dimensions: number }) => unknown;
+  export const vector: (name: string, options: {, dimensions: number }) => unknown;
 }

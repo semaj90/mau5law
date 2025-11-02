@@ -29,10 +29,10 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
     actors: {
       ...enhancedLegalCaseMachine.implementations.actors,
       // RAG-enhanced case loading
-      loadCase: fromPromise(async ({ input }: { input: { caseId: string; includeEvidence: boolean } }) => {
+      loadCase: fromPromise(async ({ input }: { input: {, caseId: string; includeEvidence: boolean } }) => {
         const response = await fetch(`/api/cases/${input.caseId}`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': `application/json` }
         });
         if (!response.ok) {
           throw new Error(`Failed to load case ${response.status}`);
@@ -51,18 +51,18 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
         }
       }),
       // RAG-powered AI analysis
-      ragAnalysis: fromPromise(async ({ input }: { input: { query: string; caseId: string } }) => {
+      ragAnalysis: fromPromise(async ({ input }: { input: {, query: string; caseId: string } }) => {
         if (!enableRAG) {
           throw new Error('RAG is not enabled for this machine');
         }
         const response = await fetch(ragEndpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({,
             query: input.query,
             caseId: input.caseId,
             options: {
-              limit: 8,
+             , limit: 8,
               model: 'gemma3-legal',
               maxTokens: 800,
               temperature: 0.1
@@ -76,7 +76,7 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
         return response.json();
       }),
       // Case similarity search using RAG
-      findSimilarCases: fromPromise(async ({ input }: { input: { caseId: string; threshold?: number } }) => {
+      findSimilarCases: fromPromise(async ({ input }: { input: {, caseId: string; threshold?: number } }) => {
         const response = await fetch(ragEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -84,10 +84,9 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
             query: "Find similar cases based on legal issues and evidence patterns",
             caseId: input.caseId,
             options: {
-              limit: 10,
+             , limit: 10,
               model: 'gemma3-legal',
-              analysisType: 'similarity'
-            }
+              analysisType: `similarity` }
           })
         });
         if (!response.ok) {
@@ -140,30 +139,30 @@ export const LegalCaseMachinePresets = {
     caseId,
     userId,
     enableRAG: true,
-    autoLoadEvidence: true,
+    autoLoadEvidence: true
   }),
   // Lightweight machine for read-only access;
   readonly: (caseId: string) => createLegalCaseMachine({
     caseId,
     enableRAG: true,
-    autoLoadEvidence: false,
+    autoLoadEvidence: false
   }),
   // RAG-focused machine for AI analysis
   ragOnly: (caseId: string) => createLegalCaseMachine({
     caseId,
     enableRAG: true,
     autoLoadEvidence: false,
-    ragEndpoint: '/api/v1/rag',
+    ragEndpoint: '/api/v1/rag'
   })
 }
 /**
  * XState machine events specifically for RAG integration
  */
 export type RAGCaseEvent =
-  | { type: 'RAG_QUERY'; query: string }
-  | { type: 'RAG_ANALYZE'; analysisType: 'summary' | 'recommendation' | 'similarity' }
+  | { type: 'RAG_QUERY';, query: string }
+  | { type: 'RAG_ANALYZE';, analysisType: 'summary' | 'recommendation' | 'similarity` }
   | { type: 'FIND_SIMILAR_CASES'; threshold?: number }
-  | { type: 'RAG_STREAM'; query: string; onChunk: (chunk: string) => void }
+  | { type: 'RAG_STREAM'; query: string;, onChunk: (chunk: string) => void }
 /**
  * Extended machine with RAG-specific states and events
  */

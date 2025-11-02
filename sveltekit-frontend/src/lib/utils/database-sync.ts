@@ -8,9 +8,7 @@ export interface SyncOptions {
   onError?: (error: Error) => void;
   onSuccess?: (data: any) => void;
 }
-export interface EntityEndpoints {
-  list: string;
-  create: string;
+export interface EntityEndpoints { list: string;, create: string;
   read: string;
   update: string;
   delete: string;
@@ -20,14 +18,12 @@ export class DatabaseSyncManager {
   private static instance: DatabaseSyncManager;
   private syncQueue: Map<string, unknown[]> = new Map();
   private pendingOperations: Set<string> = new Set();
-  private endpoints: Record<string, EntityEndpoints> = {
-    cases: {
-      list: '/api/cases',
+  private endpoints: Record<string, EntityEndpoints> = { cases: {, list: '/api/cases',
       create: '/api/cases',
       read: '/api/cases',
       update: '/api/cases',
       delete: '/api/cases',
-      patch: '/api/cases',
+      patch: '/api/cases'
     },
     evidence: {
       list: '/api/evidence',
@@ -35,7 +31,7 @@ export class DatabaseSyncManager {
       read: '/api/evidence',
       update: '/api/evidence',
       delete: '/api/evidence',
-      patch: '/api/evidence',
+      patch: '/api/evidence'
     },
     reports: {
       list: '/api/reports',
@@ -43,7 +39,7 @@ export class DatabaseSyncManager {
       read: '/api/reports',
       update: '/api/reports',
       delete: '/api/reports',
-      patch: '/api/reports',
+      patch: '/api/reports'
     },
     criminals: {
       list: '/api/criminals',
@@ -51,7 +47,7 @@ export class DatabaseSyncManager {
       read: '/api/criminals',
       update: '/api/criminals',
       delete: '/api/criminals',
-      patch: '/api/criminals',
+      patch: '/api/criminals'
     },
     activities: {
       list: '/api/activities',
@@ -59,7 +55,7 @@ export class DatabaseSyncManager {
       read: '/api/activities',
       update: '/api/activities',
       delete: '/api/activities',
-      patch: '/api/activities',
+      patch: '/api/activities'
     },
     users: {
       list: '/api/users',
@@ -67,7 +63,7 @@ export class DatabaseSyncManager {
       read: '/api/users',
       update: '/api/users',
       delete: '/api/users',
-      patch: '/api/users',
+      patch: '/api/users'
     },
     canvasStates: {
       list: '/api/canvas-states',
@@ -75,8 +71,8 @@ export class DatabaseSyncManager {
       read: '/api/canvas-states',
       update: '/api/canvas-states',
       delete: '/api/canvas-states',
-      patch: '/api/canvas-states',
-    },
+      patch: '/api/canvas-states'
+    }
   };
   public static getInstance(): DatabaseSyncManager {
     if (!DatabaseSyncManager.instance) {
@@ -258,9 +254,7 @@ export class DatabaseSyncManager {
   }
   // Batch operations for multiple entities
   async batchOperation(
-    operations: Array<{
-      operation: string;
-      entity: string;
+    operations: Array<{, operation: string;, entity: string;
       id?: string;
       data?: Record<string, unknown>;
       options?: SyncOptions;
@@ -319,28 +313,26 @@ export class DatabaseSyncManager {
     }
   }
   private getRequiredFields(entity: string, operation: string): string[] {
-    const requiredFields: Record<string, Record<string, string[]>> = {
-      cases: {
-        create: ['title', 'caseNumber'],
+    const requiredFields: Record<string, Record<string, string[]>> = { cases: {, create: ['title', 'caseNumber']
       },
       evidence: {
-        create: ['title', 'evidenceType'],
+        create: ['title', 'evidenceType']
       },
       reports: {
-        create: ['title', 'caseId'],
+        create: ['title', 'caseId']
       },
       criminals: {
-        create: ['firstName', 'lastName'],
+        create: ['firstName', 'lastName']
       },
       activities: {
-        create: ['caseId', 'title', 'activityType'],
+        create: ['caseId', 'title', 'activityType']
       },
       users: {
-        create: ['email', 'password'],
+        create: ['email', 'password']
       },
       canvasStates: {
-        create: ['name', 'canvasData'],
-      },
+        create: ['name', 'canvasData']
+      }
     };
     return requiredFields[entity]?.[operation] || [];
   }
@@ -354,8 +346,7 @@ export class DatabaseSyncManager {
     const requestOptions: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` }
     };
     if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
       requestOptions.body = JSON.stringify(data);
@@ -383,7 +374,7 @@ export class DatabaseSyncManager {
     throw new Error('Maximum retry attempts reached');
   }
   private generateOperationId(operation: string, entity: string, id?: string): string {
-    return `${operation}-${entity}-${id || 'new'}-${Date.now()}`;
+    return `${operation}-${entity}-${id || 'new` }-${Date.now()}`;
   }
   private updateLocalCache(entity: string, operation: string, data: Record<string, unknown> | null, id?: string): void {
     // Implement local cache updates based on operation
@@ -446,7 +437,7 @@ export const CasesAPI = {
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.update('cases', id, data, options),
   patch: (id: string, data: Record<string, unknown>, options?: SyncOptions) => dbSync.patch('cases', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('cases', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('cases', id, options)
 };
 export const EvidenceAPI = {
   list: (params?: any, options?: SyncOptions) => dbSync.read('evidence', undefined, params, options),
@@ -454,7 +445,7 @@ export const EvidenceAPI = {
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('evidence', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.patch('evidence', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('evidence', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('evidence', id, options)
 };
 export const ReportsAPI = {
   list: (params?: any, options?: SyncOptions) => dbSync.read('reports', undefined, params, options),
@@ -464,7 +455,7 @@ export const ReportsAPI = {
     dbSync.update('reports', id, data, options),
   patch: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.patch('reports', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('reports', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('reports', id, options)
 };
 export const CriminalsAPI = {
   list: (params?: any, options?: SyncOptions) => dbSync.read('criminals', undefined, params, options),
@@ -474,7 +465,7 @@ export const CriminalsAPI = {
     dbSync.update('criminals', id, data, options),
   patch: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.patch('criminals', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('criminals', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('criminals', id, options)
 };
 export const ActivitiesAPI = {
   list: (params?: any, options?: SyncOptions) => dbSync.read('activities', undefined, params, options),
@@ -484,7 +475,7 @@ export const ActivitiesAPI = {
     dbSync.update('activities', id, data, options),
   patch: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.patch('activities', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('activities', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('activities', id, options)
 };
 export const UsersAPI = {
   list: (params?: any, options?: SyncOptions) => dbSync.read('users', undefined, params, options),
@@ -493,7 +484,7 @@ export const UsersAPI = {
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.update('users', id, data, options),
   patch: (id: string, data: Record<string, unknown>, options?: SyncOptions) => dbSync.patch('users', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('users', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('users', id, options)
 };
 export const CanvasAPI = {
   list: (params?: any, options?: SyncOptions) => dbSync.read('canvasStates', undefined, params, options),
@@ -503,6 +494,6 @@ export const CanvasAPI = {
     dbSync.update('canvasStates', id, data, options),
   patch: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
     dbSync.patch('canvasStates', id, data, options),
-  delete: (id: string, options?: SyncOptions) => dbSync.delete('canvasStates', id, options),
+  delete: (id: string, options?: SyncOptions) => dbSync.delete('canvasStates', id, options)
 };
 export default DatabaseSyncManager;

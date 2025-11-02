@@ -159,9 +159,7 @@ export const completedPipelines = derived(stages, ($s) =>
 if (typeof window !== 'undefined') {
 	connectRealtime();
 }
-export default {
-	connect: connectRealtime;
-	disconnect: disconnectRealtime,
+export default { connect: connectRealtime;, disconnect: disconnectRealtime,
 	connectionStatus,
 	stages,
 	finalResults,

@@ -7,17 +7,13 @@ export interface SIMDVectorProcessor {
   vectorMagnitude(vector: Float32Array): number;
   preprocessForWebGPU(
     embeddings: Float32Array[],
-    targetDimensions: number
-  ): {
-    normalizedVectors: Float32Array;
-    magnitudes: Float32Array;
+    targetDimensions: number;
+  ): { normalizedVectors: Float32Array;, magnitudes: Float32Array;
     metadata: VectorMetadata;
   };
 }
 
-export interface VectorMetadata {
-  vectorCount: number;
-  dimensions: number;
+export interface VectorMetadata { vectorCount: number;, dimensions: number;
   isNormalized: boolean;
   processingTime: number;
   simdSupported: boolean;
@@ -161,9 +157,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
   preprocessForWebGPU(
     embeddings: Float32Array[],
     targetDimensions: number
-  ): {
-    normalizedVectors: Float32Array;
-    magnitudes: Float32Array;
+  ): { normalizedVectors: Float32Array;, magnitudes: Float32Array;
     metadata: VectorMetadata;
   } {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -206,13 +200,13 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
       dimensions: targetDimensions,
       isNormalized: true,
       processingTime,
-      simdSupported: this.simdSupported,
+      simdSupported: this.simdSupported
     };
 
     return {
       normalizedVectors,
       magnitudes,
-      metadata,
+      metadata
     };
   }
 }
@@ -224,8 +218,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     queryEmbedding: Float32Array,
     documentEmbeddings: Float32Array[],
     legalDomainWeights?: Float32Array
-  ): Array<{ index: number; similarity: number; confidence: number }> {
-    const results: Array<{ index: number; similarity: number; confidence: number }> = [];
+  ): Array<{ index: number; similarity: number;, confidence: number }> {
+    const results: Array<{ index: number; similarity: number;, confidence: number }> = [];
     for (let i = 0; i < documentEmbeddings.length; i++) {
       const docEmbedding = documentEmbeddings[i];
       // Basic cosine similarity
@@ -280,12 +274,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     caseEmbeddings: Float32Array[],
     evidenceEmbeddings: Float32Array[],
     _legalDomainWeights?: Float32Array
-  ): {
-    caseData: Float32Array;
-    evidenceData: Float32Array;
-    metadata: {
-      caseCount: number;
-      evidenceCount: number;
+  ): { caseData: Float32Array;, evidenceData: Float32Array;
+    metadata: { caseCount: number;, evidenceCount: number;
       dimensions: number;
       totalVectors: number;
       processingTime: number;
@@ -305,8 +295,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
         evidenceCount: evidenceEmbeddings.length,
         dimensions: caseEmbeddings[0].length,
         totalVectors: caseEmbeddings.length + evidenceEmbeddings.length,
-        processingTime,
-      },
+        processingTime
+      }
     };
   }
 }

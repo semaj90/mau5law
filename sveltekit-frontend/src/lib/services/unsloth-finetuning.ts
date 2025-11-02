@@ -18,19 +18,17 @@ export interface UltraJSONParser {
 
 export interface WasmClusteringService {
   initialize(wasmUrl: string): Promise<void>;
-  cluster(data: number[][], options: { numClusters: number }): Promise<number[]>;
+  cluster(data: number[][], options: {, numClusters: number }): Promise<number[]>;
 }
 
 export interface NesGPUBridge {
   isAvailable(): Promise<boolean>;
-  getDeviceInfo(): Promise<{ adapter: string; memory: number }>;
+  getDeviceInfo(): Promise<{ adapter: string;, memory: number }>;
 
   runComputeShader(shader: string, data: Float32Array): Promise<Float32Array>;
 }
 
-type ServiceStatus = {
-  initialized: boolean;
-  unslothAvailable: boolean;
+type ServiceStatus = { initialized: boolean;, unslothAvailable: boolean;
   cudaAvailable: boolean;
   rtx3060Detected: boolean;
   activeJobs: number;
@@ -48,9 +46,7 @@ type TrainingProgressState = {
   memoryUsage: number;
 };
 
-type ResourceMetrics = {
-  gpuMemoryUsed: number;
-  gpuMemoryTotal: number;
+type ResourceMetrics = { gpuMemoryUsed: number;, gpuMemoryTotal: number;
   gpuUtilization: number;
   gpuTemperature: number;
   cpuUtilization: number;
@@ -59,9 +55,7 @@ type ResourceMetrics = {
   trainingSpeed: number;
 };
 
-export interface UnslothConfig {
-  baseModel: string;
-  outputModel: string;
+export interface UnslothConfig { baseModel: string;, outputModel: string;
   maxSeqLength: number;
   rank: number;
   alpha: number;
@@ -83,41 +77,29 @@ export interface UnslothConfig {
   pinMemory: boolean;
 }
 
-export interface TrainingDataset {
-  id: string;
-  name: string;
+export interface TrainingDataset { id: string;, name: string;
   description: string;
   taskType: UnslothConfig['taskType'];
   samples: TrainingSample[];
   validation?: TrainingSample[];
-  metadata: {
-    created: number;
-    size: number;
+  metadata: { created: number;, size: number;
     domain: string;
     quality: 'high' | 'medium' | 'low';
     source: string;
   };
 }
-export interface TrainingSample {
-  input: string;
-  output: string;
-  metadata?: {
-    complexity: number;
-    domain: string;
+export interface TrainingSample { input: string;, output: string;
+  metadata?: { complexity: number;, domain: string;
     verified: boolean;
     source?: string;
   };
 }
 
-export interface FinetuningJob {
-  id: string;
-  name: string;
+export interface FinetuningJob { id: string;, name: string;
   status: 'queued' | 'preparing' | 'training' | 'validating' | 'completed' | 'failed' | 'cancelled';
   config: UnslothConfig;
   dataset: TrainingDataset;
-  progress: {
-    currentEpoch: number;
-    totalEpochs: number;
+  progress: { currentEpoch: number;, totalEpochs: number;
     currentStep: number;
     totalSteps: number;
     trainingLoss: number;
@@ -127,16 +109,12 @@ export interface FinetuningJob {
     elapsedTime: number;
     estimatedTimeRemaining: number;
   };
-  resources: {
-    gpuMemoryUsage: number;
-    cpuUtilization: number;
+  resources: { gpuMemoryUsage: number;, cpuUtilization: number;
     diskSpaceUsed: number;
     powerConsumption: number;
     temperature: number;
   };
-  results?: {
-    finalLoss: number;
-    validationAccuracy: number;
+  results?: { finalLoss: number;, validationAccuracy: number;
     perplexity: number;
     bleuScore: number;
     modelPath: string;
@@ -149,22 +127,19 @@ export interface FinetuningJob {
 }
 
 // Simplified legal templates (kept similar to original)
-export const LEGAL_TRAINING_TEMPLATES = {
-  contract_analysis: {
-    instruction: 'Analyze the following contract clause and identify key legal implications:',
-    input_format: 'Contract Clause: {input}',
+export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'Analyze the following contract clause and identify key legal; implications:',
+    input_format: 'Contract; Clause: {input}',
     output_format: 'Analysis: {output}',
     examples: [
       {
         input:
           'The Party shall indemnify and hold harmless the other Party from any claims arising from negligent acts.',
         output:
-          'This indemnification clause creates a one-way liability protection. Key considerations: (1) Scope limited to negligent acts, (2) No mutual indemnification, (3) May need exceptions for gross negligence, (4) Consider insurance requirements.',
+          'This indemnification clause creates a one-way liability protection. Key; considerations: (1) Scope limited to negligent acts, (2) No mutual indemnification, (3) May need exceptions for gross negligence, (4) Consider insurance requirements.'
       },
-    ],
+    ]
   },
-  case_summarization: {
-    instruction: 'Summarize the following legal case with key holdings and precedential value:',
+  case_summarization: { instruction: 'Summarize the following legal case with key holdings and precedential, value:',
     input_format: 'case {input}',
     output_format: 'Summary: {output}',
     examples: [
@@ -172,22 +147,21 @@ export const LEGAL_TRAINING_TEMPLATES = {
         input:
           'Brown v. Board of Education (1954): Supreme Court case challenging racial segregation in public schools.',
         output:
-          "Landmark civil rights case that overturned Plessy v. Ferguson (1896). Held that racial segregation in public education violates Equal Protection Clause. Established that: 'separate educational facilities are inherently unequal.' Precedent for dismantling Jim Crow laws and advancing civil rights.",
+          "Landmark civil rights case that overturned Plessy v. Ferguson (1896). Held that racial segregation in public education violates Equal Protection Clause. Established; that: 'separate educational facilities are inherently unequal.' Precedent for dismantling Jim Crow laws and advancing civil rights."
       },
-    ],
+    ]
   },
-  legal_qa: {
-    instruction: 'Answer the following legal question with accurate information and cite relevant authorities:',
+  legal_qa: { instruction: 'Answer the following legal question with accurate information and cite relevant, authorities:',
     input_format: 'Question: {input}',
     output_format: 'Answer: {output}',
     examples: [
       {
         input: 'What is the statute of limitations for breach of contract claims?',
         output:
-          'Statute of limitations for breach of contract varies by jurisdiction and contract type. Generally: Written contracts: 4-6 years in most states. Oral contracts: 2-3 years. UCC sales contracts: 4 years (UCC §2-725). Real estate contracts: Often 4-6 years. Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.',
+          'Statute of limitations for breach of contract varies by jurisdiction and contract type. Generally: Written contracts: 4-6 years in most states. Oral contracts: 2-3 years. UCC sales contracts: 4 years (UCC §2-725). Real estate contracts: Often 4-6 years.; Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
       },
-    ],
-  },
+    ]
+  }
 };
 
 /**
@@ -211,7 +185,7 @@ export class UnslothFinetuningService {
     cudaAvailable: false,
     rtx3060Detected: false,
     activeJobs: 0,
-    error: null,
+    error: null
   });
 
   public trainingProgress: Writable<TrainingProgressState> = writable({
@@ -221,7 +195,7 @@ export class UnslothFinetuningService {
     learningRate: 0,
     epoch: 0,
     timeRemaining: 'N/A',
-    memoryUsage: 0,
+    memoryUsage: 0
   });
 
   public resourceMetrics = writable<ResourceMetrics>({
@@ -232,7 +206,7 @@ export class UnslothFinetuningService {
     cpuUtilization: 0,
     diskSpaceUsed: 0,
     powerConsumption: 170,
-    trainingSpeed: 0,
+    trainingSpeed: 0
   });
 
   private _cachedDatasets: TrainingDataset[] = [];
@@ -263,7 +237,7 @@ export class UnslothFinetuningService {
       useWindowsCUDA: true,
       numWorkers: 4,
       pinMemory: true,
-      ...config,
+      ...config
     };
     if (browser) {
       void this.initialize();
@@ -271,12 +245,12 @@ export class UnslothFinetuningService {
       this.ultraJSONParser = { parse: JSON.parse, stringify: JSON.stringify };
       this.wasmClusteringService = {
         initialize: async () => console.log('WASM Clustering initialized'),
-        cluster: async (data, opts) => new Array(data.length).fill(0).map((_, i) => i % opts.numClusters),
+        cluster: async (data, opts) => new Array(data.length).fill(0).map((_, i) => i % opts.numClusters)
       };
       this.nesGPUBridge = {
         isAvailable: async () => this.checkCUDAAvailability(),
         getDeviceInfo: async () => ({ adapter: 'NVIDIA RTX 3060 Ti (Mock)', memory: 8 }),
-        runComputeShader: async (_shader, data) => data,
+        runComputeShader: async (_shader, data) => data
       };
     }
   }
@@ -293,7 +267,7 @@ export class UnslothFinetuningService {
         initialized: true,
         unslothAvailable,
         cudaAvailable,
-        rtx3060Detected,
+        rtx3060Detected
       }));
       this.isInitialized = true;
     } catch (err: any) {
@@ -304,7 +278,7 @@ export class UnslothFinetuningService {
         cudaAvailable: false,
         rtx3060Detected: false,
         activeJobs: 0,
-        error: errMsg,
+        error: errMsg
       }));
     }
   }
@@ -352,7 +326,7 @@ export class UnslothFinetuningService {
         description: 'Curated dataset for training contract analysis capabilities',
         taskType: 'contract_analysis',
         samples: this.generateContractSamples(100),
-        metadata: { created: Date.now(), size: 100, domain: 'contract_law', quality: 'high', source: 'legal_corpus_v1' },
+        metadata: { created: Date.now(), size: 100, domain: 'contract_law', quality: 'high', source: 'legal_corpus_v1' }
       },
       {
         id: 'case-summaries-v1',
@@ -360,7 +334,7 @@ export class UnslothFinetuningService {
         description: 'Training data for legal case summarization',
         taskType: 'case_summarization',
         samples: this.generateCaseSamples(75),
-        metadata: { created: Date.now(), size: 75, domain: 'case_law', quality: 'high', source: 'court_opinions_v1' },
+        metadata: { created: Date.now(), size: 75, domain: 'case_law', quality: 'high', source: 'court_opinions_v1' }
       },
       {
         id: 'legal-qa-v1',
@@ -368,7 +342,7 @@ export class UnslothFinetuningService {
         description: 'Question-answer pairs for legal domain knowledge',
         taskType: 'legal_qa',
         samples: this.generateQASamples(150),
-        metadata: { created: Date.now(), size: 150, domain: 'general_law', quality: 'medium', source: 'legal_qa_corpus' },
+        metadata: { created: Date.now(), size: 150, domain: 'general_law', quality: 'medium', source: 'legal_qa_corpus' }
       },
     ];
 
@@ -406,8 +380,7 @@ export class UnslothFinetuningService {
           complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'contract_law',
           verified: Math.random() > 0.2,
-          source: 'synthetic_generation',
-        },
+          source: `synthetic_generation` }
       });
     }
     return samples;
@@ -448,13 +421,12 @@ export class UnslothFinetuningService {
       samples.push({
         input: `Case ${i + 1}: Mock legal case involving contract dispute between parties A and B regarding performance obligations and damages.`,
         output:
-          'Summary: Contract dispute case establishing precedent for performance standards. Key holding: Material breach occurs when performance substantially defeats contract purpose. Remedy: Damages calculated based on expectation interest. Precedential value: High for commercial contract disputes.',
+          'Summary: Contract dispute case establishing precedent for performance standards. Key holding: Material breach occurs when performance substantially defeats contract purpose. Remedy: Damages calculated based on expectation interest. Precedential; value: High for commercial contract disputes.',
         metadata: {
-          complexity: Math.floor(Math.random() * 5) + 1,
+         , complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'case_law',
           verified: true,
-          source: 'court_records',
-        },
+          source: `court_records` }
       });
     }
     return samples;
@@ -478,13 +450,12 @@ export class UnslothFinetuningService {
       const q = questions[i % questions.length];
       samples.push({
         input: q,
-        output: `Legal Answer: ${q.replace('?', '')} involves multiple considerations under applicable law. Key factors include jurisdiction, specific facts, and relevant statutes. Recommend consulting qualified legal counsel for specific situations.`,
+        output: 'Legal; Answer: ${q.replace('?', '')} involves multiple considerations under applicable law. Key factors include jurisdiction, specific facts, and relevant statutes. Recommend consulting qualified legal counsel for specific situations.`,
         metadata: {
           complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'general_law',
           verified: Math.random() > 0.3,
-          source: 'legal_qa_database',
-        },
+          source: `legal_qa_database` }
       });
     }
     return samples;
@@ -503,7 +474,7 @@ export class UnslothFinetuningService {
     // In a real implementation:
     // await fetch('/api/finetuning/jobs', {
     //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
+    //   headers: { 'Content-Type': `application/json` },
     //   body: this.ultraJSONParser?.stringify(job) ?? JSON.stringify(job),
     // });
     console.log(`[Postgres] Job ${job.id} persisted.`);
@@ -520,8 +491,8 @@ export class UnslothFinetuningService {
     // In a real implementation:
     // await fetch(`/api/finetuning/cache/dataset`, {
     //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ key: `dataset:${dataset.id}`, value: dataset, ttl: 3600 }),
+    //   headers: { 'Content-Type': `application/json` },
+    //   body: JSON.stringify({, key: `dataset:${dataset.id}`, value: dataset, ttl: 3600 }),
     // });
     console.log(`[Redis] Dataset ${dataset.id} cached.`);
   }
@@ -538,7 +509,7 @@ export class UnslothFinetuningService {
     // Mock API call to a backend service that handles Ollama and Qdrant
     // await fetch('/api/finetuning/embeddings/index', {
     //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
+    //   headers: { 'Content-Type': `application/json` },
     //   body: JSON.stringify({ datasetId }),
     // });
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing time
@@ -597,16 +568,16 @@ export class UnslothFinetuningService {
         learningRate: jobConfig.learningRate || 0,
         tokensProcessed: 0,
         elapsedTime: 0,
-        estimatedTimeRemaining: 0,
+        estimatedTimeRemaining: 0
       },
       resources: {
         gpuMemoryUsage: 0,
         cpuUtilization: 0,
         diskSpaceUsed: 0,
         powerConsumption: 170,
-        temperature: 65,
+        temperature: 65
       },
-      created: Date.now(),
+      created: Date.now()
     };
     this.activeJobs.set(jobId, job);
     this.updateJobQueue();
@@ -671,8 +642,8 @@ export class UnslothFinetuningService {
         modelPath: `/models/${job.config.outputModel}.gguf`,
         benchmarks: [
           { task: 'contract_analysis', score: 0.88, baseline: 0.75, improvement: 0.13 },
-          { task: 'legal_reasoning', score: 0.82, baseline: 0.7, improvement: 0.12 },
-        ],
+          { task: 'legal_reasoning', score: 0.82, baseline: 0.7, improvement: 0.12 }
+        ]
       };
 
       this.activeJobs.delete(job.id);
@@ -698,7 +669,7 @@ export class UnslothFinetuningService {
       learningRate: job.progress.learningRate,
       epoch: job.progress.currentEpoch,
       timeRemaining: this.formatTime(job.progress.estimatedTimeRemaining),
-      memoryUsage: (job.resources.gpuMemoryUsage / 8) * 100,
+      memoryUsage: (job.resources.gpuMemoryUsage / 8) * 100
     });
   }
 
@@ -754,7 +725,7 @@ export class UnslothFinetuningService {
         cpuUtilization: this.activeJobs.size > 0 ? 60 + Math.random() * 30 : 10 + Math.random() * 20,
         diskSpaceUsed: Math.min(50, metrics.diskSpaceUsed + this.activeJobs.size * 0.1),
         powerConsumption: this.activeJobs.size > 0 ? 200 + Math.random() * 50 : 170 + Math.random() * 20,
-        trainingSpeed: this.activeJobs.size > 0 ? 150 + Math.random() * 50 : 0,
+        trainingSpeed: this.activeJobs.size > 0 ? 150 + Math.random() * 50 : 0
       }));
     }, 2000) as unknown as ReturnType<typeof setInterval>;
   }
@@ -798,7 +769,7 @@ export class UnslothFinetuningService {
       learningRate: 0,
       epoch: 0,
       timeRemaining: 'N/A',
-      memoryUsage: 0,
+      memoryUsage: 0
     });
     this.isInitialized = $state(false);
     console.log('✅ Unsloth service cleanup complete');
@@ -822,7 +793,7 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
       trainingProgress: service.trainingProgress,
       resourceMetrics: service.resourceMetrics,
       availableDatasets: service.availableDatasets,
-      jobQueue: service.jobQueue,
+      jobQueue: service.jobQueue
     },
     derived: {
       isReady: derived(
@@ -833,17 +804,16 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
         overall: $status.initialized && $metrics.gpuTemperature < 85 ? 'healthy' : 'warning',
         gpu: $metrics.gpuUtilization < 95 ? 'optimal' : 'overloaded',
         memory: $metrics.gpuMemoryUsed < 7 ? 'good' : 'high',
-        thermal: $metrics.gpuTemperature < 80 ? 'cool' : 'warm',
-      })),
+        thermal: $metrics.gpuTemperature < 80 ? 'cool' : `warm` })),
       trainingEfficiency: derived(
         [service.trainingProgress, service.resourceMetrics],
         ([$progress, $metrics]: any) => ({
           speed: $metrics.trainingSpeed,
           efficiency: $progress.progress > 0 ? ($metrics.gpuUtilization / 100) * ($metrics.trainingSpeed / 200) : 0,
           memoryEfficiency: 100 - ($progress.memoryUsage || 0),
-          thermalEfficiency: Math.max(0, 100 - ($metrics.gpuTemperature - 65) * 2),
+          thermalEfficiency: Math.max(0, 100 - ($metrics.gpuTemperature - 65) * 2)
         })
-      ),
+      )
     },
     // API methods
     startFinetuning: service.startFinetuning.bind(service),
@@ -856,14 +826,12 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
     persistJobToPostgres: service.persistJobToPostgres.bind(service),
     cacheDatasetInRedis: service.cacheDatasetInRedis.bind(service),
     generateAndIndexEmbeddings: service.generateAndIndexEmbeddings.bind(service),
-    analyzeDatasetWithWasm: service.analyzeDatasetWithWasm.bind(service),
+    analyzeDatasetWithWasm: service.analyzeDatasetWithWasm.bind(service)
   };
 }
 
 // Helper utilities for creating legal training data (single consolidated export)
-export const UnslothLegalHelpers = {
-  createContractDataset: (contracts: string[]) => ({
-    name: 'Custom Contract Dataset',
+export const UnslothLegalHelpers = { createContractDataset: (contracts: string[]) => ({, name: 'Custom Contract Dataset',
     description: 'User-provided contract analysis training data',
     taskType: 'contract_analysis' as const,
     samples: contracts.map((contract: string) => ({
@@ -873,16 +841,15 @@ export const UnslothLegalHelpers = {
         complexity: 3,
         domain: 'contract_law',
         verified: false,
-        source: 'user_upload',
-      },
+        source: 'user_upload'
+      }
     })),
     metadata: {
       created: Date.now(),
       size: contracts.length,
       domain: 'contract_law',
       quality: 'medium' as const,
-      source: 'user_generated',
-    },
+      source: `user_generated` }
   }),
   optimizeForRTX3060: (config: Partial<UnslothConfig> = {}): UnslothConfig => ({
     baseModel: 'gemma3-mohf16-q4_k_m.gguf',
@@ -906,8 +873,8 @@ export const UnslothLegalHelpers = {
     useWindowsCUDA: true,
     numWorkers: 4,
     pinMemory: true,
-    ...config,
-  }),
+    ...config
+  })
 };
     learningRate: 2e-4,
     warmupSteps: 100,
@@ -920,6 +887,6 @@ export const UnslothLegalHelpers = {
     useWindowsCUDA: true,
     numWorkers: 4,
     pinMemory: true,
-    ...config,
-  }),
+    ...config
+  })
 };

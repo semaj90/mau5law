@@ -14,10 +14,8 @@ import { eq } from 'drizzle-orm'
 interface DownloadLog {
   itemId: string
   userId?: string
-  userAgent: string
-  ip: string;
-  timestamp: Date
-  fileSize: number
+  userAgent: string; ip: string;
+  timestamp: Date; fileSize: number
   downloadType: 'view' | 'download'
 }
 
@@ -94,7 +92,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       ip: getClientIP(request),
       timestamp: new Date(),
       fileSize: stats.size,
-      downloadType,
+      downloadType
     });
 
     // Determine content disposition
@@ -109,7 +107,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       'Last-Modified': stats.mtime.toUTCString(),
       'X-File-ID': item.id,
       'X-File-Size': stats.size.toString(),
-      'X-Download-Type': downloadType,
+      'X-Download-Type': downloadType
     });
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('X-Frame-Options', 'DENY');
@@ -127,7 +125,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     return new Response(fileArrayBuffer, {
       status: 200,
-      headers,
+      headers
     });
   } catch (err) {
     console.error('Download error:', err);
@@ -138,7 +136,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500;
       throw error(statusCode, err.message);
     }
-    throw error(500, `Download failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 function handleRangeRequest(
@@ -159,8 +157,7 @@ function handleRangeRequest(
         headers: {
           'Content-Type': contentType,
           'Content-Length': fileSize.toString(),
-          'Accept-Ranges': 'bytes',
-        },
+          'Accept-Ranges': `bytes` }
       });
     }
 
@@ -179,8 +176,7 @@ function handleRangeRequest(
         'Content-Type': contentType,
         'Content-Length': chunkSize.toString(),
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes',
-      },
+        'Accept-Ranges': `bytes` }
     });
   } catch (error) {
     console.error('Range request error:', error);
@@ -189,21 +185,21 @@ function handleRangeRequest(
       status: 200,
       headers: {
         'Content-Type': contentType,
-        'Content-Length': fileSize.toString(),
-      },
+        'Content-Length': fileSize.toString()
+      }
     });
   }
 }
 
 // Replace broken parseRangeHeader with a correct implementation
-function parseRangeHeader(range: string, fileSize: number): Array<{ start: number; end: number }> | null {
+function parseRangeHeader(range: string, fileSize: number): Array<{ start: number;, end: number }> | null {
   try {
     if (!range || !range.startsWith('bytes=')) return null;
     const ranges = range
       .slice(6)
       .split(',')
       .map(r => r.trim());
-    const parsed: Array<{ start: number; end: number }> = [];
+    const parsed: Array<{ start: number;, end: number }> = [];
     for (const r of ranges) {
       const [startStr, endStr] = r.split('-');
       let start: number;
@@ -239,7 +235,7 @@ async function logDownload(log: DownloadLog): Promise<any> {
       timestamp: log.timestamp.toISOString(),
       fileSize: log.fileSize,
       downloadType: log.downloadType,
-      ip: log.ip,
+      ip: log.ip
     });
   } catch (error) {
     console.error('Failed to log download:', error);
@@ -297,8 +293,7 @@ export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
         'Last-Modified': item.uploadedAt ? new Date(item.uploadedAt).toUTCString() : new Date().toUTCString(),
         'Accept-Ranges': 'bytes',
         'X-File-ID': item.id,
-        'X-File-Name': item.originalFileName || item.fileName || 'unknown',
-      },
+        'X-File-Name': item.originalFileName || item.fileName || 'unknown` }
     });
   } catch (err) {
     console.error('HEAD request error:', err)

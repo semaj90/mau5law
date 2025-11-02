@@ -1,6 +1,8 @@
 <!-- Enhanced Document Upload Form with XState + Superforms + Zod -->
 <!-- Production-ready form with state management, validation, and progress tracking -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import {

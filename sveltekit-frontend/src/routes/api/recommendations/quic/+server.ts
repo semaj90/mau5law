@@ -17,7 +17,7 @@ type RecommendationResult = {
 
 type QuicRecommendationEngine = {
   getRecommendations(options: {
-    query: string;
+   , query: string;
     caseId?: string | null;
     practiceArea?: string | null;
     jurisdiction?: string | null;
@@ -97,8 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         benchmark: benchmarkResults,
         connection: engine.getConnectionInfo(),
-        message: 'QUIC Neo4j Recommendation Engine benchmark completed',
-      });
+        message: `QUIC Neo4j Recommendation Engine benchmark completed` });
     }
     // Execute ultra-fast QUIC recommendation
     const startTime = performance.now();
@@ -110,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
       maxResults: Math.min(maxResults, 50), // Cap at 50
       threshold: Math.max(0.1, Math.min(threshold, 1.0)), // Clamp 0.1-1.0
       useGPU,
-      useTensorCores,
+      useTensorCores
     });
     const totalTime = performance.now() - startTime;
     // Build performance headers and return via json options (safe, no internal mutation)
@@ -119,7 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
       'X-Protocol': recommendations.protocol ?? 'unknown',
       'X-Cache-Status': recommendations.cacheHit ? 'HIT' : 'MISS',
       'X-GPU-Used': recommendations.tensorMetrics?.tensorCoresUsed ? 'true' : 'false',
-      'X-SIMD-Optimized': recommendations.metadata?.simdOptimized ? 'true' : 'false',
+      'X-SIMD-Optimized': recommendations.metadata?.simdOptimized ? 'true' : 'false'
     };
 
     return json(
@@ -128,13 +127,13 @@ export const GET: RequestHandler = async ({ url }) => {
         query,
         ...recommendations,
         performance: {
-          totalApiTime: totalTime,
+         , totalApiTime: totalTime,
           engineProcessingTime: recommendations.processingTime,
           overhead: totalTime - (recommendations.processingTime ?? 0),
           targetMet: (recommendations.processingTime ?? Infinity) <= 15,
-          protocolUsed: recommendations.protocol,
+          protocolUsed: recommendations.protocol
         },
-        connection: engine.getConnectionInfo(),
+        connection: engine.getConnectionInfo()
       },
       { status: 200, headers }
     );
@@ -148,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: err instanceof Error ? err.message : 'QUIC recommendation failed',
         fallback: 'Consider using /api/search for HTTP fallback',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -166,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold = 0.7,
       useGPU = true,
       useTensorCores = true,
-      batchQueries,
+      batchQueries
     } = body as PostBody; // cast to typed body
 
     if (!query && !(batchQueries && batchQueries.length)) {
@@ -190,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
             maxResults: Math.min(bq.maxResults ?? maxResults, 20),
             threshold: bq.threshold ?? threshold,
             useGPU,
-            useTensorCores,
+            useTensorCores
           });
         })
       );
@@ -214,8 +213,8 @@ export const POST: RequestHandler = async ({ request }) => {
         performance: {
           totalBatchTime: totalTime,
           averagePerQuery: totalTime / batchQueries.length,
-          successRate: successful.length / batchQueries.length,
-        },
+          successRate: successful.length / batchQueries.length
+        }
       });
     }
     // Single query processing
@@ -227,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
       maxResults: Math.min(maxResults, 50),
       threshold: Math.max(0.1, Math.min(threshold, 1.0)),
       useGPU,
-      useTensorCores,
+      useTensorCores
     });
     const totalTime = performance.now() - startTime;
     return json({
@@ -235,11 +234,11 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       ...recommendations,
       performance: {
-        totalApiTime: totalTime,
+       , totalApiTime: totalTime,
         engineProcessingTime: recommendations.processingTime,
         overhead: totalTime - recommendations.processingTime,
-        targetMet: recommendations.processingTime <= 15,
-      },
+        targetMet: recommendations.processingTime <= 15
+      }
     });
   } catch (err) {
     console.error('QUIC recommendations POST error:', err);
@@ -250,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: err instanceof Error ? err.message : 'QUIC recommendation failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -268,7 +267,6 @@ export const OPTIONS: RequestHandler = async () => {
 			'Alt-Svc': 'h3=":4433"; ma=3600', // Advertise QUIC/HTTP3
 			'X-API-Version': '1.0',
 			'X-Supported-Protocols': 'QUIC, HTTP/2, HTTP/1.1',
-			'X-Target-Latency': '5-15ms'
-		}
+			'X-Target-Latency': `5-15ms` }
 	})
 }

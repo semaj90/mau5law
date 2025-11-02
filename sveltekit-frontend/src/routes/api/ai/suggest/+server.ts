@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -23,15 +23,11 @@ import type { RequestHandler } from './$types.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js'; // Added import
 
 // --- New Interfaces for AI Response ---
-interface Action {
-  type: string;
-  text: string;
+interface Action { type: string;, text: string;
   data: Record<string, unknown>;
 }
 
-interface AIResponse {
-  text: string;
-  suggestions: string[];
+interface AIResponse { text: string;, suggestions: string[];
   actions: Action[];
 }
 // --- End New Interfaces ---
@@ -47,7 +43,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
     return json({
       response: response.text,
       suggestions: response.suggestions,
-      actions: response.actions,
+      actions: response.actions
     });
   } catch (error: any) {
     // Changed type from any to unknown
@@ -71,9 +67,9 @@ async function generateAIResponse(
     const aiResponse = await ollamaService.generate(enhancedPrompt, {
       options: {
         // Nested temperature and maxTokens inside options
-        temperature: getTemperatureForVibe(vibe),
+       , temperature: getTemperatureForVibe(vibe),
         num_predict: 500, // maxTokens typically maps to num_predict
-      },
+      }
     });
     // Parse and structure the response
     const structuredResponse = parseAIResponse(aiResponse.response, prompt); // Access aiResponse.response
@@ -93,8 +89,7 @@ function createSystemPrompt(vibe: string, context?: any): string {
     investigative: 'Take a thorough, analytical approach with detailed examination.',
     dramatic: 'Use engaging, vivid language that brings the case to life.',
     technical: 'Provide detailed, precise information with legal specifics.',
-    collaborative: 'Use inclusive language that builds on existing work.',
-  };
+    collaborative: `Use inclusive language that builds on existing work.` };
   const contextInstruction =
     context === 'canvas'
       ? ' You are specifically helping with an interactive case canvas where users can visualize evidence, timelines, and case relationships.'
@@ -114,7 +109,7 @@ function getTemperatureForVibe(vibe: string): number {
     investigative: 0.4,
     dramatic: 0.7,
     technical: 0.1,
-    collaborative: 0.5,
+    collaborative: 0.5
   };
   return temperatureMap[vibe as keyof typeof temperatureMap] || 0.3;
 }
@@ -126,7 +121,7 @@ function parseAIResponse(aiResponse: string, originalPrompt: string): AIResponse
   return {
     text: aiResponse,
     suggestions: suggestions,
-    actions: actions,
+    actions: actions
   };
 }
 function extractSuggestions(response: string, prompt: string): string[] {
@@ -139,7 +134,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
     'Consider legal precedents',
   ];
   // Try to extract specific suggestions from the AI response
-  const suggestionPattern = /(?:suggest|recommend|consider|try|should|could)[^.!?]+/gi; // Fixed regex: removed extra: ')'
+  const suggestionPattern = /(?:suggest|recommend|consider|try|should|could)[^.!?]+/gi; // Fixed regex: removed; extra: ')'
   const matches = response.match(suggestionPattern);
   if (matches && matches.length > 0) {
     const extracted = matches
@@ -168,21 +163,21 @@ function extractActions(response: string, prompt: string): Action[] {
     actions.push({
       type: 'highlight',
       text: 'Mark important evidence',
-      data: { priority: 'high' },
+      data: {, priority: 'high' }
     });
   }
   if (response.toLowerCase().includes('timeline') || prompt.toLowerCase().includes('timeline')) {
     actions.push({
       type: 'annotation',
       text: 'Add timeline notes',
-      data: { category: 'timeline' },
+      data: {, category: 'timeline' }
     });
   }
   if (response.toLowerCase().includes('research') || response.toLowerCase().includes('precedent')) {
     actions.push({
       type: 'research',
       text: 'Research legal precedents',
-      data: { keywords: extractKeywords(prompt) },
+      data: {, keywords: extractKeywords(prompt) }
     });
   }
   // Ensure we always have at least one action
@@ -190,7 +185,7 @@ function extractActions(response: string, prompt: string): Action[] {
     actions.push({
       type: 'annotation',
       text: 'Add detailed notes',
-      data: { category: 'general' },
+      data: {, category: 'general' }
     });
   }
   return actions.slice(0, 3);
@@ -204,23 +199,20 @@ async function generateMockResponse(
   // Changed type from any to AIResponse, renamed context to _context
   // Simulate AI processing delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-  const vibeResponses = {
-    professional: {
-      prefix: 'Based on my analysis of the case materials,',
-      style: 'formal and detailed',
+  const vibeResponses = { professional: {, prefix: 'Based on my analysis of the case materials,',
+      style: 'formal and detailed'
     },
     creative: {
       prefix: 'Looking at this from a fresh perspective,',
-      style: 'innovative and exploratory',
+      style: 'innovative and exploratory'
     },
     analytical: {
       prefix: 'From a systematic examination of the evidence,',
-      style: 'logical and methodical',
+      style: 'logical and methodical'
     },
     collaborative: {
       prefix: "Building on the team's previous work,",
-      style: 'inclusive and building',
-    },
+      style: `inclusive and building` }
   };
   const currentVibe = vibeResponses[vibe as keyof typeof vibeResponses] || vibeResponses.professional;
   // Generate response based on prompt content
@@ -254,23 +246,23 @@ async function generateMockResponse(
     {
       type: 'highlight',
       text: 'Mark key evidence for review',
-      data: { priority: 'high' },
+      data: { priority: 'high' }
     },
     {
       type: 'annotation',
       text: 'Add detailed notes to timeline',
-      data: { category: 'timeline' },
+      data: { category: `timeline` }
     },
     {
       type: 'research',
       text: 'Search for similar case precedents',
-      data: { keywords: extractKeywords(prompt) },
+      data: { keywords: extractKeywords(prompt) }
     },
   ];
   return {
     text: responseText,
     suggestions: suggestions.slice(0, 3), // Return top 3 suggestions
-    actions: actions,
+    actions: actions
   };
 }
 function extractKeywords(text: string): string[] {

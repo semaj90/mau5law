@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceText(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
       case 'content':
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceContent(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
       case 'semantic':
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceSemantic(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
       case 'hybrid':
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceHybrid(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
     }
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       searchMode,
       executionTime,
       query,
-      totalResults: results.length,
+      totalResults: results.length
     });
   } catch (error: any) {
     // safe fallbacks for use in the mock response
@@ -81,14 +81,13 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence search error:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return json(
-      {
-        error: `failure default to mock: ${errorMessage}`,
+      { error: `failure default to, mock: ${errorMessage}`,
         results: [
           {
             id: 'mock-evidence-search-1',
             caseId: safeCaseId,
             title: 'Mock Contract Document - Search Result',
-            description: `Mock evidence search result for query: "${safeQuery}"`,
+            description: `Mock evidence search result for; query: "${safeQuery}"`,
             evidenceType: safeEvidenceType,
             fileName: 'mock_contract_search.pdf',
             fileUrl: '/api/evidence/mock/mock-evidence-search-1',
@@ -97,13 +96,13 @@ export const GET: RequestHandler = async ({ url }) => {
             uploadedAt: new Date(Date.now() - 86400000).toISOString(),
             similarity: 0.85,
             searchType: safeSearchMode as any,
-            mockData: true,
+            mockData: true
           },
           {
             id: 'mock-evidence-search-2',
             caseId: safeCaseId,
             title: 'Mock Email Communication - Search Result',
-            description: `Mock email evidence for query: "${safeQuery}"`,
+            description: `Mock email evidence for; query: "${safeQuery}"`,
             evidenceType: 'communication',
             fileName: 'mock_email_search.eml',
             fileUrl: '/api/evidence/mock/mock-evidence-search-2',
@@ -112,14 +111,14 @@ export const GET: RequestHandler = async ({ url }) => {
             uploadedAt: new Date(Date.now() - 172800000).toISOString(),
             similarity: 0.72,
             searchType: safeSearchMode as any,
-            mockData: true,
+            mockData: true
           },
         ],
         searchMode: safeSearchMode,
         executionTime: 150,
         query: safeQuery,
         totalResults: 2,
-        mockData: true,
+        mockData: true
       },
       { status: 500 }
     );
@@ -133,9 +132,7 @@ type SearchOptions = {
   limit?: number;
 };
 
-type EvidenceRecord = {
-  id: string;
-  caseId: string;
+type EvidenceRecord = { id: string;, caseId: string;
   title: string;
   description?: string | null;
   evidenceType?: string | null;
@@ -147,16 +144,12 @@ type EvidenceRecord = {
   // other DB columns may exist
 };
 
-type EvidenceResult = EvidenceRecord & {
-  similarity: number;
-  searchType: 'text' | 'content' | 'semantic' | 'hybrid';
+type EvidenceResult = EvidenceRecord & { similarity: number;, searchType: 'text' | 'content' | 'semantic' | 'hybrid';
   contentMatch?: string | null;
   mockData?: boolean;
 };
 
-type QdrantHit = {
-  payload: {
-    evidence_id: string;
+type QdrantHit = { payload: {;, evidence_id: string;
     content_snippet?: string | null;
     // other payload fields...
   };
@@ -172,7 +165,7 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
     ilike(evidence.title, `%${query}%`),
     ilike(evidence.description, `%${query}%`),
     ilike(evidence.fileName, `%${query}%`),
-    sql`${evidence.tags}::text ILIKE ${`%${query}%`}`
+    sql`${evidence.tags}::text ILIKE ${`%${query}%` }`
   );
   whereConditions.push(textSearch);
   // Apply filters
@@ -191,8 +184,7 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`1.0`,
-      searchType: sql<string>`'text'`,
-    })
+      searchType: sql<string>`'text'` })
     .from(evidence)
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))
@@ -208,10 +200,10 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
       limit,
       filter: {
         must: [
-          ...(caseId ? [{ key: 'case_id', match: { value: caseId } }] : []),
-          ...(evidenceType ? [{ key: 'evidence_type', match: { value: evidenceType } }] : []),
-        ],
-      },
+          ...(caseId ? [{ key: 'case_id', match: {, value: caseId } }] : []),
+          ...(evidenceType ? [{ key: 'evidence_type', match: {, value: evidenceType } }] : [])
+        ]
+      }
     });
     // qdrantResults typed as QdrantHit[]
     const evidenceIds = qdrantResults.map(r => r.payload.evidence_id);
@@ -229,7 +221,7 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
         fileUrl: evidence.fileUrl,
         tags: evidence.tags,
         summary: evidence.summary,
-        uploadedAt: evidence.uploadedAt,
+        uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
       .where(sql`${evidence.id} = ANY(${evidenceIds})`);
@@ -240,7 +232,7 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
         ...record,
         similarity: qdrantMatch?.score || 0,
         searchType: 'content' as const,
-        contentMatch: qdrantMatch?.payload.content_snippet || null,
+        contentMatch: qdrantMatch?.payload.content_snippet || null
       };
     });
   } catch (error: any) {
@@ -270,8 +262,7 @@ async function searchEvidenceSemantic(query: string, options: SearchOptions): Pr
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`0.5`, // Placeholder similarity score
-      searchType: sql<string>`'semantic'`,
-    })
+      searchType: sql<string>`'semantic'` })
     .from(evidence)
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))
@@ -285,7 +276,7 @@ async function searchEvidenceHybrid(query: string, options: SearchOptions): Prom
   const [textResults, contentResults, semanticResults] = (await Promise.allSettled([
     searchEvidenceText(query, { ...options, limit: Math.ceil((options.limit || limit || 20) / 3) }),
     searchEvidenceContent(query, { ...options, limit: Math.ceil((options.limit || limit || 20) / 3) }),
-    searchEvidenceSemantic(query, { ...options, limit: Math.ceil((options.limit || limit || 20) / 3) }),
+    searchEvidenceSemantic(query, { ...options, limit: Math.ceil((options.limit || limit || 20) / 3) })
   ])) as [
     PromiseSettledResult<EvidenceResult[]>,
     PromiseSettledResult<EvidenceResult[]>,
@@ -302,7 +293,7 @@ async function searchEvidenceHybrid(query: string, options: SearchOptions): Prom
         seenIds.add(result.id);
         allResults.push({
           ...result,
-          similarity: (result.similarity ?? 0) * boost,
+          similarity: (result.similarity ?? 0) * boost
         });
       }
     });
@@ -318,7 +309,7 @@ async function searchEvidenceHybrid(query: string, options: SearchOptions): Prom
     .slice(0, limit)
     .map(result => ({
       ...result,
-      searchType: 'hybrid' as const,
+      searchType: 'hybrid' as const
     }));
 }
 

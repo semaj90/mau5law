@@ -4,9 +4,7 @@ import { users } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { db } from './index.js';
 }
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   name: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -42,9 +40,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     return null;
   }
 }
-export async function createUser(userData: {
-  email: string;
-  hashedPassword: string;
+export async function createUser(userData: {, email: string;, hashedPassword: string;
   name?: string;
   firstName?: string;
   lastName?: string;
@@ -70,7 +66,7 @@ export async function createUser(userData: {
 }
 export async function updateUser(
   id: string;
-  updates: Partial<User>
+ , updates: Partial<User>
 ): Promise<User | null> {
   try {
     const result = await db

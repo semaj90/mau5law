@@ -8,15 +8,11 @@ import { getOllamaEndpoint } from '$lib/server/ollama-utils'; // Import the new 
 import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
 
 // Local endpoint-only response types (keeps this handler self-contained)
-type ErrorResponse = {
-  success: false;
-  error: { message: string; details?: any };
+type ErrorResponse = { success: false;, error: { message: string; details?: any };
   timestamp: string;
 };
 
-type HealthCheckResponse = {
-  success: true;
-  status: 'healthy' | 'unhealthy';
+type HealthCheckResponse = { success: true;, status: 'healthy' | 'unhealthy';
   pgvector?: string;
   ollama?: string;
   timestamp: string;
@@ -27,7 +23,7 @@ const VectorSearchSchema = z.object({
   query: z.string().min(1, 'Query cannot be empty'),
   topK: z.number().int().min(1).max(100).optional().default(10),
   threshold: z.number().min(0).max(1).optional().default(0.5),
-  filters: z.record(z.string(), z.unknown()).optional(),
+  filters: z.record(z.string(), z.unknown()).optional()
 });
 
 // ===== VECTOR EMBEDDING SERVICE =====
@@ -38,12 +34,12 @@ async function getQueryEmbedding(query: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt: query,
-        stream: false,
-      }),
+        stream: false
+      })
     });
 
     if (!response.ok) {
@@ -84,9 +80,7 @@ async function searchWithPgvector(embedding: number[], topK: number, threshold: 
     );
 
     // cast and type rows so `row` isn't implicit any
-    const rows = resultsRaw as Array<{
-      id: string;
-      title: string;
+    const rows = resultsRaw as Array<{ id: string;, title: string;
       content: string;
       similarity: number;
       metadata: string | null;
@@ -97,7 +91,7 @@ async function searchWithPgvector(embedding: number[], topK: number, threshold: 
       title: row.title,
       content: row.content,
       similarity: row.similarity,
-      metadata: row.metadata ? JSON.parse(row.metadata) : undefined,
+      metadata: row.metadata ? JSON.parse(row.metadata) : undefined
     }));
   } catch (err) {
     console.error('pgvector search error:', err);
@@ -127,8 +121,8 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       metadata: {
         modelUsed: 'embeddinggemma:latest',
-        indexType: 'pgvector (cosine distance)',
-      },
+        indexType: 'pgvector (cosine distance)'
+      }
     };
 
     return json(response);
@@ -141,9 +135,9 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: {
           message: 'Invalid request parameters',
-          details: err.flatten().fieldErrors,
+          details: err.flatten().fieldErrors
         },
-        timestamp,
+        timestamp
       };
       return json(errorResponse, { status: 400 });
     }
@@ -151,9 +145,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const errorResponse: ErrorResponse = {
       success: false,
       error: {
-        message: err instanceof Error ? err.message : 'Search failed',
+        message: err instanceof Error ? err.message : 'Search failed'
       },
-      timestamp,
+      timestamp
     };
     return json(errorResponse, { status: 500 });
   }
@@ -171,7 +165,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       pgvector: 'available',
       ollama: 'connected',
-      timestamp,
+      timestamp
     };
     return json(healthResponse);
   } catch (err) {
@@ -179,9 +173,8 @@ export const GET: RequestHandler = async () => {
       success: false,
       error: {
         message: 'Search service unavailable',
-        details: err instanceof Error ? err.message : 'Unknown error',
-      },
-      timestamp,
+        details: err instanceof Error ? err.message : `Unknown error` },
+      timestamp
     };
     return json(errorResponse, { status: 503 });
   }

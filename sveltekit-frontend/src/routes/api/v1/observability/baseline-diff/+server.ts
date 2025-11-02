@@ -3,22 +3,16 @@ import type { RequestHandler } from './$types.js';
 import { loadObservabilityState, saveObservabilityState } from '$lib/services/observability-persistence';
 import { json } from '@sveltejs/kit';
 
-export interface BaselineDiff {
-  metric: string;
-  current_value: number;
+export interface BaselineDiff { metric: string;, current_value: number;
   baseline_value: number;
   difference: number;
   percentage_change: number;
   status: 'normal' | 'drift' | 'significant_drift';
   threshold_breach: boolean;
 }
-export interface BaselineDiffResponse {
-  timestamp: string;
-  diffs: BaselineDiff[];
+export interface BaselineDiffResponse { timestamp: string;, diffs: BaselineDiff[];
   overall_status: 'stable' | 'drift_detected' | 'significant_drift';
-  summary: {
-    total_metrics: number;
-    normal_count: number;
+  summary: { total_metrics: number;, normal_count: number;
     drift_count: number;
     significant_drift_count: number;
   };
@@ -108,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
       total_metrics: diffs.length,
       normal_count: normalCount,
       drift_count: driftCount,
-      significant_drift_count: significantDriftCount,
+      significant_drift_count: significantDriftCount
     };
     // Determine overall status
     let overall_status: BaselineDiffResponse['overall_status'] = 'stable';
@@ -121,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
       diffs,
       overall_status,
-      summary,
+      summary
     };
     return json(response);
   } catch (error: any) {
@@ -150,13 +144,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Save updated state
     const updatedState = {
       ...state,
-      baselines: updatedBaselines,
+      baselines: updatedBaselines
     };
     await saveObservabilityState(updatedState);
     return json({
       success: true,
       updated_baselines: updatedBaselines,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('[baseline-diff] Update error:', error instanceof Error ? error.message : error);

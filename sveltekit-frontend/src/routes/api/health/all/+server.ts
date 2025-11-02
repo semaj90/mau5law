@@ -18,12 +18,9 @@ interface ServiceHealthStatus {
   lastChecked: string
 }
 interface AggregatedHealthResponse {
-  // allow: 'unknown' at the aggregate level as well
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  // allow: 'unknown' at the aggregate level as well; status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   timestamp: string;
-  services: {
-    database: ServiceHealthStatus;
-    redis: ServiceHealthStatus;
+  services: { database: ServiceHealthStatus;, redis: ServiceHealthStatus;
     neo4j: ServiceHealthStatus;
     ollama: ServiceHealthStatus;
     ocr: ServiceHealthStatus;
@@ -32,21 +29,15 @@ interface AggregatedHealthResponse {
     cluster: ServiceHealthStatus;
     svelteKit: ServiceHealthStatus;
   };
-  metadata: {
-    nodeVersion: string;
-    platform: string;
+  metadata: { nodeVersion: string;, platform: string;
     arch: string;
     pid: number;
     uptime: number;
   };
-  performance: {
-    memoryUsage: NodeJS.MemoryUsage;
-    cpuUsage: NodeJS.CpuUsage;
+  performance: { memoryUsage: NodeJS.MemoryUsage;, cpuUsage: NodeJS.CpuUsage;
     loadAverage: number[] | string;
   };
-  summary: {
-    totalServices: number;
-    healthyServices: number;
+  summary: { totalServices: number;, healthyServices: number;
     degradedServices: number;
     unhealthyServices: number;
     unknownServices: number;
@@ -56,9 +47,7 @@ interface AggregatedHealthResponse {
 
 // new lightweight typed result for internal checks
 type CheckResultStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
-interface CheckResult {
-  status: CheckResultStatus;
-  responseTime: number;
+interface CheckResult { status: CheckResultStatus;, responseTime: number;
   details?: any;
 }
 
@@ -70,8 +59,8 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<CheckRes
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     const response = await fetch(url, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
-      signal: controller.signal,
+      headers: {, Accept: 'application/json' },
+      signal: controller.signal
     });
     clearTimeout(timeoutId);
     const responseTime = Date.now() - startTime;
@@ -85,7 +74,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<CheckRes
   } catch (err: any) {
     const responseTime = Date.now() - startTime;
     if ((err as { name?: string })?.name === 'AbortError') {
-      return { status: 'unhealthy', responseTime, details: { error: 'Request timeout' } };
+      return { status: 'unhealthy', responseTime, details: { error: `Request timeout` } };
     }
     return { status: 'unhealthy', responseTime, details: { error: getErrorMessage(err) } };
   }
@@ -101,14 +90,14 @@ async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
       message: result.status === 'healthy' ? 'PostgreSQL connection successful' : 'Database connection issues',
       details: result.details,
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       status: 'unhealthy',
-      message: `Database health check failed: ${getErrorMessage(error)}`,
+      message: `Database health check; failed: ${getErrorMessage(error)}`,
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -122,14 +111,14 @@ async function checkRedisHealth(): Promise<ServiceHealthStatus> {
       message: result.status === 'healthy' ? 'Redis connection active' : 'Redis connection issues',
       details: result.details,
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Redis health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -143,14 +132,14 @@ async function checkNeo4jHealth(): Promise<ServiceHealthStatus> {
       message: result.status === 'healthy' ? 'Neo4j graph database active' : 'Neo4j connection issues',
       details: result.details,
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Neo4j health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -164,7 +153,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
       message: result.status === 'healthy' ? 'Ollama AI service running' : 'Ollama service issues',
       details: result.details,
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
@@ -172,7 +161,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
       message: 'Ollama service unavailable',
       details: { error: getErrorMessage(error) },
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -190,10 +179,10 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       details: {
         ...baseDetails,
         endpoint: `${ocrBaseUrl}/status`,
-        capabilities: (baseDetails?.features as unknown) ?? [],
+        capabilities: (baseDetails?.features as unknown) ?? []
       },
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
@@ -201,10 +190,9 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       message: 'OCR service unavailable',
       details: {
         error: getErrorMessage(error),
-        endpoint: (globalThis as unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr',
-      },
+        endpoint: (globalThis as unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr` },
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -218,14 +206,14 @@ async function checkVectorSearchHealth(): Promise<ServiceHealthStatus> {
       message: result.status === 'healthy' ? 'Vector search service operational' : 'Vector search issues',
       details: result.details,
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Vector search health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -239,14 +227,14 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
       message: result.status === 'healthy' ? 'MinIO storage service operational' : 'MinIO storage issues',
       details: result.details,
       responseTime: result.responseTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       status: 'degraded',
       message: 'MinIO service unavailable - file storage in degraded mode',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     };
   }
 }
@@ -286,9 +274,7 @@ function calculateHealthScore(services: AggregatedHealthResponse['services']): n
 }
 
 // extract main GET body so POST can reuse it
-async function buildAggregatedHealthPayload(): Promise<{
-  response: AggregatedHealthResponse;
-  httpStatus: number;
+async function buildAggregatedHealthPayload(): Promise<{ response: AggregatedHealthResponse;, httpStatus: number;
   headers: Record<string, string>;
 }> {
   const timestamp = new Date().toISOString();
@@ -307,7 +293,7 @@ async function buildAggregatedHealthPayload(): Promise<{
       message: 'Cluster orchestration active',
       details: {},
       responseTime: 0,
-      lastChecked: new Date().toISOString(),
+      lastChecked: new Date().toISOString()
     } as ServiceHealthStatus),
   ]);
 
@@ -325,8 +311,8 @@ async function buildAggregatedHealthPayload(): Promise<{
       message: 'SvelteKit server operational',
       details: {},
       responseTime: 0,
-      lastChecked: new Date().toISOString(),
-    } as ServiceHealthStatus,
+      lastChecked: new Date().toISOString()
+    } as ServiceHealthStatus
   };
 
   const serviceStatuses = Object.values(services).map(s => s.status);
@@ -341,13 +327,13 @@ async function buildAggregatedHealthPayload(): Promise<{
     platform: process.platform,
     arch: process.arch,
     pid: process.pid,
-    uptime: process.uptime(),
+    uptime: process.uptime()
   };
 
   const performance = {
     memoryUsage: process.memoryUsage(),
     cpuUsage: process.cpuUsage(),
-    loadAverage: typeof os.loadavg === 'function' ? os.loadavg() : [],
+    loadAverage: typeof os.loadavg === 'function' ? os.loadavg() : []
   };
 
   const summary = {
@@ -356,7 +342,7 @@ async function buildAggregatedHealthPayload(): Promise<{
     degradedServices,
     unhealthyServices,
     unknownServices,
-    overallHealthScore: calculateHealthScore(services),
+    overallHealthScore: calculateHealthScore(services)
   };
 
   const overallStatus = calculateOverallHealth(services);
@@ -367,7 +353,7 @@ async function buildAggregatedHealthPayload(): Promise<{
     services,
     metadata,
     performance,
-    summary,
+    summary
   };
 
   const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
@@ -379,8 +365,7 @@ async function buildAggregatedHealthPayload(): Promise<{
     Expires: '0',
     'X-Health-Check': 'comprehensive',
     'X-Health-Score': String(summary.overallHealthScore),
-    'X-Healthy-Services': `${healthyServices}/${totalServices}`,
-  };
+    'X-Healthy-Services': `${healthyServices}/${totalServices}` };
 
   return { response, httpStatus, headers };
 }
@@ -409,15 +394,14 @@ export const GET: RequestHandler = async () => {
           degradedServices: 0,
           unhealthyServices: 0,
           unknownServices: 0,
-          overallHealthScore: 0,
-        },
+          overallHealthScore: 0
+        }
       },
       {
         status: 503,
         headers: {
           'Content-Type': 'application/json',
-          'X-Health-Check': 'failed',
-        },
+          'X-Health-Check': `failed` }
       }
     );
   }
@@ -449,7 +433,7 @@ export const POST: RequestHandler = async ({ request }) => {
         default: return json(
             {
               error: 'Unknown service',
-              availableServices: ['database', 'redis', 'neo4j', 'ollama', 'ocr'],
+              availableServices: ['database', 'redis', 'neo4j', 'ollama', 'ocr']
             },
             { status: 400 }
           );
@@ -457,7 +441,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         service,
         health: serviceHealth,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     // If force is true or no specific service, do full health check
@@ -467,7 +451,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Invalid request',
-        message: getErrorMessage(error),
+        message: getErrorMessage(error)
       },
       { status: 400 }
     );

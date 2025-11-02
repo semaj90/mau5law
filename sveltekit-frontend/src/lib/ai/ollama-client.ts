@@ -15,9 +15,7 @@ export interface GenerateOptions {
   maxTokens?: number;
   stream?: boolean;
 }
-export interface GenerateResponse {
-  response: string;
-  model: string;
+export interface GenerateResponse { response: string;, model: string;
   duration: number;
   total_duration?: number;
   load_duration?: number;
@@ -79,7 +77,7 @@ export class OllamaClient {
    * Chat with conversation history
    */
   async chat(
-    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
+    messages: Array<{, role: 'user' | 'assistant' | 'system'; content: string }>,
     options: GenerateOptions = {}
   ): Promise<string> {
     // Build prompt from messages
@@ -100,15 +98,12 @@ export class OllamaClient {
   /**
    * Check if Ollama is available
    */
-  async healthCheck(): Promise<{
-    status: string;
-    gemma3_270m_available: boolean;
+  async healthCheck(): Promise<{ status: string;, gemma3_270m_available: boolean;
     available_models: string[];
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
-        method: 'GET'
-      });
+        method: 'GET' });
       if (!response.ok) {
         return {
           status: 'offline',

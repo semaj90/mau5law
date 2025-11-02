@@ -14,124 +14,94 @@ const meta: Meta<LegalCaseManagerProps> = {
   component: LegalCaseManager,
   parameters: {
     layout: 'fullscreen',
-    docs: {
-      description: {
-        component: 'Comprehensive case management interface for legal professionals',
-      },
-    },
+    docs: { description: {, component: 'Comprehensive case management interface for legal professionals'
+      }
+    }
   },
-  argTypes: {
-    viewMode: {
-      control: { type: 'select' },
-      options: ['list', 'grid', 'timeline', 'kanban'],
+  argTypes: { viewMode: {, control: { type: 'select' },
+      options: ['list', 'grid', 'timeline', 'kanban']
     },
-    filterMode: {
-      control: { type: 'select' },
-      options: ['all', 'active', 'closed', 'assigned'],
+    filterMode: { control: {, type: 'select' },
+      options: ['all', 'active', 'closed', 'assigned']
     },
-    sortBy: {
-      control: { type: 'select' },
-      options: ['date', 'priority', 'status', 'title'],
+    sortBy: { control: {, type: 'select' },
+      options: ['date', 'priority', 'status', 'title']
     },
-    enableAI: {
-      control: { type: 'boolean' },
-      description: 'Enable AI-powered case analysis',
+    enableAI: { control: {, type: 'boolean' },
+      description: 'Enable AI-powered case analysis'
     },
-    showStats: {
-      control: { type: 'boolean' },
-      description: 'Display case statistics dashboard',
-    },
+    showStats: { control: {, type: 'boolean' },
+      description: 'Display case statistics dashboard'
+    }
   },
-  tags: ['autodocs'],
+  tags: ['autodocs']
 }; // explicit typed Meta to avoid: 'satisfies' parsing issues
 export default meta;
 type Story = StoryObj<LegalCaseManagerProps>;
-export const Default: Story = {
-  args: {
-    viewMode: 'list',
+export const Default: Story = { args: {, viewMode: 'list',
     filterMode: 'all',
     sortBy: 'date',
     enableAI: true,
-    showStats: true,
-  },
+    showStats: true
+  }
 };
-export const GridView: Story = {
-  args: {
-    viewMode: 'grid',
+export const GridView: Story = { args: {, viewMode: 'grid',
     filterMode: 'active',
     sortBy: 'priority',
     enableAI: true,
-    showStats: false,
+    showStats: false
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Grid view layout optimized for visual case management',
-      },
-    },
-  },
+  parameters: { docs: {, description: {
+        story: 'Grid view layout optimized for visual case management'
+      }
+    }
+  }
 };
-export const Timeline: Story = {
-  args: {
-    viewMode: 'timeline',
+export const Timeline: Story = { args: {, viewMode: 'timeline',
     filterMode: 'all',
     sortBy: 'date',
     enableAI: false,
-    showStats: true,
+    showStats: true
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Timeline view showing chronological case progression',
-      },
-    },
-  },
+  parameters: { docs: {, description: {
+        story: 'Timeline view showing chronological case progression'
+      }
+    }
+  }
 };
-export const KanbanBoard: Story = {
-  args: {
-    viewMode: 'kanban',
+export const KanbanBoard: Story = { args: {, viewMode: 'kanban',
     filterMode: 'active',
     sortBy: 'status',
     enableAI: true,
-    showStats: false,
+    showStats: false
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Kanban board for workflow-based case management',
-      },
-    },
-  },
+  parameters: { docs: {, description: {
+        story: 'Kanban board for workflow-based case management'
+      }
+    }
+  }
 };
-export const AssignedCases: Story = {
-  args: {
-    viewMode: 'list',
+export const AssignedCases: Story = { args: {, viewMode: 'list',
     filterMode: 'assigned',
     sortBy: 'priority',
     enableAI: true,
-    showStats: true,
+    showStats: true
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Focus view showing only cases assigned to current user',
-      },
-    },
-  },
+  parameters: { docs: {, description: {
+        story: 'Focus view showing only cases assigned to current user'
+      }
+    }
+  }
 };
-export const ClosedCases: Story = {
-  args: {
-    viewMode: 'grid',
+export const ClosedCases: Story = { args: {, viewMode: 'grid',
     filterMode: 'closed',
     sortBy: 'date',
     enableAI: false,
-    showStats: true,
+    showStats: true
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Archive view for completed and closed cases',
-      },
-    },
-  },
+  parameters: { docs: {, description: {
+        story: 'Archive view for completed and closed cases'
+      }
+    }
+  }
 };

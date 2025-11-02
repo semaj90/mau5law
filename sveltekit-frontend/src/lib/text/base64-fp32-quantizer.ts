@@ -12,40 +12,30 @@ export interface QuantizationOptions {
   cacheStrategy: 'aggressive' | 'moderate' | 'minimal';
   outputFormat: 'fp32' | 'fp16' | 'int8' | 'int16';
 }
-export interface QuantizationResult {
-  quantizedData: Float32Array | Int8Array | Int16Array;
-  originalBase64: string;
+export interface QuantizationResult { quantizedData: Float32Array | Int8Array | Int16Array;, originalBase64: string;
   quantizationLevel: number;
   scalingFactor: number;
   compressionRatio: number;
   processingTime: number;
   cudaThreadsUsed: number;
   cacheHit: boolean;
-  metadata: {
-    originalSize: number;
-    quantizedSize: number;
+  metadata: { originalSize: number;, quantizedSize: number;
     minValue: number;
     maxValue: number;
     meanValue: number;
     entropy: number;
   };
 }
-export interface GemmaOutputQuantization {
-  modelResponse: string;
-  quantizedTokens: Float32Array;
+export interface GemmaOutputQuantization { modelResponse: string;, quantizedTokens: Float32Array;
   attentionWeights: Float32Array;
   logits: Float32Array;
   perplexity: number;
   confidence: number;
-  legalClassification: {
-    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  legalClassification: { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, riskLevel: 'low' | 'medium' | 'high' | 'critical';
     confidence: number;
   };
 }
-export interface CUDAThreadContext {
-  threadId: number;
-  blockId: number;
+export interface CUDAThreadContext { threadId: number;, blockId: number;
   gridSize: number;
   blockSize: number;
   sharedMemory: ArrayBuffer;
@@ -73,7 +63,7 @@ export class Base64FP32Quantizer {
         gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
         blockSize: this.CUDA_BLOCK_SIZE,
         sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block;
-        registers: new Map(),
+        registers: new Map()
       };
       this.cudaThreadPool.push(context);
     }
@@ -95,7 +85,7 @@ export class Base64FP32Quantizer {
       cudaThreads: 256,
       cacheStrategy: 'aggressive',
       outputFormat: 'fp32',
-      ...options,
+      ...options
     };
     try {
       // Step 1: Check cache first
@@ -106,7 +96,7 @@ export class Base64FP32Quantizer {
         return {
           ...cached,
           cacheHit: true,
-          processingTime: performance.now() - startTime,
+          processingTime: performance.now() - startTime
         };
       }
       // Step 2: Decode Base64 to raw bytes
@@ -128,7 +118,7 @@ export class Base64FP32Quantizer {
         processingTime: performance.now() - startTime,
         cudaThreadsUsed: config.cudaThreads,
         cacheHit: false,
-        metadata,
+        metadata
       };
       // Step 7: Cache the result
       await this.cacheQuantizationResult(cacheKey, result);
@@ -327,7 +317,7 @@ export class Base64FP32Quantizer {
       minValue: Math.min(...values),
       maxValue: Math.max(...values),
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
-      entropy,
+      entropy
     };
   }
   private calculateScalingFactor(originalLength: number, scaledLength: number): number {
@@ -339,7 +329,7 @@ export class Base64FP32Quantizer {
       bits: config.quantizationBits,
       scaling: config.scalingMethod,
       length: config.targetLength,
-      format: config.outputFormat,
+      format: config.outputFormat
     };
     return btoa(JSON.stringify(keyData))
       .replace(/[^a-zA-Z0-9]/g, '')
@@ -386,7 +376,7 @@ export class Base64FP32Quantizer {
       await enhancedCachingRevolutionaryBridge.processUnifiedQuery({
         query: cacheKey,
         type: 'query',
-        options: { cacheStrategy: 'enhanced_first' },
+        options: {, cacheStrategy: `enhanced_first` }
       });
     } catch (error) {
       console.warn('⚠️ Cache storage failed:', error);
@@ -419,7 +409,7 @@ export class Base64FP32Quantizer {
         logits,
         perplexity,
         confidence: Math.max(0, 1 - perplexity / 100), // Rough confidence estimate
-        legalClassification,
+        legalClassification
       };
       console.log(`⚖️ Processed Gemma3:legal-latest output in ${(performance.now() - startTime).toFixed(2)}ms`);
       console.log(
@@ -508,7 +498,7 @@ export class Base64FP32Quantizer {
       maxCacheSize: this.MAX_CACHE_SIZE,
       blockSize: this.CUDA_BLOCK_SIZE,
       gemmaVocabSize: this.GEMMA_VOCAB_SIZE,
-      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
+      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE
     };
   }
   /** Clear quantization cache */
@@ -539,6 +529,5 @@ export async function processGemmaResponse(
     quantizationBits: 8,
     scalingMethod: 'sigmoid',
     targetLength: 2048,
-    cacheStrategy: 'aggressive',
-  });
+    cacheStrategy: `aggressive` });
 }

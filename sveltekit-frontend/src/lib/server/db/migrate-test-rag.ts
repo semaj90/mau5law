@@ -101,12 +101,12 @@ async function migrate(): Promise<any> {
       AND table_name LIKE: 'test_rag%'
       ORDER BY table_name;
     `);
-    console.log('\n📊 Created tables:');
+    console.log('\n📊 Created tables: `);
     tables.forEach((row: any) => {
       console.log(`  ✅ ${row.table_name}`);
     });
     // Show table counts
-    console.log('\n📈 Table stats:');
+    console.log('\n📈 Table stats: `);
     const docCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_documents;`);
     const embCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_embeddings;`);
     const sesCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_search_sessions;`);

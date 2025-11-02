@@ -26,13 +26,13 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold = 0.7,
       collections = ['documents'],
       user_id,
-      case_id,
+      case_id
     } = searchRequest;
     if (!query) {
       return json(
         {
           error: 'Query parameter is required',
-          status: 'error',
+          status: 'error'
         },
         { status: 400 }
       );
@@ -54,17 +54,17 @@ export const POST: RequestHandler = async ({ request }) => {
         collections,
         embedding: queryEmbedding,
         dataset_size: await estimateDatasetSize(collections, filters),
-        has_filters: Object.keys(filters).length > 0,
+        has_filters: Object.keys(filters).length > 0
       },
       context: {
         user_id,
         case_id,
-        priority: 'normal' as const,
+        priority: 'normal' as const
       },
       performance_requirements: {
         max_latency_ms: 2000,
-        accuracy_threshold: threshold,
-      },
+        accuracy_threshold: threshold
+      }
     };
     // Process through orchestrator
     const response = await orchestrator.processRequest(orchestrationRequest);
@@ -83,15 +83,15 @@ export const POST: RequestHandler = async ({ request }) => {
         case_id,
         filters_count: Object.keys(filters).length,
         results_count: finalResults.results?.length || 0,
-        execution_path: (response as OrchestratorResponse)._metadata?.execution_path,
+        execution_path: (response as OrchestratorResponse)._metadata?.execution_path
       },
       response_time_ms: Date.now() - startTime,
-      cache_hit: (response as OrchestratorResponse)._metadata?.cached || false,
+      cache_hit: (response as OrchestratorResponse)._metadata?.cached || false
     });
     return json({
       success: true,
       data: {
-        results: finalResults.results || [],
+       , results: finalResults.results || [],
         metadata: {
           query,
           search_type: type,
@@ -100,10 +100,10 @@ export const POST: RequestHandler = async ({ request }) => {
           latency_ms: Date.now() - startTime,
           cached: (response as OrchestratorResponse)._metadata?.cached,
           threshold_used: threshold,
-          collections_searched: collections,
+          collections_searched: collections
         },
-        suggestions: await generateSearchSuggestions(query, finalResults.results || []),
-      },
+        suggestions: await generateSearchSuggestions(query, finalResults.results || [])
+      }
     });
   } catch (error: any) {
     console.error('Search API error:', error);
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Search processing failed',
         details: error.message,
-        status: 'error',
+        status: 'error'
       },
       { status: 500 }
     );
@@ -131,20 +131,20 @@ export const GET: RequestHandler = async ({ url }) => {
         const history = await getSearchHistory(user_id, limit);
         return json({
           success: true,
-          data: { history },
+          data: { history }
         });
       case 'suggestions':
         const query = url.searchParams.get('query') || '';
         const suggestions = await getSearchSuggestions(query);
         return json({
           success: true,
-          data: { suggestions },
+          data: { suggestions }
         });
       case 'trending':
         const trending = await getTrendingSearches(limit);
         return json({
           success: true,
-          data: { trending },
+          data: { trending }
         });
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Search request failed',
-        details: error.message,
+        details: error.message
       },
       { status: 500 }
     );
@@ -207,7 +207,7 @@ async function performHybridSearch(
           collection: collection as any,
           filters,
           limit: Math.ceil(limit / collections.length),
-          scoreThreshold: threshold,
+          scoreThreshold: threshold
         })
       );
     }
@@ -246,14 +246,11 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
       .from(documentsTable)
       .where(and(...conditions));
     const results = await searchQuery.limit(limit);
-    return {
-      results: results.map(doc => ({
-        id: doc.id,
+    return { results: results.map(doc => ({, id: doc.id,
         title: doc.title,
         content_preview: doc.content?.substring(0, 200),
         score: 0.5, // Default score for text search
-        source: 'text_search',
-      })),
+        source: 'text_search` }))
     };
   } catch (error) {
     console.error('Text search error:', error);
@@ -278,7 +275,7 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
             _hybrid_sources: [
               (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.metadata?.source ||
                 'unknown',
-            ],
+            ]
           });
         } else {
           // Merge sources for duplicates
@@ -305,8 +302,8 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
     metadata: {
       hybrid: true,
       sources_combined: results.length,
-      total_results: combinedResults.length,
-    },
+      total_results: combinedResults.length
+    }
   };
 }
 async function generateSearchSuggestions(query: string, results: any[]): Promise<string[]> {

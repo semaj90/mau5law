@@ -8,7 +8,7 @@
  * Redis Type: legalCitations
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for citation analysis
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
         isKeyAuthority: citations.isKeyAuthority,
         documentTitle: legalDocuments.title,
         caseTitle: cases.title,
-        createdAt: citations.createdAt,
+        createdAt: citations.createdAt
       })
       .from(citations)
       .leftJoin(legalDocuments, eq(citations.documentId, legalDocuments.id))
@@ -67,10 +67,10 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       citations: result,
       metadata: {
-        count: result.length,
+       , count: result.length,
         source: 'database',
-        cached: false,
-      },
+        cached: false
+      }
     });
   } catch (error) {
     console.error('❌ Citations API error:', error);
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'Failed to fetch citations',
         citations: [],
-        metadata: { count: 0, source: 'error', cached: false },
+        metadata: {, count: 0, source: 'error', cached: false }
       },
       { status: 500 }
     );
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!citationType || !quotedText) {
       return json(
         {
-          error: 'citationType and quotedText are required',
+          error: 'citationType and quotedText are required'
         },
         { status: 400 }
       );
@@ -108,20 +108,19 @@ export const POST: RequestHandler = async ({ request }) => {
         quotedText,
         legalPrinciple,
         relevanceScore: '0.85', // Default confidence
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       })
       .returning();
 
     return json({
       citation: newCitation,
-      success: true,
+      success: true
     });
   } catch (error) {
     console.error('❌ Create citation error:', error);
     return json(
       {
-        error: 'Failed to create citation',
-      },
+        error: 'Failed to create citation` },
       { status: 500 }
     );
   }

@@ -9,26 +9,18 @@ import MultiTierCache from '$lib/ai/cache/multiTierCache.js';
 import { getCache, setCache } from '$lib/server/utils/server-cache.js';
 import { browser } from '$app/environment';
 
-export interface CacheResourceAllocation {
-  cpuThreads: number;
-  memoryMB: number;
+export interface CacheResourceAllocation { cpuThreads: number;, memoryMB: number;
   gpuUtilization: number; // 0-1
-  cacheSlots: {
-    l1Memory: number;
-    l2Redis: number;
+  cacheSlots: { l1Memory: number;, l2Redis: number;
     l3Storage: number;
     gpuTexture: number;
   };
-  circuitBreakers: {
-    enabled: boolean;
-    failureThreshold: number;
+  circuitBreakers: { enabled: boolean;, failureThreshold: number;
     recoveryTime: number;
   };
 }
 
-export interface ParallelCacheRequest {
-  id: string;
-  type: 'embedding' | 'shader' | 'context' | 'rag' | 'quantized' | 'hybrid';
+export interface ParallelCacheRequest { id: string;, type: 'embedding' | 'shader' | 'context' | 'rag' | 'quantized' | 'hybrid';
   priority: 'low' | 'normal' | 'high' | 'critical';
   keys: string[];
   data?: any[];
@@ -37,17 +29,11 @@ export interface ParallelCacheRequest {
   concurrencyGroup?: number; // 0 = immediate, 1 = after group 0
 }
 
-export interface CacheExecutionMetrics {
-  totalLatency: number;
-  cacheHitRate: number;
-  resourceUtilization: {
-    cpuThreads: number;
-    memoryUsedMB: number;
+export interface CacheExecutionMetrics { totalLatency: number;, cacheHitRate: number;
+  resourceUtilization: { cpuThreads: number;, memoryUsedMB: number;
     gpuUtilizationPercent: number;
   };
-  layerPerformance: {
-    l1MemoryHits: number;
-    l2RedisHits: number;
+  layerPerformance: { l1MemoryHits: number;, l2RedisHits: number;
     l3StorageHits: number;
     gpuTextureHits: number;
     misses: number;
@@ -58,9 +44,7 @@ export interface CacheExecutionMetrics {
 /**
  * New typed shapes to replace broad `any`
  */
-export type CacheEntry<T = unknown> = {
-  key: string;
-  hit: boolean;
+export type CacheEntry<T = unknown> = { key: string;, hit: boolean;
   source: string;
   data: T | null;
 };
@@ -72,21 +56,18 @@ type PerformanceMemory = {
   usedJSHeapSize?: number;
 };
 
-export interface ParallelCacheResponse {
-  success: boolean;
-  data: any[];
+export interface ParallelCacheResponse { success: boolean;, data: any[];
   metrics: CacheExecutionMetrics;
   cacheResults: CacheEntry[];
 }
 
-type CacheActor = {
-  send: (msg: { type: string; input?: any }) => Promise<{ success: boolean; hit?: boolean; data?: any }>;
+type CacheActor = { send: (msg: {;, type: string; input?: any }) => Promise<{ success: boolean; hit?: boolean; data?: any }>;
 };
 
 class ParallelCacheOrchestrator {
   private l1Memory = new MultiTierCache({ memoryLimit: 1000, storagePrefix: 'l1:' });
   private l2Memory = new MultiTierCache({ memoryLimit: 5000, storagePrefix: 'l2:' });
-  private l3Storage = new MultiTierCache({ memoryLimit: 10000, storagePrefix: 'l3:' });
+  private l3Storage = new MultiTierCache({ memoryLimit: 10000, storagePrefix: 'l3: ' });
 
   private resourceAllocation: CacheResourceAllocation = {
     cpuThreads: 8,
@@ -96,16 +77,16 @@ class ParallelCacheOrchestrator {
       l1Memory: 1000,
       l2Redis: 5000,
       l3Storage: 50000,
-      gpuTexture: 200,
+      gpuTexture: 200
     },
     circuitBreakers: {
       enabled: true,
       failureThreshold: 5,
-      recoveryTime: 30000,
-    },
+      recoveryTime: 30000
+    }
   };
 
-  private circuitBreakerState = new Map<string, { failures: number; lastFailure: number; isOpen: boolean }>();
+  private circuitBreakerState = new Map<string, { failures: number; lastFailure: number;, isOpen: boolean }>();
   // Use typed activeRequests for deduplication of in-flight requests
   private activeRequests = new Map<string, Promise<ParallelCacheResponse>>();
   private executionMetrics: CacheExecutionMetrics = this.initializeMetrics();
@@ -141,7 +122,7 @@ class ParallelCacheOrchestrator {
           success: true,
           data: allResults.map(r => r.data).filter(Boolean),
           metrics: { ...this.executionMetrics, totalLatency },
-          cacheResults: allResults,
+          cacheResults: allResults
         };
       } catch (error) {
         console.error('Parallel cache execution failed:', error);
@@ -151,7 +132,7 @@ class ParallelCacheOrchestrator {
           success: false,
           data: [],
           metrics: { ...this.executionMetrics, totalLatency },
-          cacheResults: [],
+          cacheResults: []
         };
       }
     })();
@@ -279,7 +260,7 @@ class ParallelCacheOrchestrator {
           text: key,
           operation: request.type,
           shaderType: 'webgpu',
-          limit: 1,
+          limit: 1
         });
         if (searchResults && searchResults.length > 0) {
           results.push({ key, hit: true, source: 'gpu_texture', data: searchResults[0] });
@@ -303,7 +284,7 @@ class ParallelCacheOrchestrator {
       for (const key of request.keys) {
         const cacheResult = await actor.send({
           type: 'get',
-          input: { operation: 'get', key, semanticQuery: key },
+          input: {, operation: 'get', key, semanticQuery: key }
         });
         if (cacheResult && cacheResult.success && cacheResult.hit) {
           results.push({ key, hit: true, source: 'xstate_semantic', data: cacheResult.data ?? null });
@@ -337,7 +318,7 @@ class ParallelCacheOrchestrator {
           key,
           hit: true,
           source: 'rag_cached_embedding',
-          data: { ragResults: `RAG results for ${key} using cached embeddings` },
+          data: {, ragResults: 'RAG results for ${key} using cached embeddings' }
         });
         this.executionMetrics.layerPerformance.l3StorageHits++; // approximate
       }
@@ -397,7 +378,7 @@ class ParallelCacheOrchestrator {
       type?: string;
     } = {}
   ): Promise<void> {
-    const { tier = 'all', ttl = 30 * 60 * 1000, priority = 'normal' } = options;
+    const { tier = 'all', ttl = 30 * 60 * 1000, priority = 'normal` } = options;
     const storeOperations: Promise<unknown>[] = [];
 
     const dataSize = JSON.stringify(data).length;
@@ -461,16 +442,16 @@ class ParallelCacheOrchestrator {
       resourceUtilization: {
         cpuThreads: 0,
         memoryUsedMB: 0,
-        gpuUtilizationPercent: 0,
+        gpuUtilizationPercent: 0
       },
       layerPerformance: {
         l1MemoryHits: 0,
         l2RedisHits: 0,
         l3StorageHits: 0,
         gpuTextureHits: 0,
-        misses: 0,
+        misses: 0
       },
-      circuitBreakerStatus: {},
+      circuitBreakerStatus: {}
     };
   }
 
@@ -504,9 +485,7 @@ class ParallelCacheOrchestrator {
   /**
    * Get performance statistics
    */
-  async getPerformanceStats(): Promise<{
-    currentMetrics: CacheExecutionMetrics;
-    cacheStats: { l1Size: number; l2Size: number; l3Size: number; xstateStats: any; shaderStats: any };
+  async getPerformanceStats(): Promise<{ currentMetrics: CacheExecutionMetrics;, cacheStats: { l1Size: number; l2Size: number; l3Size: number; xstateStats: any;, shaderStats: any };
     systemResources: CacheResourceAllocation;
   }> {
     return {
@@ -516,9 +495,9 @@ class ParallelCacheOrchestrator {
         l2Size: await this.getCacheSize(this.l2Memory),
         l3Size: await this.getCacheSize(this.l3Storage),
         xstateStats: getCacheStats(),
-        shaderStats: await shaderCacheManager.getShaderStats(),
+        shaderStats: await shaderCacheManager.getShaderStats()
       },
-      systemResources: this.resourceAllocation,
+      systemResources: this.resourceAllocation
     };
   }
 

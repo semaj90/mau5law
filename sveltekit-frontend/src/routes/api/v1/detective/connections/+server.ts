@@ -14,9 +14,9 @@ const ConnectionMappingSchema = z.object({
       includePredictedConnections: z.boolean().default(true),
       clusterSimilar: z.boolean().default(true),
       timeWindow: z.string().optional(),
-      layout: z.enum(['force', 'circular', 'hierarchical', 'grid']).default('force'),
+      layout: z.enum(['force', 'circular', 'hierarchical', 'grid']).default('force')
     })
-    .optional(),
+    .optional()
 });
 
 /*
@@ -49,14 +49,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         title: 'Email thread',
         content: '...',
         createdAt: new Date().toISOString(),
-        evidenceType: 'communication',
+        evidenceType: 'communication'
       },
       {
         id: 'e3',
         title: 'Bank record',
         content: '...',
         createdAt: new Date().toISOString(),
-        evidenceType: 'financial',
+        evidenceType: 'financial'
       },
     ];
 
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         size: 14 + i * 2,
         color: getNodeColor('evidence'),
         metadata: { originalId: it.id, createdAt: it.createdAt, evidenceType: it.evidenceType },
-        position: generateRandomPosition(),
+        position: generateRandomPosition()
       })),
       {
         id: 'person_john',
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         size: 22,
         color: getNodeColor('person'),
         metadata: { mentions: 3 },
-        position: generateRandomPosition(),
+        position: generateRandomPosition()
       },
       {
         id: 'loc_office',
@@ -89,12 +89,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         size: 18,
         color: getNodeColor('location'),
         metadata: {},
-        position: generateRandomPosition(),
+        position: generateRandomPosition()
       },
     ];
 
     const edges = generateConnections(nodes, connectionStrength, {
-      includeWeakConnections: options?.includeWeakConnections ?? false,
+      includeWeakConnections: options?.includeWeakConnections ?? false
     });
 
     const clusters = options?.clusterSimilar ? generateClustersSync(nodes) : [];
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       nodes,
       edges,
       clusters,
-      statistics: { totalNodes: nodes.length, totalEdges: edges.length },
+      statistics: { totalNodes: nodes.length, totalEdges: edges.length }
     };
 
     return json({
@@ -112,14 +112,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId: caseId ?? null,
         connectionMap,
         metadata: {
-          focusTypes: focusTypes ?? ['all'],
+         , focusTypes: focusTypes ?? ['all'],
           connectionStrength,
           maxDepth,
           layout: options?.layout ?? 'force',
-          analysisTime: new Date().toISOString(),
-        },
+          analysisTime: new Date().toISOString()
+        }
       },
-      meta: { action: 'connection_map_stub', timestamp: new Date().toISOString() },
+      meta: { action: 'connection_map_stub', timestamp: new Date().toISOString() }
     });
   } catch (err: any) {
     console.error('Detective connections POST error:', err);
@@ -132,27 +132,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  * Simple informational endpoint
  */
 export const GET: RequestHandler = async () => {
-  return json({ success: true, message: 'Detective connections endpoint (stub)' });
+  return json({ success: true, message: `Detective connections endpoint (stub)` });
 };
 
 /* Helper utilities (kept minimal and synchronous where possible) */
 
 // Add a narrow node type to avoid `any` and make intent explicit
-type DetectiveNode = {
-  id: string;
-  label: string;
+type DetectiveNode = { id: string;, label: string;
   type: string;
   subtype?: string;
   size?: number;
   color?: string;
   metadata?: Record<string, unknown>;
-  position?: { x: number; y: number };
+  position?: { x: number;, y: number };
 };
 
 // New explicit edge type (replace previous any[] usage)
-type DetectiveEdge = {
-  id: string;
-  source: string;
+type DetectiveEdge = { id: string;, source: string;
   target: string;
   weight: number;
   type: string;
@@ -162,9 +158,7 @@ type DetectiveEdge = {
 };
 
 // New explicit cluster type (used instead of any[])
-type DetectiveCluster = {
-  id: string;
-  label: string;
+type DetectiveCluster = { id: string;, label: string;
   nodes: string[];
   color?: string;
   size?: number;
@@ -173,7 +167,7 @@ type DetectiveCluster = {
 function generateConnections(
   nodes: DetectiveNode[],
   connectionStrength: number,
-  opts: { includeWeakConnections: boolean }
+  opts: {, includeWeakConnections: boolean }
 ): DetectiveEdge[] {
   const edges: DetectiveEdge[] = [];
   for (let i = 0; i < nodes.length; i++) {
@@ -192,7 +186,7 @@ function generateConnections(
           type: determineConnectionType(n1, n2),
           label: generateConnectionLabel(n1, n2, strength),
           color: getEdgeColor(strength),
-          metadata: { strength },
+          metadata: { strength }
         });
       }
     }
@@ -219,7 +213,7 @@ function generateClustersSync(nodes: DetectiveNode[]): DetectiveCluster[] {
       label: `${type.charAt(0).toUpperCase() + type.slice(1)} Cluster`,
       nodes: ids,
       color: getClusterColor(idx),
-      size: ids.length,
+      size: ids.length
     }));
 }
 
@@ -247,8 +241,7 @@ function getNodeColor(type: string): string {
     location: '#10B981',
     event: '#F59E0B',
     communication: '#8B5CF6',
-    financial: '#06B6D4',
-  };
+    financial: `#06B6D4` };
   return colors[type] || '#6B7280';
 }
 
@@ -264,6 +257,6 @@ function getClusterColor(index: number): string {
   return colors[index % colors.length];
 }
 
-function generateRandomPosition(): { x: number; y: number } {
+function generateRandomPosition(): { x: number;, y: number } {
   return { x: Math.random() * 800 - 400, y: Math.random() * 600 - 300 };
 }

@@ -3,9 +3,7 @@ import { globalGPUManager } from './global-gpu-manager';
  * MemorySlot interface represents a slot in memory with an id, embedding, timestamp,
  * usage count, and optional metadata.
  */
-export interface MemorySlot {
-  id: string;
-  embedding: Float32Array;
+export interface MemorySlot { id: string;, embedding: Float32Array;
   timestamp: number;
   usageCount: number;
   metadata?: Record<string, unknown>;
@@ -14,9 +12,7 @@ export interface MemorySlot {
  * NESMemoryRegion interface represents a region of NES memory with a name, size,
  * buffer, and view.
  */
-export interface NESMemoryRegion {
-  name: string;
-  size: number;
+export interface NESMemoryRegion { name: string;, size: number;
   buffer: SharedArrayBuffer | ArrayBuffer;
   view: Uint8Array;
 }

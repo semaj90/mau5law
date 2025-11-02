@@ -9,14 +9,10 @@ import Loki from 'lokijs';
 // we'll treat collections as `any` at runtime to keep TypeScript robust
 // (lokijs Collection types are often non-generic in various versions)
 // import type { Collection } from 'lokijs';
-export interface CacheableItem {
-  id: string;
-  type: 'document' | 'search' | 'embedding' | 'analysis' | 'task' | 'config';
+export interface CacheableItem { id: string;, type: 'document' | 'search' | 'embedding' | 'analysis' | 'task' | 'config';
   key: string;
   data: any;
-  metadata: {
-    created: number;
-    accessed: number;
+  metadata: { created: number;, accessed: number;
     hits: number;
     size: number;
     ttl?: number;
@@ -24,9 +20,7 @@ export interface CacheableItem {
   };
   expiry?: number;
 }
-export interface VSCodeTask {
-  label: string;
-  type: string;
+export interface VSCodeTask { label: string;, type: string;
   command: string;
   args?: string[];
   group?: string;
@@ -44,9 +38,7 @@ export interface VSCodeTask {
     runOn?: string;
   };
 }
-export interface CacheStats {
-  totalItems: number;
-  hitRate: number;
+export interface CacheStats { totalItems: number;, hitRate: number;
   memoryUsage: number;
   collections: Record<string, number>;
   recentActivity: Array<any>;
@@ -79,9 +71,9 @@ export class LokiCacheVSCodeIntegration {
         echo: true,
         reveal: 'always',
         focus: false,
-        panel: 'shared',
+        panel: 'shared'
       },
-      problemMatcher: ['$tsc'],
+      problemMatcher: ['$tsc']
     },
     'vector-search': {
       label: 'Vector: Semantic Search',
@@ -92,8 +84,8 @@ export class LokiCacheVSCodeIntegration {
       presentation: {
         echo: true,
         reveal: 'silent',
-        focus: false,
-      },
+        focus: false
+      }
     },
     'neo4j-sync': {
       label: 'Neo4j: Sync Graph Data',
@@ -101,7 +93,7 @@ export class LokiCacheVSCodeIntegration {
       command: 'npm',
       args: ['run', 'neo4j:sync'],
       group: 'build',
-      dependsOn: ['ai-process'],
+      dependsOn: ['ai-process']
     },
     'cache-clear': {
       label: 'Cache: Clear All Data',
@@ -111,8 +103,8 @@ export class LokiCacheVSCodeIntegration {
       group: 'build',
       presentation: {
         clear: true,
-        reveal: 'always',
-      },
+        reveal: 'always'
+      }
     },
     'gpu-status': {
       label: 'GPU: Check Status',
@@ -122,9 +114,8 @@ export class LokiCacheVSCodeIntegration {
       group: 'test',
       presentation: {
         reveal: 'always',
-        panel: 'new',
-      },
-    },
+        panel: 'new` }
+    }
   };
   constructor() {
     this.initializeDB();
@@ -137,7 +128,7 @@ export class LokiCacheVSCodeIntegration {
     this.db = new Loki(this.dbName, {
       autoload: false,
       autosave: true,
-      autosaveInterval: 5000,
+      autosaveInterval: 5000
     });
     // Create collections
     this.createCollections();
@@ -183,7 +174,7 @@ export class LokiCacheVSCodeIntegration {
     for (const config of collectionConfigs) {
       if (!this.db.getCollection(config.name)) {
         const options: any = {
-          indices: config.indexes,
+          indices: config.indexes
         };
         if (config.ttl) {
           options.ttl = config.ttl;
@@ -230,9 +221,9 @@ export class LokiCacheVSCodeIntegration {
         hits: 0,
         size: this.calculateSize(data),
         ttl: options.ttl,
-        tags: options.tags || [],
+        tags: options.tags || []
       },
-      expiry: options.ttl ? now + options.ttl : undefined,
+      expiry: options.ttl ? now + options.ttl : undefined
     };
 
     const existing = collection.findOne({ key });
@@ -326,12 +317,12 @@ export class LokiCacheVSCodeIntegration {
         results,
         searchType,
         resultCount: results.length,
-        cached: new Date().toISOString(),
+        cached: new Date().toISOString()
       },
       {
         type: 'search',
         ttl,
-        tags: ['search', searchType],
+        tags: ['search', searchType]
       }
     );
   }
@@ -350,7 +341,7 @@ export class LokiCacheVSCodeIntegration {
     await this.set(cacheKey, analysis, {
       type: 'analysis',
       ttl,
-      tags: ['analysis', 'document'],
+      tags: ['analysis', 'document']
     });
   }
   /**
@@ -364,12 +355,12 @@ export class LokiCacheVSCodeIntegration {
         text: text.slice(0, 200), // Store preview only
         embedding,
         model,
-        dimensions: embedding.length,
+        dimensions: embedding.length
       },
       {
         type: 'embedding',
         ttl,
-        tags: ['embedding', model],
+        tags: ['embedding', model]
       }
     );
   }
@@ -389,7 +380,7 @@ export class LokiCacheVSCodeIntegration {
     // Cache task definition
     await this.set(`task:${taskId}`, taskDefinition, {
       type: 'task',
-      tags: ['vscode', 'task', taskDefinition.group || 'general'],
+      tags: ['vscode', 'task', taskDefinition.group || 'general']
     });
     // Add to VS Code tasks.json if possible
     await this.updateVSCodeTasksFile(taskId, taskDefinition);
@@ -408,12 +399,12 @@ export class LokiCacheVSCodeIntegration {
       // Future: Write to .vscode/tasks.json
       const taskConfig = {
         version: '2.0.0',
-        tasks: [task],
+        tasks: [task]
       };
       // Cache task configuration for VS Code integration
       await this.set(`vscode:task:${taskId}`, taskConfig, {
         type: 'config',
-        tags: ['vscode', 'tasks', taskId],
+        tags: ['vscode', 'tasks', taskId]
       });
     } catch (error: any) {
       console.warn('⚠️ VS Code tasks.json update failed:', error);
@@ -436,7 +427,7 @@ export class LokiCacheVSCodeIntegration {
       await this.set(`task-result:${taskId}:${Date.now()}`, result, {
         type: 'task',
         ttl: 3600000, // 1 hour
-        tags: ['task-result', taskId],
+        tags: ['task-result', taskId]
       });
       console.log(`✅ Task executed: ${taskId}`);
       return result;
@@ -444,8 +435,7 @@ export class LokiCacheVSCodeIntegration {
       console.error(`❌ Task execution failed: ${taskId}`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+        error: error instanceof Error ? error.message : 'Unknown error` };
     }
   }
   /**
@@ -453,39 +443,35 @@ export class LokiCacheVSCodeIntegration {
    */
   private async executeTask(task: VSCodeTask, args: Record<string, string> = {}): Promise<any> {
     // Mock task execution - in real implementation this would call VS Code API
-    console.log(`⚡ Executing: ${task.command} ${task.args?.join(' ') || ''}`);
+    console.log(`⚡ Executing: ${task.command} ${task.args?.join(' ') || '` }`);
     // Simulate task execution based on type
     switch (task.label) {
       case 'AI: Process Document':
         return {
           success: true,
-          output: `Document processed successfully: ${args.documentPath || 'unknown'}`,
-        };
+          output: 'Document processed; successfully: ${args.documentPath || 'unknown` }` };
       case 'Vector: Semantic Search':
         return {
           success: true,
-          output: `Search completed for: ${args.searchQuery || 'unknown'}`,
-        };
+          output: 'Search completed; for: ${args.searchQuery || 'unknown` }' };
       case 'Neo4j: Sync Graph Data':
         return {
           success: true,
-          output: 'Graph data synchronized successfully',
+          output: 'Graph data synchronized successfully'
         };
       case 'Cache: Clear All Data':
         await this.clearAll();
         return {
           success: true,
-          output: 'Cache cleared successfully',
+          output: 'Cache cleared successfully'
         };
       case 'GPU: Check Status':
         return {
           success: true,
-          output: 'GPU Status: RTX 3060 Ti - Available, 35 layers configured',
-        };
+          output: 'GPU; Status: RTX 3060 Ti - Available, 35 layers configured` };
       default: return {
           success: true,
-          output: `Task executed: ${task.label}`,
-        };
+          output: `Task; executed: ${task.label}' };
     }
   }
   /**
@@ -499,8 +485,7 @@ export class LokiCacheVSCodeIntegration {
     }
     // Create custom legal AI tasks
     const customTasks: Record<string, VSCodeTask> = {
-      'legal-analysis': {
-        label: 'Legal AI: Full Case Analysis',
+      'legal-analysis': { label: 'Legal, AI: Full Case Analysis',
         type: 'shell',
         command: 'npm',
         args: ['run', 'legal:analyze', '${input:caseId}'],
@@ -509,9 +494,9 @@ export class LokiCacheVSCodeIntegration {
           echo: true,
           reveal: 'always',
           focus: true,
-          panel: 'dedicated',
+          panel: 'dedicated'
         },
-        dependsOn: ['ai-process', 'vector-search', 'neo4j-sync'],
+        dependsOn: ['ai-process', 'vector-search', 'neo4j-sync']
       },
       'evidence-process': {
         label: 'Evidence: Process and Index',
@@ -521,8 +506,8 @@ export class LokiCacheVSCodeIntegration {
         group: 'build',
         presentation: {
           echo: true,
-          reveal: 'always',
-        },
+          reveal: 'always'
+        }
       },
       'cache-optimize': {
         label: 'Cache: Optimize and Cleanup',
@@ -531,9 +516,8 @@ export class LokiCacheVSCodeIntegration {
         args: ['run', 'cache:optimize'],
         group: 'build',
         runOptions: {
-          runOn: 'folderOpen',
-        },
-      },
+          runOn: 'folderOpen` }
+      }
     };
     for (const [taskId, taskDef] of Object.entries(customTasks)) {
       await this.createVSCodeTask(taskId, taskDef);
@@ -591,7 +575,7 @@ export class LokiCacheVSCodeIntegration {
    * Batch cache operations with task automation
    */
   async batchCache(
-    operations: Array<{ key: string; producer: () => Promise<any>; options?: any }>,
+    operations: Array<{, key: string; producer: () => Promise<any>; options?: any }>,
     triggerTaskAfter?: string
   ): Promise<any[]> {
     console.log(`📦 Batch caching ${operations.length} items...`);
@@ -600,7 +584,7 @@ export class LokiCacheVSCodeIntegration {
     if (triggerTaskAfter) {
       await this.triggerVSCodeTask(triggerTaskAfter, {
         batchSize: operations.length.toString(),
-        keys: operations.map(op => op.key).join(','),
+        keys: operations.map(op => op.key).join(',')
       });
     }
     console.log(`✅ Batch cache complete: ${results.length} items`);
@@ -626,7 +610,7 @@ export class LokiCacheVSCodeIntegration {
     if (triggerCleanupTask && deletedCount > 0) {
       await this.triggerVSCodeTask('cache-optimize', {
         deletedCount: deletedCount.toString(),
-        pattern: pattern.toString(),
+        pattern: pattern.toString()
       });
     }
     console.log(`🧹 Cache invalidated: ${deletedCount} items matching ${pattern}`);
@@ -641,7 +625,7 @@ export class LokiCacheVSCodeIntegration {
       hitRate: this.hitCount / (this.hitCount + this.missCount) || 0,
       memoryUsage: 0,
       collections: {},
-      recentActivity: this.activity.slice(-20),
+      recentActivity: this.activity.slice(-20)
     };
     for (const [name, collection] of this.collections) {
       const items = collection.find({});
@@ -662,8 +646,7 @@ export class LokiCacheVSCodeIntegration {
     let memoryFreed = 0;
     // Remove expired items
     for (const [name, collection] of this.collections) {
-      const expired = collection.find({
-        expiry: { $lt: Date.now() },
+      const expired = collection.find({ expiry: {, $lt: Date.now() }
       });
       for (const item of expired) {
         memoryFreed += (item as any)?.metadata?.size || 0;
@@ -693,10 +676,9 @@ export class LokiCacheVSCodeIntegration {
     // Trigger VS Code optimization task
     await this.triggerVSCodeTask('cache-optimize', {
       itemsRemoved: itemsRemoved.toString(),
-      memoryFreed: (memoryFreed / 1024 / 1024).toFixed(2) + 'MB',
-    });
+      memoryFreed: (memoryFreed / 1024 / 1024).toFixed(2) + 'MB` });
     const result = { itemsRemoved, memoryFreed, optimizations };
-    console.log(`✅ Cache optimization complete:`, result);
+    console.log(`✅ Cache optimization complete: ', result);
     return result;
   }
   /**
@@ -751,8 +733,7 @@ export class LokiCacheVSCodeIntegration {
       'embedding': 'embeddings',
       'analysis': 'analyses',
       'task': 'tasks',
-      'config': 'configs',
-    };
+      'config': 'configs` };
     return mapping[type] || 'documents';
   }
   private calculateSize(data: any): number {
@@ -829,7 +810,7 @@ export class LegalAICacheUtils {
       {
         type: 'analysis',
         ttl: 7200000, // 2 hours
-        triggerTask: true,
+        triggerTask: true
       }
     );
   }
@@ -847,14 +828,14 @@ export class LegalAICacheUtils {
         const result = await vectorProxy.search(embedding, {
           query,
           limit: 20,
-          threshold: 0.7,
+          threshold: 0.7
         });
         return result && (result as any).success ? (result as any).data : [];
       },
       {
         type: 'search',
         ttl: 1800000, // 30 minutes
-        tags: ['vector-search', searchType],
+        tags: ['vector-search', searchType]
       }
     );
   }
@@ -871,7 +852,7 @@ export class LegalAICacheUtils {
       {
         type: 'embedding',
         ttl: 86400000, // 24 hours
-        tags: ['embedding', model],
+        tags: ['embedding', model]
       }
     );
   }
@@ -889,7 +870,7 @@ export class LegalAICacheUtils {
       {
         type: 'analysis',
         ttl: 3600000, // 1 hour
-        triggerTask: true,
+        triggerTask: true
       }
     );
   }

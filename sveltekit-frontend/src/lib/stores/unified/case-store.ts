@@ -23,9 +23,7 @@ import { writable, derived } from 'svelte/store';
 export type CaseStatus = 'open' | 'in_progress' | 'closed' | 'archived' | 'pending_review';
 export type CasePriority = 'low' | 'medium' | 'high' | 'critical';
 
-export interface Case {
-  id: string;
-  title: string;
+export interface Case { id: string;, title: string;
   description: string;
   caseNumber: string;
   status: CaseStatus;
@@ -45,13 +43,9 @@ export interface Case {
   updatedAt: number;
 }
 
-export interface CaseFilters {
-  statuses: CaseStatus[];
-  priorities: CasePriority[];
+export interface CaseFilters { statuses: CaseStatus[];, priorities: CasePriority[];
   jurisdictions: string[];
-  dateRange?: {
-    start: number;
-    end: number;
+  dateRange?: { start: number;, end: number;
   };
   tags?: string[];
   searchText?: string;
@@ -274,8 +268,7 @@ function createCaseStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(caseData),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -313,8 +306,7 @@ function createCaseStore() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updates),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const updated = await response.json();
@@ -343,8 +335,7 @@ function createCaseStore() {
       try {
         const response = await fetch(`/api/cases/${id}`, {
           method: 'DELETE',
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({
@@ -489,6 +480,6 @@ export const activeCase = derived(
  *   import { caseStore, cases, filteredCases, activeCase } from '$lib/stores/unified'
  *
  * Usage patterns:
- *   Old: $cases, $casesStore
+ *  ; Old: $cases, $casesStore
  *   New: $cases or $filteredCases from unified
  */

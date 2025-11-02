@@ -17,22 +17,16 @@ interface ChatRequest {
   backend?: 'ollama' | 'tensorrt' | 'mock';
 }
 
-interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: string;
 }
 
-interface ChatResponse {
-  message: ChatMessage;
-  model: string;
+interface ChatResponse { message: ChatMessage;, model: string;
   backend: string;
   tokens?: number;
   processingTime: number;
   qualityScore: number;
-  usage?: {
-    prompt: number;
-    completion: number;
+  usage?: { prompt: number;, completion: number;
     total: number;
   };
 }
@@ -43,7 +37,7 @@ type ChatInferenceResult = {
   model?: string;
   backend?: string;
   tokens?: number;
-  usage?: { prompt: number; completion: number; total: number };
+  usage?: { prompt: number; completion: number;, total: number };
 };
 
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
@@ -86,8 +80,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       maxTokens = 1000,
       stream = false,
       systemPrompt,
-      backend = 'ollama',
-    } = requestData;
+      backend = 'ollama` } = requestData;
 
     // Validate parameters
     if (temperature < 0 || temperature > 2) {
@@ -114,24 +107,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       temperature,
       maxTokens,
       systemPrompt,
-      backend,
+      backend
     });
 
     const processingTime = performance.now() - startTime;
 
     // Build response
-    const response: ChatResponse = {
-      message: {
-        role: 'assistant',
+    const response: ChatResponse = { message: {, role: 'assistant',
         content: chatResult.text,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       model: chatResult.model || model,
       backend: chatResult.backend || backend,
       tokens: chatResult.tokens,
       processingTime: Math.round(processingTime),
       qualityScore: calculateChatQualityScore(chatResult.text, userMessage.content),
-      usage: chatResult.usage,
+      usage: chatResult.usage
     };
 
     return json(response, {
@@ -140,8 +131,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'X-Model-Used': response.model,
-        'X-Backend-Used': response.backend,
-      },
+        'X-Backend-Used': response.backend
+      }
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -174,7 +165,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const errorResponse = {
       error: status !== 500 ? publicMessage || 'Chat request failed' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? e.message : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -182,20 +173,17 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': 'true` }
     });
   }
 };
 
 // Streaming chat handler
-async function handleStreamingChat(params: {
-  messages: ChatMessage[];
-  model: string;
+async function handleStreamingChat(params: { messages: ChatMessage[];, model: string;
   temperature: number;
   maxTokens: number;
   systemPrompt?: string;
-  backend: string;
+ , backend: string;
 }): Promise<Response> {
   const encoder = new TextEncoder();
 
@@ -209,15 +197,13 @@ async function handleStreamingChat(params: {
         const chunks = text.match(/.{1,20}/g) || [text]; // Split into 20-char chunks
 
         for (let i = 0; i < chunks.length; i++) {
-          const chunk = {
-            delta: {
-              role: i === 0 ? 'assistant' : undefined,
-              content: chunks[i],
+          const chunk = { delta: {, role: i === 0 ? 'assistant' : undefined,
+              content: chunks[i]
             },
             model: result.model,
             backend: result.backend,
             index: i,
-            finished: i === chunks.length - 1,
+            finished: i === chunks.length - 1
           };
 
           const chunkData = `data: ${JSON.stringify(chunk)}\n\n`;
@@ -234,11 +220,11 @@ async function handleStreamingChat(params: {
       } catch (err: any) {
         // Normalize unknown error and send a JSON-safe SSE error chunk
         const e = ensureError(err);
-        const payload = { error: e.message ?? 'Unknown error' };
+        const payload = { error: e.message ?? 'Unknown error` };
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
         controller.close();
       }
-    },
+    }
   });
 
   return new Response(stream, {
@@ -247,19 +233,16 @@ async function handleStreamingChat(params: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-    },
+      'Access-Control-Allow-Origin': '*` }
   });
 }
 
 // Chat inference execution
-async function executeChatInference(params: {
-  messages: ChatMessage[];
-  model: string;
+async function executeChatInference(params: { messages: ChatMessage[];, model: string;
   temperature: number;
   maxTokens: number;
   systemPrompt?: string;
-  backend: string;
+ , backend: string;
 }): Promise<ChatInferenceResult> {
   const { messages, model, temperature, maxTokens, systemPrompt, backend } = params;
 
@@ -273,10 +256,10 @@ async function executeChatInference(params: {
       case 'mock':
         return await executeMockChat(messages, model, maxTokens);
       default:
-        throw new Error(`Unknown backend: ${backend}`);
+        throw new Error(`Unknown; backend: ${backend}`);
     }
   } catch (error) {
-    console.error(`Chat inference failed with ${backend} backend:`, error);
+    console.error(`Chat inference failed with ${backend} backend: ', error);
     // Fallback to mock
     console.warn('Falling back to mock chat');
     return await executeMockChat(messages, model, maxTokens);
@@ -300,7 +283,7 @@ async function executeOllamaChat(
   }
 
   // Build chat payload for Ollama's chat endpoint
-  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
+  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant';, content: string }> = [];
 
   if (systemPrompt) {
     formattedMessages.push({ role: 'system', content: systemPrompt });
@@ -322,15 +305,15 @@ async function executeOllamaChat(
     stream: false,
     options: {
       temperature,
-      num_predict: maxTokens,
-    },
+      num_predict: maxTokens
+    }
   };
 
   const response = await fetch(`${ollamaEndpoint}/api/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` },
     body: JSON.stringify(ollamaRequest),
-    signal: AbortSignal.timeout(60000),
+    signal: AbortSignal.timeout(60000)
   });
 
   if (!response.ok) {
@@ -364,9 +347,9 @@ async function executeOllamaChat(
       ? {
           prompt: promptEval,
           completion: evalCount,
-          total: promptEval + evalCount,
+          total: promptEval + evalCount
         }
-      : undefined,
+      : undefined
   };
 }
 
@@ -397,21 +380,21 @@ async function executeTensorRTChat(
   try {
     const res = await fetch(`${trtEndpoint.replace(/\/+$/, '')}/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt: (() => {
           let p = '';
           if (systemPrompt) p += `System: ${systemPrompt}\n\n`;
           for (const msg of messages) {
-            p += `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n\n`;
+            p += `${msg.role === 'user' ? 'User' : `Assistant` }: ${msg.content}\n\n`;
           }
-          p += 'Assistant: ';
+          p += 'Assistant: `;
           return p;
         })(),
-        options: { temperature, max_tokens: maxTokens },
+        options: { temperature, max_tokens: maxTokens }
       }),
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(60000)
     });
 
     if (!res.ok) {
@@ -423,7 +406,7 @@ async function executeTensorRTChat(
       } catch {
         /* ignore */
       }
-      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : ''}`);
+      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : `` }`);
     }
 
     const data = (await res.json()) as unknown;
@@ -442,7 +425,7 @@ async function executeTensorRTChat(
     const tokens = typeof tokensCandidate === 'number' ? Number(tokensCandidate) : undefined;
 
     const usageRaw = getField<unknown>(data, 'usage');
-    let usage: { prompt: number; completion: number; total: number } | undefined = undefined;
+    let usage: { prompt: number; completion: number;, total: number } | undefined = undefined;
 
     if (usageRaw && typeof usageRaw === 'object') {
       const maybePrompt = (usageRaw as Record<string, unknown>)['prompt'];
@@ -457,7 +440,7 @@ async function executeTensorRTChat(
         usage = {
           prompt: promptNum ?? 0,
           completion: completionNum ?? 0,
-          total: totalNum ?? (promptNum ?? 0) + (completionNum ?? 0),
+          total: totalNum ?? (promptNum ?? 0) + (completionNum ?? 0)
         };
       }
     }
@@ -467,7 +450,7 @@ async function executeTensorRTChat(
       model: modelUsed,
       backend: 'tensorrt',
       tokens,
-      usage,
+      usage
     };
   } catch (err: any) {
     // Bubble up a normalized error for the caller to handle; keep details in logs
@@ -520,8 +503,8 @@ async function executeMockChat(
     usage: {
       prompt: Math.ceil(userMessage.length / 4),
       completion: tokenCount,
-      total: Math.ceil(userMessage.length / 4) + tokenCount,
-    },
+      total: Math.ceil(userMessage.length / 4) + tokenCount
+    }
   };
 }
 

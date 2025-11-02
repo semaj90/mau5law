@@ -23,17 +23,13 @@ import { writable, derived } from 'svelte/store';
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 export type ToastDuration = 2000 | 3000 | 5000 | 'indefinite';
 
-export interface Toast {
-  id: string;
-  message: string;
+export interface Toast { id: string;, message: string;
   type: NotificationType;
   duration: ToastDuration;
   createdAt: number;
 }
 
-export interface Notification {
-  id: string;
-  title: string;
+export interface Notification { id: string;, title: string;
   message: string;
   type: NotificationType;
   isRead: boolean;
@@ -41,9 +37,7 @@ export interface Notification {
   actionUrl?: string;
 }
 
-export interface Alert {
-  id: string;
-  title: string;
+export interface Alert { id: string;, title: string;
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   isDismissed: boolean;
@@ -54,14 +48,10 @@ export interface Alert {
 /**
  * Notification Store State
  */
-interface NotificationStoreState {
-  notifications: Notification[];
-  toasts: Toast[];
+interface NotificationStoreState { notifications: Notification[];, toasts: Toast[];
   alerts: Alert[];
   unreadCount: number;
-  alertSettings: {
-    enableSoundNotification: boolean;
-    enableDesktopNotification: boolean;
+  alertSettings: { enableSoundNotification: boolean;, enableDesktopNotification: boolean;
     groupByType: boolean;
   };
 }
@@ -354,7 +344,7 @@ export const activeAlerts = derived(
  *   import { notificationStore, showToast, notifications, alerts } from '$lib/stores/unified'
  *
  * Usage patterns:
- *   Old: addAlert(...) - function based
+ *  ; Old: addAlert(...) - function based
  *   New: notificationStore.addAlert(...) - method based
  *
  *   Old: $alerts, $notifications, $toasts - separate subscriptions

@@ -2,7 +2,7 @@ import type {
   RAGQuery,
   RAGResponse,
   RAGSearchResult,
-  VectorSearchOptions as RAGVectorSearchOptions,
+  VectorSearchOptions as RAGVectorSearchOptions
 } from '$lib/types/rag';
 import type { RedisClient } from '$lib/types/redis';
 import type { EmbeddingService } from '$lib/services/feedback-loop-service';

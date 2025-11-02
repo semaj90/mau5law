@@ -7,15 +7,11 @@ import type { Message } from '$lib/types';
 import { rabbitMQService } from './rabbitmq-service';
 import type { DocumentProcessingJob } from './rabbitmq-service';
 
-interface RetryAttempt {
-  attemptNumber: number;
-  timestamp: string;
+interface RetryAttempt { attemptNumber: number;, timestamp: string;
   errorMessage?: string;
 }
 
-interface DLQMessage extends DocumentProcessingJob {
-  retryAttempts: RetryAttempt[];
-  maxRetries: number;
+interface DLQMessage extends DocumentProcessingJob { retryAttempts: RetryAttempt[];, maxRetries: number;
   firstFailedAt: string;
   lastFailedAt: string;
   originalQueue: string;
@@ -28,7 +24,7 @@ export class DLQMonitor {
     processed: 0,
     retried: 0,
     permanentFailures: 0,
-    rescued: 0,
+    rescued: 0
   };
 
   // Exponential backoff configuration
@@ -36,7 +32,7 @@ export class DLQMonitor {
     maxRetries: 5,
     baseDelay: 1000, // 1 second
     maxDelay: 300000, // 5 minutes
-    backoffMultiplier: 2,
+    backoffMultiplier: 2
   };
 
   private constructor() {}
@@ -135,8 +131,7 @@ export class DLQMonitor {
         msg.retryAttempts.push({
           attemptNumber,
           timestamp: new Date().toISOString(),
-          errorMessage: 'Retry failed',
-        });
+          errorMessage: 'Retry failed` });
 
         // Requeue to DLQ for another attempt
         nack(true);
@@ -166,7 +161,7 @@ export class DLQMonitor {
         caseId: job.caseId,
         userId: job.userId,
         priority: (job.priority ?? 5) + 1, // Increase priority for retries
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
 
       // Republish to original queue
@@ -197,8 +192,8 @@ export class DLQMonitor {
         s3Key: job.s3Key,
         s3Bucket: job.s3Bucket,
         originalName: job.originalName,
-        mimeType: job.mimeType,
-      },
+        mimeType: job.mimeType
+      }
     };
 
     // TODO: Store in database for analysis and alerting
@@ -218,7 +213,7 @@ export class DLQMonitor {
     return {
       ...this.stats,
       isMonitoring: this.isMonitoring,
-      rescueRate: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0,
+      rescueRate: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0
     };
   }
 
@@ -238,7 +233,7 @@ export class DLQMonitor {
       processed: 0,
       retried: 0,
       permanentFailures: 0,
-      rescued: 0,
+      rescued: 0
     };
   }
 }

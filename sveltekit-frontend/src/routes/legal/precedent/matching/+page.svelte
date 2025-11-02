@@ -3,7 +3,7 @@
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte'; // Main card component
+  import NesCard from '$lib/components/ui/nes-Card.svelte'; // Main card component
   import NesCardHeader from '$lib/components/ui/nes-card-header.svelte'; // Assuming this is a default export from its own file
   import NesCardContent from '$lib/components/ui/nes-card-content.svelte'; // Assuming this is a default export from its own file
   import NesCardTitle from '$lib/components/ui/nes-card-title.svelte'; // Assuming this is a default export from its own file
@@ -195,7 +195,7 @@ import type { Case } from '$lib/types';
     analysisInProgress = false;
     legalSystem.status = 'complete';
     legalSystem.processingStage = 'Precedent analysis complete';
-    legalSystem.vectorSearchActive = $state(false);
+    legalSystem.vectorSearchActive = false;
     legalSystem.aiConfidence = calculateOverallConfidence();
   }
   function startSystemMonitoring() {

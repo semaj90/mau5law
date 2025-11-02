@@ -8,13 +8,11 @@ import * as cluster from 'node:cluster';
 import type { Worker } from 'node:cluster'; // Explicitly import Worker type for better typing
 
 // Define a local type alias to augment the: 'cluster' module's type.
-// This addresses potential missing properties like: 'isPrimary' and: 'workers'
+// This addresses potential missing properties like: 'isPrimary'; and: 'workers'
 // if the @types/node package is not fully up-to-date or has specific configurations.
 // Using a type alias with intersection (&) can be more robust for module augmentation
 // compared to an interface extending typeof cluster in some TypeScript environments.
-type AugmentedCluster = typeof cluster & {
-  isPrimary: boolean;
-  workers: { [id: string]: Worker | undefined };
+type AugmentedCluster = typeof cluster & { isPrimary: boolean;, workers: { [id: string]: Worker | undefined };
 };
 
 // Define interfaces for better type safety
@@ -40,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!(cluster as AugmentedCluster).isPrimary) {
       return json(
         {
-          error: 'Cluster restart only available from primary process',
+          error: 'Cluster restart only available from primary process'
         },
         { status: 403 }
       );
@@ -50,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available',
+          error: 'Cluster manager not available'
         },
         { status: 503 }
       );
@@ -60,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           error: 'Rolling restart already in progress',
-          message: 'Please wait for the current restart to complete',
+          message: 'Please wait for the current restart to complete'
         },
         { status: 409 }
       );
@@ -78,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Start rolling restart in background
     const restartPromise = performRollingRestart(clusterManager, {
       force,
-      timeout,
+      timeout
     });
     // Don't await the full restart - return immediately
     restartPromise
@@ -98,8 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
       healthyWorkers: preRestartHealth.healthyWorkers,
       force,
       timeout,
-      initiator: 'admin_api',
-    };
+      initiator: 'admin_api` };
     console.log('📝 Restart audit log:', auditLog);
     return json({
       success: true,
@@ -108,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
       estimatedDuration: `${Math.ceil(preRestartWorkers.length * 3)}s`,
       force,
       timeout,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     // Changed to unknown
@@ -117,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to initiate rolling restart',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -130,7 +127,7 @@ export const GET: RequestHandler = async () => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available',
+          error: 'Cluster manager not available'
         },
         { status: 503 }
       );
@@ -144,7 +141,7 @@ export const GET: RequestHandler = async () => {
       healthyWorkers: health.healthyWorkers,
       lastRestart: globalThis.lastRestartTime || null,
       restartHistory: globalThis.restartHistory || [],
-      canRestart: !isRestarting && health.healthyWorkers > 0,
+      canRestart: !isRestarting && health.healthyWorkers > 0
     });
   } catch (error: any) {
     // Changed to unknown
@@ -152,8 +149,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         error: 'Failed to get restart status',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
+        message: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }
@@ -163,7 +159,7 @@ export const GET: RequestHandler = async () => {
  */
 async function performRollingRestart(
   clusterManager: ClusterManager,
-  options: { force: boolean; timeout: number }
+  options: {, force: boolean; timeout: number }
 ): Promise<void> {
   // Use defined interface
   const startTime = Date.now();
@@ -210,7 +206,7 @@ async function performRollingRestart(
     timestamp: new Date().toISOString(),
     duration,
     workersRestarted: workers.length,
-    success: true,
+    success: true
   };
   globalThis.lastRestartTime = Date.now();
   globalThis.restartHistory = globalThis.restartHistory || [];

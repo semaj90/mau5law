@@ -1,7 +1,5 @@
 // @ts-nocheck - Complex experimental service with external dependencies
-export type WebGPUDiagResult = {
-  supported: boolean;
-  adapterFound: boolean;
+export type WebGPUDiagResult = { supported: boolean;, adapterFound: boolean;
   deviceCreated: boolean;
   error?: string;
   warnings: string[];
@@ -68,7 +66,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
   let t1: number | undefined;
   let t2: number | undefined;
   // Try high-performance → default → low-power
-  for (const pref of ['high-performance', 'default', 'low-power'] as const) {
+  for (const pref of ['high-performance', 'default', 'low-power'] as const ) {
     tried.push(pref);
     try {
       adapter = await tryRequestAdapter(pref);
@@ -125,7 +123,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
   // If we reach here, no device acquired
   recommended.push(
     'Update GPU drivers (NVIDIA/AMD/Intel).',
-    'Verify chrome://gpu shows WebGPU: Supported.',
+    'Verify chrome://gpu shows; WebGPU: Supported.',
     'In Chrome/Edge settings, prefer discrete GPU for this app.',
     'If running in VM/remote or with multiple GPUs, ensure the high-performance adapter is allowed.'
   );

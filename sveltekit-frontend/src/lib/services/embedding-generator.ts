@@ -17,9 +17,7 @@ const EMBEDDING_CACHE_TTL = 604800; // 7 days
 const BATCH_SIZE = 32;
 const MAX_TEXT_LENGTH = 8192;
 
-export interface EmbeddingCacheStats {
-  totalRequests: number;
-  cacheHits: number;
+export interface EmbeddingCacheStats { totalRequests: number;, cacheHits: number;
   cacheMisses: number;
   hitRate: number;
   avgGenerationTime: number;
@@ -45,7 +43,7 @@ export class GemmaEmbeddingService {
     avgGenerationTime: 0,
     modelUsage: {},
     batchesProcessed: 0,
-    lastCleanup: Date.now(),
+    lastCleanup: Date.now()
   };
 
   private activeBatches = new Map<string, Promise<number[][]>>();
@@ -60,7 +58,7 @@ export class GemmaEmbeddingService {
         sharingPolicy: 'shared',
         updateFrequency: 'periodic',
         priority: 180,
-        estimatedUsage: 512 * 1024,
+        estimatedUsage: 512 * 1024
       });
     } catch {
       // registry may be a no-op in some environments; ignore registration errors
@@ -160,7 +158,7 @@ export class GemmaEmbeddingService {
 
   private async processBatch(textChunks: string[], options: EmbeddingOptions): Promise<number[][]> {
     const results: (number[] | null)[] = new Array(textChunks.length).fill(null);
-    const uncachedChunks: { index: number; text: string }[] = [];
+    const uncachedChunks: { index: number;, text: string }[] = [];
 
     for (let i = 0; i < textChunks.length; i++) {
       const chunk = textChunks[i];
@@ -254,10 +252,10 @@ export class GemmaEmbeddingService {
           model,
           prompt: textChunk,
           options: {
-            temperature: 0,
+           , temperature: 0,
             top_p: 1,
-            num_ctx: priority === 'critical' ? 8192 : priority === 'high' ? 4096 : 2048,
-          },
+            num_ctx: priority === 'critical' ? 8192 : priority === 'high' ? 4096 : 2048
+          }
         });
 
         // safe normalization and validation of embedding shape
@@ -309,8 +307,8 @@ export class GemmaEmbeddingService {
             dimensionality,
             magnitude,
             avgValue,
-            textPreview: textChunk.substring(0, 100),
-          },
+            textPreview: textChunk.substring(0, 100)
+          }
         }
       );
     } catch (err) {

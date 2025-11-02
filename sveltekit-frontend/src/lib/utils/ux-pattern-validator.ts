@@ -2,16 +2,12 @@
  * UX Pattern Validator for Legal AI Platform
  * Validates design consistency and user experience patterns
  */
-interface UXPattern {
-  name: string;
-  description: string;
+interface UXPattern { name: string;, description: string;
   category: 'consistency' | 'usability' | 'performance' | 'accessibility';
   validate: () => boolean | Promise<boolean>;
   recommendation: string;
 }
-interface UXValidationResult {
-  pattern: UXPattern;
-  passed: boolean;
+interface UXValidationResult { pattern: UXPattern;, passed: boolean;
   message: string;
   timestamp: Date;
 }
@@ -35,7 +31,7 @@ export class UXPatternValidator {
         });
         return inconsistentElements.length === 0;
       },
-      recommendation: 'Update components to use CSS variables from the legal AI theme',
+      recommendation: 'Update components to use CSS variables from the legal AI theme'
     },
     {
       name: 'button-variant-consistency',
@@ -53,7 +49,7 @@ export class UXPatternValidator {
         });
         return inconsistentButtons.length < buttons.length * 0.1; // Allow 10% variance
       },
-      recommendation: 'Apply consistent button variant classes to all interactive buttons',
+      recommendation: 'Apply consistent button variant classes to all interactive buttons'
     },
     // Usability Patterns
     {
@@ -75,7 +71,7 @@ export class UXPatternValidator {
         if (actionableCount === 0) return true;
         return hasLoadingIndicators || hasLoadingStates;
       },
-      recommendation: 'Add loading indicators for all async operations and form submissions',
+      recommendation: 'Add loading indicators for all async operations and form submissions'
     },
     {
       name: 'error-message-visibility',
@@ -91,7 +87,7 @@ export class UXPatternValidator {
         // If there are error elements, they should be visible
         return errorElements.length === 0 || validErrors.length === errorElements.length;
       },
-      recommendation: 'Ensure error messages are visible and provide clear guidance for resolution',
+      recommendation: 'Ensure error messages are visible and provide clear guidance for resolution'
     },
     // Performance Patterns
     {
@@ -105,7 +101,7 @@ export class UXPatternValidator {
         // Most images should use lazy loading (except above-the-fold)
         return images.length === 0 || lazyImages.length >= images.length * 0.7;
       },
-      recommendation: 'Add loading="lazy" to images that are not immediately visible',
+      recommendation: 'Add loading="lazy" to images that are not immediately visible'
     },
     {
       name: 'animation-performance',
@@ -128,7 +124,7 @@ export class UXPatternValidator {
           return hasPerformantTransitions;
         });
       },
-      recommendation: 'Use transform and opacity for animations instead of layout properties',
+      recommendation: 'Use transform and opacity for animations instead of layout properties'
     },
     // Accessibility Patterns
     {
@@ -150,7 +146,7 @@ export class UXPatternValidator {
         }
         return true;
       },
-      recommendation: 'Maintain proper heading hierarchy without skipping levels',
+      recommendation: 'Maintain proper heading hierarchy without skipping levels'
     },
     {
       name: 'legal-ai-terminology-consistency',
@@ -163,7 +159,7 @@ export class UXPatternValidator {
         const terminologyMappings: Record<string, string[]> = {
           'case management': ['case handling', 'case processing'],
           'legal analysis': ['legal review', 'legal examination'],
-          'evidence': ['proof', 'documentation'],
+          'evidence': ['proof', 'documentation']
         };
         let consistencyScore = 1;
         Object.entries(terminologyMappings).forEach(([preferred, alternatives]) => {
@@ -178,7 +174,7 @@ export class UXPatternValidator {
         });
         return consistencyScore >= 0.8;
       },
-      recommendation: 'Use consistent legal AI terminology throughout the interface',
+      recommendation: 'Use consistent legal AI terminology throughout the interface'
     },
   ];
   /**
@@ -195,14 +191,14 @@ export class UXPatternValidator {
           message: passed
             ? `✅ ${pattern.name}: Follows best practices`
             : `⚠️ ${pattern.name}: ${pattern.description} - ${pattern.recommendation}`,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
       } catch (error) {
         results.push({
           pattern,
           passed: false,
           message: `❌ ${pattern.name}: Validation failed - ${error}`,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
       }
     }
@@ -223,14 +219,14 @@ export class UXPatternValidator {
           message: passed
             ? `✅ ${pattern.name}: Follows best practices`
             : `⚠️ ${pattern.name}: ${pattern.recommendation}`,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
       } catch (error) {
         results.push({
           pattern,
           passed: false,
           message: `❌ ${pattern.name}: Validation failed - ${error}`,
-          timestamp: new Date(),
+          timestamp: new Date()
         });
       }
     }
@@ -239,9 +235,7 @@ export class UXPatternValidator {
   /**
    * Generate comprehensive UX report
    */
-  async generateUXReport(): Promise<{
-    summary: {
-      totalPatterns: number;
+  async generateUXReport(): Promise<{ summary: {, totalPatterns: number;
       passedPatterns: number;
       failedPatterns: number;
       scorePercentage: number;
@@ -254,7 +248,7 @@ export class UXPatternValidator {
       totalPatterns: results.length,
       passedPatterns: results.filter(r => r.passed).length,
       failedPatterns: results.filter(r => !r.passed).length,
-      scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100),
+      scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100)
     };
     const byCategory = results.reduce(
       (acc, result) => {
@@ -269,7 +263,7 @@ export class UXPatternValidator {
     return {
       summary,
       byCategory,
-      recommendations,
+      recommendations
     };
   }
   /**
@@ -318,7 +312,7 @@ export class PerformanceMetrics {
     if (typeof PerformanceObserver === 'undefined') return {};
     return new Promise(resolve => {
       // Use a typed partial metrics object instead of `any`
-      const metrics: Partial<{ lcp: number; fid: number; cls: number }> = {};
+      const metrics: Partial<{ lcp: number; fid: number;, cls: number }> = {};
 
       // Largest Contentful Paint
       try {

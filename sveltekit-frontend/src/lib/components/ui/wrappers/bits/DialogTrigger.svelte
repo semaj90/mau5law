@@ -14,7 +14,7 @@
     // Add other bits-ui component overrides if needed, e.g., Accordion, Popover, etc.
   };
   // Initialize DialogTrigger to null, make it reactive with $state
-  let DialogTrigger: ComponentType | null = $state(null);
+  let DialogTrigger: ComponentType | null = null;
   // Cast the result of getBitsOverrides to our defined interface
   const overrides: BitsOverrides = getBitsOverrides();
   // Use a reactive effect to handle the asynchronous import

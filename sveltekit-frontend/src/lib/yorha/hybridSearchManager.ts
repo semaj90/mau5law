@@ -53,7 +53,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d,
+        metadata: d
       }));
       addOrUpdateDocuments(docs);
       if (lokiCollection) {
@@ -80,7 +80,7 @@ export async function reRankWithPgVector(
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!res.ok) return current;
     const data = await res.json();
@@ -99,7 +99,7 @@ export async function reRankWithPgVector(
         const raw = scoreMap.get((item as { id?: any; source?: any }).id);
         if (raw == null) return item;
         const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
-        return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };
+        return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid` };
       })
       .sort((a, b) => b.relevance - a.relevance);
   } catch (e: any) {

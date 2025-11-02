@@ -19,15 +19,15 @@ export const GET: RequestHandler = async () => {
         stop: 'POST /api/database-orchestrator/stop',
         conditions: 'GET/POST /api/database-orchestrator/conditions',
         events: 'GET /api/database-orchestrator/events',
-        health: 'GET /api/database-orchestrator/health',
-      },
+        health: 'GET /api/database-orchestrator/health'
+      }
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -43,27 +43,27 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Database orchestrator started',
-          status: databaseOrchestrator.getStatus(),
+          status: databaseOrchestrator.getStatus()
         });
       case 'stop':
         await databaseOrchestrator.stop();
         return json({
           success: true,
-          message: 'Database orchestrator stopped',
+          message: 'Database orchestrator stopped'
         });
       case 'add_condition':
         databaseOrchestrator.addCondition(data.condition);
         return json({
           success: true,
           message: 'Condition added',
-          condition: data.condition,
+          condition: data.condition
         });
       case 'remove_condition':
         databaseOrchestrator.removeCondition(data.conditionId);
         return json({
           success: true,
           message: 'Condition removed',
-          conditionId: data.conditionId,
+          conditionId: data.conditionId
         });
       case 'save_data':
         const result = await databaseOrchestrator.saveToDatabase(data.record, data.table);
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Data saved successfully',
           result,
-          table: data.table,
+          table: data.table
         });
       case 'query_data':
         const queryResult = await databaseOrchestrator.queryDatabase(data.query, data.table);
@@ -79,13 +79,12 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           data: queryResult,
           count: queryResult.length,
-          table: data.table,
+          table: data.table
         });
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-          },
+            error: `Unknown; action: ${action}' },
           { status: 400 }
         );
     }
@@ -94,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

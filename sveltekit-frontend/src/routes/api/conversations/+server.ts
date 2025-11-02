@@ -33,7 +33,7 @@ export const POST: RequestHandler = withErrorHandling(async event => {
       userId,
       title,
       caseId,
-      context,
+      context
     });
     return apiSuccess({ conversation }, 'Conversation created successfully', requestId);
   } catch (err: any) {

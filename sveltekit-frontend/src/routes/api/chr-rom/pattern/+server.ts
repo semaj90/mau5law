@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'docId and type parameters required',
+          error: 'docId and type parameters required'
         },
         { status: 400 }
       );
@@ -33,17 +33,16 @@ export const GET: RequestHandler = async ({ url }) => {
         pattern: result.pattern,
         source: result.source,
         latency: {
-          pattern: result.latency,
-          total: totalLatency,
+         , pattern: result.latency,
+          total: totalLatency
         },
-        cached: result.source === 'cache',
+        cached: result.source === 'cache'
       },
       {
         headers: {
           'Cache-Control': result.source === 'cache' ? 'public, max-age=300' : 'no-cache',
           'X-CHR-ROM-Source': result.source,
-          'X-Response-Time': `${totalLatency.toFixed(2)}ms`,
-        },
+          'X-Response-Time': `${totalLatency.toFixed(2)}ms` }
       }
     );
   } catch (error: any) {
@@ -73,8 +72,8 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown operation: ${operation}`,
-            available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats'],
+            error: `Unknown; operation: ${operation}`,
+            available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats']
           },
           { status: 400 }
         );
@@ -95,8 +94,7 @@ async function handleSinglePattern(data: any, startTime: number): Promise<any> {
   if (!docId || !patternType) {
     return json({
       success: false,
-      error: 'docId and patternType required'
-    }, { status: 400 })
+      error: `docId and patternType required` }, { status: 400 })
   }
   const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss)
   return json(
@@ -108,15 +106,14 @@ async function handleSinglePattern(data: any, startTime: number): Promise<any> {
         patternType,
         pattern: result.pattern,
         source: result.source,
-        latency: result.latency,
+        latency: result.latency
       },
-      total_latency: performance.now() - startTime,
+      total_latency: performance.now() - startTime
     },
     {
       headers: {
         'X-CHR-ROM-Source': result.source,
-        'X-CHR-ROM-Latency': `${result.latency.toFixed(2)}ms`,
-      },
+        'X-CHR-ROM-Latency': `${result.latency.toFixed(2)}ms' }
     }
   );
 }
@@ -129,7 +126,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
     return json(
       {
         success: false,
-        error: 'requests array required',
+        error: 'requests array required'
       },
       { status: 400 }
     );
@@ -142,8 +139,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
     return json(
       {
         success: false,
-        error: 'No valid requests found. Each request needs docId and patternType.',
-      },
+        error: `No valid requests found. Each request needs docId and patternType.` },
       { status: 400 }
     );
   }
@@ -160,21 +156,19 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
       result: {
         patterns: batchResults,
         statistics: {
-          total: batchResults.length,
+         , total: batchResults.length,
           cacheHits,
           hitRate: cacheHits / batchResults.length,
           avgLatency: avgLatency,
-          fastestResponse: Math.min(...batchResults.map((r: (typeof batchResults)[number]) => r.latency)), // Fixed: Added type
-          slowestResponse: Math.max(...batchResults.map((r: (typeof batchResults)[number]) => r.latency)), // Fixed: Removed trailing comma and added type
-        },
+          fastestResponse: Math.min(...batchResults.map((r: (typeof batchResults)[number]) => r.latency)), // Fixed: Added type; slowestResponse: Math.max(...batchResults.map((r: (typeof batchResults)[number]) => r.latency)), // Fixed: Removed trailing comma and added type
+        }
       },
-      total_latency: performance.now() - startTime,
+      total_latency: performance.now() - startTime
     },
     {
       headers: {
         'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
-        'X-CHR-ROM-Hit-Rate': `${((cacheHits / batchResults.length) * 100).toFixed(1)}%`,
-      },
+        'X-CHR-ROM-Hit-Rate': `${((cacheHits / batchResults.length) * 100).toFixed(1)}%' }
     }
   );
 }
@@ -195,7 +189,7 @@ async function handlePrefetch(data: any, startTime: number): Promise<Response> {
     success: true,
     operation: 'prefetch',
     result: {
-      message: 'Prefetch initiated',
+     , message: 'Prefetch initiated',
       docIds: docIds.length,
       patternTypes: patternTypes.length,
       totalPatterns: docIds.length * patternTypes.length
@@ -214,15 +208,14 @@ async function handleGetStats(startTime: number): Promise<any> {
     efficiency: {
       overall: stats.performance,
       cacheEffectiveness: stats.hitRate > 0.8 ? 'excellent' : stats.hitRate > 0.6 ? 'good' : 'needs_improvement',
-      latencyClass: stats.averageLatency < 5 ? 'sub_5ms' : stats.averageLatency < 20 ? 'sub_20ms' : 'needs_optimization'
-    },
+      latencyClass: stats.averageLatency < 5 ? 'sub_5ms' : stats.averageLatency < 20 ? 'sub_20ms' : `needs_optimization` },
     recommendations: getPerformanceRecommendations(stats)
   }
   return json({
     success: true,
     operation: 'get_stats',
     result: enhancedStats,
-    total_latency: performance.now() - startTime,
+    total_latency: performance.now() - startTime
   })
 }
 /**

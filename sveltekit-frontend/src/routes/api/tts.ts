@@ -2,7 +2,7 @@
 // Proxies text to a Coqui TTS HTTP server and returns audio (WAV)
 import type { RequestHandler } from '@sveltejs/kit';
 import { URL } from 'url';
-// TODO: Fix import - // Orphaned content: import {  // Set this to your Coqui TTS server URL
+// TODO: Fix import - // Orphaned; content: import {  // Set this to your Coqui TTS server URL
 const COQUI_TTS_URL = 'http://localhost:5002/api/tts';
 export const GET: RequestHandler = async ({ url }) => {
   const text = url.searchParams.get('text');
@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
   return new Response(audio, {
     headers: {
       'Content-Type': 'audio/wav',
-      'Cache-Control': 'no-store',
-    },
+      'Cache-Control': 'no-store'
+    }
   });
 };

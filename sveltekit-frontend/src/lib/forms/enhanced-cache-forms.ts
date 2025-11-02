@@ -16,18 +16,18 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   clientContact: z.object({
     name: z.string().min(1, 'Contact name required'),
     email: z.string().email('Valid email required'),
-    phone: z.string().optional(),
+    phone: z.string().optional()
   }),
   // Form state
   step: z.number().min(1).max(4).default(1),
-  isDraft: z.boolean().default(true),
+  isDraft: z.boolean().default(true)
 }).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
   _cached: true,
   _lastSync: true,
-  _dirty: true,
+  _dirty: true
 });
 export type EnhancedCaseForm = z.infer<typeof EnhancedCaseFormSchema>;
 // ===== EVIDENCE UPLOAD FORM SCHEMA =====
@@ -42,10 +42,10 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
         timestamp: z.date(),
         handler: z.string(),
         action: z.string(),
-        notes: z.string().optional(),
+        notes: z.string().optional()
       })
     )
-    .default([]),
+    .default([])
 }).omit({
   id: true,
   createdAt: true,
@@ -53,7 +53,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   fileSize: true,
   _cached: true,
   _lastSync: true,
-  _dirty: true,
+  _dirty: true
 });
 export type EvidenceUploadForm = z.infer<typeof EvidenceUploadFormSchema>;
 // ===== CACHE-FIRST FORM MANAGER =====
@@ -70,9 +70,7 @@ type FormResult<T = unknown> = {
 };
 
 // Add a specific type for chain of custody entries to avoid `any`
-type ChainOfCustodyEntry = {
-  timestamp: Date;
-  handler: string;
+type ChainOfCustodyEntry = { timestamp: Date;, handler: string;
   action: string;
   notes?: string;
 };
@@ -103,11 +101,11 @@ export class CacheFirstFormManager {
       clientContact: {
         name: '',
         email: '',
-        phone: '',
+        phone: ''
       },
       step: 1,
       isDraft: true,
-      ...initialData,
+      ...initialData
     };
     // Store in cache
     this.formCache.set(formId, defaultData);
@@ -144,7 +142,7 @@ export class CacheFirstFormManager {
           return;
         }
       },
-      onResult: async (input: { result: any; formElement?: HTMLFormElement; cancel?: () => void }) => {
+      onResult: async (input: {, result: any; formElement?: HTMLFormElement; cancel?: () => void }) => {
         const res = input.result as FormResult;
         if (res.type === 'success') {
           const caseData = res.data as UnknownRecord;
@@ -159,9 +157,8 @@ export class CacheFirstFormManager {
         const res = result as FormResult;
         this.formErrors.update(errors => ({
           ...errors,
-          [formId]: res.error ?? 'unknown error',
-        }));
-      },
+          [formId]: res.error ?? 'unknown error` }));
+      }
     });
     return {
       form,
@@ -174,7 +171,7 @@ export class CacheFirstFormManager {
       saveAsDraft: () => this.saveFormDraft(formId),
       loadDraft: (draftId: string) => this.loadFormDraft(formId, draftId),
       // Progress tracking
-      progress: derived([this.formProgress], ([$progress]) => $progress[formId] || 0),
+      progress: derived([this.formProgress], ([$progress]) => $progress[formId] || 0)
     };
   }
 
@@ -192,7 +189,7 @@ export class CacheFirstFormManager {
       tags: [],
       chain_of_custody: [],
       file: null as unknown as File | null, // typed as File | null
-      ...initialData,
+      ...initialData
     };
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
@@ -236,16 +233,16 @@ export class CacheFirstFormManager {
           await cacheFirstService.createEvidence(evidenceData);
           this.cleanupForm(formId);
         } else if (res.type === 'error') {
-          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error' }));
+          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error` }));
         }
-      },
+      }
     });
     return {
       form,
       formId,
       uploadProgress: derived([this.formProgress], ([$progress]) => $progress[formId] || 0),
       addToChainOfCustody: (action: string, handler: string, notes?: string) =>
-        this.addChainOfCustodyEntry(formId, action, handler, notes),
+        this.addChainOfCustodyEntry(formId, action, handler, notes)
     };
   }
   // ===== FORM STEP MANAGEMENT =====
@@ -295,7 +292,7 @@ export class CacheFirstFormManager {
   private updateProgress(formId: string, progress: number) {
     this.formProgress.update(current => ({
       ...current,
-      [formId]: progress,
+      [formId]: progress
     }));
   }
   private updateActiveForm(formId: string) {
@@ -340,7 +337,7 @@ export class CacheFirstFormManager {
           `draft-${formId}`,
           JSON.stringify({
             data: formData,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })
         );
         console.log(`Draft saved for form ${formId}`);
@@ -412,8 +409,7 @@ export class CacheFirstFormManager {
       timestamp: new Date(),
       handler,
       action,
-      notes: notes ?? '',
-    };
+      notes: notes ?? '` };
 
     record.chain_of_custody.push(entry);
 

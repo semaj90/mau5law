@@ -22,9 +22,7 @@ export interface SemanticSearchResult {
     similarity: number;
     score: number;
   }>;
-  analytics: {
-    searchStrategy: string;
-    queryComplexity: string;
+  analytics: { searchStrategy: string;, queryComplexity: string;
     semanticConcepts: string[];
     cacheHit: boolean;
     processingTime: number;
@@ -55,13 +53,13 @@ class SemanticSearchService {
           queryComplexity: this.analyzeQueryComplexity(query),
           semanticConcepts: this.extractSemanticConcepts(query),
           cacheHit: false,
-          processingTime: vectorResult.queryTime,
+          processingTime: vectorResult.queryTime
         },
         suggestions: options.semanticExpansion ? this.generateSuggestions(query) : undefined
       }
     } catch (error) {
       console.error('Semantic search error:', error);
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
   /**

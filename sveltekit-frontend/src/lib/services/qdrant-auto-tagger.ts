@@ -88,9 +88,7 @@ export interface HybridSearchParams {
   /** Filter by error family */
   errorFamily?: string;
   /** Time range filter */
-  timeRange?: {
-    start: Date;
-    end: Date;
+  timeRange?: { start: Date;, end: Date;
   };
 }
 
@@ -200,7 +198,7 @@ export class QdrantAutoTagger {
       { name: 'sveltekit', pattern: /sveltekit|\+page|\+server|\+layout/i, tags: ['sveltekit', 'framework', 'routing'], priority: 10 },
       { name: 'vite', pattern: /vite|build|compile/i, tags: ['vite', 'build-tool', 'bundler'], priority: 10 },
       { name: 'drizzle', pattern: /drizzle|schema/i, tags: ['drizzle', 'orm', 'database'], priority: 10 },
-      { name: 'xstate', pattern: /xstate|machine|state/i, tags: ['xstate', 'state-machine', 'state-management'], priority: 10 },
+      { name: 'xstate', pattern: /xstate|machine|state/i, tags: ['xstate', 'state-machine', 'state-management'], priority: 10 }
     ];
   }
 
@@ -215,7 +213,7 @@ export class QdrantAutoTagger {
       vectorSize: config?.vectorSize || 768,
       distance: config?.distance || 'Cosine',
       quantization: config?.quantization ?? true,
-      onDisk: config?.onDisk ?? false,
+      onDisk: config?.onDisk ?? false
     };
 
     try {
@@ -231,34 +229,30 @@ export class QdrantAutoTagger {
       // Create collection with scalar quantization
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vectors: {
-            size: collectionConfig.vectorSize,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ vectors: {, size: collectionConfig.vectorSize,
             distance: collectionConfig.distance,
             // Scalar quantization for 4x memory savings
             quantization_config: collectionConfig.quantization
-              ? {
-                  scalar: {
-                    type: 'int8',
+              ? { scalar: {, type: 'int8',
                     quantile: 0.99,
-                    always_ram: true,
-                  },
+                    always_ram: true
+                  }
                 }
-              : undefined,
+              : undefined
           },
           optimizers_config: {
             default_segment_number: 2,
             memmap_threshold: 20000,
-            indexing_threshold: 10000,
+            indexing_threshold: 10000
           },
           hnsw_config: {
-            m: 16,
+           , m: 16,
             ef_construct: 100,
             full_scan_threshold: 10000,
-            on_disk: collectionConfig.onDisk,
-          },
-        }),
+            on_disk: collectionConfig.onDisk
+          }
+        })
       });
 
       if (!response.ok) {
@@ -290,18 +284,18 @@ export class QdrantAutoTagger {
       { field: 'source', type: 'keyword' },
       { field: 'tags', type: 'keyword' },
       { field: 'errorFamily', type: 'keyword' },
-      { field: 'filePattern', type: 'keyword' },
+      { field: 'filePattern', type: `keyword` }
     ];
 
     for (const index of indexes) {
       try {
         await fetch(`${this.baseUrl}/collections/${this.collectionName}/index`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            field_name: index.field,
-            field_schema: index.type,
-          }),
+           , field_name: index.field,
+            field_schema: index.type
+          })
         });
       } catch (error) {
         console.warn(`⚠️ Failed to create index for ${index.field}:`, error);
@@ -406,16 +400,16 @@ export class QdrantAutoTagger {
         timestamp: error.timestamp.toISOString(),
         metadata: {
           column: error.column,
-          rawText: error.rawText,
-        },
-      } as QdrantErrorPayload,
+          rawText: error.rawText
+        }
+      } as QdrantErrorPayload
     }));
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ points })
       });
 
       if (!response.ok) {
@@ -445,48 +439,48 @@ export class QdrantAutoTagger {
 
     // Build filter conditions
     if (params.errorCode) {
-      filters.push({ key: 'errorCode', match: { value: params.errorCode } });
+      filters.push({ key: 'errorCode', match: {, value: params.errorCode } });
     }
     if (params.severity) {
-      filters.push({ key: 'severity', match: { value: params.severity } });
+      filters.push({ key: 'severity', match: {, value: params.severity } });
     }
     if (params.category) {
-      filters.push({ key: 'category', match: { value: params.category } });
+      filters.push({ key: 'category', match: {, value: params.category } });
     }
     if (params.filePattern) {
-      filters.push({ key: 'filePattern', match: { value: params.filePattern } });
+      filters.push({ key: 'filePattern', match: {, value: params.filePattern } });
     }
     if (params.errorFamily) {
-      filters.push({ key: 'errorFamily', match: { value: params.errorFamily } });
+      filters.push({ key: 'errorFamily', match: {, value: params.errorFamily } });
     }
     if (params.tags && params.tags.length > 0) {
       filters.push({
         key: 'tags',
-        match: { any: params.tags },
+        match: {, any: params.tags }
       });
     }
     if (params.timeRange) {
       filters.push({
         key: 'timestamp',
         range: {
-          gte: params.timeRange.start.toISOString(),
-          lte: params.timeRange.end.toISOString(),
-        },
+         , gte: params.timeRange.start.toISOString(),
+          lte: params.timeRange.end.toISOString()
+        }
       });
     }
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           vector: params.queryVector,
           limit: params.limit || 10,
           with_payload: true,
           with_vector: false,
-          filter: filters.length > 0 ? { must: filters } : undefined,
-          score_threshold: params.scoreThreshold || 0.7,
-        }),
+          filter: filters.length > 0 ? {, must: filters } : undefined,
+          score_threshold: params.scoreThreshold || 0.7
+        })
       });
 
       if (!response.ok) {
@@ -498,7 +492,7 @@ export class QdrantAutoTagger {
       return data.result.map((item: any) => ({
         id: item.id,
         score: item.score,
-        payload: item.payload,
+        payload: item.payload
       }));
     } catch (error) {
       console.error('❌ Hybrid search failed:', error);
@@ -516,12 +510,12 @@ export class QdrantAutoTagger {
       // Scroll through all points and collect unique tags
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/scroll`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          limit: 1000,
+         , limit: 1000,
           with_payload: true,
-          with_vector: false,
-        }),
+          with_vector: false
+        })
       });
 
       if (!response.ok) {
@@ -547,9 +541,7 @@ export class QdrantAutoTagger {
   /**
    * Get collection statistics
    */
-  async getStats(): Promise<{
-    totalErrors: number;
-    uniqueTags: number;
+  async getStats(): Promise<{ totalErrors: number;, uniqueTags: number;
     tags: string[];
   }> {
     try {
@@ -565,7 +557,7 @@ export class QdrantAutoTagger {
       return {
         totalErrors: data.result.points_count || 0,
         uniqueTags: tags.length,
-        tags,
+        tags
       };
     } catch (error) {
       console.error('❌ Failed to fetch stats:', error);

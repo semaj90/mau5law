@@ -14,9 +14,7 @@ try {
   console.warn("Cases store not found, using fallback");
   selectedCase = writable(null);
 }
-export interface Evidence {
-  id: string;
-  caseId: string;
+export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;
   type: "document" | "image" | "video" | "audio" | "note" | "physical";
@@ -27,19 +25,13 @@ export interface Evidence {
   metadata?: { [key: string]: any }
   tags?: string[];
   embedding?: number[];
-  location?: {
-    latitude: number;
-    longitude: number;
+  location?: { latitude: number;, longitude: number;
     address?: string;
   }
-  classification?: {
-    category: string;
-    relevance: number;
+  classification?: { category: string;, relevance: number;
     confidence: number;
   }
-  timeline?: {
-    createdAt: string;
-    updatedAt: string;
+  timeline?: { createdAt: string;, updatedAt: string;
     collectedAt?: string;
   }
   analysis?: {
@@ -48,9 +40,7 @@ export interface Evidence {
     relatedEvidence?: string[];
   }
 }
-export interface EvidenceStoreState {
-  evidence: Evidence[];
-  isLoading: boolean;
+export interface EvidenceStoreState { evidence: Evidence[];, isLoading: boolean;
   error: string | null;
   isConnected: boolean;
 }
@@ -58,8 +48,8 @@ class UnifiedEvidenceStore {
   public store = writable<EvidenceStoreState>({
     evidence: [],
     isLoading: false;
-    error: null,
-    isConnected: false,
+   , error: null,
+    isConnected: false
   });
   private websocket: WebSocket | null = null;
   private eventSource: EventSource | null = null;
@@ -172,14 +162,14 @@ class UnifiedEvidenceStore {
       this.store.update((s) => ({
         ...s,
         evidence: evidenceList,
-        isLoading: false,
+        isLoading: false
       });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
-        error: error.message,
+        error: error.message
       });
       console.error("Failed to fetch evidence:", error);
     }
@@ -212,7 +202,7 @@ class UnifiedEvidenceStore {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
-        error: error.message,
+        error: error.message
       });
       throw error;
     }
@@ -308,7 +298,7 @@ class UnifiedEvidenceStore {
             evidence: (data as { id?: any; lastUpdated?: any; evidence?: any }).evidence || [],
             isLoading: false,
             error: null,
-            isConnected: false,
+            isConnected: false
           });
         }
       }

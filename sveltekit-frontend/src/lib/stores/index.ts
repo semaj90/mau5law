@@ -28,7 +28,7 @@ export {
   securityLevel,
   hasPermission,
   requirePermission,
-  recordActivity,
+  recordActivity
 } from './sessionManager.svelte';
 // Data stores
 export { default as casesStore } from './cases';
@@ -45,7 +45,7 @@ export {
   type AIMessage,
   type Backend,
   type CaseAIContext,
-  type AssistantConfig,
+  type AssistantConfig
 } from './ai-assistant.svelte';
 
 // Legacy compatibility (for gradual migration)
@@ -65,7 +65,7 @@ export {
   setAIModel,
   setAITemperature,
   clearAIConversation,
-  checkAIClusterHealth,
+  checkAIClusterHealth
 } from './aiAssistant.svelte';
 // Evidence & Document stores
 export { evidenceStore, evidenceById, evidenceByCase, type Evidence } from './evidence-unified';

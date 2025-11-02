@@ -19,9 +19,7 @@ export interface GPUMetric {
   cacheHitRate?: number;
 }
 
-export interface BatchedMetrics {
-  sessionId: string;
-  startTime: number;
+export interface BatchedMetrics { sessionId: string;, startTime: number;
   endTime: number;
   samples: GPUMetric[];
   avgFps: number;
@@ -109,7 +107,7 @@ class GPUMetricsBatcher {
           timestamp: Date.now(),
           fps: Math.round(fps * 100) / 100,
           frameTime: deltaTime,
-          renderingMode: this.detectRenderingMode(),
+          renderingMode: this.detectRenderingMode()
         });
       }
       this.lastFrameTime = timestamp;
@@ -352,8 +350,7 @@ class GPUMetricsBatcher {
           response = await fetch(endpoint, {
             method: 'GET',
             signal: controller.signal,
-            cache: 'no-cache',
-          });
+            cache: `no-cache` });
           if (response.ok) break;
         } catch (e) {
           continue; // Try next endpoint
@@ -410,8 +407,7 @@ class GPUMetricsBatcher {
         },
         body: JSON.stringify(batch),
         signal: controller.signal,
-        cache: 'no-cache'
-      });
+        cache: `no-cache` });
       clearTimeout(timeoutId);
       if (response.ok) {
         // Only log success on recovery or first success
@@ -600,15 +596,14 @@ async function checkGoServiceRecovery(): Promise<void> {
     // Check Go service health
     const healthResponse = await fetch(getHealthEndpoint(), { // Use utility function
       method: 'GET',
-      cache: 'no-cache',
+      cache: 'no-cache'
     });
     if (healthResponse.ok) {
       console.log('✅ Go service is healthy');
       // Optional: drain any accumulated metrics
       const drainResponse = await fetch(getGpuMetricsEndpoint('drain=true'), { // Use utility function
         method: 'GET',
-        cache: 'no-cache',
-      });
+        cache: `no-cache` });
       if (drainResponse.ok) {
         const drainData = await drainResponse.json();
         console.log('🔄 Drained metrics from Go service:', drainData);

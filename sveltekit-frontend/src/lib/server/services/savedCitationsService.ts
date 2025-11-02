@@ -1,8 +1,6 @@
 import pool from '$lib/server/db/drizzle';
 
-export type Citation = {
-  id: string;
-  title: string;
+export type Citation = { id: string;, title: string;
   content: string;
   source: string;
   tags: string[];
@@ -14,9 +12,7 @@ export type Citation = {
 };
 
 // New typed shape for a DB row to avoid `any`
-type SavedCitationRow = {
-  id: string;
-  title: string | null;
+type SavedCitationRow = { id: string;, title: string | null;
   content: string | null;
   source: string | null;
   tags: string | string[] | null;
@@ -151,7 +147,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
           } catch {
             tags = [s];
           }
-        } else if (s.startsWith('{') && s.endsWith('}')) {
+        } else if (s.startsWith('{') && s.endsWith(' }')) {
           // Postgres text[] literal
           try {
             tags = parsePgArray(s);
@@ -215,7 +211,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         isFavorite: Boolean(r.is_favorite === true),
         notes: r.notes ?? undefined,
         savedAt,
-        contextData,
+        contextData
       };
     });
   } catch (err) {

@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({ error: 'invalid_json' }, { status: 400 });
 	}
 
-	if (!reqBody?.caseId) return json({ error: 'caseId required' }, { status: 400 });
+	if (!reqBody?.caseId) return json({ error: `caseId required` }, { status: 400 });
 
 	const cacheKey = `caseScore:${reqBody.caseId}`;
 	const cached = await cognitiveCache.get(cacheKey);
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		async start(controller) {
 			const emit = (event: string, payload: any) => {
 				controller.enqueue(`event: ${event}\n`);
-				controller.enqueue(`data: ${JSON.stringify(payload)}\n\n`);
+				controller.enqueue(`data: ${JSON.stringify(payload)}\n\n');
 			};
 
 			emit('progress', { stage: 'started', message: 'Initializing scoring pipeline' });
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				const normalisedCaseType = normaliseCaseType(caseType);
 				const agentPayload: AgentCaseScoringRequest = {
 					...rest,
-					...(normalisedCaseType !== undefined ? { caseType: normalisedCaseType } : {}),
+					...(normalisedCaseType !== undefined ? { caseType: normalisedCaseType } : {})
 				};
 
 				emit('progress', { stage: 'agentic_start', message: 'Invoking agentic scorer (Gemma3)' });
@@ -96,8 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		headers: {
 			'Content-Type': 'text/event-stream; charset=utf-8',
 			'Cache-Control': 'no-cache, no-transform',
-			Connection: 'keep-alive'
-		}
+			Connection: `keep-alive` }
 	});
 };
 

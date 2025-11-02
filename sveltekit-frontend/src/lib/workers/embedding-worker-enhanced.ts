@@ -11,13 +11,11 @@
  */
 import { cacheService } from '$lib/api/services/cache-service.js';
 import { globalLoki } from '$lib/stores/global-loki-store.js';
-import type Redis from 'ioredis';
+import type { Redis } from 'ioredis'; // Changed from 'import type Redis from 'ioredis';'
 import { db } from '$lib/server/db/unified-client.js';
 import { sql } from 'drizzle-orm';
 // Enhanced job interface
-export interface EmbeddingJob {
-  id: string;
-  text: string;
+export interface EmbeddingJob { id: string;, text: string;
   model?: string;
   meta?: Record<string, unknown>;
   priority?: number;
@@ -25,9 +23,7 @@ export interface EmbeddingJob {
   batchId?: string;
   createdAt?: number;
 }
-export interface EmbeddingResult {
-  jobId: string;
-  embedding: number[];
+export interface EmbeddingResult { jobId: string;, embedding: number[];
   model: string;
   cached: boolean;
   processingTimeMs: number;
@@ -50,40 +46,40 @@ export class EnhancedEmbeddingWorker {
     const r = this.redis as unknown as {
       blpop?: (k: string, t: number) => Promise<[string, string] | null>;
       blPop?: (k: string, t: number) => Promise<[string, string] | null>;
-    }
-    if (r?.blpop) return r.blpop(key, timeout);
-    if (r?.blPop) return r.blPop(key, timeout);
+    };
+    if (r?.blpop) return r.blpop(_key, timeout); // Changed key to _key
+    if (r?.blPop) return r.blPop(_key, timeout); // Changed key to _key
     throw new Error('Redis client missing blpop/blPop');
   }
   private async redisRpush(_key: string, value: string): Promise<number> {
     const r = this.redis as unknown as {
       rpush?: (k: string, v: string) => Promise<number>;
       rPush?: (k: string, v: string) => Promise<number>;
-    }
-    if (r?.rpush) return r.rpush(key, value);
-    if (r?.rPush) return r.rPush(key, value);
+    };
+    if (r?.rpush) return r.rpush(_key, value); // Changed key to _key
+    if (r?.rPush) return r.rPush(_key, value); // Changed key to _key
     throw new Error('Redis client missing rpush/rPush');
   }
   private async redisLlen(_key: string): Promise<number> {
     const r = this.redis as unknown as {
       llen?: (k: string) => Promise<number>;
       lLen?: (k: string) => Promise<number>;
-    }
-    if (r?.llen) return r.llen(key);
-    if (r?.lLen) return r.lLen(key);
+    };
+    if (r?.llen) return r.llen(_key); // Changed key to _key
+    if (r?.lLen) return r.lLen(_key); // Changed key to _key
     throw new Error('Redis client missing llen/lLen');
   }
   private async redisSetNXEX(_key: string, value: string, exSeconds: number): Promise<string | null> {
     const r = this.redis as unknown as {
-      set: (...args: any[]) => Promise<string | null>;
-    }
+      set: (...args: (string | number | Record<string, unknown>)[]) => Promise<string | null>;
+    };
     // Try modern options form first
     try {
-      return await r.set(key, value, { NX: true, EX: exSeconds } as unknown as undefined);
+      return await r.set(_key, value, { nx: true, ex: exSeconds });
     } catch {
       // Fallback to legacy variadic form: SET key value NX EX seconds
       try {
-        return await r.set(key, value, 'NX', 'EX', exSeconds as unknown as never);
+        return await r.set(_key, value, 'NX', 'EX', exSeconds as unknown as never); // Changed key to _key
       } catch (e) {
         console.warn('Redis SET NX EX compatibility failed:', e);
         return null;
@@ -91,8 +87,8 @@ export class EnhancedEmbeddingWorker {
     }
   }
   private async redisDel(_key: string): Promise<number> {
-    const r = this.redis as unknown as { del: (k: string) => Promise<number> }
-    return r.del(key);
+    const r = this.redis as unknown as { del: (k: string) => Promise<number> };
+    return r.del(_key); // Changed key to _key
   }
   constructor() {
     this.initializeWorker();
@@ -130,7 +126,7 @@ export class EnhancedEmbeddingWorker {
     this.running = true;
     console.log('🚀 Starting enhanced embedding worker loop...');
     // Start the main processing loop
-    this.runWorkerLoop().catch((error) => {
+    this.runWorkerLoop().catch(error => {
       console.error('❌ Enhanced worker loop failed:', error);
       this.running = $state(false);
     });
@@ -163,27 +159,28 @@ export class EnhancedEmbeddingWorker {
     while (this.running) {
       try {
         // Debug: Log Redis client type and available methods
-        console.log('Redis client type:', this.redis.constructor.name);
-        console.log(
-          'Redis client methods:',
-          Object.getOwnPropertyNames(this.redis).filter((name) => name.includes('blp'))
-        );
-        console.log(
-          'Available blpop methods:',
-          typeof this.redis.blpop,
-          typeof (this.redis as unknown as { blPop?: any }).blPop
-        );
+        // console.log('Redis client type:', this.redis.constructor.name); // Removed or commented out
+        // console.log( // Removed or commented out
+        //   'Redis client methods:', // Removed or commented out
+        //   Object.getOwnPropertyNames(this.redis).filter((name) => name.includes('blp')) // Removed or commented out
+        // ); // Removed or commented out
+        // console.log( // Removed or commented out
+        //   'Available blpop methods:', // Removed or commented out
+        //   typeof this.redis.blpop, // Removed or commented out
+        //   typeof (this.redis as unknown as { blPop?: any }).blPop // Removed or commented out
+        // ); // Removed or commented out
         // Block until a job is available (timeout after 30 seconds)
         const result = (await this.redisBlpop(this.queueName, 30)) as unknown as
           | null
           | [string, string]
-          | { element?: string }
+          | { element?: string };
         if (!result) continue; // Timeout, check if still running
-        const jobData = (result && !Array.isArray(result)
-          ? (result as { element?: string }).element
-          : Array.isArray(result)
-          ? result[1]
-          : undefined);
+        const jobData =
+          result && !Array.isArray(result)
+            ? (result as { element?: string }).element
+            : Array.isArray(result)
+              ? result[1]
+              : undefined;
         if (!jobData) continue;
         const job: EmbeddingJob = JSON.parse(jobData as string);
         // Ensure job has ID and timestamp
@@ -228,22 +225,19 @@ export class EnhancedEmbeddingWorker {
     // Group jobs by model for efficient processing
     const jobsByModel = this.groupJobsByModel(jobs);
     // Process each model group
-    for (const [model, modelJobs] of Object.entries(jobsByModel)) {
-      await this.processModelBatch(modelJobs, model, batchId);
+    for (const [_model, modelJobs] of Object.entries(jobsByModel)) {
+      // Renamed 'model' to '_model'
+      await this.processModelBatch(modelJobs, batchId);
     }
   }
   /**
    * Process jobs for a specific model
    */
-  private async processModelBatch(
-    jobs: EmbeddingJob[];
-    model: string,
-    batchId: string,
-  ): Promise<void> {
+  private async processModelBatch(jobs: EmbeddingJob[], batchId: string): Promise<void> {
     // Process jobs in parallel with limited concurrency
     const chunks = this.chunkArray(jobs, this.concurrencyLimit);
     for (const chunk of chunks) {
-      const promises = chunk.map((job) => this.processJobWithLifecycle(job, batchId));
+      const promises = chunk.map(job => this.processJobWithLifecycle(job, batchId));
       await Promise.allSettled(promises);
     }
   }
@@ -269,7 +263,7 @@ export class EnhancedEmbeddingWorker {
         id: job.id,
         type: 'embedding-generation',
         metadata: {
-          text: job.text.slice(0, 100) + '...',
+         , text: job.text.slice(0, 100) + '...',
           model: job.model || 'nomic-embed-text',
           textLength: job.text.length,
           batchId,
@@ -320,16 +314,14 @@ export class EnhancedEmbeddingWorker {
         model: job?.model || 'unknown',
         batchId,
         efficiency: cached ? 'cache-hit' : 'computed',
-        throughput: job.text.length / processingTime // chars per ms
+        throughput: job.text.length / processingTime, // chars per ms
       });
-      console.log(
-        `✅ Job ${job.id} completed in ${processingTime}ms (cached: ${cached}, batch: ${batchId})`
-      );
-    } catch (error: any) {
+      console.log(`✅ Job ${job.id} completed in ${processingTime}ms (cached: ${cached}, batch: ${batchId})`);
+    } catch (error: unknown) {
       const processingTime = Date.now() - startTime;
       const errorMessage =
         typeof error === 'object' && error && 'message' in error
-          ? String((error as { message?: any }).message)
+          ? String((error as { message?: unknown }).message)
           : String(error ?? 'Unknown error');
       console.error(`❌ Job ${job.id} failed after ${processingTime}ms:`, errorMessage);
       // Mark as failed in global state
@@ -354,7 +346,7 @@ export class EnhancedEmbeddingWorker {
     try {
       const dedupKey = `job:processed:${jobId}`;
       // SET NX with 24h TTL - returns null if key already exists
-  const wasSet = await this.redisSetNXEX(dedupKey, '1', 24 * 60 * 60);
+      const wasSet = await this.redisSetNXEX(dedupKey, '1', 24 * 60 * 60);
       return !wasSet; // If wasSet is null/false, job was already processed
     } catch (error) {
       console.warn('Idempotency check failed:', error);
@@ -375,7 +367,7 @@ export class EnhancedEmbeddingWorker {
    * Set cached embedding with compression
    */
   private async setCachedEmbedding(
-    text: string;
+    text: string, // Changed ; to ,
     embedding: number[],
     model?: string
   ): Promise<void> {
@@ -402,7 +394,7 @@ export class EnhancedEmbeddingWorker {
     const embedding = Array.from({ length: embeddingSize }, () => (Math.random() - 0.5) * 2);
     // Normalize the vector
     const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    return magnitude > 0 ? embedding.map((val) => val / magnitude) : embedding;
+    return magnitude > 0 ? embedding.map(val => val / magnitude) : embedding;
   }
   /**
    * Upsert embedding to database using Drizzle-compatible SQL with pgvector
@@ -410,7 +402,7 @@ export class EnhancedEmbeddingWorker {
   private async upsertEmbeddingToDB(
     id: string,
     model: string,
-    embedding: number[];
+    embedding: number[],
     meta: Record<string, unknown>
   ): Promise<void> {
     try {
@@ -429,8 +421,8 @@ export class EnhancedEmbeddingWorker {
         VALUES (
           ${id},
           ${model},
-          ${embeddingText}:: vector
-          ${JSON.stringify(meta)}:: jsonb
+          ${embeddingText}:: vector,
+          ${JSON.stringify(meta)}:: jsonb,
           NOW(),
           NOW()
         )
@@ -442,7 +434,8 @@ export class EnhancedEmbeddingWorker {
           updated_at = NOW()
       `);
       console.log(`💾 Embedding ${id} (${embedding.length}D) saved to database`);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed 'any' to 'unknown'
       console.error('Database upsert failed:', error);
       throw new Error(`Database persistence failed: ${String(error)}`);
     }
@@ -461,9 +454,9 @@ export class EnhancedEmbeddingWorker {
           ...(job.meta || {}),
           previousError: error,
           retryAttempt: retryCount,
-          lastFailureTime: Date.now(),
+          lastFailureTime: Date.now()
         }
-      }
+      };
       // Re-queue with exponential backoff: 2s, 4s, 8s
       const delay = Math.pow(2, retryCount) * 1000;
       console.log(`⏰ Scheduling retry in ${delay}ms`);
@@ -492,7 +485,7 @@ export class EnhancedEmbeddingWorker {
    * Group jobs by model for batch optimization
    */
   private groupJobsByModel(jobs: EmbeddingJob[]): Record<string, EmbeddingJob[]> {
-    const grouped: Record<string, EmbeddingJob[]> = {}
+    const grouped: Record<string, EmbeddingJob[]> = {};
     for (const job of jobs) {
       const model = job.model || 'nomic-embed-text';
       if (!grouped[model]) {
@@ -513,14 +506,12 @@ export class EnhancedEmbeddingWorker {
     return chunks;
   }
   private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
   /**
    * Get comprehensive worker statistics
    */
-  getStats(): {
-    running: boolean;
-    initialized: boolean;
+  getStats(): { running: boolean;, initialized: boolean;
     batchSize: number;
     currentBatchSize: number;
     concurrencyLimit: number;
@@ -528,12 +519,10 @@ export class EnhancedEmbeddingWorker {
     maxRetries: number;
     batchTimeoutMs: number;
     redisConnected: boolean;
-    lokiStats: any;
-    performance: {
-      avgBatchProcessingTime: number;
-      cacheHitRate: number;
+    lokiStats: Record<string, unknown>; // Changed 'any' to 'Record<string, unknown>'
+    performance: { avgBatchProcessingTime: number;, cacheHitRate: number;
       throughput: number;
-    }
+    };
   } {
     return {
       running: this.running,
@@ -547,11 +536,10 @@ export class EnhancedEmbeddingWorker {
       redisConnected: !!this.redis,
       lokiStats: globalLoki.getStats(),
       performance: {
-        avgBatchProcessingTime: 0, // TODO: Track this
-        cacheHitRate: 0, // TODO: Track this;
+        avgBatchProcessingTime: 0, // TODO: Track this; cacheHitRate: 0, // TODO: Track this;
         throughput: 0, // TODO: Track jobs/second
       }
-    }
+    };
   }
   /**
    * Enqueue a job for processing
@@ -564,29 +552,27 @@ export class EnhancedEmbeddingWorker {
     const fullJob: EmbeddingJob = {
       ...job,
       id: jobId,
-      createdAt: Date.now(),
-    }
-  await this.redisRpush(this.queueName, JSON.stringify(fullJob));
+      createdAt: Date.now()
+    };
+    await this.redisRpush(this.queueName, JSON.stringify(fullJob));
     console.log(`📥 Enqueued job ${jobId} for processing`);
     return jobId;
   }
   /**
    * Get queue status
    */
-  async getQueueStatus(): Promise<{
-    queueLength: number;
-    processingQueueLength: number;
+  async getQueueStatus(): Promise<{ queueLength: number;, processingQueueLength: number;
     dlqLength: number;
   }> {
     if (!this.redis) {
-      return { queueLength: 0, processingQueueLength: 0, dlqLength: 0 }
+      return { queueLength: 0, processingQueueLength: 0, dlqLength: 0 };
     }
     const [queueLength, processingQueueLength, dlqLength] = await Promise.all([
       this.redisLlen(this.queueName),
       this.redisLlen(this.processingQueue),
       this.redisLlen('embedding:dlq')
     ]);
-    return { queueLength, processingQueueLength, dlqLength }
+    return { queueLength, processingQueueLength, dlqLength };
   }
 }
 // Export singleton worker instance

@@ -4,7 +4,7 @@
  * with Redis caching and batch processing support
  *
  * Features:
- * - Streaming embeddings from Ollama embeddinggemma:latest
+ * - Streaming embeddings from Ollama; embeddinggemma:latest
  * - Redis caching with TTL for cost optimization
  * - Batch processing for multiple documents
  * - Dimension optimization (384D for embeddinggemma:latest)
@@ -30,9 +30,7 @@ import { createHash } from 'crypto';
 /**
  * Gemma Embedding Configuration
  */
-export interface GemmaEmbeddingConfig {
-  ollamaBaseUrl: string;
-  model: string;
+export interface GemmaEmbeddingConfig { ollamaBaseUrl: string;, model: string;
   dimensions: number;
   timeout: number;
   redis: RedisClientLike;
@@ -51,9 +49,7 @@ export interface EmbeddingRequest {
 /**
  * Embedding Response
  */
-export interface EmbeddingResponse {
-  embedding: number[];
-  dimensions: number;
+export interface EmbeddingResponse { embedding: number[];, dimensions: number;
   model: string;
   text: string;
   cached: boolean;
@@ -62,9 +58,7 @@ export interface EmbeddingResponse {
 /**
  * Batch Embedding Response
  */
-export interface BatchEmbeddingResponse {
-  embeddings: EmbeddingResponse[];
-  totalProcessingTime: number;
+export interface BatchEmbeddingResponse { embeddings: EmbeddingResponse[];, totalProcessingTime: number;
   cacheHitCount: number;
   cacheHitRatio: number;
 }
@@ -142,9 +136,9 @@ export class GemmaEmbeddingService {
       const timer = setTimeout(() => controller.abort(), this.config.timeout);
       const response = await fetch(`${this.config.ollamaBaseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.config.model,
+         , model: this.config.model,
           prompt: text
         }),
         signal: controller.signal
@@ -253,9 +247,7 @@ export class GemmaEmbeddingService {
   /**
    * Get cache statistics
    */
-  async getCacheStats(): Promise<{
-    keysCount: number;
-    estimatedMemory: string;
+  async getCacheStats(): Promise<{ keysCount: number;, estimatedMemory: string;
   }> {
     try {
       const pattern = `${this.CACHE_PREFIX}*`;
@@ -267,11 +259,10 @@ export class GemmaEmbeddingService {
       }
       return {
         keysCount: keys.length,
-        estimatedMemory: `${(totalMemory / 1024 / 1024).toFixed(2)} MB`
-      };
+        estimatedMemory: '${(totalMemory / 1024 / 1024).toFixed(2)} MB' };
     } catch (error) {
       console.error('Failed to get cache stats:', error);
-      return { keysCount: 0, estimatedMemory: '0 MB' };
+      return { keysCount: 0, estimatedMemory: `0 MB` };
     }
   }
   /**
@@ -318,7 +309,7 @@ export class GemmaEmbeddingService {
       );
       if (!hasModel) {
         console.warn(
-          `Warning: embeddinggemma model not found. Available models: ${data.models?.map(m => m.name).join(', ')}`
+          `Warning: embeddinggemma model not found. Available; models: ${data.models?.map(m => m.name).join(', ')}`
         );
       }
       return true;
@@ -388,8 +379,7 @@ export async function createGemmaEmbeddingService(
 export const DEFAULT_GEMMA_CONFIG: Partial<GemmaEmbeddingConfig> = {
   ollamaBaseUrl: getOllamaEndpoint(),
   model: 'embeddinggemma:latest',
-  dimensions: 384,  // embeddinggemma:latest outputs 384 dimensions
-  timeout: 30000,
+  dimensions: 384,  // embeddinggemma:latest outputs 384 dimensions; timeout: 30000,
   cacheTtl: 86400, // 24 hours
   batchSize: 10
 };

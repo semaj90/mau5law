@@ -5,7 +5,7 @@ export class CollaborationService {
   static async createAISession({ caseId, participants, context }) {
     // TODO: Implement collaborative AI session
     return {
-      onAIResponse: cb => {},
+      onAIResponse: cb => {}
     };
   }
 }

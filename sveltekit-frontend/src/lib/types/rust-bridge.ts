@@ -1,8 +1,6 @@
 // TypeScript types for Rust WASM Bridge integration
 }
-export interface SystemInfo {
-  os: string;
-  arch: string;
+export interface SystemInfo { os: string;, arch: string;
   total_memory: number;
   available_memory: number;
   cpu_count: number;
@@ -24,15 +22,11 @@ export interface PerformanceMetrics {
   disk_io?: number;
   [key: string]: any; // Allow additional metrics
 }
-export interface WindowsService {
-  name: string;
-  status: 'Running' | 'Stopped' | 'Error';
+export interface WindowsService { name: string;, status: 'Running' | 'Stopped' | 'Error';
   port?: number;
   description?: string;
 }
-export interface DocumentProcessingResult {
-  processed: boolean;
-  word_count: number;
+export interface DocumentProcessingResult { processed: boolean;, word_count: number;
   char_count: number;
   processing_time_ms: number;
   metadata?: {
@@ -41,25 +35,17 @@ export interface DocumentProcessingResult {
     confidence?: number;
   }
 }
-export interface BenchmarkResult {
-  textProcessing: number;
-  vectorOperations: number;
+export interface BenchmarkResult { textProcessing: number;, vectorOperations: number;
   systemAccess: number;
   overallScore: number;
-  details?: {
-    platform: string;
-    wasmSupport: boolean;
+  details?: { platform: string;, wasmSupport: boolean;
     memoryLimit?: number;
   }
 }
-export interface RustBridgeStatus {
-  initialized: boolean;
-  capabilities: string[];
+export interface RustBridgeStatus { initialized: boolean;, capabilities: string[];
   performance: boolean;
   version?: string;
-  buildInfo?: {
-    target: string;
-    optimized: boolean;
+  buildInfo?: { target: string;, optimized: boolean;
     features: string[];
   }
 }
@@ -75,9 +61,7 @@ export interface LegalDocumentMetadata {
   keyTerms?: string[];
   confidentiality: 'public' | 'confidential' | 'privileged';
 }
-export interface LegalTextAnalysis {
-  wordCount: number;
-  characterCount: number;
+export interface LegalTextAnalysis { wordCount: number;, characterCount: number;
   paragraphCount: number;
   sentenceCount: number;
   averageSentenceLength: number;
@@ -87,23 +71,17 @@ export interface LegalTextAnalysis {
   keyPhrases: string[];
   entities: LegalEntity[];
 }
-export interface LegalEntity {
-  text: string;
-  type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
+export interface LegalEntity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
   confidence: number;
   startOffset: number;
   endOffset: number;
 }
-export interface VectorSimilarityResult {
-  similarity: number;
-  documentId1: string;
+export interface VectorSimilarityResult { similarity: number;, documentId1: string;
   documentId2: string;
   computationTimeMs: number;
   method: 'cosine' | 'euclidean' | 'manhattan' | 'dot-product';
 }
-export interface BatchProcessingResult {
-  totalDocuments: number;
-  successfullyProcessed: number;
+export interface BatchProcessingResult { totalDocuments: number;, successfullyProcessed: number;
   failedDocuments: number;
   totalProcessingTimeMs: number;
   averageTimePerDocument: number;
@@ -111,34 +89,24 @@ export interface BatchProcessingResult {
   errors?: string[];
 }
 // System monitoring types
-export interface SystemResourceUsage {
-  cpu: {
-    usage: number; // percentage
+export interface SystemResourceUsage { cpu: {, usage: number; // percentage
     cores: number;
     frequency?: number; // MHz
   }
-  memory: {
-    total: number; // bytes
-    used: number;
+  memory: { total: number; // bytes, used: number;
     available: number;
     percentage: number;
   }
-  disk: {
-    reads: number;
-    writes: number;
+  disk: { reads: number;, writes: number;
     totalSpace?: number;
     freeSpace?: number;
   }
-  network?: {
-    bytesReceived: number;
-    bytesSent: number;
+  network?: { bytesReceived: number;, bytesSent: number;
     packetsReceived: number;
     packetsSent: number;
   }
 }
-export interface GpuInfo {
-  name: string;
-  vendor: 'NVIDIA' | 'AMD' | 'Intel' | 'Other';
+export interface GpuInfo { name: string;, vendor: 'NVIDIA' | 'AMD' | 'Intel' | 'Other';
   memory: number; // bytes
   computeCapability?: string;
   driverVersion?: string;
@@ -148,9 +116,7 @@ export interface GpuInfo {
   supportsOpenCL?: boolean;
 }
 // Configuration types
-export interface RustBridgeConfig {
-  enableSystemMonitoring: boolean;
-  enableFileSystemAccess: boolean;
+export interface RustBridgeConfig { enableSystemMonitoring: boolean;, enableFileSystemAccess: boolean;
   enableGpuAcceleration: boolean;
   allowedDirectories: string[];
   performanceLogging: boolean;
@@ -159,54 +125,38 @@ export interface RustBridgeConfig {
   maxCacheSize: number; // bytes
 }
 // Error types
-export interface RustBridgeError {
-  code: string;
-  message: string;
+export interface RustBridgeError { code: string;, message: string;
   details?: any;
   timestamp: string;
   stack?: string;
 }
 // Event types for monitoring
-export interface SystemEvent {
-  type: 'service-start' | 'service-stop' | 'resource-warning' | 'error' | 'info';
-  timestamp: string;
+export interface SystemEvent { type: 'service-start' | 'service-stop' | 'resource-warning' | 'error' | 'info';, timestamp: string;
   message: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   source: string;
   metadata?: any;
 }
 // Legal AI specific integration types
-export interface LegalAISystemStatus {
-  database: {
-    postgres: boolean;
+export interface LegalAISystemStatus { database: {, postgres: boolean;
     connectionPool: number;
     activeQueries: number;
   }
-  ai: {
-    ollama: boolean;
-    modelLoaded: string;
+  ai: { ollama: boolean;, modelLoaded: string;
     availableModels: string[];
     queueLength: number;
   }
-  cache: {
-    redis: boolean;
-    memoryUsage: number;
+  cache: { redis: boolean;, memoryUsage: number;
     hitRate: number;
   }
-  search: {
-    qdrant: boolean;
-    indexedDocuments: number;
+  search: { qdrant: boolean;, indexedDocuments: number;
     searchPerformance: number; // ms average
   }
-  services: {
-    go: boolean;
-    python: boolean;
+  services: { go: boolean;, python: boolean;
     node: boolean;
   }
 }
-export interface LegalCaseContext {
-  caseId: string;
-  title: string;
+export interface LegalCaseContext { caseId: string;, title: string;
   status: 'active' | 'closed' | 'pending';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   assignedTo: string[];

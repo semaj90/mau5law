@@ -69,9 +69,7 @@ declare global {
     data?: any;
   }
   // Enrichment job interface
-  interface EnrichmentJob {
-    id: string;
-    type: string;
+  interface EnrichmentJob { id: string;, type: string;
     entityId: string;
     entityType: string;
     status: string;

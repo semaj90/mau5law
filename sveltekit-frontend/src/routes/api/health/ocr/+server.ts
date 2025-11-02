@@ -2,28 +2,19 @@ import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-interface OCRHealthDetails {
-  service: string
-  status: 'operational' | 'degraded' | 'offline'
+interface OCRHealthDetails { service: string, status: 'operational' | 'degraded' | 'offline'
   port?: number
   endpoint: string
   features?: string[]
-  performance?: {
-    avgProcessingTime: number
-    documentsProcessed: number
-    errorRate: number
+  performance?: { avgProcessingTime: number, documentsProcessed: number; errorRate: number
   }
   version?: string
-  lastChecked: string
-  responseTime: number
+  lastChecked: string; responseTime: number
 }
 interface OCRHealthResponse {
   status: 'healthy' | 'degraded' | 'unhealthy',
-  timestamp: string
-  ocr: OCRHealthDetails
-  metadata: {
-    checkDuration: number;
-    environment: string
+  timestamp: string; ocr: OCRHealthDetails
+  metadata: { checkDuration: number;, environment: string
   }
 }
 
@@ -73,8 +64,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'LegalAI-HealthCheck/1.0'
-      },
+        'User-Agent': `LegalAI-HealthCheck/1.0` },
       signal: controller.signal
     })
     clearTimeout(timeoutId)
@@ -92,11 +82,11 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         performance: {
           avgProcessingTime: safeNumber(data.performance?.avgProcessingTime, 0),
           documentsProcessed: safeNumber(data.performance?.documentsProcessed, 0),
-          errorRate: safeNumber(data.performance?.errorRate, 0),
+          errorRate: safeNumber(data.performance?.errorRate, 0)
         },
         version: data.version,
         lastChecked: new Date().toISOString(),
-        responseTime,
+        responseTime
       };
     } else {
       console.warn(`⚠️ OCR service returned status ${response.status}`)
@@ -117,7 +107,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         status: 'offline',
         endpoint: `${getOCRBase()}/status`,
         lastChecked: new Date().toISOString(),
-        responseTime,
+        responseTime
       };
     }
     return {
@@ -137,8 +127,7 @@ function determineOverallStatus(ocrHealth: OCRHealthDetails): OCRHealthResponse[
     case 'degraded':
       return 'degraded'
     case 'offline':
-    default: return 'unhealthy'
-  }
+    default: return 'unhealthy' }
 }
 
 export const GET: RequestHandler = async () => {
@@ -155,8 +144,7 @@ export const GET: RequestHandler = async () => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development',
-      },
+        environment: process.env.NODE_ENV || 'development` }
     };
     console.log(`✅ OCR health check completed in ${checkDuration}ms - Status: ${overallStatus}`);
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
@@ -169,8 +157,8 @@ export const GET: RequestHandler = async () => {
         'Expires': '0',
         'X-Health-Check': 'ocr-specific',
         'X-OCR-Status': ocrHealth.status,
-        'X-Response-Time': ocrHealth.responseTime.toString(),
-      },
+        'X-Response-Time': ocrHealth.responseTime.toString()
+      }
     });
   } catch (err: any) {
     const checkDuration = Date.now() - startTime;
@@ -183,15 +171,15 @@ export const GET: RequestHandler = async () => {
         message: getErrorMessage(err),
         metadata: {
           checkDuration,
-          environment: process.env.NODE_ENV || 'development',
-        },
+          environment: process.env.NODE_ENV || 'development'
+        }
       },
       {
         status: 503,
         headers: {
           'Content-Type': 'application/json',
-          'X-Health-Check': 'failed',
-        },
+          'X-Health-Check': 'failed'
+        }
       }
     );
   }
@@ -209,13 +197,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const ocrBaseUrl = getOCRBase();
       try {
         const testText = 'Legal AI Health Check Test Document';
-        const testBlob = new Blob([testText], { type: 'text/plain' });
+        const testBlob = new Blob([testText], { type: `text/plain` });
         const formData = new FormData();
         formData.append('file', testBlob, 'health-check-test.txt');
         const response = await fetch(`${ocrBaseUrl}/extract`, {
           method: 'POST',
           body: formData,
-          signal: AbortSignal.timeout(timeout ?? 15000),
+          signal: AbortSignal.timeout(timeout ?? 15000)
         });
         const responseTime = Date.now() - startTime;
         if (response.ok) {
@@ -226,7 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
             message: 'OCR processing test completed successfully',
             responseTime,
             testResult: result,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         } else {
           return json(
@@ -235,7 +223,7 @@ export const POST: RequestHandler = async ({ request }) => {
               status: 'failed',
               message: `OCR test processing failed with status ${response.status}`,
               responseTime,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: response.status }
           );
@@ -248,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
             message: 'OCR processing test error',
             error: getErrorMessage(err),
             responseTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 500 }
         );
@@ -261,11 +249,11 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'detailed-status',
         ...ocrHealth,
         additionalChecks: {
-          batchProcessingAvailable: true,
+         , batchProcessingAvailable: true,
           extractionFormats: ['pdf', 'png', 'jpg', 'jpeg', 'txt'],
-          maxFileSize: '50MB',
+          maxFileSize: '50MB'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -280,8 +268,8 @@ export const POST: RequestHandler = async ({ request }) => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development',
-      },
+        environment: process.env.NODE_ENV || 'development'
+      }
     };
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, { status: httpStatus });
@@ -290,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Invalid request',
         message: getErrorMessage(err),
-        availableActions: ['test-processing', 'detailed-status'],
+        availableActions: ['test-processing', 'detailed-status']
       },
       { status: 400 }
     );
@@ -308,15 +296,14 @@ export const HEAD: RequestHandler = async () => {
       headers: {
         'X-OCR-Status': ocrHealth.status,
         'X-Response-Time': ocrHealth.responseTime.toString(),
-        'X-Last-Checked': ocrHealth.lastChecked,
-      },
+        'X-Last-Checked': ocrHealth.lastChecked
+      }
     });
   } catch (err: any) {
     return new Response(null, {
       status: 503,
       headers: {
-        'X-Health-Check': 'failed',
-      },
+        'X-Health-Check': `failed` }
     });
   }
 }

@@ -3,17 +3,13 @@
  * Implements aggressive texture streaming with 4KB pages like Nintendo 64
  */
 import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
-interface LODLevel {
-  level: number;
-  width: number;
+interface LODLevel { level: number;, width: number;
   height: number;
   data: ArrayBuffer;
   compressed: boolean;
   sizeKB: number;
 }
-interface TextureAsset {
-  id: string;
-  basePath: string;
+interface TextureAsset { id: string;, basePath: string;
   lodLevels: LODLevel[];
   currentLOD: number;
   priority: number;
@@ -45,15 +41,13 @@ export class N64TextureLODSystem {
         return false;
       }
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) return false;
-      this.device = await adapter.requestDevice({
-        requiredLimits: {
-          maxBufferSize: this.TEXTURE_CACHE_SIZE,
+      this.device = await adapter.requestDevice({ requiredLimits: {, maxBufferSize: this.TEXTURE_CACHE_SIZE,
           maxTextureDimension2D: 2048,
-          maxTextureArrayLayers: 256,
-        },
+          maxTextureArrayLayers: 256
+        }
       });
       // Initialize mipmap shader system
       await yorhaMipmapShaders.initialize(this.device);
@@ -81,7 +75,7 @@ export class N64TextureLODSystem {
       { level: 0, width: 256, height: 256, data: new ArrayBuffer(0), compressed: false, sizeKB: 256 },
       { level: 1, width: 128, height: 128, data: new ArrayBuffer(0), compressed: false, sizeKB: 64 },
       { level: 2, width: 64, height: 64, data: new ArrayBuffer(0), compressed: true, sizeKB: 16 },
-      { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 },
+      { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 }
     ];
     const asset: TextureAsset = {
       id: textureId,
@@ -89,7 +83,7 @@ export class N64TextureLODSystem {
       lodLevels,
       currentLOD: 3, // Start with lowest quality
       priority,
-      lastAccessed: Date.now(),
+      lastAccessed: Date.now()
     };
     // Load lowest LOD immediately (4KB)
     await this.loadLODLevel(asset, 3);
@@ -167,7 +161,7 @@ export class N64TextureLODSystem {
       size: [lod.width, lod.height, 1],
       format: 'rgba8unorm',
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
-      mipLevelCount: 1,
+      mipLevelCount: 1
     });
     // Upload texture data
     if (lod.data.byteLength > 0) {
@@ -298,9 +292,7 @@ export class N64TextureLODSystem {
   /**
    * Get current memory statistics
    */
-  getMemoryStats(): {
-    usedKB: number;
-    totalKB: number;
+  getMemoryStats(): { usedKB: number;, totalKB: number;
     textureCount: number;
     activeTextureCount: number;
   } {
@@ -308,7 +300,7 @@ export class N64TextureLODSystem {
       usedKB: Math.round(this.currentMemoryUsage / 1024),
       totalKB: this.TEXTURE_CACHE_SIZE / 1024,
       textureCount: this.textureCache.size,
-      activeTextureCount: this.activeTextures.size,
+      activeTextureCount: this.activeTextures.size
     };
   }
   /**

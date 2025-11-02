@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -70,9 +70,7 @@ export async function GET({ url }): Promise<any> {
         messaging: "RabbitMQ"
       },
       // Development guidelines
-      guidelines: {
-        svelte: {
-          runesRequired: true,
+      guidelines: { svelte: {, runesRequired: true,
           stateDeclaration: "let (never const)",
           derivedFunctions: "$derived.by(() => ...)",
           errorBoundaries: "component rendering only"

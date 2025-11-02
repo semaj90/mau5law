@@ -5,30 +5,24 @@ import {
   queueDocumentProcessing,
   getJobStatus,
   getQueueStats,
-  type DocumentProcessingJobData,
+  type DocumentProcessingJobData
 } from '$lib/services/queue-service';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit'; // Import json helper
 // Types for Go server integration (kept for compatibility)
-export interface DocumentProcessRequest {
-  document_id: string;
-  content: string;
+export interface DocumentProcessRequest { document_id: string;, content: string;
   document_type: string;
   case_id?: string;
   options: ProcessingOptions;
 }
-export interface ProcessingOptions {
-  extract_entities: boolean;
-  generate_summary: boolean;
+export interface ProcessingOptions { extract_entities: boolean;, generate_summary: boolean;
   assess_risk: boolean;
   generate_embedding: boolean;
   store_in_database: boolean;
   use_gemma3_legal: boolean;
 }
 // Define a more specific type for the Go server's response to /process-document
-export interface GoProcessDocumentResponse {
-  success: boolean;
-  document_id: string;
+export interface GoProcessDocumentResponse { success: boolean;, document_id: string;
   summary?: string;
   entities?: LegalEntity[];
   risk_assessment?: RiskAssessment;
@@ -37,9 +31,7 @@ export interface GoProcessDocumentResponse {
   metadata: Record<string, unknown>;
   error?: string;
 }
-export interface DocumentProcessResponse {
-  success: boolean;
-  document_id: string;
+export interface DocumentProcessResponse { success: boolean;, document_id: string;
   summary?: string;
   entities?: LegalEntity[];
   risk_assessment?: RiskAssessment;
@@ -48,16 +40,12 @@ export interface DocumentProcessResponse {
   metadata: Record<string, unknown>;
   error?: string;
 }
-export interface LegalEntity {
-  type: string;
-  value: string;
+export interface LegalEntity { type: string;, value: string;
   confidence: number;
   start_pos: number;
   end_pos: number;
 }
-export interface RiskAssessment {
-  overall_risk: string;
-  risk_score: number;
+export interface RiskAssessment { overall_risk: string;, risk_score: number;
   risk_factors: string[];
   recommendations: string[];
   confidence: number;
@@ -87,12 +75,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const status = await getJobStatus(jobId);
         return json(status);
       } catch (error: any) {
-        // Changed: 'any' to: 'unknown'
+        // Changed: 'any'; to: 'unknown'
         console.error('❌ Error checking job status:', error);
         return json(
           {
             error: 'Failed to check job status',
-            details: error instanceof Error ? error.message : 'Unknown error',
+            details: error instanceof Error ? error.message : 'Unknown error'
           },
           { status: 500 }
         );
@@ -116,8 +104,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         assessRisk: body.assess_risk ?? true,
         generateEmbedding: body.generate_embedding ?? true,
         storeInDatabase: body.store_in_database ?? true,
-        useGemma3Legal: body.use_gemma3_legal ?? true,
-      },
+        useGemma3Legal: body.use_gemma3_legal ?? true
+      }
     };
     console.log(`🔄 Queuing document for processing: ${documentId}`);
     if (USE_QUEUE) {
@@ -143,10 +131,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           queue_stats: queueStats,
           status_url: `/api/legal-ai/process-document?job_id=${queueJobId}`,
           message: 'Document queued for processing',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       } catch (queueError: any) {
-        // Changed: 'any' to: 'unknown'
+        // Changed: 'any'; to: 'unknown'
         console.error('❌ Queue error, falling back to direct processing:', queueError);
         // Fall through to direct processing
       }
@@ -158,21 +146,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Explicitly type as Response
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify({
           document_id: documentId,
           content: body.content,
           document_type: body.document_type || 'evidence',
           case_id: body.case_id,
           options: {
-            extract_entities: jobData.options.extractEntities,
+           , extract_entities: jobData.options.extractEntities,
             generate_summary: jobData.options.generateSummary,
             assess_risk: jobData.options.assessRisk,
             generate_embedding: jobData.options.generateEmbedding,
             store_in_database: jobData.options.storeInDatabase,
-            use_gemma3_legal: jobData.options.useGemma3Legal,
-          },
+            use_gemma3_legal: jobData.options.useGemma3Legal
+          }
         }),
         signal: AbortSignal.timeout(120000), // 2 minute timeout
       });
@@ -181,9 +168,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const errorText = await response.text(); // Access method directly from Response
         console.error(`❌ Go server error (${response.status}):`, errorText); // Access properties directly from Response
         return json(
-          {
-            error: `Go server error: ${response.status}`, // Access properties directly from Response
-            details: errorText,
+          { error: `Go server, error: ${response.status}`, // Access properties directly from Response
+            details: errorText
           },
           { status: response.status }
         ); // Access properties directly from Response
@@ -196,27 +182,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
         queued: false,
         data: result,
         processed_by: 'go-legal-ai-server-direct',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (fetchError: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('❌ Direct processing error:', fetchError);
       return json(
         {
           error: 'Processing failed',
-          details: fetchError instanceof Error ? fetchError.message : 'Unknown error',
+          details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
         },
         { status: 503 }
       );
     }
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('❌ API endpoint error:', error);
     return json(
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }
@@ -230,8 +215,7 @@ export const GET: RequestHandler = async () => {
       // Explicitly type as Response
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` }
     });
     if (!response.ok) {
       // Access properties directly from Response
@@ -249,16 +233,16 @@ export const GET: RequestHandler = async () => {
       go_server_status: healthData,
       sveltekit_status: 'healthy',
       integration_status: 'connected',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    // Changed: 'any' to: 'unknown'
+    // Changed: 'any'; to: 'unknown'
     console.error('❌ Go server health check failed:', error);
     return json(
       {
         error: 'Go server unreachable',
         details: error instanceof Error ? error.message : 'Unknown error',
-        go_server_url: GO_SERVER_URL,
+        go_server_url: GO_SERVER_URL
       },
       { status: 503 }
     );

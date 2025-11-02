@@ -7,9 +7,7 @@
 import type { ActorRefFrom, AnyEventObject } from 'xstate';
 
 // Define queue message type
-export interface QueueMessage {
-  id: string;
-  type: string;
+export interface QueueMessage { id: string;, type: string;
   data: Record<string, unknown>;
   timestamp: number;
   correlationId?: string;
@@ -114,9 +112,7 @@ export class RabbitMQXStateBridge {
   /**
    * Get bridge connection status
    */
-  public getStatus(): {
-    connected: boolean;
-    failoverActive: boolean;
+  public getStatus(): { connected: boolean;, failoverActive: boolean;
     subscriptions: number;
   } {
     return {
@@ -146,8 +142,7 @@ export class RabbitMQXStateBridge {
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch(`/api/v1/messaging/queue/${queue}`, {
-          method: 'GET'
-        });
+          method: 'GET' });
 
         if (!response.ok) {
           if (response.status === 404) {
@@ -185,7 +180,7 @@ export class RabbitMQXStateBridge {
     const subject = this.mapQueueToNatsSubject(queue);
 
     // Create WebSocket connection to NATS QUIC bridge
-    const wsUrl = `${this.config.natsQuicUrl || 'ws://localhost:4233'}/events`;
+    const wsUrl = `${this.config.natsQuicUrl || 'ws://localhost:4233' }/events`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
@@ -250,8 +245,7 @@ export class RabbitMQXStateBridge {
       'ai.embedding': 'legal.ai.embedding',
       'notification.email': 'legal.notification.email',
       'notification.webhook': 'legal.notification.webhook',
-      'system.health': 'system.health.check'
-    };
+      'system.health': 'system.health.check' };
 
     return mapping[queue] || `legal.${queue.replace(/_/g, '.')}`;
   }
@@ -275,7 +269,7 @@ export const standardEventMappers = {
   evidenceProcessor: (msg: QueueMessage): AnyEventObject => ({
     type: 'PROCESS_EVIDENCE',
     payload: {
-      documentId: (msg.data?.documentId) as string | undefined,
+     , documentId: (msg.data?.documentId) as string | undefined,
       caseId: (msg.data?.caseId) as string | undefined,
       analysisType: (msg.data?.analysisType) as string | undefined
     }
@@ -287,7 +281,7 @@ export const standardEventMappers = {
   aiAnalyzer: (msg: QueueMessage): AnyEventObject => ({
     type: 'ANALYZE',
     payload: {
-      caseId: (msg.data?.caseId) as string | undefined,
+     , caseId: (msg.data?.caseId) as string | undefined,
       query: (msg.data?.query) as string | undefined,
       context: msg.data?.context
     }
@@ -299,7 +293,7 @@ export const standardEventMappers = {
   embeddingGenerator: (msg: QueueMessage): AnyEventObject => ({
     type: 'GENERATE_EMBEDDING',
     payload: {
-      documentId: (msg.data?.documentId) as string | undefined,
+     , documentId: (msg.data?.documentId) as string | undefined,
       text: (msg.data?.text) as string | undefined
     }
   }),
@@ -310,7 +304,7 @@ export const standardEventMappers = {
   notificationHandler: (msg: QueueMessage): AnyEventObject => ({
     type: 'SEND_NOTIFICATION',
     payload: {
-      userId: (msg.data?.userId) as string | undefined,
+     , userId: (msg.data?.userId) as string | undefined,
       title: (msg.data?.title) as string | undefined,
       message: (msg.data?.message) as string | undefined,
       actions: msg.data?.actions

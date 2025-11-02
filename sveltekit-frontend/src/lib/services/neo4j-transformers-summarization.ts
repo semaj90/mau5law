@@ -22,9 +22,7 @@ type Neo4jNode = {
 };
 
 // Lightweight local types to avoid depending on specific exported type names from the neo4j driver package
-type Neo4jDriver = {
-  verifyConnectivity: () => Promise<void>;
-  session: (opts?: { database?: string }) => Neo4jSession;
+type Neo4jDriver = { verifyConnectivity: () => Promise<void>;, session: (opts?: { database?: string }) => Neo4jSession;
   close?: () => Promise<void>;
 };
 type Neo4jSession = {
@@ -33,9 +31,7 @@ type Neo4jSession = {
   close?: () => Promise<void>;
 };
 
-export interface DocumentSummary {
-  id: string;
-  title: string;
+export interface DocumentSummary { id: string;, title: string;
   summary: string;
   keyPoints: string[];
   entities: LegalEntity[];
@@ -45,9 +41,7 @@ export interface DocumentSummary {
   graphNodes: GraphNode[];
 }
 
-export interface LegalEntity {
-  id: string;
-  type: 'person' | 'organization' | 'case' | 'statute' | 'precedent' | 'contract';
+export interface LegalEntity { id: string;, type: 'person' | 'organization' | 'case' | 'statute' | 'precedent' | 'contract';
   name: string;
   attributes: Record<string, unknown>;
   confidence: number;
@@ -61,9 +55,7 @@ export interface Relationship {
   metadata: Record<string, unknown>;
 }
 
-export interface GraphNode {
-  id: string;
-  labels: string[];
+export interface GraphNode { id: string;, labels: string[];
   properties: Record<string, unknown>;
   embedding?: number[];
 }
@@ -93,7 +85,7 @@ export interface SummarizationConfig {
 // add runtime-friendly helper types (avoid using `any`)
 type Neo4jAuthLike = {
 	// neo4j.auth.basic(username, password) -> some auth token object accepted by driver
-	basic: (username: string, password: string) => unknown;
+	basic: (username: string; password: string) => unknown;
 };
 
 type LangChainOllamaService = {
@@ -113,13 +105,10 @@ export class Neo4jTransformersSummarization {
   private isInitialized = $state(false);
 
   constructor(config: SummarizationConfig = {}) {
-    this.config = {
-      neo4j: {
-        uri: config.neo4j?.uri ?? 'bolt://localhost:7687',
+    this.config = { neo4j: {, uri: config.neo4j?.uri ?? 'bolt://localhost:7687',
         username: config.neo4j?.username ?? 'neo4j',
         password: config.neo4j?.password ?? 'legal-ai-2024',
-        database: config.neo4j?.database ?? 'neo4j'
-      },
+        database: config.neo4j?.database ?? 'neo4j' },
       transformers: {
         model: config.transformers?.model ?? 'gemma3-legal:latest',
         maxTokens: config.transformers?.maxTokens ?? 2048,
@@ -180,7 +169,7 @@ export class Neo4jTransformersSummarization {
     try {
       const svc = langChainOllamaService as unknown as LangChainOllamaService;
       const status = await (typeof svc.getStatus === 'function' ? svc.getStatus() : Promise.resolve({ initialized: false }));
-      console.log(`  ✅ LangChain Ollama: ${status.initialized ? 'Connected' : 'Not initialized'}`);
+      console.log(`  ✅ LangChain Ollama: ${status.initialized ? 'Connected' : `Not initialized' }`);
       const vectorHealth = (await (vectorProxy.healthCheck?.() ?? {})) as Record<string, { status?: string }>;
 
       const healthyProtocols = Object.values(vectorHealth).filter(v => v?.status === 'healthy').length;
@@ -261,7 +250,7 @@ export class Neo4jTransformersSummarization {
           id: `entity-${crypto.randomUUID()}`,
           type: typedType,
           name,
-          attributes: { context, source: 'transformers-extraction' },
+          attributes: { context, source: `transformers-extraction' },
           confidence
         });
       }
@@ -286,7 +275,7 @@ export class Neo4jTransformersSummarization {
       id: `case-${crypto.randomUUID()}`,
       type: 'case',
       name: n.trim(),
-      attributes: { extractionMethod: 'regex', pattern: 'case_name' },
+      attributes: { extractionMethod: 'regex', pattern: `case_name' },
       confidence: 0.7
     }));
     const people = content.match(/(?:Mr\.|Ms\.|Dr\.|Judge|Justice|Attorney)\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*/g) || [];
@@ -294,7 +283,7 @@ export class Neo4jTransformersSummarization {
       id: `person-${crypto.randomUUID()}`,
       type: 'person',
       name: p.trim(),
-      attributes: { extractionMethod: 'regex', pattern: 'titled_person' },
+      attributes: { extractionMethod: 'regex', pattern: `titled_person' },
       confidence: 0.6
     }));
     const orgs = content.match(/\b[A-Z][a-zA-Z\s]*(?:Inc\.|Corp\.|LLC|Ltd\.|Company|Corporation|Association)\b/g) || [];
@@ -302,7 +291,7 @@ export class Neo4jTransformersSummarization {
       id: `org-${crypto.randomUUID()}`,
       type: 'organization',
       name: o.trim(),
-      attributes: { extractionMethod: 'regex', pattern: 'organization' },
+      attributes: { extractionMethod: 'regex', pattern: `organization' },
       confidence: 0.6
     }));
     return res.slice(0, 30);
@@ -337,7 +326,7 @@ export class Neo4jTransformersSummarization {
             to: to.id,
             type: relType,
             strength,
-            metadata: { source: 'ai_transformers' }
+            metadata: {, source: `ai_transformers' }
           });
         }
       }
@@ -367,7 +356,7 @@ export class Neo4jTransformersSummarization {
             const snippet = content.slice(Math.min(posA, posB), Math.max(posA, posB) + Math.max(a.name.length, b.name.length));
             if (snippet.includes(' v. ') || snippet.includes(' vs: ')) { type = 'legal_opposition'; strength = 0.9; }
             else if (/represent|attorney|counsel/.test(snippet)) { type = 'legal_representation'; strength = 0.8; }
-            rels.push({ from a.id, to: b.id, type, strength, metadata: { extractionMethod: 'heuristic', distance, snippet: snippet.slice(0, 200) } });
+            rels.push({ from a.id, to: b.id, type, strength, metadata: {, extractionMethod: 'heuristic', distance, snippet: snippet.slice(0, 200) } });
           }
         }
       }
@@ -507,7 +496,7 @@ export class Neo4jTransformersSummarization {
             graphNodes: []
           });
         } catch (e: any) {
-          console.warn(`⚠️ Failed to fetch document ${id}:`, e instanceof Error ? e.message : String(e));
+          console.warn(`⚠️ Failed to fetch document ${id}: ', e instanceof Error ? e.message : String(e));
         }
       }
       return results;
@@ -517,7 +506,7 @@ export class Neo4jTransformersSummarization {
     }
   }
 
-  async getDocumentConnections(documentId: string, maxDepth = 2): Promise<{ connectedDocuments: DocumentSummary[]; entityNetwork: GraphNode[]; relationshipPaths: Relationship[] }> {
+  async getDocumentConnections(documentId: string, maxDepth = 2): Promise<{ connectedDocuments: DocumentSummary[]; entityNetwork: GraphNode[];, relationshipPaths: Relationship[] }> {
     await this.initialize();
     if (!this.session) return { connectedDocuments: [], entityNetwork: [], relationshipPaths: [] };
     try {
@@ -553,7 +542,7 @@ export class Neo4jTransformersSummarization {
     }
   }
 
-  async generateGraphEnhancedAnalysis(query: string, documentIds: string[] = []): Promise<{ analysis: string; relevantDocuments: DocumentSummary[]; entityInsights: LegalEntity[]; confidence: number }> {
+  async generateGraphEnhancedAnalysis(query: string, documentIds: string[] = []): Promise<{ analysis: string; relevantDocuments: DocumentSummary[]; entityInsights: LegalEntity[];, confidence: number }> {
     await this.initialize();
     try {
       let relevant: DocumentSummary[] = [];
@@ -612,7 +601,7 @@ export class Neo4jTransformersSummarization {
             return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: res };
           }
         } catch (err: any) {
-          console.warn(`⚠️ RAG candidate: "${name}" failed:`, err instanceof Error ? err.message : String(err));
+          console.warn(`⚠️ RAG candidate: "${name}", failed: ', err instanceof Error ? err.message : String(err));
           // try next candidate
           continue;
         }
@@ -627,7 +616,7 @@ export class Neo4jTransformersSummarization {
         const confidence = extractConfidenceFrom(r);
         return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: r };
       } catch (err: any) {
-        console.warn('⚠️ generateCompletion failed:', err instanceof Error ? err.message : String(err));
+        console.warn('⚠️ generateCompletion failed: `, err instanceof Error ? err.message : String(err));
       }
     }
 

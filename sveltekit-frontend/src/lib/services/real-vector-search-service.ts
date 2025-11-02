@@ -14,16 +14,12 @@ export interface VectorSearchOptions {
   filter?: { [key: string]: any };
 }
 
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
 }
 
-export interface SearchResponse {
-  success: boolean;
-  results: VectorSearchResult[];
+export interface SearchResponse { success: boolean;, results: VectorSearchResult[];
   totalResults: number;
   queryTime: number;
   model: string;
@@ -49,11 +45,11 @@ export class RealVectorSearchService {
     try {
       const response = await fetch(`${this.ollamaBaseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.embeddingModel,
-          prompt: text,
-        }),
+         , model: this.embeddingModel,
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -66,7 +62,7 @@ export class RealVectorSearchService {
       return emb as number[];
     } catch (error: any) {
       console.error('Embedding generation failed:', error);
-      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
 
@@ -85,7 +81,7 @@ export class RealVectorSearchService {
         threshold = 0.7,
         collection = 'legal_documents',
         includeMetadata = true,
-        filter,
+        filter
       } = options;
 
       // Search in Qdrant
@@ -94,7 +90,7 @@ export class RealVectorSearchService {
         limit: maxResults,
         score_threshold: threshold,
         with_payload: includeMetadata,
-        filter: filter ? this.buildQdrantFilter(filter) : undefined,
+        filter: filter ? this.buildQdrantFilter(filter) : undefined
       });
 
       // Transform results
@@ -102,7 +98,7 @@ export class RealVectorSearchService {
         id: (result as any).id.toString(),
         content: (result as any).payload?.content || (result as any).payload?.text || '',
         score: (result as any).score,
-        metadata: includeMetadata ? (result as any).payload : undefined,
+        metadata: includeMetadata ? (result as any).payload : undefined
       }));
 
       return {
@@ -110,7 +106,7 @@ export class RealVectorSearchService {
         results,
         totalResults: results.length,
         queryTime: Date.now() - startTime,
-        model: this.embeddingModel,
+        model: this.embeddingModel
       };
     } catch (error: any) {
       console.error('Vector search failed:', error);
@@ -119,7 +115,7 @@ export class RealVectorSearchService {
         results: [],
         totalResults: 0,
         queryTime: Date.now() - startTime,
-        model: this.embeddingModel,
+        model: this.embeddingModel
       };
     }
   }
@@ -147,10 +143,10 @@ export class RealVectorSearchService {
             payload: {
               content,
               ...metadata,
-              stored_at: new Date().toISOString(),
-            },
+              stored_at: new Date().toISOString()
+            }
           },
-        ],
+        ]
       });
 
       return true;
@@ -173,14 +169,11 @@ export class RealVectorSearchService {
       const exists = collections.collections.some(c => c.name === collectionName);
 
       if (!exists) {
-        await this.qdrantClient.createCollection(collectionName, {
-          vectors: {
-            size: vectorSize,
-            distance: 'Cosine',
-          },
+        await this.qdrantClient.createCollection(collectionName, { vectors: {, size: vectorSize,
+            distance: `Cosine` },
           optimizers_config: {
-            default_segment_number: 2,
-          },
+           , default_segment_number: 2
+          }
         });
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
       }
@@ -199,7 +192,7 @@ export class RealVectorSearchService {
     const health = {
       ollama: false,
       qdrant: false,
-      overall: false,
+      overall: false
     };
 
     // Check Ollama
@@ -250,7 +243,7 @@ export class RealVectorSearchService {
   private buildQdrantFilter(filter: { [key: string]: any }) {
     const must = Object.entries(filter).map(([key, value]) => ({
       key,
-      match: { value },
+      match: { value }
     }));
     return { must };
   }

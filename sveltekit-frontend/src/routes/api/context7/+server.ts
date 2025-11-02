@@ -23,8 +23,8 @@ export const GET: RequestHandler = async () => {
           signal: controller.signal,
           headers: {
             'Accept': 'application/json',
-            'User-Agent': 'Context7-API/1.0',
-          },
+            'User-Agent': 'Context7-API/1.0'
+          }
         });
         clearTimeout(timeout);
         const responseTime = Date.now() - startTime;
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async () => {
             : 'unhealthy',
           response_code: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status,
           response_time: responseTime,
-          last_check: new Date().toISOString(),
+          last_check: new Date().toISOString()
         });
       } catch (error: any) {
         const responseTime = Date.now() - startTime;
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async () => {
           error_type: errorType,
           error: errorMessage,
           response_time: responseTime,
-          last_check: new Date().toISOString(),
+          last_check: new Date().toISOString()
         });
       }
     }
@@ -68,21 +68,21 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       context7_status: {
-        mcp_servers: healthChecks,
+       , mcp_servers: healthChecks,
         healthy_count: healthChecks.filter(h => h.status === 'healthy').length,
         total_count: healthChecks.length,
         // Provide a derived integration flag (placeholder until real integration flag added)
         orchestrator_integration: (orchestratorStatus as any).context7Integration ?? false,
-        overall_status: healthChecks.every(h => h.status === 'healthy') ? 'healthy' : 'degraded',
+        overall_status: healthChecks.every(h => h.status === 'healthy') ? 'healthy' : 'degraded'
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -110,8 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Server and tool parameters required for custom tool calls',
-            },
+              error: 'Server and tool parameters required for custom tool calls` },
             { status: 400 }
           );
         }
@@ -121,8 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-          },
+            error: `Unknown; action: ${action}` },
           { status: 400 }
         );
     }
@@ -131,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -142,7 +140,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
   try {
     const endpoint = MCP_ENDPOINTS[server as keyof typeof MCP_ENDPOINTS];
     if (!endpoint) {
-      throw new Error(`Unknown MCP server: ${server}. Available servers: ${Object.keys(MCP_ENDPOINTS).join(', ')}`);
+      throw new Error(`Unknown MCP server: ${server}. Available, servers: ${Object.keys(MCP_ENDPOINTS).join(', ')}`);
     }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout for tool calls
@@ -151,13 +149,12 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Context7-API/1.0',
-      },
+        'User-Agent': 'Context7-API/1.0` },
       signal: controller.signal,
       body: JSON.stringify({
-        name: tool, // Changed semicolon to comma
-        arguments: data,
-      }),
+       , name: tool, // Changed semicolon to comma
+        arguments: data
+      })
     });
     clearTimeout(timeout);
     if (!(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok) {
@@ -177,7 +174,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         input_data: data,
         result,
         timestamp: new Date(),
-        status: 'completed',
+        status: 'completed'
       },
       'mcp_tool_calls'
     );
@@ -186,7 +183,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       server,
       tool,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     // Log the error to database
@@ -197,8 +194,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         input_data: data,
         error: error.message,
         timestamp: new Date(),
-        status: 'failed',
-      },
+        status: 'failed` },
       'mcp_tool_calls'
     );
     throw error;
@@ -215,13 +211,12 @@ async function syncWithOrchestrator(data: any): Promise<any> {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Context7-API/1.0',
-      },
+        'User-Agent': 'Context7-API/1.0` },
       signal: controller.signal,
       body: JSON.stringify({
-        name: 'generate_recommendations',
-        arguments: data,
-      }),
+       , name: 'generate_recommendations',
+        arguments: data
+      })
     });
     clearTimeout(timeout);
     if (recommendationResponse.ok) {
@@ -236,14 +231,14 @@ async function syncWithOrchestrator(data: any): Promise<any> {
             error_pattern: rec.error,
             source: 'context7_mcp',
             metadata: data,
-            created_at: new Date(),
+            created_at: new Date()
           },
           'recommendations'
         );
         // Trigger orchestrator event
         databaseOrchestrator.emit('context7:recommendation_processed', {
           recommendation: rec, // Added comma
-          source_data: data,
+          source_data: data
         });
       }
     }
@@ -254,14 +249,14 @@ async function syncWithOrchestrator(data: any): Promise<any> {
       success: true,
       message: 'Context7 sync completed',
       processed_recommendations: processedCount, // Added comma
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

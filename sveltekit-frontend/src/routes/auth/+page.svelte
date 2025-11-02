@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex bg-gray-700 rounded-lg p-1 mb-6">
         <button
           type="button"
-          class="flex-1" py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'login'
+          class="flex-1 py-2 px-4" rounded-md text-sm font-medium transition-all duration-200 {authMode === 'login'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
           onclick={() => (authMode = 'login')}
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         <button
           type="button"
-          class="flex-1" py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'register'
+          class="flex-1 py-2 px-4" rounded-md text-sm font-medium transition-all duration-200 {authMode === 'register'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
           onclick={() => (authMode = 'register')}
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
               id="confirmPassword"
               bind:value={formData.confirmPassword}
               required
-              class="w-full" px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors {formData.password &&
+              class="w-full px-3 py-2" bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors {formData.password &&
               formData.confirmPassword &&
               formData.password !== formData.confirmPassword
                 ? 'border-red-500'

@@ -8,7 +8,7 @@
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -24,11 +24,10 @@ import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/ser
 import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
-const rateLimiter = {
-  check: (_ip: string | undefined) => Promise.resolve({ allowed: true, retryAfter: null }),
+const rateLimiter = { check: (_ip: string | undefined) => Promise.resolve({, allowed: true, retryAfter: null }),
   windowMs: 60 * 1000,
   max: 30,
-  message: 'Too many search requests, please try again later.',
+  message: 'Too many search requests, please try again later.'
 };
 const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => {
   const clientAddress = typeof getClientAddress === 'function' ? getClientAddress() : 'unknown';
@@ -42,7 +41,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
   const query = url.searchParams.get('q') || url.searchParams.get('query') || '';
   if (!query || query.trim().length < 2) {
     return json(
-      { success: false, error: 'Query parameter: "q" is required and must be at least 2 characters' },
+      { success: false, error: 'Query; parameter: "q" is required and must be at least 2 characters' },
       { status: 400 }
     );
   }
@@ -52,7 +51,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
     jurisdiction: url.searchParams.get('jurisdiction') || 'all',
     category: url.searchParams.get('category') || 'all',
     maxResults: Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 10,
-    useAI: url.searchParams.get('useAI') !== 'false',
+    useAI: url.searchParams.get('useAI') !== 'false'
   };
   try {
     const { results, analytics, aiEnhancement, searchTime, total } = await handleSearch(params);
@@ -65,7 +64,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       searchTime: `${searchTime}ms`,
       total,
       filters: params,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Enhanced legal search API error:', err);
@@ -74,7 +73,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
         success: false,
         error: 'Search service temporarily unavailable',
         details: import.meta.env.NODE_ENV === 'development' ? String(err) : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -96,14 +95,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     category = 'all',
     maxResults = 10,
     useAI = true,
-    advancedOptions = {},
+    advancedOptions = {}
   } = body as AdvancedSearchRequestBody;
   if (!query || typeof query !== 'string' || query.trim().length < 2) {
     return json(
       {
         success: false,
         error: 'Query is required and must be at least 2 characters',
-        received: { query, type: typeof query },
+        received: { query, type: typeof query }
       },
       { status: 400 }
     );
@@ -115,7 +114,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       category,
       maxResults,
       useAI,
-      advancedOptions,
+      advancedOptions
     });
     return json({
       success: true,
@@ -127,7 +126,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       total,
       filters: { jurisdiction, category, maxResults, useAI },
       advancedOptions,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Enhanced legal search POST API error:', err);
@@ -136,7 +135,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
         success: false,
         error: 'Search service temporarily unavailable',
         details: import.meta.env.NODE_ENV === 'development' ? String(err) : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -152,7 +151,7 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
       jurisdictions: {},
       categories: {},
       searchTime,
-      resultCount: 0,
+      resultCount: 0
     };
   }
   const totalScore = results.reduce((sum, r) => sum + r.score, 0);
@@ -188,7 +187,7 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     resultCount: results.length,
     topScore: Math.max(...results.map(r => r.score)),
     queryLength: query.length,
-    queryTerms: query.split(' ').length,
+    queryTerms: query.split(' ').length
   };
 }
 interface AdvancedSearchRequestBody {
@@ -220,7 +219,7 @@ function calculateAdvancedAnalytics(
       semantic: 0,
       exact_match: 0,
       jurisdiction_match: 0,
-      category_match: 0,
+      category_match: 0
     }
   );
   const count = results.length;
@@ -235,12 +234,10 @@ function calculateAdvancedAnalytics(
     vectorSearchUsed: results.some(r => r.searchType === 'vector'),
     hybridSearchUsed: results.some(r => r.searchType === 'hybrid'),
     fallbackUsed: results.some(r => r.searchType === 'fallback'),
-    requestSize: JSON.stringify(requestBody).length,
+    requestSize: JSON.stringify(requestBody).length
   };
 }
-interface AIEnhancementResult {
-  summary: string;
-  topCategories: string[];
+interface AIEnhancementResult { summary: string;, topCategories: string[];
   topJurisdictions: string[];
   suggestions: string[];
   confidence: number;
@@ -260,10 +257,10 @@ async function generateAIEnhancement(
       suggestions: [
         `Try refining your search with terms from ${topResults[0]?.category}`,
         `Consider exploring related ${topResults[0]?.jurisdiction} laws`,
-        `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A'}`,
+        `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A' }`,
       ].filter(s => !s.includes('N/A')),
       confidence: topResults.reduce((sum, r) => sum + r.confidence, 0) / topResults.length,
-      recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null,
+      recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null
     };
   } catch (error: any) {
     console.warn('AI enhancement generation failed:', error);
@@ -285,13 +282,13 @@ export const OPTIONS: RequestHandler = async () => {
       'pgvector-support',
       'ai-enhancement',
     ],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };
 
 // NEW: common handler used by GET and POST
 async function handleSearch(options: {
-  query: string;
+ , query: string;
   jurisdiction?: string;
   category?: string;
   maxResults?: number;
@@ -305,7 +302,7 @@ async function handleSearch(options: {
     category: category !== 'all' ? category : undefined,
     maxResults: Math.min(maxResults, 50),
     useAI,
-    ...advancedOptions,
+    ...advancedOptions
   });
   const searchTime = Date.now() - startTime;
   const analytics = Object.keys(advancedOptions).length
@@ -315,7 +312,7 @@ async function handleSearch(options: {
         category,
         maxResults,
         useAI,
-        advancedOptions,
+        advancedOptions
       })
     : calculateSearchAnalytics(results, query, searchTime);
   const aiEnhancement = useAI && results.length > 0 ? await generateAIEnhancement(query, results.slice(0, 5)) : null;

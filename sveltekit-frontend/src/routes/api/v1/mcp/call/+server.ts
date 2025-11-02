@@ -49,10 +49,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         success: false,
         error: 'Invalid JSON in request body',
         metadata: {
-          tool: 'unknown',
+         , tool: 'unknown',
           timestamp: Date.now(),
-          executionTime: Date.now() - startTime,
-        },
+          executionTime: Date.now() - startTime
+        }
       },
       { status: 400 }
     );
@@ -65,13 +65,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json(
       {
         success: false,
-        error: `Unknown MCP tool: ${tool}. Available tools: ${Object.keys(MCP_TOOLS).join(', ')}`,
+        error: 'Unknown MCP; tool: ${tool}. Available, tools: ${Object.keys(MCP_TOOLS).join(', `)}`,
         metadata: {
           requestId: metadata.requestId,
           tool: tool || 'unknown',
           timestamp: Date.now(),
-          executionTime: Date.now() - startTime,
-        },
+          executionTime: Date.now() - startTime
+        }
       },
       { status: 400 }
     );
@@ -84,14 +84,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     clientAddress: (getClientAddress && getClientAddress()) || 'unknown',
     userAgent: request.headers.get('user-agent') || 'unknown',
     timestamp: Date.now(),
-    tool,
+    tool
   };
 
   console.log('🔧 MCP Tool Call:', {
     tool,
     args: Object.keys(args),
     requestId: requestMetadata.requestId,
-    userId: requestMetadata.userId,
+    userId: requestMetadata.userId
   });
 
   try {
@@ -105,19 +105,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.log('✅ MCP Tool Success:', {
       tool,
       requestId: requestMetadata.requestId,
-      executionTime: `${executionTime}ms`,
-    });
+      executionTime: `${executionTime}ms' });
 
     return json(
       {
         success: true,
         result,
         metadata: {
-          requestId: requestMetadata.requestId,
+         , requestId: requestMetadata.requestId,
           executionTime,
           tool,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       },
       { status: 200 }
     );
@@ -129,19 +128,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       tool,
       requestId: requestMetadata.requestId,
       error: errorMessage,
-      executionTime: `${executionTime}ms`,
-    });
+      executionTime: `${executionTime}ms' });
 
     return json(
       {
         success: false,
         error: errorMessage,
         metadata: {
-          requestId: requestMetadata.requestId,
+         , requestId: requestMetadata.requestId,
           executionTime,
           tool,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       },
       { status: 500 }
     );
@@ -158,10 +156,10 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: Date.now(),
       tools: {
         available: Object.keys(MCP_TOOLS),
-        count: Object.keys(MCP_TOOLS).length,
+        count: Object.keys(MCP_TOOLS).length
       },
       database: healthResult,
-      endpoint: url.pathname,
+      endpoint: url.pathname
     };
     return json(response);
   } catch (error: any) {
@@ -171,7 +169,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 'error',
         timestamp: Date.now(),
         error: errorMessage,
-        endpoint: url.pathname,
+        endpoint: url.pathname
       },
       { status: 500 }
     );

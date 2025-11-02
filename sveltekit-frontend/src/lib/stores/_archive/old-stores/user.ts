@@ -35,7 +35,7 @@ export class User implements Partial<UserType> {
 
   // Get display name
   get displayName() {
-    return this.name || `${this.firstName || ''} ${this.lastName || ''}`.trim() || 'User';
+    return this.name || `${this.firstName || ''} ${this.lastName || '` }`.trim() || 'User';
   }
 }
 
@@ -57,8 +57,7 @@ const createUserStore = () => {
       set(new User()); // Reset to Guest user
     },
     // Update a specific property of the user
-    updateUser: (
-      props: Partial<UserType> & {
+    updateUser: (; props: Partial<UserType> & {
         isAuthenticated?: boolean;
         isLoggedIn?: boolean;
         displayName?: string;
@@ -75,7 +74,7 @@ const createUserStore = () => {
         user.caseId = caseId;
         return user;
       });
-    },
+    }
   };
 };
 

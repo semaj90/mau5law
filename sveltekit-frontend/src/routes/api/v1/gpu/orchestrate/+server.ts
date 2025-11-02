@@ -6,7 +6,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     // Handle various GPU orchestration actions
     // Handle various GPU orchestration actions:
-    // Supported actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
+    // Supported; actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
     const { action, data, config } = await request.json();
     switch (action) {
       case 'legal_analysis':
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'GPU orchestration failed',
-        details: errMsg,
+        details: errMsg
       },
       { status: 500 }
     );
@@ -60,8 +60,8 @@ async function handleLegalAnalysis(
     // include incoming config so it's actually used (merged with defaults by orchestrator)
     config: {
       useGPU: true,
-      ...config,
-    },
+      ...config
+    }
   };
   // Ensure we pass a value of type `string | File` to the orchestrator.
   // If `document` is undefined, coerce to empty string.
@@ -87,7 +87,7 @@ async function handleLegalAnalysis(
     analysis: result?.result ?? null,
     metrics: result?.metrics ?? null,
     recommendations: result?.recommendations ?? null,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -106,14 +106,14 @@ async function handleDocumentProcessing(
       context: {
         userId: context?.userId,
         caseId: context?.caseId,
-        documentId: context?.documentId,
+        documentId: context?.documentId
       },
       config: {
         useGPU: true,
         useRAG: options?.enableRAG !== false,
         protocol: 'http',
-        ...config,
-      },
+        ...config
+      }
     })) as OrchestratorResponse;
     results.push(result);
   }
@@ -122,7 +122,7 @@ async function handleDocumentProcessing(
     results,
     processed: results.length,
     failed: results.filter(r => !r?.success).length,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -197,7 +197,7 @@ async function handleAutosolve(
     threshold: threshold ?? 5,
     includeClusterMetrics: includeClusterMetrics !== false,
     forceRun: forceRun === true,
-    ...config,
+    ...config
   });
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
   return json({
@@ -205,10 +205,10 @@ async function handleAutosolve(
     autosolve: {
       result: result?.result ?? null,
       metrics: result?.metrics ?? null,
-      recommendations: result?.recommendations ?? null,
+      recommendations: result?.recommendations ?? null
     },
     cluster: clusterStatus,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -246,8 +246,8 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
     context,
     config: {
       useGPU: true,
-      ...config,
-    },
+      ...config
+    }
   });
   return json({
     success: Boolean(result?.success),
@@ -256,7 +256,7 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
     metrics: result?.metrics ?? null,
     error: result?.error ?? null,
     recommendations: result?.recommendations ?? null,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -264,7 +264,7 @@ async function handleClusterStatus(): Promise<ReturnType<typeof json>> {
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
   return json({
     cluster: clusterStatus,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -274,7 +274,7 @@ function extractLegalEntities(doc: string) {
     dates: [] as string[],
     citations: [] as string[],
     amounts: [] as string[],
-    clauses: [] as string[],
+    clauses: [] as string[]
   };
 
   // Use a mutable typed Record so the RegExp arrays are seen as RegExp[] (not readonly tuples)
@@ -287,7 +287,7 @@ function extractLegalEntities(doc: string) {
     dates: [/\b(\d{1,2}\/\d{1,2}\/\d{4})\b/g, /\b([A-Z][a-z]+ \d{1,2}, \d{4})\b/g, /\b(\d{4}-\d{2}-\d{2})\b/g],
     citations: [/\b(\d+ [A-Z][a-z.]+ \d+(?:, \d+)? \(\d{4}\))\b/g, /\b(\d+ U\.S\.C\. (?:§ )?\d+(?:\([a-z0-9]+\))?)\b/g],
     amounts: [/\$[\d]+(?:\.\d{2})?/g, /\b(\d+(?:,\d{3})*) dollars?\b/gi],
-    clauses: [/\b(indemnification|limitation of liability|force majeure|termination|confidentiality)\b/gi],
+    clauses: [/\b(indemnification|limitation of liability|force majeure|termination|confidentiality)\b/gi]
   };
 
   // Iterate keys in a typed way to avoid unsafe casts
@@ -303,16 +303,12 @@ function extractLegalEntities(doc: string) {
 
 // Types for risk assessment
 type AnalysisResult = { text?: string; summary?: string; [key: string]: any };
-type RiskScores = {
-  financial: number;
-  legal: number;
+type RiskScores = { financial: number;, legal: number;
   operational: number;
   reputational: number;
   overall: number;
 };
-type RiskAssessment = {
-  scores: RiskScores;
-  level: 'low' | 'medium' | 'high';
+type RiskAssessment = { scores: RiskScores;, level: 'low' | 'medium' | 'high';
   recommendations: string[];
 };
 
@@ -322,7 +318,7 @@ async function performRiskAssessment(analysisResult: AnalysisResult): Promise<Ri
     legal: 0,
     operational: 0,
     reputational: 0,
-    overall: 0,
+    overall: 0
   };
   const text = String(analysisResult?.text || analysisResult?.summary || '');
 
@@ -330,7 +326,7 @@ async function performRiskAssessment(analysisResult: AnalysisResult): Promise<Ri
     financial: ['liability', 'damages', 'penalty', 'fine', 'cost', 'expense'],
     legal: ['violation', 'breach', 'non-compliance', 'lawsuit', 'litigation'],
     operational: ['disruption', 'delay', 'failure', 'inability', 'restriction'],
-    reputational: ['public', 'media', 'reputation', 'image', 'scandal'],
+    reputational: ['public', 'media', 'reputation', 'image', 'scandal']
   };
 
   for (const [category, keywords] of Object.entries(riskKeywords) as [keyof typeof riskKeywords, string[]][]) {
@@ -347,7 +343,7 @@ async function performRiskAssessment(analysisResult: AnalysisResult): Promise<Ri
   return {
     scores: risks,
     level: risks.overall >= 7 ? 'high' : risks.overall >= 4 ? 'medium' : 'low',
-    recommendations: generateRiskRecommendations(risks),
+    recommendations: generateRiskRecommendations(risks)
   };
 }
 
@@ -384,7 +380,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       service: 'gpu-orchestrator',
       cluster: clusterStatus,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const errMsg =
@@ -403,7 +399,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'unhealthy',
         error: errMsg,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

@@ -56,7 +56,7 @@
     if (expandOnHover) isHovered = true;
   }
   function handleMouseLeave() {
-    if (expandOnHover) isHovered = $state(false);
+    if (expandOnHover) isHovered = false;
   }
   async function handleCompareClick(): Promise<any> {
     try {
@@ -91,7 +91,7 @@
   class:shadow-2xl={isHovered}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
-  transition:scale={{ duration: 200, easing: quintOut }}
+  transitionscale={{ duration: 200, easing: quintOut }}
 >
   <!-- Header -->
   <div class="flex items-center justify-between px-3 py-3 bg-gray-50 border-b border-gray-200">
@@ -144,7 +144,7 @@
           alt={evidence.title ?? 'evidence'}
           loading="lazy"
           class="w-full h-auto max-h-48 object-cover"
-          on:error={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+          onerror={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
       </div>
     {:else if (evidence?.evidenceType ?? evidence?.type) === 'video' && evidence?.url}

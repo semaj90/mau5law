@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -26,7 +26,7 @@ import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
  * Handles all GPU-related operations: NVIDIA LLaMA, WASM-LLVM, WebGPU, and NES Bridge
  */
 export interface GPUApiRequest {
-	operation: 'llama_generate' | 'wasm_compile' | 'wasm_execute' | 'gpu_compute' | 'health' | 'hybrid'
+	operation: 'llama_generate' | 'wasm_compile' | 'wasm_execute' | 'gpu_compute' | 'health' | 'hybrid';
 	data?: any
 	options?: {
 		priority?: 'low' | 'medium' | 'high' | 'urgent'
@@ -35,16 +35,10 @@ export interface GPUApiRequest {
 		fallbackToCPU?: boolean
 	}
 }
-export interface GPUApiResponse {
-	success: boolean
-	operation: string
+export interface GPUApiResponse { success: boolean, operation: string
 	result?: any
 	error?: string
-	serviceUsed: string
-	performance: {
-		processingTime: number
-		memoryUsed: number
-		gpuUtilization: number
+	serviceUsed: string; performance: { processingTime: number, memoryUsed: number; gpuUtilization: number
 	}
 	metadata: { [key: string]: any }
 }
@@ -57,13 +51,13 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }> {
     health.nvidia_llama = {
       available: true,
       status: 'healthy',
-      ...nvidiaStats,
+      ...nvidiaStats
     };
   } catch (error: any) {
     health.nvidia_llama = {
       available: false,
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
   try {
@@ -73,13 +67,13 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }> {
     health.gpu_service_integration = {
       available: status.available,
       status: status.initialized ? 'healthy' : 'initializing',
-      performance: status.performance,
+      performance: status.performance
     };
   } catch (error: any) {
     health.gpu_service_integration = {
       available: false,
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
   try {
@@ -87,13 +81,13 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }> {
     health.wasm_llvm = {
       available: true, // Always available with fallback
       status: 'healthy',
-      capabilities: ['legal_processing', 'vector_computation', 'fallback_cpu'],
+      capabilities: ['legal_processing', 'vector_computation', 'fallback_cpu']
     };
   } catch (error: any) {
     health.wasm_llvm = {
       available: false,
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
   try {
@@ -104,7 +98,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }> {
       health.wasm_llvm_service = {
         available: true,
         status: 'healthy',
-        ...serviceHealth,
+        ...serviceHealth
       };
     } else {
       throw new Error(
@@ -116,7 +110,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any }> {
       available: false,
       status: 'error',
       note: 'External WASM-LLVM service not running on port 8225',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
   return health;
@@ -152,7 +146,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 					(data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).prompt || (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).query || '',
 					{
 						extractCitations: true,
-						riskAssessment: true,
+						riskAssessment: true
 					}
 				)
 				result = wasmResult
@@ -191,14 +185,14 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 			try {
 				const response = await fetch('http://localhost:8225/api/v1/compile', {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': `application/json` },
 					body: JSON.stringify({
-						id: `compile_${Date.now()}`,
+					, id: `compile_${Date.now()}`,
 						source_files: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).source_files || [],
 						compiler_flags: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).compiler_flags || [],
 						target_arch: 'wasm32',
 						opt_level: '-O2',
-						metadata: { type: 'legal_ai_module' }
+						metadata: { type: `legal_ai_module` }
 					})
 				})
 				if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -214,8 +208,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 				result = {
 					success: false,
 					error: 'External WASM service unavailable',
-					fallback: 'Using local WASM processing'
-				}
+					fallback: `Using local WASM processing` }
 				serviceUsed = 'wasm_fallback'
 				memoryUsed = 0
 				gpuUtilization = 0
@@ -229,14 +222,14 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
           type: operationType as any,
           data,
           priority: options.priority || 'medium',
-          metadata: (data as any)?.metadata || {},
+          metadata: (data as any)?.metadata || {}
         });
 				result = task.result
 				serviceUsed = 'gpu_service_integration'
 				memoryUsed = task.memoryUsed || 0
 				gpuUtilization = 0.5
 			} catch (error: any) {
-				throw new Error(`GPU processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`)
+				throw new Error(`GPU processing failed: ${error instanceof Error ? error.message: `Unknown error` }`)
 			}
 		}
 		return {
@@ -268,8 +261,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 				gpuUtilization: 0
 			},
 			metadata: {
-				errorType: error instanceof Error ? error.constructor.name : 'UnknownError'
-			}
+				errorType: error instanceof Error ? error.constructor.name : `UnknownError` }
 		}
 	}
 }
@@ -290,7 +282,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 					gpuUtilization: 0
 				},
 				metadata: {
-					timestamp: new Date().toISOString(),
+				, timestamp: new Date().toISOString(),
 					availableOperations: [
 						'llama_generate',
 						'wasm_compile',
@@ -304,14 +296,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 		}
 		return json({
 			success: false,
-			error: `Unsupported GET operation: ${operation}`
-		}, { status: 400 })
+			error: 'Unsupported GET; operation: ${operation}' }, { status: 400 })
 	} catch (error: any) {
 		console.error('GPU API GET error:', error)
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message: 'Unknown error'
-		}, { status: 500 })
+			error: error instanceof Error ? error.message: `Unknown error` }, { status: 500 })
 	}
 }
 // POST endpoint - All GPU operations
@@ -327,8 +317,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 						prompt: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).prompt,
 						max_tokens: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).max_tokens || 1024,
 						temperature: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).temperature || 0.7,
-						priority: options.priority || 'medium'
-					})
+						priority: options.priority || `medium` })
 					response = {
 						success: true,
 						operation,
@@ -351,7 +340,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             error: error instanceof Error ? error.message : 'LLaMA generation failed',
             serviceUsed: 'nvidia_llama',
             performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-            metadata: {},
+            metadata: {}
           };
 				}
 				break
@@ -362,7 +351,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					const endpoint = operation === 'wasm_compile' ? 'compile' : 'execute'
 					const serviceResponse = await fetch(`http://localhost:8225/api/v1/${endpoint}`, {
 						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
+						headers: { 'Content-Type': `application/json` },
 						body: JSON.stringify(data)
 					})
 					if (serviceResponse.ok) {
@@ -389,7 +378,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             error: error instanceof Error ? error.message : 'WASM operation failed',
             serviceUsed: 'wasm_llvm_service',
             performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-            metadata: {},
+            metadata: {}
           };
 				}
 				break
@@ -421,7 +410,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             error: error instanceof Error ? error.message : 'GPU compute failed',
             serviceUsed: 'gpu_service_integration',
             performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-            metadata: {},
+            metadata: {}
           };
 				}
 				break
@@ -443,7 +432,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				response = {
 					success: false,
 					operation: operation || 'unknown',
-					error: `Unsupported operation: ${operation}`,
+					error: `Unsupported; operation: ${operation}`,
 					serviceUsed: 'error',
 					performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
 					metadata: {
@@ -460,8 +449,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         operation: 'unknown',
         error: error instanceof Error ? error.message : 'Unknown error',
         serviceUsed: 'error',
-        performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-        metadata: {},
+        performance: {, processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
+        metadata: {}
       },
       { status: 500 }
     );

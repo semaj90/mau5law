@@ -32,7 +32,7 @@
   let searchQuery: string = '';
   let showDependencies: boolean = true;
   let showHealth: boolean = true;
-  let autoRefresh: boolean = $state(false);
+  let autoRefresh: boolean = false;
 
   const serviceTypeColors: Record<string, string> = {
     frontend: 'bg-red-500',

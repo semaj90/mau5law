@@ -6,32 +6,24 @@
 /// <reference types="@webgpu/types" />
 import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from './YoRHaMipmapShaders.js';
 import type { LegalDocument, MemoryBank } from '../../../../memory/nes-memory-architecture.js';
-export interface TextureBankConfig {
-  bankType: 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
-  maxTextures: number;
+export interface TextureBankConfig { bankType: 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';, maxTextures: number;
   maxMemoryMB: number;
   mipmapLevels: number;
   compressionEnabled: boolean;
   rtxOptimization: boolean;
 }
-export interface TextureEntry {
-  id: string;
-  texture: GPUTexture;
+export interface TextureEntry { id: string;, texture: GPUTexture;
   mipmaps: GPUTexture[];
   memoryBank: string;
   lastAccessed: number;
   memoryUsed: number;
   legalDocument?: LegalDocument;
-  generationStats: {
-    mipmapGenerationTime: number;
-    compressionRatio: number;
+  generationStats: { mipmapGenerationTime: number;, compressionRatio: number;
     qualityScore: number;
   }
 }
 
-export interface TextureStreamingSession {
-  sessionId: string;
-  sourceTexture: GPUTexture;
+export interface TextureStreamingSession { sessionId: string;, sourceTexture: GPUTexture;
   streamedChunks: Map<string, GPUTexture>;
   totalChunks: number;
   completedChunks: number;
@@ -45,9 +37,7 @@ export class YoRHaOptimizedTextureManager {
   private device: GPUDevice | null = null;
   private isInitialized = $state(false);
   // NES-style texture memory banks
-  private textureBanks = new Map<string, {
-    config: TextureBankConfig;
-    textures: Map<string, TextureEntry>;
+  private textureBanks = new Map<string, { config: TextureBankConfig;, textures: Map<string, TextureEntry>;
     memoryUsed: number;
     bankSwitchCount: number;
   }>();
@@ -92,37 +82,31 @@ export class YoRHaOptimizedTextureManager {
    */
   private initializeTextureBanks(): void {
     // CHR-ROM Bank: High-frequency legal document patterns and evidence
-    this.textureBanks.set('CHR_ROM', {
-      config: {
-        bankType: 'CHR_ROM',
+    this.textureBanks.set('CHR_ROM', { config: {, bankType: 'CHR_ROM',
         maxTextures: 64,
         maxMemoryMB: 32,
         mipmapLevels: 8,
         compressionEnabled: true,
-        rtxOptimization: true,
+        rtxOptimization: true
       },
       textures: new Map(),
       memoryUsed: 0,
       bankSwitchCount: 0
     });
     // PRG-ROM Bank: Large legal document textures and complex UI elements
-    this.textureBanks.set('PRG_ROM', {
-      config: {
-        bankType: 'PRG_ROM',
+    this.textureBanks.set('PRG_ROM', { config: {, bankType: 'PRG_ROM',
         maxTextures: 128,
         maxMemoryMB: 128,
         mipmapLevels: 12,
         compressionEnabled: true,
-        rtxOptimization: true,
+        rtxOptimization: true
       },
       textures: new Map(),
       memoryUsed: 0,
       bankSwitchCount: 0
     });
     // SAVE_RAM Bank: Persistent texture cache for frequently accessed content
-    this.textureBanks.set('SAVE_RAM', {
-      config: {
-        bankType: 'SAVE_RAM',
+    this.textureBanks.set('SAVE_RAM', { config: {, bankType: 'SAVE_RAM',
         maxTextures: 32,
         maxMemoryMB: 16,
         mipmapLevels: 6,
@@ -134,9 +118,7 @@ export class YoRHaOptimizedTextureManager {
       bankSwitchCount: 0
     });
     // EXPANSION_ROM Bank: Streaming buffer for large texture operations
-    this.textureBanks.set('EXPANSION_ROM', {
-      config: {
-        bankType: 'EXPANSION_ROM',
+    this.textureBanks.set('EXPANSION_ROM', { config: {, bankType: 'EXPANSION_ROM',
         maxTextures: 16,
         maxMemoryMB: 64,
         mipmapLevels: 10,
@@ -226,11 +208,11 @@ export class YoRHaOptimizedTextureManager {
       const allocationTime = performance.now() - startTime;
       console.log(`✅ Allocated texture ${textureId} to ${bankName} bank in ${allocationTime.toFixed(2)}ms`);
       if (mipmapResult) {
-        console.log(`🔥 Generated ${mipmapResult.mipmapLevels.length} mip levels with ${mipmapResult.optimization.rtxAcceleration ? 'RTX' : 'CPU'} acceleration`);
+        console.log(`🔥 Generated ${mipmapResult.mipmapLevels.length} mip levels with ${mipmapResult.optimization.rtxAcceleration ? 'RTX' : 'CPU' } acceleration`);
       }
       return textureEntry;
     } catch (error) {
-      console.error(`Failed to allocate texture ${textureId}:`, error);
+      console.error(`Failed to allocate texture ${textureId}: ', error);
       return null;
     }
   }
@@ -434,10 +416,9 @@ export class YoRHaOptimizedTextureManager {
   /**
    * Get comprehensive texture management statistics
    */
-  getStatistics(): {
-    banks: { [bankName: string]: { textureCount: number; memoryUsedMB: number; memoryLimitMB: number; utilization: number } }
+  getStatistics(): { banks: { [bankName: string]: { textureCount: number; memoryUsedMB: number; memoryLimitMB: number;, utilization: number } }
     overall: typeof this.stats;
-    streaming: { activeSessions: number; totalChunksProcessed: number }
+    streaming: { activeSessions: number;, totalChunksProcessed: number }
   } {
     const bankStats: { [key: string]: any } = {}
     for (const [bankName, bank] of Array.from(this.textureBanks)) {
@@ -466,13 +447,12 @@ export class YoRHaOptimizedTextureManager {
     try {
       if (!navigator.gpu) return null;
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
-      });
+        powerPreference: 'high-performance' });
       if (!adapter) return null;
       return await adapter.requestDevice({
         requiredFeatures: [],
         requiredLimits: {
-          maxBufferSize: 256 * 1024 * 1024,
+         , maxBufferSize: 256 * 1024 * 1024,
           maxComputeWorkgroupStorageSize: 16384
         }
       });

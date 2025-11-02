@@ -12,7 +12,7 @@ import { documents, cases, users } from '$lib/db/schema'; // Removed document_ch
 import { documentVectors, queryVectors } from '$lib/db/schema/vectors';
 
 // --- ADJUSTED: lightweight types and adapter to satisfy TS/linter ---
-type UpdateResult = { chunksUpdated: number; processingTime: number };
+type UpdateResult = { chunksUpdated: number;, processingTime: number };
 type RerankJob = { improvement: number; queryId?: string };
 // removed unused RerankResult
 
@@ -24,7 +24,7 @@ type StepResult = {
   expectedPriority?: string;
   priorityMatch?: boolean;
   updateResult?: UpdateResult | null;
-  rerankingResult?: { queriesAffected: number; avgImprovement: number } | null;
+  rerankingResult?: { queriesAffected: number;, avgImprovement: number } | null;
   time?: number;
   error?: string;
 };
@@ -41,7 +41,7 @@ type TestResults = {
   error?: string;
 };
 
-// New: explicit insert shapes to avoid: 'any' casts and match required fields
+// New: explicit insert shapes to; avoid: 'any' casts and match required fields
 type DocumentInsert = {
   title: string;
   case_id?: string | null; // match DB column type (e.g. UUID/string) — numbers cause Drizzle overload mismatch
@@ -51,17 +51,14 @@ type DocumentInsert = {
   user_id: number; // <-- changed: use number to match Drizzle/postgres column type
 };
 
-type QueryVectorInsert = {
-  userId: string;
-  query: string;
-  embedding: number[]; // <-- changed: plain number[] for Drizzle
-  resultCount: number;
-  clickedResults: Array<{ id: string | number; score: number }>;
+type QueryVectorInsert = { userId: string;, query: string;
+  embedding: number[]; // <-- changed: plain number[] for Drizzle; resultCount: number;
+  clickedResults: Array<{ id: string | number;, score: number }>;
 };
 
 // Small adapter interface for the subset of DocumentUpdateLoop we use
 type DocumentUpdateLoopAdapter = {
-  queueDocumentUpdate(docId: string | number, content: string): Promise<void>;
+  queueDocumentUpdate(docId: string | number; content: string): Promise<void>;
   embeddings: {
     embedQuery(query: string): Promise<number[] | Float32Array>;
   };
@@ -77,15 +74,13 @@ const DUL = DocumentUpdateLoop as unknown as DocumentUpdateLoopAdapter;
 // ============================================================================
 // TEST SCENARIOS
 // ============================================================================
-const testScenarios = {
-  minor_edit: {
-    name: 'Minor Edit Test',
+const testScenarios = { minor_edit: {, name: 'Minor Edit Test',
     description: 'Small text change to test low-priority update',
     originalContent:
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
       'This agreement establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
-    expectedPriority: 'low',
+    expectedPriority: 'low'
   },
   major_revision: {
     name: 'Major Revision Test',
@@ -94,7 +89,7 @@ const testScenarios = {
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
       'This employment agreement defines the relationship between the company and employee. The employee shall perform software development duties and maintain confidentiality of proprietary information.',
-    expectedPriority: 'high',
+    expectedPriority: 'high'
   },
   content_addition: {
     name: 'Content Addition Test',
@@ -102,7 +97,7 @@ const testScenarios = {
     originalContent: 'This contract establishes the terms and conditions for legal services.',
     modifiedContent:
       'This contract establishes the terms and conditions for legal services. Additional clauses include liability limitations, intellectual property provisions, and termination procedures. The contractor agrees to maintain professional standards.',
-    expectedPriority: 'medium',
+    expectedPriority: 'medium'
   },
   complete_rewrite: {
     name: 'Complete Rewrite Test',
@@ -111,8 +106,8 @@ const testScenarios = {
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
       'CONFIDENTIAL SETTLEMENT AGREEMENT - This settlement resolves all claims between parties regarding patent infringement allegations. Payment terms are $500,000 over 12 months with mutual non-disclosure requirements.',
-    expectedPriority: 'critical',
-  },
+    expectedPriority: 'critical'
+  }
 };
 // ============================================================================
 // TEST EXECUTION
@@ -130,7 +125,7 @@ class UpdateLoopTester {
         status: 'running',
         steps: {},
         performance: {},
-        errors: [],
+        errors: []
       };
       // Step 1: Setup test environment
       await this.setupTestEnvironment();
@@ -171,11 +166,11 @@ class UpdateLoopTester {
           email: 'test@update-loop.com',
           username: 'Update Loop Test User',
           role: 'prosecutor',
-          password_hash: 'test-hash',
+          password_hash: 'test-hash'
         })
         .onConflictDoUpdate({
           target: users.email,
-          set: { username: 'Update Loop Test User (Updated)' },
+          set: {, username: 'Update Loop Test User (Updated)' }
         })
         .returning();
       // Create test case
@@ -186,14 +181,14 @@ class UpdateLoopTester {
           description: 'Test case for document update loop validation',
           status: 'active',
           priority: 'medium',
-          user_id: testUser.id,
+          user_id: testUser.id
         })
         .returning();
       this.testResults.steps.setup = {
         status: 'success',
         userId: testUser.id,
         caseId: testCase.id,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
       this.testResults.testUserId = testUser.id;
       this.testResults.testCaseId = testCase.id;
@@ -201,7 +196,7 @@ class UpdateLoopTester {
     } catch (err: any) {
       this.testResults.steps.setup = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Setup failed',
+        error: err instanceof Error ? err.message : 'Setup failed'
       };
       throw err;
     }
@@ -228,7 +223,7 @@ class UpdateLoopTester {
         filename: `${scenarioName}_test.txt`,
         filePath: `/test/${scenarioName}_test.txt`,
         content_text: scenario.originalContent,
-        user_id: userIdNum,
+        user_id: userIdNum
       };
       const [document] = await db.insert(documents).values(documentInsert).returning();
       this.testDocumentIds.push(document.id);
@@ -247,7 +242,7 @@ class UpdateLoopTester {
         query: testQuery,
         embedding: queryEmbedding, // now a number[]
         resultCount: 1,
-        clickedResults: [{ id: document.id, score: 0.8 }],
+        clickedResults: [{ id: document.id, score: 0.8 }]
       };
       await db.insert(queryVectors).values(qvInsert); // <-- removed: 'as Insert<typeof queryVectors>'
       // NOW TEST THE UPDATE LOOP
@@ -269,7 +264,7 @@ class UpdateLoopTester {
         updateResult: updateResult
           ? {
               chunksUpdated: updateResult.chunksUpdated,
-              processingTime: updateResult.processingTime,
+              processingTime: updateResult.processingTime
             }
           : null,
         rerankingResult:
@@ -277,19 +272,18 @@ class UpdateLoopTester {
             ? {
                 queriesAffected: rerankingResult.length,
                 avgImprovement:
-                  rerankingResult.reduce((sum: number, job: { improvement: number }) => sum + job.improvement, 0) /
-                  rerankingResult.length,
+                  rerankingResult.reduce((sum: number, job: {, improvement: number }) => sum + job.improvement, 0) /
+                  rerankingResult.length
               }
             : null,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
       console.log(`✅ Scenario ${scenario.name} completed`);
     } catch (err: any) {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Scenario failed',
-      };
-      console.error(`❌ Scenario ${scenario.name} failed:`, err);
+        error: err instanceof Error ? err.message : `Scenario failed` };
+      console.error(`❌ Scenario ${scenario.name} failed: ', err);
     }
   }
   private generateTestQuery(content: string): string {
@@ -307,9 +301,7 @@ class UpdateLoopTester {
     const stepStart = Date.now();
     console.log('🔍 Testing search impact...');
     try {
-      const searchTests: {
-        documentId: string | number; // changed: allow number or string
-        query: string;
+      const searchTests: { documentId: string | number; //, changed: allow number or string, query: string;
         found: boolean;
         similarity: number;
         rank: number;
@@ -329,8 +321,7 @@ class UpdateLoopTester {
         const searchResults = await db
           .select({
             documentId: documentVectors.documentId,
-            similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`,
-          })
+            similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})` })
           .from(documentVectors)
           .where(sql`1 - (${documentVectors.embedding} <=> ${queryEmbedding}) > 0.3`)
           .orderBy(sql`${documentVectors.embedding} <=> ${queryEmbedding}`)
@@ -342,7 +333,7 @@ class UpdateLoopTester {
           query: testQuery,
           found: !!relevantResult,
           similarity: relevantResult?.similarity || 0,
-          rank: relevantResult ? searchResults.findIndex(r => String(r.documentId) === String(documentId)) + 1 : -1,
+          rank: relevantResult ? searchResults.findIndex(r => String(r.documentId) === String(documentId)) + 1 : -1
         });
       }
       this.testResults.steps.searchImpact = {
@@ -351,13 +342,13 @@ class UpdateLoopTester {
         documentsFound: searchTests.filter(t => t.found).length,
         avgSimilarity:
           searchTests.length > 0 ? searchTests.reduce((sum, t) => sum + t.similarity, 0) / searchTests.length : 0,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
       console.log('✅ Search impact testing completed');
     } catch (err: any) {
       this.testResults.steps.searchImpact = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Search testing failed',
+        error: err instanceof Error ? err.message : 'Search testing failed'
       };
     }
   }
@@ -402,12 +393,12 @@ class UpdateLoopTester {
         successfulUpdates,
         queueStatus,
         priorityDistribution,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
       console.log('✅ Performance analysis completed');
     } catch (err: any) {
       this.testResults.performance = {
-        error: err instanceof Error ? err.message : 'Performance analysis failed',
+        error: err instanceof Error ? err.message : 'Performance analysis failed'
       };
     }
   }
@@ -426,13 +417,13 @@ class UpdateLoopTester {
       this.testResults.steps.cleanup = {
         status: 'success',
         documentsDeleted: this.testDocumentIds.length,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
       console.log('✅ Cleanup completed');
     } catch (err: any) {
       this.testResults.steps.cleanup = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Cleanup failed',
+        error: err instanceof Error ? err.message : 'Cleanup failed'
       };
     }
   }
@@ -454,7 +445,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Test failed',
+        error: err instanceof Error ? err.message : 'Test failed'
       },
       { status: 500 }
     );
@@ -468,27 +459,27 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         data: {
-          service: 'Document Update Loop Tester',
+         , service: 'Document Update Loop Tester',
           scenarios: Object.keys(testScenarios),
           description: 'Tests the full re-embed + re-rank loop with various document change scenarios',
           endpoints: {
             'POST /': 'Run full test suite or specific scenario',
-            'GET /?action=scenarios': 'List available test scenarios',
-          },
-        },
+            'GET /?action=scenarios': 'List available test scenarios'
+          }
+        }
       });
     }
     if (action === 'scenarios') {
       return json({
         success: true,
         data: {
-          scenarios: Object.entries(testScenarios).map(([key, scenario]) => ({
+         , scenarios: Object.entries(testScenarios).map(([key, scenario]) => ({
             key,
             name: scenario.name,
             description: scenario.description,
-            expectedPriority: scenario.expectedPriority,
-          })),
-        },
+            expectedPriority: scenario.expectedPriority
+          }))
+        }
       });
     }
     return json({ success: false, error: 'Unknown action' }, { status: 400 });
@@ -496,8 +487,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Request failed',
-      },
+        error: err instanceof Error ? err.message : `Request failed` },
       { status: 500 }
     );
   }

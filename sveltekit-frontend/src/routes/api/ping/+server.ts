@@ -4,6 +4,6 @@ export const GET: RequestHandler = async () => {
   return json({
     status: 'ok',
     message: 'pong',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };

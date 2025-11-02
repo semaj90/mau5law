@@ -14,9 +14,7 @@ const BATCH_SIZE_LIMIT =
 
 // MAX_BATCH_SIZE ||
 
-export type IngestDocument = {
-  title: string;
-  content: string;
+export type IngestDocument = { title: string;, content: string;
   case_id?: string | null;
   // Optional metadata bag; prefer unknown over any
   metadata?: Record<string, unknown> | null;
@@ -34,9 +32,7 @@ export type IngestResult = {
 export interface BatchIngestRequest {
   documents: IngestDocument[];
 }
-export interface BatchIngestResponse {
-  results: IngestResult[];
-  processed: number;
+export interface BatchIngestResponse { results: IngestResult[];, processed: number;
   total: number;
   timestamp: string;
   errors?: string[];
@@ -50,7 +46,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     // Validate request structure
     if (!requestData.documents || !Array.isArray(requestData.documents)) {
-      return json({ error: 'Missing required field: documents array is required' }, { status: 400 });
+      return json({ error: 'Missing required, field: documents array is required' }, { status: 400 });
     }
 
     // Validate batch size
@@ -58,7 +54,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       return json(
         {
           error: `Batch size ${requestData.documents.length} exceeds maximum of ${BATCH_SIZE_LIMIT}`,
-          max_batch_size: BATCH_SIZE_LIMIT,
+          max_batch_size: BATCH_SIZE_LIMIT
         },
         { status: 400 }
       );
@@ -74,7 +70,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       return json(
         {
           error: 'Document validation failed',
-          validation_errors: validationErrors,
+          validation_errors: validationErrors
         },
         { status: 400 }
       );
@@ -108,9 +104,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           batch_id: `batch_${Date.now()}_${randomId}`,
           api_version: 'v1',
           timestamp: new Date().toISOString(),
-          user_agent: userAgent,
-        },
-      })),
+          user_agent: userAgent
+        }
+      }))
     };
 
     const controller = new AbortController();
@@ -120,21 +116,19 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const response = await fetch(`${SERVICE_URL}/api/ingest/batch`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify(batchRequest),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorText = await response.text();
         return json(
-          {
-            error: `Batch ingest service error: ${response.status} - ${errorText}`,
+          { error: `Batch ingest service, error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
             port: '8227',
-            batch_size: requestData.documents.length,
+            batch_size: requestData.documents.length
           },
           { status: response.status }
         );
@@ -157,26 +151,25 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         performance: {
           total_processing_time_ms: processingTime,
           average_document_time_ms: averageDocumentTimeMs,
-          documents_per_second: documentsPerSecond,
+          documents_per_second: documentsPerSecond
         },
         service_info: {
           go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-batch-api',
           architecture: 'multi-protocol',
-          batch_enabled: true,
+          batch_enabled: true
         },
         success: true,
         api_version: 'v1',
         batch_summary: {
-          requested: requestData.documents.length,
+         , requested: requestData.documents.length,
           processed: result.processed || 0,
           failed: result.errors?.length || 0,
           success_rate:
             result.processed && requestData.documents.length > 0
               ? `${((result.processed / requestData.documents.length) * 100).toFixed(1)}%`
-              : '0%',
-        },
+              : '0%` }
       });
     } catch (fetchError: any) {
       clearTimeout(timeoutId);
@@ -193,7 +186,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             error: 'Batch processing timeout',
             message: `Processing ${requestData.documents.length} documents took longer than ${TIMEOUT / 1000} seconds`,
             batch_size: requestData.documents.length,
-            timeout_ms: TIMEOUT,
+            timeout_ms: TIMEOUT
           },
           { status: 504 }
         );
@@ -212,7 +205,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         error: 'Internal server error during batch processing',
         message: error instanceof Error ? error.message : String(error),
         service: 'sveltekit-batch-ingest-proxy',
-        processing_time_ms: processingTime,
+        processing_time_ms: processingTime
       },
       { status: 500 }
     );
@@ -232,15 +225,15 @@ export const GET: RequestHandler = async ({ url }) => {
         endpoints: {
           batch_ingest: '/api/v1/ingest/batch',
           single_ingest: '/api/v1/ingest',
-          health: '/api/v1/ingest',
-        },
+          health: '/api/v1/ingest'
+        }
       },
       architecture: {
-        frontend: 'sveltekit-2',
+       , frontend: 'sveltekit-2',
         backend: 'go-gin-microservice',
         database: 'postgresql-pgvector',
-        embeddings: 'ollama-nomic-embed-text',
-      },
+        embeddings: 'ollama-nomic-embed-text'
+      }
     });
   }
 
@@ -248,6 +241,5 @@ export const GET: RequestHandler = async ({ url }) => {
   return json({
     batch_id: batchId,
     status: 'not_implemented',
-    message: 'Batch status tracking will be implemented with Redis/PostgreSQL integration',
-  });
+    message: 'Batch status tracking will be implemented with Redis/PostgreSQL integration` });
 };

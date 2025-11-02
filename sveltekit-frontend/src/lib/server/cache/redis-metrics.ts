@@ -4,9 +4,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * Tracks cache performance for optimization insights
  */
 import { createClient, type RedisClientType } from 'redis';
-interface CacheMetrics {
-  hits: number;
-  misses: number;
+interface CacheMetrics { hits: number;, misses: number;
   sets: number;
   deletes: number;
   errors: number;
@@ -15,9 +13,7 @@ interface CacheMetrics {
   averageGetTime: number;
   averageSetTime: number;
 }
-interface OperationTiming {
-  operation: string;
-  duration: number;
+interface OperationTiming { operation: string;, duration: number;
   timestamp: number;
 }
 export class RedisMetricsCache {
@@ -33,14 +29,14 @@ export class RedisMetricsCache {
     totalRequests: 0,
     hitRate: 0,
     averageGetTime: 0,
-    averageSetTime: 0,
+    averageSetTime: 0
   };
   // Performance tracking
   private getTimes: number[] = [];
   private setTimes: number[] = [];
   private readonly MAX_TIMING_SAMPLES = 1000;
   // Key pattern tracking for insights
-  private keyPatterns: Map<string, { hits: number; misses: number }> = new Map();
+  private keyPatterns: Map<string, { hits: number;, misses: number }> = new Map();
   constructor(private url: string) {}
   /**
    * Connect to Redis
@@ -92,7 +88,7 @@ export class RedisMetricsCache {
     } catch (error) {
       this.metrics.errors++;
       this.metrics.misses++;
-      console.error(`Redis GET error for key ${key}:`, error);
+      console.error(`Redis GET error for key ${key}: ', error);
       return null;
     }
   }
@@ -132,7 +128,7 @@ export class RedisMetricsCache {
       return await this.client!.del(key);
     } catch (error) {
       this.metrics.errors++;
-      console.error(`Redis DEL error for key ${key}:`, error);
+      console.error(`Redis DEL error for key ${key}: ', error);
       return 0;
     }
   }
@@ -271,13 +267,13 @@ export class RedisMetricsCache {
   /**
    * Get key pattern statistics
    */
-  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number; hitRate: number }> {
+  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number;, hitRate: number }> {
     return Array.from(this.keyPatterns.entries())
       .map(([pattern, stats]) => ({
         pattern,
         hits: stats.hits,
         misses: stats.misses,
-        hitRate: stats.hits + stats.misses > 0 ? (stats.hits / (stats.hits + stats.misses)) * 100 : 0,
+        hitRate: stats.hits + stats.misses > 0 ? (stats.hits / (stats.hits + stats.misses)) * 100 : 0
       }))
       .sort((a, b) => (b.hits + b.misses) - (a.hits + a.misses)); // Sort by total requests
   }
@@ -287,21 +283,18 @@ export class RedisMetricsCache {
   getPerformanceInsights() {
     const metrics = this.getMetrics();
     const patterns = this.getKeyPatternStats();
-    return {
-      overall: {
-        hitRate: metrics.hitRate.toFixed(2) + '%',
+    return { overall: {, hitRate: metrics.hitRate.toFixed(2) + '%',
         totalRequests: metrics.totalRequests,
         hits: metrics.hits,
         misses: metrics.misses,
         errors: metrics.errors,
-        errorRate: ((metrics.errors / metrics.totalRequests) * 100).toFixed(2) + '%',
+        errorRate: ((metrics.errors / metrics.totalRequests) * 100).toFixed(2) + '%'
       },
       performance: {
         averageGetTime: metrics.averageGetTime.toFixed(2) + 'ms',
-        averageSetTime: metrics.averageSetTime.toFixed(2) + 'ms',
-      },
+        averageSetTime: metrics.averageSetTime.toFixed(2) + 'ms` },
       topPatterns: patterns.slice(0, 10),
-      recommendations: this.generateRecommendations(metrics, patterns),
+      recommendations: this.generateRecommendations(metrics, patterns)
     };
   }
   /**
@@ -346,7 +339,7 @@ export class RedisMetricsCache {
       totalRequests: 0,
       hitRate: 0,
       averageGetTime: 0,
-      averageSetTime: 0,
+      averageSetTime: 0
     };
     this.getTimes = [];
     this.setTimes = [];

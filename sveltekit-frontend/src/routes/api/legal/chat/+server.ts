@@ -9,9 +9,7 @@ import { legalAnalysisSessions, legalDocuments, legalPrecedents, eq, like, and, 
 // Replace loose types with strict ones
 type DBCondition = unknown;
 
-export interface InsertLegalAnalysisSession {
-  userId: string;
-  prompt: string;
+export interface InsertLegalAnalysisSession { userId: string;, prompt: string;
   response: string;
   caseId?: string;
 }
@@ -37,15 +35,11 @@ interface Source {
   relevanceScore?: number;
   [k: string]: any;
 }
-interface AnalysisResult {
-  analysis: string;
-  confidence: number;
+interface AnalysisResult { analysis: string;, confidence: number;
   recommendations: string[];
   [k: string]: any;
 }
-export interface LegalChatResponse {
-  sessionId: string;
-  analysis: string;
+export interface LegalChatResponse { sessionId: string;, analysis: string;
   confidence: number;
   sources: Source[];
   recommendations: string[];
@@ -59,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { prompt, caseId, userId, sessionType = 'case_analysis', context } = body;
 
     if (!prompt || !userId) {
-      return json({ error: 'Missing required fields: prompt, userId' }, { status: 400 });
+      return json({ error: 'Missing required, fields: prompt, userId' }, { status: 400 });
     }
     // 1. Search for relevant legal documents and precedents
     const relevantSources = await findRelevantLegalSources(prompt, caseId);
@@ -77,11 +71,11 @@ export const POST: RequestHandler = async ({ request }) => {
         type: source.type,
         id: source.id,
         title: source.title || source.caseTitle || source.citation,
-        relevance: source.relevanceScore ?? 0.85,
+        relevance: source.relevanceScore ?? 0.85
       })),
       model: 'gemma3-legal',
       processingTime: Date.now() - startTime,
-      isActive: true,
+      isActive: true
     };
     const [session] = await db.insert(legalAnalysisSessions).values(sessionInsert).returning();
     const response: LegalChatResponse = {
@@ -93,10 +87,10 @@ export const POST: RequestHandler = async ({ request }) => {
         id: source.id,
         title: source.title || source.caseTitle || source.citation,
         relevance: source.relevanceScore ?? 0.85,
-        excerpt: source.summary ?? (source.content ? String(source.content).substring(0, 200) + '...' : ''),
+        excerpt: source.summary ?? (source.content ? String(source.content).substring(0, 200) + '...' : '')
       })),
       recommendations: analysisResult.recommendations,
-      processingTime: ((session as Record<string, unknown>)?.['processingTime'] as number) ?? Date.now() - startTime,
+      processingTime: ((session as Record<string, unknown>)?.['processingTime'] as number) ?? Date.now() - startTime
     };
     return json(response);
   } catch (error: any) {
@@ -159,8 +153,7 @@ async function generateLegalAnalysis(prompt: string, sources: Source[], context?
   try {
     // Construct analysis prompt with legal context
     const legalPrompt = `
-As a legal AI assistant specialized in prosecutor case analysis, analyze the following:
-QUERY: ${prompt}
+As a legal AI assistant specialized in prosecutor case analysis, analyze the following:; QUERY: ${prompt}
 RELEVANT SOURCES:
 ${sources
   .map(
@@ -171,7 +164,7 @@ ${sources
   )
   .join('\n')}
 CASE CONTEXT:
-${context ? JSON.stringify(context, null, 2) : 'No additional context provided'}
+${context ? JSON.stringify(context, null, 2) : 'No additional context provided' }
 Please provide:
 1. Legal Analysis (comprehensive analysis of the query)
 2. Confidence Level (0.0-1.0)
@@ -194,7 +187,7 @@ The case appears to have merit based on the documented evidence and applicable l
         'Prepare responses to anticipated defense challenges',
         'Consider additional expert witness testimony if needed',
         'Document all procedural steps for appellate protection',
-      ],
+      ]
     };
     return analysisResult;
   } catch (error: any) {

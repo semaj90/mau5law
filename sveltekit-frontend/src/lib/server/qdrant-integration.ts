@@ -5,7 +5,7 @@ import type {
   SearchRequest,
   SearchResponse,
   UpsertPoints,
-  UpsertResponse,
+  UpsertResponse
 } from '$lib/types/qdrant'; // Assuming these types will be defined
 
 const QDRANT_COLLECTION_NAME = 'legal_documents'; // Example collection name
@@ -21,9 +21,9 @@ export async function upsertVectors(points: PointStruct[]): Promise<UpsertRespon
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': QDRANT_API_KEY,
+        'api-key': QDRANT_API_KEY
       },
-      body: JSON.stringify({ points, wait: true } as UpsertPoints),
+      body: JSON.stringify({ points, wait: true } as UpsertPoints)
     });
 
     if (!response.ok) {
@@ -49,9 +49,9 @@ export async function searchVectors(searchRequest: SearchRequest): Promise<Searc
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': QDRANT_API_KEY,
+        'api-key': QDRANT_API_KEY
       },
-      body: JSON.stringify(searchRequest),
+      body: JSON.stringify(searchRequest)
     });
 
     if (!response.ok) {

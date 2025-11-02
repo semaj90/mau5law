@@ -588,7 +588,7 @@ import type { Message } from '$lib/types';
   			store.shaders.clear();
   			// Clear wrapper reference to allow GC
   			store.device = null;
-  			store.active = $state(false);
+  			store.active = false;
   			return store;
   		});
   		// unsubscribe performance metrics subscription

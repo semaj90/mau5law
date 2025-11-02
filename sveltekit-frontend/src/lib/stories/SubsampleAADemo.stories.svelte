@@ -100,9 +100,9 @@ function startDemo() {
   renderLoop();
 }
 function stopDemo() {
-  demoState.isRunning = $state(false);
-  demoState.tensorCoreActive = $state(false);
-  demoState.flashAttention2Active = $state(false);
+  demoState.isRunning = false;
+  demoState.tensorCoreActive = false;
+  demoState.flashAttention2Active = false;
   if (animationFrame) {
     cancelAnimationFrame(animationFrame);
   }

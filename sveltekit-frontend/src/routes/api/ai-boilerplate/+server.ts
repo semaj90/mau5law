@@ -9,19 +9,15 @@ import { legalAIResultCache } from '$lib/services/advanced-result-cache.js';
 import postgres from 'postgres';
 import { z } from 'zod';
 // Configuration
-const CONFIG = {
-  database: {
-    connectionString: `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test'}`,
-  },
+const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test` }' },
   olloma: {
     url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
-    model: import.meta.env.LLM_MODEL || 'gemma3-legal',
-  },
+    model: import.meta.env.LLM_MODEL || 'gemma3-legal` },
   boilerplate: {
     minProsecutionScore: 70,
     maxTemplates: 5,
-    templateLength: 300,
-  },
+    templateLength: 300
+  }
 };
 // Validation schemas
 const BoilerplateRequestSchema = z.object({
@@ -42,11 +38,11 @@ const BoilerplateRequestSchema = z.object({
       charges: z.array(z.string()).optional(),
       evidence_types: z.array(z.string()).optional(),
       precedents: z.array(z.string()).optional(),
-      custom_context: z.string().optional(),
+      custom_context: z.string().optional()
     })
     .optional(),
   tone: z.enum(['formal', 'aggressive', 'neutral', 'persuasive']).optional(),
-  length: z.enum(['brief', 'standard', 'detailed']).optional(),
+  length: z.enum(['brief', 'standard', 'detailed']).optional()
 });
 
 type BoilerplateRequest = z.infer<typeof BoilerplateRequestSchema>;
@@ -54,9 +50,7 @@ type BoilerplateRequestContext = BoilerplateRequest['context'];
 type BoilerplateType = BoilerplateRequest['type'];
 type Tone = NonNullable<BoilerplateRequest['tone']>;
 
-interface HighPerformingPhrase {
-  phrase: string;
-  avg_prosecution_score: number;
+interface HighPerformingPhrase { phrase: string;, avg_prosecution_score: number;
   frequency: number;
   correlation_strength: number;
   usage_count: string;
@@ -71,8 +65,8 @@ const BoilerplateResponseSchema = z.object({
   metadata: z.object({
     template_type: z.string(),
     jurisdiction: z.string().optional(),
-    generation_time_ms: z.number(),
-  }),
+    generation_time_ms: z.number()
+  })
 });
 // Initialize database connection
 let sql: ReturnType<typeof postgres> | null = null;
@@ -109,29 +103,27 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         template_type: validatedRequest.type,
         jurisdiction: validatedRequest.jurisdiction,
-        generation_time_ms: Date.now() - startTime,
-      },
+        generation_time_ms: Date.now() - startTime
+      }
     };
     // Validate response
     const validatedResponse = BoilerplateResponseSchema.parse(response);
     return json(validatedResponse);
   } catch (err: any) {
     const errorId = crypto.randomUUID();
-    console.error(`❌ AI Boilerplate generation error [${errorId}]:`, err);
+    console.error(`❌ AI Boilerplate generation error [${errorId}]: ', err);
     if (err instanceof z.ZodError) {
       return json(
         {
           message: 'Invalid request format',
-          errors: err.errors,
+          errors: err.errors
         },
         { status: 400 }
       );
     }
     return json(
-      {
-        message: `AI Boilerplate service temporarily unavailable. Error ID: ${errorId}`,
-        details: err instanceof Error ? err.message : 'Unknown error',
-      },
+      { message: `AI Boilerplate service temporarily unavailable. Error, ID: ${errorId}`,
+        details: err instanceof Error ? err.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -152,7 +144,7 @@ async function getHighPerformingPhrases(
 
   const db = getDB();
 
-  // Performance note: The join condition `... ILIKE: '%' || spr.phrase || '%'` is inefficient
+  // Performance note: The join condition `...; ILIKE: '%' || spr.phrase || '%'` is inefficient
   // and can cause slow queries. Consider using Full-Text Search or a trigram index (pg_trgm)
   // on `legal_documents_processed.semantic_phrases` for better performance.
   const result = await db`
@@ -164,10 +156,10 @@ async function getHighPerformingPhrases(
       COUNT(ldp.id) AS usage_count
     FROM semantic_phrases_ranking spr
     JOIN legal_documents_processed ldp
-      ON ldp.semantic_phrases::text ILIKE: '%' || spr.phrase || '%'
+      ON ldp.semantic_phrases::text; ILIKE: '%' || spr.phrase || '%'
     WHERE spr.avg_prosecution_score >= ${CONFIG.boilerplate.minProsecutionScore}
     ${jurisdiction ? db`AND ldp.jurisdiction = ${jurisdiction}` : db``}
-    ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db``}
+    ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db`` }
     ${db.unsafe(getTypeSpecificFilter(type))}
     GROUP BY
       spr.phrase,
@@ -186,7 +178,7 @@ async function getHighPerformingPhrases(
     avg_prosecution_score: Number(row.avg_prosecution_score),
     frequency: Number(row.frequency),
     correlation_strength: Number(row.correlation_strength),
-    usage_count: String(row.usage_count),
+    usage_count: String(row.usage_count)
   }));
 
   await legalAIResultCache.cacheLegalResults(cacheKey, phrases, 60 * 60 * 1000); // 1 hour cache
@@ -197,19 +189,19 @@ async function getHighPerformingPhrases(
 function getTypeSpecificFilter(type: BoilerplateType): string {
   const typeFilters: Record<BoilerplateType, string> = {
     'prosecution_argument':
-      " AND (ldp.semantic_phrases::text ILIKE: '%prosecution%' OR ldp.semantic_phrases::text ILIKE: '%argument%' OR ldp.semantic_phrases::text ILIKE: '%evidence%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%prosecution%' OR ldp.semantic_phrases::text ILIKE: '%argument%' OR ldp.semantic_phrases::text; ILIKE: '%evidence%')",
     'evidence_summary':
-      " AND (ldp.semantic_phrases::text ILIKE: '%evidence%' OR ldp.semantic_phrases::text ILIKE: '%testimony%' OR ldp.semantic_phrases::text ILIKE: '%proof%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%evidence%' OR ldp.semantic_phrases::text ILIKE: '%testimony%' OR ldp.semantic_phrases::text; ILIKE: '%proof%')",
     'legal_motion':
-      " AND (ldp.semantic_phrases::text ILIKE: '%motion%' OR ldp.semantic_phrases::text ILIKE: '%request%' OR ldp.semantic_phrases::text ILIKE: '%order%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%motion%' OR ldp.semantic_phrases::text ILIKE: '%request%' OR ldp.semantic_phrases::text; ILIKE: '%order%')",
     'case_analysis':
-      " AND (ldp.semantic_phrases::text ILIKE: '%analysis%' OR ldp.semantic_phrases::text ILIKE: '%precedent%' OR ldp.semantic_phrases::text ILIKE: '%ruling%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%analysis%' OR ldp.semantic_phrases::text ILIKE: '%precedent%' OR ldp.semantic_phrases::text; ILIKE: '%ruling%')",
     'sentencing_memo':
-      " AND (ldp.semantic_phrases::text ILIKE: '%sentencing%' OR ldp.semantic_phrases::text ILIKE: '%punishment%' OR ldp.semantic_phrases::text ILIKE: '%mitigation%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%sentencing%' OR ldp.semantic_phrases::text ILIKE: '%punishment%' OR ldp.semantic_phrases::text; ILIKE: '%mitigation%')",
     'plea_agreement':
-      " AND (ldp.semantic_phrases::text ILIKE: '%plea%' OR ldp.semantic_phrases::text ILIKE: '%agreement%' OR ldp.semantic_phrases::text ILIKE: '%guilty%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%plea%' OR ldp.semantic_phrases::text ILIKE: '%agreement%' OR ldp.semantic_phrases::text; ILIKE: '%guilty%')",
     'discovery_request':
-      " AND (ldp.semantic_phrases::text ILIKE: '%discovery%' OR ldp.semantic_phrases::text ILIKE: '%documents%' OR ldp.semantic_phrases::text ILIKE: '%disclosure%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%discovery%' OR ldp.semantic_phrases::text ILIKE: '%documents%' OR ldp.semantic_phrases::text; ILIKE: '%disclosure%')"
   };
   return typeFilters[type] || '';
 }
@@ -224,7 +216,7 @@ function getTypeSpecificFilter(type: BoilerplateType): string {
 async function generateBoilerplate(
   request: BoilerplateRequest,
   sourcePhrases: HighPerformingPhrase[]
-): Promise<{ text: string; confidence: number; prosecutionStrength: number }> {
+): Promise<{ text: string; confidence: number;, prosecutionStrength: number }> {
   const avgProsecutionScore =
     sourcePhrases.reduce((sum, p) => sum + p.avg_prosecution_score, 0) / (sourcePhrases.length || 1);
   const systemPrompt = buildSystemPrompt(request.type, request.tone || 'formal');
@@ -234,7 +226,7 @@ async function generateBoilerplate(
 ${contextPrompt}
 Based on these high-performing legal phrases that have shown strong prosecution correlation:
 ${phraseText}
-Generate a ${request.length || 'standard'} length ${request.type} that incorporates these proven effective phrases while maintaining legal accuracy and ${request.tone || 'formal'} tone.
+Generate a ${request.length || 'standard'} length ${request.type} that incorporates these proven effective phrases while maintaining legal accuracy and ${request.tone || 'formal` } tone.
 Requirements:
 - Use clear, persuasive legal language
 - Incorporate the provided high-scoring phrases naturally
@@ -245,18 +237,18 @@ Generate the boilerplate text:`;
   try {
     const response = await fetch(`${CONFIG.olloma.url}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: CONFIG.olloma.model || 'unknown',
         prompt: fullPrompt,
         stream: false,
         options: {
-          temperature: 0.4,
+         , temperature: 0.4,
           top_p: 0.9,
           repeat_penalty: 1.1,
-          num_predict: getLengthTokens(request.length),
-        },
-      }),
+          num_predict: getLengthTokens(request.length)
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`LLM request failed: ${response.status}`);
@@ -271,7 +263,7 @@ Generate the boilerplate text:`;
     return {
       text: generatedText,
       confidence,
-      prosecutionStrength: avgProsecutionScore,
+      prosecutionStrength: avgProsecutionScore
     };
   } catch (error: any) {
     console.error('LLM generation failed:', error);
@@ -293,14 +285,13 @@ function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
     'plea_agreement':
       "Draft a plea agreement that protects the prosecution's interests while following legal requirements.",
     'discovery_request':
-      'Create a comprehensive discovery request that will uncover all relevant evidence for the prosecution.',
+      'Create a comprehensive discovery request that will uncover all relevant evidence for the prosecution.'
   };
   const toneAdjustments: Record<Tone, string> = {
     'formal': 'Use formal legal language and maintain a professional, authoritative tone.',
     'aggressive': "Use strong, assertive language that emphasizes the strength of the prosecution's case.",
     'neutral': 'Use objective, fact-based language that presents information clearly and impartially.',
-    'persuasive': 'Use compelling, convincing language that builds a strong case for the prosecution.',
-  };
+    'persuasive': `Use compelling, convincing language that builds a strong case for the prosecution.` };
   return `${basePrompt}${typePrompts[type]} ${toneAdjustments[tone]}`;
 }
 function buildContextPrompt(context?: BoilerplateRequestContext): string {
@@ -343,21 +334,20 @@ function getLengthTokens(length?: string): number {
 }
 function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighPerformingPhrase[]) {
   const templates: Partial<Record<BoilerplateType, string>> = {
-    'prosecution_argument': `Based on the compelling evidence presented, the prosecution has demonstrated beyond a reasonable doubt that the defendant is guilty of the charges. The evidence includes ${sourcePhrases
+    'prosecution_argument': 'Based on the compelling evidence presented, the prosecution has demonstrated beyond a reasonable doubt that the defendant is guilty of the charges. The evidence includes ${sourcePhrases
       .slice(0, 3)
       .map((p: HighPerformingPhrase) => p.phrase)
       .join(', ')}, which clearly establishes the defendant's culpability.`,
-    'evidence_summary': `The following evidence strongly supports the prosecution's case ${sourcePhrases
+    'evidence_summary': 'The following evidence strongly supports the prosecution's case ${sourcePhrases
       .slice(0, 5)
       .map((p: HighPerformingPhrase) => p.phrase)
       .join(
         ', '
       )}. This evidence demonstrates a clear pattern of behavior and establishes the necessary elements of the charges.`,
-    'legal_motion': `The prosecution respectfully moves the court for relief based on the following grounds: ${sourcePhrases
+    'legal_motion': 'The prosecution respectfully moves the court for relief based on the following grounds: ${sourcePhrases
       .slice(0, 3)
       .map((p: HighPerformingPhrase) => p.phrase)
-      .join(', ')}. The motion is supported by applicable law and compelling evidence.`,
-  };
+      .join(', ')}. The motion is supported by applicable law and compelling evidence.` };
   const fallbackText =
     templates[type] ||
     `The prosecution presents the following legal argument incorporating proven effective elements: ${sourcePhrases
@@ -367,7 +357,7 @@ function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighP
   return {
     text: fallbackText,
     confidence: 0.6,
-    prosecutionStrength: 75,
+    prosecutionStrength: 75
   };
 }
 async function generateSuggestedEdits(text: string, type: BoilerplateType): Promise<string[]> {
@@ -389,7 +379,7 @@ async function generateSuggestedEdits(text: string, type: BoilerplateType): Prom
   const typeSpecificSuggestions: Partial<Record<BoilerplateType, string[]>> = {
     'prosecution_argument': ['Add specific statutory citations', 'Include burden of proof language'],
     'evidence_summary': ['Organize evidence chronologically', 'Highlight most compelling evidence first'],
-    'sentencing_memo': ['Include sentencing guidelines reference', 'Address mitigating factors'],
+    'sentencing_memo': ['Include sentencing guidelines reference', 'Address mitigating factors']
   };
   if (typeSpecificSuggestions[type]) {
     suggestions.push(...typeSpecificSuggestions[type]);
@@ -401,9 +391,7 @@ export const GET: RequestHandler = async () => {
   try {
     const db = getDB();
 
-    interface DbStats {
-      total_phrases: string;
-      avg_score: string;
+    interface DbStats { total_phrases: string;, avg_score: string;
       high_performing_phrases: string;
     }
 
@@ -420,40 +408,40 @@ export const GET: RequestHandler = async () => {
         type: 'prosecution_argument',
         name: 'Prosecution Argument',
         description: 'Compelling arguments for establishing guilt',
-        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0')
       },
       {
         type: 'evidence_summary',
         name: 'Evidence Summary',
         description: 'Comprehensive overview of case evidence',
-        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0')
       },
       {
         type: 'legal_motion',
         name: 'Legal Motion',
         description: 'Professional legal motions and requests',
-        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0')
       },
       {
         type: 'case_analysis',
         name: 'Case Analysis',
         description: 'Detailed legal case analysis',
-        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0')
       },
       {
         type: 'sentencing_memo',
         name: 'Sentencing Memorandum',
         description: 'Arguments for appropriate sentencing',
-        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0'),
+        available_phrases: parseInt(stats[0]?.high_performing_phrases || '0')
       },
     ];
     return json({
       templates,
       statistics: {
-        total_phrases: parseInt(stats[0]?.total_phrases || '0'),
+       , total_phrases: parseInt(stats[0]?.total_phrases || '0'),
         average_score: parseFloat(stats[0]?.avg_score || '0'),
-        high_performing_count: parseInt(stats[0]?.high_performing_phrases || '0'),
-      },
+        high_performing_count: parseInt(stats[0]?.high_performing_phrases || '0')
+      }
     });
   } catch (err: any) {
     console.error('Template listing error:', err);

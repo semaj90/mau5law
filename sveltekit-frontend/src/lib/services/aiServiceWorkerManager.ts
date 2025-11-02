@@ -8,13 +8,10 @@ import { writable, type Writable } from 'svelte/store';
 export type LLMProvider = string;
 
 // AI Task Types
-export interface AITask {
-  id: string;
-  type: 'embedding' | 'generation' | 'analysis' | 'synthesis' | 'vector-search';
+export interface AITask { id: string;, type: 'embedding' | 'generation' | 'analysis' | 'synthesis' | 'vector-search';
   priority: 'low' | 'medium' | 'high' | 'critical';
   provider?: LLMProvider;
-  // changed: avoid `any` -> use `unknown` to force explicit narrowing before use
-  payload: any;
+  // changed: avoid `any` -> use `unknown` to force explicit narrowing before use; payload: any;
   metadata?: {
     userId?: string;
     sessionId?: string;
@@ -22,9 +19,7 @@ export interface AITask {
     estimatedDuration?: number;
   };
 }
-export interface AITaskResult {
-  taskId: string;
-  success: boolean;
+export interface AITaskResult { taskId: string;, success: boolean;
   result?: any;
   error?: string;
   duration: number;
@@ -34,9 +29,7 @@ export interface AITaskResult {
     throughput?: number;
   };
 }
-export interface WorkerStatus {
-  id: string;
-  type: string;
+export interface WorkerStatus { id: string;, type: string;
   status: 'idle' | 'busy' | 'error' | 'offline';
   currentTask?: string;
   tasksCompleted: number;
@@ -44,16 +37,12 @@ export interface WorkerStatus {
   load: number; // 0-100%
 }
 
-export interface AISystemMetrics {
-  totalTasksProcessed: number;
-  averageResponseTime: number;
+export interface AISystemMetrics { totalTasksProcessed: number;, averageResponseTime: number;
   currentLoad: number;
   availableWorkers: number;
   queueLength: number;
 }
-export interface AISystemHealth {
-  totalWorkers: number;
-  activeWorkers: number;
+export interface AISystemHealth { totalWorkers: number;, activeWorkers: number;
   busyWorkers: number;
   errorWorkers: number;
   queueLength: number;
@@ -76,7 +65,7 @@ export class AIServiceWorkerManager {
     averageResponseTime: 0,
     currentLoad: 0,
     availableWorkers: 0,
-    queueLength: 0,
+    queueLength: 0
   });
 
   private maxWorkers = typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4;
@@ -116,13 +105,13 @@ export class AIServiceWorkerManager {
   private async createWorker(workerId: string, type: string): Promise<void> {
     try {
       // Use a JS worker module at ../workers/aiProcessingWorker.js (user-provided)
-      const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: 'module' });
+      const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: `module` });
 
       worker.postMessage({
         type: 'INIT',
         workerId,
         workerType: type,
-        config: this.getWorkerConfig(type),
+        config: this.getWorkerConfig(type)
       });
 
       worker.onmessage = (event: MessageEvent) => this.handleWorkerMessage(workerId, event);
@@ -135,13 +124,13 @@ export class AIServiceWorkerManager {
         status: 'idle',
         tasksCompleted: 0,
         averageTaskTime: 0,
-        load: 0,
+        load: 0
       });
 
       // update reactive store
       this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
     } catch (error: any) {
-      console.error(`Failed to create worker ${workerId}:`, error);
+      console.error(`Failed to create worker ${workerId}: ', error);
     }
   }
 
@@ -149,7 +138,7 @@ export class AIServiceWorkerManager {
     return {
       maxConcurrentTasks: type === 'embedding' ? 3 : 1,
       preferredProviders: this.getPreferredProvidersForType(type),
-      capabilities: this.getCapabilitiesForType(type),
+      capabilities: this.getCapabilitiesForType(type)
     };
   }
 
@@ -185,8 +174,8 @@ export class AIServiceWorkerManager {
       id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       metadata: {
         timestamp: Date.now(),
-        ...(task.metadata || {}),
-      },
+        ...(task.metadata || {})
+      }
     };
 
     this.insertTaskByPriority(taskWithId);
@@ -235,8 +224,7 @@ export class AIServiceWorkerManager {
       queueLength: this.taskQueue.length,
       averageLoad: avgLoad,
       status:
-        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : 'healthy',
-    };
+        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : `healthy` };
   }
 
   // Private Methods
@@ -292,7 +280,7 @@ export class AIServiceWorkerManager {
 
     worker.postMessage({
       type: 'PROCESS_TASK',
-      task,
+      task
     });
 
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
@@ -350,7 +338,7 @@ export class AIServiceWorkerManager {
       averageResponseTime:
         m.totalTasksProcessed === 0
           ? result.duration
-          : (m.averageResponseTime * m.totalTasksProcessed + result.duration) / (m.totalTasksProcessed + 1),
+          : (m.averageResponseTime * m.totalTasksProcessed + result.duration) / (m.totalTasksProcessed + 1)
     }));
 
     // Try to process more tasks
@@ -367,7 +355,7 @@ export class AIServiceWorkerManager {
   }
 
   private handleWorkerError(workerId: string, error: ErrorEvent): void {
-    console.error(`❌ Worker ${workerId} encountered an error:`, error);
+    console.error(`❌ Worker ${workerId} encountered an error: ', error);
     const ws = this.workerStatusMap.get(workerId);
     if (ws) ws.status = 'error';
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
@@ -386,7 +374,7 @@ export class AIServiceWorkerManager {
       ...metrics,
       queueLength: health.queueLength,
       currentLoad: health.averageLoad,
-      availableWorkers: health.activeWorkers - health.busyWorkers,
+      availableWorkers: health.activeWorkers - health.busyWorkers
     }));
   }
 

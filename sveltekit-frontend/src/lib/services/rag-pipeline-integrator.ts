@@ -5,9 +5,7 @@ import type { LegalDocument } from './types/legal.js';
  * Orchestrates enhanced text processing, MMR summarization, and cross-encoder reranking
  */
 }
-export interface SearchResult {
-  document: LegalDocument;
-  score: number;
+export interface SearchResult { document: LegalDocument;, score: number;
   metadata?: { [key: string]: any }
   // Additional properties used throughout the codebase
   id: string;
@@ -23,9 +21,7 @@ export interface SummaryRequest {
   maxLength?: number;
   diversityLambda?: number;
 }
-export interface RAGPipelineConfig {
-  enableSentenceSplitting: boolean;
-  enableMMRSummarization: boolean;
+export interface RAGPipelineConfig { enableSentenceSplitting: boolean;, enableMMRSummarization: boolean;
   enableCrossEncoderReranking: boolean;
   maxDocuments: number;
   maxSummaryLength: number;
@@ -33,14 +29,10 @@ export interface RAGPipelineConfig {
   cacheResults: boolean;
   enableStreaming: boolean;
 }
-export interface RAGPipelineResult {
-  query: string;
-  documents: LegalDocument[];
+export interface RAGPipelineResult { query: string;, documents: LegalDocument[];
   rerankedResults: SearchResult[];
   summary: string;
-  metadata: {
-    processingTime: number;
-    documentsProcessed: number;
+  metadata: { processingTime: number;, documentsProcessed: number;
     sentencesExtracted: number;
     summaryGenerated: boolean;
     rerankingApplied: boolean;
@@ -163,7 +155,7 @@ export class RAGPipelineIntegrator {
               metadata: doc.metadata
             }) as SearchResult
         ),
-        summary: `Analysis of: "${query}" resulted in ${documents.length} relevant documents.`,
+        summary: `Analysis; of: "${query}" resulted in ${documents.length} relevant documents.`,
         metadata: {
           processingTime: Date.now() - startTime,
           documentsProcessed: documents.length,
@@ -199,15 +191,11 @@ export class RAGPipelineIntegrator {
         try {
           const startTime = Date.now();
           // Initialize progress tracking
-          let progress: {
-            stage: string;
-            progress: number;
+          let progress: { stage: string;, progress: number;
             documents: LegalDocument[];
             rerankedResults: SearchResult[]; // Explicitly type as SearchResult[]
             summary: string;
-            metadata: {
-              processingTime: number;
-              documentsProcessed: number;
+            metadata: { processingTime: number;, documentsProcessed: number;
               sentencesExtracted: number;
               summaryGenerated: boolean;
               rerankingApplied: boolean;
@@ -225,7 +213,7 @@ export class RAGPipelineIntegrator {
               sentencesExtracted: 0,
               summaryGenerated: false,
               rerankingApplied: false,
-              cacheHit: false,
+              cacheHit: false
             }
           };
           // Send initial state
@@ -346,7 +334,7 @@ export class RAGPipelineIntegrator {
       const { rerankSearchResults } = await import('./cross-encoder-reranker');
       return await rerankSearchResults(query, searchResults, {
         maxResults: this.config.maxDocuments,
-        timeout: 5000,
+        timeout: 5000
       });
     } catch (error: any) {
       console.warn('[RAGPipeline] Cross-encoder reranking failed, using original ranking:', error);
@@ -363,7 +351,7 @@ export class RAGPipelineIntegrator {
       const config = {
         maxSummaryLength: request?.maxLength || this.config.maxSummaryLength,
         maxSentences: 5,
-        lambda: 0.7
+        lambda: 0.7;
       };
       // Fix: Assumes generateMMRSummary is a factory function based on the type error.
       const summarizer = generateMMRSummary();
@@ -424,7 +412,7 @@ export class RAGPipelineIntegrator {
   clearCache(): void {
     this.resultCache.clear();
   }
-  getCacheStats(): { size: number; keys: string[] } {
+  getCacheStats(): { size: number;, keys: string[] } {
     return {
       size: this.resultCache.size,
       keys: Array.from(this.resultCache.keys()).slice(0, 10)

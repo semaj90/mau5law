@@ -9,9 +9,7 @@ import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js';
 import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js';
 import * as tf from '@tensorflow/tfjs';
 import { browser } from '$app/environment';
-export interface SynthesizerConfig {
-  enableLegalBERT: boolean;
-  enableLanguageExtraction: boolean;
+export interface SynthesizerConfig { enableLegalBERT: boolean;, enableLanguageExtraction: boolean;
   enableSemanticSynthesis: boolean;
   enableMultiModalAnalysis: boolean;
   confidenceThreshold: number;
@@ -27,133 +25,97 @@ export interface SynthesizedAnalysis {
   processingPipeline: ProcessingPipelineInfo;
   qualityMetrics: QualityMetrics;
 }
-export interface SynthesizedInsights {
-  keyLegalConcepts: ConceptCluster[];
-  riskAssessment: RiskProfile;
+export interface SynthesizedInsights { keyLegalConcepts: ConceptCluster[];, riskAssessment: RiskProfile;
   complianceAnalysis: ComplianceProfile;
   recommendedActions: ActionRecommendation[];
   semanticMap: SemanticMap;
   crossReferences: CrossReferenceMap[];
 }
-export interface ConceptCluster {
-  primaryConcept: string;
-  relatedConcepts: string[];
+export interface ConceptCluster { primaryConcept: string;, relatedConcepts: string[];
   legalImportance: number;
   contextualRelevance: number;
   semanticEmbedding: Float32Array;
   practiceAreaAlignment: string[];
   jurisdictionalRelevance: string[];
 }
-export interface RiskProfile {
-  overallRiskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  specificRisks: RiskFactor[];
+export interface RiskProfile { overallRiskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, specificRisks: RiskFactor[];
   mitigationStrategies: string[];
   complianceGaps: string[];
   urgencyScore: number;
 }
-export interface RiskFactor {
-  category: 'contractual' | 'regulatory' | 'operational' | 'financial' | 'reputational';
-  description: string;
+export interface RiskFactor { category: 'contractual' | 'regulatory' | 'operational' | 'financial' | 'reputational';, description: string;
   likelihood: number;
   impact: number;
   severity: number;
   mitigatable: boolean;
 }
-export interface ComplianceProfile {
-  applicableRegulations: RegulationAnalysis[];
-  complianceScore: number;
+export interface ComplianceProfile { applicableRegulations: RegulationAnalysis[];, complianceScore: number;
   gapAnalysis: ComplianceGap[];
   recommendedActions: ComplianceAction[];
   jurisdictionalComplexity: number;
 }
-export interface RegulationAnalysis {
-  regulation: string;
-  applicability: number;
+export interface RegulationAnalysis { regulation: string;, applicability: number;
   complianceStatus: 'compliant' | 'partial' | 'non-compliant' | 'unclear';
   requiredActions: string[];
   deadline?: string;
 }
-export interface ComplianceGap {
-  requirement: string;
-  currentState: string;
+export interface ComplianceGap { requirement: string;, currentState: string;
   targetState: string;
   effort: 'low' | 'medium' | 'high';
   timeline: string;
 }
-export interface ComplianceAction {
-  action: string;
-  priority: 'immediate' | 'high' | 'medium' | 'low';
+export interface ComplianceAction { action: string;, priority: 'immediate' | 'high' | 'medium' | 'low';
   effort: string;
   dependencies: string[];
 }
-export interface ActionRecommendation {
-  category: 'immediate' | 'short-term' | 'long-term' | 'monitoring';
-  action: string;
+export interface ActionRecommendation { category: 'immediate' | 'short-term' | 'long-term' | 'monitoring';, action: string;
   rationale: string;
   priority: number;
   estimatedEffort: string;
   expectedOutcome: string;
   dependencies: string[];
 }
-export interface SemanticMap {
-  conceptNodes: ConceptNode[];
-  relationshipEdges: RelationshipEdge[];
+export interface SemanticMap { conceptNodes: ConceptNode[];, relationshipEdges: RelationshipEdge[];
   clusters: ConceptCluster[];
   centrality: { [concept: string]: number };
 }
-export interface ConceptNode {
-  id: string;
-  concept: string;
+export interface ConceptNode { id: string;, concept: string;
   importance: number;
   category: string;
   embedding: Float32Array;
 }
-export interface RelationshipEdge {
-  source: string;
-  target: string;
+export interface RelationshipEdge { source: string;, target: string;
   relationship: string;
   strength: number;
   bidirectional: boolean;
 }
-export interface CrossReferenceMap {
-  sourceDocument: string;
-  targetReferences: string[];
+export interface CrossReferenceMap { sourceDocument: string;, targetReferences: string[];
   relationshipType: 'citation' | 'amendment' | 'supersedes' | 'incorporates';
   confidence: number;
 }
-export interface EnhancedResponse {
-  primaryResponse: string;
-  supportingAnalysis: string[];
+export interface EnhancedResponse { primaryResponse: string;, supportingAnalysis: string[];
   legalReasoning: string;
   practicalImplications: string[];
   nextSteps: string[];
   confidenceLevel: number;
   sources: ResponseSource[];
 }
-export interface ResponseSource {
-  type: 'legal-bert' | 'language-extraction' | 'webassembly' | 'synthesized';
-  content: string;
+export interface ResponseSource { type: 'legal-bert' | 'language-extraction' | 'webassembly' | 'synthesized';, content: string;
   confidence: number;
   relevance: number;
 }
-export interface ProcessingPipelineInfo {
-  stages: PipelineStage[];
-  totalProcessingTime: number;
+export interface ProcessingPipelineInfo { stages: PipelineStage[];, totalProcessingTime: number;
   parallelProcessing: boolean;
   fallbacksUsed: string[];
   optimizationsApplied: string[];
 }
-export interface PipelineStage {
-  name: string;
-  processingTime: number;
+export interface PipelineStage { name: string;, processingTime: number;
   success: boolean;
   // narrowed from `any` to a safe object shape to avoid unexpected `any`
   output?: Record<string, unknown>;
   error?: string;
 }
-export interface QualityMetrics {
-  overallQuality: number;
-  analysisDepth: number;
+export interface QualityMetrics { overallQuality: number;, analysisDepth: number;
   factualAccuracy: number;
   completeness: number;
   coherence: number;
@@ -178,7 +140,7 @@ export class TensorFlowSynthesizer {
       maxProcessingTime: 30000, // 30 seconds
       parallelProcessing: true,
       cachingStrategy: 'memory',
-      ...config,
+      ...config
     };
   }
   /**
@@ -250,7 +212,7 @@ export class TensorFlowSynthesizer {
         name: 'synthesize-insights',
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
         success: true,
-        output: { insightsGenerated: Object.keys(synthesizedInsights || {}).length },
+        output: { insightsGenerated: Object.keys(synthesizedInsights || {}).length }
       });
       // Stage 3: Generate enhanced response
       const enhancedResponse = await this.generateEnhancedResponse(
@@ -264,7 +226,7 @@ export class TensorFlowSynthesizer {
         name: 'enhanced-response',
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
         success: true,
-        output: { responseLength: enhancedResponse.primaryResponse.length },
+        output: { responseLength: enhancedResponse.primaryResponse.length }
       });
       // Stage 4: Calculate quality metrics
       const qualityMetrics = this.calculateQualityMetrics(
@@ -277,7 +239,7 @@ export class TensorFlowSynthesizer {
         name: 'quality-metrics',
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
         success: true,
-        output: qualityMetrics,
+        output: qualityMetrics
       });
       const totalProcessingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       const result: SynthesizedAnalysis = {
@@ -290,9 +252,9 @@ export class TensorFlowSynthesizer {
           totalProcessingTime,
           parallelProcessing: this.config.parallelProcessing,
           fallbacksUsed: [],
-          optimizationsApplied: ['caching', 'parallel-processing'],
+          optimizationsApplied: ['caching', 'parallel-processing']
         },
-        qualityMetrics,
+        qualityMetrics
       };
       if (this.config.cachingStrategy === 'memory') {
         this.analysisCache.set(cacheKey, result);
@@ -302,31 +264,29 @@ export class TensorFlowSynthesizer {
     } catch (error: any) {
       console.error('[TF Synthesizer] Analysis failed:', error);
       // Minimal fallback result
-      return {
-        synthesizedInsights: {
-          keyLegalConcepts: [],
+      return { synthesizedInsights: {, keyLegalConcepts: [],
           riskAssessment: {
             overallRiskLevel: 'MEDIUM',
             specificRisks: [],
             mitigationStrategies: [],
             complianceGaps: [],
-            urgencyScore: 0.5,
+            urgencyScore: 0.5
           },
           complianceAnalysis: {
             applicableRegulations: [],
             complianceScore: 0.5,
             gapAnalysis: [],
             recommendedActions: [],
-            jurisdictionalComplexity: 0.5,
+            jurisdictionalComplexity: 0.5
           },
           recommendedActions: [],
           semanticMap: {
             conceptNodes: [],
             relationshipEdges: [],
             clusters: [],
-            centrality: {},
+            centrality: {}
           },
-          crossReferences: [],
+          crossReferences: []
         },
         enhancedResponse: {
           primaryResponse: 'Analysis failed due to processing error. Please try again.',
@@ -335,14 +295,14 @@ export class TensorFlowSynthesizer {
           practicalImplications: [],
           nextSteps: [],
           confidenceLevel: 0.1,
-          sources: [],
+          sources: []
         },
         processingPipeline: {
           stages: pipeline,
           totalProcessingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
           parallelProcessing: false,
           fallbacksUsed: ['error-fallback'],
-          optimizationsApplied: [],
+          optimizationsApplied: []
         },
         qualityMetrics: {
           overallQuality: 0.1,
@@ -351,8 +311,8 @@ export class TensorFlowSynthesizer {
           completeness: 0,
           coherence: 0,
           relevance: 0,
-          userSatisfactionPrediction: 0.1,
-        },
+          userSatisfactionPrediction: 0.1
+        }
       };
     }
   }
@@ -391,8 +351,8 @@ export class TensorFlowSynthesizer {
         legalBERTSuccess: this.config.enableLegalBERT ? results[0]?.status === 'fulfilled' : false,
         languageExtractionSuccess: this.config.enableLanguageExtraction
           ? results[this.config.enableLegalBERT ? 1 : 0]?.status === 'fulfilled'
-          : false,
-      },
+          : false
+      }
     });
     // Extract results
     let resultIndex = 0;
@@ -428,14 +388,14 @@ export class TensorFlowSynthesizer {
           name: 'legal-bert-analysis',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: true,
-          output: { entitiesFound: resultsObj.legalBERT?.entities?.length ?? 0 },
+          output: { entitiesFound: resultsObj.legalBERT?.entities?.length ?? 0 }
         });
       } catch (error: any) {
         pipeline.push({
           name: 'legal-bert-analysis',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: false,
-          error: error?.message ?? String(error),
+          error: error?.message ?? String(error)
         });
       }
     }
@@ -447,14 +407,14 @@ export class TensorFlowSynthesizer {
           name: 'language-extraction',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: true,
-          output: { conceptsExtracted: resultsObj.languageExtraction?.extractedConcepts?.length ?? 0 },
+          output: { conceptsExtracted: resultsObj.languageExtraction?.extractedConcepts?.length ?? 0 }
         });
       } catch (error: any) {
         pipeline.push({
           name: 'language-extraction',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: false,
-          error: error?.message ?? String(error),
+          error: error?.message ?? String(error)
         });
       }
     }
@@ -480,7 +440,7 @@ export class TensorFlowSynthesizer {
       complianceAnalysis,
       recommendedActions,
       semanticMap,
-      crossReferences,
+      crossReferences
     };
   }
   /**
@@ -504,7 +464,7 @@ export class TensorFlowSynthesizer {
           useWebAssembly: true,
           useHybridMode: true,
           thinkingMode: true,
-          maxRetrievedDocs: 5,
+          maxRetrievedDocs: 5
         } as any)) as HybridRAGResult;
         primaryResponse = ragResult?.answer ?? '';
         confidenceLevel = ragResult?.confidence ?? 0;
@@ -512,7 +472,7 @@ export class TensorFlowSynthesizer {
           type: 'webassembly',
           content: primaryResponse,
           confidence: confidenceLevel,
-          relevance: 0.9,
+          relevance: 0.9
         });
       } else {
         const wasmResponse = await webAssemblyAIAdapter.sendMessage(enhancedPrompt);
@@ -522,7 +482,7 @@ export class TensorFlowSynthesizer {
           type: 'webassembly',
           content: primaryResponse,
           confidence: confidenceLevel,
-          relevance: 0.8,
+          relevance: 0.8
         });
       }
       const supportingAnalysis: string[] = [];
@@ -530,9 +490,9 @@ export class TensorFlowSynthesizer {
         supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities?.length ?? 0} legal entities.`);
         sources.push({
           type: 'legal-bert',
-          content: `Classified as ${legalBERTResults.classification?.documentType ?? 'unknown'}`,
+          content: 'Classified as ${legalBERTResults.classification?.documentType ?? 'unknown` }`,
           confidence: legalBERTResults.classification?.confidence ?? 0,
-          relevance: 0.7,
+          relevance: 0.7
         });
       }
       if (languageExtractionResults) {
@@ -543,7 +503,7 @@ export class TensorFlowSynthesizer {
           type: 'language-extraction',
           content: languageExtractionResults.abstractiveSummary ?? '',
           confidence: 0.8,
-          relevance: 0.6,
+          relevance: 0.6
         });
       }
       const legalReasoning = this.generateLegalReasoning(insights, legalBERTResults);
@@ -556,7 +516,7 @@ export class TensorFlowSynthesizer {
         practicalImplications,
         nextSteps,
         confidenceLevel,
-        sources,
+        sources
       };
     } catch (error: any) {
       console.error('[TF Synthesizer] Enhanced response generation failed:', error);
@@ -568,7 +528,7 @@ export class TensorFlowSynthesizer {
         practicalImplications: [],
         nextSteps: [],
         confidenceLevel: 0.1,
-        sources: [],
+        sources: []
       };
     }
   }
@@ -588,7 +548,7 @@ export class TensorFlowSynthesizer {
             contextualRelevance: 0.8,
             semanticEmbedding: new Float32Array(768),
             practiceAreaAlignment: [(entity.category ?? '').toLowerCase()],
-            jurisdictionalRelevance: ['general'],
+            jurisdictionalRelevance: ['general']
           });
         }
       });
@@ -607,7 +567,7 @@ export class TensorFlowSynthesizer {
             contextualRelevance: concept.importance ?? 0,
             semanticEmbedding: new Float32Array(768),
             practiceAreaAlignment: [concept.category || 'general'],
-            jurisdictionalRelevance: ['general'],
+            jurisdictionalRelevance: ['general']
           });
         }
       });
@@ -640,11 +600,11 @@ export class TensorFlowSynthesizer {
         overallRiskScore = Math.max(overallRiskScore, Math.min(1, negativeIndicators.length * 0.2));
         risks.push({
           category: 'contractual',
-          description: `High frequency of risk-related terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,
+          description: 'High frequency of risk-related; terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,
           likelihood: 0.7,
           impact: 0.8,
           severity: Math.min(1, negativeIndicators.length * 0.2),
-          mitigatable: true,
+          mitigatable: true
         });
       }
     }
@@ -658,7 +618,7 @@ export class TensorFlowSynthesizer {
       specificRisks: risks,
       mitigationStrategies: this.generateMitigationStrategies(risks),
       complianceGaps: [],
-      urgencyScore: overallRiskScore,
+      urgencyScore: overallRiskScore
     };
   }
   private synthesizeComplianceProfile(legalBERTResults?: LegalBERTAnalysis, text?: string): ComplianceProfile {
@@ -671,7 +631,7 @@ export class TensorFlowSynthesizer {
           regulation: 'Contract Law Requirements',
           applicability: 0.9,
           complianceStatus: 'partial',
-          requiredActions: ['Review consideration clause', 'Verify signatures', 'Check governing law'],
+          requiredActions: ['Review consideration clause', 'Verify signatures', 'Check governing law']
         });
       }
     }
@@ -680,7 +640,7 @@ export class TensorFlowSynthesizer {
       complianceScore,
       gapAnalysis: [],
       recommendedActions: [],
-      jurisdictionalComplexity: 0.5,
+      jurisdictionalComplexity: 0.5
     };
   }
   private generateActionRecommendations(
@@ -696,7 +656,7 @@ export class TensorFlowSynthesizer {
         priority: 1.0,
         estimatedEffort: '4-8 hours',
         expectedOutcome: 'Risk mitigation and compliance verification',
-        dependencies: [],
+        dependencies: []
       });
     }
     if (complianceAnalysis.complianceScore < 0.8) {
@@ -707,7 +667,7 @@ export class TensorFlowSynthesizer {
         priority: 0.8,
         estimatedEffort: '2-4 hours',
         expectedOutcome: 'Improved regulatory compliance',
-        dependencies: [],
+        dependencies: []
       });
     }
     return actions.sort((a, b) => b.priority - a.priority);
@@ -718,7 +678,7 @@ export class TensorFlowSynthesizer {
         conceptNodes: [],
         relationshipEdges: [],
         clusters: [],
-        centrality: {},
+        centrality: {}
       };
     }
     const conceptNodes: ConceptNode[] = (languageExtractionResults.extractedConcepts || []).map((concept, index) => ({
@@ -726,20 +686,19 @@ export class TensorFlowSynthesizer {
       concept: concept.concept,
       importance: concept.importance ?? 0,
       category: concept.category ?? 'unknown',
-      embedding: new Float32Array(768),
+      embedding: new Float32Array(768)
     }));
     const relationshipEdges: RelationshipEdge[] = (languageExtractionResults.semanticRelationships || []).map(rel => ({
       source: rel.source,
       target: rel.target,
       relationship: rel.relationship,
       strength: rel.confidence ?? 0,
-      bidirectional: rel.relationship === 'synonyms',
-    }));
+      bidirectional: rel.relationship === 'synonyms` }));
     return {
       conceptNodes,
       relationshipEdges,
       clusters: [],
-      centrality: {},
+      centrality: {}
     };
   }
   private extractCrossReferences(text?: string, legalBERTResults?: LegalBERTAnalysis): CrossReferenceMap[] {
@@ -751,7 +710,7 @@ export class TensorFlowSynthesizer {
         sourceDocument: 'current',
         targetReferences: sectionRefs,
         relationshipType: 'citation',
-        confidence: 0.9,
+        confidence: 0.9
       });
     }
     return references;
@@ -787,7 +746,7 @@ export class TensorFlowSynthesizer {
   private generateLegalReasoning(insights: SynthesizedInsights, legalBERTResults?: LegalBERTAnalysis): string {
     let reasoning = 'Legal Analysis: ';
     if (legalBERTResults) {
-      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown'} with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;
+      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown` } with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;
     }
     reasoning += `Risk assessment indicates a ${insights.riskAssessment.overallRiskLevel} risk level. `;
     if (insights.keyLegalConcepts && insights.keyLegalConcepts.length > 0) {
@@ -862,7 +821,7 @@ export class TensorFlowSynthesizer {
       completeness,
       coherence,
       relevance,
-      userSatisfactionPrediction: overallQuality * 0.9,
+      userSatisfactionPrediction: overallQuality * 0.9
     };
   }
   private generateCacheKey(text: string, query?: string): string {
@@ -873,13 +832,11 @@ export class TensorFlowSynthesizer {
   /**
    * Get health status
    */
-  getHealthStatus(): {
-    initialized: boolean;
-    legalBERTReady: boolean;
+  getHealthStatus(): { initialized: boolean;, legalBERTReady: boolean;
     languageExtractionReady: boolean;
     webAssemblyReady: boolean;
     cacheSize: number;
-    tfMemoryUsage: { numTensors: number; numBytes: number };
+    tfMemoryUsage: { numTensors: number;, numBytes: number };
   } {
     return {
       initialized: this.initialized,
@@ -887,7 +844,7 @@ export class TensorFlowSynthesizer {
       languageExtractionReady: !!langExtractTensorFlow.getHealthStatus?.().initialized,
       webAssemblyReady: !!webAssemblyAIAdapter.getHealthStatus?.().initialized,
       cacheSize: this.analysisCache.size,
-      tfMemoryUsage: tf.memory(),
+      tfMemoryUsage: tf.memory()
     };
   }
   /**

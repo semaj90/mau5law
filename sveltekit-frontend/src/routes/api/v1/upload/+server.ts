@@ -21,8 +21,8 @@ const UPLOAD_SERVICE_CONFIG = {
     process: '/api/process',
     status: '/api/status',
     metadata: '/api/metadata',
-    health: '/health',
-  },
+    health: '/health'
+  }
 };
 // Document Processor Configuration
 const DOCUMENT_PROCESSOR_CONFIG = {
@@ -31,8 +31,8 @@ const DOCUMENT_PROCESSOR_CONFIG = {
     process: '/api/process',
     ocr: '/api/ocr',
     analyze: '/api/analyze',
-    health: '/api/health',
-  },
+    health: '/api/health'
+  }
 };
 // Supported file types and limits
 const FILE_CONFIG = {
@@ -58,7 +58,7 @@ const FILE_CONFIG = {
     'application/pdf',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ],
+  ]
 };
 /*
  * POST /api/v1/upload - Enhanced File Upload with Processing
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         ensureError({
           message: 'File is required',
           code: 'MISSING_FILE',
-          requestId,
+          requestId
         })
       );
     }
@@ -84,10 +84,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (file.size > FILE_CONFIG.maxSize) {
       return error(
         400,
-        ensureError({
-          message: `File too large. Maximum size: ${FILE_CONFIG.maxSize / 1024 / 1024}MB`,
+        ensureError({ message: `File too large. Maximum, size: ${FILE_CONFIG.maxSize / 1024 / 1024}MB`,
           code: 'FILE_TOO_LARGE',
-          requestId,
+          requestId
         })
       );
     }
@@ -95,11 +94,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (!FILE_CONFIG.allowedTypes.includes(file.type)) {
       return error(
         400,
-        ensureError({
-          message: `File type not supported: ${file.type}`,
+        ensureError({ message: `File type not, supported: ${file.type}`,
           code: 'UNSUPPORTED_FILE_TYPE',
           requestId,
-          details: { supportedTypes: FILE_CONFIG.allowedTypes },
+          details: {, supportedTypes: FILE_CONFIG.allowedTypes }
         })
       );
     }
@@ -116,7 +114,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: formData.get('sessionId') as string,
       caseId: formData.get('caseId') as string,
       tags: formData.getAll('tags') as string[],
-      metadata: {} as Record<string, unknown>,
+      metadata: {} as Record<string, unknown>
     };
     const context: APIRequestContext = {
       requestId,
@@ -125,7 +123,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: uploadRequest.sessionId,
       clientIP: getClientAddress(),
       userAgent: request.headers.get('user-agent') || undefined,
-      caseId: uploadRequest.caseId,
+      caseId: uploadRequest.caseId
     };
     // Process upload
     const uploadResponse = await processEnhancedUpload(uploadRequest, context);
@@ -140,7 +138,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         code: 'UPLOAD_PROCESSING_ERROR',
         requestId,
         timestamp: new Date().toISOString(),
-        retryable: true,
+        retryable: true
       })
     );
   }
@@ -166,10 +164,10 @@ export const GET: RequestHandler = async ({ url }) => {
           service: 'Enhanced Upload API',
           version: '2.0.0',
           endpoints: {
-            upload: 'POST /api/v1/upload',
+           , upload: 'POST /api/v1/upload',
             health: 'GET /api/v1/upload?action=health',
             status: 'GET /api/v1/upload?action=status&id={documentId}',
-            config: 'GET /api/v1/upload?action=config',
+            config: 'GET /api/v1/upload?action=config'
           },
           features: [
             'File Upload & Storage',
@@ -179,7 +177,7 @@ export const GET: RequestHandler = async ({ url }) => {
             'Content Analysis',
             'Metadata Extraction',
           ],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
     }
   } catch (err: any) {
@@ -188,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Service unavailable',
-        error: dev ? String(err) : 'Internal error',
+        error: dev ? String(err) : 'Internal error'
       })
     );
   }
@@ -210,26 +208,25 @@ async function processEnhancedUpload(
     processingStatus: 'completed',
     metadata: {} as Record<string, unknown>,
     requestId: context.requestId,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 async function handleHealthCheck(): Promise<Response> {
   return json({
     service: 'Enhanced Upload API',
     status: 'healthy',
-    components: {
-      uploadService: { status: 'healthy', endpoint: UPLOAD_SERVICE_CONFIG.http },
+    components: { uploadService: {, status: 'healthy', endpoint: UPLOAD_SERVICE_CONFIG.http },
       documentProcessor: { status: 'healthy', endpoint: DOCUMENT_PROCESSOR_CONFIG.http },
-      embeddingService: { status: 'healthy', model: 'nomic-embed-text' },
+      embeddingService: {, status: 'healthy', model: 'nomic-embed-text' }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleStatusCheck(documentId: string): Promise<Response> {
   return json({
     documentId,
     status: 'completed',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleConfigInfo(): Promise<Response> {
@@ -238,13 +235,12 @@ async function handleConfigInfo(): Promise<Response> {
     configuration: {
       maxFileSize: FILE_CONFIG.maxSize,
       supportedFileTypes: FILE_CONFIG.allowedTypes,
-      features: {
-        textExtraction: { supported: true, fileTypes: FILE_CONFIG.textTypes },
+      features: { textExtraction: {, supported: true, fileTypes: FILE_CONFIG.textTypes },
         ocrProcessing: { supported: true, fileTypes: FILE_CONFIG.imageTypes },
-        embeddingGeneration: { supported: true, model: 'nomic-embed-text' },
-        contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] },
-      },
+        embeddingGeneration: { supported: true, model: `nomic-embed-text` },
+        contentAnalysis: {, supported: true, types: ['legal', 'entities', 'summary'] }
+      }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

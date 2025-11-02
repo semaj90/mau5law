@@ -39,9 +39,7 @@ export interface EmbedRequest {
   model?: string;
   mode?: EmbeddingMode;
 }
-export interface EmbedResponse {
-  embeddings: number[][];
-  source: string;
+export interface EmbedResponse { embeddings: number[][];, source: string;
   cacheHit: boolean;
 }
 const DEFAULT_MODEL = 'embeddinggemma:latest';
@@ -95,7 +93,7 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
         return {
           embeddings: JSON.parse(cached) as number[][],
           source: 'redis',
-          cacheHit: true,
+          cacheHit: true
         };
       }
     } catch (error) {
@@ -109,8 +107,8 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model,
-      input: texts,
-    }),
+      input: texts
+    })
   });
   if (!response.ok) {
     throw new Error(`Embedding request failed: ${response.status} ${response.statusText}`);
@@ -131,21 +129,21 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
   return {
     embeddings: vectors,
     source: backend,
-    cacheHit: false,
+    cacheHit: false
   };
 }
 export async function generateEmbedding(
   text: string,
   options?: Omit<EmbedRequest, 'texts'>
-): Promise<{ embedding: number[]; source: string; cacheHit: boolean }> {
+): Promise<{ embedding: number[]; source: string;, cacheHit: boolean }> {
   const { embeddings, source, cacheHit } = await generateEmbeddings({
     texts: [text],
     model: options?.model,
-    mode: options?.mode,
+    mode: options?.mode
   });
   return {
     embedding: embeddings[0],
     source,
-    cacheHit,
+    cacheHit
   };
 }

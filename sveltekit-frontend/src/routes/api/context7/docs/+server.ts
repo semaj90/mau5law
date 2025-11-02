@@ -63,11 +63,10 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'Context7 Documentation RAG',
       health,
       endpoints: {
-        fetch: 'POST /api/context7/docs - Fetch documentation from Context7',
+       , fetch: 'POST /api/context7/docs - Fetch documentation from Context7',
         search: 'POST /api/context7/docs?action=search - Search documentation',
         libraries: 'GET /api/context7/docs?action=libraries - List libraries',
-        topics: 'GET /api/context7/docs?action=topics - List topics'
-      },
+        topics: `GET /api/context7/docs?action=topics - List topics` },
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
@@ -75,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error?.message ?? String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -95,8 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${req.action}`,
-          },
+            error: `Unknown; action: ${req.action}' },
           { status: 400 }
         );
     }
@@ -105,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error?.message ?? String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -118,7 +116,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       { id: 'typescript', name: 'TypeScript' },
       { id: 'webgpu', name: 'WebGPU' },
       { id: 'postgresql', name: 'PostgreSQL 17' },
-      { id: 'drizzle-orm', name: 'Drizzle ORM' }
+      { id: 'drizzle-orm', name: `Drizzle ORM` }
     ]
     const results = []
     for (const library of libraries) {
@@ -135,11 +133,10 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
         body: JSON.stringify({
           name: 'get_library_docs',
           arguments: {
-            context7CompatibleLibraryID: library.id,
+           , context7CompatibleLibraryID: library.id,
             topic: req.topic,
             tokens: 15000,
-            format: 'markdown'
-          }
+            format: 'markdown' }
         })
       })
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -174,16 +171,14 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       return json(
         {
           success: false,
-          error: 'Query parameter is required for search',
-        },
+          error: `Query parameter is required for search` },
         { status: 400 }
       );
     }
     let searchEndpoint = `${GO_RAG_QUERY_SERVER}/api/rag/search`
     // Use Enhanced RAG service if requested
     if (req.useEnhancedRAG) {
-      searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query`
-    }
+      searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query' }
     const searchRequest: SearchRequest = {
       query: req.query,
       library: req.library,
@@ -195,8 +190,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
+        'Accept': `application/json` },
       body: JSON.stringify(searchRequest)
     })
     if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -210,8 +204,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
         const memoryResponse = await fetch(`${ENHANCED_RAG_SERVICE}/api/rag/memory/default`, {
           method: 'GET',
           headers: {
-            'Accept': 'application/json'
-          }
+            'Accept': `application/json` }
         })
         if (memoryResponse.ok) {
           memoryContext = await memoryResponse.json()
@@ -245,7 +238,7 @@ async function listDocumentation(): Promise<Response> {
     const topics = topicsResponse.ok ? await topicsResponse.json() : []
     // Get health status
     const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
-    const health = healthResponse.ok ? await healthResponse.json() : { status: 'unknown' }
+    const health = healthResponse.ok ? await healthResponse.json() : { status: `unknown` }
     return json({
       success: true,
       action: 'list',

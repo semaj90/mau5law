@@ -13,32 +13,23 @@ interface YoRHaWebGPUHelper {
 }
 
 // Define a custom GPUTexture interface to include width and height
-interface YoRHaGPUTexture extends GPUTexture {
-  width: number;
-  height: number;
+interface YoRHaGPUTexture extends GPUTexture { width: number;, height: number;
 }
 
-export interface MipmapConfig {
-  maxMipLevels: number;
-  filterMode: 'linear' | 'nearest' | 'cubic';
+export interface MipmapConfig { maxMipLevels: number;, filterMode: 'linear' | 'nearest' | 'cubic';
   enableOptimizations: boolean;
   rtxOptimized: boolean;
   enableStreaming: boolean;
   maxTextureSize: number;
 }
-export interface MipmapChainResult {
-  mipLevels: { width: number; height: number }[];
+export interface MipmapChainResult { mipLevels: { width: number;, height: number }[];
   totalGenerationTime: number;
   memoryUsed: number;
-  optimization: {
-    levelsGenerated: number;
-    streamingUsed: boolean;
+  optimization: { levelsGenerated: number;, streamingUsed: boolean;
     rtxAcceleration: boolean;
   };
 }
-export interface TextureStreamingOptions {
-  chunkSize: number;
-  concurrentStreams: number;
+export interface TextureStreamingOptions { chunkSize: number;, concurrentStreams: number;
   memoryBudget: number;
   priority: 'quality' | 'performance' | 'balanced';
 }
@@ -53,7 +44,7 @@ export class YoRHaMipmapShaders {
     enableOptimizations: true,
     rtxOptimized: true,
     enableStreaming: true,
-    maxTextureSize: 4096,
+    maxTextureSize: 4096
   };
   async initialize(device?: GPUDevice): Promise<boolean> {
     if (this.isInitialized) return true;
@@ -85,7 +76,7 @@ export class YoRHaMipmapShaders {
         return false;
       }
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) {
         console.warn('WebGPU adapter not available for headless mode');
@@ -94,11 +85,11 @@ export class YoRHaMipmapShaders {
       this.device = await adapter.requestDevice({
         requiredFeatures: ['timestamp-query'],
         requiredLimits: {
-          maxBufferSize: 256 * 1024 * 1024, // 256MB for large legal documents
+         , maxBufferSize: 256 * 1024 * 1024, // 256MB for large legal documents
           maxComputeWorkgroupStorageSize: 16384,
           maxComputeInvocationsPerWorkgroup: 256,
           maxStorageBufferBindingSize: 128 * 1024 * 1024, // 128MB storage buffers
-        },
+        }
       });
       await this.setupMipmapPipelines();
       this.isInitialized = true;
@@ -119,16 +110,16 @@ export class YoRHaMipmapShaders {
       // Fallback direct WebGPU initialization
       if (!navigator.gpu) return null;
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) return null;
       return await adapter.requestDevice({
         requiredFeatures: [],
         requiredLimits: {
-          maxBufferSize: 256 * 1024 * 1024, // 256MB for large textures
+         , maxBufferSize: 256 * 1024 * 1024, // 256MB for large textures
           maxComputeWorkgroupStorageSize: 16384,
-          maxComputeInvocationsPerWorkgroup: 256,
-        },
+          maxComputeInvocationsPerWorkgroup: 256
+        }
       });
     } catch (error) {
       console.error('WebGPU device initialization failed:', error);
@@ -146,10 +137,9 @@ export class YoRHaMipmapShaders {
       'box',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
-          module: this.device.createShaderModule({ code: boxFilterShader }),
-          entryPoint: 'main',
-        },
+        compute: {, module: this.device.createShaderModule({, code: boxFilterShader }),
+          entryPoint: 'main'
+        }
       })
     );
     // 2. Bilinear filter (balanced quality/performance)
@@ -158,10 +148,9 @@ export class YoRHaMipmapShaders {
       'bilinear',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
-          module: this.device.createShaderModule({ code: bilinearFilterShader }),
-          entryPoint: 'main',
-        },
+        compute: {, module: this.device.createShaderModule({, code: bilinearFilterShader }),
+          entryPoint: 'main'
+        }
       })
     );
     // 3. Gaussian filter (high quality, slower)
@@ -170,10 +159,9 @@ export class YoRHaMipmapShaders {
       'gaussian',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
-          module: this.device.createShaderModule({ code: gaussianFilterShader }),
-          entryPoint: 'main',
-        },
+        compute: {, module: this.device.createShaderModule({, code: gaussianFilterShader }),
+          entryPoint: 'main'
+        }
       })
     );
     // 4. NVIDIA RTX-optimized tensor core acceleration
@@ -182,10 +170,9 @@ export class YoRHaMipmapShaders {
       'rtx_optimized',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
-          module: this.device.createShaderModule({ code: rtxOptimizedShader }),
-          entryPoint: 'main',
-        },
+        compute: {, module: this.device.createShaderModule({, code: rtxOptimizedShader }),
+          entryPoint: 'main'
+        }
       })
     );
     // 5. Multi-level batch generation (parallel mip levels)
@@ -194,10 +181,9 @@ export class YoRHaMipmapShaders {
       'multi_level',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
-          module: this.device.createShaderModule({ code: multiLevelShader }),
-          entryPoint: 'main',
-        },
+        compute: {, module: this.device.createShaderModule({, code: multiLevelShader }),
+          entryPoint: 'main'
+        }
       })
     );
     console.log('✅ Mipmap compute pipelines initialized');
@@ -222,8 +208,7 @@ export class YoRHaMipmapShaders {
       chunkSize: options.chunkSize ?? 1024,
       concurrentStreams: options.concurrentStreams ?? 1,
       memoryBudget: options.memoryBudget ?? 64 * 1024 * 1024,
-      priority: options.priority ?? 'balanced',
-    };
+      priority: options.priority ?? 'balanced` };
 
     const sourceWidth = sourceTexture.width || 1024;
     const sourceHeight = sourceTexture.height || 1024;
@@ -236,7 +221,7 @@ export class YoRHaMipmapShaders {
 
     const start = performance.now();
     let memoryUsed = 0;
-    const mipLevels: { width: number; height: number }[] = [];
+    const mipLevels: { width: number;, height: number }[] = [];
 
     // For demonstration we generate the first mip level by processing chunks
     for (let y = 0; y < sourceHeight; y += chunkSize) {
@@ -248,12 +233,12 @@ export class YoRHaMipmapShaders {
         const sourceChunk = device.createTexture({
           size: [chunkWidth, chunkHeight, 1],
           format: 'rgba8unorm',
-          usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING,
+          usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING
         });
         const targetChunk = device.createTexture({
           size: [Math.ceil(chunkWidth / 2), Math.ceil(chunkHeight / 2), 1],
           format: 'rgba8unorm',
-          usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
+          usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
         });
 
         // copy region from sourceTexture to sourceChunk
@@ -270,8 +255,8 @@ export class YoRHaMipmapShaders {
           layout: pipeline.getBindGroupLayout(0),
           entries: [
             { binding: 0, resource: sourceChunk.createView() },
-            { binding: 1, resource: targetChunk.createView() },
-          ],
+            { binding: 1, resource: targetChunk.createView() }
+          ]
         });
         pass.setPipeline(pipeline);
         pass.setBindGroup(0, bindGroup);
@@ -306,8 +291,8 @@ export class YoRHaMipmapShaders {
       optimization: {
         levelsGenerated: mipLevels.length,
         streamingUsed: cfg.enableStreaming,
-        rtxAcceleration: cfg.rtxOptimized,
-      },
+        rtxAcceleration: cfg.rtxOptimized
+      }
     };
     return result;
   }

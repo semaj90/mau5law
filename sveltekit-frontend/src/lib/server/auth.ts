@@ -22,7 +22,7 @@ import {
   PasswordError,
   ProfileError,
   MicroserviceError,
-  ERROR_CODES,
+  ERROR_CODES
 } from './errors';
 
 // ============================================================================
@@ -38,35 +38,29 @@ const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 /**
  * Initialize Lucia with SvelteKit 5 adapter
  */
-export const auth = new Lucia(adapter, {
-  sessionCookie: {
-    name: 'auth_session',
+export const auth = new Lucia(adapter, { sessionCookie: {, name: 'auth_session',
     attributes: {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/',
-    },
+      path: '/'
+    }
   },
   getUserAttributes: attributes => {
     return {
-      email: attributes.email,
+     , email: attributes.email,
       firstName: attributes.firstName,
       lastName: attributes.lastName,
       role: attributes.role,
       isActive: attributes.isActive,
-      avatarUrl: attributes.avatarUrl,
+      avatarUrl: attributes.avatarUrl
     };
-  },
+  }
 });
 
 export type Auth = typeof auth;
 
 declare module 'lucia' {
-  interface Register {
-    Lucia: typeof auth;
-    DatabaseUserAttributes: {
-      email: string;
-      firstName: string | null;
+  interface Register { Lucia: typeof auth;, DatabaseUserAttributes: { email: string;, firstName: string | null;
       lastName: string | null;
       role: string;
       isActive: boolean;
@@ -86,9 +80,7 @@ export class AuthService {
   /**
    * Register a new user with validation and error handling
    */
-  async register(data: {
-    email: string;
-    password: string;
+  async register(data: {, email: string;, password: string;
     firstName?: string | null;
     lastName?: string | null;
     displayName?: string | null;
@@ -104,7 +96,7 @@ export class AuthService {
 
       if (existingUser.length > 0) {
         throw new RegistrationError('A user with this email already exists', ERROR_CODES.EMAIL_TAKEN, {
-          email: data.email,
+          email: data.email
         });
       }
 
@@ -125,7 +117,7 @@ export class AuthService {
           isActive: true,
           avatarUrl: null,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         })
         .returning();
 
@@ -138,7 +130,7 @@ export class AuthService {
 
       console.error('[AUTH] Registration failed with unknown error:', error);
       throw new RegistrationError('Failed to create user account', ERROR_CODES.REGISTRATION_FAILED, {
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -159,7 +151,7 @@ export class AuthService {
       if (!user.isActive) {
         throw new LoginError('Account is deactivated. Please contact support.', ERROR_CODES.ACCOUNT_INACTIVE, {
           userId: user.id,
-          email,
+          email
         });
       }
 
@@ -181,7 +173,7 @@ export class AuthService {
 
       console.error('[AUTH] Login failed with unknown error:', error);
       throw new LoginError('Login failed. Please try again.', ERROR_CODES.LOGIN_FAILED, {
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -198,7 +190,7 @@ export class AuthService {
       console.error('[AUTH] Session creation failed:', error);
       throw new SessionError('Failed to create session', ERROR_CODES.SESSION_INVALID, {
         userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -223,7 +215,7 @@ export class AuthService {
       console.error('[AUTH] Session validation failed:', error);
       throw new SessionError('Failed to validate session', ERROR_CODES.SESSION_ERROR, {
         sessionId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -239,7 +231,7 @@ export class AuthService {
       console.error('[AUTH] Session invalidation failed:', error);
       throw new SessionError('Failed to invalidate session', ERROR_CODES.SESSION_ERROR, {
         sessionId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -255,7 +247,7 @@ export class AuthService {
       console.error('[AUTH] Invalidating user sessions failed:', error);
       throw new SessionError('Failed to invalidate user sessions', ERROR_CODES.SESSION_ERROR, {
         userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -265,15 +257,13 @@ export class AuthService {
    */
   async updateProfile(
     userId: string,
-    data: Partial<{
-      firstName: string | null;
-      lastName: string | null;
-      avatarUrl: string | null;
+    data: Partial<{ firstName: string | null;, lastName: string | null;
+     , avatarUrl: string | null;
     }>
   ) {
     try {
       const updateData: Partial<typeof users.$inferInsert> = {
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       if (data.firstName !== undefined) updateData.firstName = data.firstName;
@@ -288,7 +278,7 @@ export class AuthService {
       console.error('[AUTH] Profile update failed:', error);
       throw new ProfileError('Failed to update profile', ERROR_CODES.PROFILE_UPDATE_FAILED, {
         userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -321,7 +311,7 @@ export class AuthService {
         .update(users)
         .set({
           hashedPassword: newPasswordHash,
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         })
         .where(eq(users.id, userId));
 
@@ -337,7 +327,7 @@ export class AuthService {
       console.error('[AUTH] Password change failed:', error);
       throw new PasswordError('Failed to change password', ERROR_CODES.PASSWORD_CHANGE_FAILED, {
         userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
+        originalError: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -347,10 +337,7 @@ export class AuthService {
    */
   async getCaseById(caseId: string) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/${caseId}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
-        },
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }
       });
 
       if (!response.ok) {
@@ -359,7 +346,7 @@ export class AuthService {
         }
         throw new MicroserviceError('Failed to fetch case', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
           caseId,
-          status: response.status,
+          status: response.status
         });
       }
 
@@ -372,8 +359,7 @@ export class AuthService {
       console.error('[AUTH] Failed to get case by ID:', error);
       throw new MicroserviceError('Service temporarily unavailable', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
         caseId,
-        originalError: error instanceof Error ? error.message : 'Unknown error',
-      });
+        originalError: error instanceof Error ? error.message : 'Unknown error` });
     }
   }
 
@@ -383,11 +369,8 @@ export class AuthService {
   async getCaseDocuments(caseId: string) {
     try {
       const response = await fetch(
-        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/${caseId}/documents`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
-          },
+        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}/documents`,
+        { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }
         }
       );
 
@@ -407,10 +390,7 @@ export class AuthService {
    */
   async getTotalCases(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases/count`, {
-        headers: {
-          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
-        },
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }
       });
 
       if (!response.ok) {
@@ -430,10 +410,7 @@ export class AuthService {
    */
   async getTotalDocuments(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/documents/count`, {
-        headers: {
-          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
-        },
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }
       });
 
       if (!response.ok) {
@@ -453,10 +430,7 @@ export class AuthService {
    */
   async getSampleCases(limit: number = 5) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080'}/cases?limit=${limit}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`,
-        },
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }
       });
 
       if (!response.ok) {
@@ -489,7 +463,7 @@ export const authService = new AuthService();
 /**
  * Helper function to get user from request event with session validation
  */
-export async function getUser(event: RequestEvent): Promise<{ user: User | null; session: Session | null }> {
+export async function getUser(event: RequestEvent): Promise<{ user: User | null;, session: Session | null }> {
   try {
     const sessionId = event.cookies.get(auth.sessionCookieName);
     if (!sessionId) {
@@ -502,7 +476,7 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
       const sessionCookie = auth.createSessionCookie(session.id);
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         ...sessionCookie.attributes,
-        path: '/',
+        path: '/'
       });
     }
 
@@ -510,7 +484,7 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
       const sessionCookie = auth.createBlankSessionCookie();
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         ...sessionCookie.attributes,
-        path: '/',
+        path: '/'
       });
       return { user: null, session: null };
     }
@@ -519,15 +493,14 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
   } catch (error) {
     console.error('[AUTH] User retrieval failed:', error);
     throw new SessionError('Failed to retrieve user session', ERROR_CODES.SESSION_ERROR, {
-      originalError: error instanceof Error ? error.message : 'Unknown error',
-    });
+      originalError: error instanceof Error ? error.message : 'Unknown error` });
   }
 }
 
 /**
  * Require authenticated user middleware
  */
-export async function requireAuth(event: RequestEvent): Promise<{ user: User; session: Session }> {
+export async function requireAuth(event: RequestEvent): Promise<{ user: User;, session: Session }> {
   const { user, session } = await getUser(event);
 
   if (!user || !session) {

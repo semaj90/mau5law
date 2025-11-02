@@ -4,7 +4,7 @@
  * Evidence search has been unified in /api/v2/evidence
  *
  * Migration:
- * OLD: GET /api/search/evidence?q=query
+ *; OLD: GET /api/search/evidence?q=query
  * NEW: GET /api/v2/evidence?action=search&q=query&vector=true
  *
  * The new endpoint provides:
@@ -27,25 +27,24 @@ export const GET: RequestHandler = async ({ url }) => {
     replaceWith: '/api/v2/evidence?action=search',
     message: 'Evidence search is now unified in /api/v2/evidence',
     yourQuery: query,
-    useInstead: `/api/v2/evidence?action=search&q=${encodeURIComponent(query || '')}&vector=true`,
+    useInstead: '/api/v2/evidence?action=search&q=${encodeURIComponent(query || '')}&vector=true`,
     benefits: [
       'Semantic vector search with Ollama embeddings',
       'AI-generated search suggestions',
       'Intelligent fallback when AI unavailable',
       'Better performance with Redis caching',
-    ],
+    ]
   }, {
     status: 410,
     headers: {
       'X-Deprecated': 'true',
-      'X-Migrate-To': '/api/v2/evidence?action=search',
-    },
+      'X-Migrate-To': '/api/v2/evidence?action=search'
+    }
   });
 };
 
 export const POST: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: 'Use GET /api/v2/evidence?action=search instead',
-  }, { status: 410 });
+    message: 'Use GET /api/v2/evidence?action=search instead` }, { status: 410 });
 };

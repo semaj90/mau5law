@@ -128,7 +128,7 @@ import type { Case } from '$lib/types';
   let selectedIndex = $state<number>(0);
   let filteredShortcuts: ShortcutItem[] = $state([]); // Typed and initialized
   let filteredCommands: CommandItem[] = $state([]); // Typed and initialized
-  let commandInput: HTMLInputElement | null = $state(null); // Reactive state
+  let commandInput: HTMLInputElement | null = null; // Reactive state
 
   // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts
   let allShortcuts: ShortcutItem[] = $state(get(keyboardShortcuts)); // Typed and initialized
@@ -389,7 +389,7 @@ import type { Case } from '$lib/types';
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    onclick={(e) => { if (e.target === e.currentTarget) open = $state(false); }}
+    onclick={(e) => { if (e.target === e.currentTarget) open = false; }}
     onkeydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">

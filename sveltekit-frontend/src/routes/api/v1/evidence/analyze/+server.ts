@@ -22,24 +22,22 @@ const AnalyzeEvidenceSchema = z.object({
   evidenceId: cuidSchema,
   filename: z.string(),
   content: z.string().optional(),
-  type: z.enum(['document', 'image', 'video', 'audio', 'other']),
+  type: z.enum(['document', 'image', 'video', 'audio', 'other'])
 });
 const $SimilarEvidenceSchema = z.object({
   evidenceId: cuidSchema,
   embedding: z.array(z.number()).optional(),
   content: z.string().optional(),
-  limit: z.number().min(1).max(20).default(5),
+  limit: z.number().min(1).max(20).default(5)
 });
 const $SuggestionSchema = z.object({
   query: z.string(),
   context: z.string().optional(),
-  type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal'),
+  type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal')
 });
 
 // Types
-interface OllamaResponse {
-  model: string;
-  response: string;
+interface OllamaResponse { model: string;, response: string;
   done: boolean;
   context?: number[];
   total_duration?: number;
@@ -48,9 +46,7 @@ interface OllamaResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-interface AIAnalysisResult {
-  summary: string;
-  confidence: number;
+interface AIAnalysisResult { summary: string;, confidence: number;
   relevantLaws: string[];
   suggestedTags: string[];
   prosecutionScore: number;
@@ -96,12 +92,12 @@ async function queryOllama(prompt: string, model?: string): Promise<string> {
         prompt,
         stream: false,
         options: {
-          temperature: 0.1, // Low temperature for consistent legal analysis
+         , temperature: 0.1, // Low temperature for consistent legal analysis
           top_p: 0.9,
           num_predict: 1024,
-          num_ctx: 4096,
-        },
-      }),
+          num_ctx: 4096
+        }
+      })
     });
     if (!response.ok) {
       const bodyText = await response.text().catch(() => '');
@@ -123,11 +119,11 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        job_id: `embedding_${Date.now()}`,
+       , job_id: `embedding_${Date.now()}`,
         type: 'text_embedding',
         content: text,
-        max_length: 512,
-      }),
+        max_length: 512
+      })
     });
     if (!response.ok) {
       console.warn('CUDA service unavailable for embeddings:', response.status, response.statusText);
@@ -160,12 +156,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { evidenceId, filename, content, type } = AnalyzeEvidenceSchema.parse(body);
     // Prepare legal analysis prompt
     const analysisPrompt = `You are a legal AI assistant analyzing evidence for a legal case. Analyze the following evidence and provide a structured response:
-EVIDENCE DETAILS:
+EVIDENCE; DETAILS:
 - Filename: ${filename}
 - Type: ${type}
-- Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available'}
+- Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available' }
 ANALYSIS REQUIRED:
-Provide your analysis in this exact JSON format:
+Provide your analysis in this exact JSON; format:
 {
   "summary": "Brief 2-3 sentence summary of the evidence",
   "confidence": 0.85,
@@ -199,7 +195,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         prosecutionScore: 0.5,
         legalRelevance: 'Unknown - requires manual analysis',
         keyFindings: ['AI analysis incomplete'],
-        recommendations: ['Manual legal review recommended'],
+        recommendations: ['Manual legal review recommended']
       };
     }
     // Generate embedding for similarity search if content available
@@ -215,8 +211,8 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         embedding,
         processedAt: new Date().toISOString(),
         model: await getOptimalModel(),
-        userId: isTestMode ? 'test-user' : getUserId(locals as unknown as LocalsWithUser),
-      },
+        userId: isTestMode ? 'test-user' : getUserId(locals as unknown as LocalsWithUser)
+      }
     });
   } catch (error: any) {
     console.error('Evidence analysis failed:', error);
@@ -224,7 +220,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
       return json(
         {
           message: 'Invalid analysis request',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );
@@ -233,7 +229,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
     return json(
       {
         message: 'Analysis failed',
-        details,
+        details
       },
       { status: 500 }
     );

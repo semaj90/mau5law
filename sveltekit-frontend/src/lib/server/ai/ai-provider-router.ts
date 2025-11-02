@@ -24,9 +24,7 @@ import { createHash } from 'crypto';
 /**
  * LLM Provider Configuration
  */
-export interface LLMProviderConfig {
-  name: string;
-  type: 'tensorrt' | 'vllm' | 'ollama' | 'openai';
+export interface LLMProviderConfig { name: string;, type: 'tensorrt' | 'vllm' | 'ollama' | 'openai';
   baseUrl: string;
   model: string;
   apiKey?: string;
@@ -34,17 +32,13 @@ export interface LLMProviderConfig {
   enabled: boolean;
   timeout: number;
   maxRetries: number;
-  rateLimit: {
-    requestsPerMinute: number;
-    tokensPerMinute: number;
+  rateLimit: { requestsPerMinute: number;, tokensPerMinute: number;
   };
 }
 /**
  * Provider Health Status
  */
-export interface ProviderStatus {
-  name: string;
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
+export interface ProviderStatus { name: string;, status: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
   lastCheck: Date;
   responseTime: number;
   successRate: number;
@@ -69,13 +63,9 @@ export interface LLMRequest {
 /**
  * LLM Response
  */
-export interface LLMResponse {
-  content: string;
-  model: string;
+export interface LLMResponse { content: string;, model: string;
   provider: string;
-  tokensUsed: {
-    prompt: number;
-    completion: number;
+  tokensUsed: { prompt: number;, completion: number;
     total: number;
   };
   processingTime: number;
@@ -85,17 +75,13 @@ export interface LLMResponse {
 /**
  * Function Calling Support
  */
-export interface FunctionCall {
-  name: string;
-  description: string;
+export interface FunctionCall { name: string;, description: string;
   parameters: Record<string, unknown>;
 }
 /**
  * Function Calling Response
  */
-export interface FunctionCallingResponse {
-  functionName: string;
-  arguments: Record<string, unknown>;
+export interface FunctionCallingResponse { functionName: string;, arguments: Record<string, unknown>;
   result?: any;
 }
 /**
@@ -145,8 +131,8 @@ export class AIProviderRouter {
   /**
    * Get all providers sorted by priority and health
    */
-  getProviders(): { provider: LLMProviderConfig; status: ProviderStatus }[] {
-    const result: { provider: LLMProviderConfig; status: ProviderStatus }[] = [];
+  getProviders(): { provider: LLMProviderConfig;, status: ProviderStatus }[] {
+    const result: { provider: LLMProviderConfig;, status: ProviderStatus }[] = [];
     const sorted = Array.from(this.providers.values())
       .filter(p => p.enabled)
       .sort((a, b) => {
@@ -218,7 +204,7 @@ export class AIProviderRouter {
       case 'openai':
         return this.callOpenAI(provider, request);
       default:
-        throw new Error(`Unknown provider type: ${provider.type}`);
+        throw new Error(`Unknown provider; type: ${provider.type}`);
     }
   }
   /**
@@ -237,9 +223,9 @@ export class AIProviderRouter {
             data: request.prompt
           }
         ],
-        outputs: [{ name: 'output_ids' }],
+        outputs: [{ name: `output_ids` }],
         parameters: {
-          temperature: request.temperature || 0.7,
+         , temperature: request.temperature || 0.7,
           max_tokens: request.maxTokens || 512,
           top_p: request.topP || 0.95
         }
@@ -249,7 +235,7 @@ export class AIProviderRouter {
     if (!response.ok) {
       throw new Error(`TensorRT request failed: ${response.statusText}`);
     }
-    const data = (await response.json()) as { outputs: Array<{ data: string[] }> };
+    const data = (await response.json()) as { outputs: Array<{, data: string[] }> };
     const content = data.outputs[0]?.data[0] || '';
     return {
       content,
@@ -268,10 +254,9 @@ export class AIProviderRouter {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': provider.apiKey ? `Bearer ${provider.apiKey}` : ''
-      },
+        'Authorization': provider.apiKey ? `Bearer ${provider.apiKey}` : `` },
       body: JSON.stringify({
-        model: provider.model,
+       , model: provider.model,
         prompt: request.prompt,
         temperature: request.temperature || 0.7,
         max_tokens: request.maxTokens || 512,
@@ -283,9 +268,8 @@ export class AIProviderRouter {
     if (!response.ok) {
       throw new Error(`vLLM request failed: ${response.statusText}`);
     }
-    const data = (await response.json()) as {
-      choices: Array<{ text: string }>;
-      usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
+    const data = (await response.json()) as { choices: Array<{, text: string }>;
+      usage: { prompt_tokens: number; completion_tokens: number;, total_tokens: number };
     };
     return {
       content: data.choices[0]?.text || '',
@@ -306,9 +290,9 @@ export class AIProviderRouter {
   private async callOllama(provider: LLMProviderConfig, request: LLMRequest): Promise<LLMResponse> {
     const response = await fetch(`${provider.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: provider.model,
+       , model: provider.model,
         prompt: request.prompt,
         stream: false,
         temperature: request.temperature || 0.7,
@@ -319,9 +303,7 @@ export class AIProviderRouter {
     if (!response.ok) {
       throw new Error(`Ollama request failed: ${response.statusText}`);
     }
-    const data = (await response.json()) as {
-      response: string;
-      eval_count: number;
+    const data = (await response.json()) as { response: string;, eval_count: number;
       prompt_eval_count: number;
     };
     return {
@@ -348,15 +330,13 @@ export class AIProviderRouter {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${provider.apiKey}`
-      },
+        'Authorization': 'Bearer ${provider.apiKey}' },
       body: JSON.stringify({
         model: provider.model,
         messages: [
           {
-            role: 'system',
-            content: request.systemPrompt || 'You are a helpful assistant.'
-          },
+           , role: 'system',
+            content: request.systemPrompt || 'You are a helpful assistant.` },
           {
             role: 'user',
             content: request.prompt
@@ -371,9 +351,8 @@ export class AIProviderRouter {
     if (!response.ok) {
       throw new Error(`OpenAI request failed: ${response.statusText}`);
     }
-    const data = (await response.json()) as {
-      choices: Array<{ message: { content: string } }>;
-      usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
+    const data = (await response.json()) as { choices: Array<{, message: {, content: string } }>;
+      usage: { prompt_tokens: number; completion_tokens: number;, total_tokens: number };
     };
     return {
       content: data.choices[0]?.message.content || '',
@@ -394,7 +373,7 @@ export class AIProviderRouter {
   async callWithFunctions(
     request: LLMRequest,
     _functions: FunctionCall[]
-  ): Promise<{ response: LLMResponse; functionCalls: FunctionCallingResponse[] }> {
+  ): Promise<{ response: LLMResponse;, functionCalls: FunctionCallingResponse[] }> {
     // Get response from LLM
     const response = await this.callLLM(request);
     // Parse function calls (implementation depends on model support)

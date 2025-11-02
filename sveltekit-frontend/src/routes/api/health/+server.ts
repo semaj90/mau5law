@@ -1,9 +1,7 @@
 import { json } from '@sveltejs/kit';
 import net from 'node:net';
 import type { RequestHandler } from './$types.js';
-type HttpCheck = {
-  url: string;
-  ok: boolean;
+type HttpCheck = { url: string;, ok: boolean;
   status?: number;
   error?: string;
 };
@@ -41,7 +39,7 @@ async function httpCheck(url: string): Promise<HttpCheck> {
     return {
       url,
       ok: false,
-      error: e instanceof Error ? e.message : String(e),
+      error: e instanceof Error ? e.message : String(e)
     };
   }
 }
@@ -96,41 +94,35 @@ export const GET: RequestHandler = async () => {
   // Service status summary
   const services = {
     // Core Infrastructure
-    databases: {
-      postgres: { host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
+    databases: { postgres: {, host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
       redis: { host: '127.0.0.1', port: 6379, status: redisOpen ? 'healthy' : 'failed' },
       neo4j: { host: '127.0.0.1', port: 7474, status: neo4jHealth.ok ? 'healthy' : 'failed' },
-      qdrant: { host: '127.0.0.1', port: 6333, status: qdrantHealth.ok ? 'healthy' : 'failed' },
+      qdrant: { host: '127.0.0.1', port: 6333, status: qdrantHealth.ok ? 'healthy' : 'failed' }
     },
     // AI/ML Services
-    aiServices: {
-      ollama: { host: '127.0.0.1', port: 11434, status: ollamaVersion.ok ? 'healthy' : 'failed' },
+    aiServices: { ollama: {, host: '127.0.0.1', port: 11434, status: ollamaVersion.ok ? 'healthy' : 'failed' },
       enhancedRAG: { host: '127.0.0.1', port: 8094, status: enhancedRAGHealth.ok ? 'healthy' : 'failed' },
       vectorService: { host: '127.0.0.1', port: 8095, status: vectorServiceHealth.ok ? 'healthy' : 'failed' },
-      uploadService: { host: '127.0.0.1', port: 8093, status: uploadServiceHealth.ok ? 'healthy' : 'failed' },
+      uploadService: { host: '127.0.0.1', port: 8093, status: uploadServiceHealth.ok ? 'healthy' : 'failed' }
     },
     // GPU Acceleration
-    gpuServices: {
-      gpuStatus: { host: '127.0.0.1', port: 8230, status: gpuStatusHealth.ok ? 'healthy' : 'failed' },
+    gpuServices: { gpuStatus: {, host: '127.0.0.1', port: 8230, status: gpuStatusHealth.ok ? 'healthy' : 'failed' },
       cudaWorker: { status: cudaStatusHealth.ok ? 'healthy' : 'failed' },
       rtx3060Ti: { vram: '8GB', status: 'ready' }, // Based on architecture docs
     },
     // Cluster Management
-    orchestration: {
-      clusterManager: { host: '127.0.0.1', port: 8090, status: clusterHealth.ok ? 'healthy' : 'failed' },
-      summarizer: { host: '127.0.0.1', port: 8091, status: summarizerHealth.ok ? 'healthy' : 'failed' },
+    orchestration: { clusterManager: {, host: '127.0.0.1', port: 8090, status: clusterHealth.ok ? 'healthy' : 'failed' },
+      summarizer: { host: '127.0.0.1', port: 8091, status: summarizerHealth.ok ? 'healthy' : 'failed' }
     },
     // Storage
-    storage: {
-      minio: { host: '127.0.0.1', port: 9000, status: minioHealth.ok ? 'healthy' : 'failed' },
-    },
+    storage: { minio: {, host: '127.0.0.1', port: 9000, status: minioHealth.ok ? 'healthy' : 'failed' }
+    }
   };
   // Multi-layer caching status
-  const cachingLayers = {
-    l1_memory: { type: 'memory', status: 'healthy' },
+  const cachingLayers = { l1_memory: {, type: 'memory', status: 'healthy' },
     l2_redis: { type: 'redis', host: '127.0.0.1', port: 6379, status: redisOpen ? 'healthy' : 'failed' },
     l3_postgres: { type: 'postgres', host: '127.0.0.1', port: 5432, status: pgOpen ? 'healthy' : 'failed' },
-    l4_qdrant: { type: 'qdrant', url: 'http://localhost:6333', status: qdrantHealth.ok ? 'healthy' : 'failed' },
+    l4_qdrant: { type: 'qdrant', url: 'http://localhost:6333', status: qdrantHealth.ok ? 'healthy' : 'failed' }
   };
   // Performance metrics
   const performance = {
@@ -139,12 +131,12 @@ export const GET: RequestHandler = async () => {
       heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
       external: Math.round(memoryUsage.external / 1024 / 1024),
-      rss: Math.round(memoryUsage.rss / 1024 / 1024),
+      rss: Math.round(memoryUsage.rss / 1024 / 1024)
     },
     cpuUsage: {
       user: Math.round(cpuUsage.user / 1000),
-      system: Math.round(cpuUsage.system / 1000),
-    },
+      system: Math.round(cpuUsage.system / 1000)
+    }
   };
   // Architecture summary based on documentation
   const architecture = {
@@ -160,7 +152,7 @@ export const GET: RequestHandler = async () => {
       'Multi-Protocol Service Architecture',
       'Enterprise Vector Service v2.0',
       'FlashAttention2 RTX 3060 Ti Integration',
-    ],
+    ]
   };
   // Overall system health calculation
   const healthyServices = Object.values(services)
@@ -169,13 +161,11 @@ export const GET: RequestHandler = async () => {
   const totalServices = Object.values(services).flatMap(category => Object.values(category)).length;
   const healthScore = Math.round((healthyServices / totalServices) * 100);
   const overallStatus = healthScore >= 80 ? 'healthy' : healthScore >= 60 ? 'degraded' : 'unhealthy';
-  const status = {
-    overall: {
-      status: overallStatus,
+  const status = { overall: {, status: overallStatus,
       healthScore,
       healthyServices,
       totalServices,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     },
     services,
     caching: cachingLayers,
@@ -186,14 +176,13 @@ export const GET: RequestHandler = async () => {
     postgres: services.databases.postgres,
     redis: services.databases.redis,
     ollama: services.aiServices.ollama,
-    qdrant: services.databases.qdrant,
+    qdrant: services.databases.qdrant
   } as const;
   return json(status, {
     status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503,
     headers: {
       'X-Health-Score': healthScore.toString(),
       'X-Service-Count': `${healthyServices}/${totalServices}`,
-      'X-Architecture': 'Legal-AI-Platform-v2.0',
-    },
+      'X-Architecture': 'Legal-AI-Platform-v2.0` }
   });
 };

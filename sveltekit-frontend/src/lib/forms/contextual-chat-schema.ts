@@ -19,7 +19,7 @@ export const chatMessageSchema = z.object({
   enableFunctions: z.boolean().default(true),
   temperature: z.number().min(0).max(2).default(0.7).optional(),
   maxTokens: z.number().min(1).max(4096).default(512).optional(),
-  model: z.string().default('gemma3:270m').optional(),
+  model: z.string().default('gemma3:270m').optional()
 });
 export type ChatMessageInput = z.input<typeof chatMessageSchema>;
 export type ChatMessageOutput = z.output<typeof chatMessageSchema>;
@@ -44,7 +44,7 @@ export const entityExtractionSchema = z.object({
       'organization',
       'location'
     ])
-  ).optional(),
+  ).optional()
 });
 export type EntityExtractionInput = z.input<typeof entityExtractionSchema>;
 export type EntityExtractionOutput = z.output<typeof entityExtractionSchema>;
@@ -57,7 +57,7 @@ export const stateQuerySchema = z.object({
   includeHistory: z.boolean().default(true).optional(),
   includePredictions: z.boolean().default(true).optional(),
   includeEntities: z.boolean().default(true).optional(),
-  maxHistoryTurns: z.number().min(1).max(100).default(10).optional(),
+  maxHistoryTurns: z.number().min(1).max(100).default(10).optional()
 });
 export type StateQueryInput = z.input<typeof stateQuerySchema>;
 export type StateQueryOutput = z.output<typeof stateQuerySchema>;
@@ -76,12 +76,12 @@ export const stateUpdateSchema = z.object({
       value: z.string(),
       confidence: z.number().min(0).max(1),
       startPos: z.number().optional(),
-      endPos: z.number().optional(),
+      endPos: z.number().optional()
     })
   ).default([]),
   embedding: z.array(z.number()).optional(),
   hmmState: z.number().min(0).max(7).optional(),
-  confidence: z.number().min(0).max(1).optional(),
+  confidence: z.number().min(0).max(1).optional()
 });
 export type StateUpdateInput = z.input<typeof stateUpdateSchema>;
 export type StateUpdateOutput = z.output<typeof stateUpdateSchema>;
@@ -95,7 +95,7 @@ export const similaritySearchSchema = z.object({
   limit: z.number().min(1).max(100).default(10),
   minConfidence: z.number().min(0).max(1).optional(),
   intent: z.string().optional(),
-  entityType: z.string().optional(),
+  entityType: z.string().optional()
 });
 export type SimilaritySearchInput = z.input<typeof similaritySearchSchema>;
 export type SimilaritySearchOutput = z.output<typeof similaritySearchSchema>;
@@ -108,7 +108,7 @@ export const batchEmbeddingSchema = z.object({
     .max(100, 'Maximum 100 texts per batch'),
   model: z.string().default('embeddinggemma:latest').optional(),
   sessionId: z.string().uuid('Invalid session ID').optional(),
-  useCache: z.boolean().default(true).optional(),
+  useCache: z.boolean().default(true).optional()
 });
 export type BatchEmbeddingInput = z.input<typeof batchEmbeddingSchema>;
 export type BatchEmbeddingOutput = z.output<typeof batchEmbeddingSchema>;
@@ -119,7 +119,7 @@ export const sessionStatsSchema = z.object({
   sessionId: z.string().uuid('Invalid session ID'),
   userId: z.string().uuid('Invalid user ID'),
   includeEntityClusters: z.boolean().default(false).optional(),
-  includePatternAnalysis: z.boolean().default(false).optional(),
+  includePatternAnalysis: z.boolean().default(false).optional()
 });
 export type SessionStatsInput = z.input<typeof sessionStatsSchema>;
 export type SessionStatsOutput = z.output<typeof sessionStatsSchema>;
@@ -130,7 +130,7 @@ export const conversationClearSchema = z.object({
   sessionId: z.string().uuid('Invalid session ID'),
   clearQdrant: z.boolean().default(true).optional(),
   clearPostgres: z.boolean().default(true).optional(),
-  clearRedis: z.boolean().default(true).optional(),
+  clearRedis: z.boolean().default(true).optional()
 });
 export type ConversationClearInput = z.input<typeof conversationClearSchema>;
 export type ConversationClearOutput = z.output<typeof conversationClearSchema>;

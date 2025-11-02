@@ -14,13 +14,13 @@ interface SimpleRedis {
   isOpen: boolean;
 }
 
-function createClient(_config: { url: string; password: string }): SimpleRedis {
+function createClient(_config: {, url: string; password: string }): SimpleRedis {
   return {
     isOpen: false,
     async connect() { this.isOpen = true; },
     async setEx() {},
     async get() { return null; },
-    async quit() { this.isOpen = $state(false); }
+    async quit() { this.isOpen = false; }
   };
 }
 
@@ -41,7 +41,7 @@ class EvidenceWebSocketServer {
   constructor() {
     this.wss = new WebSocketServer({ port: WS_PORT });
     const redisConfig: any = {
-      url: 'redis://localhost:6379',
+      url: 'redis://localhost:6379'
     };
 
     // Only add password if explicitly set
@@ -76,7 +76,7 @@ class EvidenceWebSocketServer {
       };
 
       this.clients.set(ws, client);
-      console.log(`[WS] 🔌 Client connected (userId: ${userId || 'anonymous'})`);
+      console.log(`[WS] 🔌 Client connected (userId: ${userId || 'anonymous' })`);
 
       // Send welcome message
       this.sendToClient(ws, {
@@ -96,7 +96,7 @@ class EvidenceWebSocketServer {
       });
 
       ws.on('close', () => {
-        console.log(`[WS] 🔌 Client disconnected (userId: ${userId || 'anonymous'})`);
+        console.log(`[WS] 🔌 Client disconnected (userId: ${userId || 'anonymous' })`);
         this.clients.delete(ws);
       });
 

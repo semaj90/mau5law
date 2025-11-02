@@ -7,9 +7,7 @@ import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 import * as msgpack from '@msgpack/msgpack';
 
-export interface GoBinaryConfig {
-  enhancedRAGEndpoint: string;
-  uploadServiceEndpoint: string;
+export interface GoBinaryConfig { enhancedRAGEndpoint: string;, uploadServiceEndpoint: string;
   kratosServerEndpoint: string;
   goLlamaEndpoint: string;
   redisEndpoint: string;
@@ -18,9 +16,7 @@ export interface GoBinaryConfig {
   timeoutMs: number;
 }
 
-export interface GoBinaryRequest {
-  id: string;
-  service: 'enhanced-rag' | 'upload' | 'kratos' | 'go-llama';
+export interface GoBinaryRequest { id: string;, service: 'enhanced-rag' | 'upload' | 'kratos' | 'go-llama';
   method: 'POST' | 'GET' | 'PUT' | 'DELETE';
   endpoint: string;
   data?: any;
@@ -31,9 +27,7 @@ export interface GoBinaryRequest {
   retries?: number;
 }
 
-export interface GoBinaryResponse {
-  id: string;
-  success: boolean;
+export interface GoBinaryResponse { id: string;, success: boolean;
   data?: any;
   error?: string;
   processingTime: number;
@@ -42,18 +36,14 @@ export interface GoBinaryResponse {
   cudaAccelerated?: boolean;
 }
 
-export interface RedisNativeConfig {
-  host: string;
-  port: number;
+export interface RedisNativeConfig { host: string;, port: number;
   db: number;
   keyPrefix: string;
   enablePipelining: boolean;
   maxConnections: number;
 }
 
-export interface CUDAProcessingConfig {
-  deviceId: number;
-  memoryLimit: number;
+export interface CUDAProcessingConfig { deviceId: number;, memoryLimit: number;
   computeCapability: string;
   enableTensorRT: boolean;
   batchSize: number;
@@ -77,7 +67,7 @@ export class GoBinaryIntegrationService {
     kratosServer: false,
     goLlama: false,
     redis: false, // Removed semicolon, added comma
-    cuda: false,
+    cuda: false
   });
   public processingMetrics = writable({
     totalRequests: 0,
@@ -85,7 +75,7 @@ export class GoBinaryIntegrationService {
     avgResponseTime: 0,
     cacheHitRate: 0,
     cudaUtilization: 0,
-    activeConnections: 0,
+    activeConnections: 0
   });
   public requestQueue = writable<GoBinaryRequest[]>([]);
   constructor(config?: Partial<GoBinaryConfig>) {
@@ -98,7 +88,7 @@ export class GoBinaryIntegrationService {
       enableCUDA: true,
       maxConcurrentRequests: 10,
       timeoutMs: 30000,
-      ...config,
+      ...config
     };
     this.redisConfig = {
       host: 'localhost',
@@ -106,14 +96,14 @@ export class GoBinaryIntegrationService {
       db: 0,
       keyPrefix: 'go-binary:',
       enablePipelining: true,
-      maxConnections: 5,
+      maxConnections: 5
     };
     this.cudaConfig = {
       deviceId: 0,
       memoryLimit: 8192, // MB
       computeCapability: '8.6', // RTX 3060 Ti
       enableTensorRT: true,
-      batchSize: 16,
+      batchSize: 16
     };
     this.initialize();
   }
@@ -165,11 +155,11 @@ export class GoBinaryIntegrationService {
         max_results: options.maxResults || 10,
         embedding: options.embedding,
         use_embeddings: true,
-        legal_domain: true,
+        legal_domain: true
       },
       encoding: 'msgpack', // Use MessagePack for binary efficiency
       priority: options.priority || 'medium',
-      timeout: 15000,
+      timeout: 15000
     };
     return this.executeRequest(request, options.useCache !== false);
   }
@@ -179,7 +169,7 @@ export class GoBinaryIntegrationService {
   public async uploadDocument(
     file: File | Blob,
     metadata: {
-      userId: string;
+     , userId: string;
       sessionId?: string;
       documentType?: string;
       tags?: string[];
@@ -204,13 +194,13 @@ export class GoBinaryIntegrationService {
           ...metadata,
           file_size: file.size,
           file_type: file instanceof File ? file.type : 'application/octet-stream', // Corrected ternary operator
-          upload_timestamp: Date.now(),
+          upload_timestamp: Date.now()
         },
         options: {
           compression: options.useCompression !== false,
           ocr: options.enableOCR !== false,
-          thumbnail: options.generateThumbnail !== false,
-        },
+          thumbnail: options.generateThumbnail !== false
+        }
       },
       binary: true,
       encoding: 'protobuf', // Use protobuf for structured binary data
@@ -244,11 +234,11 @@ export class GoBinaryIntegrationService {
         temperature: options.temperature || 0.7,
         cuda: options.useCUDA !== false && this.config.enableCUDA,
         streaming: options.streaming === true,
-        legal_context: true,
+        legal_context: true
       },
       encoding: 'json', // Keep JSON for text generation
       priority: 'high',
-      timeout: 45000,
+      timeout: 45000
     };
     return this.executeRequest(request, true);
   }
@@ -257,8 +247,7 @@ export class GoBinaryIntegrationService {
    */
   public async callKratosService(
     method: string,
-    data: any, // Changed: 'any' to: 'unknown'
-    options: {
+    data: any, // Changed: 'any' to: 'unknown'; options: {
       useProtobuf?: boolean;
       timeout?: number;
     } = {}
@@ -271,7 +260,7 @@ export class GoBinaryIntegrationService {
       data,
       encoding: options.useProtobuf ? 'protobuf' : 'json',
       priority: 'medium',
-      timeout: options.timeout || 20000,
+      timeout: options.timeout || 20000
     };
     return this.executeRequest(request, true);
   }
@@ -283,7 +272,7 @@ export class GoBinaryIntegrationService {
     request: GoBinaryRequest,
     useCache: boolean = true
   ): Promise<GoBinaryResponse> {
-    // Removed: ',' and: '}'
+    // Removed: ',' and: ' }'
     const startTime = Date.now();
     try {
       // Check cache first
@@ -294,7 +283,7 @@ export class GoBinaryIntegrationService {
           return {
             ...cachedResponse,
             cached: true,
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           };
         }
       }
@@ -323,7 +312,7 @@ export class GoBinaryIntegrationService {
         error: error instanceof Error ? error.message : String(error), // Corrected String(error)
         processingTime: Date.now() - startTime,
         encoding: request.encoding || 'json',
-        cached: false,
+        cached: false
       };
       this.updateMetrics(errorResponse);
       return errorResponse;
@@ -350,7 +339,7 @@ export class GoBinaryIntegrationService {
         endpoint = `${this.config.goLlamaEndpoint}${request.endpoint}`;
         break;
       default:
-        throw new Error(`Unknown service: ${request.service}`);
+        throw new Error(`Unknown; service: ${request.service}`);
     }
     // Prepare request body based on encoding
     let body: string | Uint8Array;
@@ -378,10 +367,9 @@ export class GoBinaryIntegrationService {
         'Content-Type': contentType,
         'X-Request-ID': request.id,
         'X-Priority': request.priority,
-        'X-Encoding': request.encoding || 'json',
-      },
+        'X-Encoding': request.encoding || 'json` },
       body: request.method !== 'GET' ? body : undefined, // Corrected ternary operator
-      signal: AbortSignal.timeout(request.timeout || this.config.timeoutMs),
+      signal: AbortSignal.timeout(request.timeout || this.config.timeoutMs)
     };
     const response = await fetch(endpoint, fetchOptions); // Re-added response assignment
     if (!response.ok) {
@@ -408,7 +396,7 @@ export class GoBinaryIntegrationService {
       processingTime: Date.now() - startTime,
       encoding: request.encoding || 'json',
       cached: false,
-      cudaAccelerated,
+      cudaAccelerated
     };
   }
   /**
@@ -451,7 +439,7 @@ export class GoBinaryIntegrationService {
     const keyData = {
       service: request.service,
       endpoint: request.endpoint,
-      data: request.data,
+      data: request.data
     };
     // Create hash of key data
     const jsonString = JSON.stringify(keyData);
@@ -475,20 +463,20 @@ export class GoBinaryIntegrationService {
       kratosServer: false,
       goLlama: false,
       redis: false, // Removed semicolon, added comma
-      cuda: false,
+      cuda: false
     };
     // Check each service
     const services = [
       { key: 'enhancedRAG', url: `${this.config.enhancedRAGEndpoint}/health` },
       { key: 'uploadService', url: `${this.config.uploadServiceEndpoint}/health` },
-      { key: 'goLlama', url: `${this.config.goLlamaEndpoint}/health` },
+      { key: 'goLlama', url: '${this.config.goLlamaEndpoint}/health' }
     ];
     for (const service of services) {
       // Corrected syntax
       try {
         const response = await fetch(service.url, {
           method: 'GET',
-          signal: AbortSignal.timeout(5000),
+          signal: AbortSignal.timeout(5000)
         });
         (status as any)[service.key] = response.ok;
       } catch (error: any) {
@@ -563,7 +551,7 @@ export class GoBinaryIntegrationService {
       totalRequests: metrics.totalRequests + 1,
       successRate: response.success ? metrics.successRate * 0.9 + 1 * 0.1 : metrics.successRate * 0.9 + 0 * 0.1,
       avgResponseTime: metrics.avgResponseTime * 0.9 + response.processingTime * 0.1,
-      cacheHitRate: response.cached ? metrics.cacheHitRate * 0.9 + 1 * 0.1 : metrics.cacheHitRate * 0.9 + 0 * 0.1,
+      cacheHitRate: response.cached ? metrics.cacheHitRate * 0.9 + 1 * 0.1 : metrics.cacheHitRate * 0.9 + 0 * 0.1
     })); // Corrected closing parenthesis and semicolon
   }
   /**
@@ -598,12 +586,12 @@ export class GoBinaryIntegrationService {
         available: this.config.enableCUDA,
         deviceId: this.cudaConfig.deviceId,
         memoryUsage: '2.1GB / 8GB', // Simulated
-        computeCapability: this.cudaConfig.computeCapability,
+        computeCapability: this.cudaConfig.computeCapability
       },
       queues: {
         active: this.requestMap.size,
-        cached: this.responseCache.size,
-      },
+        cached: this.responseCache.size
+      }
     };
   }
   /**
@@ -628,7 +616,6 @@ export const goBinaryStatus = derived(
     services: $services,
     metrics: $metrics,
     healthy: Object.values($services).every(status => status === true),
-    performance: $metrics.successRate > 0.9 ? 'excellent' : $metrics.successRate > 0.7 ? 'good' : 'poor',
-  })
+    performance: $metrics.successRate > 0.9 ? 'excellent' : $metrics.successRate > 0.7 ? 'good' : 'poor` })
 );
 export default GoBinaryIntegrationService;

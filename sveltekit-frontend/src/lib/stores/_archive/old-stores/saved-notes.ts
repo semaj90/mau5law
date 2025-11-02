@@ -65,12 +65,10 @@ const idbUtils = {
   keys: async (): Promise<string[]> => Object.keys(localStorage).filter(k => k.startsWith('note:')),
   set: async <T = unknown>(_key: string, value: T): Promise<void> => {
     localStorage.setItem(_key, JSON.stringify(value));
-  },
+  }
 };
 
-export interface SavedNote {
-  id: string;
-  title: string;
+export interface SavedNote { id: string;, title: string;
   content: string;
   markdown: string;
   html: string;
@@ -82,9 +80,7 @@ export interface SavedNote {
   savedAt: Date;
   metadata?: any;
 }
-export interface NoteFilters {
-  search: string;
-  noteType: string;
+export interface NoteFilters { search: string;, noteType: string;
   tags: string[];
   caseId?: string;
 }
@@ -95,7 +91,7 @@ export const noteFilters = writable<NoteFilters>({
   search: '',
   noteType: '',
   tags: [],
-  caseId: undefined,
+  caseId: undefined
 });
 // Derived store for filtered notes with fuzzy search
 export const filteredNotes = derived([savedNotes, noteFilters], ([$savedNotes, $noteFilters]) => {
@@ -114,13 +110,13 @@ export const filteredNotes = derived([savedNotes, noteFilters], ([$savedNotes, $
   if ($noteFilters.search && $noteFilters.search.trim()) {
     const fuse = new Fuse<SavedNote>($savedNotes, {
       keys: [
-        { name: 'title', weight: 0.4 },
+        {, name: 'title', weight: 0.4 },
         { name: 'content', weight: 0.3 },
         { name: 'markdown', weight: 0.2 },
-        { name: 'tags', weight: 0.1 },
+        { name: 'tags', weight: 0.1 }
       ],
       threshold: 0.4,
-      includeScore: true,
+      includeScore: true
     });
     const results = fuse.search($noteFilters.search);
     return results.map(result => result.item);
@@ -137,7 +133,7 @@ export const noteStats = derived(savedNotes, $savedNotes => ({
     },
     {} as Record<string, number>
   ),
-  totalTags: Array.from(new Set($savedNotes.flatMap(note => note.tags))).length,
+  totalTags: Array.from(new Set($savedNotes.flatMap(note => note.tags))).length
 }));
 
 class NotesManager {
@@ -153,7 +149,7 @@ class NotesManager {
   async saveNote(note: Omit<SavedNote, 'savedAt'>): Promise<void> {
     const noteWithTimestamp: SavedNote = {
       ...note,
-      savedAt: new Date(),
+      savedAt: new Date()
     };
     // Update store
     savedNotes.update(notes => {
@@ -215,8 +211,7 @@ class NotesManager {
       const response: Response = await fetch(`${apiEndpoint}/sync`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` }
       });
 
       if (response.ok) {
@@ -323,7 +318,7 @@ export function clearNoteFilters() {
     search: '',
     noteType: '',
     tags: [],
-    caseId: undefined,
+    caseId: undefined
   });
 }
 export default notesManager;

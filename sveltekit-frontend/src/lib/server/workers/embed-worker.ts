@@ -7,7 +7,7 @@ async function run(): Promise<any> {
   try {
     const res = await getEmbeddingViaGate(fetch as unknown as typeof globalThis.fetch, job.text, {
       model: job?.model || "unknown" // @ts-ignore - Model property access,
-      tags: job.tags,
+      tags: job.tags
     });
     const out: EmbedResult = {
       docId: job.docId,

@@ -9,9 +9,7 @@ const advancedCache = {
   invalidateByTags: async (tags: string[]) => {}
 }
 }
-export interface Shortcut {
-  key: string;
-  description: string;
+export interface Shortcut { key: string;, description: string;
   action: () => void;
   global?: boolean;
   category?: string;

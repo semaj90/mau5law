@@ -364,10 +364,10 @@
     role="button"
     tabindex="0"
     aria-label="Evidence upload area"
-    on:dragenter={handleDragEnter}
-    on:dragleave={handleDragLeave}
-    on:dragover={handleDragOver}
-    on:drop={handleDrop}
+    ondragenter={handleDragEnter}
+    ondragleave={handleDragLeave}
+    ondragover={handleDragOver}
+    ondrop={handleDrop}
   >
     <div class="upload-content">
       <div class="upload-icon">

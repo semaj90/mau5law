@@ -21,8 +21,6 @@ export async function summarizeWithQueue(content: string, documentId: string): P
     );
   }
   await setCache(documentId, { status: "processing" });
-  return {
-    success: true;
-    message: "Summarization task queued (or marked processing)."
+  return { success: true;, message: "Summarization task queued (or marked processing)."
   }
 }

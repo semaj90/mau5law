@@ -24,9 +24,7 @@ const MEMORY_CONSTRAINTS = {
   SPRITE_LIMIT: 64, // Max sprites on screen
   PALETTE_COLORS: 52 // NES-like color palette
 } as const;
-export interface NESTexture {
-  id: string;
-  data: ArrayBuffer;
+export interface NESTexture { id: string;, data: ArrayBuffer;
   width: number;
   height: number;
   format: GPUTextureFormat;
@@ -34,15 +32,11 @@ export interface NESTexture {
   lastUsed: number;
   priority: number;
   compressed: boolean;
-  legalContext?: {
-    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-    confidenceLevel: number;
+  legalContext?: { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, confidenceLevel: number;
     riskIndicator: boolean;
   }
 }
-export interface MemoryRegion {
-  name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';
-  size: number;
+export interface MemoryRegion { name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';, size: number;
   used: number;
   textures: Map<string, NESTexture>;
 }
@@ -140,7 +134,7 @@ export class WebGPUTextureStreamer {
         alpha: true,
         antialias: false, // Disable for pixel-perfect NES style;
         depth: true,
-        premultipliedAlpha: true,
+        premultipliedAlpha: true
       });
       if (!this.gl) return false;
       // Configure WebGL2 for NES-style rendering
@@ -162,9 +156,7 @@ export class WebGPUTextureStreamer {
         try {
           // Simple RLE compression for NES-style textures
           const compressed = compressTexture(textureData, legalContext);
-          self.postMessage({
-            success: true
-            compressedData: compressed.data,
+          self.postMessage({ success: true, compressedData: compressed.data,
             compressionRatio: compressed.ratio,
             originalSize: textureData.byteLength,
             compressedSize: compressed.data.byteLength
@@ -226,7 +218,7 @@ export class WebGPUTextureStreamer {
     data: BufferLike,
     width: number,
     height: number;
-    options: {
+   , options: {
       priority?: number;
       legalContext?: NESTexture['legalContext'];
       region?: 'RAM' | 'CHR_ROM' | 'PRG_ROM';
@@ -289,14 +281,14 @@ export class WebGPUTextureStreamer {
       console.log(`✅ Loaded texture ${id} in ${region} (${this.formatBytes(nesTexture.size)})`);
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to load texture ${id}:`, error);
+      console.error(`❌ Failed to load texture ${id}: ', error);
       return false;
     }
   }
   private async compressTexture(
     data: ArrayBuffer,
     width: number;
-    height: number,
+   , height: number,
     legalContext?: NESTexture['legalContext']
   ): Promise<ArrayBuffer> {
     if (!this.compressionWorker) return data;
@@ -326,8 +318,7 @@ export class WebGPUTextureStreamer {
   }
   private async createWebGPUTexture(nesTexture: NESTexture): Promise<void> {
     if (!this.device) return;
-    const texture = this.device.createTexture({
-      size: { width: nesTexture.width, height: nesTexture.height },
+    const texture = this.device.createTexture({ size: {, width: nesTexture.width, height: nesTexture.height },
       format: nesTexture.format,
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
@@ -431,7 +422,7 @@ export class WebGPUTextureStreamer {
   getMemoryStats() {
     const stats = {
       total: MEMORY_CONSTRAINTS.TOTAL,
-        regions: {} as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
+        regions: {} as Record<string, { used: number; size: number; utilization: number;, textureCount: number }>,
       textures: 0,
       isWebGPU: !!this.device,
       isWebGL2: !!this.gl

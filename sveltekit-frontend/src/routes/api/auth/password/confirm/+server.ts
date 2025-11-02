@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { token, newPassword } = (await request.json()) as { token?: string; newPassword?: string };
     if (!token || !newPassword) {
-      return json({ success: false, error: { message: 'Token and new password required', code: 'INVALID_REQUEST', status: 400 } }, { status: 400 });
+      return json({ success: false, error: {, message: 'Token and new password required', code: 'INVALID_REQUEST', status: 400 } }, { status: 400 });
     }
 
     if (typeof (authService as any).resetPassword === 'function') {
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Not implemented - respond with not supported
-    return json({ success: false, error: { message: 'Password reset not supported on this deployment', code: 'NOT_IMPLEMENTED', status: 501 } }, { status: 501 });
+    return json({ success: false, error: {, message: 'Password reset not supported on this deployment', code: 'NOT_IMPLEMENTED', status: 501 } }, { status: 501 });
   } catch (error) {
     await logStructuredError({ source: 'api.auth.password.confirm', level: 'error', event: 'confirm_failed', message: 'Password reset confirm failed', error });
     if (isAuthError(error)) return json(formatErrorResponse(error), { status: error.status });

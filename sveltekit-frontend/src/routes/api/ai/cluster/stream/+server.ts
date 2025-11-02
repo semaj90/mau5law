@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { subscribeClusterEvents } from '$lib/server/ai/cluster-stream';
 
 const denoGlobal = (globalThis as typeof globalThis & {
-  Deno?: { upgradeWebSocket?: (request: Request) => { response: Response; socket: WebSocket } };
+  Deno?: { upgradeWebSocket?: (request: Request) => { response: Response;, socket: WebSocket } };
 }).Deno;
 
 const WebSocketPairCtor = (globalThis as typeof globalThis & {
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ request }) => {
     server.onerror = cleanup;
     return new Response(null, {
       status: 101,
-      webSocket: client,
+      webSocket: client
     } as unknown as ResponseInit);
   }
 

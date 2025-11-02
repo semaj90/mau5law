@@ -4,15 +4,11 @@ import type { Document } from '$lib/types';
  * Manages texture streaming with NES-style memory constraints
  */
 }
-export interface LODLevel {
-  level: 0 | 1 | 2 | 3;
-  resolution: { width: number; height: number }
+export interface LODLevel { level: 0 | 1 | 2 | 3;, resolution: { width: number;, height: number }
   memoryBudget: number; // bytes,
   description: string;
 }
-export interface TextureChunk {
-  assetId: string;
-  lodLevel: LODLevel['level'];
+export interface TextureChunk { assetId: string;, lodLevel: LODLevel['level'];
   data: ArrayBuffer;
   format: 'rgba8unorm' | 'bc1-rgba-unorm';
   timestamp: number;
@@ -123,7 +119,7 @@ export class N64LODManager {
       console.log(`🎮 Streamed ${assetId} at LOD${targetLOD} (${lodLevel.resolution.width}x${lodLevel.resolution.height})`);
       return chunk;
     } catch (error) {
-      console.error(`Failed to stream texture ${assetId} at LOD${targetLOD}:`, error);
+      console.error(`Failed to stream texture ${assetId} at LOD${targetLOD}: ', error);
       return null;
     }
   }

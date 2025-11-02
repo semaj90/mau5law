@@ -8,26 +8,18 @@ import type { WebASMModelConfig, VectorSearchInferenceConfig } from './webasm-in
 import { gpuSummaryStore } from '$lib/stores/gpu-summary-store.svelte.ts';
 import type { MinIOCacheMetrics } from '$lib/stores/gpu-summary-store.svelte.ts';
 }
-export interface VectorSearchPipelineConfig {
-  embedding: {
-    model: string;
+export interface VectorSearchPipelineConfig { embedding: {, model: string;
   dimensions: number;
   batchSize: number;
   }
-  similarity: {
-    model: string;
-    function: 'cosine' | 'euclidean' | 'dot_product';
+  similarity: { model: string;, function: 'cosine' | 'euclidean' | 'dot_product';
     threshold: number;
   }
-  caching: {
-    enabled: boolean;
-    ttl: number;
+  caching: { enabled: boolean;, ttl: number;
     maxSize: number;
     compression: boolean;
   }
-  webasm: {
-    memoryPages: number;
-    simdEnabled: boolean;
+  webasm: { memoryPages: number;, simdEnabled: boolean;
     threadCount: number;
     quantization: 'fp32' | 'fp16' | 'int8' | 'int4';
   }
@@ -40,17 +32,13 @@ export interface SearchRequest {
   useCache?: boolean;
 }
 }
-export interface SearchResult {
-  id: string;
-  content: string;
+export interface SearchResult { id: string;, content: string;
   similarity: number;
   metadata?: { [key: string]: any }
   embedding?: Float32Array;
 }
 }
-export interface PipelineMetrics {
-  totalTime: number;
-  embeddingTime: number;
+export interface PipelineMetrics { totalTime: number;, embeddingTime: number;
   searchTime: number;
   cacheHitRate: number;
   throughput: number;
@@ -64,7 +52,7 @@ export interface PipelineMetrics {
 export class VectorSearchWebASMPipeline {
   private inferenceEngine: VectorSearchInferenceEngine;
   private config: VectorSearchPipelineConfig;
-  private cache = new Map<string, { results: SearchResult[]; timestamp: number }>();
+  private cache = new Map<string, { results: SearchResult[];, timestamp: number }>();
   private performanceMetrics: PipelineMetrics = {
     totalTime: 0,
     embeddingTime: 0,
@@ -236,7 +224,7 @@ export class VectorSearchWebASMPipeline {
   /**
    * Get candidate documents for search
    */
-  private async getCandidateDocuments(filters?: { [key,: strin,g]: any, }): Promise<Array<a>n>>y>> {
+  private async getCandidateDocuments(filters?: { [key,: strin,g]: any }): Promise<Array<a>n>>y>> {
     // Mock implementation - in practice, this would query your vector database
     return [
       {
@@ -353,7 +341,7 @@ export class VectorSearchWebASMPipeline {
       cacheHitRate: this.performanceMetrics.cacheHitRate,
       totalTransferMB: this.performanceMetrics.wasmMemoryUsage / (1024 * 1024),
       healthScore: this.calculateHealthScore(),
-      bottlenecks: this.identifyBottlenecks(),
+      bottlenecks: this.identifyBottlenecks()
     });
   }
   /**
@@ -427,10 +415,8 @@ export class VectorSearchWebASMPipeline {
   /**
    * Get pipeline statistics
    */
-  getStats(),: {
-    pipeline: PipelineMetrics;
-    inference: ReturnType<VectorSearchInferenceEngine['getStats']>;
-    cache: { size: number; maxSize: number; hitRate: number }
+  getStats(),: { pipeline: PipelineMetrics;, inference: ReturnType<VectorSearchInferenceEngine['getStats']>;
+    cache: { size: number; maxSize: number;, hitRate: number }
   } {
     return {
       pipeline: this.performanceMetrics,
@@ -466,9 +452,7 @@ export class VectorSearchWebASMPipeline {
 /**
  * Default pipeline configuration
  */
-export const defaultPipelineConfig: VectorSearchPipelineConfig = {
-  embedding: {
-    model: 'sentence-transformer-mini',
+export const defaultPipelineConfig: VectorSearchPipelineConfig = { embedding: {, model: 'sentence-transformer-mini',
     dimensions: 384,
     batchSize: 32
   },
@@ -487,8 +471,7 @@ export const defaultPipelineConfig: VectorSearchPipelineConfig = {
     memoryPages: 256, // 16MB
     simdEnabled: true,
     threadCount: 4,
-    quantization: 'fp16'
-  }
+    quantization: `fp16` }
 }
 /**
  * Factory function to create pipeline with default config

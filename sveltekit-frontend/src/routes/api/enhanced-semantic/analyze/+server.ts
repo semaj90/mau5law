@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'Missing text parameter for semantic analysis',
+          error: 'Missing text parameter for semantic analysis'
         },
         { status: 400 }
       );
@@ -15,8 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const response = await fetch(`http://localhost:8095/api/semantic-analysis?text=${encodeURIComponent(text)}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` }
     });
     if (!response.ok) {
       throw new Error(`Enhanced Semantic Architecture API returned ${response.status}: ${response.statusText}`);
@@ -29,16 +28,15 @@ export const GET: RequestHandler = async ({ url }) => {
         som_cluster: data.data.som_cluster || { x: 0, y: 0 },
         analysis: data.data.analysis || 'Semantic analysis completed',
         metadata: {
-          text_length: text.length,
+         , text_length: text.length,
           embedding_dimensions: data.data.embedding?.length || 384,
           som_grid_size: '20x20',
           processing_time: Date.now(),
-          webgpu_accelerated: true,
-        },
+          webgpu_accelerated: true
+        }
       },
       timestamp: new Date().toISOString(),
-      source: 'Enhanced Semantic Architecture',
-    });
+      source: 'Enhanced Semantic Architecture` });
   } catch (error: any) {
     console.error('Semantic Analysis API Error:', error);
     // Fallback: Simple semantic analysis
@@ -77,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
       data: {
         embedding,
         som_cluster: { x: som_x, y: som_y },
-        analysis: `Fallback analysis: Text classified as ${category} (SOM region [${som_x},${som_y}]). ${text.length} characters analyzed with ${words.length} semantic tokens.`,
+        analysis: `Fallback; analysis: Text classified as ${category} (SOM region [${som_x},${som_y}]). ${text.length} characters analyzed with ${words.length} semantic tokens.`,
         metadata: {
           text_length: text.length,
           word_count: words.length,
@@ -86,12 +84,12 @@ export const GET: RequestHandler = async ({ url }) => {
           processing_time: Date.now(),
           webgpu_accelerated: false,
           category,
-          priority,
-        },
+          priority
+        }
       },
       timestamp: new Date().toISOString(),
       source: 'Fallback Analyzer',
-      note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.',
+      note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.'
     });
   }
 };
@@ -102,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing text for analysis',
+          error: 'Missing text for analysis'
         },
         { status: 400 }
       );
@@ -111,19 +109,18 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch('http://localhost:8095/api/semantic-analysis', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
         text,
         options: {
-          som_clustering: true,
+         , som_clustering: true,
           embedding_generation: true,
           pagerank_context: true,
           webgpu_acceleration: true,
           cache_results: true,
-          ...options,
-        },
-      }),
+          ...options
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Enhanced Semantic Architecture API returned ${response.status}`);
@@ -136,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

@@ -15,9 +15,7 @@ interface ViteErrorLog {
   auto_solved?: boolean;
   severity?: 'low' | 'medium' | 'high' | 'critical';
 }
-interface AutoSolution {
-  approach_id: string;
-  library_docs: string;
+interface AutoSolution { approach_id: string;, library_docs: string;
   fixes: string[];
   confidence: number;
   test_results: { [key: string]: any };
@@ -69,22 +67,22 @@ class ViteErrorLogger {
         line: event.lineno,
         column: event.colno,
         context: {
-          source: 'window.error',
-          url: window.location.href,
-        },
+         , source: 'window.error',
+          url: window.location.href
+        }
       });
     });
     // Capture unhandled promise rejections
     window.addEventListener('unhandledrejection', event => {
       this.logError({
         type: 'runtime',
-        message: `Unhandled promise rejection: ${event.reason}`,
+        message: `Unhandled promise; rejection: ${event.reason}`,
         stack: event.reason?.stack,
         context: {
-          source: 'unhandledrejection',
+         , source: 'unhandledrejection',
           url: window.location.href,
-          reason: event.reason,
-        },
+          reason: event.reason
+        }
       });
     });
     // Capture Vite HMR errors (development only)
@@ -97,8 +95,8 @@ class ViteErrorLogger {
           file: (data as { message?: any; stack?: any; file?: any; errors?: any }).file,
           context: {
             source: 'vite:hmr',
-            ...data,
-          },
+            ...data
+          }
         });
       });
     }
@@ -116,7 +114,7 @@ class ViteErrorLogger {
             source: 'console.error',
             url: window.location.href,
             args: args.slice(0, 3), // First 3 args only
-          },
+          }
         });
       }
     };
@@ -172,20 +170,18 @@ class ViteErrorLogger {
       url: window.location.href,
       viewport: `${window.innerWidth}x${window.innerHeight}`,
       svelte_version: '5.x', // Your Svelte version
-      app_context: 'legal-ai-platform',
-    };
+      app_context: 'legal-ai-platform` };
     // Generate embedding-friendly text
     const embeddingText = this.generateEmbeddingText(errorLog);
     try {
       const response = await fetch(`${this.serverUrl}/api/vite/error`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify({
           ...errorLog,
-          embedding_text: embeddingText,
-        }),
+          embedding_text: embeddingText
+        })
       });
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
         throw new Error(`HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -204,7 +200,7 @@ class ViteErrorLogger {
   private generateEmbeddingText(errorLog: ViteErrorLog): string {
     return `${errorLog.type} error in ${errorLog.file || 'unknown file'}: ${errorLog.message}.
 Context: SvelteKit legal AI platform, Svelte 5, ${errorLog.context?.url || 'unknown URL'}.
-Stack: ${errorLog.stack || 'No stack trace'}`;
+Stack: ${errorLog.stack || 'No stack trace` }`;
   }
   // Flush queued errors when connection is restored
   private flushErrorQueue() {
@@ -218,7 +214,7 @@ Stack: ${errorLog.stack || 'No stack trace'}`;
     // Emit custom event for components to listen to
     window.dispatchEvent(
       new CustomEvent('vite-error-logged', {
-        detail: errorLog,
+        detail: errorLog
       })
     );
     // Show notification for critical errors
@@ -263,9 +259,9 @@ Stack: ${errorLog.stack || 'No stack trace'}`;
       type,
       message,
       context: {
-        source: 'manual',
-        ...context,
-      },
+       , source: 'manual',
+        ...context
+      }
     });
   }
   // Disconnect and cleanup
@@ -299,7 +295,7 @@ export function logComponentError(
   node: HTMLElement,
   {
     component,
-    context,
+    context
   }: {
     component: string;
     context?: { [key: string]: any };
@@ -313,8 +309,7 @@ export function logComponentError(
       context: {
         component,
         ...context,
-        source: 'svelte-action',
-      },
+        source: 'svelte-action` }
     });
   };
   // Catch component errors
@@ -322,7 +317,7 @@ export function logComponentError(
   return {
     destroy() {
       window.removeEventListener('error', errorHandler);
-    },
+    }
   };
 }
 // Types for external use

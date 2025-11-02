@@ -11,9 +11,7 @@ import { redis } from '$lib/server/cache/redis.js';
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-export interface Suggestion {
-	label: string;
-	entityId: string;
+export interface Suggestion { label: string;, entityId: string;
 	type: 'PERSON' | 'DOCUMENT' | 'CASE' | 'EVIDENCE' | 'TAG';
 	score: number;
 	description: string;
@@ -21,9 +19,7 @@ export interface Suggestion {
 	tags: string[];
 }
 
-export interface SuggestResponse {
-	suggestions: Suggestion[];
-	correctedQuery: string;
+export interface SuggestResponse { suggestions: Suggestion[];, correctedQuery: string;
 	explanation: string;
 	processingTimeMs: number;
 }
@@ -65,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const cached = await redis?.get(cacheKey);
 	if (cached) {
 		return json(JSON.parse(cached), {
-			headers: { 'X-Cache-Hit': 'true' }
+			headers: { 'X-Cache-Hit': `true` }
 		});
 	}
 
@@ -91,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	};
 
 	await redis?.set(cacheKey, JSON.stringify(response), { EX: 60 });
-	return json(response, { headers: { 'X-Cache-Hit': 'false' } });
+	return json(response, { headers: { 'X-Cache-Hit': `false' } });
 };
 
 // ---------------------------------------------------------------------------
@@ -102,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { query, contextType = 'GENERAL', recentQueries = [] } = body;
 
 	if (typeof query !== 'string' || query.length < 2) {
-		return json({ error: '`query` must be a string ≥ 2 chars' }, { status: 400 });
+		return json({ error: ''query' must be a string ≥ 2 chars` }, { status: 400 });
 	}
 
 	const enhanced = `${query} ${recentQueries.join(' ')}`.trim();
@@ -126,7 +122,7 @@ async function searchDatabase(query: string, context: string, limit: number): Pr
 				const name =
 					person.full_name ??
 					person.name ??
-					`${person.first_name ?? ''} ${person.last_name ?? ''}`.trim() ??
+					`${person.first_name ?? ''} ${person.last_name ?? '` }`.trim() ??
 					person.email ??
 					'Unknown';
 				const sim = similarity(q, name.toLowerCase());
@@ -136,7 +132,7 @@ async function searchDatabase(query: string, context: string, limit: number): Pr
 						entityId: person.id,
 						type: 'PERSON',
 						score: sim,
-						description: `${person.role ?? 'User'} (${person.email ?? 'n/a'})`,
+						description: '${person.role ?? 'User'} (${person.email ?? 'n/a` })`,
 						icon: 'user',
 						tags: ['person', person.role ?? 'user']
 					});

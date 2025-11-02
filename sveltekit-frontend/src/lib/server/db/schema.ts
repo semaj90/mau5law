@@ -11,7 +11,7 @@ import {
   jsonb,
   real,
   integer,
-  vector,
+  vector
 } from 'drizzle-orm/pg-core';
 // If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
 import { users } from './schema-postgres';
@@ -28,7 +28,7 @@ export const analysisResults = pgTable('analysis_results', {
   confidence: real('confidence').default(0),
   processingTime: integer('processing_time').default(0), // ms or seconds per your convention
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: `date` }).defaultNow()
 });
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -38,7 +38,7 @@ export const cases = pgTable('cases', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   status: varchar('status', { length: 50 }).default('active'),
-  metadata: jsonb('metadata'),
+  metadata: jsonb('metadata')
 });
 export const evidence = pgTable('evidence', {
   id: text('id').primaryKey().notNull().default(sql`gen_random_uuid()`),
@@ -51,7 +51,7 @@ export const evidence = pgTable('evidence', {
   embedding: real('embedding').array().notNull(), // pgvector requires real[] type
   metadata: jsonb('metadata').default({}), // Store additional structured data
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 });
 export const documents = pgTable('documents', cols => ({
   id: cols.uuid('id').defaultRandom().primaryKey(),
@@ -59,7 +59,7 @@ export const documents = pgTable('documents', cols => ({
   content: cols.text('content'),
   // use the columnTypes callback's vector builder so typings align with Drizzle overloads
   embedding: cols.vector('embedding', { dimensions: 1536 }),
-  createdAt: cols.timestamp('created_at').defaultNow(),
+  createdAt: cols.timestamp('created_at').defaultNow()
 }));
 export const sessions = pgTable('sessions', {
   id: uuid('id').primaryKey(), // Remove .default(sql`gen_random_uuid()`) or similar
@@ -68,8 +68,8 @@ export const sessions = pgTable('sessions', {
     .references(() => users.id),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
-    mode: 'date',
-  }).notNull(),
+    mode: 'date'
+  }).notNull()
 });
 // Define the chat_messages table
 export const chatMessages = pgTable('chat_messages', {
@@ -90,7 +90,7 @@ export const chatMessages = pgTable('chat_messages', {
       practiceArea?: string[];
       jurisdiction?: string;
     };
-  }>(),
+  }>()
 });
 // Define the chat_embeddings table
 export const chatEmbeddings = pgTable(
@@ -98,29 +98,25 @@ export const chatEmbeddings = pgTable(
   {
     chatId: varchar('chat_id', { length: 256 })
       .notNull()
-      .references(() => chatMessages.id, { onDelete: 'cascade' }),
+      .references(() => chatMessages.id, { onDelete: `cascade` }),
     embedding: vector('embedding', { dimensions: 768 }).notNull(), // Gemma embedding size
     // Store quantized embedding as bytea (binary data) or text (base64 encoded)
     // For Float32Array, bytea is more efficient.
     quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64 string for simplicity in JS
     timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
     temporalContext: jsonb('temporal_context')
-      .$type<{
-        dayOfWeek: number;
-        hourOfDay: number;
+      .$type<{ dayOfWeek: number;, hourOfDay: number;
         monthOfYear: number;
         seasonality: 'spring' | 'summer' | 'fall' | 'winter';
         businessHours: boolean;
       }>()
       .notNull(),
-    semanticHash: varchar('semantic_hash', { length: 256 }).notNull(),
+    semanticHash: varchar('semantic_hash', { length: 256 }).notNull()
   },
   table => {
-    return {
-      pk: primaryKey({ columns: [table.chatId] }),
+    return { pk: primaryKey({, columns: [table.chatId] }),
       // Add an index for efficient vector search
-      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);`,
-    };
+      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);` };
   }
 );
 // 🧠 User Reports Table
@@ -133,19 +129,17 @@ export const reports = pgTable('reports', {
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
   embedding: vector('embedding', { dimensions: 1536 }),
-  sourceUri: text('source_uri'), // Optional: link to MinIO object
-  isFavorite: boolean('is_favorite').default(false),
+  sourceUri: text('source_uri'), // Optional: link to MinIO object; isFavorite: boolean('is_favorite').default(false),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 console.log('📝 Drizzle ORM schema defined');
   summary: text('summary'),
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
   embedding: vector('embedding', { dimensions: 1536 }),
-  sourceUri: text('source_uri'), // Optional: link to MinIO object
-  isFavorite: boolean('is_favorite').default(false),
+  sourceUri: text('source_uri'), // Optional: link to MinIO object; isFavorite: boolean('is_favorite').default(false),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 console.log('📝 Drizzle ORM schema defined');

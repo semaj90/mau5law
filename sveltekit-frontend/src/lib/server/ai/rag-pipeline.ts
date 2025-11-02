@@ -18,8 +18,7 @@ try {
     evidence: {} as TablePlaceholder,
     cases: {} as TablePlaceholder,
     // Generic catch-all for any other table access
-    // NOTE: these are plain placeholders — replace with your real Drizzle schema when available
-    __fallback: {} as TablePlaceholder,
+    // NOTE: these are plain placeholders — replace with your real Drizzle schema when available; __fallback: {} as TablePlaceholder
   };
 }
 import Redis from 'ioredis';
@@ -51,7 +50,7 @@ const sql = postgres({
   max: 20,
   idle_timeout: 20,
   prepare: true,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 // --- Create Drizzle DB instance to use consistently as `db` ---
 const db = drizzle(sql);
@@ -63,7 +62,7 @@ const redis = new Redis({
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   lazyConnect: false,
-  retryStrategy: times => Math.min(times * 50, 2000),
+  retryStrategy: times => Math.min(times * 50, 2000)
 });
 // Initialize LangChain components
 // NOTE: OllamaEmbeddings import was deprecated and the request option `numThreads`
@@ -74,9 +73,7 @@ type OllamaEmbeddingsOptions = {
   model: string;
   requestOptions?: Record<string, any>;
 };
-class OllamaEmbeddingsClient {
-  baseUrl: string;
-  model: string;
+class OllamaEmbeddingsClient { baseUrl: string;, model: string;
   requestOptions: Record<string, any>;
   constructor(opts: OllamaEmbeddingsOptions) {
     const resolvedBase = (opts.baseUrl ?? OLLAMA_BASE_URL).trim();
@@ -91,8 +88,8 @@ class OllamaEmbeddingsClient {
       input: text,
       // Map to Ollama option name; avoid unsupported property names (TS-safe)
       options: {
-        ...(this.requestOptions || {}),
-      },
+        ...(this.requestOptions || {})
+      }
     };
     // Ensure numeric thread option uses Ollama expected key (num_thread)
     if (this.requestOptions?.numThread != null) {
@@ -101,8 +98,8 @@ class OllamaEmbeddingsClient {
     }
     const res = await fetch(getOllamaEndpoint('embeddings', this.baseUrl), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(payload)
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
@@ -123,8 +120,8 @@ const embeddings = new OllamaEmbeddingsClient({
   requestOptions: {
     useMMap: true,
     // Use singular: 'numThread' internally; wrapper maps to Ollama's num_thread.
-    numThread: 8,
-  },
+   , numThread: 8
+  }
 });
 const llm = new Ollama({
   baseUrl: OLLAMA_BASE_URL,
@@ -134,7 +131,7 @@ const llm = new Ollama({
   numPredict: 2048,
   topK: 40,
   topP: 0.9,
-  repeatPenalty: 1.1,
+  repeatPenalty: 1.1
 });
 // Text splitter for legal documents
 const textSplitter = new RecursiveCharacterTextSplitter({
@@ -154,7 +151,7 @@ const textSplitter = new RecursiveCharacterTextSplitter({
     ' ',
     '',
   ],
-  keepSeparator: true,
+  keepSeparator: true
 });
 export class LegalRAGPipeline {
   private initialized = $state(false);
@@ -172,13 +169,11 @@ export class LegalRAGPipeline {
     this.initialized = true;
   }
   // === DOCUMENT INGESTION ===
-  async ingestLegalDocument(params: {
-    title: string;
-    content: string;
+  async ingestLegalDocument(params: { title: string;, content: string;
     documentType: string;
     metadata?: { [key: string]: any };
     caseId?: string;
-    userId: string;
+   , userId: string;
   }) {
     const startTime = Date.now();
     const { title, content, documentType, metadata = {}, caseId, userId } = params;
@@ -195,7 +190,7 @@ export class LegalRAGPipeline {
           topics: metadata.topics || [],
           jurisdiction: metadata.jurisdiction,
           caseId,
-          createdBy: userId,
+          createdBy: userId
         })
         .returning();
       // 2. Generate document-level embedding
@@ -223,8 +218,8 @@ export class LegalRAGPipeline {
                 title,
                 position: i + idx,
                 totalChunks: chunks.length,
-                ...metadata,
-              },
+                ...metadata
+              }
             };
           })
         );
@@ -239,7 +234,7 @@ export class LegalRAGPipeline {
           tag: tag.tag,
           confidence: String(tag.confidence),
           source: 'ai_analysis',
-          model: LLM_MODEL,
+          model: LLM_MODEL
         });
       }
       const processingTime = Date.now() - startTime;
@@ -248,7 +243,7 @@ export class LegalRAGPipeline {
         documentId: document.id,
         chunksCreated: chunks.length,
         tags: tags.map((t: any) => t.tag),
-        processingTime,
+        processingTime
       };
     } catch (error: any) {
       console.error('[RAG] Ingestion error:', error);
@@ -257,7 +252,7 @@ export class LegalRAGPipeline {
   }
   // === RETRIEVAL & SEARCH ===
   async hybridSearch(params: {
-    query: string;
+   , query: string;
     caseId?: string;
     documentType?: string;
     limit?: number;
@@ -278,7 +273,7 @@ export class LegalRAGPipeline {
         WHERE
           1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}
           ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``}
-          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql``}
+          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit * 2}
       `;
@@ -293,28 +288,22 @@ export class LegalRAGPipeline {
         WHERE
           to_tsvector('english', dc.content) @@ plainto_tsquery('english', ${query})
           ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``}
-          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql``}
+          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
         ORDER BY text_rank DESC
         LIMIT ${limit}
       `;
       // --- typed result merging (replaces previous any usage) ---
-      type VectorRow = {
-        id: string | number;
-        content: string;
+      type VectorRow = { id: string | number;, content: string;
         metadata?: Record<string, unknown> | null;
         document_id?: string | number;
         similarity?: number | null;
       };
-      type KeywordRow = {
-        id: string | number;
-        content: string;
+      type KeywordRow = { id: string | number;, content: string;
         metadata?: Record<string, unknown> | null;
         document_id?: string | number;
         text_rank?: number | null;
       };
-      type CombinedRow = {
-        id: string;
-        content: string;
+      type CombinedRow = { id: string;, content: string;
         metadata?: Record<string, unknown> | null;
         document_id?: string | number;
         similarity?: number;
@@ -331,7 +320,7 @@ export class LegalRAGPipeline {
           metadata: r.metadata ?? {},
           document_id: r.document_id,
           similarity: sim,
-          score: sim * 0.7,
+          score: sim * 0.7
         });
       });
       (keywordResults as KeywordRow[]).forEach(r => {
@@ -348,7 +337,7 @@ export class LegalRAGPipeline {
             metadata: r.metadata ?? {},
             document_id: r.document_id,
             text_rank: textRank,
-            score: textRank * 0.3,
+            score: textRank * 0.3
           });
         }
       });
@@ -364,8 +353,8 @@ export class LegalRAGPipeline {
             documentId: r.document_id,
             score: r.score,
             similarity: r.similarity || 0,
-            textRank: r.text_rank || 0,
-          },
+            textRank: r.text_rank || 0
+          }
         })
       );
     } catch (error: any) {
@@ -378,7 +367,7 @@ export class LegalRAGPipeline {
   async answerLegalQuestion(params: {
     question: string;
     caseId?: string;
-    userId: string;
+   , userId: string;
     conversationContext?: string;
   }) {
     const startTime = Date.now();
@@ -388,32 +377,30 @@ export class LegalRAGPipeline {
         query: question,
         caseId,
         limit: 5,
-        threshold: 0.6,
+        threshold: 0.6
       });
       if (relevantDocs.length === 0) {
         return {
           answer:
             "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
           sources: [],
-          confidence: 0,
+          confidence: 0
         };
       }
       const context = relevantDocs.map((doc, idx) => `[Source ${idx + 1}]:\n${doc.pageContent}`).join('\n\n---\n\n');
       // --- Cleaned prompt (removed stray characters and ensured valid template) ---
       const promptTemplate = PromptTemplate.fromTemplate(`
 You are a legal AI assistant with expertise in legal analysis. Answer the question based ONLY on the provided context.
-${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : ''}
+${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : `` }
 Legal Context:
 {context}
-Question: {question}
-Instructions:
+Question: {question}, Instructions:
 1. Provide a clear, accurate answer based on the context
 2. Cite specific sources using [Source N] notation
 3. Identify any legal principles or precedents mentioned
 4. Note any important caveats or limitations
 5. If the context doesn't fully answer the question, clearly state what information is missing
-Answer:
-      `);
+Answer: ');
       // Format prompt and call LLM directly (simpler and avoids malformed RunnableSequence usage)
       const promptText = await promptTemplate.format({ context, question });
       const llmResult = await (llm as any).call(promptText);
@@ -433,19 +420,19 @@ Answer:
         embedding: JSON.stringify(queryEmbedding),
         metadata: {
           sourcesCount: relevantDocs.length,
-          keyPoints: analysis.keyPoints,
-        },
+          keyPoints: analysis.keyPoints
+        }
       });
       return {
         answer,
         sources: relevantDocs.map(d => ({
           id: d.metadata.documentId,
           title: (d.metadata as any).title,
-          score: d.metadata.score,
+          score: d.metadata.score
         })),
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     } catch (error: any) {
       console.error('[RAG] QA error:', error);
@@ -457,7 +444,7 @@ Answer:
         model: LLM_MODEL,
         isSuccessful: false,
         errorMessage: error?.message || String(error),
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       });
       throw error;
     }
@@ -511,7 +498,7 @@ Provide specific clause references where applicable.
     const formattedEvidence = evidenceRecords.map(
       (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}):
 ${e.description ?? ''}
-${e.summary ?? ''}`
+${e.summary ?? '` }`
     );
     const correlationPrompt = PromptTemplate.fromTemplate(`
 As a legal analyst, examine the relationships between these pieces of evidence:
@@ -606,7 +593,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     try {
       const chainResult = await chain.invoke({
         documentType,
-        content: content.substring(0, 3000),
+        content: content.substring(0, 3000)
       });
       const responseText = typeof chainResult === 'string' ? chainResult : chainResult?.parse || String(chainResult);
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
@@ -633,7 +620,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       .slice(0, 3);
     return {
       confidence,
-      keyPoints,
+      keyPoints
     };
   }
   private parseContractAnalysis(analysis: string) {
@@ -643,7 +630,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       keyTerms: [] as string[],
       risks: [] as string[],
       legalIssues: [] as string[],
-      recommendations: [] as string[],
+      recommendations: [] as string[]
     };
     const lines = (analysis || '').split(/\r?\n/);
     let currentSection = '';

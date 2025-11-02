@@ -6,33 +6,25 @@ import { db } from '$lib/server/db/unified-client';
 import { legalCases, evidence, documentMetadata } from '$lib/server/db/schema-unified';
 import { eq, sql } from 'drizzle-orm';
 
-interface AnalysisResult {
-  caseId: string;
-  summary: string;
+interface AnalysisResult { caseId: string;, summary: string;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   keyFindings: string[];
   recommendations: string[];
-  similarCases: Array<{
-    id: string;
-    title: string;
+  similarCases: Array<{ id: string;, title: string;
     similarity: number;
   }>;
   complianceStatus: 'compliant' | 'non-compliant' | 'needs-review';
-  timeline: Array<{
-    event: string;
-    date: string;
+  timeline: Array<{ event: string;, date: string;
     importance: 'low' | 'medium' | 'high';
   }>;
 }
 
-interface SimilarCaseRow {
-  id: string;
-  title: string;
+interface SimilarCaseRow { id: string;, title: string;
   similarity: number;
 }
 
 // -------------------- new helpers --------------------
-function getOllamaEndpoint(): { url: string; embedModel: string } {
+function getOllamaEndpoint(): { url: string;, embedModel: string } {
   // centralize endpoint resolution, prefer Docker service name then fallback to localhost
   const url = process.env.OLLAMA_URL || 'http://localhost:11434';
   const embedModel = process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
@@ -57,7 +49,7 @@ async function embedWithOllama(text: string | string[]): Promise<number[] | null
         continue;
       }
       const body = await res.json();
-      // handle common response shapes: { embedding: [...] } or { data: [{ embedding: [...] }] } or { embeddings: [...] }
+      // handle common response shapes: { embedding: [...] } or { data: [{, embedding: [...] }] } or { embeddings: [...] }
       if (Array.isArray(body.embedding)) return body.embedding;
       if (Array.isArray(body.embeddings) && Array.isArray(body.embeddings[0])) return body.embeddings[0];
       if (Array.isArray(body.data) && body.data[0] && Array.isArray(body.data[0].embedding))
@@ -97,10 +89,10 @@ export const POST: RequestHandler = async ({ params }) => {
       .limit(20);
     // 4. Perform AI-powered analysis
     // Removed unused variable: const embeddingService = new GemmaEmbeddingService();
-    // Removed unused variable: const analysisPrompt = `
+    // Removed unused variable: const analysisPrompt = '
     //   Analyze this legal case for compliance and risk assessment:
-    //   Case: ${case_.title}
-    //   Description: ${case_.description || 'No description'}
+    //  ; Case: ${case_.title}
+    //   Description: ${case_.description || 'No description` }
     //   Priority: ${case_.priority}
     //   Status: ${case_.status}
     //   Evidence Count: ${evidenceData.length}
@@ -124,7 +116,7 @@ export const POST: RequestHandler = async ({ params }) => {
         const docText = (
           documentsWithEmbeddings[0].text ||
           documentsWithEmbeddings[0].title ||
-          `${case_.title} ${case_.description || ''}`
+          `${case_.title} ${case_.description || '` }`
         ).toString();
         try {
           const emb = await embedWithOllama(docText);
@@ -150,20 +142,19 @@ export const POST: RequestHandler = async ({ params }) => {
         similarCases = (similarityResults as SimilarCaseRow[]).map(row => ({
           id: row.id,
           title: row.title,
-          similarity: Math.round(row.similarity * 100) / 100,
+          similarity: Math.round(row.similarity * 100) / 100
         }));
       }
     }
     // 6. Generate mock AI analysis (replace with actual AI service call)
     const analysisResult: AnalysisResult = {
       caseId,
-      summary: `Comprehensive analysis of ${case_.title}. Case involves ${evidenceData.length} pieces of evidence with ${case_.priority} priority level. Analysis indicates ${
-        case_.priority === 'high' ? 'elevated' : case_.priority === 'medium' ? 'moderate' : 'standard'
-      } risk profile based on case complexity and evidence review.`,
+      summary: 'Comprehensive analysis of ${case_.title}. Case involves ${evidenceData.length} pieces of evidence with ${case_.priority} priority level. Analysis indicates ${
+        case_.priority === 'high' ? 'elevated' : case_.priority === 'medium' ? 'moderate' : `standard` } risk profile based on case complexity and evidence review.`,
       riskLevel: case_.priority === 'high' ? 'high' : case_.priority === 'medium' ? 'medium' : 'low',
       keyFindings: [
         `Case contains ${evidenceData.length} evidence items requiring review`,
-        `Priority level: ${case_.priority} - indicates ${case_.priority === 'high' ? 'urgent attention needed' : 'standard processing'}`,
+        `Priority level: ${case_.priority} - indicates ${case_.priority === 'high' ? 'urgent attention needed' : `standard processing` }`,
         `Current status: ${case_.status}`,
         ...(similarCases.length > 0 ? [`Found ${similarCases.length} similar cases for precedent analysis`] : []),
       ],
@@ -180,31 +171,30 @@ export const POST: RequestHandler = async ({ params }) => {
         {
           event: 'Case Analysis Initiated',
           date: new Date().toISOString(),
-          importance: 'medium',
-        },
+          importance: `medium` },
         {
           event: `Evidence Review (${evidenceData.length} items)`,
           date: new Date().toISOString(),
-          importance: evidenceData.length > 5 ? 'high' : 'medium',
+          importance: evidenceData.length > 5 ? 'high' : 'medium'
         },
         {
           event: 'Vector Similarity Analysis Completed',
           date: new Date().toISOString(),
-          importance: similarCases.length > 0 ? 'high' : 'low',
+          importance: similarCases.length > 0 ? 'high' : 'low'
         },
-      ],
+      ]
     };
     const processingTime = Date.now() - startTime;
     return json({
       success: true,
       analysis: analysisResult,
       metadata: {
-        processingTimeMs: processingTime,
+       , processingTimeMs: processingTime,
         evidenceCount: evidenceData.length,
         documentCount: documentsWithEmbeddings.length,
         similarCasesFound: similarCases.length,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
     console.error('Case analysis error:', error);
@@ -212,8 +202,7 @@ export const POST: RequestHandler = async ({ params }) => {
       {
         success: false,
         error: 'Failed to analyze case',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

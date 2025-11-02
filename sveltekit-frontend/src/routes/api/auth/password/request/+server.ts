@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { email } = (await request.json()) as { email?: string };
     if (!email) {
-      return json({ success: false, error: { message: 'Email required', code: 'INVALID_REQUEST', status: 400 } }, { status: 400 });
+      return json({ success: false, error: {, message: 'Email required', code: 'INVALID_REQUEST', status: 400 } }, { status: 400 });
     }
 
     if (typeof authService.sendPasswordReset === 'function') {
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
         level: 'info',
         event: 'password_reset_not_implemented',
         message: 'Password reset endpoint called but not implemented',
-        context: { email },
+        context: { email }
       });
     }
 

@@ -27,42 +27,30 @@ interface QLoRAWasmModule {
   enableGPU: (enable: boolean) => boolean;
 }
 // Model Configuration
-interface QLoRAModelConfig {
-  baseModel: {
-    name: string;
+interface QLoRAModelConfig { baseModel: {, name: string;
     path: string;
     size: number; // in MB
     contextLength: number;
     vocabulary: number;
   }
-  adapter: {
-    name: string;
-    path: string;
+  adapter: { name: string;, path: string;
     rank: number;
     alpha: number;
     targetModules: string[];
     size: number; // in MB
   }
-  quantization: {
-    enabled: boolean;
-    bits: 4 | 8;
+  quantization: { enabled: boolean;, bits: 4 | 8;
     groupSize: number;
   }
-  runtime: {
-    maxThreads: number;
-    memoryLimit: number; // in MB
+  runtime: { maxThreads: number;, memoryLimit: number; // in MB
     enableStreaming: boolean;
     batchSize: number;
   }
 }
 // Inference Result
-interface QLoRAInferenceResult {
-  text: string;
-  tokens: string[];
+interface QLoRAInferenceResult { text: string;, tokens: string[];
   logProbs: number[];
-  timings: {
-    promptEval: number;
-    generation: number;
+  timings: { promptEval: number;, generation: number;
     tokensPerSecond: number;
   }
   metadata: {
@@ -81,9 +69,7 @@ export class QLoRAWasmLoader {
   private isInitialized = $state(false);
   private initializationPromise: Promise<boolean> | null = null;
   // Default configuration for legal domain
-  private defaultConfig: Partial<QLoRAModelConfig> = {
-    quantization: {
-      enabled: true,
+  private defaultConfig: Partial<QLoRAModelConfig> = { quantization: {, enabled: true,
       bits: 4,
       groupSize: 128
     },
@@ -91,7 +77,7 @@ export class QLoRAWasmLoader {
       maxThreads: navigator.hardwareConcurrency || 4,
       memoryLimit: 1024, // 1GB limit for browser
       enableStreaming: true,
-      batchSize: 1,
+      batchSize: 1
     }
   }
   constructor() {
@@ -115,7 +101,7 @@ export class QLoRAWasmLoader {
       }
       // Check SIMD support for optimized inference
       const simdSupported = await this.checkSIMDSupport();
-      console.log(`🔧 SIMD support: ${simdSupported ? 'enabled' : 'disabled'}`);
+      console.log(`🔧 SIMD support: ${simdSupported ? 'enabled' : `disabled' }`);
       // Load the appropriate WASM binary
       const wasmPath = simdSupported
         ? '/wasm/qlora-simd.wasm'
@@ -174,9 +160,7 @@ export class QLoRAWasmLoader {
     if (!this.wasmModule) {
       throw new Error('WASM module not initialized');
     }
-    const fullConfig: QLoRAModelConfig = {
-      baseModel: {
-        name: config.baseModel?.name || 'gemma3-legal-distilled',
+    const fullConfig: QLoRAModelConfig = { baseModel: {, name: config.baseModel?.name || 'gemma3-legal-distilled',
         path: config.baseModel?.path || '/models/gemma3-legal-distilled.q4_0.bin',
         size: config.baseModel?.size || 256, // 256MB distilled model
         contextLength: config.baseModel?.contextLength || 2048,
@@ -193,7 +177,7 @@ export class QLoRAWasmLoader {
       ...this.defaultConfig,
       ...config
     } as QLoRAModelConfig;
-    console.log('🔄 Loading distilled model:', fullConfig.baseModel.name);
+    console.log('🔄 Loading distilled model: `, fullConfig.baseModel.name);
     console.log(`   • Base model size: ${fullConfig.baseModel.size}MB`);
     console.log(`   • Adapter size: ${fullConfig.adapter.size}MB`);
     console.log(`   • Context length: ${fullConfig.baseModel.contextLength}`);
@@ -238,7 +222,7 @@ export class QLoRAWasmLoader {
   async generateText(
     modelKey: string,
     prompt: string;
-    options: {
+   , options: {
       maxTokens?: number;
       temperature?: number;
       topP?: number;
@@ -339,9 +323,7 @@ export class QLoRAWasmLoader {
   /**
    * Get model performance statistics
    */
-  getModelStats(modelKey: string): {
-    memoryUsage: number;
-    inferenceCount: number;
+  getModelStats(modelKey: string): { memoryUsage: number;, inferenceCount: number;
     averageSpeed: number;
     modelSize: number;
     adapterSize: number;
@@ -423,7 +405,7 @@ export class QLoRAWasmLoader {
         console.log(`Mock: Setting thread count to ${threads}`);
       },
       enableGPU: (enable: boolean) => {
-        console.log(`Mock: GPU acceleration ${enable ? 'enabled' : 'disabled'}`);
+        console.log(`Mock: GPU acceleration ${enable ? 'enabled' : `disabled' }`);
         return enable;
       }
     }
@@ -453,7 +435,7 @@ export class QLoRAWasmLoader {
   private async recordInference(
     prompt: string,
     response: string;
-    result: QLoRAInferenceResult;
+   , result: QLoRAInferenceResult;
   ): Promise<void> {
     try {
       // This would integrate with the QLoRA trainer for continuous learning

@@ -25,9 +25,7 @@ import type {
   UserQuery
 } from '../server/ai/types.js';
 // Legal Entity Types
-export interface LegalEntity {
-  type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';
-  name: string;
+export interface LegalEntity { type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';, name: string;
   citation?: string;
   jurisdiction?: string;
   confidence: number;
@@ -37,36 +35,24 @@ export interface LegalEntity {
   metadata?: { [key: string]: any }
 }
 // Semantic Analysis Results
-export interface SemanticAnalysis {
-  documentId: string;
-  summary: string;
+export interface SemanticAnalysis { documentId: string;, summary: string;
   keyTopics: string[];
   legalEntities: LegalEntity[];
-  sentiment: {
-    score: number; // -1 to 1
-    confidence: number;
-    aspects: { aspect: string; sentiment: number }[];
+  sentiment: { score: number; // -1 to 1, confidence: number;
+    aspects: { aspect: string;, sentiment: number }[];
   }
-  complexity: {
-    score: number; // 0 to 1
-    factors: string[];
+  complexity: { score: number; // 0 to 1, factors: string[];
     readabilityIndex: number;
   }
   embedding: number[];
-  similarDocuments: Array<any>
+  similarDocuments: Array<any>;
 // Legal Reasoning Analysis
-export interface LegalReasoning {
-  argumentStructure: {
-    premises: string[];
+export interface LegalReasoning { argumentStructure: {, premises: string[];
   conclusions: string[];
   logicalConnections: Array<any>;
   legalPrinciples: Array<any>;
-  riskAssessment: {
-    overallRisk: 'low' | 'medium' | 'high' | 'critical';
-  riskFactors: Array<any>;
-  precedentAnalysis: {
-    relevantCases: Array<any>;
-  trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
+  riskAssessment: { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: Array<any>;
+  precedentAnalysis: { relevantCases: Array<any>;, trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
   }
 }
 // Enhanced AI Analysis Service
@@ -125,9 +111,9 @@ export class EnhancedAIAnalysisService {
         model: 'gemma3-legal:latest',
         prompt: reasoningPrompt,
         options: {
-          temperature: 0.3, // Lower temperature for more precise legal reasoning
+         , temperature: 0.3, // Lower temperature for more precise legal reasoning
           top_p: 0.9,
-          max_tokens: 2048
+          max_tokens: 2048;
         }
       )});
       // Parse structured reasoning response
@@ -165,14 +151,13 @@ Focus on:
 - Parties, attorneys, judges, organizations
 - Contract, terms and provisions
 Text: ${text.substring(0, 4000)}
-Return only the JSON array:`;
+Return only the JSON array: ';
     try {
       const response = await this.ollamaService.generateCompletion({
         model: 'gemma3-legal:latest',
-        prompt: entityPrompt
-        options: {
-          temperature: 0.2,
-          max_tokens: 1000
+        prompt: entityPrompt; options: {
+         , temperature: 0.2,
+          max_tokens: 1000;
         }
       )});
       // Parse JSON response and validate entities
@@ -211,14 +196,13 @@ Return in JSON, format:;
   "summary",: "...",
   "topics",: ["topic1", "topic2", "topic3"]
   Document: ${text.substring(0, 3000)}
-JSON Response:`;
+JSON Response: ';
     try {
       const response = await this.ollamaService.generateCompletion({
         model: 'gemma3-legal:latest',
-        prompt: summaryPrompt
-        options: {
-          temperature: 0.4,
-          max_tokens: 500
+        prompt: summaryPrompt; options: {
+         , temperature: 0.4,
+          max_tokens: 500;
         }
       )});
       return JSON.parse((response as { response?: any); embedding?: any }).response);
@@ -226,7 +210,7 @@ JSON Response:`;
       console.warn('Summary generation failed:', error);
       return {
         summary: 'Summary generation failed',
-        topics: ['document-analysis']
+        topics: ['document-analysis'];
       }
     }
   }
@@ -238,7 +222,7 @@ JSON Response:`;
     return {
       score: 0.0, // Neutral for legal documents
       confidence: 0.8,
-      aspects: [
+      aspects: [;
         { aspect: 'legal-tone', sentiment: 0.0 },
         { aspect: 'argumentation', sentiment: 0.1 }
       ]
@@ -253,9 +237,7 @@ JSON Response:`;
     const words = text.split(/\s+/).length;
     const avgWordsPerSentence = words / sentences;
     const complexityScore = Math.min(avgWordsPerSentence / 20, 1.0);
-    return {
-      score: complexityScore;
-      factors: [
+    return { score: complexityScore;, factors: [
         `,Average ${avgWordsPerSentence.toFixed(1)} words per sentence`,
         `${sentences} sentences total`
       ],
@@ -309,7 +291,7 @@ Perform sophisticated legal reasoning analysis on this, document. Analyz,e:
 Return structured JSON response with, complete, analysis.
 $,{contextStr}
 Document: ${text.substring(0, 3000)}
-JSON Analysis:`;
+JSON Analysis: ';
   }
   /**
    * Parse structured reasoning response
@@ -320,21 +302,18 @@ JSON Analysis:`;
     } catch (error) {
       console.warn('Failed to parse reasoning response:', error);
       // Return fallback structure
-      return {
-        argumentStructure: {
-          premises: ['Document analysis in progress'],
+      return { argumentStructure: {, premises: ['Document analysis in progress'],
           conclusions: ['Analysis requires review'],
-          logicalConnections: []
+          logicalConnections: [];
         },
         legalPrinciples: [],
         riskAssessment: {
           overallRisk: 'medium',
-          riskFactors: []
+          riskFactors: [];
         },
         precedentAnalysis: {
           relevantCases: [],
-          trend: 'unclear'
-        }
+          trend: 'unclear' }
       }
     }
   }
@@ -344,16 +323,16 @@ JSON Analysis:`;
   private async analyzePrecedents(text: string) {
     // Placeholder implementation - would query legal databases
     return {
-      relevantCases: [
+      relevantCases: [;
         {
           caseId: 'case-123',
           citation: 'Brown v. Board, 347 U.S. 483 (1954)',
           relevance: 0.89,
           keyHoldings: ['Equal protection analysis'],
-          distinguishingFactors: ['Different factual context']
+          distinguishingFactors: ['Different factual context'];
         }
       ],
-      trend: 'favorable' as const
+      trend: 'favorable' as const;
     }
   }
   /**

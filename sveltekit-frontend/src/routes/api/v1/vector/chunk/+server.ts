@@ -23,26 +23,18 @@ interface ChunkingRequest {
     generateEmbeddings?: boolean;
   };
 }
-interface SemanticChunk {
-  content: string;
-  startIndex: number;
+interface SemanticChunk { content: string;, startIndex: number;
   endIndex: number;
   embedding?: number[];
-  metadata: {
-    wordCount: number;
-    sentenceCount: number;
+  metadata: { wordCount: number;, sentenceCount: number;
     complexity: number;
     entities?: string[];
     keyTerms?: string[];
     similarity?: number; // Similarity to previous chunk
   };
 }
-interface ChunkingResponse {
-  success: boolean;
-  chunks: SemanticChunk[];
-  summary: {
-    totalChunks: number;
-    averageChunkSize: number;
+interface ChunkingResponse { success: boolean;, chunks: SemanticChunk[];
+  summary: { totalChunks: number;, averageChunkSize: number;
     totalTokens: number;
     processingTime: number;
     chunkingMethod: string;
@@ -65,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
       maxChunkSize = 2048,
       extractMetadata = true,
       useCUDA = true,
-      generateEmbeddings = false,
+      generateEmbeddings = false
     } = options;
     if (!providedText && !minioUrl) {
       throw error(400, 'Either text or minioUrl is required');
@@ -90,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
           chunkOverlap,
           minChunkSize,
           maxChunkSize,
-          extractMetadata,
+          extractMetadata
         });
       } else if (preserveParagraphs) {
         chunks = await performParagraphAwareChunking(text, {
@@ -98,13 +90,13 @@ export const POST: RequestHandler = async ({ request }) => {
           chunkOverlap,
           minChunkSize,
           maxChunkSize,
-          extractMetadata,
+          extractMetadata
         });
       } else {
         chunks = await performBasicChunking(text, {
           chunkSize,
           chunkOverlap,
-          extractMetadata,
+          extractMetadata
         });
       }
     // Generate embeddings if requested
@@ -115,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const resp = await generateEmbeddings({
         texts,
         model: getEmbeddingModel(),
-        mode: useCUDA ? 'tensorrt' : undefined,
+        mode: useCUDA ? 'tensorrt' : undefined
       });
       embeddings = resp.embeddings;
       // Add embeddings to chunks
@@ -134,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTokens,
         processingTime,
         chunkingMethod: useSemanticChunking ? 'semantic' : preserveParagraphs ? 'paragraph-aware' : 'basic',
-        usedCUDA: useCUDA,
+        usedCUDA: useCUDA
       },
       embeddings: generateEmbeddings ? embeddings : undefined,
       documentMetadata, // <-- include metadata in response so it's used
@@ -142,17 +134,15 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (err) {
     console.error('Chunking API error:', err);
-    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
   }
 };
 async function performSemanticChunking(
   text: string,
-  options: {
-    chunkSize: number;
-    chunkOverlap: number;
+  options: { chunkSize: number;, chunkOverlap: number;
     minChunkSize: number;
     maxChunkSize: number;
-    extractMetadata: boolean;
+   , extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
@@ -229,12 +219,10 @@ async function performSemanticChunking(
 }
 async function performParagraphAwareChunking(
   text: string,
-  options: {
-    chunkSize: number;
-    chunkOverlap: number;
+  options: { chunkSize: number;, chunkOverlap: number;
     minChunkSize: number;
     maxChunkSize: number;
-    extractMetadata: boolean;
+   , extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
@@ -296,10 +284,8 @@ async function performParagraphAwareChunking(
 }
 async function performBasicChunking(
   text: string,
-  options: {
-    chunkSize: number;
-    chunkOverlap: number;
-    extractMetadata: boolean;
+  options: { chunkSize: number;, chunkOverlap: number;
+   , extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, extractMetadata } = options;
@@ -343,8 +329,8 @@ async function createSemanticChunk(
       sentenceCount,
       complexity,
       entities: extractMetadata ? entities : undefined,
-      keyTerms: extractMetadata ? keyTerms : undefined,
-    },
+      keyTerms: extractMetadata ? keyTerms : undefined
+    }
   };
 }
 async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promise<number[][]> {
@@ -357,13 +343,13 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       model: getEmbeddingModel(),
       config: {
         normalize: true,
-        use_tensor_cores: true,
-      },
+        use_tensor_cores: true
+      }
     };
     const response = await fetch(cudaUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       throw new Error(`CUDA embedding service error: ${response.statusText}`);
@@ -379,7 +365,7 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, prompt: text }),
+        body: JSON.stringify({ model, prompt: text })
       });
       if (!response.ok) {
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
@@ -483,10 +469,10 @@ export const GET: RequestHandler = async () => {
       semanticChunking: true,
       metadataExtraction: true,
       embeddingGeneration: true,
-      cudaAcceleration: true,
+      cudaAcceleration: true
     },
     defaultOptions: {
-      chunkSize: 512,
+     , chunkSize: 512,
       chunkOverlap: 50,
       preserveParagraphs: true,
       useSemanticChunking: false,
@@ -494,8 +480,8 @@ export const GET: RequestHandler = async () => {
       maxChunkSize: 2048,
       extractMetadata: true,
       useCUDA: true,
-      generateEmbeddings: false,
+      generateEmbeddings: false
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };

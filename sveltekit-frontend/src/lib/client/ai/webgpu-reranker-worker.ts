@@ -45,23 +45,19 @@ const GPU_BUFFER_USAGE = {
   INDEX: 1 << 4,
   VERTEX: 1 << 5,
   UNIFORM: 1 << 6,
-  STORAGE: 1 << 7,
+  STORAGE: 1 << 7
 } as const;
 const GPU_MAP_MODE = { READ: 1 } as const;
 // Minimal local WebGPU interface shapes to satisfy TS without pulling lib.dom types
 type GPUAdapterLike = { requestDevice?: () => Promise<GPUDeviceLike | undefined> };
-type GPUDeviceLike = {
-  createBuffer: (desc: any) => unknown;
-  queue: { writeBuffer: (b: any, o: number, data: any, off?: number, len?: number) => void; submit: (cmds: any[]) => void };
+type GPUDeviceLike = { createBuffer: (desc: any) => unknown;, queue: { writeBuffer: (b: any, o: number; data: any, off?: number, len?: number) => void; submit: (cmds: any[]) => void };
   createShaderModule: (opts: any) => unknown;
   createComputePipeline: (opts: any) => unknown;
   getBindGroupLayout?: (idx: number) => unknown;
   createBindGroup: (opts: any) => unknown;
   createCommandEncoder: () => unknown;
 };
-type ComputePassLike = {
-  setPipeline: (p: any) => void;
-  setBindGroup: (i: number, g: any) => void;
+type ComputePassLike = { setPipeline: (p: any) => void;, setBindGroup: (i: number; g: any) => void;
   dispatchWorkgroups: (n: number) => void;
   end: () => void;
 };
@@ -110,7 +106,7 @@ async function fetchEmbeddings(
     const response = await fetch('/api/embeddings/generate?action=batch', {
       method: 'POST',
       headers: reqHeaders,
-      body: JSON.stringify({ texts, model }),
+      body: JSON.stringify({ texts, model })
     });
     if (!response.ok) {
       throw new Error(`Embedding service error: ${response.status} ${response.statusText}`);
@@ -128,7 +124,7 @@ async function fetchEmbeddings(
 }
 type RerankOptions = { model?: string; headers?: Record<string, string> } | undefined;
 self.addEventListener('message', async (event: MessageEvent) => {
-  const { query, suggestions, options } = event.data as { query: string; suggestions: Suggestion[]; options?: RerankOptions };
+  const { query, suggestions, options } = event.data as { query: string;, suggestions: Suggestion[]; options?: RerankOptions };
   const labels = suggestions.map((s) => s.label ?? s.text ?? '');
   const combinedInputs = [query, ...labels];
   let queryVec: Float32Array | null = null;
@@ -173,23 +169,23 @@ self.addEventListener('message', async (event: MessageEvent) => {
     // Create GPU buffers with proper alignment
     const queryBuffer = device.createBuffer({
       size: queryVec.byteLength,
-      usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+      usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST
     });
     const candidatesBuffer = device.createBuffer({
       size: flattened.byteLength,
-      usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+      usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST
     });
     const scoresBuffer = device.createBuffer({
       size: candidateCount * 4,
-      usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_SRC,
+      usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_SRC
     });
     const resultBuffer = device.createBuffer({
       size: candidateCount * 4,
-      usage: GPU_BUFFER_USAGE.MAP_READ | GPU_BUFFER_USAGE.COPY_DST,
+      usage: GPU_BUFFER_USAGE.MAP_READ | GPU_BUFFER_USAGE.COPY_DST
     });
     const metaBuffer = device.createBuffer({
       size: 4,
-      usage: GPU_BUFFER_USAGE.UNIFORM | GPU_BUFFER_USAGE.COPY_DST,
+      usage: GPU_BUFFER_USAGE.UNIFORM | GPU_BUFFER_USAGE.COPY_DST
     });
     device.queue.writeBuffer(queryBuffer, 0, queryVec.buffer, queryVec.byteOffset, queryVec.byteLength);
     device.queue.writeBuffer(candidatesBuffer, 0, flattened.buffer, flattened.byteOffset, flattened.byteLength);
@@ -198,14 +194,13 @@ self.addEventListener('message', async (event: MessageEvent) => {
     const pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main' } });
     // some runtimes/types are not present in TS build; cast pipeline to any for these calls
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    const bindGroup = device.createBindGroup({
-      layout: (pipeline as unknown as { getBindGroupLayout: (n: number) => unknown }).getBindGroupLayout(0),
+    const bindGroup = device.createBindGroup({ layout: (pipeline as unknown as {, getBindGroupLayout: (n: number) => unknown }).getBindGroupLayout(0),
       entries: [
         { binding: 0, resource: { buffer: queryBuffer } },
         { binding: 1, resource: { buffer: candidatesBuffer } },
         { binding: 2, resource: { buffer: scoresBuffer } },
-        { binding: 3, resource: { buffer: metaBuffer } },
-      ],
+        { binding: 3, resource: { buffer: metaBuffer } }
+      ]
     });
   const encoder = device.createCommandEncoder();
   const pass = (encoder as unknown as { beginComputePass: () => unknown }).beginComputePass() as unknown as ComputePassLike;
@@ -229,7 +224,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
     const reranked = suggestions
       .map((suggestion, idx) => ({
         ...suggestion,
-        score: 0.6 * mapped[idx] + 0.4 * (typeof suggestion.score === 'number' ? suggestion.score : 0),
+        score: 0.6 * mapped[idx] + 0.4 * (typeof suggestion.score === 'number' ? suggestion.score : 0)
       }))
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
     self.postMessage({ data: reranked });

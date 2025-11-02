@@ -12,7 +12,7 @@ const UUIDSchema = z.string().uuid('Invalid case ID format');
 const DetectiveModeSchema = z.object({
   enabled: z.boolean(),
   reason: z.string().optional(),
-  aiAssisted: z.boolean().default(true),
+  aiAssisted: z.boolean().default(true)
 });
 // Helper: safely extract user id from locals/session
 function getUserId(locals: any): string | null {
@@ -52,9 +52,9 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           toggledBy: getUserId(locals),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
           aiAssisted,
-          previousState: currentCase.metadata?.detectiveMode || null,
-        },
-      },
+          previousState: currentCase.metadata?.detectiveMode || null
+        }
+      }
     };
     await casesService.update(caseId, updateData);
     // Get updated case
@@ -62,26 +62,24 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Log detective mode change for audit trail
     console.log(
       `Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${
-        getUserId(locals) ?? 'unknown'
-      }`
+        getUserId(locals) ?? 'unknown` }`
     );
     return json({
       success: true,
       data: {
-        case: updatedCase, // <-- fixed: added missing comma
-        detectiveMode: {
+        case: updatedCase, // <-- fixed: added missing comma; detectiveMode: {
           enabled,
           toggledAt: new Date().toISOString(),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
-          aiAssisted,
-        },
+          aiAssisted
+        }
       },
       meta: {
         userId: getUserId(locals),
         caseId,
         timestamp: new Date().toISOString(),
-        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated',
-      },
+        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated'
+      }
     });
   } catch (err: any) {
     console.error('Error toggling detective mode:', err);
@@ -91,19 +89,19 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid request data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
     }
     return error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to toggle detective mode',
         code: 'DETECTIVE_MODE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

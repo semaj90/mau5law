@@ -15,15 +15,13 @@ import {
   square,
   mean,
   mul,
-  expandDims,
+  expandDims
 } from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
-export interface AutoEncoderConfig {
-  inputDimension: number;
-  hiddenLayers: number[];
+export interface AutoEncoderConfig { inputDimension: number;, hiddenLayers: number[];
   activationFunction: 'relu' | 'tanh' | 'sigmoid' | 'elu';
   learningRate: number;
   batchSize: number;
@@ -34,11 +32,9 @@ export interface AutoEncoderConfig {
   enableDropout: boolean;
   dropoutRate: number;
 }
-export interface GraphNode {
-  id: string;
-  label: string;
+export interface GraphNode { id: string;, label: string;
   type: 'case' | 'statute' | 'regulation' | 'precedent' | 'person' | 'organization';
-  position: { x: number; y: number };
+  position: { x: number;, y: number };
   features: Float32Array;
   metadata: {
     jurisdiction?: string;
@@ -48,58 +44,42 @@ export interface GraphNode {
     [key: string]: string | number | boolean | undefined;
   };
 }
-export interface GraphEdge {
-  id: string;
-  source: string;
+export interface GraphEdge { id: string;, source: string;
   target: string;
   type: 'cites' | 'references' | 'influenced_by' | 'related_to' | 'conflicts_with';
   weight: number;
   // Replaced `any` with a constrained union type
   metadata: { [key: string]: string | number | boolean | undefined };
 }
-export interface GraphData {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
-  metadata: {
-    totalNodes: number;
-    totalEdges: number;
+export interface GraphData { nodes: GraphNode[];, edges: GraphEdge[];
+  metadata: { totalNodes: number;, totalEdges: number;
     density: number;
     averageDegree: number;
     legalDomain: string;
     timestamp: number;
   };
 }
-export interface EncodedGraphPattern {
-  encodedFeatures: Float32Array;
-  compressionRatio: number;
+export interface EncodedGraphPattern { encodedFeatures: Float32Array;, compressionRatio: number;
   originalSize: number;
   encodedSize: number;
   reconstructionError: number;
   patternSignature: string;
   legalPatterns: LegalPatternFeatures;
 }
-export interface LegalPatternFeatures {
-  citationPaths: number[];
-  jurisdictionalClusters: number[];
+export interface LegalPatternFeatures { citationPaths: number[];, jurisdictionalClusters: number[];
   temporalPatterns: number[];
   authorityWeights: number[];
   precedentStrength: number;
   conceptSimilarity: number;
 }
-export interface DecodedGraphPattern {
-  reconstructedNodes: GraphNode[];
-  reconstructedEdges: GraphEdge[];
+export interface DecodedGraphPattern { reconstructedNodes: GraphNode[];, reconstructedEdges: GraphEdge[];
   fidelityScore: number;
-  lossMetrics: {
-    nodeFidelity: number;
-    edgeFidelity: number;
+  lossMetrics: { nodeFidelity: number;, edgeFidelity: number;
     structuralFidelity: number;
     semanticFidelity: number;
   };
 }
-export interface AutoEncoderTrainingMetrics {
-  epoch: number;
-  loss: number;
+export interface AutoEncoderTrainingMetrics { epoch: number;, loss: number;
   reconstructionLoss: number;
   regularizationLoss: number;
   compressionEfficiency: number;
@@ -118,7 +98,7 @@ type CacheLike = {
   write?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
   put?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
   setItem?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
-  store?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  store?: <T = unknown>(key: string; value: T, opts?: Record<string, unknown>) => Promise<void> | void;
   cleanup?: () => void | Promise<void>;
 };
 export class GraphPatternAutoEncoder {
@@ -152,7 +132,7 @@ export class GraphPatternAutoEncoder {
       enableNormalization: true,
       enableDropout: true,
       dropoutRate: 0.2,
-      ...config,
+      ...config
     };
     this.initializeCache();
   }
@@ -260,7 +240,7 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `encoder_dense_${i}`,
+          name: `encoder_dense_${i}`
         })
         .apply(encoderLayer) as SymbolicTensor;
       // Batch normalization
@@ -270,7 +250,7 @@ export class GraphPatternAutoEncoder {
       // Dropout
       if (this.config.enableDropout && i < this.config.hiddenLayers.length - 1) {
         encoderLayer = layers
-          .dropout({ rate: this.config.dropoutRate, name: `encoder_dropout_${i}` })
+          .dropout({ rate: this.config.dropoutRate, name: 'encoder_dropout_${i}' })
           .apply(encoderLayer) as SymbolicTensor;
       }
     }
@@ -278,8 +258,7 @@ export class GraphPatternAutoEncoder {
     this.encoder = model({
       inputs: encoderInputs,
       outputs: encoderLayer,
-      name: 'graph_pattern_encoder',
-    }) as LayersModel;
+      name: 'graph_pattern_encoder` }) as LayersModel;
     // Build Decoder
     const latentDim = this.config.hiddenLayers[this.config.hiddenLayers.length - 1];
     const decoderInputs = layers.input({ shape: [latentDim] }) as SymbolicTensor;
@@ -294,7 +273,7 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `decoder_dense_${i}`,
+          name: `decoder_dense_${i}`
         })
         .apply(decoderLayer) as SymbolicTensor;
       if (this.config.enableNormalization) {
@@ -302,7 +281,7 @@ export class GraphPatternAutoEncoder {
       }
       if (this.config.enableDropout && i < decoderLayers.length - 1) {
         decoderLayer = layers
-          .dropout({ rate: this.config.dropoutRate, name: `decoder_dropout_${i}` })
+          .dropout({ rate: this.config.dropoutRate, name: 'decoder_dropout_${i}' })
           .apply(decoderLayer) as SymbolicTensor;
       }
     }
@@ -311,27 +290,26 @@ export class GraphPatternAutoEncoder {
       .dense({
         units: this.config.inputDimension,
         activation: 'sigmoid', // Output between 0 and 1
-        name: 'decoder_output',
+        name: 'decoder_output'
       })
       .apply(decoderLayer) as SymbolicTensor;
     // Create decoder model
     this.decoder = model({
       inputs: decoderInputs,
       outputs: decoderLayer,
-      name: 'graph_pattern_decoder',
+      name: 'graph_pattern_decoder'
     }) as LayersModel;
     // Build complete autoencoder
     const autoencoderOutput = this.decoder.apply(this.encoder.apply(encoderInputs)) as SymbolicTensor;
     this.autoencoder = model({
       inputs: encoderInputs,
       outputs: autoencoderOutput,
-      name: 'graph_pattern_autoencoder',
-    }) as LayersModel;
+      name: 'graph_pattern_autoencoder` }) as LayersModel;
     // Compile with custom loss function
     this.autoencoder.compile({
       optimizer: train.adam(this.config.learningRate),
       loss: this.customGraphLoss,
-      metrics: ['mse', 'mae'],
+      metrics: ['mse', 'mae']
     });
     console.log('Auto-Encoder architecture built:');
     console.log(`Encoder: ${this.encoder.layers.length} layers`);
@@ -402,7 +380,7 @@ export class GraphPatternAutoEncoder {
       encodedSize,
       reconstructionError,
       patternSignature,
-      legalPatterns,
+      legalPatterns
     };
     // Store in pattern library
     this.patternLibrary.set(patternSignature, result);
@@ -452,12 +430,12 @@ export class GraphPatternAutoEncoder {
       nodeFidelity: this.calculateNodeFidelity(reconstructedGraph.reconstructedNodes),
       edgeFidelity: this.calculateEdgeFidelity(reconstructedGraph.reconstructedEdges),
       structuralFidelity: this.calculateStructuralFidelity(reconstructedGraph),
-      semanticFidelity: this.calculateSemanticFidelity(encodedPattern.legalPatterns, reconstructedGraph),
+      semanticFidelity: this.calculateSemanticFidelity(encodedPattern.legalPatterns, reconstructedGraph)
     };
     const result: DecodedGraphPattern = {
       ...reconstructedGraph,
       fidelityScore,
-      lossMetrics,
+      lossMetrics
     };
     // Cache the result
     if (this.cache) {
@@ -490,7 +468,7 @@ export class GraphPatternAutoEncoder {
         batchSize: this.config.batchSize,
         epochs: 1,
         verbose: 0,
-        shuffle: true,
+        shuffle: true
       });
       // Calculate metrics
       const loss = history.history.loss[0] as number;
@@ -504,7 +482,7 @@ export class GraphPatternAutoEncoder {
         compressionEfficiency,
         patternRecognitionAccuracy,
         gpuUtilization: this.gpuBackend !== 'cpu' ? 75.0 : 0.0,
-        processingTime: performance.now() - epochStartTime,
+        processingTime: performance.now() - epochStartTime
       };
       this.trainingHistory.push(metrics);
       // Log progress
@@ -555,7 +533,7 @@ export class GraphPatternAutoEncoder {
       regulation: 0,
       precedent: 0,
       person: 0,
-      organization: 0,
+      organization: 0
     };
     nodes.forEach(node => (typeCount[node.type] = (typeCount[node.type] || 0) + 1));
     Object.values(typeCount).forEach(count => features.push(count / (nodes.length || 1)));
@@ -588,7 +566,7 @@ export class GraphPatternAutoEncoder {
       references: 0,
       influenced_by: 0,
       related_to: 0,
-      conflicts_with: 0,
+      conflicts_with: 0
     };
     edges.forEach(edge => (typeCount[edge.type] = (typeCount[edge.type] || 0) + 1));
     Object.values(typeCount).forEach(count => features.push(edges.length > 0 ? count / edges.length : 0));
@@ -624,7 +602,7 @@ export class GraphPatternAutoEncoder {
       contract: [1, 0, 0, 0],
       tort: [0, 1, 0, 0],
       criminal: [0, 0, 1, 0],
-      corporate: [0, 0, 0, 1],
+      corporate: [0, 0, 0, 1]
     };
     const domainFeatures = domainMap[graphData.metadata.legalDomain as keyof typeof domainMap] || [0, 0, 0, 0];
     features.push(...domainFeatures);
@@ -668,9 +646,7 @@ export class GraphPatternAutoEncoder {
   private featureVectorToGraph(
     features: number[],
     _originalPattern: EncodedGraphPattern
-  ): {
-    reconstructedNodes: GraphNode[];
-    reconstructedEdges: GraphEdge[];
+  ): { reconstructedNodes: GraphNode[];, reconstructedEdges: GraphEdge[];
   } {
     // Reconstruct approximate graph structure from features
     // This is a simplified reconstruction - in practice would be more sophisticated
@@ -685,11 +661,11 @@ export class GraphPatternAutoEncoder {
         label: `Reconstructed Node ${i}`,
         type: 'case', // Simplified - would infer from features
         position: {
-          x: (features[6] || 0) * 1000 + i * 10,
-          y: (features[7] || 0) * 1000 + i * 10,
+         , x: (features[6] || 0) * 1000 + i * 10,
+          y: (features[7] || 0) * 1000 + i * 10
         },
         features: new Float32Array(features.slice(8, 32)),
-        metadata: { reconstructed: true },
+        metadata: { reconstructed: true }
       });
     }
     // Reconstruct edges
@@ -702,7 +678,7 @@ export class GraphPatternAutoEncoder {
         target: reconstructedNodes[targetIdx].id,
         type: 'references',
         weight: features[260] || 0.5,
-        metadata: { reconstructed: true },
+        metadata: {, reconstructed: true }
       });
     }
     return { reconstructedNodes, reconstructedEdges };
@@ -723,7 +699,7 @@ export class GraphPatternAutoEncoder {
       temporalPatterns,
       authorityWeights,
       precedentStrength,
-      conceptSimilarity,
+      conceptSimilarity
     };
   }
   private analyzeCitationPaths(graphData: GraphData): number[] {
@@ -840,9 +816,7 @@ export class GraphPatternAutoEncoder {
     // Simplified edge fidelity calculation
     return edges.length > 0 ? 0.7 : 0.0;
   }
-  private calculateStructuralFidelity(decoded: {
-    reconstructedNodes: GraphNode[];
-    reconstructedEdges: GraphEdge[];
+  private calculateStructuralFidelity(decoded: {, reconstructedNodes: GraphNode[];, reconstructedEdges: GraphEdge[];
   }): number {
     // Simplified structural fidelity
     const nodeEdgeRatio =
@@ -851,7 +825,7 @@ export class GraphPatternAutoEncoder {
   }
   private calculateSemanticFidelity(
     patterns: LegalPatternFeatures,
-    decoded: { reconstructedNodes: GraphNode[]; reconstructedEdges: GraphEdge[] }
+    decoded: {, reconstructedNodes: GraphNode[]; reconstructedEdges: GraphEdge[] }
   ): number {
     // Use reconstructed graph structure to produce a small structural factor
     const nodeCount = Array.isArray(decoded.reconstructedNodes) ? decoded.reconstructedNodes.length : 0;
@@ -862,9 +836,7 @@ export class GraphPatternAutoEncoder {
     const score = patterns.conceptSimilarity * 0.7 + patterns.precedentStrength * 0.2 + structureFactor * 0.1;
     return Math.max(0, Math.min(1, score)); // clamp to [0,1]
   }
-  getCompressionStats(): {
-    patternCount: number;
-    avgCompressionRatio: number;
+  getCompressionStats(): { patternCount: number;, avgCompressionRatio: number;
     totalSavings: number;
     cachingStats: Record<string, unknown> | undefined;
   } {
@@ -879,7 +851,7 @@ export class GraphPatternAutoEncoder {
       patternCount: patterns.length,
       avgCompressionRatio,
       totalSavings,
-      cachingStats,
+      cachingStats
     };
   }
   getTrainingHistory(): AutoEncoderTrainingMetrics[] {

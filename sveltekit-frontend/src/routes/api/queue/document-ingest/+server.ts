@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 
 const logger = {
   info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data ?? ''),
-  error: (msg: string, err?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? ''),
+  error: (msg: string, err?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? '')
 };
 
 type DocumentIngestPayload = {
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'documentId and caseId are required',
-          processingTime: Date.now() - start,
+          processingTime: Date.now() - start
         },
         { status: 400 }
       );
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
         documentId,
         caseId,
         task: task ?? 'ingest',
-        processingTime: Date.now() - start,
+        processingTime: Date.now() - start
       },
       { status: 200 }
     );

@@ -46,7 +46,7 @@ export function createWASMHandler(
       const simdEnhancedMessage = enhanceRabbitMQMessage(message);
       // Check if message requires WASM acceleration
       if (shouldUseWASM(simdEnhancedMessage) && wasmReady && wasmModule) {
-        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown'}`);
+        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown` }`);
         // Enhance message with WASM capabilities
         const enhancedMessage = await enhanceMessageWithWASM(simdEnhancedMessage, wasmOperations);
         // Process with WASM-enhanced context
@@ -257,8 +257,7 @@ export async function computeVectorSimilarityWASM(
           ...message,
           embeddings: message.embeddings,
           wasmAccelerated: true,
-          stage: 'ready_for_storage',
-        });
+          stage: 'ready_for_storage` });
       }
     },
     { batchNormalization: true }
@@ -267,7 +266,7 @@ export async function computeVectorSimilarityWASM(
   // WASM Similarity Search Handler
   const similarityHandler = createWASMHandler(
     async (message: any) => {
-      console.log(`🔍 WASM-accelerated similarity search: ${message.queryId || 'unknown'}`);
+      console.log(`🔍 WASM-accelerated similarity search: ${message.queryId || 'unknown` }`);
       if (message.queryVector && message.candidateVectors) {
         const similarities = await computeVectorSimilarityWASM(
           message.queryVector,
@@ -278,7 +277,7 @@ export async function computeVectorSimilarityWASM(
           ...message,
           similarities,
           wasmAccelerated: true,
-          processingTime: performance.now() - message.timestamp,
+          processingTime: performance.now() - message.timestamp
         });
       }
     },
@@ -296,6 +295,6 @@ export async function computeVectorSimilarityWASM(
     timestamp: Date.now(),
     capabilities: wasmReady
       ? ['vector_normalization', 'batch_processing', 'similarity_computation', 'tensor_operations']
-      : [],
+      : []
   };
 }

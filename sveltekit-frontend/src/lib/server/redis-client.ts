@@ -63,7 +63,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
       return msg.includes('READONLY') || msg.includes('ECONNRESET');
     },
     password,
-    ...rest,
+    ...rest
   };
 
   return [url, baseOptions];

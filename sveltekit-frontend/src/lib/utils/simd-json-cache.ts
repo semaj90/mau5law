@@ -11,18 +11,14 @@ interface SIMDJSONModule {
   getLastErrorMessage(): string;
 }
 // Cache Configuration
-interface CacheConfig {
-  redisUrl: string;
-  defaultTTL: number;
+interface CacheConfig { redisUrl: string;, defaultTTL: number;
   compressionEnabled: boolean;
   compressionThreshold: number; // bytes
   maxKeyLength: number;
   enableMetrics: boolean;
 }
 // Performance Metrics
-interface ParseMetrics {
-  totalParses: number;
-  simdParses: number;
+interface ParseMetrics { totalParses: number;, simdParses: number;
   nativeParses: number;
   cacheHits: number;
   cacheMisses: number;
@@ -37,7 +33,7 @@ class SIMDJSONCache {
   private simdLoaded = $state(false);
   private config: CacheConfig;
   private metrics: ParseMetrics;
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: any; timestamp: number;, ttl: number }>();
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
@@ -45,7 +41,7 @@ class SIMDJSONCache {
       compressionEnabled: config.compressionEnabled !== false,
       compressionThreshold: config.compressionThreshold || 1024, // 1KB
       maxKeyLength: config.maxKeyLength || 250,
-      enableMetrics: config.enableMetrics !== false,
+      enableMetrics: config.enableMetrics !== false
     };
     this.metrics = {
       totalParses: 0,
@@ -57,7 +53,7 @@ class SIMDJSONCache {
       averageSIMDTime: 0,
       averageNativeTime: 0,
       totalDataProcessed: 0,
-      compressionRatio: 0,
+      compressionRatio: 0
     };
     this.initializeSIMD();
   }
@@ -207,7 +203,7 @@ class SIMDJSONCache {
       const response = await fetch('/api/cache/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: _key }),
+        body: JSON.stringify({, key: _key })
       });
       if (response.ok) {
         const result = await response.json();
@@ -218,7 +214,7 @@ class SIMDJSONCache {
           this.cache.set(_key, {
             data: parsed,
             timestamp: Date.now(),
-            ttl: this.config.defaultTTL,
+            ttl: this.config.defaultTTL
           });
           if (this.config.enableMetrics) this.metrics.cacheHits++;
           return parsed;
@@ -238,18 +234,18 @@ class SIMDJSONCache {
       this.cache.set(_key, {
         data,
         timestamp: Date.now(),
-        ttl,
+        ttl
       });
       // Store in Redis cache
       await fetch('/api/cache/set', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          key: _key,
+         , key: _key,
           data: compressed,
           ttl,
-          compressed: this.config.compressionEnabled,
-        }),
+          compressed: this.config.compressionEnabled
+        })
       });
       // Update compression metrics
       if (this.config.enableMetrics && this.config.compressionEnabled) {
@@ -367,7 +363,7 @@ class SIMDJSONCache {
         const valid = this.simdModule.isValid(jsonString);
         return {
           valid,
-          error: valid ? undefined : this.simdModule.getLastErrorMessage(),
+          error: valid ? undefined : this.simdModule.getLastErrorMessage()
         };
       } else {
         JSON.parse(jsonString);
@@ -376,8 +372,7 @@ class SIMDJSONCache {
     } catch (error) {
       return {
         valid: false,
-        error: error instanceof Error ? error.message : 'Invalid JSON',
-      };
+        error: error instanceof Error ? error.message : `Invalid JSON` };
     }
   }
   public async minify(jsonString: string, useCache: boolean = true): Promise<string> {
@@ -414,9 +409,7 @@ class SIMDJSONCache {
   public getMetrics(): ParseMetrics {
     return { ...this.metrics };
   }
-  public getSIMDStatus(): {
-    loaded: boolean;
-    available: boolean;
+  public getSIMDStatus(): { loaded: boolean;, available: boolean;
     performance: string;
   } {
     const simdPerformance =
@@ -426,22 +419,20 @@ class SIMDJSONCache {
     return {
       loaded: this.simdLoaded,
       available: this.simdModule !== null,
-      performance: simdPerformance,
+      performance: simdPerformance
     };
   }
   public clearCache(): void {
     this.cache.clear();
   }
-  public getCacheStats(): {
-    memoryEntries: number;
-    hitRate: number;
+  public getCacheStats(): { memoryEntries: number;, hitRate: number;
     compressionRatio: number;
   } {
     const hitRate = this.metrics.totalParses > 0 ? this.metrics.cacheHits / this.metrics.totalParses : 0;
     return {
       memoryEntries: this.cache.size,
       hitRate: Math.round(hitRate * 100) / 100,
-      compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100,
+      compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100
     };
   }
 }

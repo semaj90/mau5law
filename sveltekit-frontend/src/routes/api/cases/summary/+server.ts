@@ -12,19 +12,13 @@ export interface CaseSummaryRequest {
 }
 export interface CaseSummaryResponse {
   success: boolean;
-  summary?: {
-    aiGenerated: boolean;
-    overview: string;
+  summary?: { aiGenerated: boolean;, overview: string;
     keyFindings: string[];
     recommendations: string[];
-    riskAssessment: {
-      level: 'low' | 'medium' | 'high';
-      factors: string[];
+    riskAssessment: { level: 'low' | 'medium' | 'high';, factors: string[];
     };
     timeline: TimelineEvent[]; // Changed from Array<any>
-    evidence: {
-      total: number;
-      admissible: number;
+    evidence: { total: number;, admissible: number;
       questionable: number;
       inadmissible: number;
     };
@@ -32,9 +26,7 @@ export interface CaseSummaryResponse {
     confidence: number;
     generatedAt: Date;
   };
-  analytics?: {
-    evidenceCount: number;
-    documentsReviewed: number;
+  analytics?: { evidenceCount: number;, documentsReviewed: number;
     witnessesInterviewed: number;
     daysActive: number;
     completionPercentage: number;
@@ -43,16 +35,12 @@ export interface CaseSummaryResponse {
 }
 
 // ADDED: Interfaces for specific data types
-interface EvidenceItem {
-  id: string;
-  content: string;
+interface EvidenceItem { id: string;, content: string;
   metadata: Record<string, unknown>; // Changed from Record<string, any>
   createdAt: Date;
 }
 
-interface TimelineEvent {
-  date: Date;
-  event: string;
+interface TimelineEvent { date: Date;, event: string;
   type: string;
   importance: 'low' | 'medium' | 'high';
 }
@@ -60,28 +48,25 @@ interface TimelineEvent {
 interface CaseData {
   caseId: string;
   evidence?: EvidenceItem[];
-  evidenceAnalytics?: {
-    totalEvidence: number;
-    evidenceByType: Record<string, number>;
+  evidenceAnalytics?: { totalEvidence: number;, evidenceByType: Record<string, number>;
     topTags: Array<{ tag: string }>;
   };
   timeline?: TimelineEvent[];
 }
 
 // Placeholder services
-const VectorService = {
-  storeCaseEmbedding: async (data: { caseId: string; content: string; metadata: Record<string, unknown> }) => {
+const VectorService = { storeCaseEmbedding: async (data: { caseId: string; content: string;, metadata: Record<string, unknown> }) => {
     // Changed from Record<string, any>
     // MODIFIED: Added specific type for data
     console.log('Storing case embedding:', data);
-  },
+  }
 };
 const ollamaService = {
-  generateResponse: async (_prompt: string, _options: { model: string; max_tokens: number; temperature: number }) => {
+  generateResponse: async (_prompt: string, _options: { model: string; max_tokens: number;, temperature: number }) => {
     // Marked prompt and options as unused
     // MODIFIED: Added specific type for options
-    return { response: JSON.stringify(generateFallbackSummary({ caseId: 'placeholder' })) };
-  },
+    return { response: JSON.stringify(generateFallbackSummary({, caseId: 'placeholder' })) };
+  }
 };
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
@@ -99,7 +84,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       includeEvidence = true,
       includeTimeline = true,
       analysisDepth = 'comprehensive',
-      regenerate: $regenerate = false,
+      regenerate: $regenerate = false
     } = body;
     // Validate input
     if (!caseId) {
@@ -124,29 +109,29 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       caseId,
       content: summaryText,
       metadata: {
-        summary_type: 'ai_generated',
+       , summary_type: 'ai_generated',
         summary,
         analysisDepth,
         generatedAt: new Date(),
         includeEvidence,
-        includeTimeline,
-      },
+        includeTimeline
+      }
     });
     // Calculate analytics
     const analytics = await calculateCaseAnalytics(caseId);
     return json({
       success: true,
       summary,
-      analytics,
+      analytics
     } as CaseSummaryResponse);
   } catch (error: any) {
-    // MODIFIED: Changed: 'any' to: 'unknown'
+    // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
     console.error('Case summary generation error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
+        error: error instanceof Error ? error.message : 'Internal server error'
       } as CaseSummaryResponse,
       { status: 500 } // Corrected json() syntax
     );
@@ -175,16 +160,16 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     return json({
       success: true,
       summary,
-      analytics,
+      analytics
     } as CaseSummaryResponse);
   } catch (error: any) {
-    // MODIFIED: Changed: 'any' to: 'unknown'
+    // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
     console.error('Case summary retrieval error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
+        error: error instanceof Error ? error.message : 'Internal server error'
       } as CaseSummaryResponse,
       { status: 500 } // Corrected json() syntax
     );
@@ -200,13 +185,13 @@ async function gatherCaseData(caseId: string, includeEvidence: boolean, includeT
         id: '1',
         content: 'Evidence item 1',
         metadata: {}, // Corrected metadata type syntax
-        createdAt: new Date(),
+        createdAt: new Date()
       },
     ];
     data.evidenceAnalytics = {
       totalEvidence: 1,
       evidenceByType: { document: 1 },
-      topTags: [{ tag: 'important' }],
+      topTags: [{ tag: `important` }]
     };
   }
   if (includeTimeline) {
@@ -217,7 +202,7 @@ async function gatherCaseData(caseId: string, includeEvidence: boolean, includeT
         date: new Date(),
         event: eventContent,
         type: 'system',
-        importance: _determineImportance(eventContent),
+        importance: _determineImportance(eventContent)
       },
     ];
   }
@@ -230,7 +215,7 @@ async function generateAISummary(caseData: CaseData, depth: string): Promise<Cas
     const timelineText = caseData.timeline?.map((t: TimelineEvent) => `${t.date}: ${t.event}`).join('\n') || ''; // MODIFIED: Used TimelineEvent
     const analysisPrompt = `
 As a legal expert, generate a comprehensive case summary based on the following data:
-CASE ID: ${caseData.caseId}
+CASE; ID: ${caseData.caseId}
 EVIDENCE DATA: ${evidenceText.substring(0, 1000)}
 TIMELINE DATA: ${timelineText.substring(0, 500)}
 Generate a ${depth} analysis with a structured summary.
@@ -238,7 +223,7 @@ Generate a ${depth} analysis with a structured summary.
     const response = await ollamaService.generateResponse(analysisPrompt, {
       model: 'gemma3-legal:latest',
       max_tokens: 2000,
-      temperature: 0.3,
+      temperature: 0.3
     });
     if (response.response) {
       try {
@@ -251,7 +236,7 @@ Generate a ${depth} analysis with a structured summary.
     }
     return generateFallbackSummary(caseData);
   } catch (error: any) {
-    // MODIFIED: Changed: 'any' to: 'unknown'
+    // MODIFIED: Changed: 'any'; to: 'unknown'
     console.error('AI summary generation error:', error);
     return generateFallbackSummary(caseData);
   }
@@ -267,18 +252,18 @@ function generateFallbackSummary(
     recommendations: ['Conduct thorough evidence review', 'Engage legal experts', 'Update case documentation'],
     riskAssessment: {
       level: 'medium' as const,
-      factors: ['Incomplete analysis', 'Requires manual review'],
+      factors: ['Incomplete analysis', 'Requires manual review']
     },
     timeline: caseData.timeline?.slice(0, 5) || [],
     evidence: {
       total: caseData.evidenceAnalytics?.totalEvidence || 0,
       admissible: 0,
       questionable: 0,
-      inadmissible: 0,
+      inadmissible: 0
     },
     nextSteps: ['Complete evidence analysis', 'Generate detailed summary', 'Review with legal team'],
     confidence: 0.5,
-    generatedAt: new Date(),
+    generatedAt: new Date()
   };
 }
 async function calculateCaseAnalytics(_caseId: string): Promise<CaseSummaryResponse['analytics']> {

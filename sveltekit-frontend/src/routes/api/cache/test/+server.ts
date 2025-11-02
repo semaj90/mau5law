@@ -5,7 +5,7 @@ import {
   getCachedEmbedding,
   setCachedEmbedding,
   getCachedSearchResults,
-  cacheSearchResults,
+  cacheSearchResults
 } from '$lib/api/services/cache-service';
 /*
  * Cache Test API - Tests Redis compression and functionality
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         action: 'cache_info',
         data: cacheInfo,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     if (action === 'test') {
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const testData = {
         message: 'Hello Redis!',
         numbers: [1, 2, 3, 4, 5],
-        nested: { a: 1, b: 2, c: { deep: 'value' } },
+        nested: { a: 1, b: 2, c: { deep: 'value' } }
       };
       // Set test data
       await cacheService.set(testKey, testData, { compress: true });
@@ -44,14 +44,14 @@ export const GET: RequestHandler = async ({ url }) => {
           testPassed,
           original: testData,
           retrieved,
-          cacheInfo: await cacheService.getCacheInfo(),
+          cacheInfo: await cacheService.getCacheInfo()
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json({
       success: false,
-      error: 'Unknown action. Use: info, test',
+      error: 'Unknown action.; Use: info, test'
     });
   } catch (error: any) {
     console.error('Cache test error:', error);
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: 'Missing text or embedding data',
+            error: 'Missing text or embedding data'
           },
           { status: 400 }
         );
@@ -93,8 +93,8 @@ export const POST: RequestHandler = async ({ request }) => {
           testPassed,
           original: embedding,
           cached: cachedEmbedding,
-          compressionInfo: 'Embedding cached with gzip compression',
-        },
+          compressionInfo: 'Embedding cached with gzip compression'
+        }
       });
     }
     if (action === 'search') {
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: 'Missing query or results data',
+            error: 'Missing query or results data'
           },
           { status: 400 }
         );
@@ -121,18 +121,14 @@ export const POST: RequestHandler = async ({ request }) => {
           testPassed,
           original: results,
           cached: cachedResults,
-          compressionInfo: 'Search results cached with gzip compression',
-        },
+          compressionInfo: 'Search results cached with gzip compression'
+        }
       });
     }
     if (action === 'large_payload') {
       // Test compression with large payload
-      type LargeItem = {
-        id: number;
-        data: string;
-        metadata: {
-          created: string;
-          tags: string[];
+      type LargeItem = { id: number;, data: string;
+        metadata: { created: string;, tags: string[];
           values: number[];
         };
       };
@@ -140,10 +136,10 @@ export const POST: RequestHandler = async ({ request }) => {
         id: i,
         data: `This is test data item ${i}`,
         metadata: {
-          created: new Date().toISOString(),
+         , created: new Date().toISOString(),
           tags: ['test', 'large', 'payload'],
-          values: Array.from({ length: 10 }, () => Math.random()),
-        },
+          values: Array.from({ length: 10 }, () => Math.random())
+        }
       }));
       const startTime = Date.now();
       // Test both compressed and uncompressed
@@ -158,25 +154,24 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         action: 'large_payload_test',
         data: {
-          arraySize: largeArray.length,
+         , arraySize: largeArray.length,
           compressedTest: compressedPassed,
           uncompressedTest: uncompressedPassed,
           processingTime: endTime - startTime,
-          compressionBenefit: 'Large arrays benefit significantly from gzip compression',
-        },
+          compressionBenefit: 'Large arrays benefit significantly from gzip compression'
+        }
       });
     }
     return json({
       success: false,
-      error: 'Unknown action. Use: embedding, search, large_payload',
-    });
+      error: 'Unknown action.; Use: embedding, search, large_payload` });
   } catch (error: any) {
     console.error('Cache POST test error:', error);
     return json(
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

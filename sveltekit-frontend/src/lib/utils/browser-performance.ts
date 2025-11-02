@@ -6,9 +6,7 @@
 /// <reference types="vite/client" />
 
 // Define LayoutShift interface if not globally available
-interface LayoutShift extends PerformanceEntry {
-  value: number;
-  hadRecentInput: boolean;
+interface LayoutShift extends PerformanceEntry { value: number;, hadRecentInput: boolean;
   sources: Array<LayoutShiftAttribution>;
 }
 
@@ -76,7 +74,7 @@ export class BrowserPerformanceMonitor {
     // Observe paint and layout metrics
     try {
       this.performanceObserver.observe({
-        entryTypes: ['paint', 'layout-shift'],
+        entryTypes: ['paint', 'layout-shift']
       });
     } catch (error: any) {
       // Changed from any to unknown
@@ -100,9 +98,7 @@ export class BrowserPerformanceMonitor {
 }
 
 // Define a specific interface for browser errors
-interface BrowserError {
-  message: string;
-  source: string;
+interface BrowserError { message: string;, source: string;
   line: number;
   column: number;
   timestamp: number;
@@ -118,24 +114,23 @@ export class BrowserErrorHandler {
     if (typeof window === 'undefined') return;
     // Global error handler
     window.addEventListener('error', (event: ErrorEvent) => {
-      // Changed _event: any to event: ErrorEvent
+      // Changed _event: any to; event: ErrorEvent
       this.logError({
         message: event.message,
         source: (event as ErrorEvent).filename || 'unknown',
         line: (event as ErrorEvent).lineno || 0,
         column: (event as ErrorEvent).colno || 0,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
     // Promise rejection handler
     window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
-      // Changed _event: any to event: PromiseRejectionEvent
-      this.logError({
-        message: `Unhandled Promise Rejection: ${event.reason}`,
+      // Changed _event: any to; event: PromiseRejectionEvent
+      this.logError({ message: `Unhandled Promise, Rejection: ${event.reason}`,
         source: 'promise',
         line: 0,
         column: 0,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
   }
@@ -159,9 +154,7 @@ export class BrowserErrorHandler {
     this.errors = [];
   }
   // Report Chrome Windows specific issues
-  getCompatibilityReport(): {
-    browser: string;
-    gpuSupport: boolean;
+  getCompatibilityReport(): { browser: string;, gpuSupport: boolean;
     hardwareAcceleration: boolean;
     errors: number;
     recommendations: string[];
@@ -181,7 +174,7 @@ export class BrowserErrorHandler {
       gpuSupport: supportsGPUAcceleration(),
       hardwareAcceleration: isChromeWindows(),
       errors: this.errors.length,
-      recommendations,
+      recommendations
     };
   }
 }

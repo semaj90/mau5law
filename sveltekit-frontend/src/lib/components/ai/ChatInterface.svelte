@@ -302,7 +302,7 @@ import type { Case } from '$lib/types';
           loading={$isLoading}
           premium={true}
           size="sm"
-          on:toggle={handleThinkingToggle}
+          ontoggle={handleThinkingToggle}
         />
         {#if caseId}
           <Button.Root

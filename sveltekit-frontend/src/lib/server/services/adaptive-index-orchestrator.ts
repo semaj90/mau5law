@@ -64,14 +64,10 @@ interface ExtendedConfig {
 //   // ... other properties that InferenceResult might have
 // }
 // Define interface for GPU embedding request payload
-interface GpuEmbeddingRequest {
-  text: string;
-  model: string;
+interface GpuEmbeddingRequest { text: string;, model: string;
 }
 // Define interface for VectorSearchService upsert payload
-interface DocumentUpsertPayload {
-  id: string;
-  caseId: string;
+interface DocumentUpsertPayload { id: string;, caseId: string;
   type: 'document' | 'evidence' | 'query';
   title: string;
   content: string;
@@ -92,40 +88,25 @@ interface QUICTensorStreamRuntime {
 }
 export type RoutingDecision = 'gpu' | 'quic' | 'cache' | 'cpu';
 // Define input features for the neural router
-interface RouterInputFeatures {
-  queryLatencyMs: number; // User-analytics: how long the last query took
-  userFeedbackScore: number; // User-analytics: e.g., 1-5 rating
-  embeddingCostUsd: number; // AI-analytics: estimated cost of embedding
-  gpuLoadPercent: number; // AI-analytics: current GPU utilization
-  similarityScoreVariance: number; // AI-analytics: variance in search results
-  cacheHitRate: number; // AI-analytics: Redis cache hit rate
-  fileSizeKb: number; // Contextual metadata: size of document being processed
-  docType: 'document' | 'evidence' | 'query'; // Contextual metadata: type of content
-  vectorDensity: number; // Contextual metadata: density of vectors in DB
-  ragConfidence: number; // Contextual metadata: confidence from RAG pipeline
-  textLength: number; // Length of the text to be embedded/processed
+interface RouterInputFeatures { queryLatencyMs: number; // User-analytics: how long the last query took, userFeedbackScore: number; // User-analytics: e.g., 1-5 rating
+  embeddingCostUsd: number; // AI-analytics: estimated cost of embedding; gpuLoadPercent: number; // AI-analytics: current GPU utilization; similarityScoreVariance: number; // AI-analytics: variance in search results; cacheHitRate: number; // AI-analytics: Redis cache hit rate; fileSizeKb: number; // Contextual metadata: size of document being processed; docType: 'document' | 'evidence' | 'query'; // Contextual metadata: type of content; vectorDensity: number; // Contextual metadata: density of vectors in DB; ragConfidence: number; // Contextual metadata: confidence from RAG pipeline; textLength: number; // Length of the text to be embedded/processed
   caseId: string; // Current case ID
   currentVectorCount: number; // New: Total number of vectors in the primary store (e.g., pgvector)
 }
 // Define output logits from the neural router
-interface RoutingLogits {
-  useGpu: number; // Probability to route to GPU for embeddings
-  useCpu: number; // Probability to route to CPU (Ollama/WASM) for embeddings
+interface RoutingLogits { useGpu: number; // Probability to route to GPU for embeddings, useCpu: number; // Probability to route to CPU (Ollama/WASM) for embeddings
   useQuic: number; // Probability to use QUIC for transport
   useRest: number; // Probability to use REST for transport
   cacheHit: number; // Probability that the embedding is already cached
   reindex: number; // Probability to suggest re-indexing
-  useQdrantForStorage: number; // New: Probability to store embedding in Qdrant
-  usePgVectorForStorage: number; // New: Probability to store embedding in pgvector
+  useQdrantForStorage: number; // New: Probability to store embedding in Qdrant; usePgVectorForStorage: number; // New: Probability to store embedding in pgvector
 }
 // Payload for orchestrating embedding
-interface EmbeddingOrchestrationPayload {
-  id: string;
-  caseId: string;
+interface EmbeddingOrchestrationPayload { id: string;, caseId: string;
   type: 'document' | 'evidence' | 'query';
   text: string;
   title: string;
-  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
+  metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
 }
 export class AdaptiveIndexOrchestrator {
   private ollamaUrl!: string;
@@ -146,7 +127,7 @@ export class AdaptiveIndexOrchestrator {
       this.quicTensorStream = undefined;
     }
   }
-  async decideRouting(context: { caseId: string; fileSize: number; textLength: number }): Promise<RoutingDecision> {
+  async decideRouting(context: { caseId: string; fileSize: number;, textLength: number }): Promise<RoutingDecision> {
     const metrics = await aiAnalyticsService.getSystemLoad();
     const features = {
       fileSize: context.fileSize,
@@ -154,7 +135,7 @@ export class AdaptiveIndexOrchestrator {
       gpuLoad: metrics.gpu,
       cpuLoad: metrics.cpu,
       memoryUsage: metrics.memory,
-      rabbitDepth: metrics.rabbitmqDepth,
+      rabbitDepth: metrics.rabbitmqDepth
     };
     try {
       const route = await predictWithRouter(features);
@@ -212,16 +193,16 @@ export class AdaptiveIndexOrchestrator {
       const url = `${this.ollamaUrl}/api/generate`;
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: 'gemma3', // Using gemma3 as the base model for routing decisions
           prompt: prompt,
           options: {
-            temperature: 0.1, // Low temperature for deterministic routing
+           , temperature: 0.1, // Low temperature for deterministic routing
             num_ctx: 4096, // Sufficient context window
           },
-          stream: false,
-        }),
+          stream: false
+        })
       });
       const data = await res.json();
       const responseText = data?.response as string;
@@ -259,23 +240,23 @@ export class AdaptiveIndexOrchestrator {
     try {
       const response = await fetch(qdrantUpsertUrl, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           points: [
             {
               id: item.id,
               vector: embedding,
               payload: {
-                caseId: item.caseId,
+               , caseId: item.caseId,
                 type: item.type,
                 title: item.title ?? '',
                 content_preview: item.text.substring(0, 500), // Store a preview
                 timestamp: new Date().toISOString(),
-                ...item.metadata,
-              },
+                ...item.metadata
+              }
             },
-          ],
-        }),
+          ]
+        })
       });
       if (!response.ok) {
         const errorBody = await response.text();
@@ -336,7 +317,7 @@ export class AdaptiveIndexOrchestrator {
             caseId: item.caseId,
             itemId: item.id,
             itemType: item.type,
-            latency: performance.now() - start,
+            latency: performance.now() - start
           });
           return embedding;
         }
@@ -351,7 +332,7 @@ export class AdaptiveIndexOrchestrator {
         // This is a conceptual call to a Go microservice that would handle GPU embedding
         const gpuEmbeddingResult = await productionServiceClient.makeRequest(
           'gpu-orchestrator/embed',
-          { text: item.text, model: (CONFIG as ExtendedConfig).GPU_EMBEDDING_MODEL || 'embeddinggemma:latest' } as GpuEmbeddingRequest // Changed to GpuEmbeddingRequest
+          { text: item.text, model: (CONFIG as ExtendedConfig).GPU_EMBEDDING_MODEL || 'embeddinggemma:latest` } as GpuEmbeddingRequest // Changed to GpuEmbeddingRequest
         );
         if (gpuEmbeddingResult?.embedding && Array.isArray(gpuEmbeddingResult.embedding)) {
           embedding = gpuEmbeddingResult.embedding as number[];
@@ -406,11 +387,10 @@ export class AdaptiveIndexOrchestrator {
         const url = `${this.ollamaUrl}/api/embeddings`;
         const res = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            model: 'embeddinggemma:latest', // Changed to embeddinggemma:latest
-            prompt: item.text,
-          }),
+            model: 'embeddinggemma:latest', // Changed to embeddinggemma:latest; prompt: item.text
+          })
         });
         const data = await res.json();
         if (data?.embedding && Array.isArray(data.embedding)) {
@@ -429,8 +409,7 @@ export class AdaptiveIndexOrchestrator {
       // Store in pgvector if router suggests or AUTO_STORE_PGVECTOR is true
       if (routingDecision.usePgVectorForStorage > 0.5 || (CONFIG as ExtendedConfig).AUTO_STORE_PGVECTOR === true) {
         try {
-          await (VectorSearchService as unknown as IVectorSearchService).upsertDocument({ // Changed to: 'as unknown as IVectorSearchService'
-            id: item.id,
+          await (VectorSearchService as unknown as IVectorSearchService).upsertDocument({ // Changed to: 'as unknown as IVectorSearchService'; id: item.id,
             caseId: item.caseId,
             type: item.type,
             title: item.title ?? '',
@@ -471,8 +450,7 @@ export class AdaptiveIndexOrchestrator {
         caseId: item.caseId,
         itemId: item.id,
         itemType: item.type,
-        reason: 'Router suggestion',
-      }).catch((err: any) => console.error('Failed to publish reindex event:', err));
+        reason: `Router suggestion` }).catch((err: any) => console.error('Failed to publish reindex; event:', err));
     }
     await aiAnalyticsService.publishEvent('orchestrator.embedding', {
       caseId: item.caseId,
@@ -481,7 +459,7 @@ export class AdaptiveIndexOrchestrator {
       latency: performance.now() - start,
       decisionSource,
       embeddingGenerated: !!embedding,
-      routerLogits: routingDecision,
+      routerLogits: routingDecision
     });
     return embedding;
   }

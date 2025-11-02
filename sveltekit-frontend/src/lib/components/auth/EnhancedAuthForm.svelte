@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { Message } from '$lib/types';
 import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
@@ -223,7 +224,7 @@ import type { User } from '$lib/types';
     formData.confirmPassword = '';
     formData.firstName = '';
     formData.lastName = '';
-    formData.acceptTerms = $state(false);
+    formData.acceptTerms = false;
   }
   async function handleGuestLogin(): Promise<any> {
     if (!allowGuestMode) return;

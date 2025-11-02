@@ -502,7 +502,7 @@
     fabricCanvas.on('mouse:down', (opt: any) => {
       if (opt?.e?.which === 2) {
         isPanning = true;
-        fabricCanvas.selection = $state(false);
+        fabricCanvas.selection = false;
       }
     });
     fabricCanvas.on('mouse:move', (opt: any) => {

@@ -5,7 +5,7 @@ import { ollamaChatStream } from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats,
-  type VectorSearchResult,
+  type VectorSearchResult
 } from '$lib/server/services/vectorDBService';
 // Initialize database on startup
 let dbInitialized = $state<boolean>(false);
@@ -27,9 +27,7 @@ function parseSources(input: any): VectorSearchResult[] {
     .map(it => it as VectorSearchResult);
 }
 
-export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
+export interface ChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
 }
 export interface EnhancedChatRequest {
   message: string;
@@ -48,9 +46,7 @@ export interface ChatResponse {
   response?: string;
   conversationId?: string;
   sources?: VectorSearchResult[];
-  metadata?: {
-    model: string;
-    temperature: number;
+  metadata?: { model: string;, temperature: number;
     processingTimeMs: number;
     vectorSearchUsed: boolean;
     timestamp: string;
@@ -65,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (action === 'health') {
       // Check Ollama service
       const ollamaHealth = await fetch('http://localhost:11434/api/version', {
-        signal: AbortSignal.timeout(3000),
+        signal: AbortSignal.timeout(3000)
       });
       if (!ollamaHealth.ok) {
         throw new Error('Ollama service unavailable');
@@ -79,24 +75,24 @@ export const GET: RequestHandler = async ({ url }) => {
           pgvectorEmbeddings: true,
           keywordFallback: true,
           streamingSupport: true,
-          vectorCache: true,
+          vectorCache: true
         },
         ollama: {
           version: version.version || 'unknown',
-          model: 'gemma3-legal:latest',
+          model: 'gemma3-legal:latest'
         },
         database: {
-          pgvector: true,
-          embeddingsTable: 'chat_embeddings',
+         , pgvector: true,
+          embeddingsTable: 'chat_embeddings'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     if (action === 'search') {
       const query = url.searchParams.get('q');
       const limit = parseInt(url.searchParams.get('limit') || '5');
       if (!query) {
-        return json({ error: 'Query parameter: "q" is required' }, { status: 400 });
+        return json({ error: 'Query, parameter: "q" is required' }, { status: 400 });
       }
 
       // Use the zero-arg API of searchSimilarChats; then apply threshold + limit locally
@@ -138,13 +134,13 @@ export const GET: RequestHandler = async ({ url }) => {
         query,
         results,
         count: results.length,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json(
       {
         success: false,
-        error: 'Invalid action. Use ?action=health or ?action=search',
+        error: 'Invalid action. Use ?action=health or ?action=search'
       },
       { status: 400 }
     );
@@ -156,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         status: 'unhealthy',
         error: errMsg,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -178,13 +174,13 @@ export const POST: RequestHandler = async ({ request }) => {
       stream = false,
       useVectorSearch = true,
       searchThreshold = 0.7,
-      systemPrompt,
+      systemPrompt
     } = body;
     if (!message && (!messages || messages.length === 0)) {
       return json(
         {
           success: false,
-          error: 'Message or messages array is required',
+          error: 'Message or messages array is required'
         },
         { status: 400 }
       );
@@ -195,8 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No user message found',
-        },
+          error: 'No user message found` },
         { status: 400 }
       );
     }
@@ -218,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
               conversationId,
               useVectorSearch,
               searchThreshold,
-              context: messages || [],
+              context: messages || []
             });
             let sources: VectorSearchResult[] = [];
             for await (const chunkRaw of streamGenerator) {
@@ -230,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 const sourcesChunk = {
                   type: 'sources',
                   sources,
-                  timestamp: new Date().toISOString(),
+                  timestamp: new Date().toISOString()
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
               } else if (meta?.type === 'text') {
@@ -239,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 const textChunk = {
                   type: 'text',
                   text,
-                  confidence,
+                  confidence
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
               } else if (meta?.type === 'final') {
@@ -248,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   conversationId,
                   processingTimeMs: Date.now() - startTime,
                   vectorSearchUsed: useVectorSearch,
-                  sources,
+                  sources
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
               }
@@ -261,12 +256,12 @@ export const POST: RequestHandler = async ({ request }) => {
             const errorChunk = {
               type: 'error',
               error: errMsg,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();
           }
-        },
+        }
       });
       return new Response(readable, {
         headers: {
@@ -274,8 +269,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
+          'Access-Control-Allow-Headers': 'Content-Type` }
       });
     }
     // For non-streaming responses
@@ -292,7 +286,7 @@ export const POST: RequestHandler = async ({ request }) => {
         conversationId,
         useVectorSearch,
         searchThreshold,
-        context: messages || [],
+        context: messages || []
       }
     );
     for await (const chunkRaw of streamGenerator) {
@@ -316,8 +310,8 @@ export const POST: RequestHandler = async ({ request }) => {
         temperature,
         processingTimeMs: Date.now() - startTime,
         vectorSearchUsed,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     return json(response);
   } catch (error: any) {
@@ -328,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message : String(error),
         processingTimeMs: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

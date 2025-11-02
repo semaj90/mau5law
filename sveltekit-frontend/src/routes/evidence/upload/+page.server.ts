@@ -13,7 +13,7 @@ import {
   evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
-  validateFileType,
+  validateFileType
 } from '$lib/schemas/evidence-upload';
 import { db } from '$lib/server/db'; // Adjust the import based on your project structure
 import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
@@ -28,9 +28,7 @@ const metaEnv = getMetaEnv();
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type'];
 
 // 1. Define the structure of the OCR service response
-interface OcrResultData {
-  filename: string;
-  pages: number;
+interface OcrResultData { filename: string;, pages: number;
   averageConfidence: number;
   legalConcepts: string[];
   citations: string[];
@@ -38,17 +36,13 @@ interface OcrResultData {
 }
 
 // 2. Define processing options
-interface ProcessingOptions {
-  enableAiAnalysis: boolean;
-  enableOcr: boolean;
+interface ProcessingOptions { enableAiAnalysis: boolean;, enableOcr: boolean;
   enableEmbeddings: boolean;
   enableSummarization: boolean;
 }
 
 // 3. Define the structure for the `ocrResult` field within the final database metadata
-interface DbOcrResult {
-  extractedText: string;
-  confidence: number;
+interface DbOcrResult { extractedText: string;, confidence: number;
   legalConcepts: string[];
   citations: string[];
   pageCount: number;
@@ -62,18 +56,14 @@ interface GoServiceProcessingResult {
 }
 
 // Define a more specific type for ChainOfCustody entries
-interface ChainOfCustodyEntry {
-  event: string;
-  timestamp: string;
+interface ChainOfCustodyEntry { event: string;, timestamp: string;
   actor: string;
   details?: Record<string, unknown>;
 }
 
 // 5. Define the comprehensive schema for the `metadata` column in the database
 // This type needs to cover all possible fields that can be added to `metadata`.
-interface FinalEvidenceMetadata {
-  kind: EvidenceType | 'UNKNOWN';
-  uploadedAt: string;
+interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: string;
   fileSize: number;
   processingOptions: ProcessingOptions;
   tags: string[];
@@ -94,7 +84,7 @@ interface FinalEvidenceMetadata {
   legalConcepts?: string[]; // For PDF, Image
   citations?: string[]; // For PDF, Image
   ocrConfidence?: number; // For PDF, Image
-  resolution?: { width: number; height: number }; // For Image, Video
+  resolution?: { width: number;, height: number }; // For Image, Video
   format?: string; // For Image
   hasAlphaChannel?: boolean; // For Image
   durationSeconds?: number; // For Video, Audio
@@ -108,9 +98,7 @@ interface FinalEvidenceMetadata {
 }
 
 // Define a type for the intermediate metadata object that ensures required fields are present
-type IntermediateEvidenceMetadata = {
-  kind: EvidenceType | 'UNKNOWN';
-  uploadedAt: string;
+type IntermediateEvidenceMetadata = { kind: EvidenceType | 'UNKNOWN';, uploadedAt: string;
   fileSize: number;
   processingOptions: ProcessingOptions;
 } & Partial<FinalEvidenceMetadata>; // All other fields are optional
@@ -129,8 +117,8 @@ export const load: PageServerLoad = async ({ locals }) => {
       form,
       cases: [
         { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: 'active' },
-        { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: 'active' },
-      ],
+        { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: `active` }
+      ]
     };
   }
 
@@ -141,20 +129,20 @@ export const load: PageServerLoad = async ({ locals }) => {
         id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
-        status: cases.status,
+        status: cases.status
       })
       .from(cases)
       .where(eq(cases.status, 'active'))
       .orderBy(cases.created_at);
     return {
       form,
-      cases: userCases,
+      cases: userCases
     };
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
-      cases: [],
+      cases: []
     };
   }
 };
@@ -168,19 +156,15 @@ export const actions: Actions = {
       // Accept generic form entry (server may provide a non-DOM File)
       const rawFile = formData.get('file');
       if (!rawFile) {
-        return fail(400, {
-          form: {
-            errors: { file: ['No file provided'] },
-          },
+        return fail(400, { form: {, errors: {, file: ['No file provided'] }
+          }
         });
       }
 
       // Ensure the provided entry supports arrayBuffer (basic duck-typing)
       if (typeof (rawFile as any).arrayBuffer !== 'function') {
-        return fail(400, {
-          form: {
-            errors: { file: ['Uploaded file is not readable on server'] },
-          },
+        return fail(400, { form: {, errors: {, file: ['Uploaded file is not readable on server'] }
+          }
         });
       }
 
@@ -206,10 +190,8 @@ export const actions: Actions = {
       if (caseId) {
         const caseRecord = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
         if (!caseRecord || caseRecord.length === 0) {
-          return fail(400, {
-            form: {
-              errors: { case_id: ['Selected case not found'] },
-            },
+          return fail(400, { form: {, errors: {, case_id: ['Selected case not found'] }
+            }
           });
         }
       }
@@ -219,7 +201,7 @@ export const actions: Actions = {
       const fileExtension = path.extname(fileName) || '';
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const randomSuffix = crypto.randomBytes(8).toString('hex');
-      const storageKey = `evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
+      const storageKey = `evidence/${caseId ?? 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;
 
       const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', caseId ?? 'default');
       await mkdir(uploadDir, { recursive: true });
@@ -231,7 +213,7 @@ export const actions: Actions = {
       const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
       // 5) Build a file URL relative to static assets (adjust to your serving strategy)
-      const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`;
+      const fileUrl = `/uploads/evidence/${caseId ?? 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;
 
       // 6) Optional OCR (fail-soft) - use absolute URL for server-side fetch
       let ocrResult: OcrResultData | null = null;
@@ -250,7 +232,7 @@ export const actions: Actions = {
 
           const ocrResponse = await fetch(ocrUrl, {
             method: 'POST',
-            body: ocrForm,
+            body: ocrForm
           });
 
           if (ocrResponse.ok) {
@@ -276,7 +258,7 @@ export const actions: Actions = {
         enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
         enableOcr: parseBooleanField('enableOcr'),
         enableEmbeddings: parseBooleanField('enableEmbeddings'),
-        enableSummarization: parseBooleanField('enableSummarization'),
+        enableSummarization: parseBooleanField('enableSummarization')
       };
 
       // 8) Construct intermediate metadata based on evidence type
@@ -284,7 +266,7 @@ export const actions: Actions = {
         kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: fileSize,
-        processingOptions,
+        processingOptions
       };
 
       switch (evidenceType) {
@@ -298,18 +280,17 @@ export const actions: Actions = {
             extractedText: ocrResult?.text ?? null,
             legalConcepts: ocrResult?.legalConcepts ?? [],
             citations: ocrResult?.citations ?? [],
-            ocrConfidence: ocrResult?.averageConfidence ?? null,
+            ocrConfidence: ocrResult?.averageConfidence ?? null
           };
           break;
         case 'IMAGE':
           tempMetadata = {
             ...tempMetadata,
             kind: 'IMAGE',
-            resolution: { width: 0, height: 0 }, // TODO: extract with sharp
-            format: fileType.split('/')[1] || 'unknown',
+            resolution: { width: 0, height: 0 }, // TODO: extract with sharp; format: fileType.split('/')[1] || 'unknown',
             hasAlphaChannel: fileType === 'image/png',
             extractedText: ocrResult?.text ?? null,
-            ocrConfidence: ocrResult?.averageConfidence ?? null,
+            ocrConfidence: ocrResult?.averageConfidence ?? null
           };
           break;
         case 'TEXT': {
@@ -319,15 +300,14 @@ export const actions: Actions = {
             kind: 'TEXT',
             wordCount: textContent.split(/\s+/).filter(Boolean).length,
             characterCount: textContent.length,
-            language: 'unknown',
+            language: 'unknown'
           };
           break;
         }
         default:
           tempMetadata = {
             ...tempMetadata,
-            kind: evidenceType ?? 'UNKNOWN',
-          };
+            kind: evidenceType ?? 'UNKNOWN` };
       }
 
       // 9) Final metadata composition - prefer undefined over null for optional fields
@@ -354,9 +334,9 @@ export const actions: Actions = {
               confidence: ocrResult.averageConfidence,
               legalConcepts: ocrResult.legalConcepts,
               citations: ocrResult.citations,
-              pageCount: ocrResult.pages,
+              pageCount: ocrResult.pages
             }
-          : null,
+          : null
       };
 
       // 10) Insert evidence record into DB - Use secure getUserId from session
@@ -374,22 +354,20 @@ export const actions: Actions = {
           storage_key: storageKey,
           file_hash: `sha256:${fileHash}`,
           file_size: fileSize,
-          metadata: finalMetadata,
+          metadata: finalMetadata
         })
         .returning();
 
       // 11) Success response for the action
       return {
         success: true,
-        evidence: inserted?.[0] ?? null,
+        evidence: inserted?.[0] ?? null
       };
     } catch (error: any) {
       console.error('Evidence upload failed:', error);
-      return fail(500, {
-        form: {
-          errors: { _global: ['Server error while uploading evidence'] },
-        },
+      return fail(500, { form: {, errors: {, _global: ['Server error while uploading evidence'] }
+        }
       });
     }
-  },
+  }
 };

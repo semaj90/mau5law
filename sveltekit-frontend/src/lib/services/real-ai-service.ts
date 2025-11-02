@@ -3,15 +3,11 @@ import crypto from "crypto";
 import { getOllamaEndpoint } from '$lib/server/ollama'; // Import getOllamaEndpoint
 
 // Define a basic chat message interface
-export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
 }
 
 // Define a basic interface for RAG context results, matching common vector search output
-export interface RAGDocumentResult {
-  id: string;
-  title: string;
+export interface RAGDocumentResult { id: string;, title: string;
   summary: string;
   relevanceScore: number;
   // Add other relevant fields if needed from your vector search results
@@ -19,9 +15,7 @@ export interface RAGDocumentResult {
 }
 
 // Define return types for specific methods
-export interface ConnectionResult {
-  success: boolean;
-  model: string;
+export interface ConnectionResult { success: boolean;, model: string;
   availableModels: string[];
   error?: string;
 }
@@ -44,9 +38,7 @@ export interface AIServiceOptions {
   ragServiceUrl?: string;
   timeout?: number;
 }
-export interface AIModelInfo {
-  name: string;
-  size: string;
+export interface AIModelInfo { name: string;, size: string;
   family: string;
   available: boolean;
 }
@@ -65,13 +57,9 @@ export interface ChatRequest {
     useRAG?: boolean;
   };
 }
-export interface ChatResponse {
-  response: string;
-  model: string;
+export interface ChatResponse { response: string;, model: string;
   timestamp: string;
-  performance: {
-    duration: number;
-    tokens: number;
+  performance: { duration: number;, tokens: number;
     tokensPerSecond: number;
   };
   sources?: RAGDocumentResult[]; // Changed from any[]
@@ -81,9 +69,7 @@ export interface ChatResponse {
   executionTime?: number;
   fromCache?: boolean;
 }
-export interface AIHealthStatus {
-  ollama: boolean;
-  ragService: boolean;
+export interface AIHealthStatus { ollama: boolean;, ragService: boolean;
   vectorSearch: boolean;
   overall: boolean;
   timestamp: string;
@@ -109,24 +95,24 @@ export class RealAIService {
       vectorSearch: false,
       overall: false,
       timestamp,
-      models: [] as AIModelInfo[],
+      models: [] as AIModelInfo[]
     };
     // Check Ollama
     try {
       const resolvedOllamaUrl = await this.ollamaUrl; // Await the promise here
       const response = await fetch(`${resolvedOllamaUrl}/api/tags`, {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (response.ok) {
         health.ollama = true;
         const data = await response.json();
         health.models = (data.models || []).map(
-          (model: { name: string; size?: string; details?: { family?: string } }) => ({
+          (model: {, name: string; size?: string; details?: { family?: string } }) => ({
             // Explicitly type model
             name: model.name,
             size: model.size || 'unknown',
             family: model.details?.family || 'unknown',
-            available: true,
+            available: true
           })
         );
       }
@@ -137,7 +123,7 @@ export class RealAIService {
     // Check Enhanced RAG service
     try {
       const response = await fetch(`${this.ragServiceUrl}/health`, {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       health.ragService = response.ok;
     } catch (error: any) {
@@ -147,7 +133,7 @@ export class RealAIService {
     // Check Vector Search
     try {
       const response = await fetch('/api/ai/vector-search', {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       health.vectorSearch = response.ok;
     } catch (error: any) {
@@ -177,7 +163,7 @@ export class RealAIService {
       return {
         success: true,
         model: actualModel,
-        availableModels,
+        availableModels
       };
     } catch (error: any) {
       // Changed from any
@@ -185,7 +171,7 @@ export class RealAIService {
         success: false,
         model: '',
         availableModels: [],
-        error: error instanceof Error ? error.message : 'Connection failed',
+        error: error instanceof Error ? error.message : 'Connection failed'
       };
     }
   }
@@ -205,12 +191,12 @@ export class RealAIService {
             body: JSON.stringify({
               query: request.message,
               options: {
-                maxResults: 5,
+               , maxResults: 5,
                 threshold: 0.7,
-                includeMetadata: true,
-              },
+                includeMetadata: true
+              }
             }),
-            signal: AbortSignal.timeout(10000),
+            signal: AbortSignal.timeout(10000)
           });
           if (vectorResponse.ok) {
             const vectorData = await vectorResponse.json();
@@ -224,18 +210,18 @@ export class RealAIService {
       // Send chat request to AI endpoint
       const chatResponse = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          message: request.message,
+         , message: request.message,
           model: request.options?.model || 'unknown', // Removed @ts-expect-error
           temperature: request.options?.temperature || 0.7,
           stream: request.options?.stream || false,
           context: {
             ...request.context,
-            ragContext,
-          },
+            ragContext
+          }
         }),
-        signal: AbortSignal.timeout(this.timeout),
+        signal: AbortSignal.timeout(this.timeout)
       });
       if (!chatResponse.ok) {
         throw new Error(`Chat API error: ${chatResponse.status} ${chatResponse.statusText}`);
@@ -249,18 +235,18 @@ export class RealAIService {
         performance: {
           duration,
           tokens: chatData.performance?.tokens || this.estimateTokens(chatData.response),
-          tokensPerSecond: chatData.performance?.tokensPerSecond || 0,
+          tokensPerSecond: chatData.performance?.tokensPerSecond || 0
         },
         sources: ragContext || [],
         citations: chatData.relatedCases || [],
         suggestions: chatData.suggestions || [],
         confidence: 0.85, // Default confidence
         executionTime: duration,
-        fromCache: false,
+        fromCache: false
       };
     } catch (error: any) {
       // Changed from any
-      throw new Error(`AI service error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`AI service error: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
   /**
@@ -277,13 +263,13 @@ export class RealAIService {
       // Test the model with a simple request
       const testResponse = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          message: 'Test message',
+         , message: 'Test message',
           model: modelName,
-          temperature: 0.1,
+          temperature: 0.1
         }),
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(10000)
       });
       if (!testResponse.ok) {
         throw new Error(`Model switch test failed: ${testResponse.status}`);
@@ -293,7 +279,7 @@ export class RealAIService {
       // Changed from any
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Model switch failed',
+        error: error instanceof Error ? error.message : 'Model switch failed'
       };
     }
   }
@@ -313,18 +299,18 @@ export class RealAIService {
     try {
       const response = await fetch('/api/ai/vector-search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           options: {
-            maxResults: options.limit || 5,
+           , maxResults: options.limit || 5,
             threshold: options.threshold || 0.7,
             collection: options.collection || 'legal_documents',
             includeMetadata: true,
-            filter: options.filter,
-          },
+            filter: options.filter
+          }
         }),
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(15000)
       });
       if (!response.ok) {
         throw new Error(`Vector search error: ${response.status}`);
@@ -340,9 +326,7 @@ export class RealAIService {
   /**
    * Index a document for vector search
    */
-  async indexDocument(_document: {
-    title: string;
-    content: string;
+  async indexDocument(_document: {, title: string;, content: string;
     metadata?: { [key: string]: any }; // Changed from any
   }): Promise<DocumentIndexResult> {
     // Changed from any
@@ -354,15 +338,14 @@ export class RealAIService {
         title: _document.title,
         type: 'legal_document',
         indexed_at: new Date().toISOString(),
-        ..._document.metadata,
+        ..._document.metadata
       });
       return { success: result };
     } catch (error: any) {
       // Changed from any
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Indexing failed',
-      };
+        error: error instanceof Error ? error.message : `Indexing failed` };
     }
   }
   /**

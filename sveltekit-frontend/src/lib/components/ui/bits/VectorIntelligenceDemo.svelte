@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/button';
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {

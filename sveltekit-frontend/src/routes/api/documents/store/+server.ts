@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Content is required',
+          error: 'Content is required'
         },
         { status: 400 }
       );
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Database temporarily unavailable',
-          healthStatus: dbHealth,
+          healthStatus: dbHealth
         },
         { status: 503 }
       );
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       is_confidential: metadata.isConfidential || false,
       created_by: metadata.userId || null,
       created_at: new Date(),
-      updated_at: new Date(),
+      updated_at: new Date()
     };
     const documentResult = await db.insert(legal_documents).values(documentData).returning();
     const documentId = documentResult[0].id;
@@ -72,12 +72,11 @@ export const POST: RequestHandler = async ({ request }) => {
         hasEmbedding: !!embedding,
         hasLegalAnalysis: !!legalAnalysis,
         isConfidential: documentData.is_confidential,
-        processingStatus: 'completed',
-      },
+        processingStatus: 'completed` },
       meta: {
         timestamp: new Date().toISOString(),
-        databaseHealth: dbHealth.overall,
-      },
+        databaseHealth: dbHealth.overall
+      }
     };
     // Cache the stored document for future retrieval
     await cognitiveCacheManager.set(
@@ -85,16 +84,16 @@ export const POST: RequestHandler = async ({ request }) => {
         key: `document_${documentId}`,
         type: 'legal-data' as const,
         context: {
-          action: 'document-storage',
+         , action: 'document-storage',
           documentId,
           documentType: documentData.document_type,
-          priority: 'medium' as const,
-        },
+          priority: 'medium' as const
+        }
       },
       responseData.document,
       {
         distributeAcrossCaches: true,
-        cognitiveValue: 0.8,
+        cognitiveValue: 0.8
       }
     );
     return json(responseData);
@@ -103,8 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: err.message || 'Storage failed',
-      },
+        error: err.message || 'Storage failed` },
       { status: err.status || 500 }
     );
   }
@@ -116,7 +114,7 @@ export const GET: RequestHandler = async () => {
     // Count stored documents
     let documentCount = 0;
     try {
-      const [result] = await db.select({ count: sql<number>`count(*)` }).from(legal_documents);
+      const [result] = await db.select({ count: sql<number>`count(*)' }).from(legal_documents);
       documentCount = result?.count || 0;
     } catch (countError) {
       console.warn('[Storage] Failed to count documents:', countError);
@@ -128,27 +126,25 @@ export const GET: RequestHandler = async () => {
         postgresqlStorage: dbHealth.postgres.connected,
         vectorEmbeddings: dbHealth.postgres.connected,
         cognitiveCaching: true,
-        minioIntegration: false, // TODO: Implement MinIO integration
-        legalAnalysis: true,
+        minioIntegration: false, // TODO: Implement MinIO integration; legalAnalysis: true
       },
       database: {
         status: dbHealth.overall,
-        documents: documentCount,
+        documents: documentCount
       },
       message: 'POST to store legal documents with embeddings and analysis',
       endpoints: {
-        store: 'POST /api/documents/store',
+       , store: 'POST /api/documents/store',
         retrieve: 'GET /api/documents/[id]',
-        search: 'POST /api/documents/search',
+        search: 'POST /api/documents/search'
       },
-      version: '3.0.0',
-    });
+      version: '3.0.0` });
   } catch (err: any) {
     return json(
       {
         status: 'unhealthy',
         error: err.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

@@ -6,9 +6,7 @@ import { getLocalOllamaUrl } from "$lib/constants/local-llm-config";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 
-export interface TodoEntry {
-  id: string;
-  timestamp: string;
+export interface TodoEntry { id: string;, timestamp: string;
   category: 'llm-misfire' | 'typescript' | 'runtime' | 'performance' | 'memory';
   severity: 'critical' | 'high' | 'medium' | 'low';
   title: string;
@@ -16,15 +14,11 @@ export interface TodoEntry {
   stackTrace?: string;
   context?: { [key: string]: any };
   llmAttempts?: number;
-  memoryUsage?: {
-    heapUsed: number;
-    heapTotal: number;
+  memoryUsage?: { heapUsed: number;, heapTotal: number;
     external: number;
   };
 }
-export interface LLMMisfireData {
-  model: string;
-  prompt: string;
+export interface LLMMisfireData { model: string;, prompt: string;
   error: string;
   tokenCount?: number;
   retryCount: number;
@@ -32,12 +26,10 @@ export interface LLMMisfireData {
 }
 
 // New: explicit types for performance issue details to avoid `any`
-type MemoryPerformanceDetails = {
-  heapUsedMB: number;
-  heapTotalMB: number;
+type MemoryPerformanceDetails = { heapUsedMB: number;, heapTotalMB: number;
   externalMB?: number;
   threshold?: number;
-  samples?: Array<{ timestamp: number; heapUsedMB: number }>;
+  samples?: Array<{ timestamp: number;, heapUsedMB: number }>;
 };
 
 type GPUPerformanceDetails = {
@@ -49,9 +41,7 @@ type GPUPerformanceDetails = {
   note?: string;
 };
 
-type TimeoutPerformanceDetails = {
-  operation: string;
-  durationMs: number;
+type TimeoutPerformanceDetails = { operation: string;, durationMs: number;
   retries?: number;
   backoffStrategy?: string;
   lastError?: string;
@@ -96,13 +86,13 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'llm-misfire',
       severity: data.retryCount > 3 ? 'critical' : 'high',
-      title: `LLM Failure: ${data?.model || 'unknown'} - ${data.error.substring(0, 50)}...`,
-      description: `Model: ${data?.model || 'unknown'}\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
+      title: 'LLM; Failure: ${data?.model || 'unknown' } - ${data.error.substring(0, 50)}...`,
+      description: 'Model: ${data?.model || 'unknown' }\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
       context: {
         ...data,
         timestamp: Date.now(),
-        memoryUsage: this.getMemoryUsage(),
-      },
+        memoryUsage: this.getMemoryUsage()
+      }
     };
     await this.saveTodo(todo, 'llm-misfires');
     // Auto-queue for CrewAI review if critical
@@ -121,13 +111,13 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
-      title: `TypeScript Error: ${file}${lineNumber ? `:${lineNumber}` : ''}`,
+      title: `TypeScript; Error: ${file}${lineNumber ? `:${lineNumber}` : '' }`,
       description: error,
       context: {
         file,
         lineNumber,
-        memoryUsage: this.getMemoryUsage(),
-      },
+        memoryUsage: this.getMemoryUsage()
+      }
     };
     await this.saveTodo(todo, 'typescript');
     return id;
@@ -142,13 +132,13 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'runtime',
       severity: 'high',
-      title: `Runtime Error: ${error.name}`,
+      title: `Runtime; Error: ${error.name}`,
       description: error.message,
       stackTrace: error.stack,
       context: {
         ...context,
-        memoryUsage: this.getMemoryUsage(),
-      },
+        memoryUsage: this.getMemoryUsage()
+      }
     };
     await this.saveTodo(todo, 'runtime');
     return id;
@@ -166,13 +156,13 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'performance',
       severity: type === 'memory' ? 'critical' : 'medium',
-      title: `Performance Issue: ${type.toUpperCase()}`,
+      title: `Performance; Issue: ${type.toUpperCase()}`,
       description: JSON.stringify(details, null, 2),
       context: {
         type,
         details,
-        memoryUsage: this.getMemoryUsage(),
-      },
+        memoryUsage: this.getMemoryUsage()
+      }
     };
     await this.saveTodo(todo, 'performance');
     return id;
@@ -199,13 +189,13 @@ class TodoAutogen {
       todoId: todo.id,
       priority: todo.severity,
       timestamp: new Date().toISOString(),
-      instructions: this.generateReviewInstructions(todo),
+      instructions: this.generateReviewInstructions(todo)
     };
     try {
       await writeFile(queueFile, JSON.stringify(queueEntry, null, 2));
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
     } catch (error: any) {
-      console.error(`Failed to queue for ${agent}:`, error);
+      console.error(`Failed to queue for ${agent}: ', error);
     }
   }
   /**
@@ -246,14 +236,14 @@ export async function retryLLMCall<T>(llmCall: () => Promise<T>, model: string, 
       return await llmCall();
     } catch (error: any) {
       lastError = error as Error;
-      console.warn(`🔄 LLM retry ${attempt}/${maxRetries}:`, lastError.message);
+      console.warn(`🔄 LLM retry ${attempt}/${maxRetries}: ', lastError.message);
       // Log misfire if multiple attempts
       if (attempt >= 2) {
         await todoAutogen.logLLMMisfire({
           model,
           prompt: prompt.substring(0, 500) + '...', // Truncate for logging;
           error: lastError.message,
-          retryCount: attempt,
+          retryCount: attempt
         });
       }
       // Exponential backoff with jitter
@@ -267,7 +257,7 @@ export async function retryLLMCall<T>(llmCall: () => Promise<T>, model: string, 
     model,
     prompt: prompt.substring(0, 500) + '...',
     error: lastError.message,
-    retryCount: maxRetries,
+    retryCount: maxRetries
   });
   throw lastError;
 }
@@ -286,7 +276,7 @@ export function startMemoryMonitoring() {
         heapUsedMB,
         heapTotalMB: usage.heapTotal / 1024 / 1024,
         externalMB: usage.external / 1024 / 1024,
-        threshold: 2048,
+        threshold: 2048
       });
     }
   }, 30000); // Check every 30 seconds

@@ -22,41 +22,41 @@ export const GET: RequestHandler = async () => {
         host: 'localhost',
         port: 5672,
         vhost: '/',
-        heartbeat: 60,
+        heartbeat: 60
       },
       queues: {
         'legal.docs.process': {
           status: isServiceHealthy ? 'ready' : 'unknown',
           messages: 0,
-          consumers: 0,
+          consumers: 0
         },
         'legal.chunks.embed': {
           status: isServiceHealthy ? 'ready' : 'unknown',
           messages: 0,
-          consumers: 0,
+          consumers: 0
         },
         'legal.chunks.store': {
           status: isServiceHealthy ? 'ready' : 'unknown',
           messages: 0,
-          consumers: 0,
+          consumers: 0
         },
         'legal.dlq': {
           status: isServiceHealthy ? 'ready' : 'unknown',
           messages: 0,
-          consumers: 0,
-        },
+          consumers: 0
+        }
       },
       exchanges: {
         'legal.main': {
           status: isServiceHealthy ? 'ready' : 'unknown',
           type: 'direct',
-          durable: true,
+          durable: true
         },
         'legal.dlx': {
           status: isServiceHealthy ? 'ready' : 'unknown',
           type: 'direct',
-          durable: true,
-        },
+          durable: true
+        }
       },
       serviceDetails: serviceHealth.status === 'fulfilled' ? serviceHealth.value.details : null,
       version: '3.8.9',
@@ -64,18 +64,18 @@ export const GET: RequestHandler = async () => {
       memory: {
         used: '124MB',
         limit: '512MB',
-        percentage: 24,
+        percentage: 24
       },
       worker: {
         available: true,
-        endpoint: '/api/workers/rabbitmq',
-      },
+        endpoint: '/api/workers/rabbitmq'
+      }
     };
     return json(healthStatus, {
       headers: {
         'Cache-Control': 'no-cache',
-        'X-RabbitMQ-Health': healthStatus.status === 'healthy' ? 'ok' : 'error',
-      },
+        'X-RabbitMQ-Health': healthStatus.status === 'healthy' ? 'ok' : 'error'
+      }
     });
   } catch (error) {
     console.error('RabbitMQ health check failed:', error);
@@ -85,18 +85,18 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
         connection: {
-          status: 'disconnected',
+          status: 'disconnected'
         },
         worker: {
           available: false,
-          error: 'Service unavailable',
-        },
+          error: 'Service unavailable'
+        }
       },
       {
         status: 503,
         headers: {
-          'X-RabbitMQ-Health': 'error',
-        },
+          'X-RabbitMQ-Health': 'error'
+        }
       }
     );
   }

@@ -1,10 +1,11 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 import type { Message } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-  import { Button } from '$lib/components/ui/bitsbutton.svelte';
-  import * as RawDialog from '$lib/components/ui/dialog.svelte';
+  import { Button } from '$lib/components/ui/bitsButton.svelte';
+  import * as RawDialog from '$lib/components/ui/Dialog.svelte';
   import * as RawSelect from '$lib/components/ui/Select.svelte';
   import { Badge } from '$lib/components/ui/Badge.svelte';
   import { Progress } from '$lib/components/ui/Progress.svelte';

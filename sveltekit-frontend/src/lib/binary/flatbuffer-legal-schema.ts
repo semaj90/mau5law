@@ -317,8 +317,8 @@ export class LegalDocumentBinarySerializer {
         rankingMatrix,
         version,
         flags,
-        timestamp: Number(timestamp),
-      },
+        timestamp: Number(timestamp)
+      }
     };
   }
   /**
@@ -421,7 +421,7 @@ export class LegalDocumentBinarySerializer {
       'evidence': DocumentType.EVIDENCE,
       'brief': DocumentType.BRIEF,
       'citation': DocumentType.CITATION,
-      'precedent': DocumentType.PRECEDENT,
+      'precedent': DocumentType.PRECEDENT
     };
     return map[type] || DocumentType.EVIDENCE;
   }
@@ -431,7 +431,7 @@ export class LegalDocumentBinarySerializer {
       [DocumentType.EVIDENCE]: 'evidence',
       [DocumentType.BRIEF]: 'brief',
       [DocumentType.CITATION]: 'citation',
-      [DocumentType.PRECEDENT]: 'precedent',
+      [DocumentType.PRECEDENT]: 'precedent'
     };
     return map[enumValue as DocumentType] || 'evidence';
   }
@@ -440,7 +440,7 @@ export class LegalDocumentBinarySerializer {
       'low': RiskLevel.LOW,
       'medium': RiskLevel.MEDIUM,
       'high': RiskLevel.HIGH,
-      'critical': RiskLevel.CRITICAL,
+      'critical': RiskLevel.CRITICAL
     };
     return map[risk] || RiskLevel.MEDIUM;
   }
@@ -449,7 +449,7 @@ export class LegalDocumentBinarySerializer {
       [RiskLevel.LOW]: 'low',
       [RiskLevel.MEDIUM]: 'medium',
       [RiskLevel.HIGH]: 'high',
-      [RiskLevel.CRITICAL]: 'critical',
+      [RiskLevel.CRITICAL]: 'critical'
     };
     return map[enumValue as RiskLevel] || 'medium';
   }
@@ -458,7 +458,7 @@ export class LegalDocumentBinarySerializer {
       'low': 0.25,
       'medium': 0.5,
       'high': 0.75,
-      'critical': 1.0,
+      'critical': 1.0
     };
     return map[risk] || 0.5;
   }
@@ -468,7 +468,7 @@ export class LegalDocumentBinarySerializer {
       'contract': 0.8,
       'brief': 0.6,
       'precedent': 0.7,
-      'citation': 0.4,
+      'citation': 0.4
     };
     return map[type] || 0.5;
   }

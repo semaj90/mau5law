@@ -18,9 +18,7 @@ export interface CUDAInteropConfig {
   streamPriority?: 'normal' | 'high';
 }
 
-export interface PTXKernelConfig {
-  architecture: 'sm_86' | 'sm_89' | 'sm_90';
-  optimizationLevel: 0 | 1 | 2 | 3;
+export interface PTXKernelConfig { architecture: 'sm_86' | 'sm_89' | 'sm_90';, optimizationLevel: 0 | 1 | 2 | 3;
   maxRegisters?: number;
   sharedMemorySize?: number;
 }
@@ -36,7 +34,7 @@ export class WebGPURAGEngine {
   constructor(
     private config: WebGPURAGConfig = {},
     private cudaConfig: CUDAInteropConfig = {},
-    private ptxConfig: PTXKernelConfig = { architecture: 'sm_86', optimizationLevel: 3 }
+    private ptxConfig: PTXKernelConfig = {, architecture: 'sm_86', optimizationLevel: 3 }
   ) {
     this.config = {
       deviceType: 'discrete',
@@ -44,7 +42,7 @@ export class WebGPURAGEngine {
       tensorCoreOptimization: true,
       maxBatchSize: 1024,
       workgroupSize: 256,
-      ...config,
+      ...config
     };
   }
 
@@ -58,7 +56,7 @@ export class WebGPURAGEngine {
 
       // Request adapter with preferences
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: this.config.deviceType === 'discrete' ? 'high-performance' : 'low-power',
+        powerPreference: this.config.deviceType === 'discrete' ? 'high-performance' : 'low-power'
       });
 
       if (!adapter) {
@@ -81,10 +79,10 @@ export class WebGPURAGEngine {
       this.device = await adapter.requestDevice({
         requiredFeatures,
         requiredLimits: {
-          maxComputeWorkgroupStorageSize: 32768,
+         , maxComputeWorkgroupStorageSize: 32768,
           maxComputeInvocationsPerWorkgroup: 1024,
-          maxComputeWorkgroupsPerDimension: 65535,
-        },
+          maxComputeWorkgroupsPerDimension: 65535
+        }
       });
 
       // Error handling
@@ -149,37 +147,34 @@ export class WebGPURAGEngine {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
+          buffer: { type: 'storage' }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'uniform' },
+          buffer: {, type: 'uniform' }
         },
-      ],
+      ]
     });
 
     this.bindGroupLayouts.set('similarity', bindGroupLayout);
 
     // Create compute pipeline
-    const computePipeline = this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: {
-        module: this.device.createShaderModule({ code: shaderCode }),
-        entryPoint: 'cosine_similarity',
-      },
+      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+        entryPoint: 'cosine_similarity'
+      }
     });
 
     this.computePipelines.set('similarity', computePipeline);
@@ -193,36 +188,33 @@ export class WebGPURAGEngine {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
+          buffer: { type: 'storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
+          buffer: { type: 'storage' }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'uniform' },
+          buffer: {, type: 'uniform' }
         },
-      ],
+      ]
     });
 
     this.bindGroupLayouts.set('clustering', bindGroupLayout);
 
-    const computePipeline = this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: {
-        module: this.device.createShaderModule({ code: shaderCode }),
-        entryPoint: 'kmeans_assignment',
-      },
+      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+        entryPoint: 'kmeans_assignment'
+      }
     });
 
     this.computePipelines.set('clustering', computePipeline);
@@ -236,36 +228,33 @@ export class WebGPURAGEngine {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
+          buffer: { type: 'storage' }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'uniform' },
+          buffer: {, type: 'uniform' }
         },
-      ],
+      ]
     });
 
     this.bindGroupLayouts.set('entity_extraction', bindGroupLayout);
 
-    const computePipeline = this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: {
-        module: this.device.createShaderModule({ code: shaderCode }),
-        entryPoint: 'extract_legal_entities',
-      },
+      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+        entryPoint: 'extract_legal_entities'
+      }
     });
 
     this.computePipelines.set('entity_extraction', computePipeline);
@@ -279,41 +268,37 @@ export class WebGPURAGEngine {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
+          buffer: { type: 'storage' }
         },
         {
           binding: 4,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'uniform' },
+          buffer: {, type: 'uniform' }
         },
-      ],
+      ]
     });
 
     this.bindGroupLayouts.set('semantic_search', bindGroupLayout);
 
-    const computePipeline = this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+    const computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
       }),
-      compute: {
-        module: this.device.createShaderModule({ code: shaderCode }),
-        entryPoint: 'semantic_search_scoring',
-      },
+      compute: { module: this.device.createShaderModule({, code: shaderCode }),
+        entryPoint: `semantic_search_scoring` }
     });
 
     this.computePipelines.set('semantic_search', computePipeline);
@@ -360,7 +345,7 @@ export class WebGPURAGEngine {
     const queryBuffer = this.createBuffer(queryEmbedding, GPUBufferUsage.STORAGE);
     const resultBuffer = this.device.createBuffer({
       size: numDocuments * 4, // Float32 = 4 bytes
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Config buffer
@@ -374,8 +359,8 @@ export class WebGPURAGEngine {
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: queryBuffer } },
         { binding: 2, resource: { buffer: resultBuffer } },
-        { binding: 3, resource: { buffer: configBuffer } },
-      ],
+        { binding: 3, resource: {, buffer: configBuffer } }
+      ]
     });
 
     // Create command encoder and execute
@@ -390,7 +375,7 @@ export class WebGPURAGEngine {
     // Read results
     const readBuffer = this.device.createBuffer({
       size: numDocuments * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, numDocuments * 4);
@@ -415,7 +400,7 @@ export class WebGPURAGEngine {
     documentEmbeddings: Float32Array,
     numClusters: number,
     maxIterations: number = 100
-  ): Promise<{ centroids: Float32Array; assignments: Uint32Array }> {
+  ): Promise<{ centroids: Float32Array;, assignments: Uint32Array }> {
     if (!this.device || !this.computePipelines.has('clustering')) {
       throw new Error('WebGPU not initialized or clustering pipeline not available');
     }
@@ -436,7 +421,7 @@ export class WebGPURAGEngine {
     const centroidBuffer = this.createBuffer(centroids, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
     const assignmentBuffer = this.device.createBuffer({
       size: numDocuments * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Config buffer
@@ -450,8 +435,8 @@ export class WebGPURAGEngine {
         { binding: 0, resource: { buffer: documentBuffer } },
         { binding: 1, resource: { buffer: centroidBuffer } },
         { binding: 2, resource: { buffer: assignmentBuffer } },
-        { binding: 3, resource: { buffer: configBuffer } },
-      ],
+        { binding: 3, resource: {, buffer: configBuffer } }
+      ]
     });
 
     // K-means iterations
@@ -473,12 +458,12 @@ export class WebGPURAGEngine {
     // Read final results
     const centroidReadBuffer = this.device.createBuffer({
       size: numClusters * embeddingDim * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     const assignmentReadBuffer = this.device.createBuffer({
       size: numDocuments * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     const finalEncoder = this.device.createCommandEncoder();
@@ -507,7 +492,7 @@ export class WebGPURAGEngine {
 
     return {
       centroids: centroidsCopy,
-      assignments: assignmentsCopy,
+      assignments: assignmentsCopy
     };
   }
 
@@ -516,7 +501,7 @@ export class WebGPURAGEngine {
 
     const buffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: usage | GPUBufferUsage.COPY_DST,
+      usage: usage | GPUBufferUsage.COPY_DST
     });
 
     this.device.queue.writeBuffer(buffer, 0, data);

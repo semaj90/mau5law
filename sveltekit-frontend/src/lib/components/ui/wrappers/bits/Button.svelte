@@ -18,7 +18,7 @@
     onclick = undefined,
     children,
   }: Props = $props();
-  let Btn: any = $state(null);
+  let Btn: any = null;
   const overrides = getBitsOverrides();
   if (overrides && overrides.Button) {
     Btn = overrides.Button;

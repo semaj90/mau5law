@@ -43,9 +43,7 @@ declare global {
   interface GPUDeviceDescriptor {
     [key: string]: any;
   }
-  interface GPUBufferDescriptor {
-    size: number;
-    usage: GPUBufferUsageFlags;
+  interface GPUBufferDescriptor { size: number;, usage: GPUBufferUsageFlags;
   }
   interface GPUShaderModuleDescriptor {
     [key: string]: any;
@@ -55,9 +53,7 @@ declare global {
   }
   type GPUMapModeFlags = number;
   type GPUBufferUsageFlags = number;
-  const GPUBufferUsage: {
-    STORAGE: number;
-    COPY_SRC: number;
+  const GPUBufferUsage: { STORAGE: number;, COPY_SRC: number;
     COPY_DST: number;
   };
   const GPUMapMode: {

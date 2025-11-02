@@ -6,9 +6,7 @@ export type Context7InitOptions = {
   workers?: number;
   mockLatencyMs?: number;
 }
-export type Pattern = {
-  id: string;
-  name: string;
+export type Pattern = { id: string;, name: string;
   description?: string;
   template?: string;
 }

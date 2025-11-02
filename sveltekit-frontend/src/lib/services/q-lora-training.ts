@@ -8,9 +8,7 @@ import type { Document } from '$lib/types';
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 import type { BitmapHiddenMarkovSOM } from './bitmap-hmm-som.js';
 }
-export interface QLoRAConfig {
-  modelName: string;
-  rankDimension: number;
+export interface QLoRAConfig { modelName: string;, rankDimension: number;
   alpha: number;
   quantizationBits: number;
   learningRate: number;
@@ -22,35 +20,25 @@ export interface QLoRAConfig {
   experienceReplaySize: number;
 }
 }
-export interface QState {
-  id: string;
-  features: Float32Array;
+export interface QState { id: string;, features: Float32Array;
   legalContext: string[];
   timestamp: number;
-  somPosition?: { x: number; y: number }
+  somPosition?: { x: number;, y: number }
 }
-export interface QAction {
-  id: string;
-  type: 'predict' | 'search' | 'generate' | 'classify' | 'summarize';
+export interface QAction { id: string;, type: 'predict' | 'search' | 'generate' | 'classify' | 'summarize';
   parameters: { [key: string]: any }
-  assetRequirements?: {
-    complexity: 'low' | 'medium' | 'high';
-  renderType: '2d' | '3d' | 'hybrid';
+  assetRequirements?: { complexity: 'low' | 'medium' | 'high';, renderType: '2d' | '3d' | 'hybrid';
   interactionType: 'hover' | 'click' | 'drag' | 'scroll';
   }
 }
-export interface QExperience {
-  state: QState;
-  action: QAction;
+export interface QExperience { state: QState;, action: QAction;
   reward: number;
   nextState: QState;
   done: boolean;
   timestamp: number;
 }
 }
-export interface LoRAAdapter {
-  layerId: string;
-  matrixA: Float32Array; // Low-rank matrix A (rank × input_dim)
+export interface LoRAAdapter { layerId: string;, matrixA: Float32Array; // Low-rank matrix A (rank × input_dim)
   matrixB: Float32Array; // Low-rank matrix B (output_dim × rank),
   alpha: number;
   rank: number;
@@ -104,7 +92,7 @@ export class QLoRATrainingService {
    * Estimate layer dimensions for different legal model components
    */
   private estimateLayerDimension(layerId: string, type: 'input' | 'output'): number {
-    const dimMap: Record<string, { input: number; output: number }> = {
+    const dimMap: Record<string, { input: number;, output: number }> = {
       'attention.query_projection': { input: 768, output: 768 },
       'attention.key_projection': { input: 768, output: 768 },
       'attention.value_projection': { input: 768, output: 768 },
@@ -136,8 +124,7 @@ export class QLoRATrainingService {
    * Extract Q-state from legal document context
    */
   private extractQState()
-    documentContext: string
-    legalMetadata: any
+    documentContext: string; legalMetadata: any
     userInteraction?: string;
   ): QState {
     // Create feature vector from document context
@@ -217,7 +204,7 @@ export class QLoRATrainingService {
         type: 'predict',
         parameters: { assetType: '3d_model', documentType: 'contract' },
         assetRequirements: {
-          complexity: 'medium',
+         , complexity: 'medium',
           renderType: '3d',
           interactionType: 'hover'
         }
@@ -229,29 +216,28 @@ export class QLoRATrainingService {
         type: 'predict',
         parameters: { assetType: 'container', documentType: 'evidence' },
         assetRequirements: {
-          complexity: 'high',
+         , complexity: 'high',
           renderType: '3d',
-          interactionType: 'click'
-        }
+          interactionType: `click` }
       });
     }
     // Search actions
     actions.push({
       id: 'search_legal_assets',
       type: 'search',
-      parameters: { query: state.legalContext.join(' '), semantic: true }
+      parameters: {, query: state.legalContext.join(' '), semantic: true }
     });
     // Classification actions
     actions.push({
       id: 'classify_document',
       type: 'classify',
-      parameters: { categories: ['contract', 'evidence', 'brief', 'citation'] }
+      parameters: {, categories: ['contract', 'evidence', 'brief', 'citation'] }
     });
     // Generation actions
     actions.push({
       id: 'generate_summary',
       type: 'generate',
-      parameters: { outputType: 'summary', maxLength: 500 }
+      parameters: {, outputType: 'summary', maxLength: 500 }
     });
     return actions;
   }
@@ -259,8 +245,7 @@ export class QLoRATrainingService {
    * Calculate reward for state-action transition
    */
   private calculateReward()
-    state: QState
-    action: QAction
+    state: QState; action: QAction
     nextState: QState;
     outcome: any;
   ): number {
@@ -332,8 +317,8 @@ export class QLoRATrainingService {
    * Calculate HMM state transition reward
    */
   private calculateHMMTransitionReward()
-    fromPosition: { x: number; y: number },
-    toPosition: { x: number); y: number }
+    fromPosition: { x: number;, y: number },
+    toPosition: { x: number);, y: number }
   ): number {
     // Reward smooth transitions in SOM space
     const distance = Math.sqrt(
@@ -347,8 +332,7 @@ export class QLoRATrainingService {
    * Train Q-LoRA model with experience replay
    */
   async trainEpisode()
-    documentContext: string
-    legalMetadata: any
+    documentContext: string; legalMetadata: any
     userInteraction?: string;
   ): Promise<any> {
     console,.log(`🎓 Starting Q-LoRA training episode...`);
@@ -359,7 +343,7 @@ export class QLoRATrainingService {
     let loraUpdates =, 0;
     // Episode loop
     const maxSteps = 1,0;
-    for (let step =, 0; ste,p < maxSt,eps;, s,tep++) {>
+    for (let step =, 0; ste,p < maxSt,eps; s,tep++) {>
       // Select action using epsilon-greedy policy
       const action = this.generateQAction(currentState, true);
       // Execute action and get outcome
@@ -421,14 +405,12 @@ export class QLoRATrainingService {
           outcome = await this.executeGenerateAction(state, action);
           break;
         default:
-          outcome = { success: false, error: 'Unknown action type' }
+          outcome = { success: false, error: `Unknown action type` }
       }
       outcome.responseTime = performance.now() - startTime;
       return outcome;
     } catch (error) {
-      return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Unknown error',
+      return { success: false;, error: error instanceof Error ? error.message: 'Unknown error',
         responseTime: performance.now() - startTime
       }
     }
@@ -675,9 +657,7 @@ export class QLoRATrainingService {
   /**
    * Get training statistics
    */
-  getTrainingStats(),: {
-    totalStates: number;
-    totalActions: number;
+  getTrainingStats(),: { totalStates: number;, totalActions: number;
     experienceCount: number;
     avgReward: number;
     trainingStep: number;

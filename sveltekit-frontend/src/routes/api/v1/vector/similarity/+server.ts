@@ -5,18 +5,14 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { PGVECTOR_CONFIG, getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
-interface VectorSimilarityRequest {
-  operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';
-  vectorA: Float32Array | number[];
+interface VectorSimilarityRequest { operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';, vectorA: Float32Array | number[];
   vectorB?: Float32Array | number[];
   vectors?: Array<Float32Array | number[]>; // For batch operations
   algorithm?: 0 | 1 | 2 | 3; // Algorithm selector for batch ops
   useCUDA?: boolean;
   parallel?: boolean;
 }
-interface CUDAResponse {
-  result: number | number[];
-  gpuTime: number;
+interface CUDAResponse { result: number | number[];, gpuTime: number;
   parallelWorkers: number;
   memoryUsed: number;
 }
@@ -68,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         vectorB: normalizedVectorB,
         vectors: normalizedVectors,
         algorithm,
-        requestId,
+        requestId
       });
       result = cudaResult.result;
       gpuTime = cudaResult.gpuTime;
@@ -81,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
         vectorA: normalizedVectorA,
         vectorB: normalizedVectorB,
         vectors: normalizedVectors,
-        algorithm,
+        algorithm
       });
     }
     const clientHints = generateClientOptimizationHints(operation, dataSize);
@@ -100,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalProcessingTime,
         complexityScore,
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       clientOptimizations: {
         ...clientHints,
@@ -115,22 +111,20 @@ export const POST: RequestHandler = async ({ request }) => {
           chrRomRegion: shouldUseCUDA,
           vectorAlignment: true,
           cacheOptimized: true,
-          simdFriendly: !shouldUseCUDA,
-        },
-      },
+          simdFriendly: !shouldUseCUDA
+        }
+      }
     });
   } catch (err) {
     console.error('Vector similarity API error:', err);
-    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
-async function processCUDAVectorOperation(params: {
-  operation: string;
-  vectorA: Float32Array;
+async function processCUDAVectorOperation(params: { operation: string;, vectorA: Float32Array;
   vectorB?: Float32Array;
   vectors?: Float32Array[];
   algorithm: number;
-  requestId: string;
+ , requestId: string;
 }): Promise<CUDAResponse> {
   const { operation, vectorA, vectorB, vectors, algorithm, requestId } = params;
   const cudaUrl = getCudaServiceUrl('submit');
@@ -145,7 +139,7 @@ async function processCUDAVectorOperation(params: {
       vectors: vectors?.map(v => Array.from(v)),
       algorithm,
       dimensions: vectorA.length,
-      vectorCount: vectors?.length || (vectorB ? 2 : 1),
+      vectorCount: vectors?.length || (vectorB ? 2 : 1)
     },
     gpu_config: {
       use_tensor_cores: true,
@@ -162,15 +156,14 @@ async function processCUDAVectorOperation(params: {
       expected_throughput: vectors?.length || 1,
       memory_pattern: 'sequential_access',
       cache_locality: 'high',
-      branch_prediction: 'favorable',
-    },
+      branch_prediction: 'favorable'
+    }
   };
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+      'Content-Type': `application/json` },
+    body: JSON.stringify(payload)
   });
   if (!response.ok) {
     throw new Error(`CUDA service error: ${response.statusText}`);
@@ -180,15 +173,13 @@ async function processCUDAVectorOperation(params: {
     result: cudaResult.result || cudaResult.similarity || cudaResult.distances,
     gpuTime: cudaResult.gpu_time || 0,
     parallelWorkers: cudaResult.parallel_workers || 1,
-    memoryUsed: cudaResult.memory_used || 0,
+    memoryUsed: cudaResult.memory_used || 0
   };
 }
-async function processCPUVectorOperation(params: {
-  operation: string;
-  vectorA: Float32Array;
+async function processCPUVectorOperation(params: { operation: string;, vectorA: Float32Array;
   vectorB?: Float32Array;
   vectors?: Float32Array[];
-  algorithm: number;
+ , algorithm: number;
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
   switch (operation) {
@@ -220,7 +211,7 @@ async function processCPUVectorOperation(params: {
         }
       });
     default:
-      throw new Error(`Unknown operation: ${operation}`);
+      throw new Error(`Unknown; operation: ${operation}`);
   }
 }
 // CPU fallback implementations
@@ -284,6 +275,6 @@ function generateClientOptimizationHints(operation: string, dataSize: number) {
     intel_gpu_optimized: true,
     memory_pattern: 'coalesced_access',
     shader_precision: dataSize > 1000 ? 'highp' : 'mediump',
-    workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32))),
+    workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32)))
   };
 }

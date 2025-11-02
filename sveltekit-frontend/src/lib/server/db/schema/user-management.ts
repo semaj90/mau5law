@@ -22,7 +22,7 @@ export const insertUserSchema = z.object({
   practiceAreas: z.any().optional(),
   barNumber: z.string().optional(),
   firmName: z.string().optional(),
-  metadata: z.any().default({}),
+  metadata: z.any().default({})
 });
 export const updateUserSchema = insertUserSchema.partial();
 export const insertProfileSchema = z.object({
@@ -31,7 +31,7 @@ export const insertProfileSchema = z.object({
   preferences: z.any().default({}),
   specializations: z.array(z.string()).default([]),
   experienceLevel: z.string().optional(),
-  visibility: z.string().default('private'),
+  visibility: z.string().default('private')
 });
 export const updateProfileSchema = insertProfileSchema.partial();
 // ============================================================================
@@ -61,7 +61,7 @@ export const users = pgTable(
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
     lastLoginAt: timestamp('last_login_at'),
     // Soft delete
-    deletedAt: timestamp('deleted_at'),
+    deletedAt: timestamp('deleted_at')
   },
   table => ({
     // Indexes for performance
@@ -72,7 +72,7 @@ export const users = pgTable(
       .using('ivfflat', table.profileEmbedding)
       .with({ lists: 100 }),
     createdAtIdx: index('users_created_at_idx').on(table.createdAt),
-    isActiveIdx: index('users_is_active_idx').on(table.isActive),
+    isActiveIdx: index('users_is_active_idx').on(table.isActive)
   })
 );
 // ============================================================================
@@ -93,13 +93,13 @@ export const userSessions = pgTable(
     // Session context for legal work
     sessionContext: jsonb('session_context').default({}),
     createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow()
   },
   table => ({
     sessionIdIdx: uniqueIndex('user_sessions_session_id_idx').on(table.sessionId),
     userIdIdx: index('user_sessions_user_id_idx').on(table.userId),
     expiresAtIdx: index('user_sessions_expires_at_idx').on(table.expiresAt),
-    isActiveIdx: index('user_sessions_is_active_idx').on(table.isActive),
+    isActiveIdx: index('user_sessions_is_active_idx').on(table.isActive)
   })
 );
 // ============================================================================
@@ -127,10 +127,10 @@ export const userProfiles = pgTable(
     avatarUrl: varchar('avatar_url', { length: 500 }),
     bio: text('bio'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow()
   },
   table => ({
-    userIdIdx: uniqueIndex('user_profiles_user_id_idx').on(table.userId),
+    userIdIdx: uniqueIndex('user_profiles_user_id_idx').on(table.userId)
   })
 );
 // ============================================================================
@@ -158,13 +158,13 @@ export const userActivityLog = pgTable(
     errorMessage: text('error_message'),
     // Timing
     duration: serial('duration'), // milliseconds;
-    timestamp: timestamp('timestamp').notNull().defaultNow(),
+    timestamp: timestamp('timestamp').notNull().defaultNow()
   },
   table => ({
     userIdIdx: index('user_activity_log_user_id_idx').on(table.userId),
     actionIdx: index('user_activity_log_action_idx').on(table.action),
     timestampIdx: index('user_activity_log_timestamp_idx').on(table.timestamp),
-    sessionIdIdx: index('user_activity_log_session_id_idx').on(table.sessionId),
+    sessionIdIdx: index('user_activity_log_session_id_idx').on(table.sessionId)
   })
 );
 // ============================================================================
@@ -215,26 +215,26 @@ import { relations } from 'drizzle-orm/relations';
 export const usersRelations = relations(users, ({ one, many }) => ({
   profile: one(userProfiles, {
     fields: [users.id],
-    references: [userProfiles.userId],
+    references: [userProfiles.userId]
   }),
   sessions: many(userSessions),
-  activities: many(userActivityLog),
+  activities: many(userActivityLog)
 }));
 export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
   user: one(users, {
     fields: [userProfiles.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const userSessionsRelations = relations(userSessions, ({ one }) => ({
   user: one(users, {
     fields: [userSessions.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const userActivityLogRelations = relations(userActivityLog, ({ one }) => ({
   user: one(users, {
     fields: [userActivityLog.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));

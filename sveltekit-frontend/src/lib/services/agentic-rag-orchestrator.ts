@@ -31,37 +31,25 @@ import { cache } from '$lib/server/cache/redis';
 // Types & Interfaces
 // ============================================================================
 
-export interface AgentMessage {
-  role: 'user' | 'assistant' | 'system' | 'tool';
-  content: string;
+export interface AgentMessage { role: 'user' | 'assistant' | 'system' | 'tool';, content: string;
   toolCalls?: ToolCall[];
   toolResults?: ToolResult[];
   timestamp: Date;
 }
 
-export interface ToolCall {
-  id: string;
-  name: string;
+export interface ToolCall { id: string;, name: string;
   arguments: Record<string, any>;
 }
 
-export interface ToolResult {
-  toolCallId: string;
-  toolName: string;
+export interface ToolResult { toolCallId: string;, toolName: string;
   result: any;
   success: boolean;
   error?: string;
   executionTime: number;
 }
 
-export interface ToolDefinition {
-  name: string;
-  description: string;
-  parameters: {
-    type: 'object';
-    properties: Record<string, {
-      type: string;
-      description: string;
+export interface ToolDefinition { name: string;, description: string;
+  parameters: { type: 'object';, properties: Record<string, { type: string;, description: string;
       items?: any;
     }>;
     required?: string[];
@@ -69,18 +57,13 @@ export interface ToolDefinition {
   execute: (args: any, context: AgentContext) => Promise<any>;
 }
 
-export interface AgentContext {
-  conversationHistory: AgentMessage[];
-  documents: RAGDocument[];
+export interface AgentContext { conversationHistory: AgentMessage[];, documents: RAGDocument[];
   metadata: Record<string, any>;
   userId?: string;
   sessionId: string;
 }
 
-export interface AgentConfig {
-  model: string;                    // 'gemma3:legal-latest'
-  embeddingModel: string;           // 'embeddinggemma:latest'
-  temperature: number;
+export interface AgentConfig { model: string;                    // 'gemma3:legal-latest', embeddingModel: string;           // 'embeddinggemma:latest'; temperature: number;
   maxTokens: number;
   enableFunctionCalling: boolean;
   enableOCR: boolean;
@@ -110,13 +93,11 @@ export class ToolRegistry {
       description: 'Extract text from images or PDF documents using OCR',
       parameters: {
         type: 'object',
-        properties: {
-          documentId: {
-            type: 'string',
+        properties: { documentId: {, type: 'string',
             description: 'ID of the document to extract text from'
           },
           imageData: {
-            type: 'string',
+           , type: 'string',
             description: 'Base64-encoded image data (optional if documentId provided)'
           }
         },
@@ -133,13 +114,11 @@ export class ToolRegistry {
       description: 'Search the RAG knowledge base with synthesis ranking',
       parameters: {
         type: 'object',
-        properties: {
-          query: {
-            type: 'string',
+        properties: { query: {, type: 'string',
             description: 'Search query'
           },
           limit: {
-            type: 'number',
+           , type: 'number',
             description: 'Maximum number of results (default: 10)'
           },
           weights: {
@@ -153,7 +132,7 @@ export class ToolRegistry {
         return await hybridBridge.searchKnowledgeBase(
           args.query,
           args.limit || 10,
-          args.weights ? { ranking: { weights: args.weights } } : {}
+          args.weights ? { ranking: {, weights: args.weights } } : {}
         );
       }
     });
@@ -164,14 +143,12 @@ export class ToolRegistry {
       description: 'Analyze source code semantically to find patterns, functions, or components',
       parameters: {
         type: 'object',
-        properties: {
-          query: {
-            type: 'string',
+        properties: { query: {, type: 'string',
             description: 'What to search for in the codebase'
           },
           fileTypes: {
             type: 'array',
-            items: { type: 'string' },
+            items: {, type: 'string' },
             description: 'File extensions to search (e.g., [".svelte", ".ts"])'
           }
         },
@@ -188,9 +165,7 @@ export class ToolRegistry {
       description: 'Query vector database (pgvector/Qdrant) for similar documents',
       parameters: {
         type: 'object',
-        properties: {
-          embedding: {
-            type: 'array',
+        properties: { embedding: {, type: 'array',
             items: { type: 'number' },
             description: 'Query embedding vector (384-dim for embeddinggemma)'
           },
@@ -212,13 +187,11 @@ export class ToolRegistry {
       description: 'Rank documents using GPU-accelerated SIMD pipeline',
       parameters: {
         type: 'object',
-        properties: {
-          cacheKey: {
-            type: 'string',
+        properties: { cacheKey: {, type: 'string',
             description: 'Redis cache key containing documents'
           },
           query: {
-            type: 'string',
+           , type: 'string',
             description: 'Query for ranking'
           }
         },
@@ -235,9 +208,7 @@ export class ToolRegistry {
       description: 'Query Redis cache for stored data',
       parameters: {
         type: 'object',
-        properties: {
-          key: {
-            type: 'string',
+        properties: {, key: {, type: 'string',
             description: 'Cache key to retrieve'
           }
         },
@@ -254,9 +225,7 @@ export class ToolRegistry {
       description: 'Call MCP server tool (VS Code extension integration)',
       parameters: {
         type: 'object',
-        properties: {
-          tool: {
-            type: 'string',
+        properties: { tool: {, type: 'string',
             description: 'MCP tool name'
           },
           arguments: {
@@ -310,7 +279,7 @@ export class ToolRegistry {
         toolName: name,
         result: null,
         success: false,
-        error: `Tool '${name}' not found`,
+        error: 'Tool '${name}` not found`,
         executionTime: performance.now() - startTime
       };
     }
@@ -375,8 +344,7 @@ export class ToolRegistry {
    */
   private async executeCodeAnalysis(args: any, context: AgentContext): Promise<any> {
     // Search knowledge base for code-related chunks
-    const results = await ragKnowledgePipeline.search(args.query, 20, {
-      weights: { relevance: 0.6, keywords: 0.3, synthesis: 0.1 },
+    const results = await ragKnowledgePipeline.search(args.query, 20, { weights: {, relevance: 0.6, keywords: 0.3, synthesis: 0.1 },
       keywordExtractor: 'hybrid',
       enableGemmaFunctionCalling: true,
       cacheResults: true
@@ -408,7 +376,7 @@ export class ToolRegistry {
         {
           id: 'doc2',
           score: 0.89,
-          metadata: { title: 'Similar Document 2' }
+          metadata: { title: `Similar Document 2` }
         }
       ],
       topK: args.topK || 10,
@@ -425,8 +393,8 @@ export class ToolRegistry {
     try {
       const response = await fetch(`${mcpUrl}/mcp/tools/${args.tool}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ arguments: args.arguments })
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, arguments: args.arguments })
       });
 
       if (!response.ok) {
@@ -471,9 +439,7 @@ export class AgenticRAGOrchestrator {
     userQuery: string,
     documents: RAGDocument[] = [],
     context: Partial<AgentContext> = {}
-  ): Promise<{
-    response: string;
-    toolCalls: ToolResult[];
+  ): Promise<{ response: string;, toolCalls: ToolResult[];
     conversationHistory: AgentMessage[];
   }> {
     console.log('🤖 Starting Agentic RAG Orchestrator');
@@ -517,7 +483,7 @@ export class AgenticRAGOrchestrator {
 
         toolResults.push(result);
 
-        console.log(`      ${result.success ? '✅' : '❌'} ${result.toolName}: ${result.executionTime.toFixed(2)}ms`);
+        console.log(`      ${result.success ? '✅' : `❌` } ${result.toolName}: ${result.executionTime.toFixed(2)}ms`);
       }
 
       // Step 3: Call LLM again with tool results
@@ -583,9 +549,8 @@ export class AgenticRAGOrchestrator {
           model: this.config.model,
           messages: [
             {
-              role: 'system',
-              content: 'You are a legal AI assistant with access to tools. Use tools when needed to answer user queries accurately.'
-            },
+             , role: 'system',
+              content: `You are a legal AI assistant with access to tools. Use tools when needed to answer user queries accurately.` },
             {
               role: 'user',
               content: query
@@ -617,7 +582,7 @@ export class AgenticRAGOrchestrator {
       return { content: data.message?.content };
     } catch (error: any) {
       console.error('❌ LLM call failed:', error);
-      return { content: 'Error: LLM unavailable' };
+      return { content: `Error: LLM unavailable` };
     }
   }
 
@@ -631,11 +596,11 @@ export class AgenticRAGOrchestrator {
     try {
       const response = await fetch(`${this.config.ollamaUrl}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: this.config.model,
           messages: messages.map(m => ({
-            role: m.role === 'tool' ? 'assistant' : m.role,
+           , role: m.role === 'tool' ? 'assistant' : m.role,
             content: m.content
           })),
           stream: false
@@ -693,10 +658,10 @@ export const agenticOrchestrator = new AgenticRAGOrchestrator();
  * agenticOrchestrator.registerTool({
  *   name: 'custom_analyzer',
  *   description: 'Custom legal document analyzer',
- *   parameters: { type: 'object', properties: { text: { type: 'string' } } },
+ *   parameters: { type: 'object', properties: {, text: {, type: 'string' } } },
  *   execute: async (args) => {
  *     // Custom logic
- *     return { analysis: 'Custom analysis result' };
+ *     return { analysis: `Custom analysis result` };
  *   }
  * });
  *

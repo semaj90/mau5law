@@ -8,7 +8,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   // Optional production-friendly pool settings can go here
   max: parseInt(process.env.PG_MAX_CLIENTS || '10', 10),
-  idleTimeoutMillis: 30000,
+  idleTimeoutMillis: 30000
 });
 export const db = drizzle(pool);
 // Add a stricter type for processing metadata to avoid `any`
@@ -60,7 +60,7 @@ export const legal_documents = pgTable('legal_documents', {
   prosecution_score: real('prosecution_score').notNull().default(0),
   // Use a structured type instead of `any`
   processing_metadata: jsonb('processing_metadata').$type<ProcessingMetadata>().notNull(),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull()
 });
 export const document_chunks = pgTable('document_chunks', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -70,7 +70,7 @@ export const document_chunks = pgTable('document_chunks', {
   position: integer('position').notNull(),
   legal_relevance: real('legal_relevance').notNull().default(0),
   entities: jsonb('entities').$type<string[]>().notNull().default([]),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull()
 });
 export const legal_entities = pgTable('legal_entities', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -81,7 +81,7 @@ export const legal_entities = pgTable('legal_entities', {
   start_index: integer('start_index').notNull().default(0),
   end_index: integer('end_index').notNull().default(0),
   jurisdiction: varchar('jurisdiction', { length: 128 }).notNull(),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull()
 });
 export const fact_checks = pgTable('fact_checks', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -91,7 +91,7 @@ export const fact_checks = pgTable('fact_checks', {
   sources: jsonb('sources').$type<string[]>().notNull().default([]),
   confidence: real('confidence').notNull().default(0),
   jurisdiction: varchar('jurisdiction', { length: 128 }).notNull(),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull()
 });
 // Production-ready storage function
 export async function storeDocumentsInDatabase(documents: DocumentInput[], caseId: string): Promise<void> {
@@ -113,7 +113,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           jurisdiction: doc.jurisdiction,
           extracted_text: doc.extractedText ?? '',
           prosecution_score: doc.prosecutionScore ?? 0,
-          processing_metadata: doc.processingMetadata ?? {},
+          processing_metadata: doc.processingMetadata ?? {}
         })
         .execute();
       // Insert chunks (batching)
@@ -125,7 +125,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           embedding: chunk.embedding ?? null, // jsonb column
           position: chunk.position ?? 0,
           legal_relevance: chunk.legalRelevance ?? 0,
-          entities: chunk.entities ?? [],
+          entities: chunk.entities ?? []
         }));
         // Note: drizzle .insert(...).values([...]) is supported
         await transactionalDb.insert(document_chunks).values(chunkInserts).execute();
@@ -140,7 +140,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           confidence: ent.confidence ?? 0,
           start_index: ent.startIndex ?? 0,
           end_index: ent.endIndex ?? 0,
-          jurisdiction: ent.jurisdiction ?? doc.jurisdiction ?? 'unknown',
+          jurisdiction: ent.jurisdiction ?? doc.jurisdiction ?? 'unknown'
         }));
         await transactionalDb.insert(legal_entities).values(entityInserts).execute();
       }
@@ -153,8 +153,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           status: fc.status,
           sources: fc.sources ?? [],
           confidence: fc.confidence ?? 0,
-          jurisdiction: fc.jurisdiction ?? doc.jurisdiction ?? 'unknown',
-        }));
+          jurisdiction: fc.jurisdiction ?? doc.jurisdiction ?? 'unknown` }));
         await transactionalDb.insert(fact_checks).values(factInserts).execute();
       }
     }
@@ -203,7 +202,7 @@ export async function getVectorStore(): Promise<unknown> {
         | undefined;
       if (GemCtor) {
         try {
-          embeddings = new GemCtor({ model: 'embeddinggemma:latest' });
+          embeddings = new GemCtor({ model: `embeddinggemma:latest` });
         } catch (instErr) {
           console.debug(
             'Failed to instantiate embeddinggemma constructor, will fallback:',
@@ -228,7 +227,7 @@ export async function getVectorStore(): Promise<unknown> {
     // Instantiate PGVectorStore in a tolerant way without using `any`
     const PGCtor = PGVectorStore as unknown as PGVectorStoreConstructor;
     try {
-      return new PGCtor(embeddings, { pool, tableName: 'vectors' });
+      return new PGCtor(embeddings, { pool, tableName: `vectors` });
     } catch (ctorErr) {
       console.debug(
         'PGVectorStore constructor with (embeddings, opts) failed, attempting fallback instantiation:',

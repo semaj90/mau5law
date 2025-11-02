@@ -17,11 +17,11 @@ export async function POST({ request }): Promise<any> {
           content: file.content,
           embedding: file.embedding,
           summary: file.summary,
-          metadata: file.metadata,
+          metadata: file.metadata
         });
         console.log(`Successfully stored ${file.filePath} in PostgreSQL.`);
       } catch (pgError) {
-        console.error(`Error storing ${file.filePath} in PostgreSQL:`, pgError);
+        console.error(`Error storing ${file.filePath} in PostgreSQL: ', pgError);
         // Depending on your error handling strategy, you might want to re-throw or collect these errors
       }
     });

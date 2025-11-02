@@ -6,9 +6,7 @@ import type { Evidence, Document, Case } from '../server/database/schema.js';
 // Unified Legal AI Orchestration Service
 // Intelligently routes requests between Go microservices, WASM, WebGPU, and direct DB
 }
-export interface LegalAIRequest {
-  type: 'chat' | 'search' | 'analyze' | 'generate' | 'process';
-  payload: any;
+export interface LegalAIRequest { type: 'chat' | 'search' | 'analyze' | 'generate' | 'process';, payload: any;
   context?: {
     user_id?: string;
   session_id?: string;
@@ -21,9 +19,7 @@ export interface LegalAIRequest {
     prefer_cache?: boolean;
   }
 }
-export interface OrchestrationDecision {
-  execution_path: 'cache' | 'go-microservice' | 'wasm-accelerated' | 'webgpu-compute' | 'direct-db' | 'hybrid';
-  reasoning: string;
+export interface OrchestrationDecision { execution_path: 'cache' | 'go-microservice' | 'wasm-accelerated' | 'webgpu-compute' | 'direct-db' | 'hybrid';, reasoning: string;
   estimated_latency_ms: number;
   confidence_score: number;
   fallback_paths: string[];
@@ -272,8 +268,8 @@ export class UnifiedLegalOrchestrator {
     const goServiceUrl = this.loadBalancer.getGoServiceUrl();
     const response = await fetch(`${goServiceUrl}/api/v1/process`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(request)
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`Go service error: ${(response as { ok?: any; status?: any); json?: any }).status}`);
@@ -309,8 +305,7 @@ export class UnifiedLegalOrchestrator {
       tasks.push(qdrant.hybridSearch({
         query: request.payload.query || '',
         queryEmbedding: request.payload.embedding,
-        collection: request.payload.collection || 'documents'
-      });
+        collection: request.payload.collection || 'documents` });
     }
     // Run database query
     tasks.push(this.executeDirectDB({
@@ -378,18 +373,14 @@ export class UnifiedLegalOrchestrator {
     }
     this.performanceMetrics.set(key, metrics);
     // Track in analytics
-    await analytics.trackEvent('orchestration_performance', {
-      request_type: type
-      execution_path: path
-      latency_ms: latencyMs
+    await analytics.trackEvent('orchestration_performance', { request_type: type, execution_path: path; latency_ms: latencyMs
     )});
   }
   private async emergencyFallback(request: LegalAIRequest): Promise<any> {
     // Last resort fallback
     return {
       error: 'System temporarily unavailable',
-      fallback: true
-      request_id: Math.random().toString(36)
+      fallback: true; request_id: Math.random().toString(36)
     }
   }
   private async executeDirectSearch(request: LegalAIRequest): Promise<any> {
@@ -409,16 +400,14 @@ export class UnifiedLegalOrchestrator {
   }
   private async executeDirectAnalysis(request: LegalAIRequest): Promise<any> {
     // Implementation for direct database analysis
-    return { analysis: 'direct_analysis_result' }
+    return { analysis: `direct_analysis_result` }
   }
   private combineHybridResults(results: PromiseSettledResult<any>[]): any {
     // Combine results from multiple sources
     const combined = {
       sources: [],
       results: [],
-      metadata: {
-        hybrid: true
-        sources_count: 0
+      metadata: { hybrid: true, sources_count: 0
       }
     }
     for (const result of results) {

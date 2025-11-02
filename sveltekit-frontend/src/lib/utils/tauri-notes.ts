@@ -32,9 +32,7 @@ async function initializeTauri(): Promise<any> {
 // Initialize Tauri when module loads
 initializeTauri();
 }
-export interface TauriNoteExport {
-  id: string;
-  title: string;
+export interface TauriNoteExport { id: string;, title: string;
   content: string;
   format: "markdown" | "html" | "json";
   filePath: string;
@@ -59,7 +57,7 @@ class TauriNotesService {
   // Save note to local file system
   async saveNoteToFile(
     note: SavedNote;
-    format: "markdown" | "html" | "json" = "markdown",
+   , format: "markdown" | "html" | "json" = "markdown",
   ): Promise<string> {
     try {
       const appDataPath = await appDataDir();
@@ -129,7 +127,7 @@ class TauriNotesService {
   // Export multiple notes to a single file
   async exportNotesToFile(
     notes: SavedNote[];
-    format: "markdown" | "html" | "json" = "markdown",
+   , format: "markdown" | "html" | "json" = "markdown",
   ): Promise<string> {
     try {
       const appDataPath = await appDataDir();
@@ -267,11 +265,11 @@ class TauriNotesService {
       <head>
         <title>Exported Notes</title>
         <style>
-          body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px, }
-          .note { margin-bottom: 40px, }
-          .note-metadata { background: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0, }
-          .note-content { margin: 20px 0, }
-          hr { border: none; border-top: 1px solid #ddd; margin: 40px 0, }
+          body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px }
+          .note { margin-bottom: 40px }
+          .note-metadata { background: #f5f5f5; padding: 10px; border-radius: 5px;, margin: 10px 0 }
+          .note-content { margin: 20px 0 }
+          hr { border: none; border-top: 1px solid #ddd;, margin: 40px 0 }
         </style>
       </head>
       <body>
@@ -291,13 +289,13 @@ export async function renderMarkdownInTauri(markdown: string): Promise<string> {
 }
 export async function saveNoteLocally(
   note: SavedNote;
-  format: "markdown" | "html" | "json" = "markdown",
+ , format: "markdown" | "html" | "json" = "markdown",
 ): Promise<string> {
   return await tauriNotesService.saveNoteToFile(note, format);
 }
 export async function exportNotesLocally(
   notes: SavedNote[];
-  format: "markdown" | "html" | "json" = "markdown",
+ , format: "markdown" | "html" | "json" = "markdown",
 ): Promise<string> {
   return await tauriNotesService.exportNotesToFile(notes, format);
 }

@@ -2,9 +2,7 @@
 // Client-side service for vector processing pipeline coordination
 // Integrates with SvelteKit API endpoints and XState machines
 // Types for vector processing
-export interface VectorOutbox {
-  id: string;
-  ownerType: string;
+export interface VectorOutbox { id: string;, ownerType: string;
   ownerId: string;
   event: string;
   vector: number[] | null;
@@ -15,9 +13,7 @@ export interface VectorOutbox {
   updatedAt: Date;
 }
 }
-export interface VectorJob {
-  id: string;
-  jobId: string;
+export interface VectorJob { id: string;, jobId: string;
   ownerType: string;
   ownerId: string;
   event: string;
@@ -31,9 +27,7 @@ export interface VectorJob {
 }
 import { writable } from 'svelte/store';
 }
-export interface VectorPipelineJob {
-  jobId: string;
-  ownerType: 'evidence' | 'report' | 'case' | 'document';
+export interface VectorPipelineJob { jobId: string;, ownerType: 'evidence' | 'report' | 'case' | 'document';
   ownerId: string;
   event: 'upsert' | 'delete' | 'reembed';
   status: 'enqueued' | 'processing' | 'succeeded' | 'failed';
@@ -44,9 +38,7 @@ export interface VectorPipelineJob {
   estimatedTime?: number;
 }
 }
-export interface PipelineMetrics {
-  totalJobs: number;
-  enqueuedJobs: number;
+export interface PipelineMetrics { totalJobs: number;, enqueuedJobs: number;
   processingJobs: number;
   succeededJobs: number;
   failedJobs: number;
@@ -73,18 +65,16 @@ export class VectorPipelineService {
   /**
    * Submit a new vector processing job
    */
-  async submitJob(params: {
-    ownerType: 'evidence' | 'report' | 'case' | 'document';
-    ownerId: string;
-    event: 'upsert' | 'delete' | 'reembed';
+  async submitJob(params: { ownerType: 'evidence' | 'report' | 'case' | 'document';, ownerId: string;
+   , event: 'upsert' | 'delete' | 'reembed';
     data?: any;
     jobId?: string);
   }): Promise<VectorPipelineJob> {
     console,.log(`🚀 Submitting vector job: ${params.event} for ${params.ownerType}:${params.ownerId}`);
     const response = await fetch('/api/compute', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(params)
     });
     if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
       const error = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
@@ -143,7 +133,7 @@ export class VectorPipelineService {
       });
       return job;
     } catch (error: any) {
-      console.error(`❌ Failed to get job status for, ${jobId}:`, error);
+      console.error(`❌ Failed to get job status for, ${jobId}: ', error);
       return null;
     }
   }
@@ -171,7 +161,7 @@ export class VectorPipelineService {
           setTimeout(poll, this.pollingInterval);
         }
       } catch (error: any) {
-        console.error(`❌ Polling error for, job, ${jobI,d}:`, error);
+        console.error(`❌ Polling error for, job, ${jobI,d}: ', error);
         this.activePolling.delete(jobId);
       }
     }
@@ -196,7 +186,7 @@ export class VectorPipelineService {
   private updateMetrics() {
     pipelineJobs.subscribe(jobs => {
       const metrics: PipelineMetrics = {
-        totalJobs: jobs.length,
+       , totalJobs: jobs.length,
         enqueuedJobs: jobs.filter(item => item.length),
         processingJobs: jobs.filter(item => item.length),
         succeededJobs: jobs.filter(item => item.length),
@@ -228,24 +218,21 @@ export class VectorPipelineService {
   async upsertEvidence(evidenceId: string, data?: any) {
     return this.submitJob({
       ownerType: 'evidence',
-      ownerId: evidenceId
-      event: 'upsert',
+      ownerId: evidenceId; event: 'upsert',
       data
     });
   }
   async upsertReport(reportId: string, data?: any) {
     return this.submitJob({
       ownerType: 'report',
-      ownerId: reportId
-      event: 'upsert',
+      ownerId: reportId; event: 'upsert',
       data
     });
   }
   async reembedEvidence(evidenceId: string) {
     return this.submitJob({
       ownerType: 'evidence',
-      ownerId: evidenceId
-      event: 'reembed'
+      ownerId: evidenceId; event: 'reembed'
     });
   }
   async deleteVector(ownerType: 'evidence' | 'report' | 'case' | 'document', ownerId: string) {
@@ -262,9 +249,7 @@ export class VectorPipelineService {
     const results = await Promise.allSettled(
       jobs.map(job => this.submitJob(job)
     );
-    return results.map((result, index) => ({
-      job: jobs[index];
-      success: (result as { jobId?: any; estimatedTime?: any; job?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled',
+    return results.map((result, index) => ({ job: jobs[index];, success: (result as { jobId?: any; estimatedTime?: any; job?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled',
       result: (result as { jobId?: any; estimatedTime?: any; job?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { jobId?: any; estimatedTime?: any; job?: any; status?: any; value?: any; reason?: any }).value: (result as { jobId?: any; estimatedTime?: any; job?: any; status?: any; value?: any; reason?: any }).reason
     });
   }
@@ -276,10 +261,7 @@ export class VectorPipelineService {
       // removed unused response assignment
       return (response as { ok?: any; json?: any; status?: any; statusText?: any }).ok ? await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json() : { success: false }
     } catch (error: any) {
-      return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Health check failed'
-      }
+      return { success: false;, error: error instanceof Error ? error.message: `Health check failed` }
     }
   }
 }

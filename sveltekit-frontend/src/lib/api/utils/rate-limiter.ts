@@ -30,15 +30,11 @@ export interface RateLimitOptions<Args extends unknown[] = unknown[]> {
    */
   onDropped?: (args: Args) => void;
 }
-type Pending<Args extends unknown[], T> = {
-  args: Args;
-  resolve: (_value: T | PromiseLike<T>) => void;
+type Pending<Args extends unknown[], T> = { args: Args;, resolve: (_value: T | PromiseLike<T>) => void;
   reject: (err: any) => void;
   enqueueAt: number;
 };
-class Bucket<Args extends unknown[], T> {
-  tokens: number;
-  lastRefill: number;
+class Bucket<Args extends unknown[], T> { tokens: number;, lastRefill: number;
   queue: Pending<Args, T>[];
   concurrentlyRunning: number;
   constructor(public opts: Required<RateLimitOptions<Args>>) {
@@ -86,7 +82,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
     windowMs: options?.windowMs ?? 1000,
     maxConcurrent: options?.maxConcurrent ?? 5,
     maxQueue: options?.maxQueue ?? 200,
-    onDropped: options?.onDropped ?? (() => {}),
+    onDropped: options?.onDropped ?? (() => {})
   };
   const buckets = new Map<string, Bucket<Args, T>>();
   function getBucket(_key: string) {
@@ -181,7 +177,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
         args,
         resolve,
         reject,
-        enqueueAt: Date.now(),
+        enqueueAt: Date.now()
       };
       bucket.queue.push(pending);
       // Try to trigger processing (in case tokens become available soon)

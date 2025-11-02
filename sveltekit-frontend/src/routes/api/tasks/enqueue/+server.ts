@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
       id: crypto.randomUUID(),
       type: body.type || 'generic',
       payload: body.payload || {},
-      createdAt: Date.now(),
+      createdAt: Date.now()
     };
     return new Response(JSON.stringify({ success: true, task }), { status: 202 });
   } catch (e: any) {

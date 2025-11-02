@@ -3,33 +3,23 @@
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment'; // <- ensure browser check works
 
-export interface Evidence {
-  id: string;
-  title: string;
+export interface Evidence { id: string;, title: string;
   description: string;
   type: string;
   caseId: string;
   fileUrl?: string;
   metadata?: Record<string, unknown>;
   tags?: string[];
-  location?: {
-    latitude: number;
-    longitude: number;
+  location?: { latitude: number;, longitude: number;
     address?: string;
   };
-  classification?: {
-    category: string;
-    relevance: number;
+  classification?: { category: string;, relevance: number;
     confidence: number;
   };
-  timeline?: {
-    createdAt: string;
-    updatedAt: string;
+  timeline?: { createdAt: string;, updatedAt: string;
     collectedAt?: string;
   };
-  analysis?: {
-    summary: string;
-    keyPoints: string[];
+  analysis?: { summary: string;, keyPoints: string[];
     relevance: number;
     admissibility: 'admissible' | 'questionable' | 'inadmissible';
     reasoning: string;
@@ -40,9 +30,7 @@ export interface Evidence {
     relatedEvidence?: string[];
   };
 }
-export interface EvidenceOperation {
-  id: string;
-  type: 'CREATE' | 'UPDATE' | 'DELETE';
+export interface EvidenceOperation { id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
   timestamp: string;
   userId?: string;
   evidenceId: string;
@@ -85,9 +73,7 @@ type RealtimePayload = {
   userId?: string;
 };
 
-type RealtimeMessage = {
-  channel: string;
-  data: RealtimePayload;
+type RealtimeMessage = { channel: string;, data: RealtimePayload;
 };
 
 // Simple runtime type-guards
@@ -163,7 +149,7 @@ class RealTimeEvidenceStore {
           this.websocket?.send(
             JSON.stringify({
               type: 'subscribe',
-              channels: ['evidence_update', 'case_update'],
+              channels: ['evidence_update', 'case_update']
             })
           );
           resolve();
@@ -269,7 +255,7 @@ class RealTimeEvidenceStore {
         userId,
         evidenceId: evidenceData.id,
         previousState: null,
-        newState: evidenceData,
+        newState: evidenceData
       });
       return [...items, evidenceData];
     });
@@ -292,7 +278,7 @@ class RealTimeEvidenceStore {
         evidenceId,
         previousState,
         newState,
-        changes,
+        changes
       });
       items[index] = newState;
       return [...items];
@@ -314,7 +300,7 @@ class RealTimeEvidenceStore {
         userId,
         evidenceId,
         previousState,
-        newState: null,
+        newState: null
       });
       return items.filter(item => item.id !== evidenceId);
     });
@@ -329,8 +315,8 @@ class RealTimeEvidenceStore {
       timeline: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        ...evidenceData.timeline,
-      },
+        ...evidenceData.timeline
+      }
     };
     // Optimistic update
     this.handleEvidenceCreated(newEvidence, this.getCurrentUserId());
@@ -338,8 +324,8 @@ class RealTimeEvidenceStore {
       // Send to server
       const res: Response = await fetch('/api/evidence', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEvidence),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(newEvidence)
       });
       if (!res.ok) {
         throw new Error(`Failed to create evidence: ${res.statusText}`);
@@ -363,8 +349,8 @@ class RealTimeEvidenceStore {
       // Send to server
       const res: Response = await fetch(`/api/evidence/${evidenceId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(changes),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(changes)
       });
       if (!res.ok) {
         throw new Error(`Failed to update evidence: ${res.statusText}`);
@@ -385,8 +371,7 @@ class RealTimeEvidenceStore {
     try {
       // Send to server
       const res: Response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE',
-      });
+        method: `DELETE` });
       if (!res.ok) {
         throw new Error(`Failed to delete evidence: ${res.statusText}`);
       }
@@ -493,7 +478,7 @@ class RealTimeEvidenceStore {
         evidence: get(this.evidence),
         operationHistory: get(this.operationHistory),
         currentHistoryIndex: get(this.currentHistoryIndex),
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       };
       localStorage.setItem('evidenceStore', JSON.stringify(data));
     } catch (err: any) {

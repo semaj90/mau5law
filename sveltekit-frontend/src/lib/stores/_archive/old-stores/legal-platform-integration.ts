@@ -10,9 +10,7 @@ import { poiStore, type PersonOfInterest } from './legal-poi.js';
 import { uploadStore } from './upload-machine.js';
 import { enhancedSavedNotesStore } from './enhanced-saved-notes.js';
 // Unified Legal Platform Types
-export interface LegalCase {
-  id: string;
-  caseNumber: string;
+export interface LegalCase { id: string;, caseNumber: string;
   title: string;
   description: string;
   status: 'active' | 'pending' | 'closed' | 'archived';
@@ -30,21 +28,15 @@ export interface LegalCase {
   filingDate: string;
   expectedResolution?: string;
   // Financial tracking
-  financials: {
-    budgetAllocated: number;
-    costToDate: number;
+  financials: { budgetAllocated: number;, costToDate: number;
     billingRate: number;
     timeSpent: number; // hours
   }
   // AI insights
-  aiInsights: {
-    riskScore: number; // 0-100
-    complexityScore: number; // 0-100,
+  aiInsights: { riskScore: number; // 0-100, complexityScore: number; // 0-100,
     timelineRisk: 'on_track' | 'at_risk' | 'delayed';
     recommendedActions: string[];
-    precedentCases: Array<{
-      caseId: string;
-      similarity: number;
+    precedentCases: Array<{ caseId: string;, similarity: number;
       outcome: string;
     }>;
   }
@@ -56,37 +48,29 @@ export interface LegalCase {
 }
 export interface CrossSystemInsights {
   // Citation-Report connections
-  citationReportLinks: Array<{
-    citationId: string;
-    reportId: string;
+  citationReportLinks: Array<{ citationId: string;, reportId: string;
     relevance: number;
     context: string;
   }>;
   // POI-Citation connections
-  poiCitationLinks: Array<{
-    poiId: string;
-    citationId: string;
+  poiCitationLinks: Array<{ poiId: string;, citationId: string;
     involvement: 'author' | 'referenced' | 'opposing' | 'supporting';
     frequency: number;
   }>;
   // POI-Report connections
-  poiReportLinks: Array<{
-    poiId: string;
-    reportId: string;
+  poiReportLinks: Array<{ poiId: string;, reportId: string;
     role: 'subject' | 'contributor' | 'reviewer' | 'mentioned';
     importance: number;
   }>;
   // Network patterns
-  networkPatterns: {
-    keyInfluencers: Array<{ poiId: string; influence: number }>;
-    citationClusters: Array<{ caseIds: string[]; commonCitations: string[] }>;
-    reportThemes: Array<{ theme: string; reportIds: string[]; frequency: number }>;
+  networkPatterns: { keyInfluencers: Array<{ poiId: string;, influence: number }>;
+    citationClusters: Array<{ caseIds: string[];, commonCitations: string[] }>;
+    reportThemes: Array<{ theme: string; reportIds: string[];, frequency: number }>;
   };
   // Temporal analysis
-  temporalInsights: {
-    citationTrends: Array<{ period: string; count: number; types: Record<string, number> }>;
-    reportGeneration: Array<{ period: string; count: number; templates: Record<string, number> }>;
-    poiActivity: Array<{ period: string; interactions: number; newPOIs: number }>;
+  temporalInsights: { citationTrends: Array<{ period: string; count: number;, types: Record<string, number> }>;
+    reportGeneration: Array<{ period: string; count: number;, templates: Record<string, number> }>;
+    poiActivity: Array<{ period: string; interactions: number;, newPOIs: number }>;
   };
 }
 // Integration Context
@@ -99,16 +83,12 @@ interface PlatformContext {
   activeReports: LegalReport[];
   activePOIs: PersonOfInterest[];
   // Integration status
-  syncStatus: {
-    citations: 'synced' | 'syncing' | 'error';
-    reports: 'synced' | 'syncing' | 'error';
+  syncStatus: { citations: 'synced' | 'syncing' | 'error';, reports: 'synced' | 'syncing' | 'error';
     poi: 'synced' | 'syncing' | 'error';
     documents: 'synced' | 'syncing' | 'error';
   };
   // AI processing queue
-  aiQueue: Array<{
-    id: string;
-    type: 'case_analysis' | 'cross_reference' | 'risk_assessment' | 'recommendation';
+  aiQueue: Array<{ id: string;, type: 'case_analysis' | 'cross_reference' | 'risk_assessment' | 'recommendation';
     entityIds: string[];
     priority: number;
     status: 'pending' | 'processing' | 'completed' | 'failed';
@@ -117,25 +97,23 @@ interface PlatformContext {
   error: string | null;
 }
 type PlatformEvent =
-  | { type: 'LOAD_CASE'; caseId: string }
-  | { type: 'CREATE_CASE'; caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> }
-  | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<LegalCase> }
-  | { type: 'LINK_ENTITY'; caseId: string; entityType: 'citation' | 'report' | 'poi' | 'document' | 'note'; entityId: string }
-  | { type: 'UNLINK_ENTITY'; caseId: string; entityType: string; entityId: string }
+  | { type: 'LOAD_CASE';, caseId: string }
+  | { type: 'CREATE_CASE';, caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> }
+  | { type: 'UPDATE_CASE'; caseId: string;, updates: Partial<LegalCase> }
+  | { type: 'LINK_ENTITY'; caseId: string; entityType: 'citation' | 'report' | 'poi' | 'document' | 'note';, entityId: string }
+  | { type: 'UNLINK_ENTITY'; caseId: string; entityType: string;, entityId: string }
   | { type: 'ANALYZE_CROSS_SYSTEMS' }
-  | { type: 'GENERATE_INSIGHTS'; caseId: string }
+  | { type: 'GENERATE_INSIGHTS';, caseId: string }
   | { type: 'SYNC_ALL_SYSTEMS' }
-  | { type: 'AI_PROCESS'; type: string; entityIds: string[] }
-  | { type: 'BULK_CASE_OPERATION'; operation: string; caseIds: string[] }
+  | { type: 'AI_PROCESS'; type: string;, entityIds: string[] }
+  | { type: 'BULK_CASE_OPERATION'; operation: string;, caseIds: string[] }
   | { type: 'RESET' }
-  | { type: 'ERROR'; error: string }
+  | { type: 'ERROR';, error: string }
 // Legal Platform Integration Machine
 export const legalPlatformMachine = createMachine(
   {
     id: 'legalPlatform',
-    types: {} as {
-      context: PlatformContext;
-      events: PlatformEvent;
+    types: {} as { context: PlatformContext;, events: PlatformEvent;
     },
     initial: 'idle',
     context: {
@@ -152,12 +130,9 @@ export const legalPlatformMachine = createMachine(
       },
       aiQueue: [],
       loading: false,
-      error: null,
+      error: null
     },
-    states: {
-      idle: {
-        on: {
-          LOAD_CASE: { target: 'loading_case' },
+    states: { idle: {, on: { LOAD_CASE: {, target: 'loading_case' },
           CREATE_CASE: { target: 'creating_case' },
           LINK_ENTITY: { target: 'linking_entity' },
           ANALYZE_CROSS_SYSTEMS: { target: 'analyzing_systems' },
@@ -165,9 +140,7 @@ export const legalPlatformMachine = createMachine(
           AI_PROCESS: { target: 'ai_processing' }
         }
       },
-      loading_case: {
-        invoke: {
-          id: 'loadCase',
+      loading_case: {, invoke: {, id: 'loadCase',
           src: 'loadLegalCase',
           input: ({ event }) => ({ caseId: (event as any).caseId }),
           onDone: {
@@ -185,9 +158,7 @@ export const legalPlatformMachine = createMachine(
           }
         }
       },
-      loading_related_entities: {
-        invoke: {
-          id: 'loadRelatedEntities',
+      loading_related_entities: { invoke: {, id: 'loadRelatedEntities',
           src: 'loadRelatedEntities',
           input: ({ context }) => ({ caseId: context.currentCase?.id }),
           onDone: {
@@ -206,9 +177,7 @@ export const legalPlatformMachine = createMachine(
           }
         }
       },
-      creating_case: {
-        invoke: {
-          id: 'createCase',
+      creating_case: { invoke: {, id: 'createCase',
           src: 'createLegalCase',
           input: ({ event }) => ({ caseData: (event as any).caseData }),
           onDone: {
@@ -226,9 +195,7 @@ export const legalPlatformMachine = createMachine(
           }
         }
       },
-      linking_entity: {
-        invoke: {
-          id: 'linkEntity',
+      linking_entity: { invoke: {, id: 'linkEntity',
           src: 'linkEntityToCase',
           input: ({ event }) => ({
             caseId: (event as any).caseId,
@@ -249,9 +216,7 @@ export const legalPlatformMachine = createMachine(
           }
         }
       },
-      analyzing_systems: {
-        invoke: {
-          id: 'analyzeSystems',
+      analyzing_systems: { invoke: {, id: 'analyzeSystems',
           src: 'analyzeCrossSystemInsights',
           onDone: {
             target: 'idle',
@@ -267,15 +232,11 @@ export const legalPlatformMachine = createMachine(
           }
         }
       },
-      syncing_systems: {
-        invoke: {
-          id: 'syncSystems',
+      syncing_systems: { invoke: {, id: 'syncSystems',
           src: 'syncAllSystems',
           onDone: {
             target: 'idle',
-            actions: assign({
-              syncStatus: {
-                citations: 'synced',
+            actions: assign({ syncStatus: {, citations: 'synced',
                 reports: 'synced',
                 poi: 'synced',
                 documents: 'synced'
@@ -290,9 +251,7 @@ export const legalPlatformMachine = createMachine(
           }
         }
       },
-      ai_processing: {
-        invoke: {
-          id: 'aiProcess',
+      ai_processing: { invoke: {, id: 'aiProcess',
           src: 'processAITask',
           input: ({ event }) => ({
             type: (event as any).type,
@@ -319,9 +278,9 @@ export const legalPlatformMachine = createMachine(
     actors: {
       // Load complete case with all linked entities
       loadLegalCase: fromPromise(
-        async ({ input }: { input: { caseId: string } }) => {
+        async ({ input }: { input: {, caseId: string } }) => {
           const response = await fetch(`/api/cases/${input.caseId}`, {
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': `application/json` }
           });
           if (!response.ok) {
             throw new Error(`Failed to load case ${response.statusText}`);
@@ -331,7 +290,7 @@ export const legalPlatformMachine = createMachine(
       ),
       // Load all related entities for a case
       loadRelatedEntities: fromPromise(
-        async ({ input }: { input: { caseId: string } }) => {
+        async ({ input }: { input: {, caseId: string } }) => {
           const [citationsRes, reportsRes, poisRes] = await Promise.all([
             fetch(`/api/cases/${input.caseId}/citations`),
             fetch(`/api/cases/${input.caseId}/reports`),
@@ -345,10 +304,10 @@ export const legalPlatformMachine = createMachine(
       ),
       // Create new legal case
       createLegalCase: fromPromise(
-        async ({ input }: { input: { caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> } }) => {
+        async ({ input }: { input: {, caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> } }) => {
           const response = await fetch('/api/cases', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify(input.caseData)
           });
           if (!response.ok) {
@@ -359,14 +318,14 @@ export const legalPlatformMachine = createMachine(
       ),
       // Link entity to case
       linkEntityToCase: fromPromise(
-        async ({ input }: { input: { caseId: string; entityType: string; entityId: string } }) => {
+        async ({ input }: { input: { caseId: string; entityType: string;, entityId: string } }) => {
           const response = await fetch(`/api/cases/${input.caseId}/link`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              entityType: input.entityType,
-              entityId: input.entityId,
-            }),
+             , entityType: input.entityType,
+              entityId: input.entityId
+            })
           });
           if (!response.ok) {
             throw new Error(`Failed to link entity: ${response.statusText}`);
@@ -379,7 +338,7 @@ export const legalPlatformMachine = createMachine(
         async () => {
           const response = await fetch('/api/platform/insights', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': `application/json` }
           });
           if (!response.ok) {
             throw new Error(`Failed to analyze insights: ${response.statusText}`);
@@ -392,7 +351,7 @@ export const legalPlatformMachine = createMachine(
         async () => {
           const response = await fetch('/api/platform/sync', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': `application/json` }
           });
           if (!response.ok) {
             throw new Error(`Failed to sync systems: ${response.statusText}`);
@@ -402,14 +361,14 @@ export const legalPlatformMachine = createMachine(
       ),
       // Process AI tasks
       processAITask: fromPromise(
-        async ({ input }: { input: { type: string; entityIds: string[] } }) => {
+        async ({ input }: { input: {, type: string; entityIds: string[] } }) => {
           const response = await fetch('/api/ai/process', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              taskType: input.type,
-              entityIds: input.entityIds,
-            }),
+             , taskType: input.type,
+              entityIds: input.entityIds
+            })
           });
           if (!response.ok) {
             throw new Error(`AI processing failed: ${response.statusText}`);
@@ -467,15 +426,15 @@ export const dashboardStore = derived(
           linkedReports: $platform.context.activeReports.length,
           linkedPOIs: $platform.context.activePOIs.length,
           riskScore: $platform.context.currentCase.aiInsights.riskScore,
-          status: $platform.context.currentCase.status,
+          status: $platform.context.currentCase.status
         }
       : null,
     // System health
     systemHealth: {
       allSystemsOnline: Object.values($platform.context.syncStatus).every(status => status === 'synced'),
       pendingAITasks: $platform.context.aiQueue.length,
-      lastSync: new Date().toISOString(),
-    },
+      lastSync: new Date().toISOString()
+    }
   })
 );
 // Cross-System Search
@@ -518,7 +477,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
 export async function mapEntityRelationships(entityIds: string[], types: string[]): Promise<any> {
   const response = await fetch('/api/platform/relationships', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({ entityIds, types })
   });
   if (!response.ok) {
@@ -530,7 +489,7 @@ export async function mapEntityRelationships(entityIds: string[], types: string[
 export async function generateCaseRecommendations(caseId: string): Promise<any> {
   const response = await fetch(`/api/cases/${caseId}/recommendations`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': `application/json` }
   });
   if (!response.ok) {
     throw new Error(`Recommendation generation failed: ${response.statusText}`);
@@ -538,10 +497,10 @@ export async function generateCaseRecommendations(caseId: string): Promise<any> 
   return await response.json();
 }
 // Bulk Operations Across Systems
-export async function bulkCrossSystemOperation(operation: string, entities: Array<{ type: string; id: string }>): Promise<any> {
+export async function bulkCrossSystemOperation(operation: string, entities: Array<{, type: string; id: string }>): Promise<any> {
   const response = await fetch('/api/platform/bulk', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({ operation, entities })
   });
   if (!response.ok) {

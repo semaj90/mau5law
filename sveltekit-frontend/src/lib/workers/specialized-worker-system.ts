@@ -15,7 +15,7 @@ type AmqpConnectionLike = {
 type AmqpChannelLike = {
   assertQueue: (q: string, opts?: Record<string, unknown>) => Promise<unknown>;
   consume: (q: string, cb: (msg: AmqpConsumeMessageLike | null) => void) => Promise<unknown>;
-  sendToQueue: (q: string, content: Buffer, opts?: Record<string, unknown>) => boolean;
+  sendToQueue: (q: string; content: Buffer, opts?: Record<string, unknown>) => boolean;
   ack: (msg: AmqpConsumeMessageLike) => void;
   nack: (msg: AmqpConsumeMessageLike, allUpTo?: boolean, requeue?: boolean) => void;
   prefetch?: (n: number) => Promise<unknown> | void;
@@ -39,8 +39,7 @@ function getErrorMessage(e: any): string {
 }
 
 // Job payload type variants for stricter typing
-export type SummarizePayload = {
-  document: { id: string; content: string };
+export type SummarizePayload = { document: { id: string;, content: string };
   options?: { maxLength?: number } & Record<string, unknown>;
 };
 export type CaseLawPayload = {
@@ -56,9 +55,7 @@ export type EmbeddingPayload = {
 };
 export type JobPayload = SummarizePayload | CaseLawPayload | EmbeddingPayload | Record<string, unknown>;
 
-export interface SpecializedJob {
-  id: string;
-  type: 'SUMMARIZE_DOCUMENT' | 'GET_CASE_LAW' | 'GENERATE_EMBEDDING' | 'ANALYZE_EVIDENCE' | 'LEGAL_RESEARCH';
+export interface SpecializedJob { id: string;, type: 'SUMMARIZE_DOCUMENT' | 'GET_CASE_LAW' | 'GENERATE_EMBEDDING' | 'ANALYZE_EVIDENCE' | 'LEGAL_RESEARCH';
   payload: JobPayload;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   timeout: number; // milliseconds
@@ -71,22 +68,16 @@ export interface SpecializedJob {
     confidential?: boolean;
   };
 }
-export interface WorkerResult {
-  jobId: string;
-  success: boolean;
+export interface WorkerResult { jobId: string;, success: boolean;
   data?: any;
   error?: string;
   processingTime: number;
-  workerInfo: {
-    id: string;
-    type: string;
+  workerInfo: { id: string;, type: string;
     version: string;
     capabilities: string[];
   };
 }
-export interface WorkerStats {
-  totalJobs: number;
-  completedJobs: number;
+export interface WorkerStats { totalJobs: number;, completedJobs: number;
   failedJobs: number;
   averageProcessingTime: number;
   queuedJobs: number;
@@ -113,7 +104,7 @@ export class JobOrchestrator extends EventEmitter {
     queuedJobs: 0,
     activeWorkers: 0,
     systemHealth: 'healthy',
-    lastUpdate: new Date(),
+    lastUpdate: new Date()
   };
 
   constructor(private rabbitmqUrl: string = 'amqp://localhost') {
@@ -151,7 +142,7 @@ export class JobOrchestrator extends EventEmitter {
     const fullJob: SpecializedJob = {
       ...job,
       id: jobId,
-      createdAt: new Date(),
+      createdAt: new Date()
     };
     this.jobQueue.set(jobId, fullJob);
     this.stats.totalJobs++;
@@ -160,7 +151,7 @@ export class JobOrchestrator extends EventEmitter {
     if (this.channel) {
       await this.channel.sendToQueue(queueName, Buffer.from(JSON.stringify(fullJob)), {
         persistent: true,
-        priority: this.getPriorityNumber(job.priority),
+        priority: this.getPriorityNumber(job.priority)
       });
       console.log(`📤 Job ${jobId} (${job.type}) submitted to queue ${queueName}`);
       this.emit('jobSubmitted', { jobId, type: job.type });
@@ -226,7 +217,7 @@ export class JobOrchestrator extends EventEmitter {
           // Update average processing time
           const totalProcessingTime = Array.from(this.results.values()).reduce((sum, r) => sum + r.processingTime, 0);
           this.stats.averageProcessingTime = this.results.size > 0 ? totalProcessingTime / this.results.size : 0;
-          console.log(`📥 Job ${result.jobId} completed: ${result.success ? 'SUCCESS' : 'FAILED'}`);
+          console.log(`📥 Job ${result.jobId} completed: ${result.success ? 'SUCCESS' : `FAILED` }`);
           this.emit('jobCompleted', result);
           this.channel?.ack(msg);
         } catch (error: any) {
@@ -243,8 +234,7 @@ export class JobOrchestrator extends EventEmitter {
       'GET_CASE_LAW': 'case_law_jobs',
       'GENERATE_EMBEDDING': 'embedding_jobs',
       'ANALYZE_EVIDENCE': 'analysis_jobs',
-      'LEGAL_RESEARCH': 'research_jobs',
-    };
+      'LEGAL_RESEARCH': `research_jobs` };
     return queueMap[type];
   }
 
@@ -297,7 +287,7 @@ export abstract class SpecializedWorker extends EventEmitter {
       console.log(`🐝 Worker ${this.workerId} (${this.workerType}) initialized`);
       this.emit('initialized');
     } catch (error: any) {
-      console.error(`Failed to initialize worker ${this.workerId}:`, getErrorMessage(error));
+      console.error(`Failed to initialize worker ${this.workerId}: ', getErrorMessage(error));
       throw error;
     }
   }
@@ -327,8 +317,8 @@ export abstract class SpecializedWorker extends EventEmitter {
               id: this.workerId,
               type: this.workerType,
               version: this.version,
-              capabilities: this.capabilities,
-            },
+              capabilities: this.capabilities
+            }
           };
           await this.sendResult(workerResult);
           this.channel?.ack(msg);
@@ -351,12 +341,12 @@ export abstract class SpecializedWorker extends EventEmitter {
               id: this.workerId,
               type: this.workerType,
               version: this.version,
-              capabilities: this.capabilities,
-            },
+              capabilities: this.capabilities
+            }
           };
           await this.sendResult(errorResult);
           this.channel?.ack(msg);
-          console.error(`❌ Worker ${this.workerId} failed to process job:`, errorResult.error);
+          console.error(`❌ Worker ${this.workerId} failed to process job: ', errorResult.error);
           this.emit('jobFailed', { error: errorResult.error, processingTime });
         } finally {
           this.isProcessing = false;
@@ -417,8 +407,8 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
       metadata: {
         originalLength: document.content.length,
         summaryLength: summary.length,
-        compressionRatio: summary.length / document.content.length,
-      },
+        compressionRatio: summary.length / document.content.length
+      }
     };
   }
 
@@ -463,8 +453,8 @@ export class CaseLawWorker extends SpecializedWorker {
         jurisdiction,
         dateRange,
         searchTime: new Date(),
-        relevanceThreshold: 0.7,
-      },
+        relevanceThreshold: 0.7
+      }
     };
   }
 
@@ -481,16 +471,15 @@ export class CaseLawWorker extends SpecializedWorker {
     return [
       {
         id: 'case_001',
-        title: `Sample v. Legal Case — matched for: "${q.slice(0, 60)}"`,
+        title: `Sample v. Legal Case — matched; for: "${q.slice(0, 60)}"`,
         citation: '123 F.3d 456 (9th Cir. 2023)',
         jurisdiction: options.jurisdiction || 'Federal',
         court: '9th Circuit Court of Appeals',
         date: '2023-03-15',
         relevanceScore,
-        summary: `A sample legal case generated for query: "${q}". This is placeholder data for testing.`,
+        summary: `A sample legal case generated for; query: "${q}". This is placeholder data for testing.`,
         keyHoldings: ['Sample holding 1', 'Sample holding 2'],
-        precedentialValue: 'binding',
-      },
+        precedentialValue: `binding` },
     ];
   }
 }
@@ -517,8 +506,8 @@ export class EmbeddingWorker extends SpecializedWorker {
       dimensions: embedding.length,
       model,
       metadata: {
-        textLength: (text || '').length,
-      },
+        textLength: (text || '').length
+      }
     };
   }
 
@@ -553,7 +542,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 // Factory function for creating the orchestrator with common workers
 export async function createSpecializedWorkerSystem(
   rabbitmqUrl: string = 'amqp://localhost'
-): Promise<{ orchestrator: JobOrchestrator; workers: SpecializedWorker[] }> {
+): Promise<{ orchestrator: JobOrchestrator;, workers: SpecializedWorker[] }> {
   const orchestrator = new JobOrchestrator(rabbitmqUrl);
   await orchestrator.initialize();
   const workers = [

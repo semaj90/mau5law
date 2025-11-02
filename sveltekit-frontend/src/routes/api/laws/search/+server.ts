@@ -13,7 +13,7 @@ const mockLegalDatabase = [
     fullText: 'Murder is the unlawful killing of a human being, or a fetus, with malice aforethought...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=187&lawCode=PEN',
     keywords: ['murder', 'homicide', 'killing', 'malice', 'unlawful', 'criminal'],
-    relatedSections: ['PEN § 188', 'PEN § 189', 'PEN § 190'],
+    relatedSections: ['PEN § 188', 'PEN § 189', 'PEN § 190']
   },
   {
     id: 'ca-pen-211',
@@ -27,7 +27,7 @@ const mockLegalDatabase = [
     fullText: 'Robbery is the felonious taking of personal property in the possession of another...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=211&lawCode=PEN',
     keywords: ['robbery', 'theft', 'felonious', 'taking', 'personal property', 'force', 'fear'],
-    relatedSections: ['PEN § 212', 'PEN § 213'],
+    relatedSections: ['PEN § 212', 'PEN § 213']
   },
   {
     id: 'ca-civ-1550',
@@ -38,10 +38,10 @@ const mockLegalDatabase = [
     code: 'CIV § 1550',
     lastUpdated: '2023-01-01',
     fullText:
-      'It is essential to the existence of a contract that there should be: 1. Parties capable of contracting...',
+      'It is essential to the existence of a contract that there should; be: 1. Parties capable of contracting...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1550&lawCode=CIV',
     keywords: ['contract', 'agreement', 'parties', 'consideration', 'lawful', 'consent'],
-    relatedSections: ['CIV § 1551', 'CIV § 1552', 'CIV § 1565'],
+    relatedSections: ['CIV § 1551', 'CIV § 1552', 'CIV § 1565']
   },
   {
     id: 'ca-evid-352',
@@ -55,7 +55,7 @@ const mockLegalDatabase = [
     fullText: 'The court in its discretion may exclude evidence if its probative value is substantially outweighed...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=352&lawCode=EVID',
     keywords: ['evidence', 'probative', 'prejudicial', 'discretion', 'exclude', 'court'],
-    relatedSections: ['EVID § 351', 'EVID § 353', 'EVID § 354'],
+    relatedSections: ['EVID § 351', 'EVID § 353', 'EVID § 354']
   },
   {
     id: 'federal-const-4th',
@@ -68,7 +68,7 @@ const mockLegalDatabase = [
     fullText: 'The right of the people to be secure in their persons, houses, papers, and effects...',
     fullTextUrl: 'https://constitution.congress.gov/constitution/amendment-4/',
     keywords: ['search', 'seizure', 'warrant', 'probable cause', 'unreasonable', 'privacy'],
-    relatedSections: ['U.S. Const. Amend. V', 'U.S. Const. Amend. VI'],
+    relatedSections: ['U.S. Const. Amend. V', 'U.S. Const. Amend. VI']
   },
   {
     id: 'ca-corp-204',
@@ -78,10 +78,10 @@ const mockLegalDatabase = [
     category: 'corporate',
     code: 'CORP § 204',
     lastUpdated: '2023-01-01',
-    fullText: 'The articles of incorporation shall set forth: (a) The name of the corporation...',
+    fullText: 'The articles of incorporation shall set; forth: (a) The name of the corporation...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=204&lawCode=CORP',
     keywords: ['corporation', 'articles', 'incorporation', 'business', 'entity', 'filing'],
-    relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202'],
+    relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202']
   },
 ];
 export const GET: RequestHandler = async ({ url }) => {
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async ({ url }) => {
       count: results.length,
       query,
       filters: { jurisdiction, category },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Laws search error:', error);
@@ -141,9 +141,9 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Search failed: ' + message,
+        error: 'Search; failed: ' + message,
         laws: [],
-        count: 0,
+        count: 0
       },
       { status: 500 }
     );
@@ -205,8 +205,8 @@ export async function performVectorSearch(query: string, jurisdiction: string, c
         query,
         type: 'legal',
         filters: { jurisdiction, category },
-        limit: 10,
-      }),
+        limit: 10
+      })
     });
     if (response.ok) {
       const result = await response.json();

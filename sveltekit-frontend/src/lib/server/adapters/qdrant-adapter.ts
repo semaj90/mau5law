@@ -7,8 +7,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
   const base = config.url ?? 'http://localhost:6333';
   async function indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
     if (!vectors || vectors.length === 0) return;
-    const body = {
-      points: vectors.map(v => ({ id: v.id, vector: v.vector, payload: v.payload ?? {} }))
+    const body = { points: vectors.map(v => ({, id: v.id, vector: v.vector, payload: v.payload ?? {} }))
     };
     const res = await fetch(`${base}/collections/${encodeURIComponent(name)}/points`, {
       method: 'POST',

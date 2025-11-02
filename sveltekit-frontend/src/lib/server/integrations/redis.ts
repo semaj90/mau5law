@@ -33,7 +33,7 @@ class RedisCacheService implements IRedisCacheService {
       url: this.config.url,
       password: this.config.password || undefined,
       socket: {
-        reconnectStrategy: (retries) => {
+       , reconnectStrategy: (retries) => {
           if (retries > this.config.maxRetries) {
             console.error('Redis max retries exceeded');
             return new Error('Redis connection failed');

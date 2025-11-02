@@ -8,7 +8,7 @@
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -44,18 +44,14 @@ interface SearchOptions {
   confidenceThreshold?: number;
 }
 
-interface LegalSearchRequest {
-  query: string;
-  searchType: 'general' | 'case-law' | 'contracts' | 'regulations' | 'precedents';
+interface LegalSearchRequest { query: string;, searchType: 'general' | 'case-law' | 'contracts' | 'regulations' | 'precedents';
   jurisdiction?: string;
   practiceArea?: string;
   dateRange?: DateRange;
   options?: SearchOptions;
 }
 
-interface LegalCaseResult {
-  id: string;
-  title: string;
+interface LegalCaseResult { id: string;, title: string;
   type: string;
   jurisdiction: string;
   practiceArea?: string;
@@ -66,9 +62,7 @@ interface LegalCaseResult {
   keyPoints: string[];
 }
 
-interface LegalRegulationResult {
-  id: string;
-  title: string;
+interface LegalRegulationResult { id: string;, title: string;
   type: string;
   jurisdiction: string;
   date: string;
@@ -80,20 +74,14 @@ interface LegalRegulationResult {
 
 type LegalDocumentResult = LegalCaseResult | LegalRegulationResult;
 
-interface LegalContext {
-  primaryJurisdiction: string;
-  applicableLaws: string[];
+interface LegalContext { primaryJurisdiction: string;, applicableLaws: string[];
   relevantStatutes: string[];
 }
 
-interface PracticeAreaInsights {
-  trendingIssues: string[];
-  recentDevelopments: string;
+interface PracticeAreaInsights { trendingIssues: string[];, recentDevelopments: string;
 }
 
-interface LegalSearchResponse {
-  results: LegalDocumentResult[];
-  totalResults: number;
+interface LegalSearchResponse { results: LegalDocumentResult[];, totalResults: number;
   searchTime: string;
   legalContext: LegalContext;
   relatedCases: string[];
@@ -110,7 +98,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Search query is required',
+          error: 'Search query is required'
         },
         { status: 400 }
       );
@@ -132,8 +120,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           ...(cachedResults?.metadata ?? {}),
           fromCache: true,
           cacheKey,
-          totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms`,
-        },
+          totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms` }
       };
       return cachedJson(augmented, 'VECTOR_SEARCH');
     }
@@ -160,7 +147,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       jurisdiction,
       practiceArea,
       dateRange,
-      options,
+      options
     });
     const totalTime = performance.now() - startTime;
     const response = {
@@ -175,11 +162,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         searchTime: searchResults.searchTime,
         embeddingFromCache,
         totalResponseTime: `${totalTime.toFixed(2)}ms`,
-        fromCache: false,
+        fromCache: false
       },
       legalContext: searchResults.legalContext,
       relatedCases: searchResults.relatedCases,
-      practiceAreaInsights: searchResults.practiceAreaInsights,
+      practiceAreaInsights: searchResults.practiceAreaInsights
     };
     // Cache the results with legal-specific TTL
     const cacheTTL = getLegalCacheTTL(searchType);
@@ -192,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         responseTime: `${totalTime.toFixed(2)}ms`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -207,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Wrap in block
       // Temporarily mock these as redisService does not expose them directly
       // Note: redisService needs to be updated to expose getStats() and getRedisInfo()
-      const redisStats = { connected_clients: 0, used_memory_human: '0B' }; // Mocked
+      const redisStats = { connected_clients: 0, used_memory_human: `0B` }; // Mocked
       const redisInfo = { memory: {}, keyspace: {} }; // Mocked
       const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
       const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`);
@@ -216,13 +203,13 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           redis: redisStats,
           cacheStatistics: {
-            legalSearchEntries: legalCacheKeys.length,
+           , legalSearchEntries: legalCacheKeys.length,
             caseLawEntries: caseLawKeys.length,
-            totalCachedSearches: legalCacheKeys.length + caseLawKeys.length,
+            totalCachedSearches: legalCacheKeys.length + caseLawKeys.length
           },
           redisMemory: redisInfo?.memory,
           keyspace: redisInfo?.keyspace,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         'REALTIME'
       );
@@ -235,11 +222,11 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         health: {
-          redis: isRedisHealthy,
+         , redis: isRedisHealthy,
           caching: true,
-          legalSearchOptimized: true,
+          legalSearchOptimized: true
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } // End block
     case 'clear-cache': {
@@ -255,14 +242,14 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: `Cleared ${allKeys.length} legal search cache entries`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       } catch (error: any) {
         // Change any to unknown
         return json(
           {
             success: false,
-            error: error instanceof Error ? error.message : String(error),
+            error: error instanceof Error ? error.message : String(error)
           },
           { status: 500 }
         );
@@ -273,11 +260,10 @@ export const GET: RequestHandler = async ({ url }) => {
           error: 'Invalid action',
           availableActions: ['stats', 'health', 'clear-cache'],
           endpoints: {
-            search: 'POST /api/ai/legal-search-cached',
+           , search: 'POST /api/ai/legal-search-cached',
             stats: 'GET /api/ai/legal-search-cached?action=stats',
             health: 'GET /api/ai/legal-search-cached?action=health',
-            clearCache: 'GET /api/ai/legal-search-cached?action=clear-cache',
-          },
+            clearCache: `GET /api/ai/legal-search-cached?action=clear-cache` }
         },
         { status: 400 }
       );
@@ -298,8 +284,8 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
       limit: request.options?.limit || 10,
       includeAnalysis: request.options?.includeAnalysis || false,
       includeSimilarCases: request.options?.includeSimilarCases || false,
-      confidenceThreshold: request.options?.confidenceThreshold || 0.7,
-    },
+      confidenceThreshold: request.options?.confidenceThreshold || 0.7
+    }
   };
   const crypto = await import('crypto');
   const hash = crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex');
@@ -322,11 +308,11 @@ async function generateLegalEmbedding(query: string, searchType: string, practic
     try {
       const response = await fetch(`${baseEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json' },
         body: JSON.stringify({
           model,
-          prompt: legalContextPrompt,
-        }),
+          prompt: legalContextPrompt
+        })
       });
       if (!response.ok) {
         // try next model
@@ -355,8 +341,7 @@ function buildLegalContextPrompt(query: string, searchType: string, practiceArea
     'contracts': 'Contract law and agreement terms: ',
     'regulations': 'Legal regulations and compliance requirements: ',
     'precedents': 'Legal precedents and court decisions: ',
-    'general': 'Legal research query: ',
-  };
+    'general': `Legal research query: ` };
   let prompt = contextPrefixes[searchType as keyof typeof contextPrefixes] || contextPrefixes.general;
   prompt += query;
   if (practiceArea) {
@@ -367,14 +352,11 @@ function buildLegalContextPrompt(query: string, searchType: string, practiceArea
 /**
  * Perform specialized legal search
  */
-async function performLegalSearch(params: {
-  query: string;
-  embedding: number[];
+async function performLegalSearch(params: { query: string;, embedding: number[];
   searchType: string;
   jurisdiction?: string;
   practiceArea?: string;
-  dateRange?: DateRange; // Fix: any -> DateRange
-  options: SearchOptions; // Fix: any -> SearchOptions
+  dateRange?: DateRange; // Fix: any -> DateRange; options: SearchOptions; //, Fix: any -> SearchOptions
 }): Promise<LegalSearchResponse> {
   // Fix: any -> LegalSearchResponse
   // Simulate legal search with specialized logic
@@ -394,7 +376,7 @@ async function performLegalSearch(params: {
         'Remote work provisions must be explicitly stated',
         'Employer cannot unilaterally change work location',
         'Good faith negotiation required for policy changes',
-      ],
+      ]
     },
     {
       id: 'reg-002',
@@ -409,7 +391,7 @@ async function performLegalSearch(params: {
         'Minimum standards for remote work agreements',
         'Employee privacy protections during remote work',
         'Employer obligations for equipment and workspace',
-      ],
+      ]
     },
   ];
   return {
@@ -419,13 +401,12 @@ async function performLegalSearch(params: {
     legalContext: {
       primaryJurisdiction: params.jurisdiction || 'Federal',
       applicableLaws: ['Employment Law', 'Contract Law'],
-      relevantStatutes: ['29 USC § 201', '42 USC § 2000e'],
+      relevantStatutes: ['29 USC § 201', '42 USC § 2000e']
     },
     relatedCases: ['Doe v. RemoteCorp (2023)', 'Johnson v. WorkFromHome Inc (2024)'],
     practiceAreaInsights: {
       trendingIssues: ['Remote work disputes', 'Digital privacy rights'],
-      recentDevelopments: 'Increased focus on hybrid work arrangements',
-    },
+      recentDevelopments: `Increased focus on hybrid work arrangements` }
   };
 }
 /**

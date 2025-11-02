@@ -21,21 +21,21 @@ const updatePoiSchema = z.object({
       weight: z.string().optional(),
       hair: z.string().optional(),
       eyes: z.string().optional(),
-      distinguishingMarks: z.string().optional(),
+      distinguishingMarks: z.string().optional()
     })
     .optional(),
   profileData: z
     .object({
       modusOperandi: z.string().optional(),
       knownHabits: z.array(z.string()).optional(),
-      associates: z.array(z.string()).optional(),
+      associates: z.array(z.string()).optional()
     })
     .optional(),
   lastKnownLocation: z.string().optional(),
   lastSeen: z.string().optional(),
   dangerLevel: z.number().min(0).max(10).optional(),
   notes: z.string().optional(),
-  isActive: z.boolean().optional(),
+  isActive: z.boolean().optional()
 });
 
 // GET /api/poi/[id] - Get specific POI with case relationships
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const caseRelations = await db
       .select({
         relation: casePoiRelations,
-        case: cases,
+        case: cases
       })
       .from(casePoiRelations)
       .innerJoin(cases, eq(casePoiRelations.caseId, cases.id))
@@ -69,8 +69,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       success: true,
       data: {
         ...poi,
-        caseRelations,
-      },
+        caseRelations
+      }
     });
   } catch (error) {
     console.error('Error fetching POI:', error);
@@ -115,7 +115,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     return json({
       success: true,
-      data: updatedPoi,
+      data: updatedPoi
     });
   } catch (error) {
     console.error('Error updating POI:', error);
@@ -148,13 +148,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .update(personsOfInterest)
       .set({
         isActive: false,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(personsOfInterest.id, poiId));
 
     return json({
       success: true,
-      message: 'POI deleted successfully',
+      message: 'POI deleted successfully'
     });
   } catch (error) {
     console.error('Error deleting POI:', error);

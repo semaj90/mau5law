@@ -16,7 +16,7 @@ export function apiSuccess<T>(data: T, status = 200): Response {
     {
       success: true,
       data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     },
     { status }
   );
@@ -27,7 +27,7 @@ export function apiError(error: string | object, status = 500, requestId?: strin
       success: false,
       error,
       timestamp: Date.now(),
-      requestId,
+      requestId
     },
     { status }
   );
@@ -54,7 +54,7 @@ export const apiResponses = {
   ok: <T>(data: T) => apiSuccess<T>(data, 200),
   created: <T>(data: T) => apiSuccess<T>(data, 201),
   accepted: <T>(data: T) => apiSuccess<T>(data, 202),
-  noContent: () => new Response(null, { status: 204 }),
+  noContent: () => new Response(null, { status: 204 })
 };
 /**
  * Legal AI specific response helpers
@@ -65,23 +65,23 @@ export const legalApiResponses = {
   caseUnauthorized: (caseId: string) => apiError(`Access denied to case ${caseId}`, 403),
   // Evidence management responses
   evidenceNotFound: (evidenceId: string) => apiError(`Evidence with ID ${evidenceId} not found`, 404),
-  evidenceUploadFailed: (reason: string) => apiError(`Evidence upload failed: ${reason}`, 400),
+  evidenceUploadFailed: (reason: string) => apiError(`Evidence upload; failed: ${reason}`, 400),
   // AI processing responses
-  aiProcessingFailed: (reason: string) => apiError(`AI processing failed: ${reason}`, 500),
+  aiProcessingFailed: (reason: string) => apiError(`AI processing; failed: ${reason}`, 500),
   aiServiceUnavailable: () => apiError('AI service temporarily unavailable', 503),
   // Authentication responses
   sessionExpired: () => apiError('Session expired, please log in again', 401),
   insufficientPermissions: (resource: string) => apiError(`Insufficient permissions to access ${resource}`, 403),
   // Validation responses
   invalidCaseData: (details: object) => apiError({ message: 'Invalid case data', details }, 422),
-  invalidEvidenceFormat: (format: string) => apiError(`Unsupported evidence format: ${format}`, 400),
+  invalidEvidenceFormat: (format: string) => apiError(`Unsupported evidence; format: ${format}`, 400),
   // Success responses (made generic)
   caseCreated: <T>(caseData: T) =>
     apiSuccess<{ case T; message: string }>({ case caseData, message: 'Case created successfully' }, 201),
   evidenceProcessed: <T>(result: T) =>
-    apiSuccess<{ analysis: T; message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
+    apiSuccess<{ analysis: T;, message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
   aiAnalysisComplete: <T>(analysis: T) =>
-    apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200),
+    apiSuccess<{ analysis: T;, message: string }>({ analysis, message: 'AI analysis completed' }, 200)
 };
 /**
  * Middleware to wrap API handlers with standardized error handling
@@ -97,7 +97,7 @@ export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: P
       const err = error as { name?: string; details?: any; message?: string };
       if (err.name === 'ValidationError') {
         return apiResponses.validationFailed(
-          (err.details as object) ?? { message: err.message ?? 'Validation failed' }
+          (err.details as object) ?? { message: err.message ?? 'Validation failed` }
         );
       }
       if (err.name === 'UnauthorizedError') {
@@ -140,7 +140,7 @@ export function paginatedResponse<T>(data: T[], total: number, page: number, lim
       total,
       pages,
       hasNext: page * limit < total,
-      hasPrev: page > 1,
-    },
+      hasPrev: page > 1
+    }
   });
 }

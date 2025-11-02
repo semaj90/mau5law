@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const [pg, qd, nj] = await Promise.all([
         indexPgVector({ id, text: text || '', embedding }).catch(e => ({ ok: false, error: String(e) })),
         indexQdrant({ id, text: text || '', embedding }).catch(e => ({ ok: false, error: String(e) })),
-        indexNeo4j({ id, text: text || '', embedding }).catch(e => ({ ok: false, error: String(e) })),
+        indexNeo4j({ id, text: text || '', embedding }).catch(e => ({ ok: false, error: String(e) }))
       ]);
       return json({ ok: true, id, text, status: { pg, qdrant: qd, neo4j: nj } });
     } catch (e) {

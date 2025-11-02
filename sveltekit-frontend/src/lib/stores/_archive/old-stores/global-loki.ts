@@ -84,7 +84,7 @@ export class GlobalLokiStore {
     if (!update || !update.id) return;
     this.upsertLocal(update);
   }
-  async startJob(jobMeta: { id: string; [k: string]: any }) {
+  async startJob(jobMeta: {, id: string; [k: string]: any }) {
     const doc = { ...jobMeta, state: 'queued' }
     this.upsertLocal(doc);
     this.publish(doc);

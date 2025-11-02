@@ -8,9 +8,7 @@ import type { User } from "$lib/types/user";
 import crypto from "crypto";
 import { EventEmitter } from "events";
 // Security configuration
-export interface SecurityConfig {
-  maxFileSize: number;
-  allowedFileTypes: string[];
+export interface SecurityConfig { maxFileSize: number;, allowedFileTypes: string[];
   sessionTimeout: number;
   maxLoginAttempts: number;
   passwordMinLength: number;
@@ -40,9 +38,7 @@ export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
   requireMFA: false
 }
 // Authentication and session management
-export interface UserSession {
-  userId: string;
-  username: string;
+export interface UserSession { userId: string;, username: string;
   name?: string;
   role: string;
   permissions: string[];
@@ -54,7 +50,7 @@ export interface UserSession {
   jurisdiction?: string;
 }
 export interface SecurityEvent {
-  type:
+  type:;
     | "login"
     | "logout"
     | "access_denied"
@@ -91,14 +87,14 @@ class SessionManager {
       ...user,
       loginTime: now,
       lastActivity: now,
-      sessionId: this.generateSessionId(),
+      sessionId: this.generateSessionId()
     }
     this.startSessionMonitoring();
     this.logSecurityEvent({
       type: "login",
       userId: user.userId,
       timestamp: now,
-      details: { username: user.username, role: user.role },
+      details: {, username: user.username, role: user.role },
       severity: "low"
     });
     return this.session;
@@ -245,7 +241,7 @@ export function sanitizeForJavaScript(input: string): string {
 // Generic input sanitization function
 export function sanitizeInput(
   input: string;
-  type: "html" | "sql" | "js" = "html";
+ , type: "html" | "sql" | "js" = "html";
 ): string {
   switch (type) {
     case "html":
@@ -258,9 +254,7 @@ export function sanitizeInput(
   }
 }
 // File security checks with legal document considerations
-export interface FileSecurityResult {
-  isSafe: boolean;
-  issues: string[];
+export interface FileSecurityResult { isSafe: boolean;, issues: string[];
   risk: "low" | "medium" | "high";
   isLegalDocument?: boolean;
   requiresPrivilegedAccess?: boolean;
@@ -419,9 +413,7 @@ export function generateCSPNonce(): string {
   return Math.random().toString(36).substring(2);
 }
 // Password security
-export function checkPasswordStrength(password: string): {
-  score: number;
-  feedback: string[];
+export function checkPasswordStrength(password: string): { score: number;, feedback: string[];
   isStrong: boolean;
 } {
   const feedback: string[] = [];
@@ -458,9 +450,7 @@ export function generateSecureToken(length: number = 32): string {
   return result;
 }
 // Evidence chain of custody protection for legal compliance
-export interface ChainOfCustodyEvent {
-  timestamp: number;
-  action: "created" | "accessed" | "modified" | "transferred" | "analyzed" | "sealed";
+export interface ChainOfCustodyEvent { timestamp: number;, action: "created" | "accessed" | "modified" | "transferred" | "analyzed" | "sealed";
   userId: string;
   details: string;
   hash?: string;
@@ -484,7 +474,7 @@ export function addChainOfCustodyEvent(
     type: "evidence_access",
     userId: event.userId,
     details: {
-      action: "chain_of_custody",
+     , action: "chain_of_custody",
       evidenceId,
       custodyEvent: fullEvent
     },
@@ -498,7 +488,7 @@ export function secureDataExport(data: any, userId: string, legalContext?: any):
     type: "data_export",
     userId,
     details: {
-      dataType: typeof data,
+     , dataType: typeof data,
       recordCount: Array.isArray(data) ? data.length: 1,
       fields:
         Array.isArray(data) && data.length > 0 ? Object.keys(data[0]) : []
@@ -542,7 +532,7 @@ export function checkAttorneyClientPrivilege(
       type: "access_denied",
       userId,
       details: {
-        reason: "non_legal_professional_access",
+       , reason: "non_legal_professional_access",
         documentId,
         action
       },

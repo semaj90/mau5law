@@ -7,9 +7,7 @@ import { LegalDocumentSOM } from './som-clustering.js';
 import type { SOMConfig } from '$lib/api/enhanced-rest-architecture';
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 
-export interface BitmapHMMConfig {
-  stateCount: number;
-  bitmapWidth: number;
+export interface BitmapHMMConfig { stateCount: number;, bitmapWidth: number;
   bitmapHeight: number;
   observationLevels: number;
   transitionSmoothingFactor: number;
@@ -17,17 +15,13 @@ export interface BitmapHMMConfig {
   somIntegration: boolean;
 }
 
-export interface HMMState {
-  id: number;
-  name: string;
-  somPosition?: { x: number; y: number };
+export interface HMMState { id: number;, name: string;
+  somPosition?: { x: number;, y: number };
   bitmap: Uint8Array; // Bitmap representation of state
   legalContext: string[];
 }
 
-export interface BitmapObservation {
-  bitmap: Uint8Array;
-  intensity: number;
+export interface BitmapObservation { bitmap: Uint8Array;, intensity: number;
   timestamp: number;
   documentType?: string;
   confidence?: number;
@@ -289,9 +283,7 @@ export class BitmapHiddenMarkovSOM {
   /**
    * Forward-backward algorithm for HMM training
    */
-  private forwardBackward(observations: BitmapObservation[]): {
-    forward: Float32Array;
-    backward: Float32Array;
+  private forwardBackward(observations: BitmapObservation[]): { forward: Float32Array;, backward: Float32Array;
   } {
     const T = observations.length;
     const N = this.config.stateCount;
@@ -622,8 +614,7 @@ export class BitmapHiddenMarkovSOM {
         legalContext: state.legalContext,
         somPosition: state.somPosition,
         compressionRatio: 0.6, // 40% compression
-        renderableHTML: `<div class="hmm-state" data-state="${state.id}">${state.name}</div>`
-      });
+        renderableHTML: `<div class="hmm-state" data-state="${state.id}">${state.name}</div>` });
     }
 
     console.log(`📦 Cached ${this.states.length} bitmap patterns`);
@@ -654,9 +645,7 @@ export class BitmapHiddenMarkovSOM {
   /**
    * Generate visualization data for HMM-SOM integration
    */
-  async generateVisualization(): Promise<{
-    states: Array<any>;
-    transitions: Array<any>;
+  async generateVisualization(): Promise<{ states: Array<any>;, transitions: Array<any>;
   }> {
     const states = this.states.map(state => ({
       id: state.id,

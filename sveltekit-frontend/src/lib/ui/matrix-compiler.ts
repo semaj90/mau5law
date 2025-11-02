@@ -1,9 +1,7 @@
 // JSON UI Compiler with Matrix Transforms
 // Builds on UnoCSS + Svelte 5 for GPU-accelerated layouts
 import { mat4 } from 'gl-matrix';
-export interface MatrixUINode {
-  type: 'button' | 'card' | 'input' | 'dialog' | 'grid' | 'evidence-item' | 'panel' | 'text' | 'image' | 'container';
-  id: string;
+export interface MatrixUINode { type: 'button' | 'card' | 'input' | 'dialog' | 'grid' | 'evidence-item' | 'panel' | 'text' | 'image' | 'container';, id: string;
   matrix: number[]; // 4x4 transform matrix
   styles: {
     base?: string;
@@ -27,45 +25,31 @@ export interface MatrixUINode {
     component?: string;
   };
   content?: string;
-  bounds?: {
-    x: number;
-    y: number;
+  bounds?: { x: number;, y: number;
     width: number;
     height: number;
   };
 }
-export interface EnhancedWebGLBuffer {
-  vertices: Float32Array;
-  indices: Uint16Array;
+export interface EnhancedWebGLBuffer { vertices: Float32Array;, indices: Uint16Array;
   colors: Float32Array;
   texCoords: Float32Array;
   matrices: Float32Array;
-  metadata: {
-    vertexCount: number;
-    indexCount: number;
+  metadata: { vertexCount: number;, indexCount: number;
     nodeCount: number;
     lodLevel: 'low' | 'mid' | 'high';
     shaderComplexity: 'basic' | 'standard' | 'advanced';
   };
 }
-export interface CSSOutput {
-  classes: string[];
-  variables: Record<string, string>;
+export interface CSSOutput { classes: string[];, variables: Record<string, string>;
   animations: string[];
   unoCSS: string;
 }
-export interface EventMapping {
-  nodeId: string;
-  events: {
-    type: string;
-    handler: string;
+export interface EventMapping { nodeId: string;, events: { type: string;, handler: string;
     matrix: number[];
-    bounds: { x: number; y: number; width: number; height: number };
+    bounds: { x: number; y: number; width: number;, height: number };
   }[];
 }
-export interface CompiledNode {
-  element: HTMLElement;
-  matrix: mat4; // Changed from any to mat4
+export interface CompiledNode { element: HTMLElement;, matrix: mat4; // Changed from any to mat4
   cssClasses: string[];
   webglBuffer?: WebGLBuffer;
   enhancedBuffer?: EnhancedWebGLBuffer;
@@ -75,10 +59,9 @@ export class MatrixUICompiler {
   private gl: WebGL2RenderingContext | null = null;
   private cssCache = new Map<string, string>();
   private bufferCache = new Map<string, WebGLBuffer>();
-  private lodThresholds = {
-    low: { maxVertices: 1000, maxNodes: 50 },
+  private lodThresholds = { low: {, maxVertices: 1000, maxNodes: 50 },
     mid: { maxVertices: 5000, maxNodes: 200 },
-    high: { maxVertices: 20000, maxNodes: 1000 },
+    high: { maxVertices: 20000, maxNodes: 1000 }
   };
   constructor(canvas?: HTMLCanvasElement) {
     if (canvas) {
@@ -91,9 +74,7 @@ export class MatrixUICompiler {
   async compileEnhanced(
     nodes: MatrixUINode[],
     _xstateContext?: any // Renamed to _xstateContext
-  ): Promise<{
-    compiled: CompiledNode[];
-    webgl: EnhancedWebGLBuffer;
+  ): Promise<{ compiled: CompiledNode[];, webgl: EnhancedWebGLBuffer;
     css: CSSOutput;
     events: EventMapping[];
     optimizations: string[];
@@ -121,7 +102,7 @@ export class MatrixUICompiler {
       webgl: webglBuffer,
       css: cssOutput,
       events: eventMappings,
-      optimizations,
+      optimizations
     };
   }
   /**
@@ -182,8 +163,7 @@ export class MatrixUICompiler {
         indexCount: indices.length,
         nodeCount: nodes.length,
         lodLevel,
-        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard',
-      },
+        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard` }
     };
   }
   /**
@@ -237,7 +217,7 @@ export class MatrixUICompiler {
       classes: [...new Set(classes)], // Remove duplicates
       variables,
       animations,
-      unoCSS,
+      unoCSS
     };
   }
   private generateEventMappings(nodes: MatrixUINode[]): EventMapping[] {
@@ -248,8 +228,8 @@ export class MatrixUICompiler {
           type: eventType,
           handler: `handle${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`,
           matrix: node.matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-          bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 },
-        })) || [],
+          bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 }
+        })) || []
     }));
   }
   /**
@@ -288,7 +268,7 @@ export class MatrixUICompiler {
       matrix,
       cssClasses,
       webglBuffer,
-      lodLevel,
+      lodLevel
     };
   }
   /**
@@ -478,14 +458,12 @@ export class MatrixUICompiler {
    */
   private handleEvent(_event: Event, node: MatrixUINode): void {
     // Emit custom event with matrix context
-    const matrixEvent = new CustomEvent('matrix-ui-event', {
-      detail: {
-        originalEvent: _event,
+    const matrixEvent = new CustomEvent('matrix-ui-event', { detail: {, originalEvent: _event,
         nodeId: node.id,
         nodeType: node.type,
         matrix: node.matrix,
-        metadata: node.metadata,
-      },
+        metadata: node.metadata
+      }
     });
     _event.target?.dispatchEvent(matrixEvent);
   }
@@ -522,7 +500,7 @@ export function createMatrixComponent(_node: MatrixUINode) {
   return {
     destroy() {
       // Cleanup when component unmounts
-    },
+    }
   };
 }
 export default MatrixUICompiler;

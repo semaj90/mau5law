@@ -44,7 +44,7 @@ export class TritonInferenceClient implements AIProvider {
     throw new Error('Use Ollama embeddinggemma');
   }
 
-  async chat(messages: Array<{ role: string; content: string }>): Promise<InferenceResponse> {
+  async chat(messages: Array<{, role: string; content: string }>): Promise<InferenceResponse> {
     return this.generate({ prompt: messages.map(m => `${m.role}: ${m.content}`).join('\n') });
   }
 

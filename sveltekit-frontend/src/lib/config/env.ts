@@ -14,11 +14,9 @@ const RAW_ENV = {
   VITE_PERFORMANCE_PROFILE: import.meta.env.VITE_PERFORMANCE_PROFILE,
   VITE_GPU_DEBUG: import.meta.env.VITE_GPU_DEBUG,
   VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
-  VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE,
+  VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE
 };
-export interface EnvConfig {
-  OLLAMA_URL: string;
-  OLLAMA_MODEL: string;
+export interface EnvConfig { OLLAMA_URL: string;, OLLAMA_MODEL: string;
   OPENAI_API_KEY: string;
   DATABASE_URL: string;
   PUBLIC_APP_URL: string;
@@ -54,7 +52,7 @@ function validateAndBuildEnv(): EnvConfig {
     REDUCTION_MODE:
       RAW_ENV.VITE_REDUCTION_MODE === 'gpu' || RAW_ENV.VITE_REDUCTION_MODE === 'cpu'
         ? RAW_ENV.VITE_REDUCTION_MODE
-        : 'auto',
+        : 'auto'
   };
   if (cfg.GPU_DEBUG) {
     console.log('[ENV] Loaded configuration', cfg);
@@ -73,7 +71,7 @@ export const CLIENT_ENV = Object.freeze({
   PERFORMANCE_PROFILE: ENV_CONFIG.PERFORMANCE_PROFILE,
   GPU_DEBUG: ENV_CONFIG.GPU_DEBUG,
   SHADER_DEBUG: ENV_CONFIG.SHADER_DEBUG,
-  REDUCTION_MODE: ENV_CONFIG.REDUCTION_MODE,
+  REDUCTION_MODE: ENV_CONFIG.REDUCTION_MODE
 });
 // GPU Context Configuration based on environment
 export const GPU_CONFIG = Object.freeze({
@@ -87,7 +85,7 @@ export const GPU_CONFIG = Object.freeze({
   lodSystemIntegration: true,
   // Performance settings
   memoryLimit: CLIENT_ENV.GPU_MEMORY_LIMIT * 1024 * 1024, // Convert MB to bytes
-  performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE as: 'auto' | 'mobile' | 'desktop' | 'high-end',
+  performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE; as: 'auto' | 'mobile' | 'desktop' | 'high-end',
   // Debug configuration
   enableDebug: CLIENT_ENV.GPU_DEBUG,
   enableShaderDebug: CLIENT_ENV.SHADER_DEBUG,
@@ -98,6 +96,6 @@ export const GPU_CONFIG = Object.freeze({
   nesColorPaletteSize: 52,
   nesDithering: true,
   nesPixelPerfect: true,
-  reductionMode: CLIENT_ENV.REDUCTION_MODE,
+  reductionMode: CLIENT_ENV.REDUCTION_MODE
 });
 export default ENV_CONFIG;

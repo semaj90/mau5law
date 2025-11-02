@@ -31,9 +31,7 @@ export type JobStatus =
   | 'cancelled'
   | 'retrying';
 }
-export interface JobDefinition {
-  id: string;
-  type: JobType;
+export interface JobDefinition { id: string;, type: JobType;
   priority: number;
   payload: { [key: string]: any }
   metadata?: { [key: string]: any }
@@ -43,9 +41,7 @@ export interface JobDefinition {
   retryCount?: number;
   maxRetries?: number;
 }
-export interface ProcessingMetrics {
-  totalJobs: number;
-  completedJobs: number;
+export interface ProcessingMetrics { totalJobs: number;, completedJobs: number;
   failedJobs: number;
   processingTime: number;
   averageProcessingTime: number;
@@ -54,23 +50,17 @@ export interface ProcessingMetrics {
   queueDepth: number;
   activeWorkers: number;
 }
-export interface QueueConfig {
-  name: string;
-  durable: boolean;
+export interface QueueConfig { name: string;, durable: boolean;
   autoDelete: boolean;
   exclusive: boolean;
   arguments?: { [key: string]: any }
 }
-export interface ExchangeConfig {
-  name: string;
-  type: 'direct' | 'topic' | 'fanout' | 'headers';
+export interface ExchangeConfig { name: string;, type: 'direct' | 'topic' | 'fanout' | 'headers';
   durable: boolean;
   autoDelete: boolean;
   arguments?: { [key: string]: any }
 }
-export interface RabbitMQConnection {
-  host: string;
-  port: number;
+export interface RabbitMQConnection { host: string;, port: number;
   username: string;
   password: string;
   vhost?: string;

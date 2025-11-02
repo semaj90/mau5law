@@ -9,19 +9,17 @@ import type {
   AITask,
   AITaskResult
 } from './types.js';
-type StartProcessing = { type: 'START_PROCESSING'; task: AITask }
-type ProcessingProgress = { type: 'PROCESSING_PROGRESS'; progress: number }
+type StartProcessing = { type: 'START_PROCESSING';, task: AITask }
+type ProcessingProgress = { type: 'PROCESSING_PROGRESS';, progress: number }
 type CancelProcessing = { type: 'CANCEL_PROCESSING' }
 type RetryProcessing = { type: 'RETRY_PROCESSING' }
 type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any }
 export const aiProcessingMachine = createMachine({
     id: "aiProcessing",
-    types: {} as {
-      context: AIProcessingContext;
-      events: AnyEvt;
+    types: {} as { context: AIProcessingContext;, events: AnyEvt;
     },
     context: {
-      userId: undefined,
+     , userId: undefined,
       sessionId: "",
       retryCount: 0,
       timestamp: Date.now(),
@@ -37,31 +35,24 @@ export const aiProcessingMachine = createMachine({
       error: undefined
     },
     initial: "idle",
-    states: {
-      idle: {
-        on: {
-          START_PROCESSING: {
-            target: "processing",
+    states: { idle: {, on: { START_PROCESSING: {, target: "processing",
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
               error: undefined,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             })
           }
         }
       },
       processing: {
         initial: "executing",
-        states: {
-          executing: {
-            invoke: {
+        states: { executing: {, invoke: {
               id: "executeTask",
               src: fromPromise(async ({
                   input
-                }: {
-                  input: { task: AITask; provider: string }
+                }: { input: {, task: AITask; provider: string }
                 }) => {
                   const { task, provider } = input;
                   switch (provider) {
@@ -72,7 +63,7 @@ export const aiProcessingMachine = createMachine({
                     case "local-llm":
                       return await executeLocalLLMTask(task);
                     default:
-                      throw new Error(`Unknown provider: ${provider}`);
+                      throw new Error(`Unknown; provider: ${provider}`);
                   }
                 }
               ),
@@ -94,9 +85,7 @@ export const aiProcessingMachine = createMachine({
                 })
               }
             },
-            on: {
-              PROCESSING_PROGRESS: {
-                actions: assign({
+            on: { PROCESSING_PROGRESS: {, actions: assign({
                   progress: ({ event }) => (event as ProcessingProgress).progress
                 })
               },
@@ -109,14 +98,12 @@ export const aiProcessingMachine = createMachine({
       },
       success: {
         entry: ["logSuccess", "notifyCompletion"],
-        on: {
-          START_PROCESSING: {
-            target: "processing",
+        on: { START_PROCESSING: {, target: "processing",
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
-              error: undefined,
+              error: undefined
             })
           }
         }
@@ -145,30 +132,26 @@ export const aiProcessingMachine = createMachine({
               progress: 0,
               result: undefined,
               error: undefined,
-              retryCount: 0,
+              retryCount: 0
             })
           }
         }
       },
       cancelled: {
         entry: ["logCancellation"],
-        on: {
-          START_PROCESSING: {
-            target: "processing",
+        on: { START_PROCESSING: {, target: "processing",
             actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
-              error: undefined,
+              error: undefined
             })
           }
         }
       }
     }
   },
-  {
-    actions: {
-      logSuccess: ({ context }) => {
+  { actions: {, logSuccess: ({ context }) => {
         console.log(
           `✅ AI task ${context.task.id} completed successfully in ${Date.now() - context.timestamp}ms`
         );
@@ -182,8 +165,7 @@ export const aiProcessingMachine = createMachine({
       notifyCompletion: ({ context }) => {
         // Dispatch custom event for UI updates
         if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("ai-task-complete", {
-              detail: { taskId: context.task.id, result: context.result }
+          window.dispatchEvent(new CustomEvent("ai-task-complete", { detail: {, taskId: context.task.id, result: context.result }
             })
           );
         }
@@ -223,7 +205,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
           body: JSON.stringify({,
             vectors: task.payload.vectors,
             labels: task.payload.labels,
-            dimensions: task.payload.dimensions || { width: 10, height: 10 },
+            dimensions: task.payload.dimensions || {, width: 10, height: 10 },
             iterations: task.payload.iterations || 1000,
             learning_rate: task.payload.learningRate || 0.1
           })
@@ -243,7 +225,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
         });
         break;
       default:
-        throw new Error(`Unsupported Go microservice task type: ${task.type}`);
+        throw new Error(`Unsupported Go microservice task; type: ${task.type}`);
     }
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Go microservice request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -286,7 +268,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({,
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "nomic-embed-text",
-            prompt: task.payload.text,
+            prompt: task.payload.text
           })
         });
         break;
@@ -298,12 +280,12 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "gemma3-legal",
             prompt: task.payload.prompt,
             stream: false;
-            format: task.payload.format || undefined
+           , format: task.payload.format || undefined
           })
         });
         break;
       default:
-        throw new Error(`Unsupported Ollama task type: ${task.type}`);
+        throw new Error(`Unsupported Ollama task; type: ${task.type}`);
     }
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Ollama request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);

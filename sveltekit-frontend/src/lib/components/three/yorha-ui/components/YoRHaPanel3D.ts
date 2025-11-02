@@ -56,18 +56,16 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         blur: 0.5,
         intensity: 0.3,
         offsetY: -0.1,
-        ...options.shadow,
+        ...options.shadow
       },
       // Interactive states
-      hover: {
-        shadow: {
-          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled : true,
+      hover: {, shadow: {, enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled : true,
           intensity: 0.4,
           offsetY: -0.15,
-          ...options.hover?.shadow,
+          ...options.hover?.shadow
         },
-        ...options.hover,
-      },
+        ...options.hover
+      }
     });
     this.options = options;
     // Create content container
@@ -115,7 +113,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       bevelEnabled: true,
       bevelSegments: 2,
       bevelSize: radius * 0.05,
-      bevelThickness: depth * 0.1,
+      bevelThickness: depth * 0.1
     };
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
@@ -128,7 +126,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.9
     });
     this.headerMesh = new THREE.Mesh(headerGeometry, headerMaterial);
     this.headerMesh.position.set(
@@ -141,7 +139,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const titleGeometry = new THREE.PlaneGeometry(width - 0.6, 0.2);
     const titleMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.white,
-      transparent: true,
+      transparent: true
     });
     this.titleMesh = new THREE.Mesh(titleGeometry, titleMaterial);
     this.titleMesh.position.set(
@@ -163,7 +161,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const buttonGeometry = new THREE.PlaneGeometry(buttonSize, buttonSize);
     const buttonMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.status.error,
-      transparent: true,
+      transparent: true
     });
     this.closeButtonMesh = new THREE.Mesh(buttonGeometry, buttonMaterial);
     this.closeButtonMesh.position.set(
@@ -184,7 +182,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         if (this.closeButtonMesh?.material instanceof THREE.MeshBasicMaterial) {
           this.closeButtonMesh.material.color.setHex(YORHA_COLORS.status.error);
         }
-      },
+      }
     };
     this.add(this.closeButtonMesh);
   }
@@ -195,7 +193,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const scrollGeometry = new THREE.PlaneGeometry((this.style.width || 4) - 0.2, contentHeight);
     const scrollMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
-      opacity: 0,
+      opacity: 0
     });
     const scrollPlane = new THREE.Mesh(scrollGeometry, scrollMaterial);
     scrollPlane.position.set(0, -0.2, (this.style.depth || 0.1) / 2 + 0.001);
@@ -210,7 +208,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const scrollBarMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.5
     });
     const scrollBar = new THREE.Mesh(scrollBarGeometry, scrollBarMaterial);
     scrollBar.position.set((this.style.width || 4) / 2 - 0.1, -0.2, (this.style.depth || 0.1) / 2 + 0.001);
@@ -223,7 +221,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const handleMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.7
     });
     // Bottom-right corner handle
     const resizeHandle = new THREE.Mesh(handleGeometry, handleMaterial);
@@ -234,27 +232,25 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     );
     resizeHandle.userData = {
       interactive: true,
-      onDrag: (deltaX: number, deltaY: number) => this.onResize(deltaX, deltaY),
+      onDrag: (deltaX: number, deltaY: number) => this.onResize(deltaX, deltaY)
     };
     this.add(resizeHandle);
   }
   private static getVariantStyle(variant: string): Partial<YoRHaStyle> {
-    const variantStyles = {
-      default: {
-        backgroundColor: YORHA_COLORS.primary.beige,
+    const variantStyles = { default: {, backgroundColor: YORHA_COLORS.primary.beige,
         borderColor: YORHA_COLORS.primary.black,
-        borderWidth: 0.02,
+        borderWidth: 0.02
       },
       outlined: {
         backgroundColor: 0x000000,
         opacity: 0.1,
         borderColor: YORHA_COLORS.primary.beige,
-        borderWidth: 0.04,
+        borderWidth: 0.04
       },
       filled: {
         backgroundColor: YORHA_COLORS.primary.grey,
         borderColor: YORHA_COLORS.primary.black,
-        borderWidth: 0.01,
+        borderWidth: 0.01
       },
       glass: {
         backgroundColor: YORHA_COLORS.primary.white,
@@ -264,8 +260,8 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.amber,
-          intensity: 0.2,
-        },
+          intensity: 0.2
+        }
       },
       terminal: {
         backgroundColor: YORHA_COLORS.primary.black,
@@ -275,9 +271,9 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         animation: {
           type: 'scan' as const,
           speed: 2,
-          intensity: 0.3,
-        },
-      },
+          intensity: 0.3
+        }
+      }
     };
     return variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
   }

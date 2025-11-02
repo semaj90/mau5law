@@ -26,18 +26,17 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: embeddingModel,
+       , model: embeddingModel,
         prompt: text
       })
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Ollama embedding API error:', errorData);
-      return json({ success: false, error: `Failed to get embeddings from Ollama: ${errorData.error}` }, { status: response.status });
+      console.error('Ollama embedding API error: ', errorData);
+      return json({ success: false, error: `Failed to get embeddings from; Ollama: ${errorData.error}` }, { status: response.status });
     }
 
     const data: EmbeddingResponse = await response.json();
@@ -50,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({ success: true, data });
   } catch (error) {
-    console.error('Error in /api/embeddings:', error);
-    return json({ success: false, error: 'Internal server error' }, { status: 500 });
+    console.error('Error in /api/embeddings:`, error);
+    return json({ success: false, error: `Internal server error` }, { status: 500 });
   }
 };

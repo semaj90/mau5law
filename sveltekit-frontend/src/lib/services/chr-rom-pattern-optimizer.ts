@@ -3,19 +3,15 @@
  * Hybrid SVG + Pixelated PNG system for optimal visual quality and performance
  *
  * This service determines the best format for each pattern type:
- * - SVG: Clean, scalable UI elements (16-bit SNES aesthetic)
+ * -; SVG: Clean, scalable UI elements (16-bit SNES aesthetic)
  * - PNG: Authentic 8-bit pixel art (NES aesthetic)
  */
 // Removed: import type { CHRROMPattern } from './chr-rom-precomputation.js';
 
 // Define CHRROMPattern interface based on usage in this file
-export interface CHRROMPattern {
-  type: 'icon' | 'indicator' | 'gauge' | 'heatmap' | 'badge' | 'graph' | 'color' | 'default';
-  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'scalable';
+export interface CHRROMPattern { type: 'icon' | 'indicator' | 'gauge' | 'heatmap' | 'badge' | 'graph' | 'color' | 'default';, size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'scalable';
   data: string; // SVG string, PNG data URL, or hex color
-  metadata: {
-    confidence: number;
-    timestamp: number;
+  metadata: { confidence: number;, timestamp: number;
     version: string;
     // Added properties for format optimization
     format?: 'svg' | 'png' | 'hybrid' | 'hex';
@@ -26,9 +22,7 @@ export interface CHRROMPattern {
   };
 }
 // Pattern format specifications
-export interface PatternFormatSpec {
-  format: 'svg' | 'png' | 'hybrid';
-  aesthetic: 'nes-8bit' | 'snes-16bit' | 'modern';
+export interface PatternFormatSpec { format: 'svg' | 'png' | 'hybrid';, aesthetic: 'nes-8bit' | 'snes-16bit' | 'modern';
   renderingHint: 'pixelated' | 'crisp-edges' | 'auto';
   targetSize: string; // e.g., '16x16', '32x32', 'scalable'
   colorPalette: 'nes-54' | 'snes-256' | 'modern-unlimited';
@@ -164,7 +158,7 @@ export class CHRROMPatternOptimizer {
       case 'hybrid':
         return await this.generateHybridPattern(patternType, data, spec);
       default:
-        throw new Error(`Unsupported format: ${spec.format}`);
+        throw new Error(`Unsupported; format: ${spec.format}`);
     }
   }
   /**
@@ -200,8 +194,7 @@ export class CHRROMPatternOptimizer {
             timestamp: Date.now(),
             version: '2.0',
             format: 'hex',
-            renderingHint: 'auto'
-          }
+            renderingHint: `auto` }
         };
       default:
         svgContent = this.generateDefaultSVG();
@@ -261,8 +254,7 @@ export class CHRROMPatternOptimizer {
         format: 'png',
         aesthetic: spec.aesthetic,
         renderingHint: spec.renderingHint,
-        dimensions: `${width}x${height}`
-      }
+        dimensions: `${width}x${height}` }
     };
   }
   /**
@@ -444,9 +436,8 @@ export class CHRROMPatternOptimizer {
   /**
    * Helper methods
    */
-  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
-    const schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = {
-      contract: { primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
+  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string;, text: string } {
+    const schemes: Record<string, { primary: string; secondary: string; border: string;, text: string }> = { contract: {, primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
       nda: { primary: '#FF6347', secondary: '#FF7F50', border: '#8B0000', text: '#FFFFFF' },
       agreement: { primary: '#32CD32', secondary: '#90EE90', border: '#006400', text: '#000000' },
       lease: { primary: '#DAA520', secondary: '#F4A460', border: '#B8860B', text: '#000000' },
@@ -455,9 +446,8 @@ export class CHRROMPatternOptimizer {
     return schemes[docType] || schemes.default;
   }
 
-  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
-    const schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = {
-      contract: { primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
+  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string;, text: string } {
+    const schemes: Record<string, { primary: string; secondary: string; border: string;, text: string }> = { contract: {, primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
       nda: { primary: '#EF4444', secondary: '#F87171', border: '#B91C1C', text: '#FFFFFF' },
       agreement: { primary: '#10B981', secondary: '#34D399', border: '#047857', text: '#FFFFFF' },
       lease: { primary: '#F59E0B', secondary: '#FBBF24', border: '#D97706', text: '#000000' },
@@ -493,8 +483,7 @@ export class CHRROMPatternOptimizer {
       nda: '#EF4444',
       agreement: '#10B981',
       lease: '#F59E0B',
-      default: '#6B7280'
-    };
+      default: `#6B7280` };
     return colorMap[category || 'default'] || colorMap.default;
   }
 

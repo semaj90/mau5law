@@ -19,14 +19,12 @@ export interface IOllamaEmbeddingService {
 }
 
 export interface IOllamaChatService {
-  chat(messages: { role: 'user' | 'system' | 'assistant'; content: string }[]): Promise<string>;
+  chat(messages: {, role: 'user' | 'system' | 'assistant'; content: string }[]): Promise<string>;
 }
 
 // Low-level text completion/inference request/response for Ollama or llama.cpp compatible endpoints.
 // These power simple prompt -> text flows used by analysis utilities.
-export type LlamaInferenceRequest = {
-  prompt: string;
-  model: string;
+export type LlamaInferenceRequest = { prompt: string;, model: string;
   maxTokens?: number;
   temperature?: number;
   systemPrompt?: string;
@@ -74,7 +72,7 @@ export interface UltraJSONParser {
 
 // ===== WASM Clustering Service =====
 export interface WasmClusteringService {
-  clusterTexts(texts: string[]): Promise<Array<{ clusterId: string; items: number[] }>>;
+  clusterTexts(texts: string[]): Promise<Array<{ clusterId: string;, items: number[] }>>;
   trainIncremental?(vectors: number[][], metadata?: Record<string, unknown>): Promise<void>;
 }
 
@@ -96,7 +94,7 @@ export interface OllamaClient {
   embed(text: string, opts?: { model?: string }): Promise<number[]>;
   generateText?(prompt: string, opts?: { model?: string; maxTokens?: number }): Promise<string>;
   chat?(
-    messages: Array<{ role: string; content: string }>,
+    messages: Array<{, role: string; content: string }>,
     opts?: { model?: string; stream?: boolean }
   ): Promise<string | AsyncIterable<string>>;
 }
@@ -109,7 +107,7 @@ export type OllamaEmbeddingModel = 'embeddinggemma:latest' | 'nomic-embed-text' 
 export type OllamaCompletionModel = 'gemma3' | 'gemma3-mini' | string; // allow custom model ids
 
 export interface OllamaConfig {
-  host?: string; // e.g. 'http://localhost' or: 'http://host.docker.internal'
+  host?: string; // e.g. 'http://localhost'; or: 'http://host.docker.internal'
   port?: number; // default 11434
   basePath?: string; // default: '/api'
   model?: OllamaEmbeddingModel | OllamaCompletionModel;
@@ -119,7 +117,7 @@ export interface OllamaConfig {
 export const DEFAULT_OLLAMA_MODELS = {
   EMBEDDING: 'embeddinggemma:latest' as OllamaEmbeddingModel,
   EMBEDDING_FALLBACK: 'nomic-embed-text' as OllamaEmbeddingModel,
-  COMPLETION: 'gemma3' as OllamaCompletionModel,
+  COMPLETION: 'gemma3' as OllamaCompletionModel
 } as const;
 
 /**
@@ -228,15 +226,11 @@ function normalizeEndpoint(candidate: string): string {
 }
 
 // ===== Qdrant Vector Database =====
-export interface QdrantVectorPayload {
-  id: string;
-  vector: number[];
+export interface QdrantVectorPayload { id: string;, vector: number[];
   payload?: Record<string, unknown>;
 }
 
-export interface QdrantSearchResult<T = Record<string, unknown>> {
-  id: string;
-  score: number;
+export interface QdrantSearchResult<T = Record<string, unknown>> { id: string;, score: number;
   payload?: T;
   vector?: number[];
 }
@@ -253,9 +247,7 @@ export interface QdrantClient {
   upsert?(collection: string, points: QdrantVectorPayload[]): Promise<void>;
 }
 
-export interface QdrantConfig {
-  host: string;
-  port: number;
+export interface QdrantConfig { host: string;, port: number;
   apiKey?: string;
   timeout?: number;
 }
@@ -285,9 +277,7 @@ export interface RedisConfig {
 }
 
 // ===== PostgreSQL + pgvector =====
-export interface PostgresConfig {
-  host: string;
-  port: number;
+export interface PostgresConfig { host: string;, port: number;
   database: string;
   user: string;
   password: string;
@@ -302,19 +292,17 @@ export interface PgVectorClient {
     collection: string,
     vector: number[],
     limit?: number
-  ): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string; similarity: number;, metadata: Record<string, unknown> }>>;
   insert(
     collection: string,
-    vectors: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
+    vectors: Array<{, id: string; vector: number[]; metadata?: Record<string, unknown> }>
   ): Promise<void>;
   createExtension?(): Promise<void>;
   disconnect(): Promise<void>;
 }
 
 // ===== MinIO Object Storage =====
-export interface MinIOConfig {
-  endPoint: string;
-  port: number;
+export interface MinIOConfig { endPoint: string;, port: number;
   accessKey: string;
   secretKey: string;
   useSSL: boolean;
@@ -330,15 +318,13 @@ export interface MinIOClient {
   ): Promise<{ etag: string }>;
   getObject(bucket: string, key: string): Promise<ReadableStream>;
   removeObject(bucket: string, key: string): Promise<void>;
-  listObjects(bucket: string, prefix?: string): Promise<Array<{ name: string; size: number; etag: string }>>;
+  listObjects(bucket: string, prefix?: string): Promise<Array<{ name: string; size: number;, etag: string }>>;
   makeBucket?(bucket: string, region?: string): Promise<void>;
   bucketExists?(bucket: string): Promise<boolean>;
 }
 
 // ===== Neo4j Graph Database =====
-export interface Neo4jConfig {
-  uri: string;
-  user: string;
+export interface Neo4jConfig { uri: string;, user: string;
   password: string;
   database?: string;
   maxConnectionPoolSize?: number;
@@ -351,9 +337,7 @@ export interface Neo4jClient {
 }
 
 // ===== RabbitMQ Message Queue =====
-export interface RabbitMQConfig {
-  url: string;
-  enabled: boolean;
+export interface RabbitMQConfig { url: string;, enabled: boolean;
   exchange?: string;
   queuePrefix?: string;
   heartbeat?: number;

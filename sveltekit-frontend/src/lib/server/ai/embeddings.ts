@@ -13,7 +13,7 @@ export interface EmbeddingOptions {
   maxTokens?: number;
 }
 // Simple in-memory TTL cache for embeddings (safe fallback for server-side process)
-const _embeddingCache: Map<string, { value: number[]; expiresAt: number }> = new Map();
+const _embeddingCache: Map<string, { value: number[];, expiresAt: number }> = new Map();
 // Default TTL: 24 hours
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 function makeCacheKey(text: string, model: string) {
@@ -43,7 +43,7 @@ async function cacheEmbedding(text: string, model: string, embedding: number[]):
   const stored = embedding.slice();
   _embeddingCache.set(key, {
     value: stored,
-    expiresAt: Date.now() + DEFAULT_CACHE_TTL_MS,
+    expiresAt: Date.now() + DEFAULT_CACHE_TTL_MS
   });
   // Optional: prevent unbounded growth by trimming periodically (simple heuristic)
   if (_embeddingCache.size > 5000) {
@@ -89,13 +89,11 @@ async function generateLocalEmbedding(
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` },
       body: JSON.stringify({
         model: model,
-        // Ollama uses: "prompt" for embeddings with recent versions
-        prompt: text,
-      }),
+        // Ollama uses: "prompt" for embeddings with recent versions; prompt: text
+      })
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
@@ -180,7 +178,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     const caseData = await db
       .select({
         title: cases.title,
-        description: cases.description,
+        description: cases.description
       })
       .from(cases)
       .where(eq(cases.id, caseId));
@@ -188,7 +186,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
       throw new Error('Case not found');
     }
     const case_ = caseData[0];
-    const fullText = `${case_.title} ${case_.description || ''}`.trim();
+    const fullText = `${case_.title} ${case_.description || '` }`.trim();
     // Generate embeddings
     await generateBatchEmbeddings([case_.title, case_.description || '', fullText]);
     // TODO: Re-enable when titleEmbedding field is added to schema
@@ -204,7 +202,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     //   .where(eq(cases.id, caseId));
     console.log(`Updated embeddings for case ${caseId}`);
   } catch (error: unknown) {
-    console.error(`Failed to update embeddings for case ${caseId}:`, error);
+    console.error(`Failed to update embeddings for case ${caseId}: ', error);
     throw error;
   }
 }
@@ -217,7 +215,7 @@ export async function updateEvidenceEmbeddings(evidenceId: string): Promise<void
         title: evidence.title,
         description: evidence.description,
         summary: evidence.summary,
-        aiSummary: evidence.aiSummary,
+        aiSummary: evidence.aiSummary
       })
       .from(evidence)
       .where(eq(evidence.id, evidenceId));

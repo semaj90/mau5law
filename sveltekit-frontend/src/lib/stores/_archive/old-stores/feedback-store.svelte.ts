@@ -10,9 +10,7 @@ import type {
   UserFeedbackContext
 } from '../types/feedback.js';
 }
-export interface FeedbackState {
-  activeSession: FeedbackSession | null;
-  pendingFeedback: FeedbackTrigger[];
+export interface FeedbackState { activeSession: FeedbackSession | null;, pendingFeedback: FeedbackTrigger[];
   analytics: FeedbackAnalytics;
   userContext: UserFeedbackContext;
   isCollecting: boolean;
@@ -28,7 +26,7 @@ class FeedbackStore {
       topIssues: []
     },
     userContext: {
-      userId: '',
+     , userId: '',
       sessionId: '',
       deviceType: 'desktop',
       userType: 'attorney'
@@ -36,11 +34,11 @@ class FeedbackStore {
     isCollecting: false
   });
   // Getters
-  get activeSession() { return this.state.activeSession, }
-  get pendingFeedback() { return this.state.pendingFeedback, }
-  get analytics() { return this.state.analytics, }
-  get userContext() { return this.state.userContext, }
-  get isCollecting() { return this.state.isCollecting, }
+  get activeSession() { return this.state.activeSession }
+  get pendingFeedback() { return this.state.pendingFeedback }
+  get analytics() { return this.state.analytics }
+  get userContext() { return this.state.userContext }
+  get isCollecting() { return this.state.isCollecting }
   /**
    * Initialize feedback session for user
    */
@@ -163,7 +161,7 @@ class FeedbackStore {
             platform: navigator.platform,
             language: navigator.language,
             featureUsed: ratingType,
-            deviceType: this.state.userContext.deviceType,
+            deviceType: this.state.userContext.deviceType
           }
         })
       });
@@ -226,8 +224,7 @@ class FeedbackStore {
       'file_upload': 'ui_experience',
       'document_analysis': 'ai_accuracy',
       'page_load': 'performance',
-      'feature_use': 'ui_experience'
-    }
+      'feature_use': 'ui_experience' }
     return typeMap[interactionType] || 'response_quality';
   }
   private getDefaultDelay(interactionType: string): number {

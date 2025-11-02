@@ -25,9 +25,7 @@ export interface LegalDocumentContext {
   riskScore?: number;
   confidenceScore?: number;
   // AI Analysis
-  aiAnalysis?: {
-    keyFindings: string[];
-    complianceStatus: any;
+  aiAnalysis?: { keyFindings: string[];, complianceStatus: any;
     recommendedActions: string[];
     legalPrecedents: any[];
   }
@@ -42,9 +40,7 @@ export interface LegalDocumentContext {
   startTime?: number;
   processingDuration?: number;
   // Options
-  options: {
-    extractEntities: boolean;
-    generateSummary: boolean;
+  options: { extractEntities: boolean;, generateSummary: boolean;
     assessRisk: boolean;
     generateEmbedding: boolean;
     storeInQdrant: boolean;
@@ -54,18 +50,18 @@ export interface LegalDocumentContext {
 }
 // Events for the state machine
 export type LegalDocumentEvent =
-  | { type: 'START_PROCESSING'; document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> }
+  | { type: 'START_PROCESSING';, document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> }
   | { type: 'CONTENT_EXTRACTED' }
-  | { type: 'ANALYSIS_COMPLETE'; analysis: any }
-  | { type: 'ENTITIES_EXTRACTED'; entities: LegalEntities }
-  | { type: 'SUMMARY_GENERATED'; summary: string }
-  | { type: 'EMBEDDING_GENERATED'; embedding: number[] }
-  | { type: 'RISK_ASSESSED'; riskScore: number; confidenceScore: number }
-  | { type: 'MCP_ANALYSIS_COMPLETE'; mcpAnalysis: any; recommendations: string[] }
-  | { type: 'STORAGE_COMPLETE'; documentId: string }
+  | { type: 'ANALYSIS_COMPLETE';, analysis: any }
+  | { type: 'ENTITIES_EXTRACTED';, entities: LegalEntities }
+  | { type: 'SUMMARY_GENERATED';, summary: string }
+  | { type: 'EMBEDDING_GENERATED';, embedding: number[] }
+  | { type: 'RISK_ASSESSED'; riskScore: number;, confidenceScore: number }
+  | { type: 'MCP_ANALYSIS_COMPLETE'; mcpAnalysis: any;, recommendations: string[] }
+  | { type: 'STORAGE_COMPLETE';, documentId: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
-  | { type: 'ERROR'; error: string }
+  | { type: 'ERROR';, error: string }
 // Services for async operations
 const services = {
   extractContent: async (context: LegalDocumentContext) => {
@@ -134,7 +130,7 @@ const services = {
     await new Promise((resolve: any) => setTimeout(resolve, 1200);
     return {
       mcpAnalysis: mockMCPAnalysis,
-      recommendations: mockMCPAnalysis.legalSpecificRecommendations,
+      recommendations: mockMCPAnalysis.legalSpecificRecommendations
     }
   },
   storeDocument: async (context: LegalDocumentContext) => {
@@ -147,9 +143,7 @@ const services = {
 // Legal Document Processing State Machine
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
-  types: { [key,: strin,g]: any } as {
-    context: LegalDocumentContext;
-    events: LegalDocumentEvent;
+  types: { [key,: strin,g]: any } as { context: LegalDocumentContext;, events: LegalDocumentEvent;
   },
   context: {
     caseId: '',
@@ -167,17 +161,13 @@ export const legalDocumentProcessingMachine = createMachine({
       generateEmbedding: true,
       storeInQdrant: true,
       useContext7: true,
-      useSemanticSearch: false,
+      useSemanticSearch: false
     }
   },
   initial: 'idle',
-  states: {
-    idle: {
-      on: {
-        START_PROCESSING: {
-          target: 'initializing',
+  states: { idle: {, on: { START_PROCESSING: {, target: 'initializing',
           actions: assign({
-            caseId: ({ event }) => event.document.caseId || '',
+           , caseId: ({ event }) => event.document.caseId || '',
             content: ({ event }) => event.document.content || '',
             title: ({ event }) => event.document.title || '',
             caseType: ({ event }) => event.document.caseType || 'contract',
@@ -207,9 +197,7 @@ export const legalDocumentProcessingMachine = createMachine({
         }
       ]
     },
-    extractingContent: {
-      invoke: {
-        id: 'extractContent',
+    extractingContent: { invoke: {, id: 'extractContent',
         src: services.extractContent,
         onDone: {
           target: 'analyzing',
@@ -228,12 +216,8 @@ export const legalDocumentProcessingMachine = createMachine({
     },
     analyzing: {
       type: 'parallel',
-      states: {
-        aiAnalysis: {
-          initial: 'processing',
-          states: {
-            processing: {
-              invoke: {
+      states: { aiAnalysis: {, initial: 'processing',
+          states: { processing: {, invoke: {
                 id: 'analyzeWithAI',
                 src: services.analyzeWithAI,
                 onDone: {
@@ -256,16 +240,12 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         entityExtraction: {
           initial: 'idle',
-          states: {
-            idle: {
-              always: [
+          states: { idle: {, always: [
                 { target: 'processing', guard: ({ context }) => context.options.extractEntities },
-                { target: 'skipped' }
+                { target: `skipped` }
               ]
             },
-            processing: {
-              invoke: {
-                id: 'extractEntities',
+            processing: { invoke: {, id: 'extractEntities',
                 src: services.extractEntities,
                 onDone: {
                   target: 'completed',
@@ -288,16 +268,12 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         summaryGeneration: {
           initial: 'idle',
-          states: {
-            idle: {
-              always: [
+          states: { idle: {, always: [
                 { target: 'processing', guard: ({ context }) => context.options.generateSummary },
-                { target: 'skipped' }
+                { target: `skipped` }
               ]
             },
-            processing: {
-              invoke: {
-                id: 'generateSummary',
+            processing: { invoke: {, id: 'generateSummary',
                 src: services.generateSummary,
                 onDone: {
                   target: 'completed',
@@ -320,16 +296,12 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         embeddingGeneration: {
           initial: 'idle',
-          states: {
-            idle: {
-              always: [
+          states: { idle: {, always: [
                 { target: 'processing', guard: ({ context }) => context.options.generateEmbedding },
-                { target: 'skipped' }
+                { target: `skipped` }
               ]
             },
-            processing: {
-              invoke: {
-                id: 'generateEmbedding',
+            processing: { invoke: {, id: 'generateEmbedding',
                 src: services.generateEmbedding,
                 onDone: {
                   target: 'completed',
@@ -352,16 +324,12 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         riskAssessment: {
           initial: 'idle',
-          states: {
-            idle: {
-              always: [
+          states: { idle: {, always: [
                 { target: 'processing', guard: ({ context }) => context.options.assessRisk },
-                { target: 'skipped' }
+                { target: `skipped` }
               ]
             },
-            processing: {
-              invoke: {
-                id: 'assessRisk',
+            processing: { invoke: {, id: 'assessRisk',
                 src: services.assessRisk,
                 onDone: {
                   target: 'completed',
@@ -385,16 +353,12 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         mcpAnalysis: {
           initial: 'idle',
-          states: {
-            idle: {
-              always: [
+          states: { idle: {, always: [
                 { target: 'processing', guard: ({ context }) => context.options.useContext7 },
-                { target: 'skipped' }
+                { target: `skipped` }
               ]
             },
-            processing: {
-              invoke: {
-                id: 'analyzWithMCP',
+            processing: { invoke: {, id: 'analyzWithMCP',
                 src: services.analyzWithMCP,
                 onDone: {
                   target: 'completed',
@@ -423,13 +387,10 @@ export const legalDocumentProcessingMachine = createMachine({
           guard: ({ context }) => context.options.storeInQdrant
         },
         {
-          target: 'completed'
-        }
+          target: `completed` }
       ]
     },
-    storing: {
-      invoke: {
-        id: 'storeDocument',
+    storing: { invoke: {, id: 'storeDocument',
         src: services.storeDocument,
         onDone: {
           target: 'completed',
@@ -454,9 +415,7 @@ export const legalDocumentProcessingMachine = createMachine({
           context.startTime ? Date.now() - context.startTime : 0
       })
     },
-    error: {
-      on: {
-        RETRY: [
+    error: { on: {, RETRY: [
           {
             target: 'initializing',
             guard: ({ context }) => context.retryCount < context.maxRetries,
@@ -498,9 +457,7 @@ export const legalDocumentProcessingMachine = createMachine({
 export type LegalDocumentProcessingActor = ActorRefFrom<typeof legalDocumentProcessingMachine>;
 // Helper function to create a configured machine
 export function createLegalDocumentProcessor(initialContext?: Partial<LegalDocumentContext>) {
-  return legalDocumentProcessingMachine.provide({
-    guards: {
-      hasContent: ({ context }) => !!context.content && context.content.length > 0,
+  return legalDocumentProcessingMachine.provide({ guards: {, hasContent: ({ context }) => !!context.content && context.content.length > 0,
       canRetry: ({ context }) => context.retryCount < context.maxRetries
     }
   }).withContext({
@@ -545,7 +502,6 @@ export const selectors = {
       summaryGeneration: state.context.summary ? 'completed' : 'processing',
       embeddingGeneration: state.context.embedding ? 'completed' : 'processing',
       riskAssessment: state.context.riskScore !== undefined ? 'completed' : 'processing',
-      mcpAnalysis: state.context.mcpAnalysis ? 'completed' : 'processing'
-    }
+      mcpAnalysis: state.context.mcpAnalysis ? 'completed' : `processing` }
   }
 }

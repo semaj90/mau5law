@@ -3,9 +3,7 @@
  * Gaming-inspired 3D visualization for legal document organization
  * Uses WebGL for N64-style graphics with modern optimizations
  */
-export interface MemoryRoom {
-  id: string;
-  name: string;
+export interface MemoryRoom { id: string;, name: string;
   theme: 'evidence' | 'contracts' | 'cases' | 'research';
   documents: LegalDocument[];
   position: [number, number, number];
@@ -13,9 +11,7 @@ export interface MemoryRoom {
   color: string;
   texture?: string;
 }
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   type: 'evidence' | 'contract' | 'brief' | 'citation';
   content: string;
   confidence: number;
@@ -30,9 +26,7 @@ export interface Camera {
   near: number;
   far: number;
 }
-export interface PalaceSettings {
-  renderDistance: number;
-  lodLevels: number;
+export interface PalaceSettings { renderDistance: number;, lodLevels: number;
   textureResolution: number;
   memoryBudgetMB: number;
   consolePalette: string;
@@ -56,7 +50,7 @@ export class MemoryPalaceEngine {
       antialias: false, // N64-style pixelated look
       alpha: false,
       depth: true,
-      preserveDrawingBuffer: false,
+      preserveDrawingBuffer: false
     });
     if (!gl) {
       throw new Error('WebGL2 not supported');
@@ -68,14 +62,14 @@ export class MemoryPalaceEngine {
       textureResolution: 64, // N64-style low-res textures
       memoryBudgetMB: 4, // N64 memory constraint
       consolePalette: 'n64',
-      ...settings,
+      ...settings
     };
     this.camera = {
       position: [0, 5, 10],
       target: [0, 0, 0],
       fov: 60,
       near: 0.1,
-      far: this.settings.renderDistance,
+      far: this.settings.renderDistance
     };
     this.initializeWebGL();
   }
@@ -188,7 +182,7 @@ export class MemoryPalaceEngine {
     for (const room of rooms) {
       this.rooms.set(room.id, {
         ...room,
-        documents: await this.processDocuments(room.documents),
+        documents: await this.processDocuments(room.documents)
       });
     }
   }
@@ -202,7 +196,7 @@ export class MemoryPalaceEngine {
           Array(384)
             .fill(0)
             .map(() => Math.random())
-        ),
+        )
     }));
   }
   startRenderLoop(): void {
@@ -365,11 +359,11 @@ export class MemoryPalaceEngine {
     }
     return false;
   }
-  getMemoryUsage(): { used: number; total: number; utilization: number } {
+  getMemoryUsage(): { used: number; total: number;, utilization: number } {
     return {
       used: this.currentMemoryUsage,
       total: this.TEXTURE_CACHE_SIZE,
-      utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100,
+      utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100
     };
   }
   destroy(): void {

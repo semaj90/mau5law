@@ -5,9 +5,7 @@
 
 import Loki from 'lokijs';
 
-export interface LegalAnalysisCacheEntry {
-  evidenceId: string;
-  evidenceTitle: string;
+export interface LegalAnalysisCacheEntry { evidenceId: string;, evidenceTitle: string;
   evidenceHash: string; // Hash of content to detect changes
   analysis: any;
   comparison: any;
@@ -28,7 +26,7 @@ class LegalAnalysisCache {
       autosaveInterval: 4000, // Save every 4 seconds
       persistenceMethod: 'localStorage',
       autoload: true,
-      autoloadCallback: () => this.initialize(),
+      autoloadCallback: () => this.initialize()
     });
   }
 
@@ -38,7 +36,7 @@ class LegalAnalysisCache {
     if (!this.collection) {
       this.collection = this.db.addCollection('analyses', {
         unique: ['evidenceId'],
-        indices: ['evidenceHash', 'timestamp', 'expiresAt'],
+        indices: ['evidenceHash', 'timestamp', 'expiresAt']
       });
     }
     this.initialized = true;
@@ -133,7 +131,7 @@ class LegalAnalysisCache {
       comparison,
       processingTime,
       timestamp: now,
-      expiresAt: ttl ? now + ttl : undefined,
+      expiresAt: ttl ? now + ttl : undefined
     });
 
     console.log(`✅ Cached legal analysis for: ${title}`);
@@ -154,8 +152,7 @@ class LegalAnalysisCache {
   private cleanExpired(): void {
     if (!this.collection) return;
     const now = Date.now();
-    const expired = this.collection.find({
-      expiresAt: { $lt: now },
+    const expired = this.collection.find({ expiresAt: {, $lt: now }
     });
     expired.forEach((entry) => this.collection!.remove(entry));
     if (expired.length > 0) {
@@ -166,9 +163,7 @@ class LegalAnalysisCache {
   /**
    * Get cache statistics
    */
-  getStats(): {
-    totalEntries: number;
-    oldestEntry: number | null;
+  getStats(): { totalEntries: number;, oldestEntry: number | null;
     newestEntry: number | null;
     totalSize: number;
   } {
@@ -183,7 +178,7 @@ class LegalAnalysisCache {
       totalEntries: entries.length,
       oldestEntry: timestamps.length > 0 ? Math.min(...timestamps) : null,
       newestEntry: timestamps.length > 0 ? Math.max(...timestamps) : null,
-      totalSize: JSON.stringify(entries).length,
+      totalSize: JSON.stringify(entries).length
     };
   }
 

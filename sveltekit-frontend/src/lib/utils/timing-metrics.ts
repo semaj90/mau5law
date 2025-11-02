@@ -21,9 +21,7 @@ export interface TimingMetrics {
   url: string;
   userAgent: string;
 }
-export interface PerformanceEntry {
-  name: string;
-  duration: number;
+export interface PerformanceEntry { name: string;, duration: number;
   startTime: number;
   entryType: string;
 }
@@ -253,15 +251,13 @@ class TimingMetricsCollector {
   private getCLS(): number | undefined {
     return this.customMarks['cumulative-layout-shift'];
   }
-  private logRequestMetrics(metrics: {
-    url: string;
-    method: string;
+  private logRequestMetrics(metrics: { url: string;, method: string;
     clientDuration: number;
     serverTiming: Record<string, number>;
     requestId: string;
     status: number;
     error?: string;
-    timestamp: number;
+   , timestamp: number;
   }): void {
     // Console logging for development
     if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {

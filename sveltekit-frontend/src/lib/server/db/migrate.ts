@@ -15,9 +15,7 @@ type PoolLike = {
 };
 // Derive concrete postgres-js client type
 type PostgresJsClient = ReturnType<typeof postgres>;
-interface Migration {
-  id: string;
-  filename: string;
+interface Migration { id: string;, filename: string;
   // DB drivers commonly return timestamps as strings; accept both and allow null
   applied_at?: string | Date | null;
 }
@@ -92,7 +90,7 @@ async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike): Pr
       `);
       console.log(`✅ SQL Migration ${migration} completed successfully`);
     } catch (error) {
-      console.error(`❌ SQL Migration ${migration} failed:`, error);
+      console.error(`❌ SQL Migration ${migration} failed: ', error);
       throw error;
     }
   }

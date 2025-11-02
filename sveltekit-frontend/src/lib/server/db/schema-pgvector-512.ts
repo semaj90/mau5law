@@ -30,7 +30,7 @@ export const caseEmbeddings = pgTable(
     model: text('model').notNull().default('embeddinggemma:latest'),
     metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   table => ({
     caseIdIdx: index('case_embeddings_case_id_idx').on(table.caseId),
@@ -39,7 +39,7 @@ export const caseEmbeddings = pgTable(
     // HNSW index for approximate nearest neighbor search
     embeddingHnswIdx: index('case_embeddings_hnsw_idx').on(table.embedding),
     // IVFFlat index for exact search on smaller datasets (create via manual SQL migration if needed)
-    embeddingIvfIdx: index('case_embeddings_ivfflat_idx').on(table.embedding),
+    embeddingIvfIdx: index('case_embeddings_ivfflat_idx').on(table.embedding)
   })
 );
 
@@ -58,14 +58,14 @@ export const evidenceEmbeddings = pgTable(
     model: text('model').notNull().default('embeddinggemma:latest'),
     metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   table => ({
     evidenceIdIdx: index('evidence_embeddings_evidence_id_idx').on(table.evidenceId),
     textHashIdx: index('evidence_embeddings_text_hash_idx').on(table.textHash),
     modelIdx: index('evidence_embeddings_model_idx').on(table.model),
     embeddingHnswIdx: index('evidence_embeddings_hnsw_idx').on(table.embedding),
-    embeddingIvfIdx: index('evidence_embeddings_ivfflat_idx').on(table.embedding),
+    embeddingIvfIdx: index('evidence_embeddings_ivfflat_idx').on(table.embedding)
   })
 );
 
@@ -97,7 +97,7 @@ export const legalDocumentChunks = pgTable(
     // Cache and deduplication;
     model: text('model').notNull().default('embeddinggemma:latest'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   table => ({
     documentIdIdx: index('legal_document_chunks_document_id_idx').on(table.documentId),
@@ -109,7 +109,7 @@ export const legalDocumentChunks = pgTable(
     embeddingHnswIdx: index('legal_document_chunks_hnsw_idx').on(table.embedding),
     // GIN indexes for JSONB fields (create via migration if needed)
     practiceAreaIdx: index('legal_document_chunks_practice_area_idx').on(table.practiceArea),
-    entitiesIdx: index('legal_document_chunks_entities_idx').on(table.extractedEntities),
+    entitiesIdx: index('legal_document_chunks_entities_idx').on(table.extractedEntities)
   })
 );
 
@@ -124,13 +124,13 @@ export const embeddingCache512 = pgTable(
     tokenCount: integer('token_count'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     lastAccessed: timestamp('last_accessed').defaultNow().notNull(),
-    accessCount: integer('access_count').default(0),
+    accessCount: integer('access_count').default(0)
   },
   table => ({
     textHashIdx: index('embedding_cache_512_text_hash_idx').on(table.textHash),
     modelIdx: index('embedding_cache_512_model_idx').on(table.model),
     accessedIdx: index('embedding_cache_512_accessed_idx').on(table.lastAccessed),
-    embeddingHnswIdx: index('embedding_cache_512_hnsw_idx').on(table.embedding),
+    embeddingHnswIdx: index('embedding_cache_512_hnsw_idx').on(table.embedding)
   })
 );
 

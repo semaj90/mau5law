@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import {
   rabbitmqServiceWorker,
   startRabbitMQWorker,
-  stopRabbitMQWorker,
+  stopRabbitMQWorker
 } from '$lib/workers/rabbitmq-service-worker.js';
 // The worker module does not export QUEUES in some builds; provide a safe local fallback.
 // Keep keys in sync with other parts of the codebase that expect these names.
@@ -20,7 +20,7 @@ const QUEUES: Record<string, string> = {
   EMAIL_NOTIFICATIONS: 'EMAIL_NOTIFICATIONS',
   SEARCH_INDEXING: 'SEARCH_INDEXING',
   CASE_UPDATES: 'CASE_UPDATES',
-  EVIDENCE_ANALYSIS: 'EVIDENCE_ANALYSIS',
+  EVIDENCE_ANALYSIS: 'EVIDENCE_ANALYSIS'
 };
 
 /**
@@ -46,8 +46,8 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(health, {
           headers: {
             'X-Worker-Health': health.status,
-            'Cache-Control': 'no-cache',
-          },
+            'Cache-Control': 'no-cache'
+          }
         });
       }
       case 'stats': {
@@ -55,22 +55,22 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           status: 'success',
           data: {
-            worker: stats,
+           , worker: stats,
             queues: Object.keys(QUEUES),
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
       case 'queues': {
         return json({
           status: 'success',
           data: {
-            availableQueues: Object.entries(QUEUES).map(([key, value]) => ({
+           , availableQueues: Object.entries(QUEUES).map(([key, value]) => ({
               name: key,
               queueName: value,
-              description: getQueueDescription(value),
-            })),
-          },
+              description: getQueueDescription(value)
+            }))
+          }
         });
       }
       default: {
@@ -82,14 +82,14 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             worker: {
               ...workerStats,
-              health: healthStatus,
+              health: healthStatus
             },
             endpoints: {
-              health: '/api/workers/rabbitmq?action=health',
+             , health: '/api/workers/rabbitmq?action=health',
               stats: '/api/workers/rabbitmq?action=stats',
-              queues: '/api/workers/rabbitmq?action=queues',
-            },
-          },
+              queues: '/api/workers/rabbitmq?action=queues'
+            }
+          }
         });
       }
     }
@@ -100,9 +100,9 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         status: 'error',
         error: {
-          message: err.message || 'RabbitMQ Worker API error',
-          timestamp: new Date().toISOString(),
-        },
+         , message: err.message || 'RabbitMQ Worker API error',
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -139,24 +139,23 @@ export const POST: RequestHandler = async ({ request }) => {
           enableLogging: true,
           enableN64Logging,
           maxRetries,
-          processingTimeout,
+          processingTimeout
         });
 
         return json({
           status: 'success',
           message: '🎮 RabbitMQ Service Worker started successfully',
           data: {
-            workerStats: worker.getStats(),
-            config: rawConfig,
-          },
+           , workerStats: worker.getStats(),
+            config: rawConfig
+          }
         });
       }
       case 'stop': {
         await stopRabbitMQWorker();
         return json({
           status: 'success',
-          message: 'RabbitMQ Service Worker stopped successfully',
-        });
+          message: `RabbitMQ Service Worker stopped successfully` });
       }
       case 'publish': {
         // runtime-guard extraction (no `any`)
@@ -173,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               status: 'error',
-              error: { message: 'queueName and message are required' },
+              error: {, message: `queueName and message are required` }
             },
             { status: 400 }
           );
@@ -183,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ...message,
           priority,
           publishedVia: 'worker_api',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
         const messageId = typeof message.id === 'string' ? message.id : `msg-${Date.now()}`;
@@ -194,8 +193,8 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             queueName,
             messageId,
-            published,
-          },
+            published
+          }
         });
       }
       case 'bulk_publish': {
@@ -204,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               status: 'error',
-              error: { message: 'messages must be an array' },
+              error: {, message: `messages must be an array` }
             },
             { status: 400 }
           );
@@ -221,12 +220,12 @@ export const POST: RequestHandler = async ({ request }) => {
               const success = await rabbitmqServiceWorker.publishMessage(qName!, {
                 ...(msgPayload ?? {}),
                 publishedVia: 'bulk_api',
-                timestamp: Date.now(),
+                timestamp: Date.now()
               });
               return {
                 queueName: qName,
                 success: Boolean(success),
-                messageId: typeof msgPayload?.id === 'string' ? msgPayload!.id : null,
+                messageId: typeof msgPayload?.id === 'string' ? msgPayload!.id : null
               };
             } catch (err) {
               const ferr = formatError(err);
@@ -238,7 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 queueName: failedQueue,
                 success: false,
                 messageId: failedMsgId,
-                error: ferr.message,
+                error: ferr.message
               };
             }
           })
@@ -246,15 +245,15 @@ export const POST: RequestHandler = async ({ request }) => {
         const successCount = results.filter(item => item.success).length;
         return json({
           status: 'success',
-          message: `Bulk publish completed: ${successCount}/${rawMessages.length} messages sent`,
+          message: `Bulk publish; completed: ${successCount}/${rawMessages.length} messages sent`,
           data: {
             results,
             summary: {
-              total: rawMessages.length,
+             , total: rawMessages.length,
               successful: successCount,
-              failed: rawMessages.length - successCount,
-            },
-          },
+              failed: rawMessages.length - successCount
+            }
+          }
         });
       }
       case 'simulate_load': {
@@ -266,8 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
               documentId: `doc-${Date.now()}`,
               fileName: 'legal_contract.pdf',
               type: 'contract_analysis',
-              priority: 'medium',
-            },
+              priority: `medium` }
           },
           {
             queueName: QUEUES.VECTOR_EMBEDDING,
@@ -275,8 +273,7 @@ export const POST: RequestHandler = async ({ request }) => {
               documentId: `doc-${Date.now()}`,
               content: 'Sample legal document content for embedding generation',
               type: 'embedding_generation',
-              priority: 'high',
-            },
+              priority: `high` }
           },
           {
             queueName: QUEUES.EVIDENCE_ANALYSIS,
@@ -284,8 +281,7 @@ export const POST: RequestHandler = async ({ request }) => {
               evidenceId: `evidence-${Date.now()}`,
               type: 'document_analysis',
               caseId: `case-${Date.now()}`,
-              priority: 'high',
-            },
+              priority: `high` }
           },
         ];
         const loadResults = await Promise.all(
@@ -303,16 +299,16 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'success',
           message: 'Load simulation completed',
           data: {
-            jobsSubmitted: loadResults.length,
-            results: loadResults,
-          },
+           , jobsSubmitted: loadResults.length,
+            results: loadResults
+          }
         });
       }
       default: {
         return json(
           {
             status: 'error',
-            error: { message: `Unknown action: ${action}` },
+            error: {, message: 'Unknown, action: ${action}' }
           },
           { status: 400 }
         );
@@ -325,9 +321,9 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         status: 'error',
         error: {
-          message: err.message || 'RabbitMQ Worker operation failed',
-          timestamp: new Date().toISOString(),
-        },
+         , message: err.message || 'RabbitMQ Worker operation failed',
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -344,9 +340,9 @@ export const PUT: RequestHandler = async ({ request }) => {
       status: 'success',
       message: 'Worker configuration updated',
       data: {
-        appliedConfig: config,
-        timestamp: new Date().toISOString(),
-      },
+       , appliedConfig: config,
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     const err = formatError(error);
@@ -355,9 +351,9 @@ export const PUT: RequestHandler = async ({ request }) => {
       {
         status: 'error',
         error: {
-          message: err.message || 'Configuration update failed',
-          timestamp: new Date().toISOString(),
-        },
+         , message: err.message || 'Configuration update failed',
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -374,8 +370,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
           status: 'success',
           message: 'Worker statistics reset',
           data: {
-            resetAt: new Date().toISOString(),
-          },
+           , resetAt: new Date().toISOString()
+          }
         });
       case 'clear_queues':
         // This would clear queue contents in a real implementation
@@ -383,13 +379,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
           status: 'success',
           message: 'Queue clearing initiated (simulation)',
           data: {
-            clearedAt: new Date().toISOString(),
-          },
+            clearedAt: new Date().toISOString()
+          }
         });
       default: return json(
           {
             status: 'error',
-            error: { message: 'Action required for DELETE operation' },
+            error: {, message: 'Action required for DELETE operation' }
           },
           { status: 400 }
         );
@@ -401,9 +397,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         status: 'error',
         error: {
-          message: err.message || 'Delete operation failed',
-          timestamp: new Date().toISOString(),
-        },
+         , message: err.message || 'Delete operation failed',
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -422,7 +418,6 @@ function getQueueDescription(queueName: any): string {
     [String(QUEUES.EMAIL_NOTIFICATIONS)]: 'Sends email notifications for case updates',
     [String(QUEUES.SEARCH_INDEXING)]: 'Updates search indexes with new content',
     [String(QUEUES.CASE_UPDATES)]: 'Processes legal case updates and notifications',
-    [String(QUEUES.EVIDENCE_ANALYSIS)]: 'Analyzes evidence items for legal relevance',
-  };
+    [String(QUEUES.EVIDENCE_ANALYSIS)]: `Analyzes evidence items for legal relevance` };
   return descriptions[key] || 'Generic message processing queue';
 }

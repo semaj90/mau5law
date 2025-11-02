@@ -8,9 +8,9 @@ import { browser } from '$app/environment';
 import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
 // replace loose `any` types with stricter input shapes
 type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
-type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
-type Word = { text: string; bbox: BBox; confidence: number };
-type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } };
+type BBox = { x0: number; y0: number; x1: number;, y1: number } | number[];
+type Word = { text: string; bbox: BBox;, confidence: number };
+type RecognizeResult = { data: { text: string; confidence: number;, words: Word[] } };
 type LoggerMessage = Record<string, unknown>;
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
@@ -30,28 +30,18 @@ declare global {
     Tesseract?: TesseractLike;
   }
 }
-export interface OCRResult {
-  text: string;
-  confidence: number;
-  boundingBoxes: Array<{
-    text: string;
-    bbox: BBox;
+export interface OCRResult { text: string;, confidence: number;
+  boundingBoxes: Array<{ text: string;, bbox: BBox;
     confidence: number;
   }>;
 }
-export interface TensorData {
-  embeddings: Float32Array;
-  dimensions: number;
-  metadata: {
-    source: 'ocr' | 'manual' | 'api';
-    processed_at: number;
+export interface TensorData { embeddings: Float32Array;, dimensions: number;
+  metadata: { source: 'ocr' | 'manual' | 'api';, processed_at: number;
     tensor_id: string;
     confidence: number;
   };
 }
-export interface ProcessingResult {
-  ocr: OCRResult;
-  embeddings: TensorData;
+export interface ProcessingResult { ocr: OCRResult;, embeddings: TensorData;
   searchIndex: Float32Array;
   processingTime: number;
   cacheHit: boolean;
@@ -76,9 +66,7 @@ export interface OCRProcessOptions {
   tessjs_create_hocr?: boolean;
   tessjs_create_tsv?: boolean;
 }
-export interface BatchProcessingItem {
-  image: ImageData | HTMLCanvasElement | File;
-  priority: number;
+export interface BatchProcessingItem { image: ImageData | HTMLCanvasElement | File;, priority: number;
   options: OCRProcessOptions;
 }
 export class OCRTensorProcessor {
@@ -166,7 +154,7 @@ export class OCRTensorProcessor {
   private async initializeServiceWorker(): Promise<void> {
     if (!browser || !('serviceWorker' in navigator)) return;
     try {
-      const registration = await navigator.serviceWorker.register('/tensor-simd-worker.js', { scope: '/api/tensor/' });
+      const registration = await navigator.serviceWorker.register('/tensor-simd-worker.js', { scope: `/api/tensor/` });
       this.serviceWorkerRegistration = registration;
       const activeWorker = registration.active || registration.installing || registration.waiting;
       // keep reference to the underlying ServiceWorker (may be undefined until activated)
@@ -204,7 +192,7 @@ export class OCRTensorProcessor {
         embeddings: tensorData,
         searchIndex,
         processingTime: totalTime,
-        cacheHit: embeddingResult.fromCache,
+        cacheHit: embeddingResult.fromCache
       };
     } catch (error) {
       console.error('OCR Tensor processing failed:', error);
@@ -231,8 +219,8 @@ export class OCRTensorProcessor {
       const ocrOptions = this.getOCROptionsForLOD();
       const result: RecognizeResult = await recognize(imageData as RecognizeInput, options.language || 'eng', {
         // Type logger message
-        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]:`, m),
-        ...ocrOptions,
+        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]: ', m),
+        ...ocrOptions
       });
       const ocrResult: OCRResult = {
         text: result.data.text,
@@ -240,17 +228,17 @@ export class OCRTensorProcessor {
         boundingBoxes: result.data.words.map((word: Word) => ({
           text: word.text,
           bbox: word.bbox,
-          confidence: word.confidence,
-        })),
+          confidence: word.confidence
+        }))
       };
       console.log('📝 OCR completed:', {
         textLength: ocrResult.text.length,
         confidence: ocrResult.confidence,
-        wordsFound: ocrResult.boundingBoxes.length,
+        wordsFound: ocrResult.boundingBoxes.length
       });
       return ocrResult;
     } catch (error) {
-      console.error('OCR processing failed:', error);
+      console.error('OCR processing failed: `, error);
       throw error;
     }
   }
@@ -265,7 +253,7 @@ export class OCRTensorProcessor {
           oem: 1,
           tessjs_create_pdf: false,
           tessjs_create_hocr: false,
-          tessjs_create_tsv: false,
+          tessjs_create_tsv: false
         };
       case 'medium':
         // 16-bit SNES level optimization
@@ -274,7 +262,7 @@ export class OCRTensorProcessor {
           oem: 2,
           tessjs_create_pdf: false,
           tessjs_create_hocr: true,
-          tessjs_create_tsv: false,
+          tessjs_create_tsv: false
         };
       case 'high':
         // N64 level optimization with DNN LOD system
@@ -283,7 +271,7 @@ export class OCRTensorProcessor {
           oem: 3,
           tessjs_create_pdf: true,
           tessjs_create_hocr: true,
-          tessjs_create_tsv: true,
+          tessjs_create_tsv: true
         };
       default: return {};
     }
@@ -298,7 +286,7 @@ export class OCRTensorProcessor {
     try {
       // Check Ollama GPU memory availability and status
       const ollamaStatus = await fetch('/api/ai/status', {
-        signal: AbortSignal.timeout(3000),
+        signal: AbortSignal.timeout(3000)
       });
       const statusData = await ollamaStatus.json();
       // Smart fallback to Gemma 270MB for OOM prevention and better UX
@@ -313,15 +301,14 @@ export class OCRTensorProcessor {
           fallback: ['nomic-embed-text', 'client-autogen'],
           useCrewAI: false,
           parallelism: 4,
-          cacheSize: 128,
+          cacheSize: 128
         };
       }
       // Determine model based on available GPU memory
       if (availableMemory > 2048) {
         // 2GB+ GPU memory
         return {
-          model: 'gemma3:legal-latest', // Primary: Gemma 3 legal for best quality
-          fallback: ['gemma:270m', 'nomic-embed-text'],
+          model: 'gemma3:legal-latest', // Primary: Gemma 3 legal for best quality; fallback: ['gemma:270m', 'nomic-embed-text'],
           useCrewAI: false,
           parallelism: 8, // High parallelism for powerful GPU
           cacheSize: 512, // Large cache for complex models
@@ -368,13 +355,13 @@ export class OCRTensorProcessor {
   }
   private async generateEmbeddings(
     text: string
-  ): Promise<{ embeddings: Float32Array; fromCache: boolean; model: string }> {
+  ): Promise<{ embeddings: Float32Array; fromCache: boolean;, model: string }> {
     try {
       // Intelligent model selection based on Ollama GPU memory and system state
       const modelConfig = await this.selectOptimalModel();
       const response = await fetch('/api/ai/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           text,
           model: modelConfig?.model || 'unknown',
@@ -387,17 +374,15 @@ export class OCRTensorProcessor {
           cache_size_mb: modelConfig.cacheSize,
           prevent_oom: true,
           gpu_fallback_strategy: 'gemma270m', // Always fallback to 270MB for stability
-        }),
+        })
       });
       if (!response.ok) {
-        throw new Error(`Embedding API failed: ${response.status}`); // No need for: 'as { ok?: any; ... }'
-      }
+        throw new Error(`Embedding API failed: ${response.status}`); // No need for: `as { ok?: any; ... }' }
       const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
         embeddings: new Float32Array(data.embedding), // Access properties directly
         fromCache: data.fromCache || false,
-        model: data?.model || 'unknown',
-      };
+        model: data?.model || 'unknown` };
     } catch (error) {
       console.error('Embedding generation failed:', error);
       throw error;
@@ -413,8 +398,8 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-          confidence: 0.8,
-        },
+          confidence: 0.8
+        }
       };
     }
     try {
@@ -423,7 +408,7 @@ export class OCRTensorProcessor {
       // Create input buffer
       const inputBuffer = this.webgpuDevice.createBuffer({
         size: embeddings.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
       // Execute SIMD processing
@@ -435,7 +420,7 @@ export class OCRTensorProcessor {
       // Read results back
       const resultBuffer = this.webgpuDevice.createBuffer({
         size: embeddings.byteLength,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
       const commandEncoder = this.webgpuDevice.createCommandEncoder();
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, embeddings.byteLength);
@@ -450,8 +435,8 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-          confidence: 0.9,
-        },
+          confidence: 0.9
+        }
       };
     } catch (error) {
       console.warn('WebGPU tensor processing failed, using CPU fallback:', error);
@@ -462,8 +447,8 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-          confidence: 0.8,
-        },
+          confidence: 0.8
+        }
       };
     }
   }
@@ -495,7 +480,7 @@ export class OCRTensorProcessor {
       // Type processingQueue
       image,
       priority: this.calculateProcessingPriority(image, index),
-      options,
+      options
     }));
     // Sort by priority (higher priority first)
     processingQueue.sort((a, b) => b.priority - a.priority);
@@ -507,7 +492,7 @@ export class OCRTensorProcessor {
         try {
           return await this.processImageAsync(item.image, item.options); // Access properties directly
         } catch (error) {
-          console.warn(`Failed to process image ${i}:`, error);
+          console.warn(`Failed to process image ${i}: ', error);
           return null;
         }
       });
@@ -595,7 +580,7 @@ export class OCRTensorProcessor {
           imageData,
           options,
           lodLevel: this.currentLODLevel,
-          memoryPressure: this.memoryPressure,
+          memoryPressure: this.memoryPressure
         });
       } else {
         // ServiceWorker path: listen on navigator.serviceWorker and post to active worker if available
@@ -612,7 +597,7 @@ export class OCRTensorProcessor {
             imageData,
             options,
             lodLevel: this.currentLODLevel,
-            memoryPressure: this.memoryPressure,
+            memoryPressure: this.memoryPressure
           });
         } catch (err) {
           cleanup();
@@ -679,22 +664,20 @@ export class OCRTensorProcessor {
     try {
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          results: results.map(r => ({
-            text: r.ocr.text,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, results: results.map(r => ({, text: r.ocr.text,
             embeddings: Array.from(r.embeddings.embeddings),
             dimensions: r.embeddings.dimensions,
             confidence: r.ocr.confidence,
             tensor_id: r.embeddings.metadata.tensor_id,
-            search_index: Array.from(r.searchIndex),
+            search_index: Array.from(r.searchIndex)
           })),
           metadata: {
             ...metadata,
             processed_at: Date.now(),
-            batch_size: results.length,
-          },
-        }),
+            batch_size: results.length
+          }
+        })
       });
       if (!response.ok) {
         throw new Error(`Storage API failed: ${response.status}`);

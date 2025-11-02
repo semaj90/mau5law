@@ -91,9 +91,9 @@ import type { User } from '$lib/types';
         handleAvatarClick();
       }
     }}
-    on:drop={handleDrop}
-    on:dragover={handleDragOver}
-    on:dragleave={handleDragLeave}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
     role="button"
     tabindex={clickable ? 0 : -1}
     aria-label="Upload or change avatar"

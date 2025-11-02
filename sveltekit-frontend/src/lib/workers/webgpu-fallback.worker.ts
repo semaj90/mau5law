@@ -2,7 +2,7 @@
 // This file intentionally uses no imports that require server-only modules.
 
 self.addEventListener('message', async (ev) => {
-  const { query, candidates } = ev.data as { query: string; candidates: { id: string; text: string }[] };
+  const { query, candidates } = ev.data as { query: string; candidates: { id: string;, text: string }[] };
   try {
     // Lightweight token overlap scoring as a fallback (GPU implementation to be added later)
     const tokens = new Set(query.toLowerCase().split(/\s+/).filter(Boolean));

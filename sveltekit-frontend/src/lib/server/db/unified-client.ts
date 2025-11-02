@@ -23,14 +23,10 @@ import type { DocumentMetadata } from './schema-unified.js';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
-interface DatabaseConfig {
-  runtime: {
-    url: string;
+interface DatabaseConfig { runtime: {, url: string;
     poolSize: number;
   };
-  admin: {
-    url: string;
-    poolSize: number;
+  admin: { url: string;, poolSize: number;
   };
   qdrant?: {
     url: string;
@@ -57,9 +53,7 @@ interface HybridSearchResult {
   };
 }
 // Add new type for health checks
-type HealthStatus = {
-  postgresql: boolean;
-  qdrant: boolean;
+type HealthStatus = { postgresql: boolean;, qdrant: boolean;
   pgvector: boolean;
   overallHealth: boolean;
 };
@@ -69,9 +63,7 @@ type QdrantHit = {
   score?: number;
   payload?: Record<string, unknown>;
 };
-type SearchResultEntry = {
-  id: string;
-  score: number;
+type SearchResultEntry = { id: string;, score: number;
   document: DocumentMetadata | Record<string, unknown> | null;
   source: 'qdrant' | 'postgresql';
 };
@@ -79,26 +71,23 @@ type SearchResultEntry = {
 // ENVIRONMENT CONFIGURATION
 // ============================================================================
 const isDev = process.env.NODE_ENV === 'development';
-const config: DatabaseConfig = {
-  runtime: {
-    url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
-    poolSize: isDev ? 5 : 10,
+const config: DatabaseConfig = { runtime: {, url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
+    poolSize: isDev ? 5 : 10
   },
   admin: {
     url:
       process.env.DATABASE_URL_ADMIN ||
       process.env.ADMIN_DATABASE_URL ||
       'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
-    poolSize: 2,
+    poolSize: 2
   },
   qdrant: process.env.QDRANT_URL
     ? {
         url: process.env.QDRANT_URL,
-        apiKey: process.env.QDRANT_API_KEY,
+        apiKey: process.env.QDRANT_API_KEY
       }
     : undefined,
-  environment: isDev ? 'development' : 'production',
-};
+  environment: isDev ? 'development' : 'production` };
 // ============================================================================
 // SINGLETON CONNECTION MANAGEMENT
 // ============================================================================
@@ -130,7 +119,7 @@ class DatabaseManager {
         types: {
           // Custom pgvector type support
           vector: {
-            to: 1184,
+           , to: 1184,
             from [1184],
             serialize: (x: number[]) => {
               if (Array.isArray(x)) {
@@ -143,8 +132,8 @@ class DatabaseManager {
                 return x.slice(1, -1).split(',').map(Number);
               }
               return [];
-            },
-          },
+            }
+          }
         },
         debug: isDev
           ? (_connection: any, query: string, parameters?: any[]) => {
@@ -153,7 +142,7 @@ class DatabaseManager {
                 console.log('📝 Parameters:', parameters);
               }
             }
-          : false,
+          : false
       });
     }
     return this.runtimeConnection;
@@ -166,7 +155,7 @@ class DatabaseManager {
         max_lifetime: 60 * 10, // 10 minutes
         prepare: false, // Admin operations don't need prepared statements
         ssl: false,
-        transform: { undefined: null },
+        transform: {, undefined: null },
         debug: isDev
           ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('👑 Admin PostgreSQL Query:', query);
@@ -174,7 +163,7 @@ class DatabaseManager {
                 console.log('📝 Parameters:', parameters);
               }
             }
-          : false,
+          : false
       });
     }
     return this.adminConnection;
@@ -183,7 +172,7 @@ class DatabaseManager {
     if (config.qdrant && !this.qdrantClient) {
       this.qdrantClient = new QdrantClient({
         url: config.qdrant.url,
-        apiKey: config.qdrant.apiKey,
+        apiKey: config.qdrant.apiKey
       });
     }
     return this.qdrantClient;
@@ -193,7 +182,7 @@ class DatabaseManager {
     if (!this.runtimeDb) {
       this.runtimeDb = drizzle(this.createRuntimeConnection(), {
         schema,
-        logger: isDev,
+        logger: isDev
       });
     }
     return this.runtimeDb;
@@ -202,7 +191,7 @@ class DatabaseManager {
     if (!this.adminDb) {
       this.adminDb = drizzle(this.createAdminConnection(), {
         schema,
-        logger: isDev,
+        logger: isDev
       });
     }
     return this.adminDb;
@@ -274,33 +263,31 @@ class DatabaseManager {
     if (!qdrant) return;
     try {
       const collectionsRes = await this.getQdrantCollectionsSafe(qdrant);
-      // Normalize possible shapes: { collections: [...] } or { result: { collections: [...] } } or array
+      // Normalize possible shapes: { collections: [...] } or { result: {, collections: [...] } } or array
       const collectionsList: { name: string }[] =
         (collectionsRes &&
           (collectionsRes.collections ?? (collectionsRes.result && collectionsRes.result.collections))) ||
         (Array.isArray(collectionsRes) ? collectionsRes : []);
       const exists = collectionsList.some(c => c.name === collectionName);
       if (!exists) {
-        await this.createQdrantCollectionSafe(qdrant, collectionName, {
-          vectors: {
-            size: vectorSize,
-            distance,
+        await this.createQdrantCollectionSafe(qdrant, collectionName, { vectors: {, size: vectorSize,
+            distance
           },
           optimizers_config: {
             default_segment_number: 2,
             memmap_threshold: 20000,
-            indexing_threshold: 20000,
+            indexing_threshold: 20000
           },
           hnsw_config: {
-            m: 16,
+           , m: 16,
             ef_construct: 64,
-            full_scan_threshold: 10000,
-          },
+            full_scan_threshold: 10000
+          }
         });
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
       }
     } catch (error) {
-      console.error(`❌ Failed to ensure Qdrant collection ${collectionName}:`, this.extractErrorMessage(error));
+      console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', this.extractErrorMessage(error));
       throw error;
     }
   }
@@ -312,7 +299,7 @@ class DatabaseManager {
       threshold = 0.7,
       filter = {},
       usePostgreSQL = true,
-      useQdrant = true,
+      useQdrant = true
     } = options;
     const results: Array<SearchResultEntry> = [];
     let postgresqlTime: number | undefined;
@@ -338,8 +325,7 @@ class DatabaseManager {
             id: String(row.id),
             score: Number(row.similarity) ?? 0,
             document: row as DocumentMetadata,
-            source: 'postgresql',
-          });
+            source: 'postgresql` });
         }
       } catch (error) {
         console.error('PostgreSQL vector search error:', error);
@@ -359,7 +345,7 @@ class DatabaseManager {
             limit,
             score_threshold: threshold,
             with_payload: true,
-            filter: qFilter,
+            filter: qFilter
           });
           qdrantTime = Date.now() - qStart;
           // Try to fetch matching PostgreSQL records for payload mapping if any
@@ -380,7 +366,7 @@ class DatabaseManager {
                   id: idStr,
                   score: r.score ?? 0,
                   document: doc,
-                  source: 'qdrant',
+                  source: 'qdrant'
                 } as SearchResultEntry);
               }
             } catch (err) {
@@ -390,8 +376,7 @@ class DatabaseManager {
                   id: String(r.id),
                   score: r.score ?? 0,
                   document: r.payload ?? null,
-                  source: 'qdrant',
-                } as SearchResultEntry);
+                  source: 'qdrant` } as SearchResultEntry);
               }
             }
           }
@@ -416,8 +401,8 @@ class DatabaseManager {
       performance: {
         postgresqlTime,
         qdrantTime,
-        totalTime: Date.now() - startTime,
-      },
+        totalTime: Date.now() - startTime
+      }
     };
   }
   // ============================================================================
@@ -428,7 +413,7 @@ class DatabaseManager {
       postgresql: false,
       qdrant: false,
       pgvector: false,
-      overallHealth: false,
+      overallHealth: false
     };
     try {
       const runtimeDb = this.getRuntimeDb();
@@ -597,7 +582,7 @@ export const unifiedDb = {
   vectorSearch: (embedding: number[], options?: VectorSearchOptions) =>
     dbManager.hybridVectorSearch(embedding, options),
   ensureCollection: (name: string, size?: number, distance?: 'Cosine' | 'Dot' | 'Euclid') =>
-    dbManager.ensureQdrantCollection(name, size, distance),
+    dbManager.ensureQdrantCollection(name, size, distance)
 };
 // Re-export schema for convenience
 export * from './schema-unified.js';

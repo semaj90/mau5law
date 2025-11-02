@@ -7,7 +7,7 @@ import type { RedisClientType } from 'redis';
 type RedisClientOptions = Parameters<NonNullable<typeof createClient>>[0];
 
 export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes default
-export const memoryCache = new Map<string, { value: any; expires: number }>();
+export const memoryCache = new Map<string, { value: any;, expires: number }>();
 
 const REDIS_URL = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
@@ -66,8 +66,8 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
           reconnectStrategy: (_retries?: number) => {
             // constant delay of 1s; adjust logic if exponential/backoff behavior is desired
             return 1000;
-          },
-        },
+          }
+        }
       };
 
       // Add password if provided
@@ -76,10 +76,10 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
       }
 
       redisClient = createClientFn(redisConfig);
-      redisClient.on('error', (err: any) => console.error('Redis client error:', err));
+      redisClient.on('error', (err: any) => console.error('Redis client; error: ', err));
     }
     if (!redisConnected && redisClient) {
-      // Capture the client in a local variable and ensure `connect` is callable.
+      // Capture the client in a local variable and ensure `connect' is callable.
       const client = redisClient;
       if (typeof client.connect === 'function') {
         // Safe typed invocation when connect exists
@@ -146,15 +146,15 @@ export function checkApiKey(headers: Headers): { ok: boolean; message?: string }
   const configured = process.env.CACHE_API_KEY;
   if (!configured) return { ok: true };
   const provided = headers.get('x-api-key') ?? headers.get('X-API-KEY');
-  if (!provided) return { ok: false, message: 'Missing x-api-key header' };
-  if (provided !== configured) return { ok: false, message: 'Invalid API key' };
+  if (!provided) return { ok: false, message: `Missing x-api-key header` };
+  if (provided !== configured) return { ok: false, message: `Invalid API key` };
   return { ok: true };
 }
 
 // Very small in-memory rate limiter (token bucket) keyed by client key or IP.
 const RATE_LIMIT_TOKENS = Number(process.env.CACHE_RATE_LIMIT_TOKENS ?? 10);
 const RATE_LIMIT_REFILL_MS = Number(process.env.CACHE_RATE_LIMIT_REFILL_MS ?? 60_000);
-const buckets = new Map<string, { tokens: number; lastRefill: number }>();
+const buckets = new Map<string, { tokens: number;, lastRefill: number }>();
 
 export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: number } {
   const now = Date.now();
@@ -256,5 +256,5 @@ export const cognitiveCache = {
     } catch (err) {
       console.warn('cognitiveCache.storeJsonbDocument redis store failed', err);
     }
-  },
+  }
 };

@@ -8,7 +8,7 @@ import { createMachine, assign, fromPromise } from 'xstate';
 import type { GoMicroserviceContext, GoServiceRequest, GoServiceResponse } from './types.js';
 const DEFAULT_TIMEOUT = 30_000; // 30s
 const HEALTH_CHECK_INTERVAL = 60_000; // 60s
-interface MakeRequestEvent { type: 'MAKE_REQUEST'; request: GoServiceRequest }
+interface MakeRequestEvent { type: 'MAKE_REQUEST';, request: GoServiceRequest }
 interface HealthCheckEvent { type: 'HEALTH_CHECK' }
 interface ConnectEvent { type: 'CONNECT'; endpoint?: string }
 interface DisconnectEvent { type: 'DISCONNECT' }
@@ -32,9 +32,7 @@ export const goMicroserviceMachine = createMachine({
   id: 'goMicroservice',
   context: initialContext,
   initial: 'connecting',
-  states: {
-    connecting: {
-      entry: assign(() => ({ connectionStatus: 'connecting' as any })),
+  states: {, connecting: {, entry: assign(() => ({ connectionStatus: 'connecting' as any })),
       invoke: {
         id: 'initialConnect',
         src: fromPromise(async ({ input }) => {
@@ -50,7 +48,7 @@ export const goMicroserviceMachine = createMachine({
           target: 'connected.idle',
           actions: assign((_, e: any) => ({,
             connectionStatus: 'connected' as any,
-            healthCheck: { lastCheck: Date.now(), status: 'healthy' as: 'healthy', responseTime: e.output.responseTime }
+            healthCheck: {, lastCheck: Date.now(), status: 'healthy'; as: 'healthy', responseTime: e.output.responseTime }
           })
         },
         onError: {
@@ -58,29 +56,23 @@ export const goMicroserviceMachine = createMachine({
           actions: assign((_, e: any) => ({ connectionStatus: 'error' as any, error: e.error?.message })
         }
       },
-      on: { DISCONNECT: { target: 'disconnected' } }
+      on: { DISCONNECT: {, target: 'disconnected' } }
     },
-    disconnected: {
-      entry: assign(() => ({ connectionStatus: 'disconnected' as any })),
-      on: { CONNECT: { target: 'connecting', actions: assign((c: any, e: any) => ({ endpoint: e.endpoint || c.endpoint })) } }
+    disconnected: { entry: assign(() => ({, connectionStatus: 'disconnected' as any })),
+      on: { CONNECT: {, target: 'connecting', actions: assign((c: any, e: any) => ({ endpoint: e.endpoint || c.endpoint })) } }
     },
     connected: {
       entry: 'startHealthCheckTimer',
       exit: 'stopHealthCheckTimer',
       initial: 'idle',
-      states: {
-        idle: {
-          on: {
-            MAKE_REQUEST: { target: 'requesting' },
+      states: { idle: {, on: { MAKE_REQUEST: {, target: 'requesting' },
             HEALTH_CHECK: { target: 'healthChecking' },
-            DISCONNECT: { target: '#goMicroservice.disconnected' }
+            DISCONNECT: { target: `#goMicroservice.disconnected` }
           }
         },
-        requesting: {
-          invoke: {
-            id: 'doRequest',
+        requesting: { invoke: {, id: 'doRequest',
             src: fromPromise(async ({ input }) => {
-              const { request, endpoint } = input as { request: GoServiceRequest; endpoint: string }
+              const { request, endpoint } = input as { request: GoServiceRequest;, endpoint: string }
               if (!request) throw new Error('No request provided');
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
@@ -108,9 +100,7 @@ export const goMicroserviceMachine = createMachine({
             }
           }
         },
-        healthChecking: {
-          invoke: {
-            id: 'periodicHealth',
+        healthChecking: { invoke: {, id: 'periodicHealth',
             src: fromPromise(async ({ input }) => {
               const { endpoint } = input as { endpoint: string }
               const start = Date.now();
@@ -125,25 +115,22 @@ export const goMicroserviceMachine = createMachine({
             'done.invoke.periodicHealth': {
               target: 'idle',
               actions: assign((_, e: any) => ({,
-                healthCheck: { lastCheck: Date.now(), status: 'healthy' as: 'healthy', responseTime: e.output.responseTime }
+                healthCheck: {, lastCheck: Date.now(), status: 'healthy'; as: 'healthy', responseTime: e.output.responseTime }
               })
             },
             'error.invoke.periodicHealth': {
               target: 'idle',
-              actions: assign(() => ({ healthCheck: { lastCheck: Date.now(), status: 'unhealthy' as: 'unhealthy' } })
+              actions: assign(() => ({ healthCheck: {, lastCheck: Date.now(), status: 'unhealthy'; as: 'unhealthy' } })
             }
           }
         }
       }
     },
-    error: {
-      after: { 4000: { target: 'connecting' } },
-      on: { CONNECT: { target: 'connecting' }, DISCONNECT: { target: 'disconnected' } }
+    error: { after: { 4000: {, target: 'connecting' } },
+      on: { CONNECT: {, target: 'connecting' }, DISCONNECT: { target: 'disconnected' } }
     }
   }
-}, {
-  actions: {
-    startHealthCheckTimer: () => { },
+}, { actions: {, startHealthCheckTimer: () => { },
     stopHealthCheckTimer: () => { }
   }
 });
@@ -158,7 +145,7 @@ export const goMicroserviceServices = {
         data,
         format: 'json',
         options: {
-          parallel: options?.parallel ?? false,
+         , parallel: options?.parallel ?? false,
           chunk_size: options?.chunkSize ?? 1024,
           compression: true
         }
@@ -173,7 +160,7 @@ export const goMicroserviceServices = {
       body: {
         vectors,
         labels,
-        dimensions: { width: options?.width ?? 10, height: options?.height ?? 10 },
+        dimensions: {, width: options?.width ?? 10, height: options?.height ?? 10 },
         iterations: options?.iterations ?? 1000,
         learning_rate: options?.learningRate ?? 0.1
       }
@@ -182,7 +169,7 @@ export const goMicroserviceServices = {
   cudaInfer: (model: string, input: any, options?: { batchSize?: number; precision?: 'fp32' | 'fp16' | 'int8'; streaming?: boolean }) => ({
     type: 'MAKE_REQUEST' as const,
     request: {
-      method: 'POST' as const,
+     , method: 'POST' as const,
       path: '/cuda-infer',
       body: {
         model,
@@ -195,7 +182,7 @@ export const goMicroserviceServices = {
   }),
   getMetrics: () => ({,
     type: 'MAKE_REQUEST' as const,
-    request: { method: 'GET' as const path: '/metrics' }
+    request: {, method: 'GET' as const, path: `/metrics` }
   }),
   healthCheck: () => ({ type: 'HEALTH_CHECK' as const })
 }

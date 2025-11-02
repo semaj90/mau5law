@@ -60,8 +60,8 @@ import type { Document } from '$lib/types';
     const SR = Win.SpeechRecognition || Win.webkitSpeechRecognition;
     if (!SR) return;
     recognition = new SR() as SpeechRecognition;
-    recognition.continuous = $state(false);
-    recognition.interimResults = $state(false);
+    recognition.continuous = false;
+    recognition.interimResults = false;
     recognition.lang = 'en-US';
     recognition.onresult = (event: any) => {
       const transcript = event.results?.[0]?.[0]?.transcript;
@@ -70,8 +70,8 @@ import type { Document } from '$lib/types';
       }
       isListening = false;
     };
-    recognition.onerror = () => { isListening = $state(false); };
-    recognition.onend = () => { isListening = $state(false); };
+    recognition.onerror = () => { isListening = false; };
+    recognition.onend = () => { isListening = false; };
     // teardown
     return () => {
       if (recognition) {
@@ -445,7 +445,7 @@ import type { Document } from '$lib/types';
   </div>
   <!-- Citation modal moved outside of submit button and template cleaned up -->
   {#if showCitationDialog}
-    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = $state(false); }}>
+    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
       <div class="modal" role="document">
         <div class="modal-header">
           <Quote size={20} />

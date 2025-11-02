@@ -457,7 +457,7 @@ Run Performance Test
                 <div class="flex-1">
                   <div class="flex items-center space-x-2 mb-1">
                     <span
-                      class="inline-flex" items-center px-2 py-1 rounded text-xs font-medium {getMessageTypeColor(
+                      class="inline-flex items-center px-2" py-1 rounded text-xs font-medium {getMessageTypeColor(
                         message.type
                       )}">
                       {message.type}

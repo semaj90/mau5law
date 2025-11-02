@@ -14,7 +14,7 @@ import {
   text,
   timestamp,
   uuid,
-  varchar,
+  varchar
 } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ export const UserSettingsExtSchema = z.object({
   notifications: z.boolean().default(true),
   language: z.string().default('en'),
   timezone: z.string().default('UTC'),
-  preferences: z.record(z.string(), z.any()).default({}),
+  preferences: z.record(z.string(), z.any()).default({})
 });
 export const DocumentMetadataSchema = z.object({
   author: z.string().optional(),
@@ -33,7 +33,7 @@ export const DocumentMetadataSchema = z.object({
   tags: z.array(z.string()).default([]),
   lastModified: z.string().datetime().optional(),
   wordCount: z.number().optional(),
-  estimatedReadTime: z.number().optional(),
+  estimatedReadTime: z.number().optional()
 });
 export const EvidenceMetadataSchema = z.object({
   size: z.number().optional(),
@@ -41,7 +41,7 @@ export const EvidenceMetadataSchema = z.object({
   checksum: z.string().optional(),
   source: z.string().optional(),
   collectionDate: z.string().datetime().optional(),
-  chainOfCustody: z.array(z.string()).default([]),
+  chainOfCustody: z.array(z.string()).default([])
 });
 export const CaseMetadataSchema = z.object({
   jurisdiction: z.string().optional(),
@@ -49,7 +49,7 @@ export const CaseMetadataSchema = z.object({
   status: z.enum(['active', 'closed', 'pending']).default('active'),
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
   assignedTo: z.array(z.string()).default([]),
-  dueDate: z.string().datetime().optional(),
+  dueDate: z.string().datetime().optional()
 });
 // Type definitions from Zod schemas
 export type UserSettingsExtType = z.infer<typeof UserSettingsExtSchema>;
@@ -76,12 +76,12 @@ export const users = pgTable('users', {
       language: 'en',
       timezone: 'UTC',
       preferences: {
-        defaultDocumentType: 'brief',
-        dateFormat: 'US',
-      },
+       , defaultDocumentType: 'brief',
+        dateFormat: 'US'
+      }
     }),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // Type definitions from Zod schemas (duplicates removed)
 // === ADDITIONAL SCHEMA DEFINITIONS ===
@@ -91,7 +91,7 @@ export const citationSchema = z.object({
   source: z.string(),
   type: z.enum(['case', 'statute', 'regulation']),
   page: z.number().optional(),
-  relevanceScore: z.number().min(0).max(1).optional(),
+  relevanceScore: z.number().min(0).max(1).optional()
 });
 export const documentMetadataSchema = z.object({
   template: z.string().optional(),
@@ -99,36 +99,36 @@ export const documentMetadataSchema = z.object({
   courtLevel: z.string().optional(),
   confidentialityLevel: z.enum(['public', 'restricted', 'confidential']).default('restricted'),
   keywords: z.array(z.string()).default([]),
-  customFields: z.record(z.string(), z.unknown()).default({}),
+  customFields: z.record(z.string(), z.unknown()).default({})
 });
 export const autoSaveDataSchema = z.object({
   content: z.string(),
   title: z.string().optional(),
   citations: z.array(citationSchema).default([]),
   autoSavedAt: z.string(),
-  isDirty: z.boolean().default(false),
+  isDirty: z.boolean().default(false)
 });
 export const collaboratorSchema = z.object({
   userId: z.string(),
   role: z.enum(['editor', 'reviewer', 'viewer']),
   joinedAt: z.string(),
-  lastActive: z.string().optional(),
+  lastActive: z.string().optional()
 });
 export const themeConfigSchema = z.object({
   primaryColor: z.string().default('#2563eb'),
   secondaryColor: z.string().default('#64748b'),
   fontFamily: z.string().default('Inter'),
   fontSize: z.enum(['sm', 'md', 'lg']).default('md'),
-  spacing: z.enum(['compact', 'normal', 'spacious']).default('normal'),
+  spacing: z.enum(['compact', 'normal', 'spacious']).default('normal')
 });
 export const userSettingsSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']).default('system'),
   notifications: z.object({
-    email: z.boolean().default(true),
+    email: z.boolean().default(true)
   }),
   defaultDocumentType: z.string().default('brief'),
   timezone: z.string().default('UTC'),
-  dateFormat: z.string().default('US'),
+  dateFormat: z.string().default('US')
 });
 // Type exports for use in components (avoiding duplicates)
 export type Citation = z.infer<typeof citationSchema>;
@@ -143,7 +143,7 @@ export const sessions = pgTable('sessions', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: timestamp('expires_at', { mode: 'date' }).notNull(),
+  expiresAt: timestamp('expires_at', { mode: 'date' }).notNull()
 });
 // === THEMES & UI CUSTOMIZATION ===
 export const themes = pgTable('themes', {
@@ -159,10 +159,10 @@ export const themes = pgTable('themes', {
   isSystem: boolean('is_system').default(false).notNull(), // Built-in vs user themes
   isPublic: boolean('is_public').default(false).notNull(), // Shareable themes
   createdBy: uuid('created_by').references(() => users.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 export const userThemes = pgTable('user_themes', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -175,7 +175,7 @@ export const userThemes = pgTable('user_themes', {
   isActive: boolean('is_active').default(false).notNull(),
   customOverrides: jsonb('custom_overrides').default({}), // User-specific theme overrides
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 export const layoutComponents = pgTable('layout_components', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -186,30 +186,30 @@ export const layoutComponents = pgTable('layout_components', {
   jsInteractions: text('js_interactions'), // Optional JavaScript for interactions
   position: jsonb('position').notNull(), // { x, y, width, height, zIndex }
   themeId: uuid('theme_id').references(() => themes.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   isPublic: boolean('is_public').default(false).notNull(),
   createdBy: uuid('created_by').references(() => users.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 export const canvasLayouts = pgTable('canvas_layouts', {
   id: uuid('id').primaryKey().defaultRandom(),
   caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
   themeId: uuid('theme_id').references(() => themes.id, {
-    onDelete: 'set null',
+    onDelete: 'set null'
   }),
   layoutData: jsonb('layout_data').notNull(), // Complete layout configuration
   components: jsonb('components').notNull(), // Array of component IDs and positions
   metadata: jsonb('metadata').default({}),
   isTemplate: boolean('is_template').default(false).notNull(),
   createdBy: uuid('created_by').references(() => users.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === CRIMINAL RECORDS ===
 export const criminals = pgTable('criminals', {
@@ -239,7 +239,7 @@ export const criminals = pgTable('criminals', {
   aiTags: jsonb('ai_tags').default([]).notNull(),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === CASE MANAGEMENT ===
 export const cases = pgTable(
@@ -272,7 +272,7 @@ export const cases = pgTable(
     createdBy: uuid('created_by').references(() => users.id),
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
-    closedAt: timestamp('closed_at', { mode: 'date' }),
+    closedAt: timestamp('closed_at', { mode: 'date' })
   },
   table => ({
     // Vector similarity search indexes
@@ -283,7 +283,7 @@ export const cases = pgTable(
     statusIdx: index('cases_status_idx').on(table.status),
     priorityIdx: index('cases_priority_idx').on(table.priority),
     categoryIdx: index('cases_category_idx').on(table.category),
-    caseNumberIdx: index('cases_case_number_idx').on(table.caseNumber),
+    caseNumberIdx: index('cases_case_number_idx').on(table.caseNumber)
   })
 );
 // === CASE-CRIMINAL RELATIONSHIPS ===
@@ -301,7 +301,7 @@ export const caseCriminals = pgTable('case_criminals', {
   sentencing: jsonb('sentencing').default({}).notNull(),
   notes: text('notes'),
   addedBy: uuid('added_by').references(() => users.id),
-  addedAt: timestamp('added_at', { mode: 'date' }).defaultNow().notNull(),
+  addedAt: timestamp('added_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === PERSONS OF INTEREST ===
 export const personsOfInterest = pgTable('persons_of_interest', {
@@ -319,7 +319,7 @@ export const personsOfInterest = pgTable('persons_of_interest', {
       who: '',
       what: '',
       why: '',
-      how: '',
+      how: ''
     })
     .notNull(),
   // Position on canvas
@@ -335,7 +335,7 @@ export const personsOfInterest = pgTable('persons_of_interest', {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === EVIDENCE MANAGEMENT ===
 export const evidence = pgTable(
@@ -382,7 +382,7 @@ export const evidence = pgTable(
     summaryEmbedding: vector('summary_embedding', { dimensions: 1536 }),
     uploadedBy: uuid('uploaded_by').references(() => users.id),
     uploadedAt: timestamp('uploaded_at', { mode: 'date' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     // Vector indexes for evidence search
@@ -392,7 +392,7 @@ export const evidence = pgTable(
     // Traditional indexes
     caseIdIdx: index('evidence_case_id_idx').on(table.caseId),
     evidenceTypeIdx: index('evidence_type_idx').on(table.evidenceType),
-    isAdmissibleIdx: index('evidence_admissible_idx').on(table.isAdmissible),
+    isAdmissibleIdx: index('evidence_admissible_idx').on(table.isAdmissible)
   })
 );
 // === STATUTES & LEGAL REFERENCES ===
@@ -412,7 +412,7 @@ export const statutes = pgTable('statutes', {
   tags: jsonb('tags').default([]).notNull(),
   relatedStatutes: jsonb('related_statutes').default([]).notNull(),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === CASE ACTIVITIES & TIMELINE ===
 export const caseActivities = pgTable('case_activities', {
@@ -433,7 +433,7 @@ export const caseActivities = pgTable('case_activities', {
   metadata: jsonb('metadata').default({}).notNull(),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === AI & SEARCH METADATA ===
 export const aiAnalyses = pgTable('ai_analyses', {
@@ -450,7 +450,7 @@ export const aiAnalyses = pgTable('ai_analyses', {
   tokens: integer('tokens'),
   cost: decimal('cost', { precision: 8, scale: 6 }), // API cost
   createdBy: uuid('created_by').references(() => users.id),
-  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
 });
 export const searchTags = pgTable('search_tags', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -461,7 +461,7 @@ export const searchTags = pgTable('search_tags', {
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   source: varchar('source', { length: 50 }), // ai_model, user, ocr, etc.
   createdBy: uuid('created_by').references(() => users.id),
-  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === EXPORT & REPORTING ===
 export const reports = pgTable('reports', {
@@ -507,7 +507,7 @@ export const reports = pgTable('reports', {
   generatedBy: uuid('generated_by').references(() => users.id),
   generatedAt: timestamp('generated_at', { mode: 'date' }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
-  expiresAt: timestamp('expires_at', { mode: 'date' }),
+  expiresAt: timestamp('expires_at', { mode: 'date' })
 });
 // === LEGAL DOCUMENTS ===
 export const legalDocuments = pgTable(
@@ -529,7 +529,7 @@ export const legalDocuments = pgTable(
       .default({
         keywords: [],
         customFields: {},
-        confidentialityLevel: 'restricted',
+        confidentialityLevel: 'restricted'
       })
       .notNull(),
     citations: jsonb('citations').$type<Citation[]>().default([]).notNull(),
@@ -539,7 +539,7 @@ export const legalDocuments = pgTable(
         content: '',
         citations: [],
         autoSavedAt: new Date().toISOString(),
-        isDirty: false,
+        isDirty: false
       })
       .notNull(),
     collaborators: jsonb('collaborators').$type<Collaborator[]>().default([]).notNull(),
@@ -555,7 +555,7 @@ export const legalDocuments = pgTable(
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
     publishedAt: timestamp('published_at', { mode: 'date' }),
-    archivedAt: timestamp('archived_at', { mode: 'date' }),
+    archivedAt: timestamp('archived_at', { mode: 'date' })
   },
   table => ({
     // Vector indexes for semantic search
@@ -565,7 +565,7 @@ export const legalDocuments = pgTable(
     caseIdIdx: index('legal_documents_case_id_idx').on(table.caseId),
     userIdIdx: index('legal_documents_user_id_idx').on(table.userId),
     documentTypeIdx: index('legal_documents_type_idx').on(table.documentType),
-    statusIdx: index('legal_documents_status_idx').on(table.status),
+    statusIdx: index('legal_documents_status_idx').on(table.status)
   })
 );
 // === NOTES ===
@@ -596,7 +596,7 @@ export const notes = pgTable(
     // Timestamps
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
-    reminderAt: timestamp('reminder_at', { mode: 'date' }),
+    reminderAt: timestamp('reminder_at', { mode: 'date' })
   },
   table => ({
     // Indexes for efficient queries
@@ -604,7 +604,7 @@ export const notes = pgTable(
     userIdIdx: index('notes_user_id_idx').on(table.userId),
     noteTypeIdx: index('notes_type_idx').on(table.noteType),
     priorityIdx: index('notes_priority_idx').on(table.priority),
-    reminderIdx: index('notes_reminder_idx').on(table.reminderAt),
+    reminderIdx: index('notes_reminder_idx').on(table.reminderAt)
   })
 );
 // === SAVED CITATIONS ===
@@ -631,14 +631,14 @@ export const savedCitations = pgTable(
     lastUsedAt: timestamp('last_used_at', { mode: 'date' }),
     // Timestamps
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
   },
   table => ({
     // Indexes for efficient queries
     userIdIdx: index('saved_citations_user_id_idx').on(table.userId),
     categoryIdx: index('saved_citations_category_idx').on(table.category),
     isFavoriteIdx: index('saved_citations_favorite_idx').on(table.isFavorite),
-    usageCountIdx: index('saved_citations_usage_idx').on(table.usageCount),
+    usageCountIdx: index('saved_citations_usage_idx').on(table.usageCount)
   })
 );
 // === CANVAS STATES ===
@@ -646,7 +646,7 @@ export const canvasStates = pgTable('canvas_states', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }),
   reportId: uuid('report_id').references(() => reports.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   caseId: uuid('case_id')
     .notNull()
@@ -661,7 +661,7 @@ export const canvasStates = pgTable('canvas_states', {
   metadata: text('metadata'),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === CITATION POINTS ===
 export const citationPoints = pgTable('citation_points', {
@@ -675,25 +675,25 @@ export const citationPoints = pgTable('citation_points', {
   tags: jsonb('tags').default([]).notNull(),
   caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
   reportId: uuid('report_id').references(() => reports.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   evidenceId: uuid('evidence_id').references(() => evidence.id, {
-    onDelete: 'set null',
+    onDelete: 'set null'
   }),
   statuteId: uuid('statute_id').references(() => statutes.id, {
-    onDelete: 'set null',
+    onDelete: 'set null'
   }),
   aiSummary: text('ai_summary'),
   relevanceScore: decimal('relevance_score', {
     precision: 4,
-    scale: 3,
+    scale: 3
   }).default('0.0'),
   metadata: jsonb('metadata').default({}).notNull(),
   isBookmarked: boolean('is_bookmarked').default(false).notNull(),
   usageCount: integer('usage_count').default(0).notNull(),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === HASH VERIFICATIONS ===
 export const hashVerifications = pgTable('hash_verifications', {
@@ -709,7 +709,7 @@ export const hashVerifications = pgTable('hash_verifications', {
     .notNull()
     .references(() => users.id),
   notes: text('notes'),
-  verifiedAt: timestamp('verified_at', { mode: 'date' }).defaultNow().notNull(),
+  verifiedAt: timestamp('verified_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === ATTACHMENT VERIFICATIONS ===
 export const attachmentVerifications = pgTable('attachment_verifications', {
@@ -722,14 +722,14 @@ export const attachmentVerifications = pgTable('attachment_verifications', {
   verificationNotes: text('verification_notes'),
   verifiedAt: timestamp('verified_at', { mode: 'date' }).defaultNow().notNull(),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === CRIMES (legacy compatibility) ===
 export const crimes = pgTable('crimes', {
   id: uuid('id').primaryKey().defaultRandom(),
   caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
   criminalId: uuid('criminal_id').references(() => criminals.id, {
-    onDelete: 'cascade',
+    onDelete: 'cascade'
   }),
   statuteId: uuid('statute_id').references(() => statutes.id),
   name: varchar('name', { length: 255 }).notNull(),
@@ -744,7 +744,7 @@ export const crimes = pgTable('crimes', {
   metadata: jsonb('metadata').default({}).notNull(),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
 });
 // === RELATIONSHIPS ===
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -760,125 +760,125 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   reports: many(reports),
   legalDocuments: many(legalDocuments),
   notes: many(notes),
-  savedCitations: many(savedCitations),
+  savedCitations: many(savedCitations)
 }));
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
-    relationName: 'leadProsecutor',
+    relationName: 'leadProsecutor'
   }),
   createdBy: one(users, {
     fields: [cases.createdBy],
     references: [users.id],
-    relationName: 'createdBy',
+    relationName: 'createdBy'
   }),
   criminals: many(caseCriminals),
   evidence: many(evidence),
   activities: many(caseActivities),
   personsOfInterest: many(personsOfInterest),
   legalDocuments: many(legalDocuments),
-  notes: many(notes),
+  notes: many(notes)
 }));
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
-    references: [users.id],
+    references: [users.id]
   }),
   cases: many(caseCriminals),
-  evidence: many(evidence),
+  evidence: many(evidence)
 }));
 export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
   case: one(cases, {
     fields: [caseCriminals.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   criminal: one(criminals, {
     fields: [caseCriminals.criminalId],
-    references: [criminals.id],
+    references: [criminals.id]
   }),
   addedBy: one(users, {
     fields: [caseCriminals.addedBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
-    references: [users.id],
+    references: [users.id]
   }),
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
-  }),
+    references: [cases.id]
+  })
 }));
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
     fields: [themes.createdBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const reportsRelations = relations(reports, ({ one }) => ({
   createdBy: one(users, {
     fields: [reports.createdBy],
-    references: [users.id],
+    references: [users.id]
   }),
   lastEditedBy: one(users, {
     fields: [reports.lastEditedBy],
-    references: [users.id],
+    references: [users.id]
   }),
   generatedBy: one(users, {
     fields: [reports.generatedBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
     fields: [citationPoints.createdBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const attachmentVerificationsRelations = relations(attachmentVerifications, ({ one }) => ({
   verifiedBy: one(users, {
     fields: [attachmentVerifications.verifiedBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
   case: one(cases, {
     fields: [personsOfInterest.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   createdBy: one(users, {
     fields: [personsOfInterest.createdBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   user: one(users, {
     fields: [legalDocuments.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const notesRelations = relations(notes, ({ one }) => ({
   case: one(cases, {
     fields: [notes.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   user: one(users, {
     fields: [notes.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 // Pattern Analysis Tables - pgvector integration for user pattern discovery
 export const userDocuments = pgTable(
@@ -886,7 +886,7 @@ export const userDocuments = pgTable(
   {
     id: serial('id').primaryKey(),
     userId: text('user_id').notNull(),
-    source: text('source'), // e.g. "minio://bucket/key" or: "note", etc.
+    source: text('source'), // e.g. "minio://bucket/key"; or: "note", etc.
     content: text('content').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -895,7 +895,7 @@ export const userDocuments = pgTable(
   table => ({
     userIdIdx: index('idx_user_documents_user_id').on(table.userId),
     createdAtIdx: index('idx_user_documents_created_at').on(table.createdAt),
-    embeddingIdx: index('idx_user_documents_embedding').using('ivfflat', table.embedding.op('vector_cosine_ops')),
+    embeddingIdx: index('idx_user_documents_embedding').using('ivfflat', table.embedding.op('vector_cosine_ops'))
   })
 );
 export const userPatterns = pgTable(
@@ -910,11 +910,11 @@ export const userPatterns = pgTable(
     representativeDocId: integer('representative_doc_id').references(() => userDocuments.id),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
-    embedding: vector('embedding', { dimensions: 1536 }),
+    embedding: vector('embedding', { dimensions: 1536 })
   },
   table => ({
     userIdIdx: index('idx_user_patterns_user_id').on(table.userId),
-    embeddingIdx: index('idx_user_patterns_embedding').using('ivfflat', table.embedding.op('vector_cosine_ops')),
+    embeddingIdx: index('idx_user_patterns_embedding').using('ivfflat', table.embedding.op('vector_cosine_ops'))
   })
 );
 export const patternSessions = pgTable(
@@ -926,33 +926,33 @@ export const patternSessions = pgTable(
     queryText: text('query_text'),
     resultsCount: integer('results_count').default(0),
     avgConfidence: decimal('avg_confidence', { precision: 3, scale: 2 }).default('0.0'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   table => ({
-    userIdIdx: index('idx_pattern_sessions_user_id').on(table.userId),
+    userIdIdx: index('idx_pattern_sessions_user_id').on(table.userId)
   })
 );
 // Relations for pattern analysis tables
 export const userDocumentsRelations = relations(userDocuments, ({ one, many }) => ({
   user: one(users, {
     fields: [userDocuments.userId],
-    references: [users.id],
+    references: [users.id]
   }),
-  patterns: many(userPatterns),
+  patterns: many(userPatterns)
 }));
 export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
   user: one(users, {
     fields: [userPatterns.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   representativeDoc: one(userDocuments, {
     fields: [userPatterns.representativeDocId],
-    references: [userDocuments.id],
-  }),
+    references: [userDocuments.id]
+  })
 }));
 export const patternSessionsRelations = relations(patternSessions, ({ one }) => ({
   user: one(users, {
     fields: [patternSessions.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));

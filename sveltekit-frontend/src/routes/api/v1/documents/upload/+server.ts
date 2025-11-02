@@ -31,17 +31,13 @@ const execAsync = promisify(exec);
  * 8. Return document ID for immediate RAG queries
  */
 
-interface UploadResponse {
-  success: boolean;
-  documentId: string;
+interface UploadResponse { success: boolean;, documentId: string;
   filename: string;
   size: number;
   chunks: number;
   processingTime: number;
   minioUrl?: string;
-  metadata: {
-    bucket: string;
-    objectName: string;
+  metadata: { bucket: string;, objectName: string;
     contentType: string;
     extractedText?: number; // character count
     embedded?: boolean;
@@ -69,7 +65,7 @@ export const POST = async ({ request, locals }) => {
     return json(
       {
         message: 'Authentication required',
-        code: 'UNAUTHORIZED',
+        code: 'UNAUTHORIZED'
       },
       { status: 401 }
     );
@@ -88,7 +84,7 @@ export const POST = async ({ request, locals }) => {
       return json(
         {
           message: 'File is required',
-          code: 'MISSING_FILE',
+          code: 'MISSING_FILE'
         },
         { status: 400 }
       );
@@ -103,7 +99,7 @@ export const POST = async ({ request, locals }) => {
       {
         message: 'Invalid form data',
         error: message,
-        code: 'INVALID_FORM_DATA',
+        code: 'INVALID_FORM_DATA'
       },
       { status: 400 }
     );
@@ -126,7 +122,7 @@ export const POST = async ({ request, locals }) => {
       documentType: 'legal',
       userId: user.id,
       caseId,
-      documentId,
+      documentId
     });
 
     console.log(`✅ [Upload] MinIO upload complete: ${minioResult.bucket}/${minioResult.objectName}`);
@@ -183,7 +179,7 @@ export const POST = async ({ request, locals }) => {
     let embeddings: number[][] = [];
     let embeddingModel = 'none';
     try {
-      const result = await serverGenerateEmbeddings({ texts: chunks, model: 'embeddinggemma:latest' });
+      const result = await serverGenerateEmbeddings({ texts: chunks, model: `embeddinggemma:latest` });
       embeddings = result.embeddings;
       embeddingModel = result.source || 'server-embedding-service';
       console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
@@ -196,9 +192,9 @@ export const POST = async ({ request, locals }) => {
         const embeddingServiceUrl = process.env.EMBEDDING_SERVICE_URL || 'http://localhost:8094/api/embed';
         const fallbackResp = await fetch(embeddingServiceUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ texts: chunks }),
-          signal: AbortSignal.timeout(60000),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify({, texts: chunks }),
+          signal: AbortSignal.timeout(60000)
         });
         if (fallbackResp.ok) {
           const fallbackData = await fallbackResp.json();
@@ -233,7 +229,7 @@ export const POST = async ({ request, locals }) => {
           embeddingModel,
           minioUrl: minioResult.url,
           bucket: minioResult.bucket,
-          objectName: minioResult.objectName,
+          objectName: minioResult.objectName
         })},
 				${'minio://' + minioResult.bucket + '/' + minioResult.objectName}
 			)
@@ -271,7 +267,7 @@ export const POST = async ({ request, locals }) => {
     try {
       const jobData: DocumentProcessingJobData = {
         documentId,
-        content: extractedText || `[Stored at minio://${minioResult.bucket}/${minioResult.objectName}]`,
+        content: extractedText || `[Stored at; minio://${minioResult.bucket}/${minioResult.objectName}]`,
         documentType: 'legal',
         caseId: caseId ?? undefined,
         filePath: `minio://${minioResult.bucket}/${minioResult.objectName}`,
@@ -281,12 +277,10 @@ export const POST = async ({ request, locals }) => {
           assessRisk: false,
           generateEmbedding: false, // embedding job already queued
           storeInDatabase: true,
-          useGemma3Legal: true,
-        },
+          useGemma3Legal: true
+        }
       };
-      const { jobId: procJobId, estimated } = (await queueDocumentProcessing(jobData, 1)) as {
-        jobId: string;
-        estimated: number;
+      const { jobId: procJobId, estimated } = (await queueDocumentProcessing(jobData, 1)) as { jobId: string;, estimated: number;
       };
       console.log(`[Upload] Enqueued document processing job ${procJobId} (est ${estimated}s)`);
     } catch (procErr: any) {
@@ -301,7 +295,7 @@ export const POST = async ({ request, locals }) => {
         userId: user.id,
         caseId,
         bucket: minioResult.bucket,
-        objectName: minioResult.objectName,
+        objectName: minioResult.objectName
       }).catch(err => {
         console.error('⚠️ [Upload] Qdrant indexing failed (non-blocking):', err);
       });
@@ -326,8 +320,8 @@ export const POST = async ({ request, locals }) => {
         contentType,
         extractedText: extractedText.length,
         embedded: embeddings.length > 0,
-        indexed: embeddings.length > 0,
-      },
+        indexed: embeddings.length > 0
+      }
     };
 
     return json(response, { status: 201 });
@@ -346,8 +340,8 @@ export const POST = async ({ request, locals }) => {
       metadata: {
         bucket: '',
         objectName: '',
-        contentType,
-      },
+        contentType
+      }
     };
 
     return json(response, { status: 500 });
@@ -357,7 +351,7 @@ export const POST = async ({ request, locals }) => {
 /**
  * Chunk text into overlapping segments
  */
-function chunkText(text: string, options: { maxChunkChars: number; overlapChars: number }): string[] {
+function chunkText(text: string, options: {, maxChunkChars: number; overlapChars: number }): string[] {
   const { maxChunkChars, overlapChars } = options;
   const chunks: string[] = [];
   let start = 0;
@@ -379,12 +373,10 @@ async function indexInQdrant(
   documentId: string,
   chunks: string[],
   embeddings: number[][],
-  metadata: {
-    filename: string;
-    userId: string;
+  metadata: { filename: string;, userId: string;
     caseId?: string;
     bucket: string;
-    objectName: string;
+   , objectName: string;
   }
 ): Promise<void> {
   try {
@@ -395,12 +387,9 @@ async function indexInQdrant(
     await fetch(`${qdrantUrl}/collections/${collectionName}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        vectors: {
-          size: embeddings[0]?.length || 384,
-          distance: 'Cosine',
-        },
-      }),
+      body: JSON.stringify({, vectors: {, size: embeddings[0]?.length || 384,
+          distance: `Cosine` }
+      })
     }).catch(() => {}); // Ignore if already exists
 
     // Upsert points
@@ -408,20 +397,19 @@ async function indexInQdrant(
       id: `${documentId}_chunk_${i}`,
       vector: embeddings[i],
       payload: {
-        document_id: documentId,
+       , document_id: documentId,
         chunk_index: i,
         text: chunk,
         filename: metadata.filename,
         user_id: metadata.userId,
         case_id: metadata.caseId,
-        source: `minio://${metadata.bucket}/${metadata.objectName}`,
-      },
+        source: `minio://${metadata.bucket}/${metadata.objectName}` }
     }));
 
     await fetch(`${qdrantUrl}/collections/${collectionName}/points`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ points }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ points })
     });
 
     console.log(`✅ [Qdrant] Indexed ${points.length} points for document: ${documentId}`);
@@ -451,15 +439,12 @@ export const GET = async () => {
     fields: {
       file: 'File (required)',
       caseId: 'string (optional)',
-      description: 'string (optional)',
-    },
-    example: {
-      curl: `curl -X POST http://localhost:5173/api/v1/documents/upload \\
+      description: `string (optional)` },
+    example: { curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\
   -H "Cookie: legal_ai_session=..." \\
   -F "file=@contract.pdf" \\
   -F "caseId=case_123" \\
-  -F "description=Employment contract"`,
-    },
-    timestamp: new Date().toISOString(),
+  -F "description=Employment contract"` },
+    timestamp: new Date().toISOString()
   });
 };

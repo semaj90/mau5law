@@ -2,17 +2,13 @@
  * System Health Store - Monitor service status with Svelte 5 runes
  */
 
-export interface ServiceStatus {
-  name: string;
-  status: 'online' | 'offline' | 'warning';
+export interface ServiceStatus { name: string;, status: 'online' | 'offline' | 'warning';
   url?: string;
   lastCheck?: Date;
   responseTime?: number;
 }
 
-export interface SystemHealth {
-  overall: 'healthy' | 'degraded' | 'down';
-  services: ServiceStatus[];
+export interface SystemHealth { overall: 'healthy' | 'degraded' | 'down';, services: ServiceStatus[];
   lastUpdate: Date;
 }
 
@@ -20,12 +16,12 @@ export interface SystemHealth {
 const healthState = $state<SystemHealth>({
   overall: 'healthy',
   services: [
-    { name: 'Database', status: 'online' },
+    {, name: 'Database', status: 'online' },
     { name: 'AI Service', status: 'online' },
     { name: 'File Storage', status: 'online' },
-    { name: 'Vector Search', status: 'online' },
+    { name: 'Vector Search', status: 'online' }
   ],
-  lastUpdate: new Date(),
+  lastUpdate: new Date()
 });
 
 export const systemHealthStore = {
@@ -71,5 +67,5 @@ export const systemHealthStore = {
     // Mock health check for development
     await new Promise(resolve => setTimeout(resolve, 500));
     healthState.lastUpdate = new Date();
-  },
+  }
 };

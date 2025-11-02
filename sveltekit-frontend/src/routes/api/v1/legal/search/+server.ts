@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data: {
         query,
         results: results.map(r => ({
-          id: r.id,
+         , id: r.id,
           score: r.score,
           content: r.content.slice(0, 500), // Truncate for API response
           metadata: r.metadata
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
       data: {
         query,
         results: results.map(r => ({
-          id: r.id,
+         , id: r.id,
           score: r.score,
           content: r.content.slice(0, 500),
           metadata: r.metadata

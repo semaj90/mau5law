@@ -28,11 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
         keyPoints: metadata?.keyPoints ?? [],
         recommendations: metadata?.recommendations ?? [],
         riskFactors: metadata?.riskFactors ?? [],
-        ...(metadata || {}),
+        ...(metadata || {})
       },
       canvasElements: canvasElements || [],
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     const [savedReport] = await db.insert(aiReports).values(reportData).returning();
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: true,
         report: savedReport,
-        message: 'Report saved successfully',
+        message: 'Report saved successfully'
       },
       { status: 200 }
     );
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to save report',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to load reports',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           content,
           updatedAt: new Date(),
           embedding,
-          autoKeywords: keywords,
+          autoKeywords: keywords
         })
         .where(eq(reports.id, id))
         .returning();
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           title,
           content,
           embedding,
-          autoKeywords: keywords,
+          autoKeywords: keywords
         })
         .returning();
     }
@@ -142,10 +142,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       endpoint: CONFIG.MINIO_URL,
       region: CONFIG.MINIO_REGION ?? 'us-east-1', // Default region if not set
       credentials: {
-        accessKeyId: CONFIG.MINIO_ACCESS_KEY,
-        secretAccessKey: CONFIG.MINIO_SECRET_KEY,
+       , accessKeyId: CONFIG.MINIO_ACCESS_KEY,
+        secretAccessKey: CONFIG.MINIO_SECRET_KEY
       },
-      forcePathStyle: true,
+      forcePathStyle: true
     });
 
     await minio.send(
@@ -153,8 +153,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         Bucket: CONFIG.MINIO_BUCKET,
         Key: `reports/${user.id}/${updatedReport.id}.json`,
         Body: JSON.stringify(updatedReport),
-        ContentType: 'application/json',
-      })
+        ContentType: 'application/json` })
     );
 
     // ⚡ Step 4 — Upsert embedding in Qdrant
@@ -165,12 +164,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           id: updatedReport.id,
           vector: embedding,
           payload: {
-            userId: user.id,
+           , userId: user.id,
             title,
-            keywords,
-          },
+            keywords
+          }
         },
-      ],
+      ]
     });
 
     return new Response(JSON.stringify(updatedReport), { status: 200 });

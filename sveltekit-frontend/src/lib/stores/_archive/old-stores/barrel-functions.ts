@@ -58,19 +58,16 @@ export const testingFramework = {
         } catch {
           return true;
         }
-      },
+      }
     })),
   beforeEach: _globals.beforeEach || ((fn: () => void) => fn()),
   afterEach: _globals.afterEach || ((fn: () => void) => fn()),
   beforeAll: _globals.beforeAll || ((fn: () => void) => fn()),
   afterAll: _globals.afterAll || ((fn: () => void) => fn()),
-  // Fixed: ensure the inline function expression is properly closed
-  test: _globals.test || _globals.it || ((name: string, fn: () => void) => fn()),
+  // Fixed: ensure the inline function expression is properly closed; test: _globals.test || _globals.it || ((name: string, fn: () => void) => fn())
 };
 // ===== CACHE LAYER METHODS BARREL STORE =====
-export const cacheLayerMethods = {
-  memory: {
-    get: async (_key: string) => null as unknown,
+export const cacheLayerMethods = { memory: {, get: async (_key: string) => null as unknown,
     set: async (_key: string, _value: any) => true,
     delete: async (_key: string) => true,
     clear: async () => true,
@@ -78,7 +75,7 @@ export const cacheLayerMethods = {
     keys: () => [] as string[],
     priority: 1,
     capacity: 1000,
-    ttl: 3600,
+    ttl: 3600
   },
   redis: {
     get: async (_key: string) => null as unknown,
@@ -88,20 +85,20 @@ export const cacheLayerMethods = {
     expire: async (_key: string, _seconds: number) => true,
     priority: 2,
     capacity: 10000,
-    ttl: 7200,
+    ttl: 7200
   },
   postgres: {
     query: async (_sql: string, _params?: any[]) => ({ rows: [] as unknown[], rowCount: 0 }),
     execute: async (_sql: string, _params?: any[]) => true,
     transaction: async (callback: (tx: any) => Promise<unknown>) => callback({} as unknown),
-    close: async () => true,
+    close: async () => true
   },
   vector: {
     search: async (_query: number[], _k: number) => [] as unknown[],
     insert: async (_vector: number[], _metadata: Record<string, unknown>) => true,
     delete: async (_id: string) => true,
     update: async (_id: string, _vector: number[], _metadata: Record<string, unknown>) => true,
-    similarity: (_v1: number[], _v2: number[]) => 0,
+    similarity: (_v1: number[], _v2: number[]) => 0
   },
   filesystem: {
     read: async (_path: string) => null as unknown,
@@ -109,34 +106,32 @@ export const cacheLayerMethods = {
     delete: async (_path: string) => true,
     exists: async (_path: string) => false,
     list: async (_path: string) => [] as string[],
-    stat: async (_path: string) => null as unknown,
+    stat: async (_path: string) => null as unknown
   },
   cdn: {
     get: async (_url: string) => null as unknown,
     put: async (_url: string, _content: any) => true,
     delete: async (_url: string) => true,
-    purge: async (_pattern: string) => true,
+    purge: async (_pattern: string) => true
   },
-  browser: {
-    localStorage: {
-      get: (_key: string) => globalThis.localStorage?.getItem(_key) || null,
+  browser: { localStorage: {, get: (_key: string) => globalThis.localStorage?.getItem(_key) || null,
       set: (_key: string, value: string) => globalThis.localStorage?.setItem(_key, value),
       delete: (_key: string) => globalThis.localStorage?.removeItem(_key),
-      clear: () => globalThis.localStorage?.clear(),
+      clear: () => globalThis.localStorage?.clear()
     },
     sessionStorage: {
       get: (_key: string) => globalThis.sessionStorage?.getItem(_key) || null,
       set: (_key: string, value: string) => globalThis.sessionStorage?.setItem(_key, value),
       delete: (_key: string) => globalThis.sessionStorage?.removeItem(_key),
-      clear: () => globalThis.sessionStorage?.clear(),
+      clear: () => globalThis.sessionStorage?.clear()
     },
     indexedDB: {
       open: async (_name: string) => null as unknown,
       get: async (_key: string) => null as unknown,
       set: async (_key: string, _value: any) => true,
-      delete: async (_key: string) => true,
-    },
-  },
+      delete: async (_key: string) => true
+    }
+  }
 };
 // ===== DATABASE ENTITY PROPERTIES BARREL STORE =====
 export const databaseEntityProperties = {
@@ -167,7 +162,7 @@ export const databaseEntityProperties = {
     updated_at: new Date().toISOString(),
     user_id: null,
     status: 'pending',
-    type: 'document',
+    type: 'document'
   },
   // Chat/message properties
   messageProperties: {
@@ -176,7 +171,7 @@ export const databaseEntityProperties = {
     timestamp: new Date().toISOString(),
     sources: [] as unknown[],
     id: null,
-    user_id: null,
+    user_id: null
   },
   // Cache entry properties
   cacheEntryProperties: {
@@ -185,8 +180,8 @@ export const databaseEntityProperties = {
     createdAt: Date.now(),
     expiresAt: Date.now() + 3600000, // 1 hour
     size: 0,
-    version: 1,
-  },
+    version: 1
+  }
 };
 // ===== WEBGPU EXTENDED METHODS BARREL STORE =====
 export const webGPUExtendedMethods = {
@@ -217,7 +212,7 @@ export const webGPUExtendedMethods = {
           listeners.delete(listener);
         }
       };
-      dev.dispatchEvent = (event: { type: string; [k: string]: any }) => {
+      dev.dispatchEvent = (event: {, type: string; [k: string]: any }) => {
         const listeners = eventListeners.get(event.type);
         if (listeners) {
           for (const listener of Array.from(listeners)) {
@@ -236,14 +231,14 @@ export const webGPUExtendedMethods = {
   createGPUError: (type: string, message: string) => ({
     type,
     message,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   }),
   // GPU uncaptured error event
   createGPUUncapturedErrorEvent: (error: any) => ({
     type: 'uncapturederror',
     error,
-    timestamp: Date.now(),
-  }),
+    timestamp: Date.now()
+  })
 };
 // ===== LOKI.JS COLLECTION METHODS BARREL STORE =====
 export const lokiCollectionMethods = {
@@ -309,7 +304,7 @@ export const lokiCollectionMethods = {
       };
     }
     return l;
-  },
+  }
 };
 // ===== CONFIGURATION PROPERTIES BARREL STORE =====
 export const configurationProperties = {
@@ -333,14 +328,13 @@ export const configurationProperties = {
     readStrategy: 'cache-first',
     writeStrategy: 'write-through',
     evictionStrategy: 'lru',
-    replicationStrategy: 'none',
-  },
+    replicationStrategy: 'none` },
   // Cache policy properties
   cachePolicy: {
     evictionStrategy: 'lru',
     maxSize: 1000,
     ttl: 3600000,
-    compressionEnabled: false,
+    compressionEnabled: false
   },
   // Cache metrics with missing properties
   cacheMetrics: {
@@ -352,11 +346,10 @@ export const configurationProperties = {
     deletes: 0,
     totalOperations: 0,
     totalOperationTime: 0,
-    // Fixed: use runtime empty objects with type assertion instead of invalid index-signature literals
-    hitsByLayer: {} as Record<string, any>,
+    // Fixed: use runtime empty objects with type assertion instead of invalid index-signature literals; hitsByLayer: {} as Record<string, any>,
     writesByLayer: {} as Record<string, any>,
     hitRate: 0,
-    averageOperationTime: 0,
+    averageOperationTime: 0
   },
   // Cache analytics with missing properties
   cacheAnalytics: {
@@ -365,7 +358,7 @@ export const configurationProperties = {
     coldKeys: new Set(),
     // Use runtime empty objects with type assertions instead of TS-only index-signature syntax
     performanceMetrics: {} as Record<string, any>,
-    usageStats: {} as Record<string, any>,
+    usageStats: {} as Record<string, any>
   },
   // Cache entry with missing properties
   cacheEntry: {
@@ -376,15 +369,15 @@ export const configurationProperties = {
     lastAccessed: Date.now(),
     accessCount: 0,
     size: 0,
-    compressed: false,
+    compressed: false
   },
   // Cache stats with missing properties
   cacheStats: {
     totalEntries: 0,
     memoryUsage: 0,
     hitRate: 0,
-    size: 0,
-  },
+    size: 0
+  }
 };
 // ===== UTILITY FUNCTIONS BARREL STORE =====
 export const utilityFunctions = {
@@ -419,7 +412,7 @@ export const utilityFunctions = {
       if (timeout !== null) clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), wait);
     };
-  },
+  }
 };
 // ===== MAIN BARREL STORE EXPORT =====
 export const barrelStore = {
@@ -429,14 +422,12 @@ export const barrelStore = {
   webgpu: webGPUExtendedMethods,
   loki: lokiCollectionMethods,
   config: configurationProperties,
-  utils: utilityFunctions,
+  utils: utilityFunctions
 };
 // Export everything for easy access
 export default barrelStore;
 // Type definitions for barrel store
-export interface BarrelStore {
-  testing: typeof testingFramework;
-  cache: typeof cacheLayerMethods;
+export interface BarrelStore { testing: typeof testingFramework;, cache: typeof cacheLayerMethods;
   database: typeof databaseEntityProperties;
   webgpu: typeof webGPUExtendedMethods;
   loki: typeof lokiCollectionMethods;

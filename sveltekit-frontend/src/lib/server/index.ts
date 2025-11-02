@@ -24,9 +24,7 @@ export * from './ingest/extractors.js';
 export * from './ingest/embed.js';
 export * from './ingest/worker-pool.js';
 // Utility types
-export interface ProcessingJob {
-  id: string;
-  userId: string;
+export interface ProcessingJob { id: string;, userId: string;
   source: string; // upload | minio://bucket/key,
   type: 'text' | 'image' | 'audio' | 'video' | 'json';
   status: 'pending' | 'processing' | 'completed' | 'failed';

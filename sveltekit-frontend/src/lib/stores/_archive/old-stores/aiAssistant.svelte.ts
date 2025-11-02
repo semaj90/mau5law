@@ -8,9 +8,7 @@ import { aiAssistantMachine, aiAssistantServices, aiAssistantActions } from '$li
 import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from '$lib/adapters/webasm-ai-adapter.js';
 import { webAssemblyLangChainBridge, type any } from '$lib/services/webasm-langchain-bridge.js';
 // AI Assistant reactive state interface
-export interface AIAssistantState {
-  isActive: boolean;
-  isProcessing: boolean;
+export interface AIAssistantState { isActive: boolean;, isProcessing: boolean;
   currentQuery: string;
   response: string;
   conversationHistory: ConversationEntry[];
@@ -18,36 +16,26 @@ export interface AIAssistantState {
   temperature: number;
   maxTokens: number;
   error: string | null;
-  ollamaClusterHealth: {
-    primary: boolean;
-    secondary: boolean;
+  ollamaClusterHealth: { primary: boolean;, secondary: boolean;
     embeddings: boolean;
   }
   context7Analysis?: Context7Analysis;
-  usage: {
-    totalQueries: number;
-    totalTokens: number;
+  usage: { totalQueries: number;, totalTokens: number;
     averageResponseTime: number;
   }
   streamingActive: boolean;
   streamBuffer: string;
 }
-export interface ConversationEntry {
-  id: string;
-  type: 'user' | 'assistant' | 'system';
+export interface ConversationEntry { id: string;, type: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
-  metadata?: {
-    model: string;
-    temperature: number;
+  metadata?: { model: string;, temperature: number;
     responseTime: number;
     tokenCount: number;
     context7Used: boolean;
   }
 }
-export interface Context7Analysis {
-  suggestions: string[];
-  codeExamples: any[];
+export interface Context7Analysis { suggestions: string[];, codeExamples: any[];
   documentation: string;
   confidence: number;
 }
@@ -65,20 +53,18 @@ const aiAssistantState = $state<AIAssistantState>({
   ollamaClusterHealth: {
     primary: false,
     secondary: false,
-    embeddings: false,
+    embeddings: false
   },
   usage: {
-    totalQueries: 0,
+   , totalQueries: 0,
     totalTokens: 0,
     averageResponseTime: 0
   },
   streamingActive: false,
-  streamBuffer: '',
+  streamBuffer: ''
 });
 // Create XState actor for AI assistant
-const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
-  services: aiAssistantServices;
-  actions: aiAssistantActions
+const aiAssistantActor = browser ? createActor(aiAssistantMachine, { services: aiAssistantServices;, actions: aiAssistantActions
 }) : null;
 export class AIAssistantManager {
   private actor = aiAssistantActor;
@@ -291,7 +277,7 @@ export class AIAssistantManager {
         verbose: options?.verbose,
         maxRetrievedDocs: 5,
         useCompression: true,
-        confidenceThreshold: 0.7,
+        confidenceThreshold: 0.7
       });
       // Update conversation history
       const userEntry: ConversationEntry = {
@@ -369,7 +355,7 @@ export class AIAssistantManager {
       'mistral'
     ];
     if (!validModels.includes(model)) {
-      throw new Error(`Invalid model: ${model}. Valid models: ${validModels.join(', ')}`);
+      throw new Error(`Invalid model: ${model}. Valid, models: ${validModels.join(', ')}`);
     }
     this.actor.send({
       type: 'SET_MODEL',
@@ -474,8 +460,7 @@ export class AIAssistantManager {
       usage: aiAssistantState.usage
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
-    });
+      type: `application/json` });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -559,7 +544,7 @@ export class AIAssistantManager {
   // Analyze legal document using WebAssembly if available
   async analyzeLegalDocument(
     title: string;
-    content: string,
+   , content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ) {
     if (!this.webAssemblyEnabled) {

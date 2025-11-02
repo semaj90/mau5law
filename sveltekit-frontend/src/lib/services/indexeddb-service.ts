@@ -4,23 +4,18 @@ import { browser } from '$app/environment'
 import type { DataType, RAGObject } from '$lib/types/shared'
 
 export interface CachedDocument extends RAGObject {
-  syncStatus: 'synced' | 'pending' | 'error'
+  syncStatus: 'synced' | 'pending' | 'error';
   lastUpdated?: number
 }
 
-export interface SearchResult {
-  query: string
-  results: RAGObject[]
-  timestamp: number
-  executionTime: number
+export interface SearchResult { query: string, results: RAGObject[]; timestamp: number
+  executionTime: number;
 }
 
-export interface UserInteraction {
-  id: string
-  type: 'search' | 'view' | 'edit' | 'ai_query'
+export interface UserInteraction { id: string, type: 'search' | 'view' | 'edit' | 'ai_query'
   query?: string
   documentId?: string
-  timestamp: number
+  timestamp: number;
   metadata?: Record<string, unknown>
 }
 
@@ -146,7 +141,7 @@ export class IndexedDBService {
     const record: UserInteraction = {
       ...interaction,
       id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }
     const tx = this.db!.transaction('userInteractions', 'readwrite')
     const store = tx.objectStore('userInteractions')

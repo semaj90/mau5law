@@ -4,9 +4,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  */
 import { env } from '$env/dynamic/private';
 import type { IRedisCacheService } from '$lib/types/external-services';
-type RedisClientLike = {
-  get: (k: string) => Promise<string | null>;
-  set: (k: string, v: string, mode?: string, ttl?: number) => Promise<unknown>;
+type RedisClientLike = { get: (k: string) => Promise<string | null>;, set: (k: string; v: string, mode?: string, ttl?: number) => Promise<unknown>;
 };
 let client: RedisClientLike | null = null;
 
@@ -45,5 +43,5 @@ export const RedisCacheService: IRedisCacheService = {
     if (!client) throw new Error('Redis client not initialized');
     const data = JSON.stringify(value);
     await client.set(key, data, 'EX', ttl);
-  },
+  }
 };

@@ -4,15 +4,11 @@ import type { Document } from '$lib/types';
 // Ollama integration for local LLM inference with legal models
 import { logger } from './logger.js';
 export type JsonObject = Record<string, unknown>;
-export interface OllamaModel {
-  name: string;
-  size: string;
+export interface OllamaModel { name: string;, size: string;
   digest: string;
   modified: string;
 }
-export interface OllamaGenerateOptions {
-  model: string;
-  prompt: string;
+export interface OllamaGenerateOptions { model: string;, prompt: string;
   system?: string;
   template?: string;
   context?: number[];
@@ -30,9 +26,7 @@ export interface OllamaGenerateOptions {
     repeat_penalty?: number;
   };
 }
-export interface OllamaResponse {
-  model: string;
-  created_at: string;
+export interface OllamaResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -44,13 +38,9 @@ export interface OllamaResponse {
   eval_duration?: number;
 }
 // Define specific interfaces for chat messages and responses
-export interface OllamaChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+export interface OllamaChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
 }
-export interface OllamaChatResponse {
-  model: string;
-  created_at: string;
+export interface OllamaChatResponse { model: string;, created_at: string;
   message: OllamaChatMessage;
   done: boolean;
   total_duration?: number;
@@ -64,7 +54,7 @@ class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel: string = 'gemma3-legal:latest';
   private availableModels: Map<string, OllamaModel> = new Map();
-  private modelCache: Map<string, { loaded: boolean; lastUsed: number }> = new Map();
+  private modelCache: Map<string, { loaded: boolean;, lastUsed: number }> = new Map();
   constructor(baseUrl: string = 'http://localhost:11434') {
     this.baseUrl = baseUrl;
     this.initialize();
@@ -164,9 +154,9 @@ TEMPLATE: """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: targetName,
-          modelfile: modelfile,
-        }),
+         , name: targetName,
+          modelfile: modelfile
+        })
       });
       if (response.ok) {
         logger.info(`[OllamaLLM] Created legal model variant: ${targetName}`);
@@ -176,7 +166,7 @@ TEMPLATE: """{{ if .System }}<|system|>
         throw new Error(`Failed to create model: ${response.statusText} - ${errorText}`);
       }
     } catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}:`, error);
+      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);
     }
   }
   /**
@@ -208,8 +198,8 @@ TEMPLATE: """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (!response.ok) {
         const errorText = await response.text();
@@ -219,7 +209,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       // Update model cache
       this.modelCache.set(model, {
         loaded: true,
-        lastUsed: Date.now(),
+        lastUsed: Date.now()
       });
       return result;
     } catch (error: any) {
@@ -244,8 +234,8 @@ TEMPLATE: """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: true,
-        }),
+          stream: true
+        })
       });
       if (!response.ok) {
         const errorText = await response.text();
@@ -296,9 +286,9 @@ TEMPLATE: """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: embeddingModel,
-          prompt: text,
-        }),
+         , model: embeddingModel,
+          prompt: text
+        })
       });
       if (!response.ok) {
         const errorText = await response.text();
@@ -314,17 +304,17 @@ TEMPLATE: """{{ if .System }}<|system|>
   /**
    * Chat completion with conversation history
    */
-  async chat(messages: Array<{ role: 'user' | 'assistant'; content: string }>, model?: string): Promise<string | null> {
+  async chat(messages: Array<{, role: 'user' | 'assistant'; content: string }>, model?: string): Promise<string | null> {
     try {
       const selectedModel = this.selectBestModel(model);
       const response = await fetch(`${this.baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: selectedModel,
+         , model: selectedModel,
           messages,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (!response.ok) {
         throw new Error(`Chat completion failed: ${response.statusText}`);
@@ -367,10 +357,10 @@ TEMPLATE: """{{ if .System }}<|system|>
         prompt,
         system: systemPrompt,
         options: {
-          temperature: 0.3,
+         , temperature: 0.3,
           top_p: 0.9,
-          num_predict: 2000,
-        },
+          num_predict: 2000
+        }
       });
       if (result && result.response) {
         // Parse structured output if needed

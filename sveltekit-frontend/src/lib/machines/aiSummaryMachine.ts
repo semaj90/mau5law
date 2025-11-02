@@ -19,27 +19,19 @@ export interface AISummaryContext {
   keyInsights: string[];
   confidence: number;
   // AI Mix Synthesis data (added for comprehensive integration)
-  llmOutput: {
-    content: string;
-    model: string;
+  llmOutput: { content: string;, model: string;
     confidence: number;
     tokens: number;
     processingTime: number;
   } | null;
-  ragOutput: {
-    relevantDocs: RelevantDoc[];
-    contextSummary: string;
+  ragOutput: { relevantDocs: RelevantDoc[];, contextSummary: string;
     searchMetrics: SearchMetrics | null;
   } | null;
-  userActivity: {
-    recentQueries: string[];
-    preferredTopics: string[];
+  userActivity: { recentQueries: string[];, preferredTopics: string[];
     recommendations: string[];
   } | null;
   // Synthesis progress tracking
-  synthesisPipeline: {
-    llmComplete: boolean;
-    ragComplete: boolean;
+  synthesisPipeline: { llmComplete: boolean;, ragComplete: boolean;
     userActivityComplete: boolean;
     fusejsComplete: boolean;
     finalSynthesisComplete: boolean;
@@ -62,30 +54,22 @@ export interface AISummaryContext {
   highlightMode: 'key_points' | 'entities' | 'legal_terms' | 'none';
   readingMode: 'sequential' | 'insight_focused' | 'summary_only';
 }
-export interface SummarySection {
-  id: string;
-  title: string;
+export interface SummarySection { id: string;, title: string;
   content: string;
   type: 'executive_summary' | 'key_findings' | 'evidence_analysis' | 'recommendations' | 'legal_implications';
   importance: 'critical' | 'high' | 'medium' | 'low';
   entities: Entity[];
   wordCount: number;
 }
-export interface Entity {
-  text: string;
-  type: 'person' | 'organization' | 'location' | 'date' | 'legal_term' | 'evidence_id';
+export interface Entity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'legal_term' | 'evidence_id';
   confidence: number;
   context?: string;
 }
-export interface AnalysisResult {
-  type: 'relevance' | 'credibility' | 'legal_significance' | 'evidence_strength';
-  score: number;
+export interface AnalysisResult { type: 'relevance' | 'credibility' | 'legal_significance' | 'evidence_strength';, score: number;
   explanation: string;
   recommendations: string[];
 }
-export interface SynthesisData {
-  mainThemes: string[];
-  contradictions: string[];
+export interface SynthesisData { mainThemes: string[];, contradictions: string[];
   supportingEvidence: string[];
   gaps: string[];
   legalImplications: string[];
@@ -103,13 +87,9 @@ export interface SearchMetrics {
   timeMs?: number;
   query?: string;
 }
-interface LoadDocumentResult {
-  content: string;
-  type: AISummaryContext['documentType'];
+interface LoadDocumentResult { content: string;, type: AISummaryContext['documentType'];
 }
-interface GenerateSummaryResult {
-  summary: string;
-  sections: SummarySection[];
+interface GenerateSummaryResult { summary: string;, sections: SummarySection[];
   insights?: string[];
   confidence?: number;
   wordCount?: number;
@@ -122,10 +102,8 @@ interface SynthesizeResult {
 }
 // (Reading progress handled by the readingProgress service below)
 export type AISummaryEvent =
-  | { type: 'LOAD_DOCUMENT'; documentId: string; caseId?: string }
-  | {
-      type: 'GENERATE_SUMMARY';
-      content: string;
+  | { type: 'LOAD_DOCUMENT';, documentId: string; caseId?: string }
+  | { type: 'GENERATE_SUMMARY';, content: string;
       documentType: AISummaryContext['documentType'];
     }
   | { type: 'START_READING' }
@@ -134,11 +112,11 @@ export type AISummaryEvent =
   | { type: 'STOP_READING' }
   | { type: 'NEXT_SECTION' }
   | { type: 'PREVIOUS_SECTION' }
-  | { type: 'JUMP_TO_SECTION'; sectionIndex: number }
+  | { type: 'JUMP_TO_SECTION';, sectionIndex: number }
   | { type: 'ANALYZE_DOCUMENT' }
   | { type: 'SYNTHESIZE_INSIGHTS' }
-  | { type: 'UPDATE_PROGRESS'; progress: number }
-  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<AISummaryContext> }
+  | { type: 'UPDATE_PROGRESS';, progress: number }
+  | { type: 'UPDATE_PREFERENCES';, preferences: Partial<AISummaryContext> }
   | { type: 'RETRY' }
   | { type: 'RESET' };
 const initialContext: AISummaryContext = {
@@ -159,7 +137,7 @@ const initialContext: AISummaryContext = {
     ragComplete: false,
     userActivityComplete: false,
     fusejsComplete: false,
-    finalSynthesisComplete: false,
+    finalSynthesisComplete: false
   },
   currentSection: 0,
   sections: [],
@@ -173,8 +151,7 @@ const initialContext: AISummaryContext = {
   progress: 0,
   voiceEnabled: false,
   highlightMode: 'key_points',
-  readingMode: 'sequential',
-};
+  readingMode: `sequential` };
 // Small helper to safely extract error messages without using `any`
 const extractErrorMessage = (event: AnyEventObject): string => {
   const obj = event as unknown as Record<string, unknown>;
@@ -189,19 +166,15 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
     id: 'aiSummaryMachine',
     initial: 'idle',
     context: initialContext,
-    states: {
-      idle: {
-        on: {
-          LOAD_DOCUMENT: {
-            target: 'loading',
+    states: { idle: {, on: { LOAD_DOCUMENT: {, target: 'loading',
             actions: assign({
-              documentId: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'LOAD_DOCUMENT' }>) =>
+             , documentId: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'LOAD_DOCUMENT' }>) =>
                 event.documentId,
               caseId: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'LOAD_DOCUMENT' }>) =>
                 event.caseId ?? null,
               loading: () => true,
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
           GENERATE_SUMMARY: {
             target: 'generating',
@@ -211,44 +184,40 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
               documentType: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'GENERATE_SUMMARY' }>) =>
                 event.documentType,
               loading: () => true,
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
           UPDATE_PREFERENCES: {
             actions: assign((_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES' }>) => ({
               ..._,
-              ...(event.preferences || {}),
-            })),
-          },
-        },
+              ...(event.preferences || {})
+            }))
+          }
+        }
       },
-      loading: {
-        invoke: {
-          src: 'loadDocument',
+      loading: { invoke: {, src: 'loadDocument',
           onDone: {
             target: 'loaded',
             actions: assign({
               originalContent: (_: AISummaryContext, event: DoneInvokeEvent<LoadDocumentResult>) =>
                 event.output.content,
               documentType: (_: AISummaryContext, event: DoneInvokeEvent<LoadDocumentResult>) => event.output.type,
-              loading: () => false,
-            }),
+              loading: () => false
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
               error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
-              loading: () => false,
-            }),
-          },
+              loading: () => false
+            })
+          }
         },
         on: {
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
-      generating: {
-        invoke: {
-          src: 'generateSummary',
+      generating: { invoke: {, src: 'generateSummary',
           onDone: {
             target: 'ready',
             actions: assign({
@@ -260,86 +229,74 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
                 event.output.confidence ?? 0,
               estimatedReadTime: (context: AISummaryContext, event: DoneInvokeEvent<GenerateSummaryResult>) =>
                 Math.ceil((event.output.wordCount ?? 0) / context.readingSpeed),
-              loading: () => false,
-            }),
+              loading: () => false
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
               error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
-              loading: () => false,
-            }),
-          },
+              loading: () => false
+            })
+          }
         },
         on: {
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
-      loaded: {
-        on: {
-          GENERATE_SUMMARY: {
+      loaded: { on: {, GENERATE_SUMMARY: {
             target: 'generating',
             actions: assign({
               loading: () => true,
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
       ready: {
         initial: 'paused',
-        states: {
-          paused: {
-            on: {
+        states: { paused: {, on: {
               START_READING: 'reading',
               ANALYZE_DOCUMENT: {
                 target: '#aiSummaryMachine.analyzing',
-                actions: assign({ loading: () => true }),
+                actions: assign({ loading: () => true })
               },
               SYNTHESIZE_INSIGHTS: {
                 target: '#aiSummaryMachine.synthesizing',
-                actions: assign({ loading: () => true }),
-              },
-            },
+                actions: assign({ loading: () => true })
+              }
+            }
           },
           reading: {
             initial: 'playing',
             entry: assign({ isPlaying: () => true }),
             exit: assign({ isPlaying: () => false }),
-            states: {
-              playing: {
-                invoke: {
+            states: { playing: {, invoke: {
                   src: 'readingProgress',
-                  id: 'readingProgress',
+                  id: 'readingProgress'
                 },
                 on: {
                   PAUSE_READING: 'paused_mid_read',
-                  UPDATE_PROGRESS: {
-                    actions: assign({
-                      progress: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PROGRESS' }>) =>
-                        event.progress,
-                    }),
-                  },
-                },
+                  UPDATE_PROGRESS: { actions: assign({, progress: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PROGRESS' }>) =>
+                        event.progress
+                    })
+                  }
+                }
               },
-              paused_mid_read: {
-                on: {
-                  RESUME_READING: 'playing',
-                  STOP_READING: '#aiSummaryMachine.ready.paused',
-                },
-              },
+              paused_mid_read: { on: {, RESUME_READING: 'playing',
+                  STOP_READING: '#aiSummaryMachine.ready.paused'
+                }
+              }
             },
-            on: {
-              NEXT_SECTION: {
-                actions: assign((context: AISummaryContext) => {
+            on: { NEXT_SECTION: {, actions: assign((context: AISummaryContext) => {
                   const next = Math.min(context.currentSection + 1, Math.max(context.sections.length - 1, 0));
                   const denom = Math.max(context.sections.length, 1);
                   return {
                     currentSection: next,
-                    progress: (next / denom) * 100,
+                    progress: (next / denom) * 100
                   };
-                }),
+                })
               },
               PREVIOUS_SECTION: {
                 actions: assign((context: AISummaryContext) => {
@@ -347,9 +304,9 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
                   const denom = Math.max(context.sections.length, 1);
                   return {
                     currentSection: prev,
-                    progress: (prev / denom) * 100,
+                    progress: (prev / denom) * 100
                   };
-                }),
+                })
               },
               JUMP_TO_SECTION: {
                 actions: assign(
@@ -359,80 +316,71 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
                     const denom = Math.max(context.sections.length, 1);
                     return {
                       currentSection: safeIdx,
-                      progress: (safeIdx / denom) * 100,
+                      progress: (safeIdx / denom) * 100
                     };
                   }
-                ),
+                )
               },
-              STOP_READING: 'paused',
-            },
-          },
+              STOP_READING: 'paused'
+            }
+          }
         },
-        on: {
-          UPDATE_PREFERENCES: {
-            actions: assign(
+        on: { UPDATE_PREFERENCES: {, actions: assign(
               (_context: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES' }>) => ({
                 ..._context,
-                ...(event.preferences || {}),
+                ...(event.preferences || {})
               })
-            ),
+            )
           },
-          RESET: '#aiSummaryMachine.idle',
-        },
+          RESET: '#aiSummaryMachine.idle'
+        }
       },
-      analyzing: {
-        invoke: {
-          src: 'analyzeDocument',
+      analyzing: { invoke: {, src: 'analyzeDocument',
           onDone: {
             target: 'ready',
             actions: assign({
               analysisResults: (_: AISummaryContext, event: DoneInvokeEvent<AnalyzeDocumentResult>) =>
                 event.output.results ?? [],
-              loading: () => false,
-            }),
+              loading: () => false
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
               error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
-              loading: () => false,
-            }),
-          },
-        },
+              loading: () => false
+            })
+          }
+        }
       },
-      synthesizing: {
-        invoke: {
-          src: 'synthesizeInsights',
+      synthesizing: { invoke: {, src: 'synthesizeInsights',
           onDone: {
             target: 'ready',
             actions: assign({
               synthesisData: (_: AISummaryContext, event: DoneInvokeEvent<SynthesizeResult>) =>
                 event.output.synthesis ?? null,
-              loading: () => false,
-            }),
+              loading: () => false
+            })
           },
           onError: {
             target: 'error',
             actions: assign({
               error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
-              loading: () => false,
-            }),
-          },
-        },
+              loading: () => false
+            })
+          }
+        }
       },
-      error: {
-        on: {
-          RETRY: {
+      error: { on: {, RETRY: {
             target: 'idle',
             actions: assign({
               error: () => null,
-              loading: () => false,
-            }),
+              loading: () => false
+            })
           },
-          RESET: 'idle',
-        },
-      },
-    },
+          RESET: `idle` }
+      }
+    }
   },
   {
     services: {
@@ -452,10 +400,10 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           const txt = await res.text().catch(() => 'failed to fetch');
           throw new Error(`Failed to load document: ${txt}`);
         }
-        const payload = await res.json().catch(() => ({ content: '' }));
+        const payload = await res.json().catch(() => ({ content: `` }));
         return {
           content: (payload?.content as string) ?? (payload?.text as string) ?? '',
-          type: (payload?.type as AISummaryContext['documentType']) ?? context.documentType,
+          type: (payload?.type as AISummaryContext['documentType']) ?? context.documentType;
         };
       },
       generateSummary: async (context: AISummaryContext): Promise<GenerateSummaryResult> => {
@@ -470,7 +418,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
             type: 'executive_summary',
             importance: 'high',
             entities: [],
-            wordCount: Math.max(0, Math.min(words, 200)),
+            wordCount: Math.max(0, Math.min(words, 200))
           },
         ];
         return {
@@ -478,7 +426,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           sections,
           insights: [],
           confidence: 0.5,
-          wordCount: words,
+          wordCount: words
         };
       },
       // mark unused context param with a leading underscore to satisfy lint rules
@@ -490,23 +438,21 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
               type: 'relevance',
               score: 0.5,
               explanation: 'Placeholder analysis - integrate real analyzer.',
-              recommendations: [],
+              recommendations: []
             },
-          ],
+          ]
         };
       },
       // mark unused context param with a leading underscore to satisfy lint rules
       synthesizeInsights: async (_context: AISummaryContext): Promise<SynthesizeResult> => {
         // Minimal synthesis stub — replace with server-side LLM/RAG combination
-        return {
-          synthesis: {
-            mainThemes: [],
+        return { synthesis: {, mainThemes: [],
             contradictions: [],
             supportingEvidence: [],
             gaps: [],
             legalImplications: [],
-            nextSteps: [],
-          },
+            nextSteps: []
+          }
         };
       },
       // readingProgress is an invoked callback-style service that periodically sends UPDATE_PROGRESS
@@ -522,7 +468,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           }
         }, 1000);
         return () => clearInterval(interval);
-      },
-    },
+      }
+    }
   }
 );

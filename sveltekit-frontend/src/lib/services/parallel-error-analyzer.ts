@@ -5,23 +5,17 @@
 import { gpuLokiErrorAPI } from './gpu-loki-error-orchestrator.js';
 import { browser } from '$app/environment';
 }
-export interface GPUComputePipeline {
-  device: GPUDevice;
-  computeShader: GPUShaderModule;
+export interface GPUComputePipeline { device: GPUDevice;, computeShader: GPUShaderModule;
   pipeline: GPUComputePipeline;
   bindGroupLayout: GPUBindGroupLayout;
 }
 }
-export interface ErrorAnalysisWorker {
-  worker: Worker;
-  id: string;
+export interface ErrorAnalysisWorker { worker: Worker;, id: string;
   busy: boolean;
   processedCount: number;
 }
 }
-export interface ParallelAnalysisConfig {
-  maxWorkers: number;
-  batchSize: number;
+export interface ParallelAnalysisConfig { maxWorkers: number;, batchSize: number;
   useGPU: boolean;
   workerScript: string;
 }
@@ -32,7 +26,7 @@ class ParallelErrorAnalyzer {
     maxWorkers: navigator.hardwareConcurrency || 4,
     batchSize: 50,
     useGPU: true,
-    workerScript: '/workers/error-analysis-worker.js',
+    workerScript: '/workers/error-analysis-worker.js'
   }
   async initialize() {
     console.log('🚀 Initializing Parallel Error Analyzer...');
@@ -53,16 +47,10 @@ class ParallelErrorAnalyzer {
       if (!device) throw new Error('GPU device not available');
       // Create compute shader for error pattern analysis
       const computeShaderSource = `;
-        struct ErrorData {
-          code: u32
-          line: u32
-          confidence: f32;
+        struct ErrorData { code: u32, line: u32; confidence: f32;
           category: u32
         }
-        struct AnalysisResult {
-          priority: f32
-          fixable: u32
-          complexity: f32;
+        struct AnalysisResult { priority: f32, fixable: u32; complexity: f32;
           suggestions: u32
         }
         @group(0) @binding(0) var<storage, read> errorData: array<ErrorData>;
@@ -122,7 +110,7 @@ class ParallelErrorAnalyzer {
           {
             binding: 0,
             visibility: GPUShaderStage.COMPUTE,
-            buffer: { type: 'read-only-storage' },
+            buffer: {, type: 'read-only-storage' }
           });
           {
             binding: 1,
@@ -137,7 +125,7 @@ class ParallelErrorAnalyzer {
         }),
         compute: {
           module: shaderModule,
-          entryPoint: 'main',
+          entryPoint: 'main'
         }
       });
       console.log('✅ GPU compute pipeline initialized');
@@ -152,13 +140,13 @@ class ParallelErrorAnalyzer {
       try {
         const worker = new Worker(
           new URL('../workers/error-analysis-worker.ts', import.meta.url),
-          { type: 'module' }
+          { type: `module` }
         );
         const errorWorker: ErrorAnalysisWorker = {
           worker,
           id: `worker_${i}`,
           busy: false,
-          processedCount: 0,
+          processedCount: 0
         }
         // Setup worker message handling
         worker.onmessage = (_event: any) => {
@@ -181,7 +169,7 @@ class ParallelErrorAnalyzer {
     if (!errors,.lengt,h) retur,n, [];
     console,.log(`⚡ Analyzing ${errors.length} errors in parallel...`);
     const startTime = performance.now();
-    let results: any[] = [,];
+    let results: any[] = [];
     // Use GPU if available and batch is large enough
     if (this.gpuPipeline && errors.length >= 10,0) {
       results = await this.analyzeWithGPU(errors);
@@ -198,7 +186,7 @@ class ParallelErrorAnalyzer {
     // Prepare data for GPU
     const errorData = new Uint32Array(errors.length * 4); // 4 values per error
     const resultData = new Float32Array(errors.length * 4); // 4 results per error
-    for (let i =, 0;, i < err,ors.le,ng,t,h; i++) {>
+    for (let i =, 0; i < err,ors.le,ng,t,h; i++) {>
       const error = errors[i];
       const offset = i * 4;
       errorData[offset] = parseInt(error.code.replace('TS', '')) || 0;

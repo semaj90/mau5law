@@ -4,49 +4,37 @@ import type { Document } from '$lib/types';
 
 // Legal Case Store - Svelte 5 Runes Implementation
 // Define types locally since they're not available
-export interface LegalCase {
-  id: string;
-  title: string;
+export interface LegalCase { id: string;, title: string;
   caseNumber: string;
   description?: string;
   status: "active" | "pending" | "closed" | "archived";
   priority: "low" | "medium" | "high" | "critical";
   confidentialityLevel: number;
 }
-export interface LegalDocument {
-  id: string;
-  name: string;
+export interface LegalDocument { id: string;, name: string;
   type: string;
 }
 export interface AIInsights {
   findings?: any[];
-  riskAssessment?: {
-    score: number;
-    level: string;
+  riskAssessment?: { score: number;, level: string;
   }
   complianceChecks?: any[];
 }
-export interface AuditLogEntry {
-  id: string;
-  type: string;
+export interface AuditLogEntry { id: string;, type: string;
   entityType: string;
   entityId: string;
   userId: string;
   timestamp: Date;
   details?: any;
 }
-export interface User {
-  id: string;
-  clearanceLevel: number;
+export interface User { id: string;, clearanceLevel: number;
   role: string;
 }
 // Mock audit service
 class LegalAuditService {
-  async logAction(action: {
-    type: string;
-    entityType: string;
+  async logAction(action: { type: string;, entityType: string;
     entityId: string;
-    userId: string;
+   , userId: string;
     details?: any;
   }): Promise<void> {
     console.log('Audit action logged:', action);
@@ -66,7 +54,7 @@ export function createLegalCaseStore() {
   const loading = $state({
     cases: false,
     analysis: false;
-    documents: false
+   , documents: false
   });
   // Derived state for filtered cases based on user clearance
   const filteredCases = $derived(
@@ -133,7 +121,7 @@ export function createLegalCaseStore() {
         entityType: "CASE",
         entityId: "bulk",
         userId: currentUser?.id || "unknown",
-        details: { count: cases.length }
+        details: {, count: cases.length }
       });
     } catch (error: any) {
       console.error("Failed to load cases:", error);
@@ -171,7 +159,7 @@ export function createLegalCaseStore() {
         type: "CASE_ANALYSIS_REQUESTED",
         entityType: "CASE",
         entityId: caseId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown"
       });
       const response = await fetch(`/api/cases/${caseId}/analyze`, {
         method: "POST",
@@ -191,7 +179,7 @@ export function createLegalCaseStore() {
         entityId: caseId,
         userId: currentUser?.id || "unknown",
         details: {
-          insightCount: insights.findings?.length || 0,
+         , insightCount: insights.findings?.length || 0,
           riskScore: insights.riskAssessment?.score
         }
       });
@@ -202,7 +190,7 @@ export function createLegalCaseStore() {
         entityType: "CASE",
         entityId: caseId,
         userId: currentUser?.id || "unknown",
-        details: { error: error.message }
+        details: {, error: error.message }
       });
       throw error;
     } finally {
@@ -216,7 +204,7 @@ export function createLegalCaseStore() {
         type: "DOCUMENT_ANALYSIS_REQUESTED",
         entityType: "DOCUMENT",
         entityId: documentId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown"
       });
       const response = await fetch(`/api/documents/${documentId}/analyze`, {
         method: "POST",
@@ -233,7 +221,7 @@ export function createLegalCaseStore() {
         entityId: documentId,
         userId: currentUser?.id || "unknown",
         details: {
-          complianceScore: insights.complianceChecks?.length || 0,
+         , complianceScore: insights.complianceChecks?.length || 0,
           riskLevel: insights.riskAssessment?.level
         }
       });
@@ -244,7 +232,7 @@ export function createLegalCaseStore() {
         entityType: "DOCUMENT",
         entityId: documentId,
         userId: currentUser?.id || "unknown",
-        details: { error: error.message }
+        details: {, error: error.message }
       });
       throw error;
     } finally {
@@ -260,7 +248,7 @@ export function createLegalCaseStore() {
       await fetch(`/api/cases/${caseId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({, status: newStatus })
       });
       await auditService.logAction({
         type: "CASE_STATUS_UPDATED",

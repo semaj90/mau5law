@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       cores: record.cores,
       capabilities: record.capabilities,
       metadata: record.metadata ?? {},
-      health: record.health ?? null,
+      health: record.health ?? null
     };
 
     if (stream) {
@@ -55,20 +55,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
         messages: [
           {
             role: 'user',
-            content: `Summarize this MCP server info and return helpful fields for UI:\n${JSON.stringify(
+            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(
               serverPayload,
               null,
               2
-            )}`,
-          },
+            )}` },
         ],
-        stream: true,
+        stream: true
       };
 
       const ollamaResponse = await fetch(`${OLLAMA_URL}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(chatBody),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(chatBody)
       });
 
       if (!ollamaResponse.ok || !ollamaResponse.body) {
@@ -84,7 +83,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       const streamBody = new ReadableStream({
         async start(controller) {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'record', record: serverPayload })}\n\n`));
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({, type: 'record', record: serverPayload })}\n\n`));
 
           const reader = ollamaResponse.body!.getReader();
           while (true) {
@@ -97,15 +96,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
 
           controller.close();
-        },
+        }
       });
 
       return new Response(streamBody, {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          Connection: 'keep-alive',
-        },
+          Connection: `keep-alive` }
       });
     }
 
@@ -115,8 +113,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         messages: [
           {
             role: 'user',
-            content: `Retrieve MCP server data for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }`,
-          },
+            content: `Retrieve MCP server data; for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }' },
         ],
         functions: [
           {
@@ -124,46 +121,43 @@ export const POST: RequestHandler = async ({ request, url }) => {
             description: 'Retrieve MCP server information by name and dataset',
             parameters: {
               type: 'object',
-              properties: {
-                serverName: { type: 'string' },
+              properties: { serverName: {, type: 'string' },
                 cores: {
                   type: 'array',
                   items: {
                     type: 'object',
-                    properties: {
-                      id: { type: 'string' },
+                    properties: { id: {, type: 'string' },
                       role: { type: 'string' },
-                      status: { type: 'string' },
-                    },
-                  },
+                      status: { type: 'string' }
+                    }
+                  }
                 },
                 endpoints: {
                   type: 'array',
                   items: {
                     type: 'object',
-                    properties: {
-                      id: { type: 'string' },
+                    properties: { id: {, type: 'string' },
                       url: { type: 'string' },
-                      protocol: { type: 'string' },
-                    },
-                  },
+                      protocol: { type: 'string' }
+                    }
+                  }
                 },
                 capabilities: {
                   type: 'array',
-                  items: { type: 'string' },
-                },
+                  items: { type: `string` }
+                }
               },
-              required: ['serverName'],
-            },
+              required: ['serverName']
+            }
           },
         ],
-        stream: false,
+        stream: false
       };
 
       const first = await fetch(`${OLLAMA_URL}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(firstBody),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(firstBody)
       });
       const firstOut = await first.json();
 
@@ -196,19 +190,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
           content: JSON.stringify({
             ...serverPayload,
             requestedAt: new Date().toISOString(),
-            requestedArgs: fnArgs,
-          }),
+            requestedArgs: fnArgs
+          })
         };
 
         const secondBody = {
           model: selectedModel,
           messages: [...history, toolMessage],
-          stream: false,
+          stream: false
         };
         const second = await fetch(`${OLLAMA_URL}/api/chat`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(secondBody),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(secondBody)
         });
         const secondOut = await second.json();
         return json({
@@ -217,7 +211,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           record: serverPayload,
           function_called: fnName,
           modelUsed: selectedModel,
-          availableModels: AVAILABLE_MODELS,
+          availableModels: AVAILABLE_MODELS
         });
       }
 
@@ -227,27 +221,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
         record: serverPayload,
         function_called: null,
         modelUsed: selectedModel,
-        availableModels: AVAILABLE_MODELS,
+        availableModels: AVAILABLE_MODELS
       });
     }
 
     const resp = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: selectedModel,
         messages: [
           {
             role: 'user',
-            content: `Summarize this MCP server info and return helpful fields for UI:\n${JSON.stringify(
+            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(
               serverPayload,
               null,
               2
-            )}`,
-          },
+            )}' },
         ],
-        stream: false,
-      }),
+        stream: false
+      })
     });
 
     const data = await resp.json();
@@ -256,7 +249,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       llm_output: data,
       record: serverPayload,
       modelUsed: selectedModel,
-      availableModels: AVAILABLE_MODELS,
+      availableModels: AVAILABLE_MODELS
     });
   } catch (err: any) {
     const requestId = randomUUID();
@@ -264,7 +257,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       aiOrchestrator.handleMcpError(err?.message ?? 'Unknown MCP error', {
         requestId,
         stage: 'api.mcp.post',
-        error: err,
+        error: err
       });
     } catch {}
     return json(
@@ -272,8 +265,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: false,
         error: err?.message ?? String(err),
         requestId,
-        path: url?.pathname ?? '/api/mcp',
-      },
+        path: url?.pathname ?? '/api/mcp` },
       { status: 500 }
     );
   }

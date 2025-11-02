@@ -23,7 +23,7 @@ export const JobSchema = z.object({
   scheduledAt: z.date(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 export type Job = z.infer<typeof JobSchema>;
 /* Type additions to reduce `any` usage */
@@ -65,23 +65,17 @@ type PersonRow = {
   createdAt?: Date;
   updatedAt?: Date;
 };
-type AnalysisResult = {
-  summary: string;
-  confidence: number;
+type AnalysisResult = { summary: string;, confidence: number;
   insights: string[];
   entities: string[];
   timestamp: string;
 };
-type CaseSynthesisResult = {
-  summary: string;
-  timeline: Array<{ event: string; timestamp?: Date | string; significance: string }>;
+type CaseSynthesisResult = { summary: string;, timeline: Array<{ event: string; timestamp?: Date | string;, significance: string }>;
   relationships: Array<{ evidenceId?: string; connections: string[]; strength: number }>;
   recommendations: string[];
-  riskAssessment: { overall: string; factors: string[] };
+  riskAssessment: { overall: string;, factors: string[] };
 };
-type ReportContent = {
-  content: string;
-  metadata: JsonMap;
+type ReportContent = { content: string;, metadata: JsonMap;
 };
 export interface ProcessingResult {
   success: boolean;
@@ -124,7 +118,7 @@ export class LegalAIJobQueue {
       id: jobId,
       createdAt: now,
       updatedAt: now,
-      scheduledAt,
+      scheduledAt
     };
     // Store job in Redis or database queue table
     await this.storeJob(newJob);
@@ -189,7 +183,7 @@ export class LegalAIJobQueue {
           result = await this.processVectorEmbedding(job);
           break;
         default:
-          result = { success: false, error: `Unknown job type: ${job.type}` };
+          result = { success: false, error: `Unknown job; type: ${job.type}` };
       }
       if (result.success) {
         await this.updateJobStatus(job.id, 'completed', result.data);
@@ -225,9 +219,9 @@ export class LegalAIJobQueue {
           metadata: {
             ...(evidenceData.metadata || {}),
             aiAnalysis: analysisResult,
-            analyzedAt: new Date().toISOString(),
+            analyzedAt: new Date().toISOString()
           },
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(evidence.id, evidenceId));
       // Queue vector embedding generation
@@ -235,16 +229,16 @@ export class LegalAIJobQueue {
         type: 'vector_embedding',
         priority: 'medium',
         userId: job.userId,
-        data: { entityType: 'evidence', entityId: evidenceId },
+        data: {, entityType: 'evidence', entityId: evidenceId },
         status: 'pending',
         attempts: 0,
         maxAttempts: 3,
-        scheduledAt: new Date(),
+        scheduledAt: new Date()
       });
       return {
         success: true,
         data: analysisResult,
-        metadata: { evidenceId },
+        metadata: { evidenceId }
       };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Analysis failed' };
@@ -272,15 +266,15 @@ export class LegalAIJobQueue {
           metadata: {
             ...(caseData.metadata || {}),
             synthesis: synthesisResult,
-            synthesizedAt: new Date().toISOString(),
+            synthesizedAt: new Date().toISOString()
           },
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(cases.id, caseId));
       return {
         success: true,
         data: synthesisResult,
-        metadata: { caseId, evidenceCount: relatedEvidence.length },
+        metadata: { caseId, evidenceCount: relatedEvidence.length }
       };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Synthesis failed' };
@@ -308,16 +302,16 @@ export class LegalAIJobQueue {
           metadata: {
             ...(reportData.metadata || {}),
             generation: reportContent.metadata,
-            generatedAt: new Date().toISOString(),
+            generatedAt: new Date().toISOString()
           },
           status: 'completed',
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(reports.id, reportId));
       return {
         success: true,
         data: reportContent,
-        metadata: { reportId },
+        metadata: { reportId }
       };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Report generation failed' };
@@ -356,7 +350,7 @@ export class LegalAIJobQueue {
           dimensions: embedding.length,
           model: 'nomic-embed-text',
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       } catch (dbErr) {
         console.warn(
@@ -367,10 +361,10 @@ export class LegalAIJobQueue {
       return {
         success: true,
         data: { dimensions: embedding.length },
-        metadata: { entityType, entityId },
+        metadata: { entityType, entityId }
       };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Embedding generation failed' };
+      return { success: false, error: error instanceof Error ? error.message : `Embedding generation failed` };
     }
   }
   /**
@@ -386,11 +380,11 @@ export class LegalAIJobQueue {
           : 'http://localhost:11434/api/embeddings';
       const response = await fetch(ollamaEndpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'nomic-embed-text',
-          prompt: text,
-        }),
+         , model: 'nomic-embed-text',
+          prompt: text
+        })
       });
       if (!response.ok) {
         throw new Error(`Ollama embedding API error: ${response.statusText}`);
@@ -428,15 +422,13 @@ export class LegalAIJobQueue {
       document: 'Document analysis with OCR, entity extraction, and legal precedent matching',
       audio: 'Audio analysis with transcription and sentiment analysis',
       video: 'Video analysis with motion detection and timeline extraction',
-      digital: 'Digital forensics with metadata extraction and chain of custody verification',
-    };
+      digital: `Digital forensics with metadata extraction and chain of custody verification` };
     const analysisType = analysisTypes[evidenceData.evidenceType ?? ''] || 'General evidence analysis';
-    return {
-      summary: `AI Analysis: ${analysisType}`,
+    return { summary: `AI, Analysis: ${analysisType}`,
       confidence: 0.85 + Math.random() * 0.1,
       insights: ['Evidence integrity verified', 'Chain of custody maintained', 'Legal admissibility confirmed'],
       entities: ['person', 'location', 'object'],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
   /**
@@ -444,16 +436,16 @@ export class LegalAIJobQueue {
    */
   private async performCaseSynthesis(caseData: CaseRow, evidenceList: EvidenceRow[]): Promise<CaseSynthesisResult> {
     return {
-      summary: `Comprehensive analysis of case "${caseData.title ?? ''}" with ${evidenceList.length} pieces of evidence`,
+      summary: 'Comprehensive analysis of case "${caseData.title ?? '` }" with ${evidenceList.length} pieces of evidence`,
       timeline: evidenceList.map((e, i) => ({
-        event: `Evidence ${i + 1}: ${e.title ?? 'untitled'}`,
+        event: 'Evidence ${i + 1}: ${e.title ?? 'untitled` }`,
         timestamp: e.createdAt,
-        significance: 'medium',
+        significance: 'medium'
       })),
       relationships: evidenceList.map(e => ({
         evidenceId: e.id,
         connections: ['temporal', 'spatial', 'causal'],
-        strength: Math.random(),
+        strength: Math.random()
       })),
       recommendations: [
         'Additional witness interviews recommended',
@@ -462,8 +454,8 @@ export class LegalAIJobQueue {
       ],
       riskAssessment: {
         overall: 'medium',
-        factors: ['evidence quality', 'witness reliability', 'legal precedent'],
-      },
+        factors: ['evidence quality', 'witness reliability', 'legal precedent']
+      }
     };
   }
   /**
@@ -474,12 +466,12 @@ export class LegalAIJobQueue {
       summary: 'Executive Summary Report',
       analysis: 'Detailed Analysis Report',
       timeline: 'Timeline Report',
-      evidence: 'Evidence Inventory Report',
+      evidence: 'Evidence Inventory Report'
     };
     return {
-      content: `# ${reportTypes[reportData.reportType ?? ''] || 'Legal Report'}
+      content: '# ${reportTypes[reportData.reportType ?? ''] || 'Legal Report'}
 ## Case Overview
-${reportData.description || 'Case analysis and findings'}
+${reportData.description || 'Case analysis and findings` }
 ## Key Findings
 - Evidence integrity maintained
 - Chain of custody verified
@@ -494,8 +486,7 @@ ${reportData.description || 'Case analysis and findings'}
         wordCount: 150,
         sections: 4,
         generationTime: '2.3s',
-        model: 'legal-report-generator-v1',
-      },
+        model: `legal-report-generator-v1` }
     };
   }
   /**
@@ -509,19 +500,19 @@ ${reportData.description || 'Case analysis and findings'}
         case 'evidence': {
           const rows = await db.select().from(evidence).where(eq(evidence.id, entityId)).limit(1);
           const evidenceData = rows[0] as EvidenceRow | undefined;
-          content = `${evidenceData?.title || ''} ${evidenceData?.description || ''} ${evidenceData?.aiSummary || ''}`;
+          content = `${evidenceData?.title || ''} ${evidenceData?.description || ''} ${evidenceData?.aiSummary || '` }`;
           break;
         }
         case 'case': {
           const rows = await db.select().from(cases).where(eq(cases.id, entityId)).limit(1);
           const caseData = rows[0] as CaseRow | undefined;
-          content = `${caseData?.title || ''} ${caseData?.description || ''}`;
+          content = `${caseData?.title || ''} ${caseData?.description || '` }`;
           break;
         }
         case 'report': {
           const rows = await db.select().from(reports).where(eq(reports.id, entityId)).limit(1);
           const reportData = rows[0] as ReportRow | undefined;
-          content = `${reportData?.title || ''} ${reportData?.description || ''} ${reportData?.content || ''}`;
+          content = `${reportData?.title || ''} ${reportData?.description || ''} ${reportData?.content || '` }`;
           break;
         }
         case 'person':
@@ -529,7 +520,7 @@ ${reportData.description || 'Case analysis and findings'}
         case 'personsOfInterest': {
           const rows = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, entityId)).limit(1);
           const person = rows[0] as PersonRow | undefined;
-          content = `${person?.name || ''} ${person?.notes || ''} ${person?.biography || ''}`;
+          content = `${person?.name || ''} ${person?.notes || ''} ${person?.biography || '` }`;
           break;
         }
         default: return null;
@@ -614,7 +605,7 @@ ${reportData.description || 'Case analysis and findings'}
       job.metadata = {
         ...(job.metadata || {}),
         result: data,
-        completedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString()
       };
     }
     // Put it back into the store
@@ -641,7 +632,7 @@ ${reportData.description || 'Case analysis and findings'}
         ...(jobInStore.metadata || {}),
         lastError: error,
         failedAt: new Date().toISOString(),
-        attempts: newAttempts,
+        attempts: newAttempts
       };
       this.jobStore.set(job.id, jobInStore);
       console.error(`[JobQueue] ❌ Job ${job.id} failed after ${jobInStore.maxAttempts} attempts: ${error}`);
@@ -656,7 +647,7 @@ ${reportData.description || 'Case analysis and findings'}
       ...(jobInStore.metadata || {}),
       lastError: error,
       rescheduledAt: rescheduledAt.toISOString(),
-      attempts: newAttempts,
+      attempts: newAttempts
     };
     // Persist and re-enqueue
     this.jobStore.set(job.id, jobInStore);
@@ -703,7 +694,7 @@ export async function queueEvidenceAnalysis(evidenceId: string, userId: string):
     status: 'pending',
     attempts: 0,
     maxAttempts: 3,
-    scheduledAt: new Date(),
+    scheduledAt: new Date()
   });
 }
 // Auto-queue case synthesis after case creation
@@ -731,7 +722,7 @@ export async function queueReportGeneration(reportId: string, userId: string): P
     status: 'pending',
     attempts: 0,
     maxAttempts: 3,
-    scheduledAt: new Date(),
+    scheduledAt: new Date()
   });
 }
 // Queue vector embedding generation
@@ -745,7 +736,7 @@ export async function queueVectorEmbedding(entityType: string, entityId: string,
     status: 'pending',
     attempts: 0,
     maxAttempts: 3,
-    scheduledAt: new Date(),
+    scheduledAt: new Date()
   });
 }
 // Initialize job queue on server start

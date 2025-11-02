@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
   interface LegalQuery {
     id?: number;
     prompt: string;

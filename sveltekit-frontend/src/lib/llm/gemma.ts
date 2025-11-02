@@ -175,14 +175,14 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     stream: false,
     options: {
       num_predict: opts.maxTokens ?? 512,
-      temperature: opts.temperature ?? 0.0,
-    },
+      temperature: opts.temperature ?? 0.0
+    }
   };
   try {
     const res = await fetch(`${API.replace(/\/+$/, '')}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
@@ -207,13 +207,13 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
     stream: true,
     options: {
       num_predict: opts.maxTokens ?? 512,
-      temperature: opts.temperature ?? 0.0,
-    },
+      temperature: opts.temperature ?? 0.0
+    }
   };
   const res = await fetch(`${API.replace(/\/+$/, '')}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     throw new Error(`Gemma3 stream error: ${res.status}`);
@@ -281,7 +281,7 @@ export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:l
     const res = await fetch(`${API.replace(/\/+$/, '')}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, input: text }),
+      body: JSON.stringify({ model, input: text })
     });
     if (!res.ok) {
       console.warn('Embedding request failed', res.status);
@@ -333,7 +333,7 @@ export async function cacheEmbeddingRedis(
     await fetch(`${CACHE_API.replace(/\/+$/, '')}/cache`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, vector: vectorToArray(vector), ttl: ttlSeconds }),
+      body: JSON.stringify({ key, vector: vectorToArray(vector), ttl: ttlSeconds })
     });
     return true;
   } catch (e) {
@@ -357,14 +357,14 @@ export async function indexToQdrant(
         {
           id,
           vector: vectorToArray(vector),
-          payload: metadata ?? {},
+          payload: metadata ?? {}
         },
-      ],
+      ]
     };
     const res = await fetch(`${QDRANT_URL.replace(/\/+$/, '')}/collections/${collection}/points`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     return res.ok;
   } catch (e) {
@@ -384,7 +384,7 @@ export async function persistToPostgresJsonb(table: string, payload: any): Promi
     const res = await fetch(`${PG_PERSIST_API.replace(/\/+$/, '')}/persist`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ table, payload }),
+      body: JSON.stringify({ table, payload })
     });
     return res.ok;
   } catch (e) {

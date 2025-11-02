@@ -13,36 +13,30 @@ type OllamaStatus = {
   error?: string;
 };
 
-type DatabaseStatus = {
-  status: 'connected' | 'error' | 'unknown';
-  type: 'PostgreSQL';
+type DatabaseStatus = { status: 'connected' | 'error' | 'unknown';, type: 'PostgreSQL';
   tablesAccessible?: any;
   error?: string;
 };
 
 export const GET: RequestHandler = async () => {
   try {
-    const systemStatus = {
-      services: {
-        ollama: await checkOllamaStatus(),
-        database: await checkDatabaseStatus(),
+    const systemStatus = { services: {, ollama: await checkOllamaStatus(),
+        database: await checkDatabaseStatus()
       },
       environment: {
-        ollamaUrl: OLLAMA_URL,
+        ollamaUrl: OLLAMA_URL
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     return json(systemStatus);
   } catch (error: any) {
     console.error('System status check failed:', error);
     return json(
-      {
-        services: {
-          ollama: { status: 'error', error: 'System check failed' },
-          database: { status: 'error', error: 'System check failed' },
+      { services: {, ollama: { status: 'error', error: 'System check failed' },
+          database: { status: 'error', error: 'System check failed' }
         },
-        environment: { ollamaUrl: OLLAMA_URL },
-        timestamp: new Date().toISOString(),
+        environment: {, ollamaUrl: OLLAMA_URL },
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -56,8 +50,7 @@ async function checkOllamaStatus(): Promise<OllamaStatus> {
     const response: Response = await fetch(`${OLLAMA_URL}/api/version`, {
       signal: controller.signal,
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json` }
     });
     clearTimeout(timeoutId);
 
@@ -74,7 +67,7 @@ async function checkOllamaStatus(): Promise<OllamaStatus> {
     return {
       status: 'connected',
       version,
-      url: OLLAMA_URL,
+      url: OLLAMA_URL
     };
   } catch (error: any) {
     console.error('Ollama connection failed:', error);
@@ -91,7 +84,7 @@ async function checkOllamaStatus(): Promise<OllamaStatus> {
     return {
       status: 'error',
       error: errorMessage,
-      url: OLLAMA_URL,
+      url: OLLAMA_URL
     };
   }
 }
@@ -131,13 +124,13 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
         return {
           status: 'connected',
           type: 'PostgreSQL',
-          tablesAccessible: result.tablesAccessible,
+          tablesAccessible: result.tablesAccessible
         };
       } else {
         return {
           status: 'error',
           type: 'PostgreSQL',
-          error: isDBHealthResult(result) && result.error ? String(result.error) : 'unhealthy',
+          error: isDBHealthResult(result) && result.error ? String(result.error) : 'unhealthy'
         };
       }
     }
@@ -146,15 +139,14 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
     return {
       status: 'unknown',
       type: 'PostgreSQL',
-      error: 'healthCheck not exported from $lib/server/db/index.js',
+      error: 'healthCheck not exported from $lib/server/db/index.js'
     };
   } catch (error: any) {
     console.error('Database health check failed:', error);
     return {
       status: 'error',
       type: 'PostgreSQL',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+      error: error instanceof Error ? error.message : 'Unknown error` };
   }
 }
 

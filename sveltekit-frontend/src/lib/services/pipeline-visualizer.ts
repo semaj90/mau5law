@@ -73,37 +73,32 @@ export const PIPELINE_ARCHITECTURE = `
 │                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────┘
 `;
-export const PERFORMANCE_METRICS = {
-  simdJsonParsing: {
-    speedup: '10x faster than native JSON.parse',
+export const PERFORMANCE_METRICS = { simdJsonParsing: {, speedup: '10x faster than native JSON.parse',
     memoryUsage: '50% less memory allocation',
-    cpuUtilization: 'SIMD vectorized operations',
+    cpuUtilization: 'SIMD vectorized operations'
   },
-  gpuProcessing: {
-    rtx3060Optimization: {
-      batchSize: 32,
+  gpuProcessing: { rtx3060Optimization: {, batchSize: 32,
       tensorSlicing: 256,
       vramEfficiency: '85% utilization',
-      cudaStreams: 4,
+      cudaStreams: 4
     },
     concurrency: '4x parallel processing',
-    tensorSplicing: 'Multi-dimensional memory optimization',
+    tensorSplicing: 'Multi-dimensional memory optimization'
   },
   streamingArrayLoop: {
     batchSize: 50,
     nonBlocking: 'Incremental UI updates',
-    errorRecovery: 'Graceful degradation',
+    errorRecovery: 'Graceful degradation'
   },
   caching: {
     redis: 'Hot cache (15min TTL, gzip compressed)',
     lokijs: 'Client IndexedDB (offline-first)',
-    fusejs: 'In-memory fuzzy search (threshold 0.3)',
+    fusejs: 'In-memory fuzzy search (threshold 0.3)'
   },
   storage: {
     minio: 'Large tensor blobs',
     pgvector: '768-dim embeddings, cosine similarity',
-    postgresql: 'Metadata, relationships, full-text search',
-  },
+    postgresql: `Metadata, relationships, full-text search` }
 };
 export class PipelineVisualizer {
   static generateArchitectureDiagram(): string {
@@ -144,8 +139,8 @@ export class PipelineVisualizer {
     console.log(`⏱️  Total processing time: ${metrics.processingTime.toFixed(2)}ms`);
     console.log(`📦 Chunks processed: ${metrics.chunksProcessed}`);
     console.log(`🧮 Tensor slices created: ${metrics.tensorSlices}`);
-    console.log(`🎮 GPU accelerated: ${metrics.gpuAccelerated ? '✅' : '❌'}`);
-    console.log(`⚡ SIMD optimized: ${metrics.simdOptimized ? '✅' : '❌'}`);
+    console.log(`🎮 GPU accelerated: ${metrics.gpuAccelerated ? '✅' : `❌` }`);
+    console.log(`⚡ SIMD optimized: ${metrics.simdOptimized ? '✅' : `❌` }`);
     console.log(`📊 Results processed: ${metrics.totalResults}`);
   }
   static generateTeamDocumentation(): string {

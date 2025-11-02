@@ -10,15 +10,11 @@ export interface User {
   email?: string;
   role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user';
 }
-export interface Session {
-  id: string;
-  user: User;
+export interface Session { id: string;, user: User;
   fresh?: boolean;
   expiresAt?: Date;
 }
-export interface SessionState {
-  user: User | null;
-  session: Session | null;
+export interface SessionState { user: User | null;, session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   lastSyncAt: number;
@@ -31,7 +27,7 @@ const createSessionStore = () => {
     session: null,
     isAuthenticated: false,
     isLoading: true,
-    lastSyncAt: 0,
+    lastSyncAt: 0
   });
   return {
     // Getter for reactive access
@@ -47,7 +43,7 @@ const createSessionStore = () => {
           session: pageData.session,
           isAuthenticated: !!pageData.user,
           isLoading: false,
-          lastSyncAt: Date.now(),
+          lastSyncAt: Date.now()
         };
       } else {
         // Fallback: Try to restore from persistent storage
@@ -61,7 +57,7 @@ const createSessionStore = () => {
         session,
         isAuthenticated: !!user,
         isLoading: false,
-        lastSyncAt: Date.now(),
+        lastSyncAt: Date.now()
       };
       // Persist to localStorage for faster subsequent loads
       if (browser && user) {
@@ -71,7 +67,7 @@ const createSessionStore = () => {
             JSON.stringify({
               user,
               session,
-              cachedAt: Date.now(),
+              cachedAt: Date.now()
             })
           );
         } catch (e) {
@@ -86,7 +82,7 @@ const createSessionStore = () => {
         session: null,
         isAuthenticated: false,
         isLoading: false,
-        lastSyncAt: Date.now(),
+        lastSyncAt: Date.now()
       };
       // Clear persistent storage
       if (browser) {
@@ -115,7 +111,7 @@ const createSessionStore = () => {
               session: data.session || { id: 'server', user: data.user },
               isAuthenticated: true,
               isLoading: false,
-              lastSyncAt: Date.now(),
+              lastSyncAt: Date.now()
             };
             return data.user;
           }
@@ -126,7 +122,7 @@ const createSessionStore = () => {
           session: null,
           isAuthenticated: false,
           isLoading: false,
-          lastSyncAt: Date.now(),
+          lastSyncAt: Date.now()
         };
         return null;
       } catch (error) {
@@ -138,7 +134,7 @@ const createSessionStore = () => {
     // Get current user for upload operations
     getCurrentUser: (): User | null => {
       return sessionState.user;
-    },
+    }
   };
 };
 // Fallback session restoration from various storage mechanisms
@@ -186,13 +182,13 @@ export const getUser = () => sessionStore.state.user;
 export const getIsAuthenticated = () => sessionStore.state.isAuthenticated;
 export const getIsLoading = () => sessionStore.state.isLoading;
 // Utility functions for upload operations
-export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; uploaderEmail: string | null } => {
+export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;, uploaderEmail: string | null } => {
   const currentUser = sessionStore.getCurrentUser();
   if (currentUser?.id) {
     return {
       uploadedBy: currentUser.id,
       uploaderRole: currentUser.role || 'viewer',
-      uploaderEmail: currentUser.email || null,
+      uploaderEmail: currentUser.email || null
     };
   }
   // Try fallback mechanisms synchronously
@@ -205,7 +201,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
         return {
           uploadedBy: candidate.user.id,
           uploaderRole: candidate.user.role || 'viewer',
-          uploaderEmail: candidate.user.email || null,
+          uploaderEmail: candidate.user.email || null
         };
       }
       // Check localStorage
@@ -219,7 +215,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
           return {
             uploadedBy: parsed.user.id,
             uploaderRole: parsed.user.role || 'viewer',
-            uploaderEmail: parsed.user.email || null,
+            uploaderEmail: parsed.user.email || null
           };
         }
       }
@@ -231,6 +227,6 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
   return {
     uploadedBy: 'anonymous',
     uploaderRole: 'viewer',
-    uploaderEmail: null,
+    uploaderEmail: null
   };
 };

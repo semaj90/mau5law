@@ -128,7 +128,7 @@ export class RabbitMQLegalQueue {
     }]
   ]);
   constructor(private config: RabbitMQConnection = {
-    host: 'localhost',
+   , host: 'localhost',
     port: 15674, // WebSocket port for RabbitMQ Web STOMP
     username: 'legal_ai',
     password: 'legal_2024',
@@ -172,8 +172,7 @@ export class RabbitMQLegalQueue {
       'host': this.config.vhost,
       'login': this.config.username,
       'passcode': this.config.password,
-      'heart-beat': '10000,10000'
-    });
+      'heart-beat': '10000,10000' });
     this.connection?.send(connectFrame);
     // Initialize queues and setup consumers
     this.setupQueuesAndConsumers();
@@ -215,8 +214,7 @@ export class RabbitMQLegalQueue {
   /**
    * Publish legal document processing message to queue
    */
-  async publishDocumentMessage(_document: LegalDocument
-    operation: LegalDocumentMessage['operation'],
+  async publishDocumentMessage(_document: LegalDocument; operation: LegalDocumentMessage['operation'],
     options: {
       priority?: number;
       requiresGPU?: boolean;
@@ -290,8 +288,7 @@ export class RabbitMQLegalQueue {
           result = {
             confidence: message.metadata.confidenceLevel,
             risk: message.metadata.riskLevel,
-            analysis: 'Legal document analyzed successfully'
-          }
+            analysis: 'Legal document analyzed successfully' }
           break;
         case 'store':
           // Persistent storage operation
@@ -322,7 +319,7 @@ export class RabbitMQLegalQueue {
       // Acknowledge message
       await this.acknowledgeMessage(message.messageId);
     } catch (error: any) {
-      console.error(`❌ Document processing failed for ${message.documentId}:`, error);
+      console.error(`❌ Document processing failed for ${message.documentId}: ', error);
       await this.sendProcessingResult({
         success: false,
         documentId: message.documentId,
@@ -400,7 +397,7 @@ export class RabbitMQLegalQueue {
       await this.broadcastMemoryStatus(memStats);
       await this.acknowledgeMessage(message.messageId);
     } catch (error: any) {
-      console.error(`❌ Memory allocation handling failed:`, error);
+      console.error(`❌ Memory allocation handling failed: ', error);
     }
   }
   // Helper methods
@@ -432,8 +429,7 @@ export class RabbitMQLegalQueue {
     return {
       computationCompleted: true,
       gpuTime: Math.random() * 10 + 5, // 5-15ms
-      result: `GPU computation result for ${message.documentId}`
-    }
+      result: `GPU computation result for ${message.documentId}' }
   }
   private async computeRankings(message: LegalDocumentMessage): Promise<RankingResult[]> {
     // Placeholder for ranking computation
@@ -445,7 +441,7 @@ export class RabbitMQLegalQueue {
       metadata: {
         processingTime: 5.2,
         cacheHit: false,
-        bankId: 1,
+        bankId: 1
       }
     }];
   }
@@ -477,7 +473,7 @@ export class RabbitMQLegalQueue {
     frame += '\n' + body + '\x00';
     return frame;
   }
-  private parseSTOMPFrame(data: string): { command: string; headers: Record<string, string>; body: string } {
+  private parseSTOMPFrame(data: string): { command: string;, headers: Record<string, string>; body: string } {
     // removed unused lines assignment
     const command = lines[0];
     const headers: Record<string, string> = {}
@@ -499,8 +495,7 @@ export class RabbitMQLegalQueue {
     // Send queue declaration frame
     const frame = this.createSTOMPFrame('SEND', {
       'destination': '/amq/queue/' + config.name,
-      'content-type': 'application/json'
-    }, JSON.stringify(config);
+      'content-type': 'application/json' }, JSON.stringify(config);
     this.connection?.send(frame);
   }
   private async publishToQueue(queueName: string, message: LegalDocumentMessage): Promise<void> {
@@ -521,8 +516,7 @@ export class RabbitMQLegalQueue {
       const frame = this.createSTOMPFrame('SUBSCRIBE', {
         'id': queueKey,
         'destination': '/amq/queue/' + config.name,
-        'ack': 'client'
-      });
+        'ack': 'client' });
       this.connection?.send(frame);
     }
   }
@@ -543,7 +537,7 @@ export class RabbitMQLegalQueue {
           const handler = this.messageHandlers.get(queueKey);
           if (handler) {
             handler(message).catch(error => {
-              console.error(`❌ Message handler failed for ${queueKey}:`, error);
+              console.error(`❌ Message handler failed for ${queueKey}: ', error);
             });
           }
         }

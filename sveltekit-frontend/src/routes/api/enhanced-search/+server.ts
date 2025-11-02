@@ -49,7 +49,7 @@ export async function POST({ request }): Promise<any> {
     // 4. Cache results in Redis
     try {
       await redis.set(cacheKey, JSON.stringify(searchResults), { EX: 3600 }); // Cache for 1 hour
-      console.log(`CACHE SET for enhanced search: "${query}"`);
+      console.log(`CACHE SET for enhanced search: "${query}"');
     } catch (cacheError) {
       console.error('Redis cache write error:', cacheError);
       // Log error but don't fail the request

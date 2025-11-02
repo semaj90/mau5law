@@ -10,7 +10,7 @@ import type {
   IngestionJobRequest,
   SimilarityQueryOptions,
   SimilarityResult,
-  IngestionJobStatus,
+  IngestionJobStatus
 } from './embedding-repository.js';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
@@ -57,7 +57,7 @@ async function processNextJob(): Promise<IngestionJobStatus | null> {
         documentType: 'evidence',
         chunkIndex: index,
         content: text,
-        embedding,
+        embedding
       });
       processed++;
       update({ processedChunks: processed });
@@ -82,14 +82,14 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
     content: String(r.content),
-    score: 1 - Number(r.distance),
+    score: 1 - Number(r.distance)
   }));
 }
 export const pgvectorEmbeddingRepository: EmbeddingRepository = {
   enqueueIngestion,
   processNextJob,
   getJobStatus: async (jobId: string) => getJobStatus(jobId) || null,
-  querySimilar,
+  querySimilar
 };
 // Named exports (optional direct usage)
 export { enqueueIngestion, processNextJob, getJobStatus, querySimilar };

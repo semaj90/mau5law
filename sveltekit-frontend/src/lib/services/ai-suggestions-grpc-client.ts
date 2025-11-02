@@ -21,9 +21,7 @@ type GrpcClientLike = {
 };
 
 // Types based on our protobuf schema
-export interface SuggestionRequest {
-  content: string;
-  report_type: ReportType;
+export interface SuggestionRequest { content: string;, report_type: ReportType;
   model?: string;
   context?: SuggestionContext;
   max_suggestions?: number;
@@ -42,9 +40,7 @@ export interface SuggestionContext {
   user_profile?: UserProfile;
   document_metadata?: DocumentMetadata;
 }
-export interface VectorContext {
-  document_id: string;
-  content: string;
+export interface VectorContext { document_id: string;, content: string;
   similarity_score: number;
   document_type: string;
   metadata?: Record<string, string>;
@@ -53,14 +49,10 @@ export interface GraphContext {
   related_nodes?: GraphNode[];
   relationships?: GraphRelationship[];
 }
-export interface GraphNode {
-  id: string;
-  type: string; // case, evidence, precedent, person
+export interface GraphNode { id: string;, type: string; // case, evidence, precedent, person
   properties?: Record<string, string>;
 }
-export interface GraphRelationship {
-  from_node: string;
-  to_node: string;
+export interface GraphRelationship { from_node: string;, to_node: string;
   relationship_type: string;
   weight?: number;
 }
@@ -93,26 +85,22 @@ export enum ReportType {
   DISCOVERY_REQUEST = 5,
   WITNESS_STATEMENT = 6,
   LEGAL_RESEARCH = 7,
-  CLOSING_ARGUMENT = 8,
+  CLOSING_ARGUMENT = 8
 }
 export enum SuggestionStyle {
   SUGGESTION_STYLE_UNSPECIFIED = 0,
   CONCISE = 1,
   DETAILED = 2,
   FORMAL = 3,
-  CONVERSATIONAL = 4,
+  CONVERSATIONAL = 4
 }
-export interface SuggestionResponse {
-  suggestions: Suggestion[];
-  model: string;
+export interface SuggestionResponse { suggestions: Suggestion[];, model: string;
   overall_confidence: number;
   timestamp: number;
   metrics?: ProcessingMetrics;
   request_id?: string;
 }
-export interface Suggestion {
-  id: string;
-  content: string;
+export interface Suggestion { id: string;, content: string;
   type: SuggestionType;
   confidence: number;
   priority: number;
@@ -131,7 +119,7 @@ export enum SuggestionType {
   CITATION_NEEDED = 5,
   FORMATTING_IMPROVEMENT = 6,
   CONSISTENCY_CHECK = 7,
-  COMPLETENESS_CHECK = 8,
+  COMPLETENESS_CHECK = 8
 }
 export enum SuggestionCategory {
   SUGGESTION_CATEGORY_UNSPECIFIED = 0,
@@ -140,7 +128,7 @@ export enum SuggestionCategory {
   EVIDENCE_HANDLING = 3,
   WRITING_QUALITY = 4,
   CASE_STRATEGY = 5,
-  RISK_ASSESSMENT = 6,
+  RISK_ASSESSMENT = 6
 }
 export interface SuggestionMetadata {
   source_documents?: string[];
@@ -157,9 +145,7 @@ export interface ProcessingMetrics {
   gpu_utilization?: number;
   tokens_processed?: number;
 }
-export interface SuggestionRating {
-  suggestion_id: string;
-  user_id: string;
+export interface SuggestionRating { suggestion_id: string;, user_id: string;
   rating: Rating;
   feedback?: string;
   was_applied?: boolean;
@@ -171,7 +157,7 @@ export enum Rating {
   POOR = 2,
   FAIR = 3,
   GOOD = 4,
-  EXCELLENT = 5,
+  EXCELLENT = 5
 }
 export interface RatingResponse {
   success: boolean;
@@ -195,7 +181,7 @@ export class AISuggestionsGRPCClient {
       'grpc.keepalive_timeout_ms': 5000,
       'grpc.keepalive_permit_without_calls': true,
       'grpc.http2.max_pings_without_data': 0,
-      ...options,
+      ...options
     };
   }
 
@@ -220,7 +206,7 @@ export class AISuggestionsGRPCClient {
           console.log('closing placeholder grpc client for', this.serviceUrl);
         },
         options: this.clientOptions,
-        serviceUrl: this.serviceUrl,
+        serviceUrl: this.serviceUrl
       };
 
       // mark connected
@@ -269,8 +255,7 @@ export class AISuggestionsGRPCClient {
       const params = new URLSearchParams({
         content: request.content,
         report_type: String(request.report_type),
-        model: request.model ?? 'unknown',
-      });
+        model: request.model ?? 'unknown` });
       const eventSource = new EventSource(`/api/ai/suggestions/stream?${params.toString()}`);
       yield* this.handleStreamingResponse(eventSource);
     } catch (error: any) {
@@ -285,9 +270,8 @@ export class AISuggestionsGRPCClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Client-Type': 'grpc-fallback',
-        },
-        body: JSON.stringify(data),
+          'X-Client-Type': 'grpc-fallback` },
+        body: JSON.stringify(data)
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const parsed = await res.json();
@@ -381,7 +365,7 @@ export class AISuggestionsGRPCClient {
     }
   }
 
-  getConnectionStatus(): { connected: boolean; serviceUrl: string } {
+  getConnectionStatus(): { connected: boolean;, serviceUrl: string } {
     return { connected: this.isConnected, serviceUrl: this.serviceUrl };
   }
 }
@@ -401,7 +385,7 @@ export async function generateLegalSuggestions(
     max_suggestions: 5,
     confidence_threshold: 0.6,
     model: 'gemma3-legal',
-    ...options,
+    ...options
   };
   return await aiSuggestionsClient.generateSuggestions(request);
 }
@@ -419,10 +403,10 @@ export async function generateContextualLegalSuggestions(
       max_suggestions: 5,
       confidence_threshold: 0.6,
       model: 'gemma3-legal',
-      ...options,
+      ...options
     },
     vector_context: vectorContext,
-    graph_context: graphContext,
+    graph_context: graphContext
   };
   return await aiSuggestionsClient.generateContextualSuggestions(request);
 }
@@ -440,7 +424,7 @@ export async function rateLegalSuggestion(
     rating,
     feedback,
     was_applied: wasApplied,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
   return await aiSuggestionsClient.rateSuggestion(request);
 }
@@ -488,7 +472,7 @@ export const ReportTypeUtils = {
         return 'closing_argument';
       default: return 'unspecified';
     }
-  },
+  }
 };
 
 export const RatingUtils = {
@@ -515,5 +499,5 @@ export const RatingUtils = {
         return 'Excellent';
       default: return 'Unspecified';
     }
-  },
+  }
 };

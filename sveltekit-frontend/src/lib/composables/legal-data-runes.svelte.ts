@@ -4,9 +4,7 @@ import type { Case } from '$lib/types';
  * Reusable state management for legal entities, cases, evidence, and POIs
  */
 // Core legal data interfaces
-export interface LegalCase {
-  id: string;
-  title: string;
+export interface LegalCase { id: string;, title: string;
   status: 'active' | 'closed' | 'pending' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   assignedTo?: string;
@@ -15,9 +13,7 @@ export interface LegalCase {
   description?: string;
   metadata: { [key: string]: any }
 }
-export interface Evidence {
-  id: string;
-  caseId: string;
+export interface Evidence { id: string;, caseId: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital';
   title: string;
   description?: string;
@@ -28,9 +24,7 @@ export interface Evidence {
   updatedAt: string;
   metadata: { [key: string]: any }
 }
-export interface PersonOfInterest {
-  id: string;
-  name: string;
+export interface PersonOfInterest { id: string;, name: string;
   alias?: string[];
   type: 'suspect' | 'witness' | 'victim' | 'person_of_interest';
   status: 'active' | 'inactive' | 'cleared';
@@ -114,8 +108,8 @@ export function useLegalCase(initialCaseId?: string) {
     try {
       const response = await fetch(`/api/cases/${currentCase.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(updates)
       });
       if (!response.ok) throw new Error(`Failed to update case ${response.statusText}`);
       const updated = await response.json();
@@ -165,7 +159,7 @@ export function useLegalCase(initialCaseId?: string) {
     loadCase,
     loadCases,
     updateCase,
-    clearCurrentCase,
+    clearCurrentCase
   };
 }
 // Evidence composable
@@ -223,7 +217,7 @@ export function useEvidence(caseId?: string) {
       formData.append('metadata', JSON.stringify(metadata));
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
       const newEvidence = await response.json();
@@ -240,8 +234,7 @@ export function useEvidence(caseId?: string) {
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE',
-      });
+        method: `DELETE` });
       if (!response.ok) throw new Error(`Failed to delete evidence: ${response.statusText}`);
       evidence = evidence.filter(e => e.id !== evidenceId);
       if (currentEvidence?.id === evidenceId) {
@@ -287,7 +280,7 @@ export function useEvidence(caseId?: string) {
     uploadEvidence,
     deleteEvidence,
     selectEvidence,
-    clearSelection,
+    clearSelection
   };
 }
 // Person of Interest composable
@@ -343,8 +336,8 @@ export function usePersonsOfInterest() {
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(personData)
       });
       if (!response.ok) throw new Error(`Failed to create person: ${response.statusText}`);
       const newPerson = await response.json();
@@ -363,8 +356,8 @@ export function usePersonsOfInterest() {
     try {
       const response = await fetch(`/api/persons-of-interest/${personId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(updates)
       });
       if (!response.ok) throw new Error(`Failed to update person: ${response.statusText}`);
       const updated = await response.json();
@@ -421,7 +414,7 @@ export function usePersonsOfInterest() {
     updatePerson,
     selectPerson,
     clearSelection,
-    setSearchQuery,
+    setSearchQuery
   };
 }
 // Unified legal data composable
@@ -449,6 +442,6 @@ export function useLegalData(caseId?: string) {
     persons: personComposable,
     isAnyLoading,
     hasAnyError,
-    initializeAll,
+    initializeAll
   };
 }

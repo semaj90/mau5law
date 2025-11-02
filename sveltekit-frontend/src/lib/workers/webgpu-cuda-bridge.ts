@@ -6,16 +6,12 @@ interface WebGPUCudaBridgeMessage {
 	payload?: any;
 	requestId: string;
 }
-interface CudaProcessingTask {
-	id: string;
-	type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing';
+interface CudaProcessingTask { id: string;, type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing';
 	data: BufferLike;
 	config: any;
 	priority: 'low' | 'medium' | 'high' | 'critical';
 }
-interface WebGPUDevice {
-  device: GPUDevice;
-  adapter: GPUAdapter;
+interface WebGPUDevice { device: GPUDevice;, adapter: GPUAdapter;
   isInitialized: boolean;
   // GPUDeviceCapabilities is not a standard global type in TS, use any to avoid errors
   capabilities: any;
@@ -37,7 +33,7 @@ class WebGPUCudaBridge {
         return false;
       }
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) {
         console.warn('⚠️ WebGPU adapter not available');
@@ -46,9 +42,9 @@ class WebGPUCudaBridge {
       const device = await adapter.requestDevice({
         requiredFeatures: ['texture-compression-bc'] as GPUFeatureName[],
         requiredLimits: {
-          maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-          maxBufferSize: adapter.limits.maxBufferSize,
-        },
+         , maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
+          maxBufferSize: adapter.limits.maxBufferSize
+        }
       });
       this.webgpuDevice = {
         device,
@@ -57,15 +53,15 @@ class WebGPUCudaBridge {
         capabilities: {
           maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
           maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-          maxBufferSize: adapter.limits.maxBufferSize,
-        } as any,
+          maxBufferSize: adapter.limits.maxBufferSize
+        } as any
       };
       console.log('✅ WebGPU initialized successfully');
       console.log('GPU Device:', {
         vendor: adapter.info?.vendor || 'Unknown',
         architecture: adapter.info?.architecture || 'Unknown',
         device: adapter.info?.device || 'Unknown',
-        description: adapter.info?.description || 'Unknown',
+        description: adapter.info?.description || 'Unknown'
       });
       // Start processing queue
       this.startProcessingLoop();
@@ -121,14 +117,14 @@ class WebGPUCudaBridge {
           result = await this.processImageOperations(task);
           break;
         default:
-          throw new Error(`Unknown task type: ${task.type}`);
+          throw new Error(`Unknown task; type: ${task.type}`);
       }
       // Send result back to main thread
       self.postMessage({
         type: 'task-complete',
         taskId: task.id,
         result,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
       console.log(`✅ Task completed: ${task.id}`);
     } catch (error) {
@@ -137,7 +133,7 @@ class WebGPUCudaBridge {
         type: 'task-error',
         taskId: task.id,
         error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } finally {
       this.isProcessing = false;
@@ -189,7 +185,7 @@ class WebGPUCudaBridge {
 			}
 		`;
     const shaderModule = device.createShaderModule({
-      code: computeShaderCode,
+      code: computeShaderCode
     });
     // Convert data to Float32Array using buffer utilities
     const inputArray = toFloat32Array(data);
@@ -197,11 +193,11 @@ class WebGPUCudaBridge {
     // Create buffers
     const inputBuffer = device.createBuffer({
       size: inputArray.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const outputBuffer = device.createBuffer({
       size: outputArray.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const configArray = new Float32Array([
       config.weight || 1.0,
@@ -211,7 +207,7 @@ class WebGPUCudaBridge {
     ]);
     const configBuffer = device.createBuffer({
       size: configArray.byteLength,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Write data to buffers - use ArrayBuffer + offsets to satisfy TS signatures
     device.queue.writeBuffer(
@@ -234,19 +230,19 @@ class WebGPUCudaBridge {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
+          buffer: { type: 'storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'uniform' },
+          buffer: {, type: 'uniform' }
         },
-      ],
+      ]
     });
     // Create bind group (fixed punctuation)
     const bindGroup = device.createBindGroup({
@@ -254,18 +250,15 @@ class WebGPUCudaBridge {
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } },
-        { binding: 2, resource: { buffer: configBuffer } },
-      ],
+        { binding: 2, resource: {, buffer: configBuffer } }
+      ]
     });
     // Create compute pipeline (fixed punctuation)
-    const computePipeline = device.createComputePipeline({
-      layout: device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+    const computePipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout]
       }),
       compute: {
         module: shaderModule,
-        entryPoint: 'main',
-      },
+        entryPoint: `main` }
     });
     // Create command encoder and dispatch compute
     const commandEncoder = device.createCommandEncoder();
@@ -277,7 +270,7 @@ class WebGPUCudaBridge {
     // Copy result buffer to staging buffer
     const stagingBuffer = device.createBuffer({
       size: outputArray.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, outputArray.byteLength);
     // Submit commands
@@ -298,17 +291,17 @@ class WebGPUCudaBridge {
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: config?.model || 'gemma3-legal',
           prompt: config.prompt || 'Analyze the provided legal document.',
           stream: false,
           options: {
-            temperature: config.temperature || 0.7,
+           , temperature: config.temperature || 0.7,
             top_p: config.top_p || 0.9,
-            top_k: config.top_k || 40,
-          },
-        }),
+            top_k: config.top_k || 40
+          }
+        })
       });
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
         throw new Error(`Ollama API error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -328,7 +321,7 @@ class WebGPUCudaBridge {
             embedding?: any;
             matches?: any;
           }
-        ).response,
+        ).response
       };
     } catch (error) {
       // Final fallback to Go microservice
@@ -350,11 +343,10 @@ class WebGPUCudaBridge {
           user_id: config.user_id,
           session_id: config.session_id,
           metadata: {
-            webgpu_bridge: true,
+           , webgpu_bridge: true,
             data_length: (data as any)?.length ?? (data as any)?.byteLength ?? 0,
-            optimization_level: 'rtx_3060_ti',
-          },
-        }),
+            optimization_level: `rtx_3060_ti` }
+        })
       });
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
         throw new Error(`Enhanced CUDA server error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -452,7 +444,7 @@ class WebGPUCudaBridge {
             embedding?: any;
             matches?: any;
           }
-        ).thinking_content,
+        ).thinking_content
       };
     } catch (error) {
       throw new Error(`Enhanced CUDA server failed: ${error}`);
@@ -465,12 +457,12 @@ class WebGPUCudaBridge {
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: config?.model || 'nomic-embed-text',
+         , model: config?.model || 'nomic-embed-text',
           prompt: config.text || config.prompt,
-          options: config.options || {},
-        }),
+          options: config.options || {}
+        })
       });
       if ((response as { ok?: any; status?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; status?: any; json?: any }).json();
@@ -488,7 +480,7 @@ class WebGPUCudaBridge {
               embedding?: any;
               matches?: any;
             }
-          ).embedding,
+          ).embedding
         };
       }
     } catch (error) {
@@ -497,14 +489,14 @@ class WebGPUCudaBridge {
     // Fallback to enhanced CUDA server vector search
     const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/vector-search`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        query_vector: config.query_vector || new Array(768).fill(0.1),
+       , query_vector: config.query_vector || new Array(768).fill(0.1),
         top_k: config.top_k || 10,
         threshold: config.threshold || 0.5,
         legal_domain: config.legal_domain || 'general',
-        include_metadata: true,
-      }),
+        include_metadata: true
+      })
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`Enhanced vector search error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -550,7 +542,7 @@ class WebGPUCudaBridge {
           embedding?: any;
           matches?: any;
         }
-      ).gpu_metrics,
+      ).gpu_metrics
     };
   }
   private async processTensorOperations(task: CudaProcessingTask): Promise<any> {
@@ -619,13 +611,12 @@ class WebGPUCudaBridge {
       deviceInfo: this.webgpuDevice
         ? {
             vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',
-            architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown',
-          }
+            architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown` }
         : null,
       endpoints: {
         ollama: this.ollamaEndpoint,
-        cudaService: this.cudaServiceEndpoint,
-      },
+        cudaService: this.cudaServiceEndpoint
+      }
     };
   }
   cleanup(): void {
@@ -651,7 +642,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
           type: 'init-complete',
           requestId,
           success: initialized,
-          status: bridge.getStatus(),
+          status: bridge.getStatus()
         });
         break;
       case 'process':
@@ -659,31 +650,31 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
         self.postMessage({
           type: 'task-queued',
           requestId,
-          taskId,
+          taskId
         });
         break;
       case 'status':
         self.postMessage({
           type: 'status-response',
           requestId,
-          status: bridge.getStatus(),
+          status: bridge.getStatus()
         });
         break;
       case 'cleanup':
         bridge.cleanup();
         self.postMessage({
           type: 'cleanup-complete',
-          requestId,
+          requestId
         });
         break;
       default:
-        throw new Error(`Unknown message type: ${type}`);
+        throw new Error(`Unknown message; type: ${type}`);
     }
   } catch (error) {
     self.postMessage({
       type: 'error',
       requestId,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     });
   }
 };

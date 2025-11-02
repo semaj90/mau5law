@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       evidence,
-      count: evidence.length,
+      count: evidence.length
     });
   } catch (error: any) {
     console.error('Error fetching evidence:', error);
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ params }) => {
     return json(
       {
         error: 'Failed to fetch evidence',
-        details: errorMessage,
+        details: errorMessage
       },
       { status: 500 }
     );

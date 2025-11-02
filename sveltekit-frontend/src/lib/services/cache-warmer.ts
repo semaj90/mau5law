@@ -6,27 +6,21 @@ import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type D
 import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
 import { lodManager } from '$lib/services/N64LODManager';
 
-export interface UserProfile {
-  userId: string;
-  practiceAreas: LegalCategory[];
+export interface UserProfile { userId: string;, practiceAreas: LegalCategory[];
   recentCases: string[];
   preferredDocumentTypes: DocumentType[];
   workingStyle: 'litigator' | 'transactional' | 'research' | 'hybrid';
   memoryPreference: 'performance' | 'balanced' | 'conservative';
 }
 
-export interface CacheWarmingStrategy {
-  name: string;
-  description: string;
+export interface CacheWarmingStrategy { name: string;, description: string;
   priorityThreshold: number;
   maxDocuments: number;
   preloadLODs: number[];
   memoryBudget: number; // bytes
 }
 
-export interface WarmingResult {
-  documentsProcessed: number;
-  texturesLoaded: number;
+export interface WarmingResult { documentsProcessed: number;, texturesLoaded: number;
   memoryUsed: number;
   cacheHitRateImprovement: number;
   processingTime: number;
@@ -34,9 +28,7 @@ export interface WarmingResult {
   warnings: string[];
 }
 
-export interface CaseContext {
-  caseId: string;
-  caseType: LegalCategory | string;
+export interface CaseContext { caseId: string;, caseType: LegalCategory | string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   documents: LegalDocument[];
   relatedCases: string[];
@@ -200,7 +192,7 @@ export class LegalCacheWarmer {
   /**
    * Pre-load textures into memory banks
    */
-  private async preloadTextures(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ texturesLoaded: number; memoryUsed: number; warnings: string[] }> {
+  private async preloadTextures(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ texturesLoaded: number; memoryUsed: number;, warnings: string[] }> {
     let texturesLoaded = 0;
     let memoryUsed = 0;
     const warnings: string[] = [];
@@ -269,7 +261,7 @@ export class LegalCacheWarmer {
    * Warm CHR-ROM UI patterns (lightweight placeholder implementation)
    * Returns a minimal result object so callers can sum memory usages and warnings.
    */
-  private async warmChrRomPatterns(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ memoryUsed: number; warnings: string[]; patternsLoaded: number }> {
+  private async warmChrRomPatterns(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ memoryUsed: number; warnings: string[];, patternsLoaded: number }> {
     const warnings: string[] = [];
     let memoryUsed = 0;
     let patternsLoaded = 0;

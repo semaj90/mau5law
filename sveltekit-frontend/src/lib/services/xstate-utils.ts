@@ -40,8 +40,8 @@ export function createCompatibleActor<
             restoreSnapshot:
               typeof m.restoreSnapshot === 'function'
                 ? (m.restoreSnapshot as (...args: any[]) => unknown).bind(m)
-                : undefined,
-          },
+                : undefined
+          }
         };
         return createActor(adapted as unknown as Parameters<typeof createActor>[0], options as unknown as Opt);
       }

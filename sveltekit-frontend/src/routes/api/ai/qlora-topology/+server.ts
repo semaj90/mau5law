@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative (cache-aside per error)
+ * - Cache; Strategy: conservative (cache-aside per error)
  * - Memory Bank: PRG_ROM (Nintendo-style) for low-level efficiency
  * - Cache hits: ~2-5ms response time per error
  * - Fresh queries (Cache Miss): Full RAG pipeline execution
@@ -28,9 +28,7 @@ import { sql } from 'drizzle-orm';
 
 // --- Interfaces for Request, Response, and Cache ---
 
-interface NPMError {
-  id: string;
-  errorText: string;
+interface NPMError { id: string;, errorText: string;
 }
 
 interface IntelligentTodoRequest {
@@ -39,18 +37,14 @@ interface IntelligentTodoRequest {
   binaryResponse?: boolean;
 }
 
-interface IntelligentTodo {
-  errorId: string;
-  originalError: string;
+interface IntelligentTodo { errorId: string;, originalError: string;
   suggestedSteps: string[];
   contextUsed: number;
   cacheHit: boolean;
   processingTime: number;
 }
 
-interface CacheEntry {
-  data: Uint8Array;
-  timestamp: number;
+interface CacheEntry { data: Uint8Array;, timestamp: number;
   ttl: number;
 }
 
@@ -87,7 +81,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { errors, useCache = true, binaryResponse = false } = body;
 
     if (!errors || !Array.isArray(errors) || errors.length === 0) {
-      return json({ error: 'Request body must be a non-empty array of NPMError objects.' }, { status: 400 });
+      return json({ error: `Request body must be a non-empty array of NPMError objects.` }, { status: 400 });
     }
 
     const intelligentTodos = await Promise.all(
@@ -107,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           }
         }
 
-        console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.`);
+        console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.');
 
         // 2. EMBED (Triton Server)
         const errorEmbedding = await tritonClient.getEmbedding(error.errorText);
@@ -115,9 +109,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         // 3. RETRIEVE (Qdrant Vector DB)
         const similarErrorVectors = await qdrantClient.search('npm_errors', {
           vector: errorEmbedding,
-          limit: 3,
+          limit: 3
         });
-        const similarErrorIds = similarErrorVectors.map((v: { id: number | string }) => v.id as number);
+        const similarErrorIds = similarErrorVectors.map((v: {, id: number | string }) => v.id as number);
 
         // 4. AUGMENT (PostgreSQL via Drizzle)
         let contextText = 'No similar errors found in the database.';
@@ -129,7 +123,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
           contextText = similarSolutions
             .map(
-              (s: { rawErrorText: string; solutionText: string }) =>
+              (s: {, rawErrorText: string; solutionText: string }) =>
                 `SIMILAR ERROR:\n${s.rawErrorText}\nSOLUTION:\n${s.solutionText}`
             )
             .join('\n\n---\n\n');
@@ -145,7 +139,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           suggestedSteps: generatedSolution
             .split('\n')
             .filter((step: string) => step.trim().length > 0 && !step.startsWith('---')),
-          contextUsed: similarErrorIds.length,
+          contextUsed: similarErrorIds.length
         };
 
         const processingTime = Date.now() - startTime;
@@ -172,8 +166,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/octet-stream',
-          'Content-Encoding': 'gzip',
-        },
+          'Content-Encoding': `gzip` }
       });
     } else {
       return json(intelligentTodos);
@@ -203,7 +196,7 @@ const originalGETHandler: RequestHandler = async () => {
         l1CacheSizeBytes: Array.from(cache.values()).reduce((acc, entry) => acc + entry.data.length, 0),
         l1CacheEntries: cache.size,
         // More metrics would be exposed from the services themselves.
-      },
+      }
     };
     return json(healthStatus);
   } catch (error) {

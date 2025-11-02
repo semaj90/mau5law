@@ -1,6 +1,4 @@
-export interface AIAnalysis {
-  extractedTags: string[];
-  summary: string;
+export interface AIAnalysis { extractedTags: string[];, summary: string;
 }
 
 // Lightweight evidence shape used across the summarization service.
@@ -24,17 +22,13 @@ export interface CanvasElement {
   children?: CanvasElement[];
 }
 
-export interface CaseSummaryReport {
-  content: string;
-  richTextContent: string;
+export interface CaseSummaryReport { content: string;, richTextContent: string;
   // use a safe, unknown-based map instead of `any`
   metadata: Record<string, unknown>;
   // typed canvas elements instead of `any[]`
   canvasElements: CanvasElement[];
 }
-export interface ProsecutionStrategyReport {
-  content: string;
-  richTextContent: string;
+export interface ProsecutionStrategyReport { content: string;, richTextContent: string;
   metadata: Record<string, unknown>;
   canvasElements: CanvasElement[];
 }

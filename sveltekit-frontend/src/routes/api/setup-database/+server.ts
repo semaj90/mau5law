@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             success: false,
             error: 'Adding sample documents not yet implemented',
-            plannedFeature: true,
+            plannedFeature: true
           },
           { status: 501 }
         );
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             success: false,
             error: 'Index rebuilding not yet implemented',
-            plannedFeature: true,
+            plannedFeature: true
           },
           { status: 501 }
         );
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             success: false,
             error: 'Cache clearing not yet implemented',
-            plannedFeature: true,
+            plannedFeature: true
           },
           { status: 501 }
         );
@@ -68,8 +68,8 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: 'Unknown action. Available: add-sample-documents, rebuild-indexes, clear-cache, init',
-            availableActions: ['add-sample-documents', 'rebuild-indexes', 'clear-cache', 'init'],
+            error: 'Unknown action.; Available: add-sample-documents, rebuild-indexes, clear-cache, init',
+            availableActions: ['add-sample-documents', 'rebuild-indexes', 'clear-cache', 'init']
           },
           { status: 400 }
         );
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -96,7 +96,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         success: false,
         error: 'Destructive operation requires confirmation',
         requiredParam: 'confirm=yes-delete-all-data',
-        warning: 'This will delete ALL data in the database',
+        warning: 'This will delete ALL data in the database'
       },
       { status: 400 }
     );
@@ -107,7 +107,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Database deletion not implemented for safety',
-        message: 'Use manual SQL commands or database admin tools for destructive operations',
+        message: 'Use manual SQL commands or database admin tools for destructive operations'
       },
       { status: 501 }
     );
@@ -118,7 +118,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

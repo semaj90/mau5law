@@ -2,16 +2,12 @@
  * Multi-Layer Cache System for Legal AI Platform
  * Implements gaming-inspired memory management with console constraints
  */
-export interface CacheLayer {
-  name: string;
-  maxSize: number;
+export interface CacheLayer { name: string;, maxSize: number;
   maxAge: number; // milliseconds,
   priority: 'high' | 'medium' | 'low';
   evictionPolicy: 'lru' | 'lfu' | 'fifo';
 }
-export interface CacheEntry<T> {
-  key: string;
-  value: T;
+export interface CacheEntry<T> { key: string;, value: T;
   timestamp: number;
   accessCount: number;
   size: number;
@@ -67,7 +63,7 @@ export class MultiLayerCacheSystem {
       timestamp: Date.now(),
       accessCount: 0,
       size,
-      layer: targetLayer,
+      layer: targetLayer
     };
     layer.set(key, entry);
     this.currentSize.set(targetLayer, this.currentSize.get(targetLayer)! + size);
@@ -219,7 +215,7 @@ export class MultiLayerCacheSystem {
         maxSize: config.maxSize,
         utilization: (currentSize / config.maxSize) * 100,
         priority: config.priority,
-        evictionPolicy: config.evictionPolicy,
+        evictionPolicy: config.evictionPolicy
       };
     }
     return stats;

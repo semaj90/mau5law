@@ -1,6 +1,4 @@
-export type StoredMessage = {
-	id: string;
-	sessionId: string;
+export type StoredMessage = { id: string;, sessionId: string;
 	type?: string;
 	payload?: any;
 	timestamp: string;
@@ -63,7 +61,7 @@ export function storeMessage(sessionId: string, payload: any, type = 'message') 
 		sessionId,
 		type,
 		payload,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	};
 	messageStore.push(msg);
 	return msg;

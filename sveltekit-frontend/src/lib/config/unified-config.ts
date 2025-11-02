@@ -5,11 +5,9 @@ import os from "os";
  * Supports Windows-native deployment with environment-based configuration
  */
 const dev = import.meta.env.NODE_ENV === 'development';
-const browser = $state(false); // Server-side config
+const browser = false; // Server-side config
 // Configuration interfaces for type safety
-export interface DatabaseConfig {
-  postgres: {
-    url: string;
+export interface DatabaseConfig { postgres: {, url: string;
     maxConnections: number;
     ssl: boolean;
     timeout: number;
@@ -23,9 +21,7 @@ export interface DatabaseConfig {
     commandTimeout: number;
     keepAlive: number;
   }
-  neo4j: {
-    url: string;
-    username: string;
+  neo4j: { url: string;, username: string;
     password: string;
     maxConnectionPoolSize: number;
     connectionTimeout: number;
@@ -38,104 +34,68 @@ export interface DatabaseConfig {
     windowsOptimized: boolean;
   }
 }
-export interface AIConfig {
-  ollama: {
-    baseUrl: string;
-    models: {
-      legal: string;
-      embedding: string;
+export interface AIConfig { ollama: {, baseUrl: string;
+    models: { legal: string;, embedding: string;
       chat: string;
     }
     timeout: number;
     maxConcurrent: number;
     gpuLayers: number;
   }
-  openai?: {
-    apiKey: string;
-    model: string;
+  openai?: { apiKey: string;, model: string;
     maxTokens: number;
   }
-  embedding: {
-    dimensions: number;
-    batchSize: number;
+  embedding: { dimensions: number;, batchSize: number;
     cacheEnabled: boolean;
   }
 }
-export interface ServiceConfig {
-  enhancedRAG: {
-    url: string;
+export interface ServiceConfig { enhancedRAG: {, url: string;
     timeout: number;
     retries: number;
     batchSize: number;
   }
-  uploadService: {
-    url: string;
-    maxFileSize: number;
+  uploadService: { url: string;, maxFileSize: number;
     allowedTypes: string[];
     timeout: number;
   }
-  clusterManager: {
-    url: string;
-    workers: {
-      legal: number;
-      ai: number;
+  clusterManager: { url: string;, workers: { legal: number;, ai: number;
       vector: number;
       database: number;
     }
-    ports: {
-      basePort: number;
-      legalBase: number;
+    ports: { basePort: number;, legalBase: number;
       aiBase: number;
       vectorBase: number;
       databaseBase: number;
     }
   }
 }
-export interface WindowsConfig {
-  platform: 'win32' | 'linux' | 'darwin';
-  gpuAcceleration: boolean;
+export interface WindowsConfig { platform: 'win32' | 'linux' | 'darwin';, gpuAcceleration: boolean;
   pathSeparator: '\\' | '/';
-  serviceInstallation: {
-    useWindowsServices: boolean;
-    serviceUser: string;
+  serviceInstallation: { useWindowsServices: boolean;, serviceUser: string;
     dataPath: string;
     logPath: string;
   }
-  performance: {
-    maxMemoryMB: number;
-    cpuCores: number;
+  performance: { maxMemoryMB: number;, cpuCores: number;
     ioOptimization: boolean;
     networkKeepAlive: number;
   }
 }
-export interface SecurityConfig {
-  cors: {
-    origins: string[];
+export interface SecurityConfig { cors: {, origins: string[];
     credentials: boolean;
   }
-  rateLimit: {
-    windowSec: number;
-    limits: {
-      free: number;
-      premium: number;
+  rateLimit: { windowSec: number;, limits: { free: number;, premium: number;
       enterprise: number;
       api: number;
       admin: number;
     }
   }
-  auth: {
-    sessionTimeout: number;
-    jwtSecret: string;
+  auth: { sessionTimeout: number;, jwtSecret: string;
     bcryptRounds: number;
   }
 }
-export interface LoggingConfig {
-  level: 'debug' | 'info' | 'warn' | 'error';
-  format: 'json' | 'text';
+export interface LoggingConfig { level: 'debug' | 'info' | 'warn' | 'error';, format: 'json' | 'text';
   outputs: ('console' | 'file' | 'syslog')[];
-  file?: {
-    path: string;
-    maxSize: string;
+  file?: { path: string;, maxSize: string;
     maxFiles: number;
     rotate: boolean;
   }
@@ -143,17 +103,13 @@ export interface LoggingConfig {
   includeStack: boolean;
 }
 // Main unified configuration interface
-export interface UnifiedConfig {
-  environment: 'development' | 'staging' | 'production';
-  database: DatabaseConfig;
+export interface UnifiedConfig { environment: 'development' | 'staging' | 'production';, database: DatabaseConfig;
   ai: AIConfig;
   services: ServiceConfig;
   windows: WindowsConfig;
   security: SecurityConfig;
   logging: LoggingConfig;
-  monitoring: {
-    enabled: boolean;
-    metricsPort: number;
+  monitoring: { enabled: boolean;, metricsPort: number;
     healthCheckInterval: number;
     alerting: {
       enabled: boolean;
@@ -178,9 +134,7 @@ class ConfigManager {
     const env = this.getEnvironmentVariables();
     this.config = {
       environment: (env.NODE_ENV as any) || 'development',
-      database: {
-        postgres: {
-          url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5434/legal_ai_db',
+      database: { postgres: {, url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5434/legal_ai_db',
           maxConnections: parseInt(env.POSTGRES_MAX_CONNECTIONS) || (isWindows ? 20 : 25),
           ssl: env.POSTGRES_SSL === 'true' || env.NODE_ENV === 'production',
           timeout: parseInt(env.POSTGRES_TIMEOUT) || (isWindows ? 30000 : 20000),
@@ -209,9 +163,7 @@ class ConfigManager {
           windowsOptimized: isWindows
         }
       },
-      ai: {
-        ollama: {
-          baseUrl: env.OLLAMA_BASE_URL || 'http://localhost:11434',
+      ai: { ollama: {, baseUrl: env.OLLAMA_BASE_URL || 'http://localhost:11434',
           models: {
             legal: env.OLLAMA_LEGAL_MODEL || 'gemma3-legal',
             embedding: env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text',
@@ -232,9 +184,7 @@ class ConfigManager {
           cacheEnabled: env.EMBEDDING_CACHE !== 'false'
         }
       },
-      services: {
-        enhancedRAG: {
-          url: env.ENHANCED_RAG_URL || 'http://localhost:8094',
+      services: { enhancedRAG: {, url: env.ENHANCED_RAG_URL || 'http://localhost:8094',
           timeout: parseInt(env.RAG_TIMEOUT) || (isWindows ? 60000 : 45000),
           retries: parseInt(env.RAG_RETRIES) || 3,
           batchSize: parseInt(env.RAG_BATCH_SIZE) || (isWindows ? 8 : 16)
@@ -279,9 +229,7 @@ class ConfigManager {
           networkKeepAlive: parseInt(env.NETWORK_KEEP_ALIVE) || (isWindows ? 30000 : 0)
         }
       },
-      security: {
-        cors: {
-          origins: (env.CORS_ORIGINS || 'http://localhost:5173').split(','),
+      security: { cors: {, origins: (env.CORS_ORIGINS || 'http://localhost:5173').split(','),
           credentials: env.CORS_CREDENTIALS !== 'false'
         },
         rateLimit: {

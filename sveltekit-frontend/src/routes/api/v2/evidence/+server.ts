@@ -11,7 +11,7 @@
  * - DELETE /api/v2/evidence          - Delete evidence
  *
  * QUERY PARAMETERS:
- * - action: upload | search | analyze | synthesize | stream | status
+ * -; action: upload | search | analyze | synthesize | stream | status
  *
  * ARCHITECTURE:
  * TypeScript SvelteKit ↔ Python FastAPI (AI/ML) ↔ PostgreSQL/Redis/Qdrant
@@ -37,9 +37,7 @@ import { randomUUID } from 'node:crypto';
 const PYTHON_AI_BASE_URL = 'http://localhost:8000';
 const PYTHON_WS_URL = 'ws://localhost:8000/ws';
 
-interface UploadResponse {
-  success: boolean;
-  file_id: string;
+interface UploadResponse { success: boolean;, file_id: string;
   message: string;
 }
 
@@ -48,16 +46,12 @@ interface SearchResponse {
   suggestions: Array<Record<string, unknown>>;
 }
 
-interface WorkflowStatus {
-  stage: string;
-  progress: number;
+interface WorkflowStatus { stage: string;, progress: number;
   status: string;
   message?: string;
 }
 
-interface AnalysisResponse {
-  file_id: string;
-  analysis: string;
+interface AnalysisResponse { file_id: string;, analysis: string;
   tags: string[];
 }
 
@@ -91,7 +85,7 @@ class PythonAIBackend implements PythonAIClient {
   async upload(formData: FormData): Promise<UploadResponse> {
     const response = await fetch(`${this.baseUrl}/api/upload`, {
       method: 'POST',
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
@@ -104,13 +98,13 @@ class PythonAIBackend implements PythonAIClient {
   async search(query: string, userId: string, options: Record<string, unknown> = {}): Promise<SearchResponse> {
     const response = await fetch(`${this.baseUrl}/api/search`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         query,
         user_id: userId,
         use_vector: options.useVector ?? true,
-        limit: options.limit ?? 10,
-      }),
+        limit: options.limit ?? 10
+      })
     });
 
     if (!response.ok) {
@@ -145,9 +139,7 @@ interface ListFilters {
   offset?: number;
 }
 
-interface CreateEvidenceData {
-  caseId: string;
-  title: string;
+interface CreateEvidenceData { caseId: string;, title: string;
   description?: string;
   evidenceType?: string;
   subType?: string;
@@ -201,7 +193,7 @@ class TypeScriptEvidenceService {
         uploadedBy: data.userId,
         uploadedAt: new Date(),
         dateModified: new Date(),
-        analyzed: false,
+        analyzed: false
       })
       .returning();
 
@@ -213,7 +205,7 @@ class TypeScriptEvidenceService {
       .update(evidence)
       .set({
         ...data,
-        dateModified: new Date(),
+        dateModified: new Date()
       })
       .where(eq(evidence.id, id))
       .returning();
@@ -276,7 +268,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           evidenceType,
           search,
           limit,
-          offset,
+          offset
         });
 
         return json({
@@ -286,9 +278,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             limit,
             offset,
             total: results.length,
-            hasMore: results.length === limit,
+            hasMore: results.length === limit
           },
-          source: 'typescript',
+          source: 'typescript'
         });
       }
 
@@ -309,7 +301,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             try {
               const pythonResults = await pythonAI.search(query, userId, {
                 useVector: true,
-                limit: parseInt(url.searchParams.get('limit') || '10'),
+                limit: parseInt(url.searchParams.get('limit') || '10')
               });
 
               return json({
@@ -317,7 +309,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
                 data: pythonResults.results || [],
                 suggestions: pythonResults.suggestions || [],
                 source: 'python-ai',
-                aiBackend: 'ollama',
+                aiBackend: 'ollama'
               });
             } catch (error) {
               console.warn('Python AI search failed, falling back to TypeScript:', error);
@@ -328,14 +320,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         // Fallback to TypeScript search
         const results = await tsService.searchEvidence(query, {
           limit: parseInt(url.searchParams.get('limit') || '10'),
-          caseId: url.searchParams.get('caseId'),
+          caseId: url.searchParams.get('caseId')
         });
 
         return json({
           success: true,
           data: results,
           source: 'typescript-fallback',
-          message: 'Using basic search. Enable Python AI backend for vector search.',
+          message: 'Using basic search. Enable Python AI backend for vector search.'
         });
       }
 
@@ -354,7 +346,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return json({
           error: 'Python AI backend unavailable',
           fileId,
-          source: 'typescript',
+          source: 'typescript'
         }, { status: 503 });
       }
 
@@ -364,21 +356,20 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return json({
           service: 'Evidence API v2',
           status: 'operational',
-          backends: {
-            typescript: { status: 'healthy', capabilities: ['CRUD', 'basic_search'] },
+          backends: { typescript: {, status: 'healthy', capabilities: ['CRUD', 'basic_search'] },
             pythonAI: {
               status: pythonHealthy ? 'healthy' : 'unavailable',
               url: PYTHON_AI_BASE_URL,
-              capabilities: pythonHealthy ? ['vector_search', 'ai_analysis', 'streaming'] : [],
-            },
+              capabilities: pythonHealthy ? ['vector_search', 'ai_analysis', 'streaming'] : []
+            }
           },
           endpoints: {
-            list: 'GET /api/v2/evidence?action=list&caseId=xxx',
+           , list: 'GET /api/v2/evidence?action=list&caseId=xxx',
             search: 'GET /api/v2/evidence?action=search&q=xxx',
             upload: 'POST /api/v2/evidence (multipart/form-data)',
             update: 'PUT /api/v2/evidence',
-            delete: 'DELETE /api/v2/evidence?id=xxx',
-          },
+            delete: 'DELETE /api/v2/evidence?id=xxx'
+          }
         });
       }
 
@@ -389,7 +380,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       {
         error: 'Internal server error',
-        details: err instanceof Error ? err.message : 'Unknown error',
+        details: err instanceof Error ? err.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -413,7 +404,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           {
             error: 'Python AI backend unavailable',
             message: 'File upload requires Python AI server on port 8000',
-            fallback: 'Use JSON POST to create evidence without AI processing',
+            fallback: 'Use JSON POST to create evidence without AI processing'
           },
           { status: 503 }
         );
@@ -425,7 +416,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const caseId = formData.get('caseId')?.toString() || formData.get('case_id')?.toString();
 
       if (!formData.get('file')) {
-        return json({ error: 'File required' }, { status: 400 });
+        return json({ error: `File required` }, { status: 400 });
       }
 
       // Forward to Python AI backend
@@ -436,13 +427,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const evidenceRecord = await tsService.createEvidence({
         caseId,
         title: file.name,
-        description: `AI processing started: ${result.file_id}`,
+        description: `AI processing; started: ${result.file_id}`,
         evidenceType: 'document',
         fileName: file.name,
         fileSize: file.size,
         mimeType: file.type,
         userId,
-        aiProcessingId: result.file_id,
+        aiProcessingId: result.file_id
       });
 
       return json({
@@ -451,7 +442,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         aiProcessing: result,
         message: 'File uploaded. AI analysis in progress.',
         websocket: PYTHON_WS_URL,
-        source: 'python-ai',
+        source: 'python-ai'
       });
     }
 
@@ -461,20 +452,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const newEvidence = await tsService.createEvidence({
       ...data,
-      userId,
+      userId
     });
 
     return json({
       success: true,
       evidence: newEvidence,
-      source: 'typescript',
+      source: 'typescript'
     });
   } catch (err) {
     console.error('Evidence API POST error:', err);
     return json(
       {
         error: 'Failed to create evidence',
-        details: err instanceof Error ? err.message : 'Unknown error',
+        details: err instanceof Error ? err.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -498,14 +489,14 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       success: true,
       evidence: updated,
-      source: 'typescript',
+      source: 'typescript'
     });
   } catch (err) {
     console.error('Evidence API PUT error:', err);
     return json(
       {
         error: 'Failed to update evidence',
-        details: err instanceof Error ? err.message : 'Unknown error',
+        details: err instanceof Error ? err.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -528,14 +519,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       ...result,
-      source: 'typescript',
+      source: 'typescript'
     });
   } catch (err) {
     console.error('Evidence API DELETE error:', err);
     return json(
       {
         error: 'Failed to delete evidence',
-        details: err instanceof Error ? err.message : 'Unknown error',
+        details: err instanceof Error ? err.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -550,7 +541,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+      'Access-Control-Allow-Headers': `Content-Type, Authorization` }
   });
 };

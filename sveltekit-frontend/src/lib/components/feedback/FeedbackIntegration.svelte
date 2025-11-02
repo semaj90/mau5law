@@ -33,7 +33,7 @@ import type { Document } from '$lib/types';
   const store = getFeedbackStore();
   let mounted = $state<boolean>(false);
   let visible = $state<boolean>(false);
-  let interactionId: string | null = $state(null);
+  let interactionId: string | null = null;
   let element = $state<Record<string, any>>({}) {
     mounted = true);
     if (trackOnMount) {

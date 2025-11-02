@@ -1,13 +1,10 @@
-import type { TextChunk } from '$lib/types';
 // Lightweight local text splitter (word-based with overlap) – no heavy deps.
 export interface SplitterOptions {
   chunkSize?: number; // Approx words per chunk (default 350)
   overlap?: number; // Word overlap between chunks (default 40)
   minChunkSize?: number; // Minimum words after trimming (default 25)
 }
-export interface TextChunk {
-  index: number;
-  text: string;
+export interface TextChunk { index: number;, text: string;
   startWord: number;
   endWord: number;
   tokenEstimate: number; // Rough heuristic (words * 1.3)
@@ -27,7 +24,7 @@ export function splitText(raw: string, opts: SplitterOptions = {}): TextChunk[] 
       text: chunkText,
       startWord: start,
       endWord: start + slice.length - 1,
-      tokenEstimate: Math.round(slice.length * 1.3),
+      tokenEstimate: Math.round(slice.length * 1.3)
     });
   }
   return chunks;

@@ -6,9 +6,7 @@ const BASE_URL =
 
 type Fingerprint = Record<string, unknown>;
 
-interface UserClient extends Record<string, unknown> {
-  email: string;
-  username: string;
+interface UserClient extends Record<string, unknown> { email: string;, username: string;
   requestedRole?: string;
   referralCode?: string;
   firstName?: string;
@@ -18,16 +16,12 @@ interface UserClient extends Record<string, unknown> {
   badgeNumber?: string;
 }
 
-export interface SecurityValidationRequestClient {
-  task: 'security_validation';
-  fingerprint: Fingerprint;
+export interface SecurityValidationRequestClient { task: 'security_validation';, fingerprint: Fingerprint;
   user: UserClient;
   context?: Record<string, unknown>;
 }
 
-export interface SecurityValidationResponseClient {
-  requestId: string;
-  riskScore: number;
+export interface SecurityValidationResponseClient { requestId: string;, riskScore: number;
   securityScore: number;
   verification: Record<string, unknown>;
   signals: Array<Record<string, unknown>>;
@@ -49,15 +43,15 @@ export async function validateSecurity(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      email: payload.user.email,
+     , email: payload.user.email,
       firstName,
       lastName,
       role: payload.user.requestedRole,
       department: payload.user.department,
       jurisdiction: payload.user.jurisdiction,
       badgeNumber: payload.user.badgeNumber,
-      deviceInfo: payload.fingerprint,
-    }),
+      deviceInfo: payload.fingerprint
+    })
   });
 
   if (!res.ok) {
@@ -114,7 +108,7 @@ export async function validateSecurity(
     status,
     modelVersion,
     durationMs,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 

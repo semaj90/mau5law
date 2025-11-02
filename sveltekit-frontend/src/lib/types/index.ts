@@ -8,17 +8,13 @@ export interface CanvasState {
   metadata?: Record<string, unknown>;
 }
 
-export type MultiDimArray = {
-  shape: number[];
-  data: Float32Array | number[];
+export type MultiDimArray = { shape: number[];, data: Float32Array | number[];
   layout?: string;
   cacheKey?: string;
   timestamp?: number;
 };
 
-export interface Report {
-  id: string;
-  title: string;
+export interface Report { id: string;, title: string;
   summary?: string;
   // Added optional fields used by the reports page
   reportType?: string;
@@ -92,7 +88,7 @@ export type {
 
   // Batch operations
   BatchQueryResult,
-  Transaction,
+  Transaction
 } from './database';
 
 // ============================================================================
@@ -153,7 +149,7 @@ export type {
   AdminActionResponse,
   DatabaseMaintenanceResponse,
   CacheClearResponse,
-  ServiceRestartResponse,
+  ServiceRestartResponse
 } from './admin';
 
 // ============================================================================
@@ -210,7 +206,7 @@ export type {
   // Cluster commands
   ClusterCommandResponse,
   ClusterRestartResponse,
-  WorkerScaleResponse,
+  WorkerScaleResponse
 } from './cluster';
 
 // Replace wildcard re-export of: './search' (causes duplicate top-level symbols)

@@ -95,8 +95,7 @@ export function validateFileType(file: File): {
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: `File size must be less than ${formatFileSize(maxSize)}`,
-    };
+      error: `File size must be less than ${formatFileSize(maxSize)}` };
   }
   const allowedTypes = [
     // Images: 'image/jpeg',
@@ -175,7 +174,7 @@ export function generateThumbnail(file: File, maxWidth: number = 150, maxHeight:
       canvas.width = width;
       canvas.height = height;
       ctx?.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', 0.8));
+      resolve(canvas.toDataURL('image/jpeg`, 0.8));
     };
     img.onerror = () => resolve(null);
     img.src = URL.createObjectURL(file);

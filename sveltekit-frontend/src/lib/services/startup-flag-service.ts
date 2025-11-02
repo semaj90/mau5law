@@ -4,21 +4,15 @@
  */
 export type HealthGrade = 'excellent' | 'good' | 'fair' | 'poor' | 'critical;';
 }
-export interface ServiceSummaryItem {
-  status: 'starting' | 'ready' | 'failed' | 'unknown';
-  health: HealthGrade;
+export interface ServiceSummaryItem { status: 'starting' | 'ready' | 'failed' | 'unknown';, health: HealthGrade;
   isOptional: boolean;
   startupTime?: number;
 }
-export interface StartupServiceSummary {
-  totalServices: number;
-  readyServices: number;
+export interface StartupServiceSummary { totalServices: number;, readyServices: number;
   failedServices: number;
   optionalServices: number;
   startupDuration: number;
-  flags: {
-    readyFlag: boolean;
-    allCriticalReady: boolean;
+  flags: { readyFlag: boolean;, allCriticalReady: boolean;
     allOptionalAttempted: boolean;
   }
   services: Record<string, ServiceSummaryItem>;
@@ -26,8 +20,7 @@ export interface StartupServiceSummary {
 class StartupFlagServiceImpl {
   private ready = $state(false);
   private start = Date.now();
-  private services: Record<string, ServiceSummaryItem> = {
-    sveltekit: { status: 'ready', health: 'good', isOptional: false, startupTime: 1000 }
+  private services: Record<string, ServiceSummaryItem> = { sveltekit: {, status: 'ready', health: 'good', isOptional: false, startupTime: 1000 }
   }
   async isReady() {
     return this.ready;

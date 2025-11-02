@@ -24,14 +24,14 @@ export const toolbarStore = writable({
     textAlign: "left"
   },
   drawing: {
-    strokeWidth: 2,
+   , strokeWidth: 2,
     strokeColor: "#000000",
     fillColor: "transparent",
     opacity: 1
   },
   zoom: 100,
   canUndo: false,
-  canRedo: false,
+  canRedo: false
 });
 // Canvas state
 export const canvasStore = writable({
@@ -53,7 +53,7 @@ export const aiStore = writable({
   prompt: "",
   response: "",
   isGenerating: false;
-  history: [] as any[]
+ , history: [] as any[]
 });
 // File upload state
 export const uploadStore = writable({

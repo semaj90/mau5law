@@ -7,9 +7,7 @@ import { enhancedRAGStore } from "$lib/stores";
 import { debounce } from "$lib/utils";
 
 // --- Types ---
-export interface SuggestionContext {
-  text: string;
-  cursorPosition: number;
+export interface SuggestionContext { text: string;, cursorPosition: number;
   contextBefore: string;
   contextAfter: string;
   documentType?: 'legal' | 'evidence' | 'notes' | 'general';
@@ -17,14 +15,12 @@ export interface SuggestionContext {
   userId?: string;
 }
 
-export interface InlineSuggestion {
-  id: string;
-  type: 'completion' | 'grammar' | 'legal_term' | 'case_reference' | 'citation';
+export interface InlineSuggestion { id: string;, type: 'completion' | 'grammar' | 'legal_term' | 'case_reference' | 'citation';
   text: string;
   replacement?: string;
   confidence: number;
   reasoning: string;
-  range?: { start: number; end: number };
+  range?: { start: number;, end: number };
   metadata?: {
     sourceType?: string;
     relevanceScore?: number;
@@ -32,9 +28,7 @@ export interface InlineSuggestion {
   };
 }
 
-export interface SuggestionOptions {
-  enableAutoComplete: boolean;
-  enableGrammarCheck: boolean;
+export interface SuggestionOptions { enableAutoComplete: boolean;, enableGrammarCheck: boolean;
   enableLegalTerms: boolean;
   enableCaseReferences: boolean;
   enableCitations: boolean;
@@ -311,7 +305,7 @@ export const applySuggestionToText = (
   text: string,
   suggestion: InlineSuggestion,
   cursorPosition: number
-): { newText: string; newCursorPosition: number } => {
+): { newText: string;, newCursorPosition: number } => {
   if (suggestion.type === 'completion') {
     const newText = text.slice(0, cursorPosition) + suggestion.text + text.slice(cursorPosition);
     return {

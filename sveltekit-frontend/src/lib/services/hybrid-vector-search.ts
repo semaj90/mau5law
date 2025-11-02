@@ -3,7 +3,7 @@
  * Combines PostgreSQL pgvector (storage) with Qdrant (GPU-accelerated search)
  *
  * Architecture:
- * - PostgreSQL: Primary storage with pgvector for persistence and ACID compliance
+ * -; PostgreSQL: Primary storage with pgvector for persistence and ACID compliance
  * - Qdrant: High-performance GPU-accelerated search with WebTransport/QUIC streaming
  * - Sync Strategy: Write to both, read from Qdrant for performance
  */
@@ -12,7 +12,7 @@ import {
   gemmaEmbeddingsService,
   type EmbeddingRequest,
   type VectorSearchRequest,
-  type VectorSearchResult,
+  type VectorSearchResult
 } from './gemma-embeddings-service';
 import { qdrantClient, type QdrantSearchRequest, type QdrantPoint } from './qdrant-client';
 
@@ -23,9 +23,7 @@ export interface HybridSearchOptions {
   prefer_cache?: boolean; // Prefer Redis cache (default: true)
 }
 
-export interface HybridSearchStats {
-  total_vectors_pgvector: number;
-  total_vectors_qdrant: number;
+export interface HybridSearchStats { total_vectors_pgvector: number;, total_vectors_qdrant: number;
   sync_status: 'synced' | 'out_of_sync' | 'unknown';
   last_sync: Date | null;
   qdrant_available: boolean;
@@ -44,7 +42,7 @@ export class HybridVectorSearchService {
       use_qdrant: options.use_qdrant !== false,
       use_pgvector: options.use_pgvector || false,
       sync_to_qdrant: options.sync_to_qdrant !== false,
-      prefer_cache: options.prefer_cache !== false,
+      prefer_cache: options.prefer_cache !== false
     };
   }
 
@@ -82,7 +80,7 @@ export class HybridVectorSearchService {
         return {
           success: false,
           error: result.error || 'Embedding generation failed',
-          stored_in: [],
+          stored_in: []
         };
       }
 
@@ -99,8 +97,8 @@ export class HybridVectorSearchService {
               document_type: request.document_type || 'unknown',
               metadata: request.metadata || {},
               model: result.model,
-              created_at: new Date().toISOString(),
-            },
+              created_at: new Date().toISOString()
+            }
           };
 
           await qdrantClient.upsert({ points: [qdrantPoint] });
@@ -116,13 +114,13 @@ export class HybridVectorSearchService {
         success: true,
         embedding: result.embedding,
         text_hash: result.text_hash,
-        stored_in: storedIn,
+        stored_in: storedIn
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Storage failed',
-        stored_in: [],
+        stored_in: []
       };
     }
   }
@@ -137,16 +135,14 @@ export class HybridVectorSearchService {
       metadata?: Record<string, any>;
       model?: string;
     } = {}
-  ): Promise<{
-    total: number;
-    successful: number;
+  ): Promise<{ total: number;, successful: number;
     failed: number;
     stored_in: string[];
   }> {
     const results = await gemmaEmbeddingsService.batchGenerateEmbeddings(texts, {
       document_type: options.document_type as any,
       metadata: options.metadata,
-      model: options.model,
+      model: options.model
     });
 
     let successful = 0;
@@ -164,12 +160,12 @@ export class HybridVectorSearchService {
             id: result.text_hash,
             vector: result.embedding,
             payload: {
-              content: texts[i],
+             , content: texts[i],
               document_type: options.document_type || 'unknown',
               metadata: options.metadata || {},
               model: result.model,
-              created_at: new Date().toISOString(),
-            },
+              created_at: new Date().toISOString()
+            }
           });
         }
       } else {
@@ -194,7 +190,7 @@ export class HybridVectorSearchService {
       total: results.length,
       successful,
       failed,
-      stored_in: storedIn,
+      stored_in: storedIn
     };
   }
 
@@ -210,16 +206,14 @@ export class HybridVectorSearchService {
           limit: request.limit || 10,
           score_threshold: request.similarity_threshold || 0.7,
           with_payload: true,
-          with_vector: false,
+          with_vector: false
         };
 
         // Add filters if provided
         if (request.document_types && request.document_types.length > 0) {
-          qdrantRequest.filter = {
-            must: request.document_types.map(type => ({
-              key: 'document_type',
-              match: { value: type },
-            })),
+          qdrantRequest.filter = { must: request.document_types.map(type => ({, key: 'document_type',
+              match: {, value: type }
+            }))
           };
         }
 
@@ -231,8 +225,7 @@ export class HybridVectorSearchService {
           similarity: result.score,
           content: result.payload?.content || '',
           metadata: result.payload?.metadata || {},
-          document_type: result.payload?.document_type || 'unknown',
-        }));
+          document_type: result.payload?.document_type || 'unknown` }));
       } catch (error) {
         console.warn('Qdrant search failed, falling back to pgvector:', error);
         // Fall through to pgvector
@@ -264,7 +257,7 @@ export class HybridVectorSearchService {
       // Generate query embedding
       const embeddingResult = await gemmaEmbeddingsService.generateEmbedding({
         text: query,
-        normalize: true,
+        normalize: true
       });
 
       if (!embeddingResult.success || !embeddingResult.embedding) {
@@ -277,7 +270,7 @@ export class HybridVectorSearchService {
         limit: options.limit,
         similarity_threshold: options.similarity_threshold,
         document_types: options.document_types,
-        filters: options.filters,
+        filters: options.filters
       });
     } catch (error) {
       console.error('Semantic search failed:', error);
@@ -322,7 +315,7 @@ export class HybridVectorSearchService {
         sync_status: syncStatus,
         last_sync: null, // Would need to track this separately
         qdrant_available: qdrantAvailable,
-        pgvector_available: true,
+        pgvector_available: true
       };
     } catch (error) {
       console.error('Failed to get hybrid search stats:', error);
@@ -332,7 +325,7 @@ export class HybridVectorSearchService {
         sync_status: 'unknown',
         last_sync: null,
         qdrant_available: false,
-        pgvector_available: false,
+        pgvector_available: false
       };
     }
   }
@@ -340,11 +333,7 @@ export class HybridVectorSearchService {
   /**
    * Health check
    */
-  async healthCheck(): Promise<{
-    healthy: boolean;
-    services: {
-      qdrant: boolean;
-      pgvector: boolean;
+  async healthCheck(): Promise<{ healthy: boolean;, services: { qdrant: boolean;, pgvector: boolean;
       redis: boolean;
     };
   }> {
@@ -357,7 +346,7 @@ export class HybridVectorSearchService {
         qdrant: qdrantHealthy,
         pgvector: true, // Assume healthy if we got here
         redis: true, // Assume healthy if we got here
-      },
+      }
     };
   }
 }
@@ -367,7 +356,7 @@ export const hybridVectorSearch = new HybridVectorSearchService({
   use_qdrant: true,
   use_pgvector: false, // Use as fallback only
   sync_to_qdrant: true,
-  prefer_cache: true,
+  prefer_cache: true
 });
 
 export default hybridVectorSearch;

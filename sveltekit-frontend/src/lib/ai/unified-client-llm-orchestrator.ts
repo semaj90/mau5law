@@ -3,7 +3,7 @@
  * Coordinates Gemma 270M, Gemma Legal, Legal-BERT, and ONNX.js models
  *
  * Model Architecture Overview:
- * - Gemma 270M: Lightweight Gemma runtime (WASM)
+ * - Gemma; 270M: Lightweight Gemma runtime (WASM)
  * - Gemma Legal: Specialized legal reasoning variant
  * - Legal-BERT: BERT architecture for legal context switching
  * - ONNX Models: Lightweight embeddings and specialized tasks
@@ -12,14 +12,10 @@
  */
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 import { browser } from '$app/environment';
-export interface ClientLLMRequest {
-  id: string;
-  prompt: string;
+export interface ClientLLMRequest { id: string;, prompt: string;
   task: 'chat' | 'legal_analysis' | 'context_switch' | 'embedding' | 'rl_training';
   priority: 'low' | 'normal' | 'high' | 'realtime';
-  context: {
-    userId: string;
-    sessionId: string;
+  context: { userId: string;, sessionId: string;
     legalDomain?: string;
     documentType?: string;
     previousContext?: string[];
@@ -46,29 +42,21 @@ type ONNXSession = {
 };
 
 // Orchestrator status shape returned from getStatus
-type OrchestratorStatus = {
-  modelsLoaded: number;
-  totalGPUMemoryMB: number;
+type OrchestratorStatus = { modelsLoaded: number;, totalGPUMemoryMB: number;
   totalDDRRAMCacheMB: number;
   activeModels: string[];
   memoryUtilization: number;
   cacheStats: Record<string, unknown>;
 };
 
-export interface ModelInstance {
-  id: string;
-  type: 'gemma270m' | 'gemma-legal' | 'legal-bert' | 'onnx-model';
+export interface ModelInstance { id: string;, type: 'gemma270m' | 'gemma-legal' | 'legal-bert' | 'onnx-model';
   architecture: 'gemma' | 'bert' | 'onnx';
   isLoaded: boolean;
   isActive: boolean;
-  memoryFootprint: {
-    gpuMemoryMB: number;
-    ddrRAMCacheMB: number;
+  memoryFootprint: { gpuMemoryMB: number;, ddrRAMCacheMB: number;
     wasmHeapMB: number;
   };
-  performanceMetrics: {
-    averageLatency: number;
-    throughput: number;
+  performanceMetrics: { averageLatency: number;, throughput: number;
     qualityScore: number;
     lastUsed: number;
   };
@@ -77,9 +65,7 @@ export interface ModelInstance {
   onnxSession?: ONNXSession | null; // tightened type
   modelVariant?: string; // e.g., 'gemma-270m', 'gemma-legal'
 }
-export interface InferenceResult {
-  success: boolean;
-  response: string;
+export interface InferenceResult { success: boolean;, response: string;
   modelUsed: string;
   executionMetrics: {
     totalLatency: number;
@@ -88,14 +74,10 @@ export interface InferenceResult {
     memoryUsed: number;
     qualityScore: number;
   };
-  rlMetrics?: {
-    reward: number;
-    action: any;
+  rlMetrics?: { reward: number;, action: any;
     stateEmbedding: number[];
   };
-  contextSwitching?: {
-    switchOccurred: boolean;
-    fromModel: string;
+  contextSwitching?: { switchOccurred: boolean;, fromModel: string;
     toModel: string;
     switchReason: string;
   };
@@ -110,10 +92,10 @@ type WorkerResult = {
   modelUsed?: string;
 };
 
-type CheckCacheResult = { hit: boolean; data?: { response: string; modelUsed: string; qualityScore: number } };
+type CheckCacheResult = { hit: boolean; data?: { response: string; modelUsed: string;, qualityScore: number } };
 
 type ParallelCacheOrchestratorShape = {
-  storeParallel?: (key: string, value: Record<string, unknown>, opts?: Record<string, unknown>) => Promise<void>;
+  storeParallel?: (key: string; value: Record<string, unknown>, opts?: Record<string, unknown>) => Promise<void>;
   executeParallel?: (payload: Record<string, unknown>) => Promise<any>;
   getPerformanceStats?: () => Promise<{ currentMetrics: Record<string, unknown> }>;
 };
@@ -166,8 +148,8 @@ class UnifiedClientLLMOrchestrator {
             totalLatency: (typeof perf.now === 'function' ? perf.now() : Date.now()) - startTime,
             cacheHitRate: 1.0,
             memoryUsed: 0,
-            qualityScore: cacheResult.data.qualityScore,
-          },
+            qualityScore: cacheResult.data.qualityScore
+          }
         };
       }
       // Step 2: Select optimal model for the task
@@ -195,7 +177,7 @@ class UnifiedClientLLMOrchestrator {
           modelSwitchTime: contextSwitch.required ? contextSwitch.switchTime : undefined,
           cacheHitRate: 0.0,
           memoryUsed: selectedModel.memoryFootprint.gpuMemoryMB + selectedModel.memoryFootprint.ddrRAMCacheMB,
-          qualityScore: inferenceResult.qualityScore,
+          qualityScore: inferenceResult.qualityScore
         },
         rlMetrics: inferenceResult.rlMetrics,
         contextSwitching:
@@ -204,9 +186,9 @@ class UnifiedClientLLMOrchestrator {
                 switchOccurred: true,
                 fromModel: contextSwitch.fromModel,
                 toModel: contextSwitch.toModel,
-                switchReason: contextSwitch.reason,
+                switchReason: contextSwitch.reason
               }
-            : undefined,
+            : undefined
       };
     } catch (error) {
       console.error('Client LLM orchestrator error:', error);
@@ -223,8 +205,8 @@ class UnifiedClientLLMOrchestrator {
             totalLatency: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
             cacheHitRate: 0,
             memoryUsed: 0,
-            qualityScore: 0,
-          },
+            qualityScore: 0
+          }
         };
       }
     }
@@ -262,18 +244,18 @@ class UnifiedClientLLMOrchestrator {
       await this.sendWorkerMessage(worker, {
         type: 'INIT_WASM',
         config: {
-          modelVariant: 'gemma-270m',
+         , modelVariant: 'gemma-270m',
           modelSize: '270m',
-          architecture: 'llama',
-        },
+          architecture: 'llama'
+        }
       });
       // Load Gemma model weights
       await this.sendWorkerMessage(worker, {
         type: 'LOAD_MODEL',
         data: {
           modelUrl: '/wasm/gemma-models/gemma-270m.bin',
-          config: { contextLength: 2048, quantization: 'int8' },
-        },
+          config: {, contextLength: 2048, quantization: 'int8' }
+        }
       });
       const model: ModelInstance = {
         id: 'gemma270m',
@@ -284,16 +266,16 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 1024, // 1GB for 270M model
           ddrRAMCacheMB: 512,
-          wasmHeapMB: 256,
+          wasmHeapMB: 256
         },
         performanceMetrics: {
           averageLatency: 150,
           throughput: 20, // tokens/sec
           qualityScore: 0.85,
-          lastUsed: 0,
+          lastUsed: 0
         },
         worker,
-        modelVariant: 'gemma-270m',
+        modelVariant: 'gemma-270m'
       };
       this.models.set('gemma270m', model);
       this.activeWorkers.set('gemma270m', worker);
@@ -310,7 +292,7 @@ class UnifiedClientLLMOrchestrator {
       const worker = new Worker('/workers/nes-rl.js');
       await this.sendWorkerMessage(worker, {
         type: 'INIT_GEMMA_LEGAL',
-        config: { modelVariant: 'gemma:legal', contextLength: 4096 },
+        config: {, modelVariant: 'gemma:legal', contextLength: 4096 }
       });
       const model: ModelInstance = {
         id: 'gemma-legal',
@@ -321,17 +303,16 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 2048,
           ddrRAMCacheMB: 1024,
-          wasmHeapMB: 384,
+          wasmHeapMB: 384
         },
         performanceMetrics: {
           averageLatency: 280,
           throughput: 18,
           qualityScore: 0.9,
-          lastUsed: 0,
+          lastUsed: 0
         },
         worker,
-        modelVariant: 'gemma:legal',
-      };
+        modelVariant: `gemma:legal` };
       this.models.set('gemma-legal', model);
       this.activeWorkers.set('gemma-legal', worker);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
@@ -357,15 +338,15 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 512, // Smaller model
           ddrRAMCacheMB: 256,
-          wasmHeapMB: 128,
+          wasmHeapMB: 128
         },
         performanceMetrics: {
           averageLatency: 50, // Very fast for context switching
           throughput: 100,
           qualityScore: 0.92, // High quality for legal domain
-          lastUsed: 0,
+          lastUsed: 0
         },
-        onnxSession: session,
+        onnxSession: session
       };
       this.models.set('legal-bert', model);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
@@ -391,15 +372,15 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 256,
           ddrRAMCacheMB: 128,
-          wasmHeapMB: 64,
+          wasmHeapMB: 64
         },
         performanceMetrics: {
           averageLatency: 25, // Very fast embeddings
           throughput: 200,
           qualityScore: 0.88,
-          lastUsed: 0,
+          lastUsed: 0
         },
-        onnxSession: embeddingSession,
+        onnxSession: embeddingSession
       };
       this.models.set('onnx-embeddings', model);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
@@ -465,7 +446,7 @@ class UnifiedClientLLMOrchestrator {
         id: `llm-inference:${request.id}`,
         type: 'context',
         priority: request.priority === 'realtime' ? 'high' : request.priority,
-        keys: [cacheKey],
+        keys: [cacheKey]
       });
 
       // Normalize result safely
@@ -478,7 +459,7 @@ class UnifiedClientLLMOrchestrator {
       if (!first) return { hit: false };
       const hit = !!first.hit;
       const data = first.data
-        ? (first.data as { response: string; modelUsed: string; qualityScore: number })
+        ? (first.data as { response: string; modelUsed: string;, qualityScore: number })
         : undefined;
       if (hit && data) return { hit: true, data };
       return { hit: false };
@@ -493,7 +474,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeModelInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string; qualityScore: number; rlMetrics?: Record<string, unknown>; modelUsed?: string }> {
+  ): Promise<{ response: string;, qualityScore: number; rlMetrics?: Record<string, unknown>; modelUsed?: string }> {
     model.isActive = true;
     model.performanceMetrics.lastUsed = Date.now();
     try {
@@ -507,7 +488,7 @@ class UnifiedClientLLMOrchestrator {
         case 'onnx-model':
           return await this.executeONNXInference(model, request);
         default:
-          throw new Error(`Unknown model type: ${model.type}`);
+          throw new Error(`Unknown model; type: ${model.type}`);
       }
     } finally {
       model.isActive = false;
@@ -519,22 +500,22 @@ class UnifiedClientLLMOrchestrator {
   private async executeGemmaInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string; qualityScore: number }> {
+  ): Promise<{ response: string;, qualityScore: number }> {
     if (!model.worker) {
       throw new Error('Gemma worker not available');
     }
     const response = (await this.sendWorkerMessage(model.worker, {
       type: 'GENERATE',
       data: {
-        prompt: request.prompt,
+       , prompt: request.prompt,
         maxTokens: 256,
         temperature: 0.7,
-        context: request.context,
-      },
+        context: request.context
+      }
     })) as WorkerResult;
     return {
       response: response.text ?? response.response ?? 'No response generated',
-      qualityScore: response.confidence ?? response.qualityScore ?? 0.8,
+      qualityScore: response.confidence ?? response.qualityScore ?? 0.8
     };
   }
   /**
@@ -543,17 +524,15 @@ class UnifiedClientLLMOrchestrator {
   private async executeLegalBERTInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string; qualityScore: number }> {
+  ): Promise<{ response: string;, qualityScore: number }> {
     if (!model.onnxSession) {
       throw new Error('Legal-BERT ONNX session not available');
     }
     // Legal-BERT is primarily for context understanding, not generation
     const contextAnalysis = await this.onnxInference.runInference(model.onnxSession, request.prompt, {
-      task: 'context_analysis',
-    });
-    return {
-      response: `Legal context analysis: ${contextAnalysis.contextType} (confidence: ${contextAnalysis.confidence})`,
-      qualityScore: contextAnalysis.confidence || 0.92,
+      task: `context_analysis` });
+    return { response: `Legal context, analysis: ${contextAnalysis.contextType} (confidence: ${contextAnalysis.confidence})`,
+      qualityScore: contextAnalysis.confidence || 0.92
     };
   }
   /**
@@ -562,7 +541,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeGemmaLegalInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string; qualityScore: number; rlMetrics?: Record<string, unknown> }> {
+  ): Promise<{ response: string;, qualityScore: number; rlMetrics?: Record<string, unknown> }> {
     if (!model.worker) {
       throw new Error('Gemma Legal worker not available');
     }
@@ -573,31 +552,31 @@ class UnifiedClientLLMOrchestrator {
         maxTokens: 512,
         temperature: 0.4,
         legalContext: {
-          domain: request.context.legalDomain ?? 'general',
-          documentType: request.context.documentType ?? 'generic',
-        },
-      },
+         , domain: request.context.legalDomain ?? 'general',
+          documentType: request.context.documentType ?? 'generic'
+        }
+      }
     })) as WorkerResult;
 
     return {
       response: response.text ?? response.response ?? 'No legal response generated',
       qualityScore: response.qualityScore ?? response.confidence ?? 0.9,
-      rlMetrics: response.rlMetrics ?? undefined,
+      rlMetrics: response.rlMetrics ?? undefined
     };
   }
   private async executeLLaMAInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string; qualityScore: number; rlMetrics?: Record<string, unknown> }> {
+  ): Promise<{ response: string;, qualityScore: number; rlMetrics?: Record<string, unknown> }> {
     if (!model.worker) {
       throw new Error('LLaMA RL worker not available');
     }
     const response = (await this.sendWorkerMessage(model.worker, {
       type: 'RL_INFERENCE',
       data: {
-        prompt: request.prompt,
-        context: request.context.previousContext ?? [],
-      },
+       , prompt: request.prompt,
+        context: request.context.previousContext ?? []
+      }
     })) as WorkerResult;
 
     return {
@@ -606,7 +585,7 @@ class UnifiedClientLLMOrchestrator {
         response.rlMetrics && typeof response.rlMetrics === 'object' && 'reward' in response.rlMetrics
           ? ((response.rlMetrics as any).reward as number)
           : (response.confidence ?? response.qualityScore ?? 0.85),
-      rlMetrics: response.rlMetrics ?? undefined,
+      rlMetrics: response.rlMetrics ?? undefined
     };
   }
   /**
@@ -615,7 +594,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeONNXInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string; qualityScore: number }> {
+  ): Promise<{ response: string;, qualityScore: number }> {
     if (!model.onnxSession) {
       throw new Error('ONNX session not available');
     }
@@ -623,7 +602,7 @@ class UnifiedClientLLMOrchestrator {
     // result should follow the typed shape defined below in ONNXInferenceEngine
     return {
       response: JSON.stringify(result),
-      qualityScore: (result as { confidence?: number }).confidence ?? 0.88,
+      qualityScore: (result as { confidence?: number }).confidence ?? 0.88
     };
   }
   /**
@@ -641,7 +620,7 @@ class UnifiedClientLLMOrchestrator {
         response: result.response ?? '',
         modelUsed: result.modelUsed ?? '',
         qualityScore: result.qualityScore ?? 0,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
 
       if (typeof storeFn === 'function') {
@@ -650,8 +629,7 @@ class UnifiedClientLLMOrchestrator {
           tier: 'l1',
           ttl: 10 * 60 * 1000, // 10 minutes
           priority: 'normal',
-          type: 'llm_inference',
-        });
+          type: `llm_inference` });
         return;
       }
 
@@ -665,8 +643,8 @@ class UnifiedClientLLMOrchestrator {
             payload: {
               key: cacheKey,
               value: payload,
-              meta: { tier: 'l1', ttl: 10 * 60 * 1000 },
-            },
+              meta: {, tier: 'l1', ttl: 10 * 60 * 1000 }
+            }
           });
           return;
         } catch (e) {
@@ -768,7 +746,7 @@ class UnifiedClientLLMOrchestrator {
           fromModel: model.id,
           toModel: 'legal-bert',
           switchTime: 50, // small estimate
-          reason: 'Prefer Legal-BERT for context analysis',
+          reason: 'Prefer Legal-BERT for context analysis'
         };
       }
 
@@ -786,8 +764,7 @@ class UnifiedClientLLMOrchestrator {
             fromModel: model.id,
             toModel: fallbackTarget,
             switchTime: 30,
-            reason: 'Switch to lower-latency model for realtime constraints',
-          };
+            reason: `Switch to lower-latency model for realtime constraints` };
         }
       }
     }
@@ -829,7 +806,7 @@ class UnifiedClientLLMOrchestrator {
           prompt: request.prompt,
           response: result.response,
           qualityScore: result.qualityScore ?? 0,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       } else {
         // No-op but keep a predictable log for debugging
@@ -843,7 +820,7 @@ class UnifiedClientLLMOrchestrator {
     // Fallback to simplest available model
     const gemmaModel = this.models.get('gemma270m');
     if (gemmaModel) {
-      // executeGemmaInference has a precise return type: { response: string; qualityScore: number }
+      // executeGemmaInference has a precise return type: { response: string;, qualityScore: number }
       const result = await this.executeGemmaInference(gemmaModel, request);
       return {
         success: true,
@@ -853,8 +830,8 @@ class UnifiedClientLLMOrchestrator {
           totalLatency: 0,
           cacheHitRate: 0,
           memoryUsed: gemmaModel.memoryFootprint.gpuMemoryMB,
-          qualityScore: result.qualityScore,
-        },
+          qualityScore: result.qualityScore
+        }
       };
     }
     throw new Error('No fallback model available');
@@ -885,7 +862,7 @@ class UnifiedClientLLMOrchestrator {
       totalDDRRAMCacheMB: this.totalDDRRAMCacheMB,
       activeModels,
       memoryUtilization: this.totalGPUMemoryMB / this.maxGPUMemoryMB,
-      cacheStats: cacheStatsResult.currentMetrics ?? {},
+      cacheStats: cacheStatsResult.currentMetrics ?? {}
     };
   }
 }
@@ -914,10 +891,9 @@ class ONNXInferenceEngine {
   ): Promise<{ output: string; confidence?: number; contextType?: any }> {
     // ONNX inference implementation
     // 'session' is the typed session handle and may contain runtime internals if needed
-    return {
-      output: `ONNX inference result for: ${input}`,
+    return { output: `ONNX inference result, for: ${input}`,
       confidence: 0.88,
-      contextType: options.task,
+      contextType: options.task
     };
   }
 }

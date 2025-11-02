@@ -11,7 +11,7 @@ type SearchRequestBody = {
 type SearchHit = { id: string | number; score?: number; payload?: Record<string, unknown> };
 type CollectionsListResponse = { collections?: Array<{ name: string }> };
 type PayloadIndexBody = { field_name: string; field_schema?: string; wait?: boolean; [k: string]: any };
-type CreateCollectionBody = { vectors: { size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
+type CreateCollectionBody = { vectors: {;, size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
 const DEFAULT_QDRANT = 'http://localhost:6333';
 function getQdrantUrl(): string {
   if (process.env.QDRANT_URL) return process.env.QDRANT_URL;
@@ -21,7 +21,7 @@ function getQdrantUrl(): string {
 }
 function getApiKeyHeader(): Record<string, string> {
   const key = process.env.QDRANT_API_KEY || '';
-  return key ? { Authorization: `ApiKey ${key}` } : {};
+  return key ? { Authorization: `ApiKey ${key}' } : {};
 }
 type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 async function ensureFetch(): Promise<FetchFn> {
@@ -107,7 +107,7 @@ async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndex
       const res = await f(ep, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getApiKeyHeader() },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       } as any);
       if (res.ok) return await res.json();
     } catch {
@@ -208,7 +208,7 @@ const qdrant = {
       }
     }
     return await httpDelete(collectionName, ids);
-  },
+  }
 };
 async function qdrantHealthCheck(): Promise<boolean> {
   try {
@@ -238,7 +238,7 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
     const exists = cols?.collections?.some((c: any) => c.name === collectionName);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrant.createCollection(collectionName, { vectors: { size: vectorSize, distance: 'Cosine' } });
+      await qdrant.createCollection(collectionName, { vectors: {, size: vectorSize, distance: 'Cosine' } });
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
     }
     const pairs: Array<[string, string]> = [
@@ -250,7 +250,7 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
       try {
         await qdrant.createPayloadIndex(collectionName, { field_name: field, field_schema: schema });
       } catch (e) {
-        console.warn(`Failed to create payload index for field: '${field}':`, e);
+        console.warn(`Failed to create payload index for field: '${field}': ', e);
       }
     }
     return { ok: true };

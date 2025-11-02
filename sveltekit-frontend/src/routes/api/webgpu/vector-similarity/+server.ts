@@ -15,19 +15,13 @@ interface WebGPUPolyfill {
   getPerformanceStats?: () => PerformanceStats;
 }
 
-export interface VectorSimilarityRequest {
-  vector1: number[];
-  vector2: number[];
+export interface VectorSimilarityRequest { vector1: number[];, vector2: number[];
   mode?: 'webgpu' | 'webgl' | 'cpu' | 'auto';
   returnDiagnostics?: boolean;
 }
-export interface VectorSimilarityResponse {
-  similarity: number;
-  mode: 'webgpu' | 'webgl' | 'cpu';
+export interface VectorSimilarityResponse { similarity: number;, mode: 'webgpu' | 'webgl' | 'cpu';
   executionTimeMs: number;
-  diagnostics?: {
-    webgpuAvailable: boolean;
-    webglAvailable: boolean;
+  diagnostics?: { webgpuAvailable: boolean;, webglAvailable: boolean;
     vectorLength: number;
     performanceStats?: any;
   };
@@ -45,20 +39,20 @@ export const GET: RequestHandler = async () => {
         vector1: 'number[] - First vector',
         vector2: 'number[] - Second vector (must be same length as vector1)',
         mode: 'string (optional) - "webgpu", "webgl", "cpu", or: "auto" (default)',
-        returnDiagnostics: 'boolean (optional) - Include performance diagnostics',
+        returnDiagnostics: 'boolean (optional) - Include performance diagnostics'
       },
       responseFormat: {
         similarity: 'number - Cosine similarity score (-1 to 1)',
         mode: 'string - Actual computation mode used',
         executionTimeMs: 'number - Execution time in milliseconds',
-        diagnostics: 'object (optional) - Performance and capability info',
+        diagnostics: 'object (optional) - Performance and capability info'
       },
       notes: [
         'Vectors must be the same length',
         'WebGPU provides fastest computation for large vectors (>256 dimensions)',
         'Automatically falls back to WebGL then CPU if WebGPU unavailable',
         'Returns cosine similarity: 1 = identical, 0 = perpendicular, -1 = opposite',
-      ],
+      ]
     };
     return json(capabilities);
   } catch (error: any) {
@@ -77,14 +71,12 @@ export const POST: RequestHandler = async ({ request }) => {
     // Basic validation
     if (!Array.isArray(body.vector1) || !Array.isArray(body.vector2)) {
       return json({ error: 'Both vector1 and vector2 must be arrays of numbers' } as VectorSimilarityResponse, {
-        status: 400,
+        status: 400
       });
     }
     if (body.vector1.length !== body.vector2.length) {
       return json(
-        {
-          error: `Vector length mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions`,
-        } as VectorSimilarityResponse,
+        { error: `Vector length, mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions' } as VectorSimilarityResponse,
         { status: 400 }
       );
     }
@@ -94,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Ensure elements are numbers
     for (let i = 0; i < body.vector1.length; i++) {
       if (typeof body.vector1[i] !== 'number' || typeof body.vector2[i] !== 'number') {
-        return json({ error: 'All vector elements must be numbers' } as VectorSimilarityResponse, { status: 400 });
+        return json({ error: `All vector elements must be numbers` } as VectorSimilarityResponse, { status: 400 });
       }
     }
 
@@ -116,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     try {
-      // Try WebGPU for: 'webgpu' or: 'auto'
+      // Try WebGPU for: 'webgpu'; or: 'auto'
       if (mode === 'webgpu' || mode === 'auto') {
         try {
           if (typeof polyfill.init === 'function') {
@@ -195,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response: VectorSimilarityResponse = {
       similarity,
       mode: actualMode,
-      executionTimeMs: executionTime,
+      executionTimeMs: executionTime
     };
 
     // Diagnostics (best-effort)
@@ -208,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
         webgpuAvailable: Boolean(initResult?.isWebGPUAvailable),
         webglAvailable: hasWebGLFallback,
         vectorLength: body.vector1.length,
-        performanceStats: stats,
+        performanceStats: stats
       };
     }
 
@@ -222,8 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: 0,
         mode: 'cpu' as const,
         executionTimeMs: executionTime,
-        error: `Vector similarity computation failed: ${errMsg}`,
-      } as VectorSimilarityResponse,
+        error: `Vector similarity computation; failed: ${errMsg}` } as VectorSimilarityResponse,
       { status: 500 }
     );
   }

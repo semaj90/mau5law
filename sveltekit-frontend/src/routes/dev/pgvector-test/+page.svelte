@@ -6,6 +6,9 @@ https://svelte.dev/e/expected_token -->
   Best Practices Implementation for Vector Similarity Search
 -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
+  import { Label } from '$lib/components/ui/label';
+  import { Input } from '$lib/components/ui/input';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>

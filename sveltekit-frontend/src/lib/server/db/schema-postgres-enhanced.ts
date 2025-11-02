@@ -16,14 +16,14 @@ export const users = pgTable('users', {
   lastName: text('last_name'),
   role: text('role').default('user'),
   avatarUrl: text('avatar_url'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: timestamp('expires_at').notNull(),
+  expiresAt: timestamp('expires_at').notNull()
 });
 // ===============================
 // Core tables with vector support
@@ -52,7 +52,7 @@ export const cases = pgTable('cases', {
   titleEmbedding: vector('title_embedding', { dimensions: 768 }),
   contentEmbedding: vector('content_embedding', { dimensions: 768 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const evidence = pgTable('evidence', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -83,7 +83,7 @@ export const evidence = pgTable('evidence', {
   contentEmbedding: vector('content_embedding', { dimensions: 768 }),
   boardPosition: jsonb('board_position').default({ x: 0, y: 0 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const criminals = pgTable('criminals', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -116,7 +116,7 @@ export const criminals = pgTable('criminals', {
   metadata: jsonb('metadata').default({}),
   profileEmbedding: vector('profile_embedding', { dimensions: 768 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const evidenceConnections = pgTable('evidence_connections', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -130,7 +130,7 @@ export const evidenceConnections = pgTable('evidence_connections', {
   createdBy: text('created_by')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 export const vectorMetadata = pgTable('vector_metadata', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -141,14 +141,14 @@ export const vectorMetadata = pgTable('vector_metadata', {
   contentHash: text('content_hash').notNull(),
   embeddingModel: text('embedding_model').default('nomic-embed-text'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const embeddingCache = pgTable('embedding_cache', {
   id: uuid('id').primaryKey().defaultRandom(),
   textHash: text('text_hash').notNull().unique(),
   embedding: vector('embedding', { dimensions: 768 }).notNull(),
   model: text('model').notNull().default('nomic-embed-text'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 export const conversations = pgTable('conversations', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -159,7 +159,7 @@ export const conversations = pgTable('conversations', {
   type: text('type').notNull().default('general'),
   metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const messages = pgTable('messages', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -168,7 +168,7 @@ export const messages = pgTable('messages', {
   content: text('content').notNull(),
   metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 export const userActivity = pgTable('user_activity', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -181,7 +181,7 @@ export const userActivity = pgTable('user_activity', {
   details: jsonb('details').default({}),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 export const systemConfig = pgTable('system_config', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -194,7 +194,7 @@ export const systemConfig = pgTable('system_config', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 // ===============================
 // Relations
@@ -205,42 +205,42 @@ export const usersRelations = relations(users, ({ many }) => ({
   evidence: many(evidence),
   criminals: many(criminals),
   conversations: many(conversations),
-  activity: many(userActivity),
+  activity: many(userActivity)
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   user: one(users, { fields: [cases.userId], references: [users.id] }),
   evidence: many(evidence),
-  connections: many(evidenceConnections),
+  connections: many(evidenceConnections)
 }));
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   user: one(users, { fields: [evidence.userId], references: [users.id] }),
   case: one(cases, { fields: [evidence.caseId], references: [cases.id] }),
   connectionsfrom many(evidenceConnections, { relationName: 'from' }),
-  connectionsTo: many(evidenceConnections, { relationName: 'to' }),
+  connectionsTo: many(evidenceConnections, { relationName: 'to' })
 }));
 export const evidenceConnectionsRelations = relations(evidenceConnections, ({ one }) => ({
   case: one(cases, { fields: [evidenceConnections.caseId], references: [cases.id] }),
   fromEvidence: one(evidence, {
     fields: [evidenceConnections.fromEvidenceId],
     references: [evidence.id],
-    relationName: 'from',
+    relationName: 'from'
   }),
   toEvidence: one(evidence, {
     fields: [evidenceConnections.toEvidenceId],
     references: [evidence.id],
-    relationName: 'to',
+    relationName: 'to'
   }),
-  createdByUser: one(users, { fields: [evidenceConnections.createdBy], references: [users.id] }),
+  createdByUser: one(users, { fields: [evidenceConnections.createdBy], references: [users.id] })
 }));
 export const conversationsRelations = relations(conversations, ({ one, many }) => ({
   user: one(users, { fields: [conversations.userId], references: [users.id] }),
-  messages: many(messages),
+  messages: many(messages)
 }));
 export const messagesRelations = relations(messages, ({ one }) => ({
-  conversation: one(conversations, { fields: [messages.conversationId], references: [conversations.id] }),
+  conversation: one(conversations, { fields: [messages.conversationId], references: [conversations.id] })
 }));
 export const userActivityRelations = relations(userActivity, ({ one }) => ({
-  user: one(users, { fields: [userActivity.userId], references: [users.id] }),
+  user: one(users, { fields: [userActivity.userId], references: [users.id] })
 }));
 // ===============================
 // Types

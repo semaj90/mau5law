@@ -16,10 +16,10 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -33,17 +33,17 @@ export const GET: RequestHandler = async (event) => {
       const sessionCookie = auth.createBlankSessionCookie();
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         path: '/',
-        ...sessionCookie.attributes,
+        ...sessionCookie.attributes
       });
 
       return json(
         {
           success: false,
           error: {
-            message: 'Session expired or invalid',
+           , message: 'Session expired or invalid',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -58,12 +58,12 @@ export const GET: RequestHandler = async (event) => {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
-        avatarUrl: user.avatarUrl,
+        avatarUrl: user.avatarUrl
       },
       session: {
-        id: session.id,
-        expiresAt: session.expiresAt.toISOString(),
-      },
+       , id: session.id,
+        expiresAt: session.expiresAt.toISOString()
+      }
     });
   } catch (error) {
     console.error('Error fetching user session:', error);
@@ -71,10 +71,10 @@ export const GET: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to fetch user session',
+         , message: 'Failed to fetch user session',
           code: 'SESSION_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );

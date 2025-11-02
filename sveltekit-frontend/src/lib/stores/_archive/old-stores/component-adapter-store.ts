@@ -27,9 +27,7 @@ export interface ComponentAdapter<TData = unknown> {
   // Default to unknown
   state: Readable<ComponentState<TData>>; // Pass TData to ComponentState
   props: Readable<UIProps>;
-  actions: {
-    update: (data: DeepPartial<TData>) => void; // Use DeepPartial for partial updates
-    reset: () => void;
+  actions: { update: (data: DeepPartial<TData>) => void; // Use DeepPartial for partial updates, reset: () => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
   };
@@ -51,15 +49,14 @@ export function createComponentAdapter<TData = unknown>( // Default to unknown
     loading: options.loading ?? false,
     error: options.error ?? null,
     data: initialData,
-    meta: options.meta ?? {},
+    meta: options.meta ?? {}
   });
   const props = writable<UIProps>({
     variant: 'default',
     size: 'medium',
-    disabled: false,
+    disabled: false
   });
-  return {
-    state: { subscribe: state.subscribe },
+  return { state: {, subscribe: state.subscribe },
     props: { subscribe: props.subscribe },
     actions: {
       update: (newData: DeepPartial<TData>) => {
@@ -74,7 +71,7 @@ export function createComponentAdapter<TData = unknown>( // Default to unknown
           loading: false,
           error: null,
           data: initialData,
-          meta: {},
+          meta: {}
         });
       },
       setLoading: (loading: boolean) => {
@@ -82,8 +79,8 @@ export function createComponentAdapter<TData = unknown>( // Default to unknown
       },
       setError: (error: string | null) => {
         state.update(current => ({ ...current, error }));
-      },
-    },
+      }
+    }
   };
 }
 /**
@@ -97,9 +94,7 @@ export interface ChatMessage {
   timestamp?: number;
   [key: string]: any; // Allow additional properties
 }
-export interface ChatData {
-  messages: ChatMessage[]; // Use ChatMessage[]
-  currentInput: string;
+export interface ChatData { messages: ChatMessage[]; // Use ChatMessage[], currentInput: string;
   isTyping: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
 }
@@ -108,7 +103,7 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     messages: initialMessages,
     currentInput: '',
     isTyping: false,
-    connectionStatus: 'disconnected',
+    connectionStatus: 'disconnected'
   });
   // Enhanced actions for chat-specific operations
   const chatActions = {
@@ -116,7 +111,7 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     addMessage: (message: Omit<ChatMessage, 'timestamp'>) => {
       // Use Omit to allow timestamp to be added
       adapter.actions.update({
-        messages: [...(get(adapter.state).data.messages || []), { ...message, timestamp: Date.now() }],
+        messages: [...(get(adapter.state).data.messages || []), { ...message, timestamp: Date.now() }]
       });
     },
     setTyping: (isTyping: boolean) => {
@@ -127,11 +122,11 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     },
     setConnectionStatus: (status: ChatData['connectionStatus']) => {
       adapter.actions.update({ connectionStatus: status });
-    },
+    }
   };
   return {
     ...adapter,
-    actions: chatActions,
+    actions: chatActions
   };
 }
 /**
@@ -145,13 +140,9 @@ export interface SearchResult {
   description: string;
   [key: string]: any; // Allow additional properties
 }
-export interface SearchData {
-  query: string;
-  results: SearchResult[]; // Use SearchResult[]
+export interface SearchData { query: string;, results: SearchResult[]; // Use SearchResult[]
   filters: Record<string, unknown>; // Use Record<string, unknown>
-  pagination: {
-    page: number;
-    limit: number;
+  pagination: { page: number;, limit: number;
     total: number;
   };
   sortBy: string;
@@ -162,9 +153,9 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
     query: '',
     results: [],
     filters: {},
-    pagination: { page: 1, limit: 20, total: 0 },
+    pagination: {, page: 1, limit: 20, total: 0 },
     sortBy: 'relevance',
-    sortOrder: 'desc',
+    sortOrder: 'desc'
   });
   const searchActions = {
     ...adapter.actions,
@@ -175,7 +166,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
       // Type results
       adapter.actions.update({
         results,
-        pagination: { ...get(adapter.state).data.pagination, total },
+        pagination: { ...get(adapter.state).data.pagination, total }
       });
     },
     updateFilters: (filters: Partial<SearchData['filters']>) => {
@@ -185,21 +176,19 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
     setPage: (page: number) => {
       const currentPagination = get(adapter.state).data.pagination;
       adapter.actions.update({
-        pagination: { ...currentPagination, page },
+        pagination: { ...currentPagination, page }
       });
-    },
+    }
   };
   return {
     ...adapter,
-    actions: searchActions,
+    actions: searchActions
   };
 }
 /**
  * Upload Component Adapter
  * Simplifies complex file upload component state
- */ export interface UploadData {
-  files: File[];
-  uploadProgress: Record<string, number>;
+ */ export interface UploadData { files: File[];, uploadProgress: Record<string, number>;
   uploadStatus: Record<string, 'pending' | 'uploading' | 'completed' | 'error'>;
   maxFileSize: number;
   allowedTypes: string[];
@@ -218,7 +207,7 @@ export function createUploadAdapter(
     uploadStatus: {},
     maxFileSize: options.maxFileSize || 10 * 1024 * 1024, // 10MB
     allowedTypes: options.allowedTypes || ['*'],
-    multiple: options.multiple ?? true,
+    multiple: options.multiple ?? true
   });
   const uploadActions = {
     ...adapter.actions,
@@ -235,19 +224,19 @@ export function createUploadAdapter(
       adapter.actions.update({
         files: [...currentFiles, ...newFiles],
         uploadProgress: updatedProgress,
-        uploadStatus: updatedStatus,
+        uploadStatus: updatedStatus
       });
     },
     updateProgress: (fileName: string, progress: number) => {
       const currentProgress = get(adapter.state).data.uploadProgress || {};
       adapter.actions.update({
-        uploadProgress: { ...currentProgress, [fileName]: progress },
+        uploadProgress: { ...currentProgress, [fileName]: progress }
       });
     },
     updateStatus: (fileName: string, status: UploadData['uploadStatus'][string]) => {
       const currentStatus = get(adapter.state).data.uploadStatus || {};
       adapter.actions.update({
-        uploadStatus: { ...currentStatus, [fileName]: status },
+        uploadStatus: { ...currentStatus, [fileName]: status }
       });
     },
     removeFile: (fileName: string) => {
@@ -261,13 +250,13 @@ export function createUploadAdapter(
       adapter.actions.update({
         files: updatedFiles,
         uploadProgress: updatedProgress,
-        uploadStatus: updatedStatus,
+        uploadStatus: updatedStatus
       });
-    },
+    }
   };
   return {
     ...adapter,
-    actions: uploadActions,
+    actions: uploadActions
   };
 }
 /**
@@ -297,7 +286,7 @@ export function createFormAdapter<TFormValues extends Record<string, unknown>>( 
       {} as Record<keyof TFormValues, boolean>
     ), // Initialize touched based on initialValues keys
     isSubmitting: false,
-    isValid: true,
+    isValid: true
   });
   const formActions = {
     ...adapter.actions,
@@ -322,7 +311,7 @@ export function createFormAdapter<TFormValues extends Record<string, unknown>>( 
         values: newValues,
         touched: newTouched,
         errors,
-        isValid: Object.keys(errors).length === 0,
+        isValid: Object.keys(errors).length === 0
       } as DeepPartial<FormData<TFormValues>>);
     },
     setFieldError: (field: keyof TFormValues, error: string) => {
@@ -332,22 +321,22 @@ export function createFormAdapter<TFormValues extends Record<string, unknown>>( 
       const newErrors = { ...current.errors, [field]: error };
       adapter.actions.update({
         errors: newErrors,
-        isValid: Object.keys(newErrors).length === 0,
+        isValid: Object.keys(newErrors).length === 0
       } as DeepPartial<FormData<TFormValues>>);
     },
     clearErrors: () => {
       adapter.actions.update({
         errors: {} as Partial<Record<keyof TFormValues, string>>,
-        isValid: true,
+        isValid: true
       } as DeepPartial<FormData<TFormValues>>);
     },
     setSubmitting: (isSubmitting: boolean) => {
       adapter.actions.update({ isSubmitting } as DeepPartial<FormData<TFormValues>>);
-    },
+    }
   };
   return {
     ...adapter,
-    actions: formActions,
+    actions: formActions
   };
 }
 /**
@@ -388,12 +377,11 @@ export const componentRegistry = new ComponentAdapterRegistry();
       error: !!state.error,
       'data-error': state.error,
       'aria-busy': state.loading,
-      'aria-invalid': !!state.error,
+      'aria-invalid': !!state.error
     };
   },
   // Event handler factory for simplified components
-  createHandler: <T extends (...args: any[]) => void>( // Use unknown[]
-    fn: T,
+  createHandler: <T extends (...args: any[]) => void>( // Use unknown[]; fn: T,
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {
     return (event: Event, ...args: Parameters<T>) => {
@@ -401,5 +389,5 @@ export const componentRegistry = new ComponentAdapterRegistry();
       if (options.stopPropagation) event.stopPropagation();
       fn(...args);
     };
-  },
+  }
 };

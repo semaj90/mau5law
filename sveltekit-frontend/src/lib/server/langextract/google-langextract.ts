@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+// This module uses Google's Gemma model, served locally via Ollama.
 /**
  * Keyword extraction module for legal documents
  * Extracts key terms and concepts using Ollama's Gemma 3:270m
@@ -19,6 +19,9 @@ import { OLLAMA_BASE_URL } from '$env/static/private';
  * @returns Array of extracted keywords (max 20)
  */
 export async function extractKeywords(text: string): Promise<string[]> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
   try {
     // Limit text to first 8000 chars to avoid token overflow
     const limitedText = text.slice(0, 8000);
@@ -40,10 +43,11 @@ Keywords (comma-separated):`;
         prompt,
         stream: false,
         options: {
-          temperature: 0.3, // Low temperature for consistent extraction
-          num_predict: 200,  // Limit tokens to keywords only
-        },
+         , temperature: 0.3, // Low temperature for consistent extraction
+          num_predict: 200, // Limit tokens to keywords only
+        }
       }),
+      signal: controller.signal
     });
     if (!response.ok) {
       console.warn('⚠️ Ollama API error:', response.statusText);
@@ -63,8 +67,14 @@ Keywords (comma-separated):`;
     }
     return keywords;
   } catch (error) {
-    console.warn('⚠️ Gemma keyword extraction failed, using fallback extraction:', error);
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.warn('⚠️ Gemma keyword extraction timed out after 5s, using fallback.');
+    } else {
+      console.warn('⚠️ Gemma keyword extraction failed, using fallback extraction:', error);
+    }
     return extractKeywordsFallback(text);
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 /**
@@ -86,16 +96,41 @@ function extractKeywordsFallback(text: string): string[] {
     // Extract common legal terms found in document
     const legalTerms = [
       // Parties: 'plaintiff', 'defendant', 'appellant', 'respondent', 'claimant', 'petitioner',
-      'witness', 'expert', 'counsel', 'attorney', 'judge', 'jury',
+      'witness',
+      'expert',
+      'counsel',
+      'attorney',
+      'judge',
+      'jury',
       // Legal concepts: 'contract', 'agreement', 'liability', 'damages', 'negligence', 'breach',
-      'fraud', 'misrepresentation', 'warranty', 'indemnity', 'arbitration',
+      'fraud',
+      'misrepresentation',
+      'warranty',
+      'indemnity',
+      'arbitration',
       // Court/process
-      'court', 'jurisdiction', 'venue', 'appeal', 'trial', 'hearing', 'motion',
-      'discovery', 'deposition', 'interrogatory', 'settlement', 'judgment', 'verdict',
+      'court',
+      'jurisdiction',
+      'venue',
+      'appeal',
+      'trial',
+      'hearing',
+      'motion',
+      'discovery',
+      'deposition',
+      'interrogatory',
+      'settlement',
+      'judgment',
+      'verdict',
       // Evidence: 'evidence', 'testimony', 'deposition', 'affidavit', 'exhibit', 'document',
       // Documents: 'complaint', 'petition', 'brief', 'memorandum', 'motion', 'order', 'judgment',
       // Time/money
-      'damages', 'compensation', 'settlement', 'fee', 'cost', 'penalty',
+      'damages',
+      'compensation',
+      'settlement',
+      'fee',
+      'cost',
+      'penalty',
     ];
     legalTerms.forEach(term => {
       if (new RegExp(`\\b${term}\\b`, 'gi').test(text)) {
@@ -103,7 +138,8 @@ function extractKeywordsFallback(text: string): string[] {
       }
     });
     // Extract dates and money amounts
-    const dateRegex = /\b(January|February|March|April|May|June|July|August|September|October|November|December|\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4})\b/gi;
+    const dateRegex =
+      /\b(January|February|March|April|May|June|July|August|September|October|November|December|\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4})\b/gi;
     const dateMatches = text.match(dateRegex) || [];
     dateMatches.slice(0, 5).forEach(d => keywords.add(d));
     const moneyRegex = /\$[\d,]+(?:\.\d{2})?|\b\d+\s(?:million|thousand|billion|dollars|cents)\b/gi;

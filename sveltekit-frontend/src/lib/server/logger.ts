@@ -11,11 +11,9 @@ try {
   _redis = null;
 }
 
-export async function logStructuredError(payload: {
-  source: string;
-  level: 'error' | 'warn' | 'info';
+export async function logStructuredError(payload: { source: string;, level: 'error' | 'warn' | 'info';
   event: string;
-  message: string;
+ , message: string;
   error?: any;
   context?: Record<string, unknown>;
 }): Promise<any> {
@@ -25,7 +23,7 @@ export async function logStructuredError(payload: {
     error:
       payload.error instanceof Error
         ? { message: payload.error.message, stack: (payload.error as Error).stack }
-        : payload.error,
+        : payload.error
   };
 
   try {
@@ -44,7 +42,7 @@ export async function logStructuredError(payload: {
           captureException(payload.error ?? payload.message, {
             source: payload.source,
             event: payload.event,
-            context: payload.context,
+            context: payload.context
           });
         }
       } catch {
@@ -70,8 +68,8 @@ export async function captureAndFormat(error: any): Promise<any> {
       error: {
         message: 'An unexpected error occurred',
         code: 'UNKNOWN_ERROR',
-        status: 500,
-      },
+        status: 500
+      }
     };
   }
 }

@@ -22,7 +22,7 @@ export async function POST({ request }): Promise<any> {
       id: body.id || `canvas_${Date.now()}`,
       metadata: body.metadata || {},
       data: body.data || null,
-      updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
     return json({ success: true, canvas: savedCanvas }, { status: 201 });

@@ -2,9 +2,7 @@ import type { SearchResult } from '$lib/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 // Mock VectorSearchService for testing - actual service has @ts-nocheck
-interface SearchResult {
-  documentId: string;
-  similarity: number;
+interface SearchResult { documentId: string;, similarity: number;
   source: 'qdrant' | 'postgres';
 }
 
@@ -15,9 +13,7 @@ interface VectorSearchConfig {
   timeout?: number;
 }
 
-interface CollectionStatus {
-  vectorDimension: number;
-  documentCount: number;
+interface CollectionStatus { vectorDimension: number;, documentCount: number;
 }
 
 // Mock service implementation
@@ -32,8 +28,7 @@ class MockVectorSearchService {
 
   async initialize() {
     this.initialized = true;
-    return {
-      qdrant: { status: 'connected' },
+    return { qdrant: {, status: 'connected' },
       postgres: { status: 'connected' },
       redis: { status: 'connected' }
     };
@@ -113,8 +108,7 @@ class MockVectorSearchService {
   }
 
   async ensureCollections() {
-    return {
-      qdrant: { name: 'legal_documents', vectorSize: 384 },
+    return { qdrant: {, name: 'legal_documents', vectorSize: 384 },
       postgres: { name: 'embeddings', vectorSize: 384 }
     };
   }
@@ -301,8 +295,7 @@ describe('VectorSearchService (Integration)', () => {
   describe('Error Handling', () => {
     it('should reject search on uninitialized service', async () => {
       const uninitializedService = new MockVectorSearchService({
-        qdrantUrl: 'http://localhost:6333'
-      });
+        qdrantUrl: `http://localhost:6333` });
 
       const embedding = Array(384).fill(0.1);
       await expect(uninitializedService.search(embedding, 10)).rejects.toThrow(

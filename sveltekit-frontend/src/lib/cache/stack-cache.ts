@@ -23,8 +23,7 @@ export const cacheConfig = {
     'upload-service': { enabled: false } // Real-time needed
   },
   // Frontend caching
-  frontend: {
-    components: { enabled: true, ttl: 3600 },
+  frontend: { components: {, enabled: true, ttl: 3600 },
     assets: { enabled: true, ttl: 86400 },
     api_responses: { enabled: true, ttl: 300 }
   }

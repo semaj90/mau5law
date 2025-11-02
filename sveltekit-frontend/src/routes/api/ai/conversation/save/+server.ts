@@ -8,7 +8,7 @@
  * Redis Type: aiChat
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests

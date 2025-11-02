@@ -11,7 +11,7 @@ import {
   pgTable,
   serial,
   text,
-  timestamp,
+  timestamp
 } from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
 /**
@@ -27,25 +27,19 @@ export const migrations = pgTable('schema_migrations', {
   success: boolean('success').default(true).notNull(),
   errorMessage: text('error_message'),
   rollbackSql: text('rollback_sql'),
-  metadata: jsonb('metadata'),
+  metadata: jsonb('metadata')
 });
-export interface Migration {
-  version: string;
-  name: string;
+export interface Migration { version: string;, name: string;
   up: string;
   down?: string;
   metadata?: Record<string, unknown>;
 }
-export interface MigrationResult {
-  success: boolean;
-  version: string;
+export interface MigrationResult { success: boolean;, version: string;
   executionTime: number;
   applied: boolean;
   error?: string;
 }
-interface MigrationStatus {
-  appliedMigrations: number;
-  pendingMigrations: number;
+interface MigrationStatus { appliedMigrations: number;, pendingMigrations: number;
   lastMigration?: string;
   systemHealthy: boolean;
 }
@@ -75,7 +69,7 @@ function parseSqlMigration(filename: string, source: string): Migration {
     version,
     name,
     up: upSql,
-    down: downSql || undefined,
+    down: downSql || undefined
   };
 }
 function toFileUrl(inputPath: string): URL {
@@ -138,9 +132,7 @@ export class DatabaseMigrator {
     return migrations;
   }
   async getAppliedVersions(): Promise<Record<string, string>> {
-    const rows = await this.sqlClient<{
-      version: string;
-      checksum: string;
+    const rows = await this.sqlClient<{ version: string;, checksum: string;
     }[]>`SELECT version, checksum FROM schema_migrations WHERE success = TRUE ORDER BY version ASC;`;
     return rows.reduce<Record<string, string>>((map, row) => {
       map[row.version] = row.checksum;
@@ -185,7 +177,7 @@ export class DatabaseMigrator {
           success: true,
           version: migration.version,
           executionTime: 0,
-          applied: false,
+          applied: false
         });
         continue;
       }
@@ -201,7 +193,7 @@ export class DatabaseMigrator {
           success: true,
           version: migration.version,
           executionTime: durationMs,
-          applied: true,
+          applied: true
         });
       } catch (error) {
         const durationMs = Math.round(performance.now() - start);
@@ -212,7 +204,7 @@ export class DatabaseMigrator {
           version: migration.version,
           executionTime: durationMs,
           applied: false,
-          error: message,
+          error: message
         });
         throw error;
       }
@@ -220,9 +212,7 @@ export class DatabaseMigrator {
     return results;
   }
   async rollback(): Promise<MigrationResult | null> {
-    const [lastMigration] = await this.sqlClient<{
-      version: string;
-      name: string;
+    const [lastMigration] = await this.sqlClient<{ version: string;, name: string;
       rollback_sql: string | null;
     }[]>`
       SELECT version, name, rollback_sql
@@ -250,10 +240,10 @@ export class DatabaseMigrator {
       success: true,
       version: lastMigration.version,
       executionTime: durationMs,
-      applied: false,
+      applied: false
     };
   }
-  async validateIntegrity(): Promise<{ valid: boolean; issues: string[] }> {
+  async validateIntegrity(): Promise<{ valid: boolean;, issues: string[] }> {
     const issues: string[] = [];
     const migrations = await this.loadMigrations();
     const applied = await this.getAppliedVersions();
@@ -271,7 +261,7 @@ export class DatabaseMigrator {
     }
     return {
       valid: issues.length === 0,
-      issues,
+      issues
     };
   }
   async getStatus(): Promise<MigrationStatus> {
@@ -282,7 +272,7 @@ export class DatabaseMigrator {
       ORDER BY executed_at DESC;
     `;
     const appliedVersions = new Set(
-      appliedRows.map((row: { version: string }) => row.version),
+      appliedRows.map((row: {, version: string }) => row.version),
     );
     const migrations = await this.loadMigrations();
     const pendingVersions = migrations.filter(m => !appliedVersions.has(m.version));
@@ -290,7 +280,7 @@ export class DatabaseMigrator {
       appliedMigrations: appliedRows.length,
       pendingMigrations: pendingVersions.length,
       lastMigration: appliedRows[0]?.version,
-      systemHealthy: pendingVersions.length === 0,
+      systemHealthy: pendingVersions.length === 0
     };
   }
   async createMigration(name: string, template = '-- Up\n\n-- Down\n'): Promise<string> {
@@ -327,7 +317,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
         console.log('Migration Status');
         console.log(`  Applied: ${status.appliedMigrations}`);
         console.log(`  Pending: ${status.pendingMigrations}`);
-        console.log(`  Last: ${status.lastMigration ?? 'None'}`);
+        console.log(`  Last: ${status.lastMigration ?? 'None' }`);
         console.log(`  Healthy: ${status.systemHealthy}`);
         break;
       }
@@ -344,7 +334,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
       }
       case 'validate': {
         const validation = await migrator.validateIntegrity();
-        console.log(`Validation: ${validation.valid ? 'ok' : 'issues detected'}`);
+        console.log(`Validation: ${validation.valid ? 'ok' : 'issues detected' }`);
         validation.issues.forEach(issue => console.log(`  - ${issue}`));
         break;
       }

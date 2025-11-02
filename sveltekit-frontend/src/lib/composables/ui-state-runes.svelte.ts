@@ -41,9 +41,7 @@ export function useModal(initialOpen = false) {
   }
 }
 // Toast/Notification state management
-interface Toast {
-  id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
@@ -67,7 +65,7 @@ export function useToast() {
       title,
       message,
       duration: duration || 5000,
-      createdAt: Date.now(),
+      createdAt: Date.now()
     };
     toasts = [...toasts, toast];
     // Auto-remove toast after duration
@@ -96,7 +94,7 @@ export function useToast() {
     success,
     error,
     warning,
-    info,
+    info
   };
 }
 // Form state management
@@ -166,6 +164,6 @@ export function useForm<T extends Record<string, any>>(initialValues: T) {
     clearAllErrors,
     setTouched,
     reset,
-    validate,
+    validate
   };
 }

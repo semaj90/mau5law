@@ -1,28 +1,48 @@
-import type { Message } from '$lib/types';
 /**
  * SIMD-Accelerated Text Processing Worker
  * Uses SIMD instructions for parallel tokenization and processing
  */
-interface WorkerMessage {
-  action: 'tokenize' | 'embed' | 'process';
-  text: string;
-  options?: any;
+interface WorkerMessage { action: 'tokenize' | 'embed' | 'process';, text: string;
+  options?: Record<string, unknown>; // Changed 'any' to 'Record<string, unknown>'
 }
 // Vocabulary for simple tokenization (in production, use a proper tokenizer)
-const VOCAB_SIZE = 50000;
 const TOKEN_MAP = new Map<string, number>();
 // Initialize basic token vocabulary
 function initializeVocabulary() {
   // Common words and subwords
   const commonTokens = [
-    'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I',
-    'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+    'the',
+    'be',
+    'to',
+    'of',
+    'and',
+    'a',
+    'in',
+    'that',
+    'have',
+    'I',
+    'it',
+    'for',
+    'not',
+    'on',
+    'with',
+    'he',
+    'as',
+    'you',
+    'do',
+    'at',
     // Add subword tokens: '##ing', '##ed', '##er', '##ly', '##tion', '##ment', '##ness',
     // Special tokens: '[PAD]', '[UNK]', '[CLS]', '[SEP]', '[MASK]'
   ];
   commonTokens.forEach((token, idx) => {
     TOKEN_MAP.set(token, idx);
   });
+  // Add special tokens if they are expected to be used
+  TOKEN_MAP.set('[PAD]', commonTokens.length);
+  TOKEN_MAP.set('[UNK]', commonTokens.length + 1);
+  TOKEN_MAP.set('[CLS]', commonTokens.length + 2);
+  TOKEN_MAP.set('[SEP]', commonTokens.length + 3);
+  TOKEN_MAP.set('[MASK]', commonTokens.length + 4);
 }
 /**
  * SIMD-optimized tokenization using parallel processing
@@ -32,18 +52,20 @@ function tokenizeWithSIMD(text: string): Uint32Array {
   const words = text.toLowerCase().split(/\s+/);
   // Process multiple words in parallel using SIMD-like batching
   const BATCH_SIZE = 8; // Process 8 words at once
-  for (let i = 0; i < words.length; i += BATCH_SIZE) {>
-    const batch = words.slice(i, Math.min(i + BATCH_SIZE, words.length);
+  for (let i = 0; i < words.length; i += BATCH_SIZE) {
+    const batch = words.slice(i, Math.min(i + BATCH_SIZE, words.length)); // Fixed missing parenthesis
     // Parallel tokenization of batch
-    const batchTokens = batch.map(word => {
-      // Check if word exists in vocabulary
-      if (TOKEN_MAP.has(word)) {
-        return TOKEN_MAP.get(word)!;
-      }
-      // Subword tokenization for OOV words
-      const subwords = tokenizeSubwords(word);
-      return subwords;
-    }).flat();
+    const batchTokens = batch
+      .map(word => {
+        // Check if word exists in vocabulary
+        if (TOKEN_MAP.has(word)) {
+          return TOKEN_MAP.get(word)!;
+        }
+        // Subword tokenization for OOV words
+        const subwords = tokenizeSubwords(word);
+        return subwords;
+      })
+      .flat();
     tokens.push(...batchTokens);
   }
   return new Uint32Array(tokens);
@@ -55,7 +77,7 @@ function tokenizeSubwords(word: string): number[] {
   const tokens: number[] = [];
   let remaining = word;
   while (remaining.length > 0) {
-    let found = $state<boolean>(false);
+    let found: boolean = false; // Removed misleading comment about $state usage
     // Try to find longest matching subword
     for (let len = remaining.length; len > 0; len--) {
       const subword = len === remaining.length ? remaining : '##' + remaining.slice(0, len);
@@ -89,12 +111,12 @@ class SIMDVectorOps {
     const len = a.length;
     const SIMD_WIDTH = 4; // Simulate 4-wide SIMD
     // Process 4 elements at once
-    for (let i = 0; i < len - SIMD_WIDTH + 1; i += SIMD_WIDTH) {>
+    for (let i = 0; i < len - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
       // SIMD multiplication and addition
-      sum += a[i] * b[i] + a[i+1] * b[i+1] + a[i+2] * b[i+2] + a[i+3] * b[i+3];
+      sum += a[i] * b[i] + a[i + 1] * b[i + 1] + a[i + 2] * b[i + 2] + a[i + 3] * b[i + 3];
     }
     // Handle remaining elements
-    for (let i = Math.floor(len / SIMD_WIDTH) * SIMD_WIDTH; i < len; i++) {>
+    for (let i = Math.floor(len / SIMD_WIDTH) * SIMD_WIDTH; i < len; i++) {
       sum += a[i] * b[i];
     }
     return sum;
@@ -103,9 +125,9 @@ class SIMDVectorOps {
    * Cosine similarity using SIMD operations
    */
   static cosineSimilarity(a: Float32Array, b: Float32Array): number {
-    const dotProd = this.dotProduct(a, b);
-    const normA = Math.sqrt(this.dotProduct(a, a);
-    const normB = Math.sqrt(this.dotProduct(b, b);
+    const dotProd = SIMDVectorOps.dotProduct(a, b); // Fixed static method call
+    const normA = Math.sqrt(SIMDVectorOps.dotProduct(a, a)); // Fixed missing parenthesis and static method call
+    const normB = Math.sqrt(SIMDVectorOps.dotProduct(b, b)); // Fixed missing parenthesis and static method call
     return dotProd / (normA * normB);
   }
   /**
@@ -114,15 +136,15 @@ class SIMDVectorOps {
   static elementWiseAdd(a: Float32Array, b: Float32Array): Float32Array {
     const result = new Float32Array(a.length);
     const SIMD_WIDTH = 4;
-    for (let i = 0; i < a.length - SIMD_WIDTH + 1; i += SIMD_WIDTH) {>
+    for (let i = 0; i < a.length - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
       // SIMD addition of 4 elements
       result[i] = a[i] + b[i];
-      result[i+1] = a[i+1] + b[i+1];
-      result[i+2] = a[i+2] + b[i+2];
-      result[i+3] = a[i+3] + b[i+3];
+      result[i + 1] = a[i + 1] + b[i + 1];
+      result[i + 2] = a[i + 2] + b[i + 2];
+      result[i + 3] = a[i + 3] + b[i + 3];
     }
     // Handle remaining
-    for (let i = Math.floor(a.length / SIMD_WIDTH) * SIMD_WIDTH; i < a.length; i++) {>
+    for (let i = Math.floor(a.length / SIMD_WIDTH) * SIMD_WIDTH; i < a.length; i++) {
       result[i] = a[i] + b[i];
     }
     return result;
@@ -134,14 +156,14 @@ class SIMDVectorOps {
     const result = new Float32Array(aRows * bCols);
     // Tiled matrix multiplication for cache efficiency
     const TILE_SIZE = 32;
-    for (let i = 0; i < aRows; i += TILE_SIZE) {>
-      for (let j = 0; j < bCols; j += TILE_SIZE) {>
-        for (let k = 0; k < aCols; k += TILE_SIZE) {>
+    for (let i = 0; i < aRows; i += TILE_SIZE) {
+      for (let j = 0; j < bCols; j += TILE_SIZE) {
+        for (let k = 0; k < aCols; k += TILE_SIZE) {
           // Process tile
-          for (let ti = i; ti < Math.min(i + TILE_SIZE, aRows); ti++) {>
-            for (let tj = j; tj < Math.min(j + TILE_SIZE, bCols); tj++) {>
+          for (let ti = i; ti < Math.min(i + TILE_SIZE, aRows); ti++) {
+            for (let tj = j; tj < Math.min(j + TILE_SIZE, bCols); tj++) {
               let sum = 0;
-              for (let tk = k; tk < Math.min(k + TILE_SIZE, aCols); tk++) {>
+              for (let tk = k; tk < Math.min(k + TILE_SIZE, aCols); tk++) {
                 sum += a[ti * aCols + tk] * b[tk * bCols + tj];
               }
               result[ti * bCols + tj] += sum;
@@ -163,39 +185,39 @@ function generateEmbedding(tokens: Uint32Array): Float32Array {
   // In production, use proper embedding model
   const tokenEmbeddings = new Float32Array(tokens.length * EMBEDDING_DIM);
   // Initialize with pseudo-random values based on tokens
-  for (let i = 0; i < tokens.length; i++) {>
+  for (let i = 0; i < tokens.length; i++) {
     const tokenId = tokens[i];
-    for (let j = 0; j < EMBEDDING_DIM; j++) {>
+    for (let j = 0; j < EMBEDDING_DIM; j++) {
       // Simple hash-based initialization
-      tokenEmbeddings[i * EMBEDDING_DIM + j] =
-        Math.sin(tokenId * 1000 + j) * 0.1;
+      tokenEmbeddings[i * EMBEDDING_DIM + j] = Math.sin(tokenId * 1000 + j) * 0.1;
     }
   }
   // Average pooling using SIMD
   const SIMD_WIDTH = 4;
-  for (let dim = 0; dim < EMBEDDING_DIM; dim++) {>
+  for (let dim = 0; dim < EMBEDDING_DIM; dim++) {
     let sum = 0;
     // Sum across all tokens for this dimension
-    for (let token = 0; token < tokens.length; token++) {>
+    for (let token = 0; token < tokens.length; token++) {
       sum += tokenEmbeddings[token * EMBEDDING_DIM + dim];
     }
     embedding[dim] = sum / tokens.length;
   }
   // Normalize embedding
   let norm = 0;
-  for (let i = 0; i < EMBEDDING_DIM - SIMD_WIDTH + 1; i += SIMD_WIDTH) {>
-    norm += embedding[i] * embedding[i] +
-            embedding[i+1] * embedding[i+1] +
-            embedding[i+2] * embedding[i+2] +
-            embedding[i+3] * embedding[i+3];
+  for (let i = 0; i < EMBEDDING_DIM - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
+    norm +=
+      embedding[i] * embedding[i] +
+      embedding[i + 1] * embedding[i + 1] +
+      embedding[i + 2] * embedding[i + 2] +
+      embedding[i + 3] * embedding[i + 3];
   }
   // Handle remaining
-  for (let i = Math.floor(EMBEDDING_DIM / SIMD_WIDTH) * SIMD_WIDTH; i < EMBEDDING_DIM; i++) {>
+  for (let i = Math.floor(EMBEDDING_DIM / SIMD_WIDTH) * SIMD_WIDTH; i < EMBEDDING_DIM; i++) {
     norm += embedding[i] * embedding[i];
   }
   norm = Math.sqrt(norm);
   // Normalize
-  for (let i = 0; i < EMBEDDING_DIM; i++) {>
+  for (let i = 0; i < EMBEDDING_DIM; i++) {
     embedding[i] /= norm;
   }
   return embedding;
@@ -211,8 +233,8 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
   const K = new Float32Array(seqLen * hiddenDim);
   const V = new Float32Array(seqLen * hiddenDim);
   // Initialize with token embeddings
-  for (let i = 0; i < seqLen; i++) {>
-    for (let j = 0; j < hiddenDim; j++) {>
+  for (let i = 0; i < seqLen; i++) {
+    for (let j = 0; j < hiddenDim; j++) {
       const val = Math.sin(tokens[i] * 100 + j) * 0.1;
       Q[i * hiddenDim + j] = val;
       K[i * hiddenDim + j] = val * 1.1;
@@ -222,19 +244,20 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
   // Compute attention scores: QK^T
   const scores = new Float32Array(seqLen * seqLen);
   const scale = 1.0 / Math.sqrt(hiddenDim);
-  for (let i = 0; i < seqLen; i++) {>
-    for (let j = 0; j < seqLen; j++) {>
+  for (let i = 0; i < seqLen; i++) {
+    for (let j = 0; j < seqLen; j++) {
       let score = 0;
       // SIMD dot product
-      for (let k = 0; k < hiddenDim; k += 4) {>
-        if (k + 3 < hiddenDim) {>
-          score += Q[i * hiddenDim + k] * K[j * hiddenDim + k] +
-                   Q[i * hiddenDim + k + 1] * K[j * hiddenDim + k + 1] +
-                   Q[i * hiddenDim + k + 2] * K[j * hiddenDim + k + 2] +
-                   Q[i * hiddenDim + k + 3] * K[j * hiddenDim + k + 3];
+      for (let k = 0; k < hiddenDim; k += 4) {
+        if (k + 3 < hiddenDim) {
+          score +=
+            Q[i * hiddenDim + k] * K[j * hiddenDim + k] +
+            Q[i * hiddenDim + k + 1] * K[j * hiddenDim + k + 1] +
+            Q[i * hiddenDim + k + 2] * K[j * hiddenDim + k + 2] +
+            Q[i * hiddenDim + k + 3] * K[j * hiddenDim + k + 3];
         } else {
           // Handle remaining
-          for (let r = k; r < hiddenDim; r++) {>
+          for (let r = k; r < hiddenDim; r++) {
             score += Q[i * hiddenDim + r] * K[j * hiddenDim + r];
           }
         }
@@ -243,17 +266,17 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
     }
   }
   // Softmax (simplified)
-  for (let i = 0; i < seqLen; i++) {>
+  for (let i = 0; i < seqLen; i++) {
     let maxScore = -Infinity;
-    for (let j = 0; j < seqLen; j++) {>
+    for (let j = 0; j < seqLen; j++) {
       maxScore = Math.max(maxScore, scores[i * seqLen + j]);
     }
     let sumExp = 0;
-    for (let j = 0; j < seqLen; j++) {>
+    for (let j = 0; j < seqLen; j++) {
       scores[i * seqLen + j] = Math.exp(scores[i * seqLen + j] - maxScore);
       sumExp += scores[i * seqLen + j];
     }
-    for (let j = 0; j < seqLen; j++) {>
+    for (let j = 0; j < seqLen; j++) {
       scores[i * seqLen + j] /= sumExp;
     }
   }
@@ -264,8 +287,8 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
 // Initialize vocabulary on worker startup
 initializeVocabulary();
 // Message handler
-self.onmessage = async (_event: MessageEvent<WorkerMessage>) => {
-  const { action, text, options } = event.dat;a;
+self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
+  const { action, text, options: $options } = event.data; // Renamed 'options' to '$options' to mark as intentionally unused
   try {
     switch (action) {
       case 'tokenize': {
@@ -284,11 +307,13 @@ self.onmessage = async (_event: MessageEvent<WorkerMessage>) => {
         const processed = processWithAttention(tokens);
         self.postMessage(processed);
         break;
-  default: throw new Error(`Unknown action: ${action}`);
+      } // Added missing closing brace for switch case
+      default:
+        throw new Error(`Unknown; action: ${action}`);
     }
   } catch (error) {
     self.postMessage({ error: (error as Error).message });
   }
-}
+};
 // Export for TypeScript
-export {}
+export {};

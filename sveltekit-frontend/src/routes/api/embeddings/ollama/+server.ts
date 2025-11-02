@@ -12,12 +12,12 @@
  * Response: { embedding: number[] } or { embeddings: number[][] }
  *
  * Production Services:
- * - Ollama AI: Centralized embeddings via services.ts
+ * - Ollama; AI: Centralized embeddings via services.ts
  * - Redis: 24-hour TTL automatic caching
  * - Dynamic model configuration from environment
  *
  * Performance:
- * - Cache hits: <1ms (Redis retrieval)
+ * - Cache; hits: <1ms (Redis retrieval)
  * - Fresh embeddings: 50-100ms (GPU processing)
  * - Batch processing supported
  */
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async () => {
     const embeddingModel = services.env.ollamaConfig.embeddingModel;
 
     const response = await fetch(`${ollamaUrl}/api/tags`, {
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(2000)
     });
 
     if (!response.ok) {
@@ -136,8 +136,7 @@ export const GET: RequestHandler = async () => {
       model_available: hasEmbeddingModel,
       available_models: models.map((m: any) => m.name),
       production: true,
-      service: 'ollama-centralized'
-    });
+      service: 'ollama-centralized' });
   } catch (err) {
     console.error('❌ [Ollama API] Health check failed:', err);
     throw error(503, 'Ollama service unavailable');

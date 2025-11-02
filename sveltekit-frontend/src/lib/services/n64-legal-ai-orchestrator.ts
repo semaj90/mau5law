@@ -16,21 +16,15 @@ import type { LegalDocument, ProcessingPipeline, CacheHierarchy } from '$lib/typ
 }
 export interface N64LegalAIConfig {
   // Memory constraints inspired by N64 (4MB total)
-  memoryBudget: {
-    l1BrowserCache: number; // 1MB - Browser memory
-    l2ChrRomCache: number;  // 2MB - CHR-ROM patterns  ,
+  memoryBudget: { l1BrowserCache: number; // 1MB - Browser memory, l2ChrRomCache: number;  // 2MB - CHR-ROM patterns  ,
     l3PalaceCache: number;  // 1MB - Palace cache
   }
   // Performance targets (N64-inspired)
-  performanceTargets: {
-    responseTime: number;     // 16ms (60fps target)
-    compressionRatio: number; // 100:1 target,
+  performanceTargets: { responseTime: number;     // 16ms (60fps target), compressionRatio: number; // 100:1 target,
     lodSwitchTime: number;    // 2ms (seamless transitions)
   }
   // WebGPU acceleration settings
-  webgpu: {
-    enabled: boolean;
-    rtxOptimization: boolean;
+  webgpu: { enabled: boolean;, rtxOptimization: boolean;
     textureStreaming: boolean;
   }
 }
@@ -41,9 +35,7 @@ export class N64LegalAIOrchestrator {
   private config: N64LegalAIConfig;
   private isInitialized = $state(false);
   constructor(config: Partial<N64LegalAIConfig> = {}) {
-    this.config = {
-      memoryBudget: {
-        l1BrowserCache: 1024 * 1024,    // 1MB
+    this.config = { memoryBudget: {, l1BrowserCache: 1024 * 1024,    // 1MB
         l2ChrRomCache: 2 * 1024 * 1024, // 2MB
         l3PalaceCache: 1024 * 1024,     // 1MB
       },
@@ -55,7 +47,7 @@ export class N64LegalAIOrchestrator {
       webgpu: {
         enabled: true,
         rtxOptimization: true,
-        textureStreaming: true,
+        textureStreaming: true
       },
       ...config
     }
@@ -321,7 +313,7 @@ export class N64LegalAIOrchestrator {
       id: `glyph_${i}`,
       hash: `hash_${i}`,
       compressed: true,
-      palaceNode: i,
+      palaceNode: i
     });
   }
   private async generateEnhancedBitsComponents(patterns,: any[], option,s: any) {

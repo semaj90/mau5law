@@ -15,7 +15,7 @@ import { randomUUID } from 'crypto';
 // Initialize connections
 let redis: Redis | null = null;
 const qdrant = new QdrantClient({
-  url: import.meta.env.VITE_QDRANT_URL || 'http://localhost:6333',
+  url: import.meta.env.VITE_QDRANT_URL || 'http://localhost:6333'
 });
 
 // Compatibility helper: try several client APIs for retrieving points (different qdrant client versions expose different methods)
@@ -25,7 +25,7 @@ async function qdrantRetrievePoints(client: any, collection: string, ids: Array<
     const resp = await client.retrieve(collection, {
       ids,
       with_payload: true,
-      with_vector: true,
+      with_vector: true
     });
     return (resp as any).points || resp || [];
   }
@@ -36,7 +36,7 @@ async function qdrantRetrievePoints(client: any, collection: string, ids: Array<
         collection_name: collection,
         ids,
         with_payload: true,
-        with_vector: true,
+        with_vector: true
       });
       return (resp as any).result?.[0]?.points ? (resp as any).result[0].points : (resp as any).points || [];
     } catch {
@@ -106,7 +106,7 @@ async function ensureRedisInstance(): Promise<any> {
 
     redis = new RedisCtor({
       host: env.REDIS_HOST ?? 'localhost',
-      port: parseInt(env.REDIS_PORT ?? '6379', 10),
+      port: parseInt(env.REDIS_PORT ?? '6379', 10)
     }) as Redis;
 
     return redis;
@@ -210,16 +210,12 @@ type RawClusterResult =
   | Array<{ cluster?: number; label?: number; [key: string]: any }>
   | number[][];
 
-type ClusterSummary = {
-  count: number;
-  types: Record<string, number>;
+type ClusterSummary = { count: number;, types: Record<string, number>;
   keywords: Record<string, number>;
   sampleIds: (string | number)[];
 };
 
-type ClusterAnalysisResult = {
-  clusterId: string;
-  count: number;
+type ClusterAnalysisResult = { clusterId: string;, count: number;
   types: Record<string, number>;
   topKeywords: string[];
   sampleIds: (string | number)[];
@@ -321,7 +317,7 @@ function analyzeLegalClustersLocal(rawClusters: RawClusterResult, docsMeta: DocM
       count: summary.count,
       types: summary.types,
       topKeywords,
-      sampleIds: summary.sampleIds,
+      sampleIds: summary.sampleIds
     };
   });
 
@@ -338,9 +334,9 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Document IDs array is required',
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 400 }
       );
@@ -351,23 +347,23 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Invalid cluster count: ${clusterCount}. Must be between 2 and ${documentIds.length}`,
+          error: `Invalid cluster; count: ${clusterCount}. Must be between 2 and ${documentIds.length}`,
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 400 }
       );
     }
     // Fetch embeddings from multiple sources for redundancy
     let embeddings: number[][] = [];
-    let documentMetadata: Array<{ id: string | number; type: string; keywords: string[] }> = [];
+    let documentMetadata: Array<{ id: string | number; type: string;, keywords: string[] }> = [];
     try {
       // Primary: PostgreSQL - only select id here to avoid referencing non-existent columns
       const pgDocuments = (await db
         .select({
-          id: legalDocuments.id,
+          id: legalDocuments.id
         })
         .from(legalDocuments)
         .where(inArray(legalDocuments.id, documentIds))) as Array<{ id: string | number; [key: string]: any }>; // cast to allow runtime inspection
@@ -385,7 +381,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Merge results with preference for PostgreSQL if embeddings are present at runtime
       const mergedDocuments = new Map<
         string | number,
-        { id: string | number; embedding: number[] | null; metadata: Record<string, unknown>; source: string }
+        { id: string | number; embedding: number[] | null;, metadata: Record<string, unknown>; source: string }
       >();
       // Add PostgreSQL results (inspect for runtime fields if available)
       for (const doc of pgDocuments) {
@@ -395,7 +391,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: doc.id,
             embedding: doc.embedding,
             metadata: (doc.metadata || doc.keywords || {}) as Record<string, unknown>,
-            source: 'postgresql',
+            source: 'postgresql'
           });
         } else {
           // store minimal info so Qdrant can complement later
@@ -403,7 +399,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: doc.id,
             embedding: null,
             metadata: (doc.metadata || {}) as Record<string, unknown>,
-            source: 'postgresql',
+            source: 'postgresql'
           });
         }
       }
@@ -420,14 +416,14 @@ export const POST: RequestHandler = async ({ request }) => {
               id: rid,
               embedding: vector,
               metadata: payload,
-              source: 'qdrant',
+              source: 'qdrant'
             });
           } else if (!existing) {
             mergedDocuments.set(rid, {
               id: rid,
               embedding: null,
               metadata: payload,
-              source: 'qdrant',
+              source: 'qdrant'
             });
           }
         }
@@ -440,7 +436,7 @@ export const POST: RequestHandler = async ({ request }) => {
       documentMetadata = Array.from(mergedDocuments.values()).map(doc => ({
         id: doc.id,
         type: (doc.metadata && doc.metadata.type) || 'unknown',
-        keywords: (doc.metadata && doc.metadata.keywords) || [],
+        keywords: (doc.metadata && doc.metadata.keywords) || []
       }));
     } catch (dbError) {
       console.error('Database retrieval error:', dbError);
@@ -449,9 +445,9 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Failed to retrieve document embeddings',
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 500 }
       );
@@ -462,9 +458,9 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'No valid embeddings found',
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 404 }
       );
@@ -474,7 +470,7 @@ export const POST: RequestHandler = async ({ request }) => {
       k: clusterCount,
       maxIterations: config?.maxIterations || 100,
       tolerance: config?.tolerance || 0.001,
-      initMethod: config?.initMethod || ('kmeans++' as const),
+      initMethod: config?.initMethod || ('kmeans++' as const ),
       algorithm: 'kmeans' as const, // Required algorithm property
       distanceMetric: 'euclidean' as const, // Required distance metric
     };
@@ -485,8 +481,7 @@ export const POST: RequestHandler = async ({ request }) => {
     enum KMeansJobStatus {
       Processing = 'processing',
       Completed = 'completed',
-      Failed = 'failed',
-    }
+      Failed = 'failed` }
 
     // Generate cluster job ID (avoid deprecated substr)
     const clusterJobId = randomUUID();
@@ -500,7 +495,7 @@ export const POST: RequestHandler = async ({ request }) => {
         `kmeans:job:${clusterJobId}`,
         {
           status: KMeansJobStatus.Processing,
-          documentCount: embeddings.length,
+          documentCount: embeddings.length
         },
         3600
       );
@@ -511,10 +506,10 @@ export const POST: RequestHandler = async ({ request }) => {
         payload: {
           documentIds,
           embeddings: embeddings.slice(0, 10), // Sample for messaging
-          config: kmeansConfig,
+          config: kmeansConfig
         },
         priority: 'high',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
       const channel = await getRabbitChannel();
       if (channel) {
@@ -560,9 +555,9 @@ export const POST: RequestHandler = async ({ request }) => {
             silhouetteScore,
             documentCount: embeddings.length,
             clusterCount,
-            convergenceTime: Date.now() - startTime,
+            convergenceTime: Date.now() - startTime
           },
-          centroids,
+          centroids
         };
         if (redisInstance != null) {
           // prefer setex for explicit TTL to avoid relying on `set` overload differences
@@ -574,7 +569,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               status: 'completed',
               completedAt: Date.now(),
-              silhouetteScore: silhouetteScore.toString(),
+              silhouetteScore: silhouetteScore.toString()
             },
             3600
           );
@@ -586,23 +581,20 @@ export const POST: RequestHandler = async ({ request }) => {
               id: `centroid_${clusterJobId}_${index}`,
               vector: centroid,
               payload: {
-                type: 'centroid',
+               , type: 'centroid',
                 clusterId: `cluster_${index}`,
                 jobId: clusterJobId,
-                createdAt: new Date().toISOString(),
-              },
+                createdAt: new Date().toISOString()
+              }
             }));
             // Define a type for a Qdrant client that supports our upsert call, to avoid using `any`
-            type QdrantUpsertClient = {
-              upsert: (
-                collectionName: string,
-                options: { wait?: boolean; points: Array<Record<string, unknown>> }
+            type QdrantUpsertClient = { upsert: (, collectionName: string; options: { wait?: boolean; points: Array<Record<string, unknown>> }
               ) => Promise<unknown>;
             };
             if (centroidPoints.length > 0) {
               await (qdrant as QdrantUpsertClient).upsert('legal_documents', {
                 wait: true,
-                points: centroidPoints,
+                points: centroidPoints
               });
             }
           }
@@ -619,7 +611,7 @@ export const POST: RequestHandler = async ({ request }) => {
               JSON.stringify({
                 jobId: clusterJobId,
                 status: 'completed',
-                metrics: results.metrics,
+                metrics: results.metrics
               })
             )
           );
@@ -632,14 +624,14 @@ export const POST: RequestHandler = async ({ request }) => {
             clusters: results.clusters,
             analysis: results.analysis,
             assignments: results.assignments,
-            metrics: results.metrics,
+            metrics: results.metrics
           },
           metadata: {
-            timestamp: new Date().toISOString(),
+           , timestamp: new Date().toISOString(),
             processingTime: Date.now() - startTime,
             clusterId: clusterJobId,
-            confidence: silhouetteScore,
-          },
+            confidence: silhouetteScore
+          }
         });
       } catch (clusteringError) {
         // Publish failure event
@@ -652,8 +644,7 @@ export const POST: RequestHandler = async ({ request }) => {
               JSON.stringify({
                 jobId: clusterJobId,
                 status: 'failed',
-                error: clusteringError instanceof Error ? clusteringError.message : 'Unknown error',
-              })
+                error: clusteringError instanceof Error ? clusteringError.message : 'Unknown error` })
             )
           );
           // Do not close channel; reuse for future jobs
@@ -663,9 +654,9 @@ export const POST: RequestHandler = async ({ request }) => {
             success: false,
             error: clusteringError instanceof Error ? clusteringError.message : 'Clustering failed',
             metadata: {
-              timestamp: new Date().toISOString(),
-              processingTime: Date.now() - startTime,
-            },
+             , timestamp: new Date().toISOString(),
+              processingTime: Date.now() - startTime
+            }
           },
           { status: 500 }
         );
@@ -676,9 +667,9 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Redis not available for clustering job',
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 503 }
       );
@@ -690,9 +681,9 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: error instanceof Error ? error.message : 'Internal server error',
         metadata: {
-          timestamp: new Date().toISOString(),
-          processingTime: Date.now() - startTime,
-        },
+         , timestamp: new Date().toISOString(),
+          processingTime: Date.now() - startTime
+        }
       },
       { status: 500 }
     );
@@ -708,9 +699,9 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: 'Job ID and embedding are required',
         metadata: {
-          timestamp: new Date().toISOString(),
-          processingTime: 0,
-        },
+         , timestamp: new Date().toISOString(),
+          processingTime: 0
+        }
       },
       { status: 400 }
     );
@@ -729,9 +720,9 @@ export const GET: RequestHandler = async ({ url }) => {
           success: false,
           error: 'No clustering results found for the provided jobId',
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: 0,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: 0
+          }
         },
         { status: 404 }
       );
@@ -746,9 +737,9 @@ export const GET: RequestHandler = async ({ url }) => {
           success: false,
           error: 'No centroids available for prediction',
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: 0,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: 0
+          }
         },
         { status: 404 }
       );
@@ -762,9 +753,9 @@ export const GET: RequestHandler = async ({ url }) => {
           success: false,
           error: `Embedding dimensionality mismatch. Expected length ${centroidDim}`,
           metadata: {
-            timestamp: new Date().toISOString(),
-            processingTime: 0,
-          },
+           , timestamp: new Date().toISOString(),
+            processingTime: 0
+          }
         },
         { status: 400 }
       );
@@ -797,12 +788,12 @@ export const GET: RequestHandler = async ({ url }) => {
       data: {
         clusterId: `cluster_${bestIndex}`,
         jobId,
-        distance: bestDist,
+        distance: bestDist
       },
       metadata: {
-        timestamp: new Date().toISOString(),
-        processingTime: Date.now() - 0,
-      },
+       , timestamp: new Date().toISOString(),
+        processingTime: Date.now() - 0
+      }
     });
   } catch (error: any) {
     console.error('K-Means prediction error:', error);
@@ -811,9 +802,9 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: error instanceof Error ? error.message : 'Prediction failed',
         metadata: {
-          timestamp: new Date().toISOString(),
-          processingTime: 0,
-        },
+         , timestamp: new Date().toISOString(),
+          processingTime: 0
+        }
       },
       { status: 500 }
     );

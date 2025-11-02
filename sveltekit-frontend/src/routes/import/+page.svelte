@@ -16,7 +16,7 @@ import type { Case } from '$lib/types';
   const CollapsibleErrorSectionComponent: any = CollapsibleErrorSection as unknown as any;
 
   // Import state
-  let importFile: File | null = $state(null);
+  let importFile: File | null = null;
   let importType = $state<string>('all');
   let overwriteExisting = $state<boolean>(false);
   let isImporting = $state<boolean>(false);
@@ -34,12 +34,12 @@ import type { Case } from '$lib/types';
       errors: string[]; // Record-level errors (per row/record)
     };
     error?: string; // Top-level import error (whole operation failed)
-  } | null = $state(null);
+  } | null = null;
   type CsvPreview = { type: 'csv', data: string[] };
   type JsonPreview = { type: 'json', data: any };
   type XmlPreview = { type: 'xml', data: string };
   type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
-  let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
+  let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = null;
   let dragActive = $state<boolean>(false);
   // File input reference
   let fileInput: HTMLInputElement = $state();

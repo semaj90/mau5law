@@ -10,8 +10,7 @@ function getDatabaseUrl(): string {
   return (
     process.env.DATABASE_URL ||
     `postgresql://legal_admin:123456@${process.env.DATABASE_HOST ?? 'postgres'}:${
-      process.env.DATABASE_PORT ?? '5434'
-    }/legal_ai_db`
+      process.env.DATABASE_PORT ?? '5434` }/legal_ai_db`
   );
 }
 function getAdminDatabaseUrl(): string {
@@ -19,8 +18,7 @@ function getAdminDatabaseUrl(): string {
     process.env.ADMIN_DATABASE_URL ||
     (process.env.ADMIN_DATABASE_HOST &&
       `postgresql://postgres:postgres@${process.env.ADMIN_DATABASE_HOST}:${
-        process.env.ADMIN_DATABASE_PORT ?? '5432'
-      }/postgres`) ||
+        process.env.ADMIN_DATABASE_PORT ?? '5432` }/postgres`) ||
     getDatabaseUrl()
   );
 }
@@ -63,7 +61,7 @@ export async function testRuntimeConnection(): Promise<boolean> {
   try {
     const client = runtimeConnectionSingleton ?? postgres(getDatabaseUrl());
     // avoid `any` by using unknown and runtime checks
-    const res: any = await client`SELECT 1 as ok`;
+    const res: Array<{ ok: number }> = await client`SELECT 1 as ok`;
     // Only close if we created a temporary connection and it supports .end()
     if (!runtimeConnectionSingleton && typeof (client as { end?: () => Promise<void> }).end === 'function') {
       await (client as { end: () => Promise<void> }).end();
@@ -77,7 +75,7 @@ export async function testRuntimeConnection(): Promise<boolean> {
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = adminConnectionSingleton ?? postgres(getAdminDatabaseUrl());
-    const res: any = await client`SELECT 1 as ok`;
+    const res: Array<{ ok: number }> = await client`SELECT 1 as ok`;
     // Only close the connection if we created a new one and it's not the singleton
     if (!adminConnectionSingleton && typeof (client as unknown as { end?: () => Promise<void> }).end === 'function') {
       await (client as unknown as { end: () => Promise<void> }).end();
@@ -121,7 +119,7 @@ async function initializeDatabase(): Promise<void> {
     console.log('🔄 initializeDatabase: production initialization placeholder');
     // Recommended: Use Drizzle ORM migrations.
     // Example: import { migrate } from 'drizzle-orm/node-postgres/migrator';
-    // await migrate(runtimeDb, { migrationsFolder: './drizzle/migrations' });
+    // await migrate(runtimeDb, { migrationsFolder: `./drizzle/migrations` });
     // See https://orm.drizzle.team/docs/migrations for details.
   }
   // mark as initialized to prevent re-run

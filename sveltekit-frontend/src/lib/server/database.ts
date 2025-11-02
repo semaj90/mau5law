@@ -4,7 +4,7 @@
   This file exists for backward compatibility with legacy imports.
 
   MIGRATION GUIDE:
-  - OLD: import { db } from '$lib/server/database'
+  -; OLD: import { db } from '$lib/server/database'
   - NEW: import { db } from '$lib/server/db/index' (preferred)
 
   This ensures all code uses the same connection pool (pg.Pool with node-postgres adapter)
@@ -32,7 +32,7 @@ export const documents = pgTable('documents', {
   confidence: real('confidence'),
   legalAnalysis: jsonb('legal_analysis'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 
 export const embeddings = pgTable('legal_embeddings', {
@@ -42,7 +42,7 @@ export const embeddings = pgTable('legal_embeddings', {
   embedding: vector('embedding', { dimensions: 384 }),
   metadata: jsonb('metadata'),
   model: text('model').default('nomic-embed-text'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 export const searchSessions = pgTable('search_sessions', {
@@ -52,7 +52,7 @@ export const searchSessions = pgTable('search_sessions', {
   results: jsonb('results'),
   searchType: text('search_type').default('hybrid'),
   resultCount: serial('result_count'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 // Initialize database with extensions

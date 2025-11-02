@@ -17,8 +17,7 @@ export const NES_PALETTE = {
 } as const;
 // Bits UI v2 style semantic roles we want to map (simplified)
 // These reference UnoCSS theme token names (see uno.config.ts)
-const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string; accent?: string }> = {
-  primary: { bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
+const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string;, text: string; accent?: string }> = { primary: {, bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
   secondary: { bg: 'yorha-bg-secondary', border: 'yorha-border', text: 'yorha-text-secondary' },
   accent: { bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
   ghost: { bg: 'yorha-bg-primary', border: 'yorha-border', text: 'yorha-text-primary' },
@@ -96,9 +95,7 @@ export function resolveColorToken(
   // Final fallback
   return fallback;
 }
-export interface VariantResolvedStyle {
-  backgroundColor: number;
-  borderColor: number;
+export interface VariantResolvedStyle { backgroundColor: number;, borderColor: number;
   textColor: number;
   hover?: { backgroundColor?: number; textColor?: number; opacity?: number };
   glow?: { enabled: boolean; color?: number; intensity?: number };
@@ -114,7 +111,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
     ? {
         enabled: true,
         color: backgroundColor,
-        intensity: 0.35,
+        intensity: 0.35
       }
     : undefined;
   // Derive simple hover (lighten by adding small value) – naive approach
@@ -124,7 +121,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
     borderColor,
     textColor,
     glow,
-    hover: { backgroundColor: hoverColor },
+    hover: { backgroundColor: hoverColor }
   };
 }
 // Central exported theme adapter

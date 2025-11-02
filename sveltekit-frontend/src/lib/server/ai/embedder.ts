@@ -12,7 +12,7 @@ const EMBEDDING_CONFIG = {
   // Ollama model for embeddings
   defaultModel: process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
   nomicApiKey: process.env.NOMIC_API_KEY,
-  nomicUrl: process.env.NOMIC_URL,
+  nomicUrl: process.env.NOMIC_URL
 };
 
 /**
@@ -68,12 +68,12 @@ async function embedWithLocal(text: string, model?: string): Promise<number[]> {
   const url = `${EMBEDDING_CONFIG.localBaseUrl.replace(/\/$/, '')}/embeddings`;
   const body = {
     model: model || EMBEDDING_CONFIG.defaultModel,
-    input: text,
+    input: text
   };
   const resp = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
   if (!resp.ok) {
     // Attempt a helpful message
@@ -97,12 +97,11 @@ async function embedWithNomic(text: string, model?: string): Promise<number[]> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}`,
-        },
+          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}' },
         body: JSON.stringify({
           text,
-          model: model || EMBEDDING_CONFIG.defaultModel,
-        }),
+          model: model || EMBEDDING_CONFIG.defaultModel
+        })
       });
       if (resp.ok) {
         try {
@@ -199,7 +198,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
       const resp = await fetch(batchUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: modelName, input: texts }),
+        body: JSON.stringify({, model: modelName, input: texts })
       });
       if (resp.ok) {
         const parsed = await resp.json().catch(() => null);
@@ -233,8 +232,8 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
  * Get embedding service status
  */
 export async function getEmbeddingServiceStatus(): Promise<any> {
-  let localAvailable = $state<boolean>(false);
-  let nomicAvailable = $state<boolean>(false);
+  let localAvailable = false;
+  let nomicAvailable = false;
 
   // Local (Ollama) health check
   if (EMBEDDING_CONFIG.useLocal) {
@@ -243,7 +242,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
       const timeout = setTimeout(() => controller.abort(), 2000);
       const resp = await fetch(`${EMBEDDING_CONFIG.localBaseUrl.replace(/\/$/, '')}/health`, {
         method: 'GET',
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeout);
       localAvailable = !!resp.ok;
@@ -261,7 +260,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
   return {
     local: localAvailable,
     nomic: nomicAvailable,
-    activeService,
+    activeService
   };
 }
 
@@ -287,7 +286,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 
 const embeddings = new OpenAIEmbeddings({
   modelName: 'text-embedding-3-small', // or local Ollama/Gemma endpoint
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 export async function embeddingFunction(text: string): Promise<any> {
@@ -305,12 +304,12 @@ export async function embeddingFunction(text: string): Promise<any> {
 async function extractKeywords(text: string): Promise<string[]> {
   // Simple heuristic — replace with LangChain LLMChain if needed
   // Extracts words starting with an uppercase letter, at least 4 characters long
-  return Array.from(new Set(text.match(/\b[A-Z][a-zA-Z]{3,}\b/g)))?.slice(0, 10) ?? [];
+  return Array.from(new Set(text.match(/\b[A-Z][a-zA-Z]{3}\b/g)))?.slice(0, 10) ?? [];
 }
 
 export default {
   embedText,
   embedTexts,
   getEmbeddingServiceStatus,
-  cosineSimilarity,
+  cosineSimilarity
 };

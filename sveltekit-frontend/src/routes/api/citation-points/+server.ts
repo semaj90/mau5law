@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       citationPoints: [],
       total: 0,
       limit,
-      offset,
+      offset
     });
   } catch (error: any) {
     console.error('Error fetching citation points:', error);
@@ -60,16 +60,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relevanceScore: data.relevanceScore || '0.0',
       metadata: data.metadata || {},
       isBookmarked: data.isBookmarked || false,
-      createdBy: getUserId(locals),
+      createdBy: getUserId(locals)
     };
     const [newCitation] = await db
       .insert(reports)
-      .values({
-        title: 'Citation Point: ' + data.text.substring(0, 50),
+      .values({ title: 'Citation, Point: ' + data.text.substring(0, 50),
         content: JSON.stringify(citationData),
         reportType: 'citation_point',
         createdBy: getUserId(locals),
-        caseId: data.caseId,
+        caseId: data.caseId
       })
       .returning();
     return json(newCitation, { status: 201 });
@@ -100,7 +99,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Citation point not found' }, { status: 404 });
     }
     const updateData: { [key: string]: any } = {
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     // Only update provided fields
     if (data.text !== undefined) updateData.text = data.text;
@@ -116,7 +115,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       .update(reports)
       .set({
         content: JSON.stringify(updateData),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(reports.id, data.id))
       .returning();

@@ -11,8 +11,7 @@ const safeErrorToString = (err: any): string => (err instanceof Error ? (err.sta
 // light typing for pdf2pic module to avoid `any` casts
 type Pdf2PicModule = {
   fromBuffer?: (
-    buffer: Buffer,
-    opts: Record<string, unknown>
+    buffer: Buffer; opts: Record<string, unknown>
   ) => (page: number) => Promise<{ path?: string; name?: string }>;
   fromPath?: (
     path: string,
@@ -21,38 +20,28 @@ type Pdf2PicModule = {
 };
 const pdf2picModule = pdf2pic as unknown as Pdf2PicModule;
 
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   pages: PageResult[];
   metadata: DocumentMetadata;
   processing_time: number;
 }
 
-export interface PageResult {
-  page_number: number;
-  text: string;
+export interface PageResult { page_number: number;, text: string;
   confidence: number;
   blocks: TextBlock[];
   images: ImageRegion[];
 }
 
-export interface TextBlock {
-  text: string;
-  bbox: BoundingBox;
+export interface TextBlock { text: string;, bbox: BoundingBox;
   confidence: number;
   font_size?: number;
   font_family?: string;
 }
 
-export interface ImageRegion {
-  bbox: BoundingBox;
-  type: 'figure' | 'table' | 'diagram' | 'signature';
+export interface ImageRegion { bbox: BoundingBox;, type: 'figure' | 'table' | 'diagram' | 'signature';
 }
 
-export interface BoundingBox {
-  x: number;
-  y: number;
+export interface BoundingBox { x: number;, y: number;
   width: number;
   height: number;
 }
@@ -80,7 +69,7 @@ export class EnhancedOCRProcessor {
 
   constructor() {
     // warm up Tesseract in background (best-effort)
-    this.initializeTesseract().catch((e: any) => console.warn('Tesseract warmup failed:', safeErrorToString(e)));
+    this.initializeTesseract().catch((e: any) => console.warn('Tesseract warmup; failed:', safeErrorToString(e)));
   }
 
   private async initializeTesseract(): Promise<void> {
@@ -91,7 +80,7 @@ export class EnhancedOCRProcessor {
           // progress and debug information
           // keep logging minimal to avoid noisy output
           if (m && typeof m === 'object') console.debug('tesseract:', m);
-        },
+        }
       });
 
       await this.worker.load();
@@ -150,7 +139,7 @@ export class EnhancedOCRProcessor {
           savePath: '/tmp',
           format: 'png',
           width: 2480,
-          height: 3508,
+          height: 3508
         })
       : pdf2picModule.fromPath!(filePath, {
           density: 300,
@@ -158,7 +147,7 @@ export class EnhancedOCRProcessor {
           savePath: '/tmp',
           format: 'png',
           width: 2480,
-          height: 3508,
+          height: 3508
         });
 
     const pages: PageResult[] = [];
@@ -185,7 +174,7 @@ export class EnhancedOCRProcessor {
           text: String(ocrData.text || ''),
           confidence: typeof ocrData.confidence === 'number' ? ocrData.confidence : 0,
           blocks: this.extractTextBlocks(ocrData),
-          images: this.detectImageRegions(ocrData),
+          images: this.detectImageRegions(ocrData)
         };
 
         pages.push(pageResult);
@@ -205,8 +194,7 @@ export class EnhancedOCRProcessor {
         metadata: {
           ...metadata,
           file_size: fileStats.size,
-          content_type: 'application/pdf',
-        },
+          content_type: 'application/pdf` },
         processing_time: 0, // caller will set actual time
       };
     } catch (error: any) {
@@ -229,7 +217,7 @@ export class EnhancedOCRProcessor {
       text: String(ocrData.text || ''),
       confidence: typeof ocrData.confidence === 'number' ? ocrData.confidence : 0,
       blocks: this.extractTextBlocks(ocrData),
-      images: this.detectImageRegions(ocrData),
+      images: this.detectImageRegions(ocrData)
     };
 
     if (enhancedImagePath !== filePath) {
@@ -243,9 +231,8 @@ export class EnhancedOCRProcessor {
       metadata: {
         page_count: 1,
         file_size: fileStats.size,
-        content_type: `image/${path.extname(filePath).slice(1)}`,
-      },
-      processing_time: 0,
+        content_type: `image/${path.extname(filePath).slice(1)}' },
+      processing_time: 0
     };
   }
 
@@ -265,14 +252,14 @@ export class EnhancedOCRProcessor {
         creator: creatorMatch ? creatorMatch[1] : undefined,
         page_count: pageCount,
         file_size: buffer.length,
-        content_type: 'application/pdf',
+        content_type: 'application/pdf'
       };
     } catch (error: any) {
       console.warn('⚠️ Could not extract PDF metadata:', error);
       return {
         page_count: 1,
         file_size: buffer.length,
-        content_type: 'application/pdf',
+        content_type: 'application/pdf'
       };
     }
   }
@@ -299,12 +286,12 @@ export class EnhancedOCRProcessor {
       blocks.push({
         text,
         bbox: {
-          x: bbox.x0 ?? 0,
+         , x: bbox.x0 ?? 0,
           y: bbox.y0 ?? 0,
           width: (bbox.x1 ?? 0) - (bbox.x0 ?? 0),
-          height: (bbox.y1 ?? 0) - (bbox.y0 ?? 0),
+          height: (bbox.y1 ?? 0) - (bbox.y0 ?? 0)
         },
-        confidence: typeof b.confidence === 'number' ? b.confidence : 0,
+        confidence: typeof b.confidence === 'number' ? b.confidence : 0
       });
     }
     return blocks;
@@ -321,15 +308,12 @@ export class EnhancedOCRProcessor {
       const height = (bbox.y1 ?? 0) - (bbox.y0 ?? 0);
       const confidence = typeof b.confidence === 'number' ? b.confidence : 100;
       if (confidence < 30 && width > 100 && height > 100) {
-        regions.push({
-          bbox: {
-            x: bbox.x0 ?? 0,
+        regions.push({ bbox: {, x: bbox.x0 ?? 0,
             y: bbox.y0 ?? 0,
             width,
-            height,
+            height
           },
-          type: 'figure',
-        });
+          type: 'figure` });
       }
     }
     return regions;
@@ -368,13 +352,11 @@ export class EnhancedOCRProcessor {
     return results;
   }
 
-  getProcessingStats(): {
-    supportedFormats: string[];
-    tesseractReady: boolean;
+  getProcessingStats(): { supportedFormats: string[];, tesseractReady: boolean;
   } {
     return {
       supportedFormats: this.supportedFormats,
-      tesseractReady: this.tesseractReady,
+      tesseractReady: this.tesseractReady
     };
   }
 }

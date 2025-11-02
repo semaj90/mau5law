@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -29,7 +29,7 @@ export async function POST({ request }): Promise<any> {
     return json({
       success: true,
       transcript,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Voice API error:', error);
@@ -37,7 +37,7 @@ export async function POST({ request }): Promise<any> {
       {
         success: false,
         error: 'Failed to transcribe audio',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

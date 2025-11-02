@@ -19,9 +19,7 @@ type AppDatabase = NodePgDatabase<AppSchema>;
 // Cast the imported db to the correct type
 const db: AppDatabase = untypedDb as AppDatabase;
 
-export interface UserRating {
-  id: string;
-  userId: string;
+export interface UserRating { id: string;, userId: string;
   sessionId: string;
   interactionId: string;
   ratingType: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
@@ -47,23 +45,17 @@ export interface UserRating {
   createdAt?: Date; // Added
   updatedAt?: Date; // Added
 }
-export interface InteractionPattern {
-  userId: string;
-  commonQueries: string[];
+export interface InteractionPattern { userId: string;, commonQueries: string[];
   preferredFeatures: string[];
   responseTimeThreshold: number;
   qualityExpectations: number;
-  learningProgress: {
-    initialAccuracy: number;
-    currentAccuracy: number;
+  learningProgress: { initialAccuracy: number;, currentAccuracy: number;
     improvementRate: number;
     strongAreas: string[];
     weakAreas: string[];
   };
 }
-export interface TrainingDataPoint {
-  input: string;
-  expectedOutput: string;
+export interface TrainingDataPoint { input: string;, expectedOutput: string;
   actualOutput: string;
   userRating: number;
   corrections?: string;
@@ -115,8 +107,7 @@ export class FeedbackLoopService {
         sessionId: rating.sessionId,
         interactionId: rating.interactionId,
         ratingType: rating.ratingType,
-        score: rating.score, // Assign number directly, schema is: 'real'
-        feedback: rating.feedback,
+        score: rating.score, // Assign number directly, schema is: 'real'; feedback: rating.feedback,
         context: rating.context,
         metadata: rating.metadata,
         queryEmbedding: queryEmbedding, // Assign number[] directly
@@ -147,8 +138,8 @@ export class FeedbackLoopService {
       return ratingId;
     } catch (error: any) {
       // Changed from any to unknown
-      console.error('❌ Error collecting rating:', error);
-      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('❌ Error collecting rating: `, error);
+      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
   /**
@@ -164,7 +155,7 @@ export class FeedbackLoopService {
         userRating: rating.score,
         corrections: rating.feedback,
         contextTags: [rating.ratingType, rating.metadata.featureUsed || 'unknown'],
-        difficultyLevel: this.assessDifficultyLevel(rating.context.query),
+        difficultyLevel: this.assessDifficultyLevel(rating.context.query)
       };
       // Add to training queue
       this.trainingQueue.push(trainingPoint);
@@ -250,8 +241,8 @@ export class FeedbackLoopService {
             currentAccuracy: rating.score,
             improvementRate: 0,
             strongAreas: [],
-            weakAreas: [],
-          },
+            weakAreas: []
+          }
         };
       }
       // Update common queries
@@ -342,7 +333,7 @@ export class FeedbackLoopService {
             actualOutput: '', // Previous poor response
             userRating: pattern.qualityExpectations,
             contextTags: [weakArea, 'personalized_training'],
-            difficultyLevel: this.assessDifficultyLevel(query),
+            difficultyLevel: this.assessDifficultyLevel(query)
           };
           this.trainingQueue.push(trainingScenario);
         }
@@ -350,7 +341,7 @@ export class FeedbackLoopService {
       console.log(`📚 Scheduled personalized training for user ${userId}: ${this.trainingQueue.length} scenarios`);
     } catch (error: any) {
       // Changed from any to unknown
-      console.error('❌ Error scheduling personalized training:', error);
+      console.error('❌ Error scheduling personalized training: `, error);
     }
   }
   /**
@@ -462,7 +453,7 @@ export class FeedbackLoopService {
             ...rating,
             // Drizzle should automatically parse JSONB columns, no need for JSON.parse
             context: rating.context,
-            metadata: rating.metadata,
+            metadata: rating.metadata
           } as UserRating);
         }
       }
@@ -491,8 +482,7 @@ export class FeedbackLoopService {
       personalizedSettings: {
         responseTimeThreshold: pattern.responseTimeThreshold,
         qualityExpectations: pattern.qualityExpectations,
-        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner',
-      },
+        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : `beginner` }
     };
   }
   /**
@@ -528,7 +518,7 @@ export class FeedbackLoopService {
         totalRatings,
         ratingDistribution,
         improvementTrends,
-        activeTrainingItems: this.trainingQueue.length,
+        activeTrainingItems: this.trainingQueue.length
       };
     } catch (error: any) {
       // Changed from any to unknown
@@ -538,7 +528,7 @@ export class FeedbackLoopService {
         totalRatings: 0,
         ratingDistribution: {}, // Changed to empty object for type safety
         improvementTrends: {}, // Changed to empty object for type safety
-        activeTrainingItems: 0,
+        activeTrainingItems: 0
       };
     }
   }

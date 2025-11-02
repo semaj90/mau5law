@@ -35,5 +35,5 @@ export async function validateDatabaseOnStartup(): Promise<any> {
   }
 }
 export default {
-  validateDatabaseOnStartup,
+  validateDatabaseOnStartup
 };

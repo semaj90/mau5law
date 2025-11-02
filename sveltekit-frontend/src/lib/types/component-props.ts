@@ -166,9 +166,7 @@ export interface ValidationResult {
   issues?: string[];
   recommendations?: string[];
 }
-export interface LLMProvider {
-  id: string;
-  name: string;
+export interface LLMProvider { id: string;, name: string;
   description?: string;
   available: boolean;
   type?: 'ollama' | 'vllm' | 'autogen' | 'crewai';
@@ -178,9 +176,7 @@ export interface LLMProvider {
   status?: LLMStatus;
   performance?: PerformanceMetrics;
 }
-export interface LLMModel {
-  id: string;
-  name: string;
+export interface LLMModel { id: string;, name: string;
   size?: string;
   specialization?: 'general' | 'legal' | 'code' | 'reasoning';
   performance?: PerformanceMetrics;
@@ -192,35 +188,27 @@ export interface PerformanceMetrics {
   uptime?: number;
 }
 export type LLMStatus = 'online' | 'offline' | 'busy' | 'loading';
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   excerpt: string;
   relevanceScore: number;
   type: 'case' | 'document' | 'precedent' | 'statute';
   metadata?: Record<string, unknown>;
 }
 export interface SearchFilters {
-  dateRange?: {
-    start: Date;
-    end: Date;
+  dateRange?: { start: Date;, end: Date;
   };
   jurisdiction?: string;
   documentType?: string[];
   relevanceThreshold?: number;
 }
-export interface CaseData {
-  id: string;
-  title: string;
+export interface CaseData { id: string;, title: string;
   status: 'active' | 'closed' | 'pending';
   priority: 'low' | 'medium' | 'high' | 'critical';
   assignedTo?: string;
   createdAt: Date;
   lastActivity: Date;
 }
-export interface AnalysisResult {
-  id: string;
-  type: AnalysisType;
+export interface AnalysisResult { id: string;, type: AnalysisType;
   summary: string;
   confidence: number;
   findings: string[];
@@ -235,16 +223,12 @@ export type AnalysisType =
   | 'entity_extraction'
   | 'sentiment'
   | 'risk_assessment';
-export interface SelectOption {
-  value: string;
-  label: string;
+export interface SelectOption { value: string;, label: string;
   disabled?: boolean;
   description?: string;
 }
 // Add a strongly-typed CaseTypeOption to avoid `any`
-export interface CaseTypeOption {
-  id: string;
-  label: string;
+export interface CaseTypeOption { id: string;, label: string;
   description?: string;
   // optional taxonomy/category for filtering/grouping
   category?: 'civil' | 'criminal' | 'administrative' | 'family' | 'corporate' | string;
@@ -284,9 +268,7 @@ export interface OllamaAgentShellProps extends BaseComponentProps {
   onError?: (error: string) => void;
 }
 // Supporting Upload Types
-export interface UploadedFile {
-  id: string;
-  name: string;
+export interface UploadedFile { id: string;, name: string;
   size: number;
   type: string;
   url: string;

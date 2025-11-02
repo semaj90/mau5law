@@ -32,13 +32,11 @@ interface ChatResponse {
 type WorkerProgressEvent =
   | { type: 'queued'; position?: number }
   | { type: 'started'; timestamp?: string }
-  | { type: 'stream_data'; data: any }
+  | { type: 'stream_data';, data: any }
   | { type: 'stream_end' }
   | { type: 'stream_complete' };
 
-type ActiveRequest = {
-  resolve: (value: ChatResponse) => void;
-  reject: (reason?: any) => void;
+type ActiveRequest = { resolve: (value: ChatResponse) => void;, reject: (reason?: any) => void;
   onProgress?: (data: WorkerProgressEvent) => void;
   timeoutId?: number;
   port?: MessagePort;
@@ -170,7 +168,7 @@ export class ChatWorkerClient {
         reject,
         onProgress: options?.onProgress,
         timeoutId,
-        port: channel.port1,
+        port: channel.port1
       });
 
       try {
@@ -178,7 +176,7 @@ export class ChatWorkerClient {
           {
             type: 'CHAT_REQUEST',
             data: request,
-            requestId,
+            requestId
           },
           [channel.port2]
         );

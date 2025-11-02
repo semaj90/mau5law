@@ -1,7 +1,7 @@
 /**
  * Vector Configuration - Standardized to 384 dimensions
  *
- * Purpose: Centralize vector dimension configuration for:
+ * Purpose: Centralize vector dimension configuration; for:
  * - Drizzle ORM schemas
  * - Qdrant collections
  * - PostgreSQL pgvector
@@ -77,9 +77,7 @@ export function getCollectionName(baseName: string): string {
   return `${baseName}_${VECTOR_CONFIG.DIMENSIONS}`;
 }
 // Export environment check
-export function checkVectorEnvironment(): {
-  postgres: boolean;
-  qdrant: boolean;
+export function checkVectorEnvironment(): { postgres: boolean;, qdrant: boolean;
   ollama: boolean;
   redis: boolean;
 } {
@@ -94,15 +92,14 @@ export function checkVectorEnvironment(): {
 export function getVectorConfigSummary(): string {
   return `
 🎯 Vector Configuration Summary:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Model: ${VECTOR_CONFIG.MODEL}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━; Model: ${VECTOR_CONFIG.MODEL}
   Dimensions: ${VECTOR_CONFIG.DIMENSIONS}
   Distance Metric: ${VECTOR_CONFIG.DISTANCE_METRIC.QDRANT}
   HNSW M: ${VECTOR_CONFIG.INDEX.HNSW_M}
   Batch Size: ${VECTOR_CONFIG.BATCH_SIZE.EMBEDDING_GENERATION}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Services:
-  ✅ PostgreSQL: ${VECTOR_CONFIG.DOCKER_SERVICES.POSTGRES_URL}
+  ✅; PostgreSQL: ${VECTOR_CONFIG.DOCKER_SERVICES.POSTGRES_URL}
   ✅ Qdrant: ${VECTOR_CONFIG.DOCKER_SERVICES.QDRANT_URL}
   ✅ Ollama: ${VECTOR_CONFIG.DOCKER_SERVICES.OLLAMA_URL}
   ✅ Redis: ${VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL}

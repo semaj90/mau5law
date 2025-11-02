@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         isActive: users.isActive,
         avatarUrl: users.avatarUrl,
         createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
+        updatedAt: users.updatedAt
       })
       .from(users)
       .where(whereClause)
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     // Get total count for pagination
     const totalCountResult = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })
       .from(users)
       .where(whereClause);
     const totalCount = totalCountResult[0]?.count || 0;
@@ -92,8 +92,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       pagination: {
         limit,
         offset,
-        total: totalCount,
-      },
+        total: totalCount
+      }
     });
   } catch (err: any) {
     console.error('Error fetching users:', extractErrorMessage(err));
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       lastName: data.lastName?.trim() || null,
       role: data.role || 'prosecutor',
       isActive: data.isActive !== undefined ? data.isActive : true,
-      avatarUrl: data.avatarUrl?.trim() || null,
+      avatarUrl: data.avatarUrl?.trim() || null
     };
 
     const [newUser] = await db.insert(users).values(userData).returning({
@@ -151,13 +151,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       role: users.role,
       isActive: users.isActive,
       createdAt: users.createdAt,
-      updatedAt: users.updatedAt,
+      updatedAt: users.updatedAt
     });
 
     return json(newUser, { status: 201 });
   } catch (err: any) {
     console.error('Error creating user:', extractErrorMessage(err));
-    return json({ error: 'Failed to create user' }, { status: 500 });
+    return json({ error: `Failed to create user` }, { status: 500 });
   }
 };
 

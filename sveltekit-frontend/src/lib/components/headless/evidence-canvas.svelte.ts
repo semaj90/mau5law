@@ -3,20 +3,16 @@
  * Svelte 5 component for interactive evidence visualization
  */
 
-export interface EvidenceItem {
-  id: string;
-  type: 'photo' | 'document' | 'physical' | 'digital';
+export interface EvidenceItem { id: string;, type: 'photo' | 'document' | 'physical' | 'digital';
   name: string;
-  position: { x: number; y: number };
+  position: { x: number;, y: number };
   rotation: number;
   scale: number;
   textureId?: string;
   metadata: Record<string, unknown>;
   connections: string[];
 }
-export interface CanvasState {
-  zoom: number;
-  pan: { x: number; y: number };
+export interface CanvasState { zoom: number;, pan: { x: number;, y: number };
   selectedItems: string[];
   mode: 'view' | 'edit' | 'present';
   showConnections: boolean;
@@ -33,15 +29,15 @@ export function useEvidenceCanvas() {
   // Canvas state
   let canvasState = $state<CanvasState>({
     zoom: 1.0,
-    pan: { x: 0, y: 0 },
+    pan: {, x: 0, y: 0 },
     selectedItems: [],
     mode: 'view',
     showConnections: true,
-    filter: 'all',
+    filter: 'all'
   });
   // Interaction state
   let isDragging = $state<boolean>(false);
-  let dragStartPos = $state<{ x: number; y: number } | null>(null);
+  let dragStartPos = $state<{ x: number;, y: number } | null>(null);
   // draggedItems is reassigned in pointer handling, keep let
   let draggedItems = $state<Set<string>>(new Set());
   // Canvas dimensions
@@ -61,7 +57,7 @@ export function useEvidenceCanvas() {
       position: item.position || { x: canvasSize.width / 2, y: canvasSize.height / 2 },
       rotation: item.rotation || 0,
       scale: item.scale || 1.0,
-      connections: item.connections || [],
+      connections: item.connections || []
     };
     evidenceItems.set(id, evidenceItem);
     saveToHistory();
@@ -235,11 +231,9 @@ export function useEvidenceCanvas() {
       for (const itemId of draggedItems) {
         const item = evidenceItems.get(itemId);
         if (item) {
-          updateEvidenceItem(itemId, {
-            position: {
-              x: item.position.x + deltaX / canvasState.zoom,
-              y: item.position.y + deltaY / canvasState.zoom,
-            },
+          updateEvidenceItem(itemId, { position: {, x: item.position.x + deltaX / canvasState.zoom,
+              y: item.position.y + deltaY / canvasState.zoom
+            }
           });
         }
       }
@@ -308,14 +302,14 @@ export function useEvidenceCanvas() {
       evidenceItems: Array.from(evidenceItems.entries()),
       canvasState,
       canvasSize,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
   // Structured type for import/export payload
   type CanvasExport = {
     evidenceItems: Array<[string, EvidenceItem]>;
     canvasState?: Partial<CanvasState>;
-    canvasSize?: { width: number; height: number };
+    canvasSize?: { width: number;, height: number };
     timestamp?: string;
   };
 
@@ -399,11 +393,11 @@ export function useEvidenceCanvas() {
     setHoveredItem: (itemId: string | null) => {
       hoveredItem = itemId;
     },
-    setCanvasSize: (size: { width: number; height: number }) => {
+    setCanvasSize: (size: {, width: number; height: number }) => {
       canvasSize = size;
     },
-    setViewport: (size: { width: number; height: number }) => {
+    setViewport: (size: {, width: number; height: number }) => {
       viewport = size;
-    },
+    }
   };
 }

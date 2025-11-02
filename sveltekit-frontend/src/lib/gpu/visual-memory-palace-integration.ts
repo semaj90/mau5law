@@ -1,7 +1,5 @@
 import { topKSimilar } from './webgl-shader-cache';
-export interface PalaceNode {
-  id: string;
-  position: { x: number; y: number; z?: number };
+export interface PalaceNode { id: string;, position: { x: number;, y: number; z?: number };
   embedding: Float32Array;
   metadata?: Record<string, unknown>;
 }
@@ -63,7 +61,7 @@ export async function generateVisualMemoryReport(
 	bridge: GlyphShaderBridge, // use explicit, minimal interface
 	entityId: string,
 	text: string
-): Promise<{ entityId: string; topMatches: Array<{ id: string; score: string | number; metadata: Record<string, unknown> | null }> }> {
+): Promise<{ entityId: string; topMatches: Array<{ id: string; score: string | number;, metadata: Record<string, unknown> | null }> }> {
 	try {
 		// persist (best-effort)
 		await bridge.persistShaderToBanks?.(entityId, text);
@@ -90,9 +88,9 @@ export async function generateVisualMemoryReport(
 				return {
 					id: s.id,
 					score: formatted,
-					metadata: s.metadata ?? s.payload ?? null,
+					metadata: s.metadata ?? s.payload ?? null
 				};
-			}),
+			})
 		};
 	} catch (err) {
 		// fail-safe: log and return empty results

@@ -213,7 +213,7 @@ import type { User } from '$lib/types';
         break;
       case 'complete':
         // Streaming complete
-        aiMessage.streaming = $state(false);
+        aiMessage.streaming = false;
         aiMessage.processed = true;
         break;
     }

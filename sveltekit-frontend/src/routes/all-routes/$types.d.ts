@@ -28,34 +28,24 @@ type RecommendedRouteLayout = {
 
 export type PageServerLoad = (
   event: Kit.ServerLoadEvent<RouteParams, AppParentData, '/(authenticated)/all-routes'>
-) => Promise<{
-  availableRoutes: Array<{
-    path: string;
+) => Promise<{ availableRoutes: Array<{, path: string;
     icon: string;
     description: string;
   }>;
-  routeInventory: {
-    fileRoutesSample: string[];
-    counts: {
-      config: number;
-      fileBased: number;
+  routeInventory: { fileRoutesSample: string[];, counts: { config: number;, fileBased: number;
       api: number;
       configMissingFiles: number;
       filesMissingConfig: number;
       consolidatable: number;
     };
   };
-  serviceHealth: {
-    system_overview: {
-      healthy_services: number;
+  serviceHealth: { system_overview: {, healthy_services: number;
       total_services: number;
       uptime_hours: number;
       last_updated: string;
     };
     services: ServiceStatus[]; // replaced `Array<any>` with ServiceStatus[]
-    performance: {
-      cpu_usage: number;
-      memory_usage: number;
+    performance: { cpu_usage: number;, memory_usage: number;
       disk_usage: number;
     };
   };

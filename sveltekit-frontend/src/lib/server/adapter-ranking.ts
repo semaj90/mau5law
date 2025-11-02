@@ -8,7 +8,7 @@ side-effects optional and defensive so importing it won't crash in tests.
 import type { RedisClientType } from 'redis';
 import type { Driver } from 'neo4j-driver';
 
-export type AdapterRank = { id: string; score: number };
+export type AdapterRank = { id: string;, score: number };
 
 export async function getTopAdapter(redis: RedisClientType, namespace = 'adapters:rank'): Promise<AdapterRank | null> {
   try {

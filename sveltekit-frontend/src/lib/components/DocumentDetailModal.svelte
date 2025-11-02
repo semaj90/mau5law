@@ -412,7 +412,7 @@ import type { Document } from '$lib/types';
 {#if isOpen}
   <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-    transition:fade={{ duration: 200 }}
+    transitionfade={{ duration: 200 }}
     onclick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     onkeydown={(e) => { if (e.key === 'Escape') handleClose(); }}
     tabindex="0"

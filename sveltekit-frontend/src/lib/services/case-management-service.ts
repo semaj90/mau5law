@@ -21,7 +21,7 @@ import { eq, and, desc, sql } from 'drizzle-orm';
 // Add typed global extensions to avoid `any`
 type GlobalLoki = {
 	id?: string;
-	startJob?: (job: { id: string; type: string; metadata?: any }) => Promise<void>;
+	startJob?: (job: {, id: string; type: string; metadata?: any }) => Promise<void>;
 };
 type OCRWorker = {
 	process?: (filePath: string) => Promise<{
@@ -33,7 +33,7 @@ type OCRWorker = {
 	}>;
 };
 type EnhancedEmbeddingWorker = {
-	enqueueJob?: (job: { text: string; model?: string; meta?: Record<string, unknown> }) => Promise<string>;
+	enqueueJob?: (job: {, text: string; model?: string; meta?: Record<string, unknown> }) => Promise<string>;
 };
 
 declare global {
@@ -44,48 +44,36 @@ declare global {
 }
 
 // ====== Types ======
-type Case = typeof cases.$inferSelect;
-type NewCase = typeof cases.$inferInsert;
-type Evidence = typeof evidence.$inferSelect;
-type NewEvidence = typeof evidence.$inferInsert;
-type CaseTimelineEvent = typeof caseTimeline.$inferSelect;
-type NewCaseTimelineEvent = typeof caseTimeline.$inferInsert;
-type Citation = typeof citations.$inferSelect;
-type CaseNote = typeof caseNotes.$inferSelect;
+type Case = typeof | cases.$inferSelect;
+type NewCase = typeof | cases.$inferInsert;
+type Evidence = typeof | evidence.$inferSelect;
+type NewEvidence = typeof | evidence.$inferInsert;
+type CaseTimelineEvent = typeof | caseTimeline.$inferSelect;
+type NewCaseTimelineEvent = typeof | caseTimeline.$inferInsert;
+type Citation = typeof | citations.$inferSelect;
+type CaseNote = typeof | caseNotes.$inferSelect;
 
 // New — explicit typed interfaces to eliminate `any`
-interface EntityConnection {
-  to: string;
-  type: 'co_occurrence' | 'citation' | 'reference' | 'string';
+interface EntityConnection { to: string;, type: 'co_occurrence' | 'citation' | 'reference' | 'string';
   strength: number;
 }
 
-interface EntityNode {
-  entityType: 'person' | 'organization' | 'location' | 'case' | 'statute';
-  entity: string;
-  connections: EntityConnection[];
-  evidenceIds: string[];
+interface EntityNode { entityType: 'person' | 'organization' | 'location' | 'case' | 'statute';, entity: string;
+  connections: EntityConnection[]; evidenceIds: string[];
   occurrences: number;
   centralityScore?: number;
 }
 
-type ExtractedEntity = {
-  text: string;
-  type: 'person' | 'organization' | 'location' | 'date' | 'case_number' | 'statute';
+type ExtractedEntity = { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'case_number' | 'statute';
   confidence: number;
 };
 
-type SuspiciousPattern = {
-  pattern: string;
-  evidenceIds: string[];
-  confidence: number;
+type SuspiciousPattern = { pattern: string;, evidenceIds: string[]; confidence: number;
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
 };
 
-type TimelineAnomaly = {
-  type: 'contradiction' | 'temporal_gap' | 'sequence_violation' | 'duplicate' | 'implausible_timing';
-  description: string;
+type TimelineAnomaly = { type: 'contradiction' | 'temporal_gap' | 'sequence_violation' | 'duplicate' | 'implausible_timing';, description: string;
   eventIds: string[];
   confidence: number;
   severity: 'low' | 'medium' | 'high';
@@ -119,24 +107,18 @@ type EnqueueResult = {
 
 // ====== Interfaces ======
 export interface CaseSearchFilters {
-  status?: string[];
-  priority?: string[];
+  status?: string[]; priority?: string[];
   caseType?: string;
   assignedTo?: string;
-  dateRange?: { start: Date; end: Date };
+  dateRange?: { start: Date;, end: Date };
   detectiveMode?: boolean;
-  tags?: string[];
-}
+  tags?: string[]; }
 
-export interface EvidenceAnalysisRequest {
-  evidenceId: string;
-  analysisTypes: ('ocr' | 'entity_extraction' | 'sentiment' | 'pattern_detection' | 'forensic')[];
+export interface EvidenceAnalysisRequest { evidenceId: string;, analysisTypes: ('ocr' | 'entity_extraction' | 'sentiment' | 'pattern_detection' | 'forensic')[];
   detectiveMode?: boolean;
 }
 
-export interface DetectiveModeConfig {
-  enableSuspiciousPatternDetection: boolean;
-  enableCrossReferenceAnalysis: boolean;
+export interface DetectiveModeConfig { enableSuspiciousPatternDetection: boolean;, enableCrossReferenceAnalysis: boolean;
   enableEntityMapping: boolean;
   enableTimelineAnalysis: boolean;
   confidenceThreshold: number;
@@ -165,7 +147,7 @@ export class CaseManagementService {
 
     if (!caseData.caseNumber) caseData.caseNumber = await this.generateCaseNumber(caseData.caseType);
 
-    const [newCase] = await db
+    const [newCase], = await db
       .insert(cases)
       .values({ ...caseData, dateCreated: new Date(), dateModified: new Date() })
       .returning();
@@ -177,7 +159,7 @@ export class CaseManagementService {
       description: `Case "${newCase.title}" was created`,
       eventDate: new Date(),
       importance: 'medium',
-      automated: true,
+      automated: true
     });
 
     await cache.set(`case:${newCase.id}`, newCase, 3600 * 1000);
@@ -248,13 +230,13 @@ export class CaseManagementService {
       evidenceData.checksum = createHash('sha256').update(evidenceData.filePath).digest('hex');
     }
 
-    const [newEvidence] = await db
+    const [newEvidence], = await db
       .insert(evidence)
       .values({
         ...evidenceData,
         caseId,
         uploadedAt: new Date(),
-        dateModified: new Date(),
+        dateModified: new Date()
       })
       .returning();
 
@@ -266,7 +248,7 @@ export class CaseManagementService {
       evidenceId: newEvidence.id,
       eventDate: new Date(),
       importance: 'medium',
-      automated: true,
+      automated: true
     });
 
     // send to processing pipeline
@@ -290,7 +272,7 @@ export class CaseManagementService {
       filePath: evidenceRecord.filePath,
       analysisTypes,
       detectiveMode: detectiveMode ?? false,
-      forceReanalysis: true,
+      forceReanalysis: true
     };
 
     try {
@@ -298,7 +280,7 @@ export class CaseManagementService {
       await this.queueEvidenceAnalysis(message);
       console.log(`🚀 Queued analysis request for evidence ${evidenceId}`);
     } catch (error) {
-      console.error(`Failed to queue evidence analysis for ${evidenceId}:`, error);
+      console.error(`Failed to queue evidence analysis for ${evidenceId}: ', error);
       throw new Error('Failed to queue evidence for analysis.');
     }
   }
@@ -306,17 +288,17 @@ export class CaseManagementService {
   // ==================== DETECTIVE MODE FEATURES ====================
   async enableDetectiveMode(caseId: string, config: DetectiveModeConfig): Promise<Case> {
     await this.initialize();
-    const [oldCase] = await db.select().from(cases).where(eq(cases.id, caseId));
+    const [oldCase], = await db.select().from(cases).where(eq(cases.id, caseId));
     if (!oldCase) throw new Error(`Case not found: ${caseId}`);
 
     const mergedMetadata = {
       ...((oldCase?.metadata as object) ?? {}),
-      detectiveModeConfig: config,
+      detectiveModeConfig: config
     };
     const updatedCase = await this.updateCase(caseId, {
       detectiveMode: true,
       analysisDepth: 'forensic',
-      metadata: mergedMetadata,
+      metadata: mergedMetadata
     });
 
     const evidenceList = await this.getEvidence(caseId);
@@ -325,7 +307,7 @@ export class CaseManagementService {
         this.analyzeEvidence({
           evidenceId: evi.id,
           analysisTypes: ['ocr', 'entity_extraction', 'pattern_detection', 'forensic'],
-          detectiveMode: true,
+          detectiveMode: true
         })
       )
     );
@@ -335,7 +317,7 @@ export class CaseManagementService {
   }
 
   // ==================== HELPERS / TIMELINE ====================
-  async getEvidence(caseId: string, filters: EvidenceFilters = {}): Promise<Evidence[]> {
+  async getEvidence(caseId: string, filters: EvidenceFilters = {}): Promise<Evidence[]>, {
 	const { limit = 50, offset = 0 } = filters;
 	const conds: any[] = [eq(evidence.caseId, caseId)];
 	if (filters.evidenceType) conds.push(eq(evidence.evidenceType, filters.evidenceType));
@@ -354,7 +336,7 @@ export class CaseManagementService {
   }
 
   async updateCase(caseId: string, updates: Partial<Case>): Promise<Case> {
-    const [oldCase] = await db.select().from(cases).where(eq(cases.id, caseId));
+    const [oldCase], = await db.select().from(cases).where(eq(cases.id, caseId));
     if (!oldCase) throw new Error(`Case not found: ${caseId}`);
 
     const [updatedCase] = await db
@@ -377,7 +359,7 @@ export class CaseManagementService {
 	const message = {
 		evidenceId: ev.id,
 		caseId: ev.caseId,
-		filePath: ev.filePath,
+		filePath: ev.filePath
 	};
 	try {
 		await rabbitmq.publish('evidence.new', message);
@@ -392,12 +374,12 @@ export class CaseManagementService {
 		try {
 			const patterns = await this.detectSuspiciousPatterns(ev);
 			if (patterns && patterns.length > 0) {
-				console.log(`🛡️ [Forensics] Detected ${patterns.length} suspicious patterns for ${ev.id}`);
+				console.log(`🛡️ [Forensics], Detected ${patterns.length} suspicious patterns for ${ev.id}`);
 				// best-effort cache (log failures)
 				try {
 					await cache.set(`forensics:patterns:${ev.id}`, patterns, 60 * 60 * 1000);
 				} catch (err) {
-					console.warn(`forensics patterns cache set failed for ${ev.id}:`, String(err));
+					console.warn(`forensics patterns cache set failed for ${ev.id}: ', String(err));
 				}
 			}
 		} catch (e) {
@@ -412,7 +394,7 @@ export class CaseManagementService {
 			try {
 				await cache.set(`forensics:report:${ev.id}`, report, 24 * 60 * 60 * 1000);
 			} catch (err) {
-				console.warn(`forensics report cache set failed for ${ev.id}:`, String(err));
+				console.warn(`forensics report cache set failed for ${ev.id}: ', String(err));
 			}
 		} catch (e) {
 			console.warn('performForensicAnalysis probe failed:', String(e));
@@ -427,7 +409,7 @@ export class CaseManagementService {
 				try {
 					await cache.set(`ocr:text:${ev.id}`, { text: ocrResult.text, engine: ocrResult.engine }, 6 * 60 * 60 * 1000);
 				} catch (err) {
-					console.warn(`ocr cache set failed for ${ev.id}:`, String(err));
+					console.warn(`ocr cache set failed for ${ev.id}: ', String(err));
 				}
 			}
 		} catch (e) {
@@ -448,7 +430,7 @@ export class CaseManagementService {
   }
 
   private async generateEvidenceNumber(caseId: string): Promise<string> {
-    const [res] = (await db
+    const [res], = (await db
       .select({ count: sql`count(*)` })
       .from(evidence)
       .where(eq(evidence.caseId, caseId))) as Array<{ count: number | string }>;
@@ -463,7 +445,7 @@ export class CaseManagementService {
 			await globalLoki.startJob({
 				id: `evidence_analysis_${request.evidenceId}`,
 				type: 'evidence-analysis',
-				metadata: request,
+				metadata: request
 			});
 		} else {
 			// fallback: publish to rabbitmq or log if globalLoki isn't available
@@ -476,9 +458,7 @@ export class CaseManagementService {
 	}
   }
 
-  private async performOCRAnalysis(evidence: Evidence): Promise<{
-	text: string;
-	confidence: number;
+  private async performOCRAnalysis(evidence: Evidence): Promise<{ text: string;, confidence: number;
 	language: string;
 	processingTime: number;
 	engine: string;
@@ -495,10 +475,10 @@ export class CaseManagementService {
 				confidence: typeof result.confidence === 'number' ? result.confidence : 0,
 				language: result.language ?? 'unknown',
 				processingTime: Number(result.processingTime) || 0,
-				engine: result.engine ?? 'ocrWorker',
+				engine: result.engine ?? 'ocrWorker'
 			};
 		} catch (err) {
-			console.error('[OCR Service] ocrWorker failed:', err);
+			console.error('[OCR, Service] ocrWorker failed:', err);
 		}
 	}
 
@@ -518,8 +498,7 @@ export class CaseManagementService {
 			confidence: typeof data?.confidence === 'number' ? data.confidence : 0,
 			language: data?.language ?? 'eng',
 			processingTime: 0,
-			engine: 'tesseract.js',
-		};
+			engine: `tesseract.js` };
 	} catch (err) {
 		console.warn('[OCR Service] tesseract.js not available or failed:', err);
 	}
@@ -530,19 +509,19 @@ export class CaseManagementService {
 		confidence: 0,
 		language: 'unknown',
 		processingTime: 0,
-		engine: 'mock',
+		engine: 'mock'
 	};
   }
 
   private async extractEntities(text: string): Promise<EnqueueResult> {
-	console.log('[Embedding Service] Enqueuing entity extraction (Gemma3)...');
+	console.log('[Embedding, Service] Enqueuing entity extraction (Gemma3)...');
 	try {
 		const worker = global.enhancedEmbeddingWorker;
 		if (worker && typeof worker.enqueueJob === 'function') {
 			const jobId = await worker.enqueueJob({
 				text,
 				model: 'gemma3-entity-extraction',
-				meta: { task: 'entity_extraction' },
+				meta: {, task: 'entity_extraction' }
 			});
 			return { jobId, status: 'queued' };
 		}
@@ -553,23 +532,22 @@ export class CaseManagementService {
 		return { status: 'fallback-published' };
 	} catch (error) {
 		console.error('[Embedding Service] Error enqueuing job:', error);
-		return { error: (error as Error)?.message ?? 'unknown' };
+		return { error: (error as Error)?.message ?? 'unknown` };
 	}
   }
 
-  private async detectSuspiciousPatterns(evidence: Evidence): Promise<SuspiciousPattern[]> {
+  private async detectSuspiciousPatterns(evidence: Evidence): Promise<SuspiciousPattern[]>, {
     console.log(`[Forensics Service] Detecting suspicious patterns in ${evidence.fileName}...`);
-    const patterns: SuspiciousPattern[] = [];
+    const patterns: SuspiciousPattern[], = [];
 
     // 1) Simple keyword heuristic
     if (evidence.description?.toLowerCase().includes('urgent')) {
       patterns.push({
         pattern: 'keyword_urgency',
         confidence: 0.7,
-        description: 'Use of: "urgent" keyword may indicate pressure or coercion.',
+        description: 'Use; of: "urgent" keyword may indicate pressure or coercion.',
         evidenceIds: [evidence.id],
-        severity: 'low',
-      });
+        severity: `low` });
     }
 
     try {
@@ -589,8 +567,7 @@ export class CaseManagementService {
             evidenceIds: Array.from(new Set(crossReferences.map((r) => r.to))),
             confidence: Math.min(0.95, avgConfidence || 0.5),
             description: `Found ${crossReferences.length} cross-references for this evidence.`,
-            severity: 'low',
-          });
+            severity: `low` });
         }
       } catch (err) {
         console.warn('cross-reference check failed:', String(err));
@@ -612,8 +589,7 @@ export class CaseManagementService {
             evidenceIds: timelineAnomalies.flatMap((a) => a.eventIds),
             confidence: Math.max(maxConfidence, 0.6),
             description: `Detected ${timelineAnomalies.length} timeline anomalies related to this evidence.`,
-            severity: 'medium',
-          });
+            severity: `medium` });
         }
       } catch (err) {
         console.warn('timeline anomaly check failed:', String(err));
@@ -646,10 +622,8 @@ export class CaseManagementService {
    * 🔍 Analyze suspicious patterns across all evidence in a case
    * Uses pattern matching, temporal analysis, and LLM-based anomaly detection
    */
-  private async analyzeSuspiciousPatterns(evidenceList: Evidence[]): Promise<SuspiciousPattern[]> {
-    const patterns: SuspiciousPattern[] = [];
-
-    try {
+  private async analyzeSuspiciousPatterns(evidenceList: Evidence[]): Promise<SuspiciousPattern[]>, {
+    const patterns: SuspiciousPattern[] = []; try {
       // 1. TEMPORAL CLUSTERING - Evidence submitted at unusual times
       const unusualTimingEvidence = evidenceList.filter(e => {
         if (!e.dateCreated) return false;
@@ -663,8 +637,7 @@ export class CaseManagementService {
           evidenceIds: unusualTimingEvidence.map(e => e.id),
           confidence: 0.75,
           description: `${unusualTimingEvidence.length} pieces of evidence created at unusual hours (late night/early morning)`,
-          severity: 'medium'
-        });
+          severity: `medium` });
       }
 
       // 2. RAPID SUBMISSION PATTERN - Multiple evidence submitted within short timeframe
@@ -674,17 +647,16 @@ export class CaseManagementService {
 
       for (let i = 0; i < sortedByDate.length - 2; i++) {
         const first = new Date(sortedByDate[i].dateCreated!);
-        const third = new Date(sortedByDate[i + 2].dateCreated!);
+        const third = new Date(sortedByDate[i, + 2].dateCreated!);
         const minutesDiff = (third.getTime() - first.getTime()) / (1000 * 60);
 
         if (minutesDiff < 30) { // 3 pieces in 30 minutes
           patterns.push({
             pattern: 'rapid_submission',
-            evidenceIds: [sortedByDate[i].id, sortedByDate[i + 1].id, sortedByDate[i + 2].id],
+            evidenceIds: [sortedByDate[i].id, sortedByDate[i + 1].id, sortedByDate[i, + 2].id],
             confidence: 0.8,
             description: `Multiple evidence items submitted within ${minutesDiff.toFixed(0)} minutes`,
-            severity: 'medium'
-          });
+            severity: `medium` });
         }
       }
 
@@ -700,8 +672,7 @@ export class CaseManagementService {
           evidenceIds: urgentEvidence.map(e => e.id),
           confidence: 0.7,
           description: `${urgentEvidence.length} evidence items contain urgency/pressure language`,
-          severity: 'medium'
-        });
+          severity: `medium` });
       }
 
       // 4. MODIFICATION PATTERNS - Evidence modified after initial submission
@@ -716,8 +687,7 @@ export class CaseManagementService {
           evidenceIds: modifiedEvidence.map(e => e.id),
           confidence: 0.65,
           description: `${modifiedEvidence.length} evidence items modified significantly after initial submission`,
-          severity: 'low'
-        });
+          severity: `low` });
       }
 
       // 5. LLM-BASED ANOMALY DETECTION - Use Ollama for semantic anomalies
@@ -728,21 +698,21 @@ export class CaseManagementService {
 
           const evidenceSummary = evidenceList
             .slice(0, 10) // Limit to 10 for token limits
-            .map((e, idx) => `[${idx + 1}] ${e.title}: ${e.description?.slice(0, 200)}`)
+            .map((e, idx) => `[${idx, + 1}] ${e.title}: ${e.description?.slice(0, 200)}`)
             .join('\n');
 
           const response = await ollama.chat([
-            { role: 'system', content: 'You are a forensic analyst. Identify suspicious patterns in evidence. Return JSON only.' },
-            { role: 'user', content: `Analyze this evidence for suspicious patterns:\n${evidenceSummary}\n\nReturn JSON: [{"pattern": "...", "description": "...", "confidence": 0.0-1.0, "severity": "low|medium|high"}]` }
+            {, role: 'system', content: 'You are a forensic analyst. Identify suspicious patterns in evidence. Return JSON only.' },
+            { role: 'user', content: 'Analyze this evidence for suspicious; patterns:\n${evidenceSummary}\n\nReturn, JSON: [{"pattern": "...", "description": "...", "confidence": 0.0-1.0, "severity": "low|medium|high"}]' }
           ], { temperature: 0.3, maxTokens: 500 });
 
-          const jsonMatch = typeof response?.response === 'string' ? response.response.match(/\[[\s\S]*\]/) : null;
+          const jsonMatch = typeof response?.response === 'string' ? response.response.match(/\[[\s\S]*\]/), : null;
           if (jsonMatch) {
             // Narrow type for LLM items
             type LLMSuspicious = { pattern?: string; description?: string; confidence?: number; severity?: 'low'|'medium'|'high' };
             const parsed = JSON.parse(jsonMatch[0]) as unknown;
             if (Array.isArray(parsed)) {
-              const llmItems = (parsed as unknown[]).map(item => item as LLMSuspicious);
+              const llmItems = (parsed as unknown[]).map(item, => item as LLMSuspicious);
               const valid = llmItems
                 .filter(p => typeof p.confidence === 'number' && p.confidence > 0.6 && typeof p.pattern === 'string' && typeof p.description === 'string')
                 .map(p => ({
@@ -750,8 +720,7 @@ export class CaseManagementService {
                   evidenceIds: [],
                   confidence: p.confidence!,
                   description: p.description!,
-                  severity: p.severity ?? 'medium'
-                } as SuspiciousPattern));
+                  severity: p.severity ?? 'medium` } as SuspiciousPattern));
               patterns.push(...valid);
             }
           }
@@ -760,7 +729,7 @@ export class CaseManagementService {
         }
       }
 
-      console.log(`🔍 [Suspicious Patterns] Found ${patterns.length} patterns`);
+      console.log(`🔍 [Suspicious, Patterns] Found ${patterns.length} patterns`);
       return patterns;
 
     } catch (error) {
@@ -773,7 +742,7 @@ export class CaseManagementService {
    * 🕸️ Map entity connections across all evidence using graph analysis
    * Creates a knowledge graph of people, organizations, locations, and their relationships
    */
-  private async mapEntityConnections(evidenceList: Evidence[]): Promise<EntityNode[]> {
+  private async mapEntityConnections(evidenceList: Evidence[]): Promise<EntityNode[]>, {
     try {
       const entityGraph: Map<string, EntityNode> = new Map();
 
@@ -828,7 +797,7 @@ export class CaseManagementService {
       // Sort by centrality (most important entities first)
       entityList.sort((a, b) => (b.centralityScore ?? 0) - (a.centralityScore ?? 0));
 
-      console.log(`🕸️ [Entity Mapping] Mapped ${entityList.length} entities with ${entityList.reduce((sum, e) => sum + e.connections.length, 0)} connections`);
+      console.log(`🕸️ [Entity, Mapping] Mapped ${entityList.length} entities with ${entityList.reduce((sum, e) => sum + e.connections.length, 0)} connections`);
 
       return entityList;
 
@@ -845,11 +814,9 @@ export class CaseManagementService {
     timeline: CaseTimelineEvent[],
     currentEvidenceId: string
   ): Promise<TimelineAnomaly[]> {
-    console.log(`[Detective Mode] ⏰ Detecting timeline anomalies for ${currentEvidenceId}...`);
+    console.log(`[Detective, Mode] ⏰ Detecting timeline anomalies for ${currentEvidenceId}...`);
 
-    const anomalies: TimelineAnomaly[] = [];
-
-    try {
+    const anomalies: TimelineAnomaly[] = []; try {
       const evidenceAddedEvent = timeline.find(
         (e) => e.evidenceId === currentEvidenceId && e.eventType === 'evidence_added'
       );
@@ -867,11 +834,10 @@ export class CaseManagementService {
             laterEvent.description?.toLowerCase().includes('conflicts with')) {
           anomalies.push({
             type: 'contradiction',
-            description: `Evidence ${currentEvidenceId} may be contradicted by later event: "${laterEvent.title}"`,
+            description: `Evidence ${currentEvidenceId} may be contradicted by later, event: "${laterEvent.title}"`,
             eventIds: [evidenceAddedEvent.id, laterEvent.id],
             confidence: 0.75,
-            severity: 'high'
-          });
+            severity: `high` });
         }
       }
 
@@ -882,17 +848,16 @@ export class CaseManagementService {
 
       for (let i = 0; i < sortedEvents.length - 1; i++) {
         const current = new Date(sortedEvents[i].eventDate!);
-        const next = new Date(sortedEvents[i + 1].eventDate!);
+        const next = new Date(sortedEvents[i, + 1].eventDate!);
         const daysDiff = (next.getTime() - current.getTime()) / (1000 * 60 * 60 * 24);
 
         if (daysDiff > 30) { // Gap of more than 30 days
           anomalies.push({
             type: 'temporal_gap',
-            description: `Unexplained ${daysDiff.toFixed(0)}-day gap between: "${sortedEvents[i].title}" and: "${sortedEvents[i + 1].title}"`,
+            description: `Unexplained ${daysDiff.toFixed(0)}-day gap between: "${sortedEvents[i].title}", and: "${sortedEvents[i + 1].title}"`,
             eventIds: [sortedEvents[i].id, sortedEvents[i + 1].id],
             confidence: 0.6,
-            severity: 'medium'
-          });
+            severity: `medium` });
         }
       }
 
@@ -916,11 +881,10 @@ export class CaseManagementService {
         if (currentStage && nextStage && currentStage > nextStage) {
           anomalies.push({
             type: 'sequence_violation',
-            description: `Timeline sequence violation: "${sortedEvents[i].title}" (stage ${currentStage}) before: "${sortedEvents[i + 1].title}" (stage ${nextStage})`,
+            description: `Timeline sequence; violation: "${sortedEvents[i].title}", (stage ${currentStage}) before: "${sortedEvents[i + 1].title}" (stage ${nextStage})`,
             eventIds: [sortedEvents[i].id, sortedEvents[i + 1].id],
             confidence: 0.7,
-            severity: 'high'
-          });
+            severity: `high` });
         }
       }
 
@@ -928,23 +892,22 @@ export class CaseManagementService {
       for (let i = 0; i < sortedEvents.length - 1; i++) {
         for (let j = i + 1; j < sortedEvents.length && j < i + 5; j++) {
           const similarity = this.calculateTextSimilarity(
-            sortedEvents[i].description || '',
+            sortedEvents[i].description, || '',
             sortedEvents[j].description || ''
           );
 
           const timeDiff = Math.abs(
-            new Date(sortedEvents[i].eventDate!).getTime() -
+            new Date(sortedEvents[i].eventDate!).getTime(), -
             new Date(sortedEvents[j].eventDate!).getTime()
           ) / (1000 * 60 * 60 * 24);
 
           if (similarity > 0.8 && timeDiff < 7) {
             anomalies.push({
               type: 'duplicate',
-              description: `Potential duplicate events: "${sortedEvents[i].title}" and: "${sortedEvents[j].title}" (${similarity.toFixed(2)} similarity)`,
+              description: `Potential duplicate; events: "${sortedEvents[i].title}", and: "${sortedEvents[j].title}" (${similarity.toFixed(2)} similarity)`,
               eventIds: [sortedEvents[i].id, sortedEvents[j].id],
               confidence: similarity,
-              severity: 'low'
-            });
+              severity: `low` });
           }
         }
       }
@@ -953,22 +916,20 @@ export class CaseManagementService {
       for (let i = 0; i < sortedEvents.length - 1; i++) {
         const timeDiff = (
           new Date(sortedEvents[i + 1].eventDate!).getTime() -
-          new Date(sortedEvents[i].eventDate!).getTime()
-        ) / (1000 * 60); // in minutes
+          new Date(sortedEvents[i].eventDate!).getTime(), ) / (1000 * 60); // in minutes
 
         // Legal processes typically take hours/days, not minutes
-        if (timeDiff < 30 && sortedEvents[i].eventType !== sortedEvents[i + 1].eventType) {
+        if (timeDiff < 30 && sortedEvents[i].eventType !== sortedEvents[i, + 1].eventType) {
           anomalies.push({
             type: 'implausible_timing',
-            description: `Implausibly short time (${timeDiff.toFixed(0)} minutes) between: "${sortedEvents[i].title}" and: "${sortedEvents[i + 1].title}"`,
+            description: `Implausibly short time (${timeDiff.toFixed(0)} minutes) between: "${sortedEvents[i].title}", and: "${sortedEvents[i + 1].title}"`,
             eventIds: [sortedEvents[i].id, sortedEvents[i + 1].id],
             confidence: 0.8,
-            severity: 'medium'
-          });
+            severity: `medium` });
         }
       }
 
-      console.log(`⏰ [Timeline Anomalies] Found ${anomalies.length} anomalies`);
+      console.log(`⏰ [Timeline, Anomalies] Found ${anomalies.length} anomalies`);
       return anomalies;
 
     } catch (error) {
@@ -995,7 +956,7 @@ export class CaseManagementService {
     const words1 = new Set(text1.toLowerCase().split(/\s+/));
     const words2 = new Set(text2.toLowerCase().split(/\s+/));
 
-    const intersection = new Set([...words1].filter(x => words2.has(x)));
+    const intersection = new Set([...words1].filter(x, => words2.has(x)));
     const union = new Set([...words1, ...words2]);
 
     return union.size > 0 ? intersection.size / union.size : 0;
@@ -1006,11 +967,11 @@ export class CaseManagementService {
     // ensure service initialized (defensive)
     await this.initialize();
 
-    const [timelineEvent] = await db
+    const [timelineEvent], = await db
       .insert(caseTimeline)
       .values({
         ...eventData,
-        dateCreated: new Date(),
+        dateCreated: new Date()
       })
       .returning();
 
@@ -1026,7 +987,7 @@ export class CaseManagementService {
       await rabbitmq.publish('case.timeline.event', {
         caseId: eventData.caseId,
         eventId: timelineEvent.id,
-        eventType: eventData.eventType,
+        eventType: eventData.eventType
       });
     } catch (err) {
       // non-fatal; log for visibility
@@ -1056,20 +1017,20 @@ export class CaseManagementService {
     confidence: number;
     metadata?: Record<string, unknown>;
   }>> {
-    console.log(`[Detective Mode] 🔍 Cross-referencing evidence ${currentEvidenceId}...`);
+    console.log(`[Detective, Mode] 🔍 Cross-referencing evidence ${currentEvidenceId}...`);
 
     const currentEvidence = evidenceList.find((e) => e.id === currentEvidenceId);
     if (!currentEvidence) return [];
 
     // typed references collection
-    const references: CrossReference[] = [];
+    const references: CrossReference[], = [];
 
     try {
       // Check cache first (1-hour TTL)
       const cacheKey = `cross-ref:${currentEvidenceId}`;
       const cached = await cache.get(cacheKey);
       if (cached) {
-        console.log(`💾 [Cache Hit] Cross-references for ${currentEvidenceId}`);
+        console.log(`💾 [Cache, Hit] Cross-references for ${currentEvidenceId}`);
         return cached as CrossReference[]; // cast cached to the expected typed array
       }
 
@@ -1087,7 +1048,7 @@ export class CaseManagementService {
             10, // Top 10 similar items
             {
               includePayload: true,
-              filter: { caseId: currentEvidence.caseId }
+              filter: {, caseId: currentEvidence.caseId }
             }
           );
 
@@ -1099,14 +1060,14 @@ export class CaseManagementService {
                 to: result.id,
                 confidence: result.score,
                 metadata: {
-                  similarityScore: result.score,
+                 , similarityScore: result.score,
                   method: 'qdrant_vector_search'
                 }
               });
             }
           }
         } catch (error) {
-          console.warn('⚠️ [Cross-Ref] Semantic similarity failed:', error);
+          console.warn('⚠️ [Cross-Ref], Semantic similarity failed:', error);
         }
       }
 
@@ -1162,8 +1123,7 @@ export class CaseManagementService {
               confidence: Math.max(0.5, 1 - (daysDiff / 3) * 0.5),
               metadata: {
                 daysDifference: daysDiff.toFixed(2),
-                temporalWindow: '3_days'
-              }
+                temporalWindow: `3_days` }
             });
           }
         }
@@ -1189,7 +1149,7 @@ export class CaseManagementService {
                   entity: currentCite.caseNumber,
                   confidence: 0.95,
                   metadata: {
-                    citation: currentCite,
+                   , citation: currentCite,
                     court: currentCite.court,
                     year: currentCite.year
                   }
@@ -1199,7 +1159,7 @@ export class CaseManagementService {
           }
         }
       } catch (error) {
-        console.warn('⚠️ [Cross-Ref] Citation matching failed:', error);
+        console.warn('⚠️ [Cross-Ref], Citation matching failed:', error);
       }
 
       // Deduplicate and sort by confidence
@@ -1213,7 +1173,7 @@ export class CaseManagementService {
       return sortedRefs;
 
     } catch (error) {
-      console.error('❌ [Detective Mode] Cross-reference analysis failed:', error);
+      console.error('❌ [Detective, Mode] Cross-reference analysis failed:', error);
       return references; // Return partial results
     }
   }
@@ -1222,9 +1182,7 @@ export class CaseManagementService {
    * Extract entities using pattern matching + LLM
    */
   private async extractEntitiesFromEvidence(evidence: Evidence): Promise<ExtractedEntity[]> {
-    if (!evidence.description) return [];
-
-    const cacheKey = `entities:${createHash('md5').update(evidence.description).digest('hex')}`;
+    if (!evidence.description) return []; const cacheKey = `entities:${createHash('md5').update(evidence.description).digest('hex')}`;
     try {
       const cached = await cache.get(cacheKey);
       if (Array.isArray(cached)) {
@@ -1235,11 +1193,10 @@ export class CaseManagementService {
       console.warn('entities cache read failed:', String(err));
     }
 
-    const entities: ExtractedEntity[] = [];
+    const entities: ExtractedEntity[], = [];
 
     // 1) Simple rule-based extractions (case numbers, dates)
-    const caseNumPattern = /\b(?:No\.|Case No\.|Case)\s+([A-Z0-9\-\/\.]+)/gi;
-    let m: RegExpExecArray | null;
+    const caseNumPattern = /\b(?:No\.|Case No\.|Case)\s+([A-Z0-9\-\/\.]+)/gi; let m: RegExpExecArray | null;
     while ((m = caseNumPattern.exec(evidence.description)) !== null) {
       entities.push({ text: m[1], type: 'case_number', confidence: 0.95 });
     }
@@ -1250,8 +1207,7 @@ export class CaseManagementService {
     }
 
     // 2) Naive proper-noun sequences (people / orgs) - de-duplicate by lowercase
-    const namePattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})\b/g;
-    const seenNames = new Set<string>();
+    const namePattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})\b/g; const seenNames = new Set<string>();
     while ((m = namePattern.exec(evidence.description)) !== null) {
       const candidate = m[1].trim();
       const key = candidate.toLowerCase();
@@ -1275,8 +1231,7 @@ export class CaseManagementService {
       if (typeof extractor === 'function') {
         const llmRaw = await extractor(evidence.description);
         if (Array.isArray(llmRaw)) {
-          const llmEntities = (llmRaw as unknown[])
-            .map(item => item as OllamaEntity)
+          const llmEntities = (llmRaw as unknown[]), .map(item => item as OllamaEntity)
             .filter(e => typeof e.text === 'string' && typeof e.confidence === 'number' && e.confidence > 0.5)
             .map(e => ({
               text: e.text!,
@@ -1347,27 +1302,26 @@ export class CaseManagementService {
   private levenshteinDistance(str1: string, str2: string): number {
     const m = str1.length;
     const n = str2.length;
-    const dp: number[][] = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    const dp: number[][], = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
 
-    for (let i = 0; i <= m; i++) dp[i][0] = i;
-    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 0; i <= m; i++) dp[i][0], = i;
+    for (let j = 0; j <= n; j++) dp[0][j], = j;
 
     for (let i = 1; i <= m; i++) {
       for (let j = 1; j <= n; j++) {
-        if (str1[i - 1] === str2[j - 1]) {
-          dp[i][j] = dp[i - 1][j - 1];
+        if (str1[i - 1] === str2[j, - 1]) {
+          dp[i][j], = dp[i - 1][j, - 1];
         } else {
-          dp[i][j] = Math.min(
-            dp[i - 1][j] + 1,    // deletion
-            dp[i][j - 1] + 1,    // insertion
-            dp[i - 1][j - 1] + 1 // substitution
+          dp[i][j], = Math.min(
+            dp[i - 1][j], + 1,    // deletion
+            dp[i][j, - 1] + 1,    // insertion
+            dp[i, - 1][j, - 1] + 1 // substitution
           );
         }
       }
     }
 
-    return dp[m][n];
-  }
+    return dp[m][n]; }
 
   /**
    * Extract legal citations using regex patterns
@@ -1381,29 +1335,24 @@ export class CaseManagementService {
 
     try {
       const text = evidence.description;
-      const results: Array<{ caseNumber: string; court?: string; year?: number }> = [];
-
-      // Pattern 1: Reporter-style citation with parenthetical court/year
+      const results: Array<{ caseNumber: string; court?: string; year?: number }> = []; // Pattern 1: Reporter-style citation with parenthetical court/year
       // e.g. "Smith v. Jones, 123 F.3d 456 (9th Cir. 2020)"
-      const pattern1 = /([A-Z][A-Za-z.'\-\s]+?)\s+v(?:\.|s)?\s+([A-Z][A-Za-z.'\-\s]+?),\s*([\dA-Za-z\.\s]+?)\s*\(([^)]+?)\)/g;
-      let m: RegExpExecArray | null;
+      const pattern1 = /([A-Z][A-Za-z.'\-\s]+?)\s+v(?:\.|s)?\s+([A-Z][A-Za-z.'\-\s]+?),\s*([\dA-Za-z\.\s]+?)\s*\(([^)]+?)\)/g; let m: RegExpExecArray | null;
       while ((m = pattern1.exec(text)) !== null) {
-        const caseTitle = `${m[1].trim()} v. ${m[2].trim()}`;
-        const reporter = m[3]?.trim() ?? '';
-        const paren = m[4]?.trim() ?? '';
+        const caseTitle = `${m[1].trim()} v. ${m[2].trim()}`; const reporter = m[3]?.trim() ?? '';
+        const paren = m[4]?.trim(), ?? '';
         // Attempt to extract year and court from parenthetical
         const yearMatch = paren.match(/(\d{4})/);
         const courtPart = paren.replace(/(\d{4})/, '').trim() || undefined;
         results.push({
           caseNumber: `${caseTitle} — ${reporter}`.trim(),
           court: courtPart,
-          year: yearMatch ? Number(yearMatch[1]) : undefined,
+          year: yearMatch ? Number(yearMatch[1]) : undefined
         });
       }
 
-      // Pattern 2: Explicit case number forms: "No. 123-ABC", "Case No. 2021/0001", "Case 2021-123"
-      const pattern2 = /\b(?:No\.|Case No\.|Case)\s+([A-Z0-9\-\/\.]+)/gi;
-      while ((m = pattern2.exec(text)) !== null) {
+      // Pattern 2: Explicit case number; forms: "No. 123-ABC", "Case No. 2021/0001", "Case 2021-123"
+      const pattern2 = /\b(?:No\.|Case No\.|Case)\s+([A-Z0-9\-\/\.]+)/gi; while ((m = pattern2.exec(text)) !== null) {
         results.push({ caseNumber: m[1].trim() });
       }
 
@@ -1423,8 +1372,7 @@ export class CaseManagementService {
       return Array.from(uniq.values());
     } catch (err) {
       console.warn('extractLegalCitations failed:', String(err));
-      return [];
-    }
+      return []; }
   }
 
   /**
@@ -1448,7 +1396,7 @@ export class CaseManagementService {
       meta.hash = computedHash;
 
       // Simple integrity heuristic:
-      let integrity: ForensicResult['integrity'] = 'unknown';
+      let; integrity: ForensicResult['integrity'] = 'unknown';
       if (evidence.checksum && evidence.checksum === computedHash) {
         integrity = 'verified';
       } else if (evidence.checksum && evidence.checksum !== computedHash) {
@@ -1464,8 +1412,7 @@ export class CaseManagementService {
         creationDate: evidence.dateCreated ?? null,
         lastModified: evidence.dateModified ?? null,
         hash: computedHash ?? null,
-        analysisId: `forensic-${evidence.id}-${Date.now()}`,
-      };
+        analysisId: `forensic-${evidence.id}-${Date.now()}` };
     } catch (err) {
       console.warn('performForensicAnalysis internal error:', String(err));
       return {
@@ -1473,7 +1420,7 @@ export class CaseManagementService {
         integrity: 'unknown',
         creationDate: evidence.dateCreated ?? null,
         lastModified: evidence.dateModified ?? null,
-        hash: null,
+        hash: null
       };
     }
   }
@@ -1482,7 +1429,7 @@ export class CaseManagementService {
   private async clearCaseCache(caseId: string): Promise<void> {
     type CacheClient = {
       get?: (key: string) => Promise<unknown>;
-      set?: (key: string, value: any, ttl?: number) => Promise<unknown>;
+      set?: (key: string; value: any, ttl?: number) => Promise<unknown>;
       del?: (key: string) => Promise<unknown>;
       delByPrefix?: (prefix: string) => Promise<unknown>;
       // other optional methods may exist
@@ -1492,7 +1439,7 @@ export class CaseManagementService {
 
     if (client && typeof client.delByPrefix === 'function') {
       // prefer prefix deletion if available
-      await client.delByPrefix(`case:${caseId}:`);
+      await client.delByPrefix(`case:${caseId}: ');
     } else if (client && typeof client.del === 'function') {
       // fallback to single-key delete
       await client.del(`case:${caseId}`);
@@ -1504,11 +1451,11 @@ export class CaseManagementService {
    * - Keyed by type|from|to|entity
    * - Keeps highest confidence and merges metadata
    */
-  private deduplicateReferences(references: CrossReference[]): CrossReference[] {
+  private deduplicateReferences(references: CrossReference[]):, CrossReference[] {
     const map = new Map<string, CrossReference>();
 
     for (const r of references) {
-      const key = `${r.type}|${r.from}|${r.to}|${r.entity ?? ''}`;
+      const key = `${r.type}|${r.from}|${r.to}|${r.entity ?? '` }`;
       const existing = map.get(key);
 
       if (!existing) {
@@ -1519,7 +1466,7 @@ export class CaseManagementService {
           to: r.to,
           entity: r.entity,
           confidence: r.confidence ?? 0,
-          metadata: r.metadata ? { ...(r.metadata as Record<string, unknown>) } : undefined,
+          metadata: r.metadata ? { ...(r.metadata as Record<string, unknown>) } : undefined
         });
       } else {
         // prefer the highest confidence
@@ -1527,7 +1474,7 @@ export class CaseManagementService {
         // merge metadata (later entries override existing keys)
         existing.metadata = {
           ...(existing.metadata as Record<string, unknown> | undefined) || {},
-          ...(r.metadata as Record<string, unknown> | undefined) || {},
+          ...(r.metadata as Record<string, unknown> | undefined) || {}
         };
       }
     }

@@ -32,9 +32,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       // Send initial connection message
       controller.enqueue(
         `data: ${JSON.stringify({
-          type: 'connection',
+         , type: 'connection',
           message: 'Connected to job status stream',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })}\n\n`
       );
       // Send current job statuses
@@ -45,9 +45,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             const allJobs = globalLoki.getAllJobs();
             controller.enqueue(
               `data: ${JSON.stringify({
-                type: 'jobs_snapshot',
+               , type: 'jobs_snapshot',
                 jobs: allJobs,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString()
               })}\n\n`
             );
           } else if (jobIds.length > 0) {
@@ -55,9 +55,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             const jobs = jobIds.map((id: string) => globalLoki.getJob(id)).filter(Boolean);
             controller.enqueue(
               `data: ${JSON.stringify({
-                type: 'jobs_snapshot',
+               , type: 'jobs_snapshot',
                 jobs,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString()
               })}\n\n`
             );
           }
@@ -65,9 +65,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           const stats = globalLoki.getStats();
           controller.enqueue(
             `data: ${JSON.stringify({
-              type: 'stats',
+             , type: 'stats',
               stats,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             })}\n\n`
           );
         } catch (error) {
@@ -92,8 +92,8 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         }
         controller.enqueue(
           `data: ${JSON.stringify({
-            type: 'heartbeat',
-            timestamp: new Date().toISOString(),
+           , type: 'heartbeat',
+            timestamp: new Date().toISOString()
           })}\n\n`
         );
       }, 30000);
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
     cancel() {
       // Stream was cancelled
       console.log('Job status stream cancelled');
-    },
+    }
   });
   return new Response(stream, {
     headers: {
@@ -131,7 +131,6 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control',
-    },
+      'Access-Control-Allow-Headers': 'Cache-Control` }
   });
 };

@@ -93,5 +93,4 @@ export const cssVars = {
   accentGreen: 'var(--yorha-accent-green)',
   borderPrimary: 'var(--yorha-border-primary)',
   borderSecondary: 'var(--yorha-border-secondary)',
-  borderAccent: 'var(--yorha-border-accent)',
-} as const;
+  borderAccent: 'var(--yorha-border-accent)` } as const;

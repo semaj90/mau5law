@@ -2,24 +2,18 @@ import { db } from './client.js'; // Changed import path for db
 import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.ts'; // Import specific schema objects
 import { sql, type PgTable } from 'drizzle-orm'; // Added type PgTable
 // GRPMO imports
-interface GRPMOConfig {
-  hotCacheThreshold: number;
-  warmCacheThreshold: number;
+interface GRPMOConfig { hotCacheThreshold: number;, warmCacheThreshold: number;
   coldCacheThreshold: number;
   reinforcementLearningRate: number;
   predictiveWindowMs: number;
   glyphCompressionRatio: number;
 }
-interface ExtendedThinkingStage {
-  name: string;
-  duration: number;
+interface ExtendedThinkingStage { name: string;, duration: number;
   cacheLayer: 'hot' | 'warm' | 'cold';
   confidence: number;
   glyphData?: string;
 }
-interface PPOState {
-  stateVector: number[];
-  actionHistory: string[];
+interface PPOState { stateVector: number[];, actionHistory: string[];
   rewardSignal: number;
   policyGradient: number[];
   valueFunction: number;
@@ -30,7 +24,7 @@ const defaultGRPMOConfig: GRPMOConfig = {
   coldCacheThreshold: 5000,
   reinforcementLearningRate: 0.01,
   predictiveWindowMs: 30000,
-  glyphCompressionRatio: 50,
+  glyphCompressionRatio: 50
 };
 // New: typed metadata and DB row helpers
 type Metadata = { keywords?: string[]; topics?: string[]; [key: string]: any };
@@ -109,8 +103,8 @@ export async function searchSimilarDocuments(
         similarity,
         metadata: {
           keywords,
-          topics,
-        },
+          topics
+        }
       } as SimilarityResult;
     });
   } catch (error) {
@@ -129,7 +123,7 @@ async function fallbackTextSearch(_queryEmbedding: number[], limit: number): Pro
       title: (legalDocuments as PgTable).title,
       content: (legalDocuments as PgTable).content,
       keywords: (legalDocuments as PgTable).keywords,
-      topics: (legalDocuments as PgTable).topics,
+      topics: (legalDocuments as PgTable).topics
     })
     .from(legalDocuments as PgTable)
     .limit(limit)) as DBRow[];
@@ -144,7 +138,7 @@ async function fallbackTextSearch(_queryEmbedding: number[], limit: number): Pro
       title,
       content,
       similarity: 1 - index * 0.1,
-      metadata: { keywords, topics },
+      metadata: { keywords, topics }
     } as SimilarityResult;
   });
 }
@@ -165,7 +159,7 @@ export async function storeAiQueryWithEmbedding(
       response,
       embedding: arrayToPgVector(embedding),
       metadata,
-      isSuccessful: true,
+      isSuccessful: true
     });
   } catch (error) {
     console.error('Failed to store AI query with embedding:', stringifyError(error));
@@ -177,7 +171,7 @@ export async function storeAiQueryWithEmbedding(
         query,
         response,
         metadata,
-        isSuccessful: true,
+        isSuccessful: true
       });
     } catch (err) {
       console.error('Fallback store also failed:', stringifyError(err));
@@ -194,7 +188,7 @@ export async function cacheEmbedding(
     await db.insert(embeddingCache as PgTable).values({
       textHash,
       embedding: arrayToPgVector(embedding),
-      model,
+      model
     });
   } catch (error) {
     console.error('Failed to cache embedding:', stringifyError(error));
@@ -260,7 +254,7 @@ export async function hybridSearch(
         title,
         content,
         similarity: rank * 0.5,
-        metadata: { keywords, topics, searchType: 'text' },
+        metadata: { keywords, topics, searchType: `text` }
       } as SimilarityResult;
     });
     // Combine and deduplicate results
@@ -284,9 +278,7 @@ export async function checkPgVectorAvailable(): Promise<boolean> {
   }
 }
 // Vector operations test function
-export async function testVectorOperations(): Promise<{
-  pgvectorAvailable: boolean;
-  similaritySearchWorking: boolean;
+export async function testVectorOperations(): Promise<{ pgvectorAvailable: boolean;, similaritySearchWorking: boolean;
   embeddingCacheWorking: boolean;
 }> {
   const pgvectorAvailable = await checkPgVectorAvailable();
@@ -312,20 +304,18 @@ export async function testVectorOperations(): Promise<{
   return {
     pgvectorAvailable,
     similaritySearchWorking,
-    embeddingCacheWorking,
+    embeddingCacheWorking
   };
 }
 // New interface for the return type of processExtendedThinking
-interface ProcessExtendedThinkingResult {
-  result: SimilarityResult[];
-  thinkingStages: ExtendedThinkingStage[];
-  cachePerformance: { hot: number; warm: number; cold: number };
+interface ProcessExtendedThinkingResult { result: SimilarityResult[];, thinkingStages: ExtendedThinkingStage[];
+  cachePerformance: { hot: number; warm: number;, cold: number };
 }
 // GRPMO Extended Thinking Engine
 export class GRPMOOrchestrator {
   private config: GRPMOConfig;
   // Narrowed memoryCache type from any to SimilarityResult[]
-  private memoryCache: Map<string, { data: SimilarityResult[]; timestamp: number; layer: string }> = new Map();
+  private memoryCache: Map<string, { data: SimilarityResult[]; timestamp: number;, layer: string }> = new Map();
   private reinfrocementAgent: PPOAgent;
   constructor(config: GRPMOConfig = defaultGRPMOConfig) {
     this.config = config;
@@ -352,7 +342,7 @@ export class GRPMOOrchestrator {
         duration: Date.now() - startTime,
         cacheLayer: 'hot',
         confidence: 0.95,
-        glyphData: this.compressToGlyph(hotResult.data),
+        glyphData: this.compressToGlyph(hotResult.data)
       });
       return { result: hotResult.data, thinkingStages: stages, cachePerformance };
     }
@@ -366,7 +356,7 @@ export class GRPMOOrchestrator {
         duration: Date.now() - startTime,
         cacheLayer: 'warm',
         confidence: 0.8,
-        glyphData: this.compressToGlyph(warmResult.data),
+        glyphData: this.compressToGlyph(warmResult.data)
       });
       // Predictive enhancement
       const enhanced = await this.enhanceWithPredictiveAnalysis(warmResult.data, queryEmbedding);
@@ -378,7 +368,7 @@ export class GRPMOOrchestrator {
       name: 'Deep Vector Analysis',
       duration: Date.now() - startTime,
       cacheLayer: 'cold',
-      confidence: 0.6,
+      confidence: 0.6
     });
     const fullResults = await this.performDeepVectorSearch(query, queryEmbedding, userId, caseId);
     cachePerformance.cold++;
@@ -387,7 +377,7 @@ export class GRPMOOrchestrator {
       query,
       userId,
       caseId,
-      embedding: queryEmbedding,
+      embedding: queryEmbedding
     });
     // Stage 5: Glyph compression and caching
     const glyphData = this.compressToGlyph(optimizedResults);
@@ -396,7 +386,7 @@ export class GRPMOOrchestrator {
       duration: Date.now() - startTime,
       cacheLayer: 'warm',
       confidence: 0.9,
-      glyphData,
+      glyphData
     });
     // Cache at multiple layers
     await this.cacheResult(warmCacheKey, optimizedResults, 'warm');
@@ -410,7 +400,7 @@ export class GRPMOOrchestrator {
   private async retrieveFromCache(
     key: string,
     layer: string
-  ): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
+  ): Promise<{ data: SimilarityResult[];, timestamp: number } | null> {
     const cached = this.memoryCache.get(key);
     if (!cached) return null;
     const age = Date.now() - cached.timestamp;
@@ -426,7 +416,7 @@ export class GRPMOOrchestrator {
     this.memoryCache.set(key, {
       data,
       timestamp: Date.now(),
-      layer,
+      layer
     });
   }
   private compressToGlyph(data: SimilarityResult[]): string {
@@ -434,7 +424,7 @@ export class GRPMOOrchestrator {
     const compressed = data.map(item => ({
       id: String(item.id).slice(0, 8),
       sim: Math.round(item.similarity * 127),
-      key: item.metadata?.keywords && item.metadata.keywords[0] ? item.metadata.keywords[0] : '',
+      key: item.metadata?.keywords && item.metadata.keywords[0] ? item.metadata.keywords[0] : ''
     }));
     return JSON.stringify(compressed);
   }
@@ -458,8 +448,7 @@ export class GRPMOOrchestrator {
     return data.map(item => ({
       ...item,
       predictiveScore: this.calculatePredictiveScore(item, queryEmbedding),
-      cacheLayer: 'warm',
-    }));
+      cacheLayer: `warm` }));
   }
   private calculatePredictiveScore(item: SimilarityResult, queryEmbedding: number[]): number {
     return (item.similarity || 0) * 0.8 + Math.random() * 0.2;
@@ -475,7 +464,7 @@ export class GRPMOOrchestrator {
       ...item,
       cacheLayer: 'cold',
       responseTime: Date.now(),
-      extendedThinkingStages: [],
+      extendedThinkingStages: []
     }));
   }
 }
@@ -499,13 +488,13 @@ class PPOAgent {
         actionHistory: [stateKey],
         rewardSignal: item.similarity ?? 0,
         policyGradient: currentPolicy,
-        valueFunction: this.valueNetwork.get(stateKey) || 0.5,
-      },
+        valueFunction: this.valueNetwork.get(stateKey) || 0.5
+      }
     }));
   }
   private generateStateKey(context: PPOContext): string {
     const qlen = context?.query?.length ?? 0;
-    return `${context.userId ?? 'anon'}:${context.caseId ?? 'global'}:${qlen}`;
+    return `${context.userId ?? 'anon'}:${context.caseId ?? 'global` }:${qlen}`;
   }
   async updatePolicy(stateKey: string, reward: number, action: number[]): Promise<void> {
     const currentPolicy = this.policyNetwork.get(stateKey) || action;

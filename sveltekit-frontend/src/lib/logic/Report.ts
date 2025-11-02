@@ -16,8 +16,8 @@ export class Report {
   public id: string;
   public title: Writable<string>;
   public content: Writable<ContentNode[]>;
-  public position: Writable<{ x: number; y: number }>;
-  public size: Writable<{ width: number; height: number }>;
+  public position: Writable<{ x: number;, y: number }>;
+  public size: Writable<{ width: number;, height: number }>;
   public isDirty: Writable<boolean>;
   public version: Writable<number>;
   public historyManager: HistoryManager;
@@ -37,7 +37,7 @@ export class Report {
     height?: number;
     caseId?: string;
     version?: number;
-    createdBy: string;
+   , createdBy: string;
   }) {
     this.id = data.id || crypto.randomUUID();
     this.title = writable(data.title || 'Untitled Report');
@@ -45,14 +45,14 @@ export class Report {
     const initialContent: ContentNode[] = data.content || [
       {
         type: 'paragraph',
-         [{ type: 'text', text: '' }],
+         [{ type: 'text', text: '' }]
       },
     ];
     this.content = writable(initialContent);
     this.position = writable({ x: data.posX || 50, y: data.posY || 50 });
     this.size = writable({
       width: data.width || 650,
-      height: data.height || 450,
+      height: data.height || 450
     });
     this.isDirty = writable(false);
     this.version = writable(data.version || 1);
@@ -170,7 +170,7 @@ export class Report {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       createdBy: this.createdBy,
-      lastModifiedBy: this.lastModifiedBy,
+      lastModifiedBy: this.lastModifiedBy
     };
   }
 }
@@ -234,6 +234,6 @@ export function fromJSON(data: ReportSerialized, createdBy: string): Report {
         : typeof data.version === 'string'
           ? parseInt(data.version) || 1
           : 1,
-    createdBy: createdBy,
+    createdBy: createdBy
   });
 }

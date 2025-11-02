@@ -97,9 +97,7 @@ export const YoRHaUtils = {
   }
 }
 // Constants for easy access to color schemes (use YORHA_COLORS directly for type safety)
-export const YoRHaThemes = {
-  DEFAULT: {
-    background: 0xd4c5a9,  // YORHA_COLORS.primary.beige
+export const YoRHaThemes = { DEFAULT: {, background: 0xd4c5a9,  // YORHA_COLORS.primary.beige
     text: 0x0a0a0a,        // YORHA_COLORS.primary.black
     border: 0x8b8680,      // YORHA_COLORS.primary.grey
     accent: 0xd4af37       // YORHA_COLORS.accent.gold
@@ -219,7 +217,7 @@ export const YoRHaQuickSetup = {
   /**
    * Create a toolbar with common actions
    */
-  createToolbar: (actions: Array<{ text: string; icon?: string; variant?: string }>) => {
+  createToolbar: (actions: Array<{, text: string; icon?: string; variant?: string }>) => {
     const toolbar = YoRHaLayoutPresets.createToolbar();
     const buttons: YoRHaButton3D[] = [];
     actions.forEach(action => {

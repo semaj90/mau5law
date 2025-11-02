@@ -11,7 +11,7 @@ import { browser } from '$app/environment';
 export class LegalAIIntegrationClient {
   private baseUrl: string;
   private healthStatus = writable<Record<string, boolean>>({});
-  private requestCache = new Map<string, { data: any; timestamp: number }>();
+  private requestCache = new Map<string, { data: any;, timestamp: number }>();
   private cacheTimeout = 5 * 60 * 1000; // 5 minutes
   constructor(baseUrl = '') {
     this.baseUrl = baseUrl;
@@ -36,7 +36,7 @@ export class LegalAIIntegrationClient {
           try {
             const response = await fetch(`${this.baseUrl}/api/${service}`, {
               method: 'OPTIONS',
-              signal: AbortSignal.timeout(3000),
+              signal: AbortSignal.timeout(3000)
             });
             results[service] = response.ok;
           } catch {
@@ -66,9 +66,9 @@ export class LegalAIIntegrationClient {
         headers: {
           'Content-Type': 'application/json',
           'X-Client': 'legal-ai-integration',
-          ...options.headers,
+          ...options.headers
         },
-        ...options,
+        ...options
       });
       if (!response.ok) {
         throw new Error(`API Error: ${response.status} ${response.statusText}`);
@@ -80,7 +80,7 @@ export class LegalAIIntegrationClient {
       }
       return data;
     } catch (error) {
-      console.error(`API Request failed for ${endpoint}:`, error);
+      console.error(`API Request failed for ${endpoint}: ', error);
       throw error;
     }
   }
@@ -93,74 +93,54 @@ export class LegalAIIntegrationClient {
 export const legalAI = new LegalAIIntegrationClient();
 
 // --- New API Response Interfaces ---
-interface LegalSearchResult {
-  id: string;
-  title: string;
+interface LegalSearchResult { id: string;, title: string;
   url: string;
   snippet: string;
   relevanceScore: number;
   source: string;
 }
 
-interface LegalResearchItem {
-  id: string;
-  title: string;
+interface LegalResearchItem { id: string;, title: string;
   summary: string;
   citation: string;
   type: 'case' | 'statute' | 'article';
 }
 
-interface LegalResearchApiResponse {
-  results: LegalResearchItem[];
-  recommendations: string[];
+interface LegalResearchApiResponse { results: LegalResearchItem[];, recommendations: string[];
   metadata?: {
     confidence?: number;
   };
 }
 
-interface ChatApiResponse {
-  response: string;
-  model: string;
+interface ChatApiResponse { response: string;, model: string;
   timestamp: string;
 }
 
-interface Entity {
-  text: string;
-  type: string;
+interface Entity { text: string;, type: string;
   confidence: number;
 }
 
-interface DocumentAnalysisApiResponse {
-  summary: string;
-  keyTerms: string[];
+interface DocumentAnalysisApiResponse { summary: string;, keyTerms: string[];
   entities: Entity[];
   documentType: string;
   analysisDate: string;
 }
 
-interface EmbeddingApiResponse {
-  embeddings: number[];
-  model: string;
+interface EmbeddingApiResponse { embeddings: number[];, model: string;
   text: string;
 }
 
-interface SummarizationApiResponse {
-  summary: string;
-  keyTerms: string[];
+interface SummarizationApiResponse { summary: string;, keyTerms: string[];
   maxLength: number;
 }
 
-interface CaseAnalysisApiResponse {
-  caseScore: number;
-  riskFactors: string[];
+interface CaseAnalysisApiResponse { caseScore: number;, riskFactors: string[];
   strengths: string[];
   weaknesses: string[];
   recommendations: string[];
 }
 
-interface SuggestionsApiResponse {
-  suggestions: string[];
-  type: string;
+interface SuggestionsApiResponse { suggestions: string[];, type: string;
   context: string;
 }
 
@@ -188,21 +168,20 @@ export class LegalAIWorkflowOrchestrator {
       const researchResults = await this.client.request<LegalResearchApiResponse>('ai/legal-research', {
         method: 'POST',
         body: JSON.stringify({
-          topic: request.query,
+         , topic: request.query,
           jurisdiction: request.jurisdiction,
           userRole: request.userRole,
-          includeAnalysis: true,
-        }),
+          includeAnalysis: true
+        })
       });
       // Step 3: AI-powered summary and recommendations
       this.updateWorkflowStatus(workflowId, 'processing', 'Generating AI analysis...');
       const aiAnalysis = await this.client.request<ChatApiResponse>('ai/chat', {
         method: 'POST',
-        body: JSON.stringify({
-          message: `Provide a comprehensive legal analysis for: ${request.query}. Include key findings, precedents, and strategic recommendations.`,
+        body: JSON.stringify({, message: `Provide a comprehensive legal analysis, for: ${request.query}. Include key findings, precedents, and strategic recommendations.`,
           model: 'gemma3-legal:latest',
-          temperature: 0.3,
-        }),
+          temperature: 0.3
+        })
       });
       // Combine and structure results
       const result: LegalResearchWorkflowResult = {
@@ -214,7 +193,7 @@ export class LegalAIWorkflowOrchestrator {
         recommendations: researchResults.recommendations || [],
         confidence: researchResults.metadata?.confidence || 0.5,
         processingTime: Date.now() - (this.getWorkflow(workflowId)?.startTime ?? Date.now()), // Fixed non-null assertion
-        timestamp: new Date(),
+        timestamp: new Date()
       };
       this.updateWorkflowStatus(workflowId, 'completed', 'Legal research completed successfully');
       return result;
@@ -232,30 +211,29 @@ export class LegalAIWorkflowOrchestrator {
       const analysisResult = await this.client.request<DocumentAnalysisApiResponse>('ai/analyze-evidence', {
         method: 'POST',
         body: JSON.stringify({
-          content: request.content,
+         , content: request.content,
           documentType: request.documentType,
           extractEntities: true,
-          includeKeyTerms: true,
-        }),
+          includeKeyTerms: true
+        })
       });
       // Step 2: Generate embeddings for search
       this.updateWorkflowStatus(workflowId, 'processing', 'Generating embeddings...');
       const embeddingResult = await this.client.request<EmbeddingApiResponse>('ai/embed', {
         method: 'POST',
         body: JSON.stringify({
-          text: request.content,
-          model: 'nomic-embed-text',
-        }),
+         , text: request.content,
+          model: 'nomic-embed-text` })
       });
       // Step 3: AI-powered summarization
       this.updateWorkflowStatus(workflowId, 'processing', 'Creating summary...');
       const summaryResult = await this.client.request<SummarizationApiResponse>('ai/summarize', {
         method: 'POST',
         body: JSON.stringify({
-          content: request.content,
+         , content: request.content,
           maxLength: 300,
-          includeKeyPoints: true,
-        }),
+          includeKeyPoints: true
+        })
       });
       const result: DocumentProcessingWorkflowResult = {
         workflowId,
@@ -266,7 +244,7 @@ export class LegalAIWorkflowOrchestrator {
         keyTerms: summaryResult.keyTerms || [],
         entities: analysisResult.entities || [],
         processingTime: Date.now() - (this.getWorkflow(workflowId)?.startTime ?? Date.now()), // Fixed non-null assertion
-        timestamp: new Date(),
+        timestamp: new Date()
       };
       this.updateWorkflowStatus(workflowId, 'completed', 'Document processing completed');
       return result;
@@ -284,11 +262,11 @@ export class LegalAIWorkflowOrchestrator {
       const caseAnalysis = await this.client.request<CaseAnalysisApiResponse>('ai/case-scoring', {
         method: 'POST',
         body: JSON.stringify({
-          caseTitle: request.title,
+         , caseTitle: request.title,
           description: request.description,
           caseType: request.caseType,
-          jurisdiction: request.jurisdiction,
-        }),
+          jurisdiction: request.jurisdiction
+        })
       });
       // Step 2: Create case record (this would typically go to a database)
       this.updateWorkflowStatus(workflowId, 'processing', 'Saving case data...');
@@ -296,9 +274,8 @@ export class LegalAIWorkflowOrchestrator {
       const researchSuggestions = await this.client.request<SuggestionsApiResponse>('ai/suggestions', {
         method: 'POST',
         body: JSON.stringify({
-          context: `New ${request.caseType} case ${request.title}`,
-          suggestionType: 'research',
-        }),
+         , context: `New ${request.caseType} case ${request.title}`,
+          suggestionType: 'research` })
       });
       const result: CaseCreationWorkflowResult = {
         workflowId,
@@ -308,7 +285,7 @@ export class LegalAIWorkflowOrchestrator {
         researchSuggestions: researchSuggestions.suggestions || [],
         timeline: this.generateInitialTimeline(request),
         processingTime: Date.now() - (this.getWorkflow(workflowId)?.startTime ?? Date.now()), // Fixed non-null assertion
-        timestamp: new Date(),
+        timestamp: new Date()
       };
       this.updateWorkflowStatus(workflowId, 'completed', 'Case created successfully');
       return result;
@@ -319,8 +296,7 @@ export class LegalAIWorkflowOrchestrator {
   }
   // Workflow management methods
   private createWorkflow(
-    type: WorkflowType, // Use a more specific type for: 'type'
-    request: LegalResearchWorkflowRequest | DocumentProcessingWorkflowRequest | CaseCreationWorkflowRequest // Specific request types
+    type: WorkflowType, // Use a more specific type for: 'type'; request: LegalResearchWorkflowRequest | DocumentProcessingWorkflowRequest | CaseCreationWorkflowRequest // Specific request types
   ): string {
     const workflowId = `${type}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`; // Fixed substr deprecation
     const workflow: WorkflowState = {
@@ -330,11 +306,11 @@ export class LegalAIWorkflowOrchestrator {
       message: 'Workflow initialized',
       request,
       startTime: Date.now(),
-      progress: 0,
+      progress: 0
     };
     this.workflows.update(workflows => ({
       ...workflows,
-      [workflowId]: workflow,
+      [workflowId]: workflow
     }));
     this.currentWorkflow.set(workflowId);
     return workflowId;
@@ -347,8 +323,8 @@ export class LegalAIWorkflowOrchestrator {
         status,
         message,
         progress: progress ?? workflows[workflowId]?.progress ?? 0,
-        lastUpdated: Date.now(),
-      },
+        lastUpdated: Date.now()
+      }
     }));
   }
   private getWorkflow(workflowId: string): WorkflowState | undefined {
@@ -366,22 +342,20 @@ export class LegalAIWorkflowOrchestrator {
         title: 'Case Created',
         date: now,
         type: 'milestone',
-        description: `${request.caseType} case "${request.title}" created`,
-      },
+        description: `${request.caseType} case "${request.title}" created' },
       {
         id: '2',
         title: 'Initial Research',
         date: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
         type: 'task',
-        description: 'Complete initial legal research and case analysis',
+        description: 'Complete initial legal research and case analysis'
       },
       {
         id: '3',
         title: 'Discovery Phase',
         date: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
         type: 'phase',
-        description: 'Begin discovery and evidence collection',
-      },
+        description: 'Begin discovery and evidence collection` },
     ];
   }
 }
@@ -394,9 +368,7 @@ export interface LegalResearchWorkflowRequest {
   includeAI?: boolean;
 }
 
-export interface LegalResearchWorkflowResult {
-  workflowId: string;
-  query: string;
+export interface LegalResearchWorkflowResult { workflowId: string;, query: string;
   searchResults: LegalSearchResult[]; // Changed from any[]
   researchResults: LegalResearchItem[]; // Changed from any[]
   aiAnalysis: string;
@@ -406,15 +378,11 @@ export interface LegalResearchWorkflowResult {
   timestamp: Date;
 }
 
-export interface DocumentProcessingWorkflowRequest {
-  documentId: string;
-  content: string;
+export interface DocumentProcessingWorkflowRequest { documentId: string;, content: string;
   documentType: string;
 }
 
-export interface DocumentProcessingWorkflowResult {
-  workflowId: string;
-  documentId: string;
+export interface DocumentProcessingWorkflowResult { workflowId: string;, documentId: string;
   analysis: DocumentAnalysisApiResponse; // Changed from any
   embeddings: number[];
   summary: string;
@@ -424,17 +392,13 @@ export interface DocumentProcessingWorkflowResult {
   timestamp: Date;
 }
 
-export interface CaseCreationWorkflowRequest {
-  title: string;
-  description: string;
+export interface CaseCreationWorkflowRequest { title: string;, description: string;
   caseType: string;
   jurisdiction: string;
   clientId?: string;
 }
 
-export interface CaseCreationWorkflowResult {
-  workflowId: string;
-  caseId: string;
+export interface CaseCreationWorkflowResult { workflowId: string;, caseId: string;
   title: string;
   analysis: CaseAnalysisApiResponse; // Changed from any
   researchSuggestions: string[];
@@ -445,9 +409,7 @@ export interface CaseCreationWorkflowResult {
 export type WorkflowStatus = 'initialized' | 'processing' | 'completed' | 'failed' | 'paused';
 export type WorkflowType = 'legal-research' | 'document-processing' | 'case-creation'; // New type for workflow types
 
-export interface WorkflowState {
-  id: string;
-  type: WorkflowType; // Changed from string
+export interface WorkflowState { id: string;, type: WorkflowType; // Changed from string
   status: WorkflowStatus;
   message: string;
   request: LegalResearchWorkflowRequest | DocumentProcessingWorkflowRequest | CaseCreationWorkflowRequest; // Specific request types
@@ -457,9 +419,7 @@ export interface WorkflowState {
   progress: number;
 }
 
-export interface TimelineEvent {
-  id: string;
-  title: string;
+export interface TimelineEvent { id: string;, title: string;
   date: Date;
   type: 'milestone' | 'task' | 'phase' | 'deadline';
   description: string;

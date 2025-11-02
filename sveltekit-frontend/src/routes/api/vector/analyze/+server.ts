@@ -48,13 +48,13 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       analysis,
       metadata: {
-        contentLength: content.length,
+       , contentLength: content.length,
         processingTime: Date.now(),
         systemHealth: {
           status: systemHealth.systemHealth,
-          confidence: systemHealth.modelConfidence,
-        },
-      },
+          confidence: systemHealth.modelConfidence
+        }
+      }
     });
   } catch (err: any) {
     console.error('❌ Semantic analysis API error:', err);
@@ -76,12 +76,11 @@ export const GET: RequestHandler = async () => {
   return json({
     message: 'Vector Intelligence Semantic Analysis API - Phase 4',
     endpoints: {
-      'POST /api/vector/analyze': 'Perform semantic analysis on content',
+      'POST /api/vector/analyze': 'Perform semantic analysis on content'
     },
     parameters: {
-      content: 'Text content to analyze (required, max 50,000 chars)',
-      options: 'Analysis options (optional)',
-    },
+     , content: 'Text content to analyze (required, max 50,000 chars)',
+      options: 'Analysis options (optional)` },
     analysisFeatures: [
       'Entity extraction (persons, organizations, locations, dates, legal concepts)',
       'Theme identification and weighting',
@@ -93,19 +92,17 @@ export const GET: RequestHandler = async () => {
     ],
     entityTypes: ['person', 'organization', 'location', 'date', 'legal_concept'],
     complexityMetrics: ['readability', 'technicalLevel', 'legalComplexity'],
-    usage: {
-      example: {
-        method: 'POST',
+    usage: { example: {, method: 'POST',
         url: '/api/vector/analyze',
         body: {
           content: 'The defendant, John Smith, signed the contract on January 15, 2024...',
           options: {
             extractEntities: true,
             analyzeSentiment: true,
-            assessComplexity: true,
-          },
-        },
-      },
-    },
+            assessComplexity: true
+          }
+        }
+      }
+    }
   });
 };

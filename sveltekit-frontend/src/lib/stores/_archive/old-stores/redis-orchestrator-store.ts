@@ -5,40 +5,30 @@
  */
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
-export interface RedisStats {
-  llm_cache: {
-    total_keys: number;
+export interface RedisStats { llm_cache: {, total_keys: number;
     memory_usage: string;
     hit_rate_estimate: number;
   };
   agent_memory: {
     active_sessions: number;
   };
-  task_queue: {
-    queued_tasks: number;
-    processing_tasks: number;
+  task_queue: { queued_tasks: number;, processing_tasks: number;
     completed_tasks_count: number;
   };
   redis_memory: string;
   last_updated: string;
 }
-export interface RedisOptimizationResult {
-  response: any;
-  source: 'cache' | 'fresh' | 'queued';
+export interface RedisOptimizationResult { response: any;, source: 'cache' | 'fresh' | 'queued';
   processing_time: number;
   cached: boolean;
   task_id?: string;
-  _redis_optimization?: {
-    endpoint: string;
-    cache_strategy: string;
+  _redis_optimization?: { endpoint: string;, cache_strategy: string;
     memory_bank: string;
     session_id: string;
     timestamp: string;
   };
 }
-export interface QueuedTask {
-  taskId: string;
-  taskType: string;
+export interface QueuedTask { taskId: string;, taskType: string;
   query: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   estimatedTime: string;
@@ -52,7 +42,7 @@ export const isRedisHealthy = writable<boolean>(true);
 export const queuedTasks = writable<Map<string, QueuedTask>>(new Map());
 // Fixed: processingTimes typed as array of entries
 export const cacheHitRate = writable<number>(0);
-export const processingTimes = writable<Array<{ endpoint: string; time: number; timestamp: string }>>([]);
+export const processingTimes = writable<Array<{ endpoint: string; time: number;, timestamp: string }>>([]);
 // Derived stores for computed values
 export const averageProcessingTime = derived(processingTimes, $times => {
   if ($times.length === 0) return 0;
@@ -119,17 +109,17 @@ export class RedisOrchestratorClient {
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           query,
           sessionId: this.generateSessionId(context),
           context: {
             endpoint: context.endpoint || 'client-query',
-            ...context,
+            ...context
           },
-          useOrchestrator: context.useOrchestrator !== false,
-        }),
+          useOrchestrator: context.useOrchestrator !== false
+        })
       });
       if (!response.ok) {
         throw new Error(`Redis orchestrator request failed: ${response.statusText}`);
@@ -149,7 +139,7 @@ export class RedisOrchestratorClient {
           query,
           status: 'queued',
           estimatedTime: '30-45 seconds',
-          submittedAt: new Date().toISOString(),
+          submittedAt: new Date().toISOString()
         });
       }
 
@@ -163,7 +153,7 @@ export class RedisOrchestratorClient {
         response: rawResult as unknown,
         source: 'fresh',
         processing_time: Math.round(performance.now() - startTime),
-        cached: false,
+        cached: false
       } as RedisOptimizationResult;
     } catch (error) {
       console.error('🎮 Redis orchestrator query failed:', error);
@@ -217,14 +207,13 @@ export class RedisOrchestratorClient {
       const response = await fetch(`${this.baseUrl}/tasks`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify({
           taskType,
           query,
           metadata,
-          priority,
-        }),
+          priority
+        })
       });
       if (!response.ok) {
         throw new Error(`Task queuing failed: ${response.statusText}`);
@@ -252,7 +241,7 @@ export class RedisOrchestratorClient {
         query,
         status: 'queued',
         estimatedTime: estimated,
-        submittedAt: new Date().toISOString(),
+        submittedAt: new Date().toISOString()
       });
       return taskId;
     } catch (error) {
@@ -288,8 +277,7 @@ export class RedisOrchestratorClient {
     }
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
-        method: 'DELETE',
-      });
+        method: 'DELETE` });
       return response.ok;
     } catch (error) {
       console.error('🎮 Cache clear failed:', error);
@@ -339,7 +327,7 @@ export class RedisOrchestratorClient {
       const newEntry = {
         endpoint,
         time: Math.round(time),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
       const updated = [...times, newEntry].slice(-50); // Keep last 50 entries
       return updated;
@@ -488,22 +476,20 @@ function buildRedisStatsFromUnknown(src: any): RedisStats | null {
 
   const redisMem = s.redis_memory ?? s.memory ?? '';
 
-  const stats: RedisStats = {
-    llm_cache: {
-      total_keys: toNumber(llm.total_keys, 0),
+  const stats: RedisStats = { llm_cache: {, total_keys: toNumber(llm.total_keys, 0),
       memory_usage: toString(llm.memory_usage, ''),
-      hit_rate_estimate: toNumber(llm.hit_rate_estimate, 0),
+      hit_rate_estimate: toNumber(llm.hit_rate_estimate, 0)
     },
     agent_memory: {
-      active_sessions: toNumber(agent.active_sessions, 0),
+      active_sessions: toNumber(agent.active_sessions, 0)
     },
     task_queue: {
       queued_tasks: toNumber(taskq.queued_tasks, 0),
       processing_tasks: toNumber(taskq.processing_tasks, 0),
-      completed_tasks_count: toNumber(taskq.completed_tasks_count, 0),
+      completed_tasks_count: toNumber(taskq.completed_tasks_count, 0)
     },
     redis_memory: toString(redisMem, ''),
-    last_updated: new Date().toISOString(),
+    last_updated: new Date().toISOString()
   };
   return stats;
 }
@@ -565,7 +551,7 @@ function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null 
         cache_strategy: toString(r.cache_strategy, ''),
         memory_bank: toString(r.memory_bank, ''),
         session_id: toString(r.session_id, ''),
-        timestamp: toString(r.timestamp, ''),
+        timestamp: toString(r.timestamp, '')
       };
     }
     return undefined;
@@ -577,7 +563,7 @@ function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null 
     processing_time,
     cached,
     ...(task_id ? { task_id } : {}),
-    ...(_redis_optimization ? { _redis_optimization } : {}),
+    ...(_redis_optimization ? { _redis_optimization } : {})
   };
 }
 // --- end helpers ---

@@ -18,7 +18,7 @@ export async function getVectorSearchService(): Promise<VectorSearchService> {
       redis,
       database: db as any, // Type casting for now - db is a Drizzle client
       cacheTtl: 3600,
-      primaryProvider: 'pgvector',
+      primaryProvider: 'pgvector'
     });
     try {
       await serviceInstance.initialize();
@@ -64,5 +64,5 @@ export const enhancedVectorSearchService = {
   async clearCache() {
     const service = await getVectorSearchService();
     return service.clearCache();
-  },
+  }
 };

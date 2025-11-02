@@ -5,11 +5,10 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * High-performance inference service for legal AI
  */
 import { redisConfig, redisKeys, createServiceConfig } from '$lib/config/redis-config';
-import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
 // Configuration optimized for RTX 3060 Ti
-const TENSORRT_ENDPOINT = env.TENSORRT_ENDPOINT || 'http://localhost:8100'
-const OLLAMA_ENDPOINT = env.OLLAMA_ENDPOINT || 'http://localhost:11434'
+const TENSORRT_ENDPOINT = env.TENSORRT_ENDPOINT || 'http://localhost:8100';
+const OLLAMA_ENDPOINT = env.OLLAMA_ENDPOINT || 'http://localhost:11434';
 const OLLAMA_MODEL = env.OLLAMA_MODEL || 'gemma3:legal-latest';
 // RTX 3060 Ti optimized settings
 const RTX_3060_CONFIG = {
@@ -18,8 +17,8 @@ const RTX_3060_CONFIG = {
   max_seq_len: 4096,
   memory_pool_limit: '4096MiB',
   use_tensor_cores: true,
-  mixed_precision: 'fp16_fp32_adaptive',
-}
+  mixed_precision: 'fp16_fp32_adaptive'
+};
 // Redis clients
 const tensorrtRedis = redis;
 const cacheRedis = redis;
@@ -41,20 +40,35 @@ export interface InferenceResponse {
   error?: string;
   cached?: boolean;
 }
-export interface ModelInfo {
-  name: string;
-  backend: 'tensorrt' | 'ollama';
+export interface ModelInfo { name: string;, backend: 'tensorrt' | 'ollama';
   available: boolean;
   warmup_time?: number;
   memory_usage?: number;
 }
 class TensorRTLLMService {
-  private tensorrtAvailable = $state(false);
-  private ollamaAvailable = $state(false);
+  private tensorrtAvailable = false; // Changed from $state(false)
+  private ollamaAvailable = false; // Changed from $state(false)
   private modelCache = new Map<string, ModelInfo>();
   constructor() {
     this.checkBackendAvailability();
   }
+
+  /**
+   * Safely obtain an AbortSignal via AbortSignal.timeout if available.
+   * Fallback for older environments.
+   */
+  private getAbortSignalTimeout(ms: number): AbortSignal | undefined {
+    // @ts-ignore - AbortSignal.timeout is a new feature, might not be in all lib.dom.d.ts
+    if (typeof AbortSignal.timeout === 'function') {
+      // @ts-ignore
+      return AbortSignal.timeout(ms);
+    }
+    // Fallback for older environments
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), ms);
+    return controller.signal;
+  }
+
   /**
    * Check availability of TensorRT-LLM and Ollama backends
    */
@@ -62,22 +76,22 @@ class TensorRTLLMService {
     try {
       // Check TensorRT-LLM availability
       const tensorrtResponse = await fetch(`${TENSORRT_ENDPOINT}/health`, {
-        timeout: 5000
+        signal: this.getAbortSignalTimeout(5000), // Replaced timeout with signal
       });
       this.tensorrtAvailable = tensorrtResponse.ok;
     } catch (error) {
       console.log('TensorRT-LLM not available, falling back to Ollama');
-      this.tensorrtAvailable = $state(false);
+      this.tensorrtAvailable = false; // Changed from $state(false)
     }
     try {
       // Check Ollama availability
       const ollamaResponse = await fetch(`${OLLAMA_ENDPOINT}/api/tags`, {
-        timeout: 5000
+        signal: this.getAbortSignalTimeout(5000), // Replaced timeout with signal
       });
       this.ollamaAvailable = ollamaResponse.ok;
     } catch (error) {
       console.error('Ollama not available');
-      this.ollamaAvailable = $state(false);
+      this.ollamaAvailable = false; // Changed from $state(false)
     }
     // Cache availability status
     await tensorrtRedis.setex('backend:tensorrt:available', 60, this.tensorrtAvailable ? '1' : '0');
@@ -96,41 +110,41 @@ class TensorRTLLMService {
         return {
           ...cached,
           cached: true,
-          processing_time: Date.now() - startTime,
-        }
+          processing_time: Date.now() - startTime
+        };
       }
       // Try TensorRT-LLM first if available
       if (this.tensorrtAvailable) {
         try {
-          // removed unused response assignment
+          const response = await this.generateTensorRT(request); // Declared response
           await this.cacheResponse(cacheKey, response);
           return {
             ...response,
             backend: 'tensorrt',
             processing_time: Date.now() - startTime
-          }
+          };
         } catch (error) {
           console.warn('TensorRT-LLM failed, falling back to Ollama:', error);
-          this.tensorrtAvailable = $state(false);
+          this.tensorrtAvailable = false; // Changed from $state(false)
         }
       }
       // Fallback to Ollama
       if (this.ollamaAvailable) {
-        // removed unused response assignment
+        const response = await this.generateOllama(request); // Declared response
         await this.cacheResponse(cacheKey, response);
         return {
           ...response,
           backend: 'ollama',
           processing_time: Date.now() - startTime
-        }
+        };
       }
       throw new Error('No available inference backends');
     } catch (error) {
       return {
-        success: false;
+        success: false, // Added semicolon
         error: error instanceof Error ? error.message : 'Inference failed',
         processing_time: Date.now() - startTime
-      }
+      };
     }
   }
   /**
@@ -142,7 +156,9 @@ class TensorRTLLMService {
       max_tokens: Math.min(request.max_tokens || 512, RTX_3060_CONFIG.max_input_len),
       temperature: request.temperature || 0.1,
       stream: false,
-      system_prompt: request.system_prompt || 'You are a helpful legal AI assistant specialized in legal analysis, case research, and evidence review.',
+      system_prompt:
+        request.system_prompt ||
+        'You are a helpful legal AI assistant specialized in legal analysis, case research, and evidence review.',
       // RTX 3060 Ti specific optimizations
       gpu_config: {
         batch_size: Math.min(1, RTX_3060_CONFIG.max_batch_size),
@@ -151,17 +167,16 @@ class TensorRTLLMService {
         memory_pool: RTX_3060_CONFIG.memory_pool_limit,
         cuda_graph: true,
         fp16_qdq: true,
-        remove_input_padding: true,
+        remove_input_padding: true
       },
       evidence_context: this.extractEvidenceContext(request.prompt)
-    }
+    };
     const response = await fetch(`${TENSORRT_ENDPOINT}/v1/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify(payload),
-      timeout: 30000
+      signal: this.getAbortSignalTimeout(30000), // Replaced timeout with signal
     });
     if (!response.ok) {
       throw new Error(`TensorRT-LLM API error: ${response.status}`);
@@ -171,8 +186,7 @@ class TensorRTLLMService {
       success: true,
       response: data.text || data.response,
       tokens: data.tokens_generated || data.tokens,
-      model: data.model || 'tensorrt-llm'
-    }
+      model: data.model || 'tensorrt-llm` };
   }
   /**
    * Generate inference using Ollama with legal optimization
@@ -185,23 +199,24 @@ class TensorRTLLMService {
     const payload = {
       model: request.model || OLLAMA_MODEL,
       prompt: enhancedPrompt,
-      system: request.system_prompt || 'You are a specialized legal AI assistant with expertise in case analysis, evidence review, legal research, and procedural guidance. Focus on accuracy, legal precedent, and practical applications.',
+      system:
+        request.system_prompt ||
+        'You are a specialized legal AI assistant with expertise in case analysis, evidence review, legal research, and procedural guidance. Focus on accuracy, legal precedent, and practical applications.',
       options: {
         num_predict: request.max_tokens || 512,
         temperature: request.temperature || 0.1,
         num_ctx: 4096, // Match TensorRT context window
-        num_gpu: 35,   // Use GPU layers for better performance
-        num_thread: 8  // Optimize for parallel processing
+        num_gpu: 35, // Use GPU layers for better performance
+        num_thread: 8, // Optimize for parallel processing
       },
       stream: false
-    }
+    };
     const response = await fetch(`${OLLAMA_ENDPOINT}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify(payload),
-      timeout: 60000
+      signal: this.getAbortSignalTimeout(60000), // Replaced timeout with signal
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status}`);
@@ -212,7 +227,7 @@ class TensorRTLLMService {
       response: data.response,
       tokens: data.prompt_eval_count + data.eval_count,
       model: data.model
-    }
+    };
   }
   /**
    * Get available models from both backends
@@ -222,7 +237,10 @@ class TensorRTLLMService {
     // Check TensorRT models
     if (this.tensorrtAvailable) {
       try {
-        // removed unused response assignment
+        const response = await fetch(`${TENSORRT_ENDPOINT}/v1/models`, {
+          // Declared response, added signal
+          signal: this.getAbortSignalTimeout(5000)
+        });
         if (response.ok) {
           const data = await response.json();
           data.models?.forEach((model: any) => {
@@ -230,7 +248,7 @@ class TensorRTLLMService {
               name: model.name,
               backend: 'tensorrt',
               available: true,
-              memory_usage: model.memory_usage,
+              memory_usage: model.memory_usage
             });
           });
         }
@@ -241,7 +259,10 @@ class TensorRTLLMService {
     // Check Ollama models
     if (this.ollamaAvailable) {
       try {
-        // removed unused response assignment
+        const response = await fetch(`${OLLAMA_ENDPOINT}/api/tags`, {
+          // Declared response, added signal
+          signal: this.getAbortSignalTimeout(5000)
+        });
         if (response.ok) {
           const data = await response.json();
           data.models?.forEach((model: any) => {
@@ -249,7 +270,7 @@ class TensorRTLLMService {
               name: model.name,
               backend: 'ollama',
               available: true,
-              memory_usage: model.size,
+              memory_usage: model.size
             });
           });
         }
@@ -271,7 +292,7 @@ class TensorRTLLMService {
           max_tokens: 10,
           temperature: 0.1,
           model: model.name
-        }
+        };
         const startTime = Date.now();
         await this.generateInference(warmupRequest);
         const warmupTime = Date.now() - startTime;
@@ -279,41 +300,39 @@ class TensorRTLLMService {
         this.modelCache.set(model.name, model);
         console.log(`Warmed up model ${model.name} (${model.backend}) in ${warmupTime}ms`);
       } catch (error) {
-        console.warn(`Failed to warm up model ${model.name}:`, error);
+        console.warn(`Failed to warm up model ${model.name}: ', error);
       }
     }
   }
   /**
    * Get health status of all backends
    */
-  async getHealthStatus(): Promise<{
-    tensorrt: { available: boolean; latency?: number }
-    ollama: { available: boolean; latency?: number }
+  async getHealthStatus(): Promise<{ tensorrt: {, available: boolean; latency?: number };
+    ollama: { available: boolean; latency?: number };
     overall: 'healthy' | 'degraded' | 'down';
   }> {
-    const status = {
-      tensorrt: { available: this.tensorrtAvailable, latency: undefined as number | undefined },
+    const status = { tensorrt: {, available: this.tensorrtAvailable, latency: undefined as number | undefined },
       ollama: { available: this.ollamaAvailable, latency: undefined as number | undefined },
-      overall: 'down' as: 'healthy' | 'degraded' | 'down'
-    }
+      overall: 'down' as 'healthy' | 'degraded' | 'down', // Corrected type assertion syntax
+    };
     // Test TensorRT latency
     if (this.tensorrtAvailable) {
       try {
         const start = Date.now();
-        await fetch(`${TENSORRT_ENDPOINT}/health`, { timeout: 5000 });
+        await fetch(`${TENSORRT_ENDPOINT}/health`, { signal: this.getAbortSignalTimeout(5000) }); // Replaced timeout with signal
         status.tensorrt.latency = Date.now() - start;
       } catch (error) {
-        status.tensorrt.available = $state(false);
+        status.tensorrt.available = false; // Changed from $state(false)
       }
     }
     // Test Ollama latency
     if (this.ollamaAvailable) {
       try {
         const start = Date.now();
-        await fetch(`${OLLAMA_ENDPOINT}/api/tags`, { timeout: 5000 });
+        await fetch(`${OLLAMA_ENDPOINT}/api/tags`, { signal: this.getAbortSignalTimeout(5000) }); // Replaced timeout with signal
         status.ollama.latency = Date.now() - start;
       } catch (error) {
-        status.ollama.available = $state(false);
+        status.ollama.available = false; // Changed from $state(false)
       }
     }
     // Determine overall status
@@ -330,7 +349,7 @@ class TensorRTLLMService {
    * Generate cache key for requests
    */
   private getCacheKey(request: InferenceRequest): string {
-    const key = `${request.prompt}:${request.model || 'default'}:${request.max_tokens || 512}:${request.temperature || 0.1}`;
+    const key = `${request.prompt}:${request.model || 'default` }:${request.max_tokens || 512}:${request.temperature || 0.1}`;
     return Buffer.from(key).toString('base64').substring(0, 64);
   }
   /**
@@ -362,9 +381,7 @@ class TensorRTLLMService {
   /**
    * Extract evidence context from prompts for legal AI optimization
    */
-  private extractEvidenceContext(prompt: string): {
-    hasEvidence: boolean;
-    evidenceIds: string[];
+  private extractEvidenceContext(prompt: string): { hasEvidence: boolean;, evidenceIds: string[];
     summary: string;
     caseId?: string;
   } {
@@ -374,17 +391,21 @@ class TensorRTLLMService {
     const caseMatches = Array.from(prompt.matchAll(casePattern));
     const evidenceIds = evidenceMatches.map(match => match[1]);
     const caseId = caseMatches[0]?.[1];
-    const hasLegalTerms = /\b(evidence|testimony|witness|defendant|plaintiff|statute|precedent|liability|negligence|contract|tort|jurisdiction|court|legal|law)\b/i.test(prompt);
+    const hasLegalTerms =
+      /\b(evidence|testimony|witness|defendant|plaintiff|statute|precedent|liability|negligence|contract|tort|jurisdiction|court|legal|law)\b/i.test(
+        prompt
+      );
     return {
       hasEvidence: evidenceIds.length > 0 || hasLegalTerms,
       evidenceIds,
-      summary: evidenceIds.length > 0
-        ? `Analyzing evidence: ${evidenceIds.join(', ')}${caseId ? ` in case ${caseId}` : ''}`
-        : hasLegalTerms
-          ? 'Legal analysis request detected'
-          : '',
+      summary:
+        evidenceIds.length > 0
+          ? `Analyzing evidence: ${evidenceIds.join(', ')}${caseId ? ` in case ${caseId}` : `` }`
+          : hasLegalTerms
+            ? 'Legal analysis request detected'
+            : '',
       caseId
-    }
+    };
   }
   /**
    * Generate legal analysis with evidence integration
@@ -393,14 +414,16 @@ class TensorRTLLMService {
     prompt: string,
     evidenceIds?: string[],
     caseId?: string,
-    options?: Partial<InferenceRequest>,
+    options?: Partial<InferenceRequest>
   ): Promise<InferenceResponse> {
-    const enhancedPrompt = evidenceIds && evidenceIds.length > 0
-      ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown'}\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`
-      : prompt;
+    const enhancedPrompt =
+      evidenceIds && evidenceIds.length > 0
+        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown` }\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`
+        : prompt;
     return this.generateInference({
       prompt: enhancedPrompt,
-      system_prompt: 'You are a specialized legal AI assistant analyzing evidence and case materials. Provide thorough, accurate legal analysis with attention to chain of custody, evidence integrity, and legal relevance.',
+      system_prompt:
+        'You are a specialized legal AI assistant analyzing evidence and case materials. Provide thorough, accurate legal analysis with attention to chain of custody, evidence integrity, and legal relevance.',
       max_tokens: 1024,
       temperature: 0.1,
       ...options
@@ -409,9 +432,8 @@ class TensorRTLLMService {
   /**
    * Get inference performance metrics for evidence processing
    */
-  async getPerformanceMetrics(): Promise<{
-    tensorrt: { avgLatency: number; throughput: number; available: boolean }
-    ollama: { avgLatency: number; throughput: number; available: boolean }
+  async getPerformanceMetrics(): Promise<{ tensorrt: { avgLatency: number; throughput: number;, available: boolean };
+    ollama: { avgLatency: number; throughput: number;, available: boolean };
     cacheHitRate: number;
     totalRequests: number;
   }> {
@@ -431,9 +453,7 @@ class TensorRTLLMService {
       const ollamaLatency = parseFloat(stats[3] || '0');
       const tensorrtRequests = parseInt(stats[4] || '0');
       const ollamaRequests = parseInt(stats[5] || '0');
-      return {
-        tensorrt: {
-          avgLatency: tensorrtLatency,
+      return { tensorrt: {, avgLatency: tensorrtLatency,
           throughput: tensorrtRequests > 0 ? 1000 / (tensorrtLatency || 1) : 0,
           available: this.tensorrtAvailable
         },
@@ -444,15 +464,14 @@ class TensorRTLLMService {
         },
         cacheHitRate: totalRequests > 0 ? cacheHits / totalRequests : 0,
         totalRequests
-      }
+      };
     } catch (error) {
       console.warn('Failed to get performance metrics:', error);
-      return {
-        tensorrt: { avgLatency: 0, throughput: 0, available: this.tensorrtAvailable },
+      return { tensorrt: {, avgLatency: 0, throughput: 0, available: this.tensorrtAvailable },
         ollama: { avgLatency: 0, throughput: 0, available: this.ollamaAvailable },
         cacheHitRate: 0,
         totalRequests: 0
-      }
+      };
     }
   }
   /**

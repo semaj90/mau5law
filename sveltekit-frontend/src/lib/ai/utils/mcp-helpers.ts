@@ -35,18 +35,18 @@ export async function copilotOrchestrator(
   return {
     success: true,
     result: null,
-    selfPrompt: typeof request === 'string' ? request : undefined,
+    selfPrompt: typeof request === 'string' ? request : undefined
   };
 }
 export async function semanticSearch(query: string, options?: any): Promise<any[]> {
   // Implementation placeholder
   return [];
 }
-export async function mcpMemoryReadGraph(): Promise<{ nodes: any[]; edges: any[] }> {
+export async function mcpMemoryReadGraph(): Promise<{ nodes: any[];, edges: any[] }> {
   // Implementation placeholder
   return { nodes: [], edges: [] };
 }
-export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[]; analysis: { [key: string]: any } }> {
+export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[];, analysis: { [key: string]: any } }> {
   // Implementation placeholder
   return { files: [], analysis: {} };
 }
@@ -61,7 +61,7 @@ export const commonMCPQueries = {
   analyzeSvelteKit: (): string => 'analyze-sveltekit',
   analyzeDrizzle: (): string => 'analyze-drizzle',
   performanceBestPractices: (): string => 'performance-best-practices',
-  securityBestPractices: (): string => 'security-best-practices',
+  securityBestPractices: (): string => 'security-best-practices'
 };
 export default {
   copilotOrchestrator,
@@ -69,5 +69,5 @@ export default {
   mcpMemoryReadGraph,
   mcpCodebaseAnalyze,
   generateMCPPrompt,
-  commonMCPQueries,
+  commonMCPQueries
 };

@@ -3,9 +3,7 @@ import { createMachine, assign } from 'xstate';
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
 import productionServiceClient from '../services/production-service-client.js';
 // Define context and event types
-export interface AgentShellContext {
-  input: string;
-  response: string;
+export interface AgentShellContext { input: string;, response: string;
   jobId?: string;
   rating?: number;
   searchQuery?: string;
@@ -13,131 +11,113 @@ export interface AgentShellContext {
   uploadResults?: UploadResponse;
   userId?: string;
   caseId?: string;
-  serviceHealth?: {
-    enhancedRAG: boolean;
-    uploadService: boolean;
+  serviceHealth?: { enhancedRAG: boolean;, uploadService: boolean;
     kratosServer: boolean;
   };
 }
 type AgentShellEvent =
-  | { type: 'PROMPT'; input: string; userId?: string; caseId?: string }
-  | { type: 'xstate.done.actor.callAgent'; data: string }
-  | { type: 'ACCEPT_PATCH'; jobId: string; userId: string; patchContent: string }
-  | { type: 'RATE_SUGGESTION'; jobId: string; rating: number; userId: string; feedback?: string }
-  | { type: 'SEMANTIC_SEARCH'; query: string; userId: string; caseId?: string }
-  | { type: 'FILE_UPLOAD'; file: File; userId: string; caseId?: string }
+  | { type: 'PROMPT';, input: string; userId?: string; caseId?: string }
+  | { type: 'xstate.done.actor.callAgent';, data: string }
+  | { type: 'ACCEPT_PATCH'; jobId: string; userId: string;, patchContent: string }
+  | { type: 'RATE_SUGGESTION'; jobId: string; rating: number;, userId: string; feedback?: string }
+  | { type: 'SEMANTIC_SEARCH'; query: string;, userId: string; caseId?: string }
+  | { type: 'FILE_UPLOAD'; file: File;, userId: string; caseId?: string }
   | { type: 'CHECK_HEALTH' };
 export const agentShellMachine = createMachine({
   id: 'agentShell',
   initial: 'idle',
   context: { input: '', response: '' },
-  types: {} as {
-    context: AgentShellContext;
-    events: AgentShellEvent;
+  types: {} as { context: AgentShellContext;, events: AgentShellEvent;
   },
-  states: {
-    idle: {
-      on: {
-        PROMPT: {
-          target: 'processing',
+  states: { idle: {, on: { PROMPT: {, target: 'processing',
           actions: assign({
-            input: ({ event }) => (event as any).input || '',
+           , input: ({ event }) => (event as any).input || '',
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         SEMANTIC_SEARCH: {
           target: 'searching',
           actions: assign({
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         FILE_UPLOAD: {
           target: 'uploading',
           actions: assign({
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         CHECK_HEALTH: {
-          target: 'checkingHealth',
-        },
-      },
+          target: 'checkingHealth'
+        }
+      }
     },
-    processing: {
-      invoke: {
-        src: 'callAgent',
+    processing: { invoke: {, src: 'callAgent',
         input: ({ context }) => ({
           input: context.input,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: 'idle',
           actions: assign({
-            response: (_, e) => (e && 'data' in e ? (e as any).data : ''),
-          }),
+            response: (_, e) => (e && 'data' in e ? (e as any).data : '')
+          })
         },
-        onError: 'idle',
+        onError: 'idle'
       },
-      on: {
-        ACCEPT_PATCH: {
-          actions: 'acceptPatchAction',
+      on: { ACCEPT_PATCH: {, actions: 'acceptPatchAction'
         },
         RATE_SUGGESTION: {
-          actions: 'rateSuggestionAction',
-        },
-      },
+          actions: 'rateSuggestionAction'
+        }
+      }
     },
-    searching: {
-      invoke: {
-        src: 'performSemanticSearch',
+    searching: { invoke: {, src: 'performSemanticSearch',
         input: ({ context }) => ({
           query: context.searchQuery,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: 'idle',
           actions: assign({
-            searchResults: (_, e) => (e && 'data' in e ? (e as any).data : null),
-          }),
+            searchResults: (_, e) => (e && 'data' in e ? (e as any).data : null)
+          })
         },
-        onError: 'idle',
-      },
+        onError: 'idle'
+      }
     },
-    uploading: {
-      invoke: {
-        src: 'performFileUpload',
+    uploading: { invoke: {, src: 'performFileUpload',
         input: ({ context, event }) => ({
           file: (event as any).file,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: 'idle',
           actions: assign({
-            uploadResults: (_, e) => (e && 'data' in e ? (e as any).data : null),
-          }),
+            uploadResults: (_, e) => (e && 'data' in e ? (e as any).data : null)
+          })
         },
-        onError: 'idle',
-      },
+        onError: 'idle'
+      }
     },
-    checkingHealth: {
-      invoke: {
-        src: 'checkServiceHealth',
+    checkingHealth: { invoke: {, src: 'checkServiceHealth',
         onDone: {
           target: 'idle',
           actions: assign({
-            serviceHealth: (_, e) => (e && 'data' in e ? (e as any).data : null),
-          }),
+            serviceHealth: (_, e) => (e && 'data' in e ? (e as any).data : null)
+          })
         },
-        onError: 'idle',
-      },
-    },
-  },
+        onError: 'idle'
+      }
+    }
+  }
 });
 // Service implementations for XState with Production Services
 export const agentShellServices = {
@@ -155,7 +135,7 @@ export const agentShellServices = {
         const fallbackResponse = await goServiceClient.queryRAG({
           query: input,
           userId,
-          caseId,
+          caseId
         });
         return fallbackResponse.response;
       } catch (fallbackError) {
@@ -164,7 +144,7 @@ export const agentShellServices = {
       }
     }
   },
-  performSemanticSearch: async ({ query, userId, caseId }: { query: string; userId: string; caseId?: string }) => {
+  performSemanticSearch: async ({ query, userId, caseId }: { query: string;, userId: string; caseId?: string }) => {
     try {
       // Use production RAG service for semantic search
       const response = await productionServiceClient.semanticSearch(query, { userId, caseId });
@@ -179,7 +159,7 @@ export const agentShellServices = {
       }
     }
   },
-  performFileUpload: async ({ file, userId, caseId }: { file: File; userId: string; caseId?: string }) => {
+  performFileUpload: async ({ file, userId, caseId }: { file: File;, userId: string; caseId?: string }) => {
     try {
       // Use production upload service
       const response = await productionServiceClient.uploadFile(file, { userId, caseId });
@@ -202,7 +182,7 @@ export const agentShellServices = {
       const productionHealth = await productionServiceClient.checkAllServicesHealth();
       return {
         production: productionHealth,
-        legacy: await goServiceClient.checkServiceHealth(),
+        legacy: await goServiceClient.checkServiceHealth()
       };
     } catch (error: any) {
       console.error('Production health check failed:', error);
@@ -214,7 +194,7 @@ export const agentShellServices = {
         throw error;
       }
     }
-  },
+  }
 };
 // Action implementations
 export const agentShellActions = {
@@ -224,7 +204,7 @@ export const agentShellActions = {
         jobId: event.jobId,
         userId: event.userId,
         patchContent: event.patchContent,
-        targetFile: event.targetFile,
+        targetFile: event.targetFile
       });
       console.log('Patch accepted:', result);
     } catch (error: any) {
@@ -237,11 +217,11 @@ export const agentShellActions = {
         jobId: event.jobId,
         rating: event.rating,
         userId: event.userId,
-        feedback: event.feedback,
+        feedback: event.feedback
       });
       console.log('Rating submitted:', result);
     } catch (error: any) {
       console.error('Rating submission failed:', error);
     }
-  },
+  }
 };

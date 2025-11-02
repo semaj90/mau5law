@@ -49,9 +49,7 @@ export class YoRHaUIExample {
   private setupScene(): void {
     // Add subtle background gradient
     const gradientGeometry = new THREE.PlaneGeometry(50, 30);
-    const gradientMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        topColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
+    const gradientMaterial = new THREE.ShaderMaterial({ uniforms: {, topColor: {, value: new THREE.Color(YORHA_COLORS.primary.black) },
         bottomColor: { value: new THREE.Color(YORHA_COLORS.primary.grey) }
       },
       vertexShader: `
@@ -61,15 +59,14 @@ export class YoRHaUIExample {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
-      fragmentShader: `
+      fragmentShader: '
         uniform vec3 topColor;
         uniform vec3 bottomColor;
         varying vec2 vUv;
         void main() {
           gl_FragColor = vec4(mix(bottomColor, topColor, vUv.y), 1.0);
         }
-      `
-    });
+      ' });
     const background = new THREE.Mesh(gradientGeometry, gradientMaterial);
     background.position.z = -10;
     this.scene.add(background);
@@ -130,7 +127,7 @@ export class YoRHaUIExample {
       height: 1.2,
       showCloseButton: false,
       glow: {
-        enabled: true,
+       , enabled: true,
         color: YORHA_COLORS.accent.gold,
         intensity: 0.3
       }
@@ -139,8 +136,7 @@ export class YoRHaUIExample {
     const headerLayout = YoRHaLayoutPresets.createToolbar();
     headerPanel.addContent(headerLayout);
     // System status indicators
-    const statusButton = new YoRHaButton3D({
-      text: 'System Status: OPERATIONAL',
+    const statusButton = new YoRHaButton3D({ text: 'System, Status: OPERATIONAL',
       variant: 'ghost',
       size: 'small',
       textColor: YORHA_COLORS.status.success
@@ -163,7 +159,7 @@ export class YoRHaUIExample {
       width: 8,
       height: 4.5,
       scrollable: true,
-      resizable: true,
+      resizable: true
     });
     // Form layout
     const formLayout = YoRHaLayoutPresets.createForm();
@@ -176,7 +172,7 @@ export class YoRHaUIExample {
       icon: 'user',
       iconPosition: 'left',
       clearable: true,
-      width: 6,
+      width: 6
     });
     const passwordInput = new YoRHaInput3D({
       placeholder: 'Security passphrase...',
@@ -195,7 +191,7 @@ export class YoRHaUIExample {
       icon: 'email',
       iconPosition: 'left',
       clearable: true,
-      width: 6,
+      width: 6
     });
     const messageInput = new YoRHaInput3D({
       placeholder: 'Mission parameters...',
@@ -261,7 +257,7 @@ export class YoRHaUIExample {
       size: 'small',
       rounded: true,
       glow: {
-        enabled: true,
+       , enabled: true,
         color: YORHA_COLORS.accent.gold,
         intensity: 0.5
       }
@@ -282,7 +278,7 @@ export class YoRHaUIExample {
       size: 'medium',
       closable: true,
       showHeader: true,
-      showFooter: true,
+      showFooter: true
     });
     // Add content to modal
     const modalLayout = YoRHaLayoutPresets.createDialog();
@@ -333,8 +329,7 @@ export class YoRHaUIExample {
     const confirmButton = new YoRHaButton3D({
       text: 'Abort',
       variant: 'danger',
-      size: 'medium'
-    });
+      size: `medium` });
     confirmButton.addEventListener('click', () => {
       this.modal?.close();
     });

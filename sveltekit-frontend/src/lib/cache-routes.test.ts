@@ -3,11 +3,8 @@ import { POST as postGet } from '../../routes/api/cache/redis/get/+server';
 import { POST as postSet } from '../../routes/api/cache/redis/set/+server';
 
 function makeReq(body: any, headers: Record<string,string> = {}) {
-	return {
-		request: {
-			json: async () => body,
-			// minimal headers shim for Node/Vitest: supports headers.get(name)
-			headers: {
+	return { request: {, json: async () => body,
+			// minimal headers shim for Node/Vitest: supports headers.get(name); headers: {
 				get: (name: string) => {
 					// header names are case-insensitive
 					return headers[name.toLowerCase()] ?? null;
@@ -19,7 +16,7 @@ function makeReq(body: any, headers: Record<string,string> = {}) {
 
 describe('cache route handlers (direct imports)', () => {
 	it('set then get returns value via memory fallback', async () => {
-		const setRes = await postSet(makeReq({ key: 'x1', value: { a: 1 } }));
+		const setRes = await postSet(makeReq({ key: 'x1', value: {, a: 1 } }));
 		expect(setRes).toBeDefined();
 
 		const getRes = await postGet(makeReq({ key: 'x1' }));

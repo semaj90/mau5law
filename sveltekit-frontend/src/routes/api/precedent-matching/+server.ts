@@ -3,9 +3,7 @@ import type { RequestHandler } from './$types';
 import { env } from '$env/dynamic/private'; // For server-side environment variables
 
 // Mock interfaces for demonstration purposes, these should ideally be imported from a shared types file
-interface PrecedentMatch {
-  id: string;
-  title: string;
+interface PrecedentMatch { id: string;, title: string;
   citation: string;
   court: string;
   jurisdiction: string;
@@ -21,9 +19,7 @@ interface PrecedentMatch {
   recentCitations: number;
   distinguishingFactors: string[];
   applicabilityScore: number;
-  strengthIndicators: {
-    factualAlignment: number;
-    legalPrinciples: number;
+  strengthIndicators: { factualAlignment: number;, legalPrinciples: number;
     jurisdictionalRelevance: number;
     temporalRelevance: number;
   };
@@ -36,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseFactPattern,
       selectedJurisdiction,
       selectedCourtLevel,
-      selectedPracticeArea,
+      selectedPracticeArea
     } = await request.json();
 
     console.log('Received precedent matching request:', {
@@ -44,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseFactPattern,
       selectedJurisdiction,
       selectedCourtLevel,
-      selectedPracticeArea,
+      selectedPracticeArea
     });
 
     // --- Docker / Env Production Wiring Example ---
@@ -68,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
     //    const embeddingResponse = await fetch(`${ollamaUrl}/api/embeddings`, {
     //      method: 'POST',
     //      headers: { 'Content-Type': 'application/json' },
-    //      body: JSON.stringify({ model: 'nomic-embed-text', prompt: searchQuery || caseFactPattern })
+    //      body: JSON.stringify({, model: 'nomic-embed-text', prompt: searchQuery || caseFactPattern })
     //    });
     //    const embeddingData = await embeddingResponse.json();
     //    const embedding = embeddingData.embedding;
@@ -78,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
     //    import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config';
     //    const vectorSearchResults = await enhancedVectorSearchService.searchDocuments(embedding, {
     //      limit: 10,
-    //      filters: { jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea }
+    //      filters: {, jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea }
     //    });
 
     // 3. Refine results, build reasoning chains, etc.
@@ -102,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
         precedentialValue: 'BINDING',
         keyFacts: [
           'API: Contract signed under financial duress',
-          'API: Unequal bargaining power between parties',
+          'API: Unequal bargaining power between parties'
         ],
         legalHolding: 'API: Contracts entered under economic duress are voidable when the duress was a substantial factor.',
         reasoningChain: ['API: Economic duress requires proof of coercive circumstances'],
@@ -130,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
         precedentialValue: 'PERSUASIVE',
         keyFacts: [
           'API: Adhesion contract with no negotiation',
-          'API: Complex legal language',
+          'API: Complex legal language'
         ],
         legalHolding: 'API: Contract terms may be unconscionable where there is both procedural and substantive unconscionability.',
         reasoningChain: ['API: Procedural unconscionability from lack of meaningful choice'],
@@ -155,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query: searchQuery || caseFactPattern,
       filters: { selectedJurisdiction, selectedCourtLevel, selectedPracticeArea },
       matches: mockMatches,
-      totalMatches: mockMatches.length,
+      totalMatches: mockMatches.length
     });
 
   } catch (error) {
@@ -164,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       message: error instanceof Error ? error.message : 'An unknown error occurred',
       matches: [],
-      totalMatches: 0,
+      totalMatches: 0
     }, { status: 500 });
   }
 };

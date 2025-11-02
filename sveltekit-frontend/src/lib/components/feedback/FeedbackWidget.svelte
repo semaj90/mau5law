@@ -23,8 +23,8 @@ import type { User } from '$lib/types';
   // Component state
   let rating: number = $state(0);
   let feedback: string = $state('');
-  let isSubmitting: boolean = $state(false);
-  let isSubmitted: boolean = $state(false);
+  let isSubmitting: boolean = false;
+  let isSubmitted: boolean = false;
   // Auto-generate IDs using $effect for side effects
   $effect(() => {
     if (!interactionId) {

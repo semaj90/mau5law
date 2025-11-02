@@ -14,16 +14,12 @@ interface FullTextSearchQuery {
     practiceArea?: string;
     documentType?: string;
     caseId?: string;
-    dateRange?: {
-      start: string;
-      end: string;
+    dateRange?: { start: string;, end: string;
     };
   };
   searchMode?: 'simple' | 'advanced' | 'fuzzy';
 }
-interface FullTextResult {
-  id: string;
-  title: string;
+interface FullTextResult { id: string;, title: string;
   content: string;
   excerpt: string;
   rank: number;
@@ -70,18 +66,18 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       results: sortedResults,
       metadata: {
-        totalResults: sortedResults.length,
+       , totalResults: sortedResults.length,
         searchTime: Date.now(),
         searchMode,
         sources: {
           postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length : 0,
-          loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0,
-        },
-      },
+          loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0
+        }
+      }
     });
   } catch (error) {
     console.error('❌ Full-text search failed:', error);
-    return json({ error: 'Full-text search failed' }, { status: 500 });
+    return json({ error: `Full-text search failed` }, { status: 500 });
   }
 };
 /*
@@ -152,7 +148,7 @@ async function searchPostgreSQL(
             headline:
               sql<string>`ts_headline('english', COALESCE(legal_documents.extracted_text, ''), plainto_tsquery('english', ${query}), 'MaxWords=50, MinWords=10')`.as(
                 'headline'
-              ),
+              )
           })
           .from(legalDocuments)
           .where(
@@ -181,7 +177,7 @@ async function searchPostgreSQL(
             rank: sql<number>`GREATEST(similarity(legal_documents.title, ${query}), similarity(legal_documents.extracted_text, ${query}))`.as(
               'rank'
             ),
-            headline: sql<string>`COALESCE(legal_documents.extracted_text, '')`.as('headline'),
+            headline: sql<string>`COALESCE(legal_documents.extracted_text, '')`.as('headline')
           })
           .from(legalDocuments)
           .where(
@@ -212,22 +208,22 @@ async function searchPostgreSQL(
             metadata: sql<string>`COALESCE(legal_documents.metadata::text, '')`.as('metadata'),
             rank: sql<number>`CASE
               WHEN legal_documents.title ILIKE ${'%' + query + '%'} THEN 1.0
-              WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%'} THEN 0.5
+              WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%` } THEN 0.5
               ELSE 0.1
             END`.as('rank'),
-            headline: sql<string>`COALESCE(legal_documents.extracted_text, '')`.as('headline'),
+            headline: sql<string>`COALESCE(legal_documents.extracted_text, '')`.as('headline')
           })
           .from(legalDocuments)
           .where(
             and(
-              sql`(legal_documents.title ILIKE ${'%' + query + '%'} OR legal_documents.extracted_text ILIKE ${'%' + query + '%'})`,
+              sql`(legal_documents.title ILIKE ${'%' + query + '%'} OR legal_documents.extracted_text ILIKE ${'%' + query + '%` })`,
               ...whereConditions
             )
           )
           .orderBy(
             sql`CASE
             WHEN legal_documents.title ILIKE ${'%' + query + '%'} THEN 1.0
-            WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%'} THEN 0.5
+            WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%` } THEN 0.5
             ELSE 0.1
           END DESC`
           )
@@ -255,8 +251,8 @@ async function searchPostgreSQL(
           source: 'postgresql',
           matchType: searchMode,
           highlights,
-          ...parseMetadata(row.metadata),
-        },
+          ...parseMetadata(row.metadata)
+        }
       };
     });
   } catch (error) {
@@ -267,7 +263,7 @@ async function searchPostgreSQL(
         id: 'pg_ft_001',
         title: 'Legal Contract Analysis - Full Text Match',
         content: 'This legal document contains relevant information matching your search query',
-        excerpt: `Found relevant content matching: "${query}" in legal contract analysis...`,
+        excerpt: `Found relevant content; matching: "${query}" in legal contract analysis...`,
         rank: 0.85,
         metadata: {
           practiceArea: 'Contract Law',
@@ -276,8 +272,8 @@ async function searchPostgreSQL(
           uploadDate: new Date().toISOString(),
           source: 'postgresql',
           matchType: searchMode,
-          highlights: [query],
-        },
+          highlights: [query]
+        }
       },
     ];
   }
@@ -298,37 +294,35 @@ async function searchLokiLogs(
       {
         timestamp: new Date().toISOString(),
         level: 'info',
-        message: `Document processing completed for query: ${query}`,
+        message: `Document processing completed for; query: ${query}`,
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: filters?.caseId || 'case_log_001',
-        },
+          case_id: filters?.caseId || 'case_log_001` },
         metadata: {
           processing_time: '2.3s',
           document_count: 1,
-          query_matched: true,
-        },
+          query_matched: true
+        }
       },
       {
         timestamp: new Date(Date.now() - 3600000).toISOString(),
         level: 'warn',
-        message: `Search query: "${query}" took longer than expected`,
+        message: `Search; query: "${query}" took longer than expected`,
         labels: {
           job: 'legal-platform',
           service: 'search-engine',
-          case_id: filters?.caseId || 'case_log_002',
-        },
+          case_id: filters?.caseId || 'case_log_002` },
         metadata: {
           search_time: '5.7s',
           result_count: 0,
-          performance_warning: true,
-        },
+          performance_warning: true
+        }
       },
     ];
     return mockLogResults.map((entry, index) => ({
       id: `loki_ft_${index}`,
-      title: `System Log: ${entry.message}`,
+      title: `System; Log: ${entry.message}`,
       content: `${entry.level.toUpperCase()}: ${entry.message}`,
       excerpt: entry.message.substring(0, 100) + '...',
       rank: entry.message.toLowerCase().includes(query.toLowerCase()) ? 0.7 : 0.3,
@@ -342,8 +336,8 @@ async function searchLokiLogs(
         highlights: extractLogHighlights(entry.message, query),
         logLevel: entry.level,
         service: entry.labels.service,
-        ...entry.metadata,
-      },
+        ...entry.metadata
+      }
     }));
   } catch (error) {
     console.error('Loki.js search failed:', error);

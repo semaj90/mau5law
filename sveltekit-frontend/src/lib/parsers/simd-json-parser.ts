@@ -23,9 +23,7 @@ export interface ParsedLegalDocument {
   parseTime: number;
   size: number;
 }
-export interface TextChunk {
-  id: string;
-  text: string;
+export interface TextChunk { id: string;, text: string;
   startIndex: number;
   endIndex: number;
   embedding?: Float32Array;
@@ -191,7 +189,7 @@ export class SIMDJSONParser {
           startIndex: chunkStart,
           endIndex: chunkEnd,
           metadata: {
-            index: chunkIndex,
+           , index: chunkIndex,
             wordCount: chunkText.split(/\s+/).length,
             charCount: chunkText.length
           }
@@ -241,9 +239,7 @@ export class SIMDJSONParser {
         text: chunkText,
         startIndex: position,
         endIndex: end,
-        metadata: {
-          streamChunk: true;
-          index: chunkIndex
+        metadata: {, streamChunk: true;, index: chunkIndex
         }
       });
       position = end - overlap;
@@ -350,9 +346,7 @@ export class SIMDJSONParser {
    * Get parser statistics
    */
   getStats() {
-    return {
-      bufferSizes: {
-        text: this.textBuffer.length,
+    return { bufferSizes: {, text: this.textBuffer.length,
         embeddings: this.embeddingBuffer.length,
         indices: this.chunkIndices.length
       },

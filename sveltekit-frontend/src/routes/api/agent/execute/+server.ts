@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Missing required parameters',
-          message: 'Both taskId and agentId are required',
+          message: 'Both taskId and agentId are required'
         },
         { status: 400 }
       );
@@ -27,8 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Agent busy',
-          message: `Agent ${agentId} is already working on task: ${activeTasks.get(agentId).taskId}`,
-        },
+          message: `Agent ${agentId} is already working on, task: ${activeTasks.get(agentId).taskId}' },
         { status: 409 }
       );
     }
@@ -45,8 +44,8 @@ export const POST: RequestHandler = async ({ request }) => {
         { id: 'generate', name: 'Generating code changes', status: 'pending' },
         { id: 'patch', name: 'Creating diff patches', status: 'pending' },
         { id: 'validate', name: 'Validating changes', status: 'pending' },
-        { id: 'apply', name: 'Applying patches', status: 'pending' },
-      ],
+        { id: 'apply', name: 'Applying patches', status: `pending` }
+      ]
     };
 
     activeTasks.set(agentId, taskExecution);
@@ -67,15 +66,14 @@ export const POST: RequestHandler = async ({ request }) => {
         agentId,
         status: 'started',
         estimatedDuration: 30000, // 30 seconds for demo
-        message: `Agent ${agentId} started working on task ${taskId}`,
-      },
+        message: `Agent ${agentId} started working on task ${taskId}` },
       capabilities: {
         ragEnabled: true,
         gemma3Model: 'gemma3:legal-latest',
         tensorrtAccelerated: true,
         pgvectorIntegration: true,
-        diffPatchingEnabled: true,
-      },
+        diffPatchingEnabled: true
+      }
     };
 
     return json(response);
@@ -85,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Execution failed',
-        message: error.message,
+        message: error.message
       },
       { status: 500 }
     );
@@ -100,20 +98,20 @@ export const GET: RequestHandler = async ({ url }) => {
       const task = activeTasks.get(agentId);
       return json({
         success: true,
-        execution: task,
+        execution: task
       });
     }
 
     // Return all active tasks
     const allTasks = Array.from(activeTasks.entries()).map(([agentId, task]) => ({
       agentId,
-      ...task,
+      ...task
     }));
 
     return json({
       success: true,
       activeTasks: allTasks,
-      totalActiveAgents: activeTasks.size,
+      totalActiveAgents: activeTasks.size
     });
   } catch (error) {
     console.error('Error getting agent execution status:', error);
@@ -121,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to get execution status',
-        message: error.message,
+        message: error.message
       },
       { status: 500 }
     );

@@ -33,9 +33,7 @@ export type LokiEvidence = EvidenceItem & {
   $loki?: number;
   meta?: any;
 };
-export interface SyncOperation {
-  id: string;
-  type: 'CREATE' | 'UPDATE' | 'DELETE';
+export interface SyncOperation { id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
   collectionName: string;
   recordId: string;
   data?: any;
@@ -67,7 +65,7 @@ export class LokiEvidenceService {
             resolve();
           },
           autosave: true,
-          autosaveInterval: 4000,
+          autosaveInterval: 4000
         });
       } catch (error: any) {
         console.error('❌ Loki database initialization failed:', error);
@@ -82,13 +80,13 @@ export class LokiEvidenceService {
       (this.db.getCollection('evidence') as unknown as Collection<LokiEvidence>) ||
       (this.db.addCollection('evidence', {
         indices: ['id', 'caseId', 'type'],
-        unique: ['id'],
+        unique: ['id']
       }) as unknown as Collection<LokiEvidence>);
     // Sync queue for offline operations
     this.syncQueue =
       (this.db.getCollection('syncQueue') as unknown as Collection<SyncOperation>) ||
       (this.db.addCollection('syncQueue', {
-        indices: ['timestamp', 'synced', 'type'],
+        indices: ['timestamp', 'synced', 'type']
       }) as unknown as Collection<SyncOperation>);
     // Clean up old synced operations (keep last 1000)
     const syncedOps = this.syncQueue.find({ synced: true });
@@ -117,7 +115,7 @@ export class LokiEvidenceService {
         data: evidence,
         timestamp: new Date().toISOString(),
         synced: false,
-        retryCount: 0,
+        retryCount: 0
       });
       // Trigger sync if online
       if (navigator.onLine) {
@@ -135,7 +133,7 @@ export class LokiEvidenceService {
     }
     try {
       const existing = this.evidenceCollection.findOne({
-        id: evidenceId,
+        id: evidenceId
       });
       if (!existing) {
         throw new Error(`Evidence ${evidenceId} not found in local storage`);
@@ -146,8 +144,8 @@ export class LokiEvidenceService {
         ...changes,
         timeline: {
           createdAt: existing.timeline?.createdAt || new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
+          updatedAt: new Date().toISOString()
+        }
       };
       this.evidenceCollection.update(updated);
       // Add to sync queue
@@ -159,7 +157,7 @@ export class LokiEvidenceService {
         data: changes,
         timestamp: new Date().toISOString(),
         synced: false,
-        retryCount: 0,
+        retryCount: 0
       });
       // Trigger sync if online
       if (navigator.onLine) {
@@ -176,7 +174,7 @@ export class LokiEvidenceService {
     }
     try {
       const existing = this.evidenceCollection.findOne({
-        id: evidenceId,
+        id: evidenceId
       });
       if (!existing) {
         throw new Error(`Evidence ${evidenceId} not found in local storage`);
@@ -191,7 +189,7 @@ export class LokiEvidenceService {
         recordId: evidenceId,
         timestamp: new Date().toISOString(),
         synced: false,
-        retryCount: 0,
+        retryCount: 0
       });
       // Trigger sync if online
       if (navigator.onLine) {
@@ -271,7 +269,7 @@ export class LokiEvidenceService {
       total: all.length,
       byType,
       byCase,
-      recentCount,
+      recentCount
     };
   }
   // Sync queue management
@@ -313,21 +311,20 @@ export class LokiEvidenceService {
       case 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(data)
         });
         break;
       case 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(data)
         });
         break;
       case 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
-          method: 'DELETE',
-        });
+          method: `DELETE` });
         break;
     }
   }
@@ -343,7 +340,7 @@ export class LokiEvidenceService {
       pending,
       failed,
       total: all.length,
-      inProgress: this.syncInProgress,
+      inProgress: this.syncInProgress
     };
   }
   public async syncWithServer(serverEvidence: EvidenceItem[]): Promise<void> {
@@ -416,7 +413,7 @@ class LokiIndexedAdapter {
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains('data')) {
-        db.createObjectStore('data', { keyPath: 'id' });
+        db.createObjectStore('data', { keyPath: `id` });
       }
     };
   }

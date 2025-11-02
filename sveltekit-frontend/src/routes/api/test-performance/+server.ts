@@ -6,16 +6,15 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, iterations = 100 } = await request.json();
     if (action === 'benchmark') {
-      const results = {
-        memory: { total: 0, avg: 0, iterations: 0 },
+      const results = { memory: {, total: 0, avg: 0, iterations: 0 },
         redis: { total: 0, avg: 0, iterations: 0 },
         qdrant: { total: 0, avg: 0, iterations: 0 },
-        overall: { total: 0, avg: 0 },
+        overall: { total: 0, avg: 0 }
       };
       const testData = {
         timestamp: new Date().toISOString(),
         data: new Array(100).fill(0).map((_, i) => ({ id: i, value: Math.random() })),
-        metadata: { type: 'performance-test', size: 'medium' },
+        metadata: { type: 'performance-test', size: 'medium' }
       };
       console.log(`Starting performance benchmark with ${iterations} iterations...`);
       const overallStart = Date.now();
@@ -62,8 +61,8 @@ export const POST: RequestHandler = async ({ request }) => {
           avgTimePerOp: overallTime / iterations,
           opsPerSecond: (iterations * 1000) / overallTime,
           results,
-          cacheStats: cacheManager.getCacheStats(),
-        },
+          cacheStats: cacheManager.getCacheStats()
+        }
       });
     }
     if (action === 'stress-test') {
@@ -103,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
         (acc, result) => ({
           success: acc.success + result.success,
           errors: acc.errors + result.errors,
-          totalTime: acc.totalTime + result.totalTime,
+          totalTime: acc.totalTime + result.totalTime
         }),
         { success: 0, errors: 0, totalTime: 0 }
       );
@@ -116,8 +115,8 @@ export const POST: RequestHandler = async ({ request }) => {
           opsPerSecond: (totals.success * 1000) / stressTime,
           successRate: (totals.success / (totals.success + totals.errors)) * 100,
           results: totals,
-          cacheStats: cacheManager.getCacheStats(),
-        },
+          cacheStats: cacheManager.getCacheStats()
+        }
       });
     }
     return json({ success: false, error: 'Invalid action' }, { status: 400 });

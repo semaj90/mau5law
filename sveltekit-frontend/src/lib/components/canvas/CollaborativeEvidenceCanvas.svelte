@@ -226,7 +226,7 @@ import type { Document } from '$lib/types';
         const evt = opt.e;
         if (evt && (evt.altKey || evt.button === 1)) {
           panning = true;
-          fabricCanvas.selection = $state(false);
+          fabricCanvas.selection = false;
           fabricCanvas.defaultCursor = 'grab';
         }
       });

@@ -45,17 +45,13 @@ export interface CanvasItem extends BaseKnowledgeItem {
 
 export type KnowledgeCollectionName = 'evidence' | 'notes' | 'canvas';
 
-type KnowledgeRecordMap = {
-  evidence: EvidenceItem;
-  notes: NoteItem;
+type KnowledgeRecordMap = { evidence: EvidenceItem;, notes: NoteItem;
   canvas: CanvasItem;
 };
 
 type KnowledgeItem = KnowledgeRecordMap[keyof KnowledgeRecordMap];
 
-interface CollectionContext<K extends KnowledgeCollectionName> {
-  name: K;
-  collection: Collection<KnowledgeRecordMap[K]>;
+interface CollectionContext<K extends KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
   fuse: Fuse<KnowledgeRecordMap[K]>;
   fuseKeys: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
 }
@@ -91,9 +87,7 @@ export interface HybridConfig {
   collections?: Array<CollectionSpec<KnowledgeCollectionName>>;
 }
 
-interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> {
-  instanceId: string;
-  action: 'upsert' | 'remove' | 'clear';
+interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> { instanceId: string;, action: 'upsert' | 'remove' | 'clear';
   collection: KnowledgeCollectionName;
   item?: T;
   itemId?: string;
@@ -104,17 +98,17 @@ const DEFAULT_COLLECTIONS: Array<CollectionSpec<KnowledgeCollectionName>> = [
   {
     name: 'evidence',
     indices: ['id', 'tags', 'fileName'],
-    fuseKeys: ['title', 'content', 'fileName', 'tags'],
+    fuseKeys: ['title', 'content', 'fileName', 'tags']
   },
   {
     name: 'notes',
     indices: ['id', 'tags', 'authorId', 'caseId'],
-    fuseKeys: ['title', 'content', 'tags'],
+    fuseKeys: ['title', 'content', 'tags']
   },
   {
     name: 'canvas',
     indices: ['id', 'tags'],
-    fuseKeys: ['title', 'content', 'tags'],
+    fuseKeys: ['title', 'content', 'tags']
   },
 ];
 
@@ -148,14 +142,14 @@ export class LokiHybridStore {
       redisPrefix: cfg.redisPrefix ?? 'kgcl',
       autoPersistToRedis: cfg.autoPersistToRedis ?? true,
       autoBroadcast: cfg.autoBroadcast ?? true,
-      autoEmbedToQdrant: cfg.autoEmbedToQdrant ?? true,
+      autoEmbedToQdrant: cfg.autoEmbedToQdrant ?? true
     };
 
     this.textSplitter =
       cfg.textSplitter ??
       new RecursiveCharacterTextSplitter({
         chunkSize: 768,
-        chunkOverlap: 128,
+        chunkOverlap: 128
       });
 
     this.redis = cfg.redis ?? (cfg.redisUrl ? new Redis(cfg.redisUrl) : undefined);
@@ -232,7 +226,7 @@ export class LokiHybridStore {
     const enriched: KnowledgeRecordMap[K] = {
       ...item,
       createdAt: item.createdAt ?? now,
-      updatedAt: now,
+      updatedAt: now
     };
 
     const ctx = this.getContext(collection);
@@ -350,7 +344,7 @@ export class LokiHybridStore {
   async embedAndSyncToQdrant(item: EvidenceItem): Promise<void> {
     if (!this.qdrant) return;
 
-    const content = `${item.title ?? ''}\n${item.content ?? ''}`.trim();
+    const content = `${item.title ?? ''}\n${item.content ?? '` }`.trim();
     if (!content) return;
 
     const embeddings = await this.ensureEmbeddings();
@@ -365,8 +359,8 @@ export class LokiHybridStore {
         ...this.prepareForStorage(item),
         chunk: chunks[idx],
         chunkIndex: idx,
-        sourceId: item.id,
-      },
+        sourceId: item.id
+      }
     }));
 
     await this.qdrant.upsert(this.qdrantCollection, { points });
@@ -420,7 +414,7 @@ export class LokiHybridStore {
             id: item.id,
             title: item.title ?? null,
             summary: item.summary ?? null,
-            tags: item.tags ?? [],
+            tags: item.tags ?? []
           }
         );
       }
@@ -441,7 +435,7 @@ export class LokiHybridStore {
 
     const [result] = await summarizer(item.content, {
       max_length: maxLength,
-      min_length: Math.min(Math.floor(maxLength / 2), 80),
+      min_length: Math.min(Math.floor(maxLength / 2), 80)
     });
 
     const summary = result?.summary_text?.trim();
@@ -458,19 +452,19 @@ export class LokiHybridStore {
   private setupCollections(specs: Array<CollectionSpec<KnowledgeCollectionName>>): void {
     for (const spec of specs) {
       const collection = this.db.addCollection<KnowledgeRecordMap[typeof spec.name]>(spec.name, {
-        indices: spec.indices,
+        indices: spec.indices
       });
       const fuse = new Fuse<KnowledgeRecordMap[typeof spec.name]>([], {
         threshold: 0.3,
         keys: spec.fuseKeys ?? ['title', 'content', 'tags'],
         includeScore: true,
-        shouldSort: true,
+        shouldSort: true
       });
       const ctx: CollectionContext<typeof spec.name> = {
         name: spec.name,
         collection,
         fuse,
-        fuseKeys: spec.fuseKeys ?? ['title', 'content', 'tags'],
+        fuseKeys: spec.fuseKeys ?? ['title', 'content', 'tags']
       };
       this.contexts.set(spec.name, ctx);
     }
@@ -509,7 +503,7 @@ export class LokiHybridStore {
     return {
       ...item,
       createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : undefined,
-      updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : undefined,
+      updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : undefined
     };
   }
 
@@ -525,7 +519,7 @@ export class LokiHybridStore {
     const payload = JSON.stringify({
       ...message,
       instanceId: this.instanceId,
-      emittedAt: new Date().toISOString(),
+      emittedAt: new Date().toISOString()
     });
     await this.redis.publish(this.redisChannel(), payload);
   }
@@ -555,7 +549,7 @@ export class LokiHybridStore {
       this.add(parsed.collection, parsed.item as any, {
         persist: false,
         broadcast: false,
-        embed: false,
+        embed: false
       });
     }
   }

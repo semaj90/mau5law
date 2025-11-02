@@ -1,6 +1,7 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 import type { Message } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
@@ -37,8 +38,8 @@ import type { Document } from '$lib/types';
   let messages = $state<ChatMessage[]>([]);
   let currentMessage = $state<string>('');
   let isLoading = $state<boolean>(false);
-  let chatContainer: HTMLElement | null = $state(null);
-  let inputElement: HTMLTextAreaElement | null = $state(null);
+  let chatContainer: HTMLElement | null = null;
+  let inputElement: HTMLTextAreaElement | null = null;
   // Auto-scroll to bottom when messages change (capture ref to avoid: "possibly null" inside timeout)
   $effect(() => {
     if (messages.length > 0 && chatContainer) {

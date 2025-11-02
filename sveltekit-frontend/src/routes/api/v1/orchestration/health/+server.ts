@@ -7,7 +7,7 @@ export const GET = async () => {
   try {
     const healthReport = await orchestrator.comprehensiveHealthCheck();
     return json(healthReport, {
-      status: healthReport.overall_health === 'healthy' ? 200 : healthReport.overall_health === 'degraded' ? 206 : 503,
+      status: healthReport.overall_health === 'healthy' ? 200 : healthReport.overall_health === 'degraded' ? 206 : 503
     });
   } catch (error: any) {
     return json(
@@ -15,7 +15,7 @@ export const GET = async () => {
         overall_health: 'critical',
         error: 'Health check system failure',
         details: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

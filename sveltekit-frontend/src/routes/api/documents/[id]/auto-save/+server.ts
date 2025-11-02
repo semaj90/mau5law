@@ -81,8 +81,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
         title,
         citations,
         autoSavedAt: new Date().toISOString(),
-        isDirty: !!isDirty,
-      },
+        isDirty: !!isDirty
+      }
     };
 
     if (content !== undefined) {
@@ -123,11 +123,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
           success: true,
           message: 'Document auto-saved successfully',
           document: {
-            id: row.id,
+           , id: row.id,
             lastSavedAt: row.updatedAt ?? new Date().toISOString(),
             wordCount: row.wordCount ?? updates.wordCount ?? 0,
-            isDirty: !!row.autoSaveData?.isDirty,
-          },
+            isDirty: !!row.autoSaveData?.isDirty
+          }
         });
       } catch (dbErr: any) {
         console.warn('Database auto-save failed, returning fallback response:', extractErrorMessage(dbErr));
@@ -143,8 +143,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
         id: documentId,
         lastSavedAt: updates.autoSaveData.autoSavedAt,
         wordCount: updates.wordCount ?? 0,
-        isDirty: !!updates.autoSaveData.isDirty,
-      },
+        isDirty: !!updates.autoSaveData.isDirty
+      }
     });
   } catch (err: any) {
     console.error('Error auto-saving document:', extractErrorMessage(err));
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
     if (!documentId) {
-      return json({ success: false, error: 'Document ID is required' }, { status: 400 });
+      return json({ success: false, error: `Document ID is required` }, { status: 400 });
     }
 
     if (legalDocuments) {
@@ -171,14 +171,13 @@ export const GET: RequestHandler = async ({ params }) => {
 
         // dynamic select/from/where - keep runtime casts and descriptive comments
         const docs: DocSelectResult[] = await db
-          .select({
-            id: (legalDocuments as unknown as { id: any }).id,
+          .select({ id: (legalDocuments as unknown as {, id: any }).id,
             lastSavedAt: (legalDocuments as unknown as { updatedAt?: any }).updatedAt,
-            autoSaveData: (legalDocuments as unknown as { autoSaveData?: any }).autoSaveData,
+            autoSaveData: (legalDocuments as unknown as { autoSaveData?: any }).autoSaveData
           })
           .from(legalDocuments as unknown)
           .where(
-            // cast column expression to string to avoid using `any` in the eq call
+            // cast column expression to string to avoid using `any' in the eq call
             eq((legalDocuments as unknown as { id: any }).id as unknown as string, documentId)
           )
           .limit(1);
@@ -193,11 +192,11 @@ export const GET: RequestHandler = async ({ params }) => {
         return json({
           success: true,
           autoSaveStatus: {
-            isDirty: !!autoSave?.isDirty,
+           , isDirty: !!autoSave?.isDirty,
             lastSavedAt: doc.lastSavedAt ?? null,
             hasAutoSaveData: !!autoSave,
-            autoSaveData: autoSave,
-          },
+            autoSaveData: autoSave
+          }
         });
       } catch (dbErr: any) {
         console.warn('Database query failed, returning mock response:', extractErrorMessage(dbErr));
@@ -209,14 +208,14 @@ export const GET: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       autoSaveStatus: {
-        isDirty: false,
+       , isDirty: false,
         lastSavedAt: new Date().toISOString(),
         hasAutoSaveData: false,
-        autoSaveData: null,
-      },
+        autoSaveData: null
+      }
     });
   } catch (err: any) {
     console.error('Error fetching auto-save status:', extractErrorMessage(err));
-    return json({ success: false, error: 'Failed to fetch auto-save status' }, { status: 500 });
+    return json({ success: false, error: `Failed to fetch auto-save status` }, { status: 500 });
   }
 };

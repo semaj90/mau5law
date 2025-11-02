@@ -1134,7 +1134,7 @@
 
         <div class="dialog-actions">
           <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
-          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = $state(false); }}>Apply Tags</Button>
+          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = false; }}>Apply Tags</Button>
         {/if}
     </div>
   {/if}
@@ -2288,7 +2288,7 @@
 
         <div class="dialog-actions">
           <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
-          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = $state(false); }}>Apply Tags</Button>
+          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = false; }}>Apply Tags</Button>
         {/if}
     </div>
   {/if}

@@ -21,21 +21,19 @@ type ProcessDocumentPayload = {
 
 type GenerateEmbeddingsPayload = { text: string; model?: string };
 type SIMDParsePayload = { buffer: ArrayBuffer };
-type IndexVectorsPayload = { documentId: string; embedding: Float32Array };
+type IndexVectorsPayload = { documentId: string;, embedding: Float32Array };
 type SearchSimilarityPayload = { queryEmbedding: Float32Array; limit?: number; threshold?: number };
 
 // Renamed to avoid collision with global/ambient WorkerMessage types
 type IngestionWorkerMessage =
-  | { id: string; type: 'process_document'; payload: ProcessDocumentPayload }
-  | { id: string; type: 'generate_embeddings'; payload: GenerateEmbeddingsPayload }
-  | { id: string; type: 'simd_parse'; payload: SIMDParsePayload }
-  | { id: string; type: 'index_vectors'; payload: IndexVectorsPayload }
-  | { id: string; type: 'search_similarity'; payload: SearchSimilarityPayload };
+  | { id: string; type: 'process_document';, payload: ProcessDocumentPayload }
+  | { id: string; type: 'generate_embeddings';, payload: GenerateEmbeddingsPayload }
+  | { id: string; type: 'simd_parse';, payload: SIMDParsePayload }
+  | { id: string; type: 'index_vectors';, payload: IndexVectorsPayload }
+  | { id: string; type: 'search_similarity';, payload: SearchSimilarityPayload };
 
 // Generic, typed worker response payload
-type WorkerResponse<T = Record<string, unknown>> = {
-  id: string | null;
-  success: boolean;
+type WorkerResponse<T = Record<string, unknown>> = { id: string | null;, success: boolean;
   stage: string;
   status?: string;
   error?: string;
@@ -55,9 +53,7 @@ interface AnalyzeResultItem {
   results?: any;
 }
 interface AdvancedEvidenceAnalyzer {
-  analyzeEvidence(args: {
-    evidenceId: string;
-    analysisTypes: string[];
+  analyzeEvidence(args: {, evidenceId: string;, analysisTypes: string[];
     priority?: string;
     textOverride?: string;
   }): Promise<{ summary?: string; analyses?: AnalyzeResultItem[] }>;
@@ -65,21 +61,19 @@ interface AdvancedEvidenceAnalyzer {
 
 interface EvidenceGraphService {
   updateEvidenceGraph?(
-    meta: { id: string; summary: string; caseId?: string | null },
-    entities: Array<{ name: string; type?: string | null }>,
+    meta: { id: string;, summary: string; caseId?: string | null },
+    entities: Array<{, name: string; type?: string | null }>,
     edges: any[]
   ): Promise<void>;
   // some modules may export a callable shape
   (
-    meta: { id: string; summary: string; caseId?: string | null },
-    entities: Array<{ name: string; type?: string | null }>,
+    meta: { id: string;, summary: string; caseId?: string | null },
+    entities: Array<{, name: string; type?: string | null }>,
     edges: any[]
   ): Promise<void>;
 }
 
-interface GraphNode {
-  id: string;
-  type: 'Evidence' | 'Entity' | 'Case';
+interface GraphNode { id: string;, type: 'Evidence' | 'Entity' | 'Case';
   label: string;
 }
 interface GraphEdge {
@@ -103,8 +97,8 @@ class VectorEmbeddingCache {
   async retrieve(k: string) {
     return this.c.get(k) ?? null;
   }
-  async search(q: Float32Array, opts: { limit: number; threshold: number }) {
-    const out: Array<{ key: string; similarity: number }> = [];
+  async search(q: Float32Array, opts: {, limit: number; threshold: number }) {
+    const out: Array<{ key: string;, similarity: number }> = [];
     for (const [k, v] of this.c.entries()) {
       if (!v || v.length !== q.length) continue;
       let dot = 0,
@@ -195,7 +189,7 @@ class RAGIngestionWorker {
       const type = typeof obj['type'] === 'string' ? (obj['type'] as string) : 'unknown';
       return { name, type };
     }
-    return { name: String(item), type: 'unknown' };
+    return { name: String(item), type: `unknown` };
   }
 
   // Helper to safely extract an id from an unknown message without using `any`
@@ -271,7 +265,7 @@ class RAGIngestionWorker {
       case 'search_similarity':
         return this.cache.search(msg.payload.queryEmbedding, {
           limit: msg.payload.limit || 10,
-          threshold: msg.payload.threshold || 0.7,
+          threshold: msg.payload.threshold || 0.7
         });
       default:
         throw new Error('Unknown message type');
@@ -316,7 +310,7 @@ class RAGIngestionWorker {
             evidenceId: id,
             analysisTypes: ['summary', 'entities'],
             priority: 'medium',
-            textOverride: text,
+            textOverride: text
           });
           this.post({ id, success: true, stage: 'analysis', status: 'completed' });
         } catch (err: any) {
@@ -332,7 +326,7 @@ class RAGIngestionWorker {
           await fetch(VECTOR_INDEX_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, embedding: Array.from(emb) }),
+            body: JSON.stringify({ id, embedding: Array.from(emb) })
           });
         } catch (e: any) {
           console.warn('vector push failed', e);
@@ -350,9 +344,9 @@ class RAGIngestionWorker {
 
       // rename sim variable to explicit typed name to avoid implicit any
       if (NEO4J_CREATE_SIMILARITY_LINKS) {
-        const simResults: Array<{ key: string; similarity: number }> = await this.cache.search(emb, {
+        const simResults: Array<{ key: string;, similarity: number }> = await this.cache.search(emb, {
           limit: 5,
-          threshold: 0.85,
+          threshold: 0.85
         });
         if (simResults && simResults.length) {
           // minimal observable action: emit a graph-stage message so caller can decide further processing
@@ -361,7 +355,7 @@ class RAGIngestionWorker {
             success: true,
             stage: 'neo4j_similarity_candidates',
             status: 'found',
-            payload: { candidates: simResults },
+            payload: {, candidates: simResults }
           });
         }
       }
@@ -372,10 +366,8 @@ class RAGIngestionWorker {
           // If it's an object exposing updateEvidenceGraph, call it.
           if (svc && typeof (svc as { updateEvidenceGraph?: any }).updateEvidenceGraph === 'function') {
             await (
-              svc as {
-                updateEvidenceGraph: (
-                  meta: { id: string; summary: string; caseId?: string | null },
-                  entities: Array<{ name: string; type?: string | null }>,
+              svc as { updateEvidenceGraph: (, meta: { id: string;, summary: string; caseId?: string | null },
+                  entities: Array<{, name: string; type?: string | null }>,
                   edges: any[]
                 ) => Promise<void>;
               }
@@ -387,8 +379,8 @@ class RAGIngestionWorker {
           } else if (typeof svc === 'function') {
             // Callable shape
             const callable = svc as unknown as (
-              meta: { id: string; summary: string; caseId?: string | null },
-              entities: Array<{ name: string; type?: string | null }>,
+              meta: { id: string;, summary: string; caseId?: string | null },
+              entities: Array<{, name: string; type?: string | null }>,
               edges: any[]
             ) => Promise<void>;
             await callable(
@@ -402,7 +394,7 @@ class RAGIngestionWorker {
             success: true,
             stage: 'graph',
             status: 'completed',
-            payload: this.formatGraphData(id, payload?.options?.caseId, entities),
+            payload: this.formatGraphData(id, payload?.options?.caseId, entities)
           });
         } catch (err: any) {
           this.post({ id, success: false, stage: 'graph', status: 'error', error: String(err) });
@@ -413,11 +405,11 @@ class RAGIngestionWorker {
           success: true,
           stage: 'graph',
           status: 'completed',
-          payload: this.formatGraphData(id, payload?.options?.caseId, entities),
+          payload: this.formatGraphData(id, payload?.options?.caseId, entities)
         });
       }
 
-      this.post({ id, success: true, stage: 'complete', status: 'done' });
+      this.post({ id, success: true, stage: 'complete', status: `done` });
       return { success: true };
     } catch (err: any) {
       this.post({ id, success: false, stage: 'error', status: 'error', error: String(err) });
@@ -436,12 +428,12 @@ class RAGIngestionWorker {
     const edges: GraphEdge[] = [];
     if (caseId) {
       nodes.push({ id: `case:${caseId}`, type: 'Case', label: `C:${String(caseId).slice(0, 6)}` });
-      edges.push({ from `evidence:${evidenceId}`, to: `case:${caseId}`, relation: 'ASSOCIATED_WITH' });
+      edges.push({ from `evidence:${evidenceId}`, to: `case:${caseId}`, relation: `ASSOCIATED_WITH` });
     }
     for (const ent of entities || []) {
       const nodeId = `entity:${ent.name}`;
       if (!nodes.some(n => n.id === nodeId)) nodes.push({ id: nodeId, type: 'Entity', label: ent.name });
-      edges.push({ from `evidence:${evidenceId}`, to: nodeId, relation: 'MENTIONS' });
+      edges.push({ from `evidence:${evidenceId}`, to: nodeId, relation: `MENTIONS` });
     }
     return { nodes, edges };
   }
@@ -468,8 +460,8 @@ class RAGIngestionWorker {
           : '/api/embeddings/generate';
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, model }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ text, model })
       });
       if (!res.ok) throw new Error(`Embedding API ${res.status}`);
       const body = await res.json();
@@ -493,8 +485,8 @@ class RAGIngestionWorker {
           : '/api/embeddings/generate';
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texts, model }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ texts, model })
       });
       if (!res.ok) throw new Error(`batch ${res.status}`);
       const b = await res.json();

@@ -18,5 +18,5 @@ export const gpuAnimations = {
   setShaderProgram: (vertexShader: string, fragmentShader: string) => {
     console.log('🎨 Setting GPU shader program');
     return { programSet: true, vertex: vertexShader, fragment: fragmentShader };
-  },
+  }
 };

@@ -108,9 +108,9 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			heartbeat: 60
 		},
 		// Development
-		nodeEnv: (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development',
+		nodeEnv: (process.env.NODE_ENV; as: 'development' | 'production' | 'test') || 'development',
 		devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev,
-		logLevel: (process.env.LOG_LEVEL as: 'error' | 'warn' | 'info' | 'debug') || 'info'
+		logLevel: (process.env.LOG_LEVEL; as: 'error' | 'warn' | 'info' | 'debug') || 'info'
 	};
 }
 /**
@@ -126,8 +126,8 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 		ollama: env.ollamaConfig.baseUrl,
 		ollamaEmbeddings: `${env.ollamaConfig.baseUrl}/api/embeddings`,
 		// Storage & Processing
-		minio: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
-		minioConsole: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
+		minio: '${env.minioConfig.useSSL ? 'https' : 'http' }://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
+		minioConsole: '${env.minioConfig.useSSL ? 'https' : 'http' }://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
 		neo4j: env.neo4jConfig.uri,
 		neo4jBrowser: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
 		rabbitmq: env.rabbitmqConfig.url,
@@ -170,7 +170,7 @@ export class OllamaAdapter implements OllamaClient {
 				model,
 				prompt,
 				stream: false,
-				options: { num_predict: opts?.maxTokens || 512 }
+				options: {, num_predict: opts?.maxTokens || 512 }
 			}),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
@@ -181,7 +181,7 @@ export class OllamaAdapter implements OllamaClient {
 		return data.response;
 	}
 	async chat(
-		messages: Array<{ role: string; content: string }>,
+		messages: Array<{, role: string; content: string }>,
 		opts?: { model?: string; stream?: boolean }
 	): Promise<string | AsyncIterable<string>> {
 		const model = opts?.model || this.config.chatModel;
@@ -228,7 +228,7 @@ export class OllamaAdapter implements OllamaClient {
 // ===== Redis Adapter (IORedis) =====
 export class RedisAdapter implements RedisCacheService {
 	private client: any; // IORedis client
-	private connected = $state(false);
+	private connected = false;
 	constructor(private config: RedisConfig) {}
 	private async ensureConnected() {
 		if (this.connected) return;
@@ -278,7 +278,7 @@ export class RedisAdapter implements RedisCacheService {
 	async disconnect(): Promise<void> {
 		if (this.connected) {
 			await this.client.quit();
-			this.connected = $state(false);
+			this.connected = false;
 		}
 	}
 }
@@ -297,8 +297,7 @@ export class QdrantAdapter implements QdrantClient {
 	}
 	async createCollection(name: string, vectorSize: number): Promise<void> {
 		await this.ensureClient();
-		await this.client.createCollection(name, {
-			vectors: { size: vectorSize, distance: 'Cosine' }
+		await this.client.createCollection(name, { vectors: {, size: vectorSize, distance: 'Cosine' }
 		});
 	}
 	async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
@@ -351,7 +350,7 @@ export class PgVectorAdapter implements PgVectorClient {
 			database: this.config.database,
 			user: this.config.user,
 			password: this.config.password,
-			ssl: this.config.ssl ? { rejectUnauthorized: false } : false,
+			ssl: this.config.ssl ? {, rejectUnauthorized: false } : false,
 			max: this.config.max || 20,
 			idleTimeoutMillis: this.config.idleTimeoutMillis || 30000
 		});
@@ -367,7 +366,7 @@ export class PgVectorAdapter implements PgVectorClient {
 		collection: string,
 		vector: number[],
 		limit?: number
-	): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
+	): Promise<Array<{ id: string; similarity: number;, metadata: Record<string, unknown> }>> {
 		const vectorStr = `[${vector.join(',')}]`;
 		const sql = `
       SELECT id, 1 - (embedding <=> $1::vector) as similarity, metadata
@@ -375,7 +374,7 @@ export class PgVectorAdapter implements PgVectorClient {
       ORDER BY embedding <=> $1::vector
       LIMIT $2
     `;
-		const result = await this.query<{ id: string; similarity: number; metadata: any }>(sql, [
+		const result = await this.query<{ id: string; similarity: number;, metadata: any }>(sql, [
 			vectorStr,
 			limit || 10
 		]);
@@ -383,7 +382,7 @@ export class PgVectorAdapter implements PgVectorClient {
 	}
 	async insert(
 		collection: string,
-		vectors: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
+		vectors: Array<{, id: string; vector: number[]; metadata?: Record<string, unknown> }>
 	): Promise<void> {
 		const values = vectors
 			.map(
@@ -456,10 +455,10 @@ export class MinIOAdapter implements MinIOClient {
 	async listObjects(
 		bucket: string,
 		prefix?: string
-	): Promise<Array<{ name: string; size: number; etag: string }>> {
+	): Promise<Array<{ name: string; size: number;, etag: string }>> {
 		await this.ensureClient();
 		const stream = this.client.listObjects(bucket, prefix, true);
-		const objects: Array<{ name: string; size: number; etag: string }> = [];
+		const objects: Array<{ name: string; size: number;, etag: string }> = [];
 		return new Promise((resolve, reject) => {
 			stream.on('data', (obj: any) => {
 				objects.push({ name: obj.name, size: obj.size, etag: obj.etag });

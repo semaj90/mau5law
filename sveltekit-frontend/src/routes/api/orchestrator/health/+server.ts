@@ -2,19 +2,15 @@
 // Nintendo-Style Service Health Monitoring
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-interface ServiceHealth {
-  service: string
-  status: 'healthy' | 'degraded' | 'down'
+interface ServiceHealth { service: string, status: 'healthy' | 'degraded' | 'down'
   response_time_ms?: number
   details?: string
 }
 interface HealthResponse {
   overall_status: 'healthy' | 'degraded' | 'critical',
-  services: ServiceHealth[]
-  nintendo_memory_banks: {
-    L1_GPU_VRAM: { used_mb: number; total_mb: number; utilization: number }
-    L2_SYSTEM_RAM: { used_mb: number; total_mb: number; utilization: number }
-    L3_REDIS_CACHE: { used_mb: number; total_mb: number; utilization: number }
+  services: ServiceHealth[]; nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: number; total_mb: number;, utilization: number }
+    L2_SYSTEM_RAM: { used_mb: number; total_mb: number;, utilization: number }
+    L3_REDIS_CACHE: { used_mb: number; total_mb: number;, utilization: number }
   }
   timestamp: string
 }
@@ -36,7 +32,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     }
   }
 }
@@ -52,7 +48,7 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
       service: 'Redis Cache (L3)',
       status: response?.ok ? 'healthy' : 'down',
       response_time_ms: response ? 50 : undefined,
-      details: response?.ok ? 'Nintendo L3 memory bank operational' : 'Redis connection failed',
+      details: response?.ok ? 'Nintendo L3 memory bank operational' : 'Redis connection failed'
     }
   } catch {
     return {
@@ -64,9 +60,7 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
 }
 async function getMemoryBankStatus(): Promise<any> {
   // Simulate memory bank readings - in production, you'd get actual metrics
-  return {
-    L1_GPU_VRAM: {
-      used_mb: Math.floor(Math.random() * 6000 + 2000), // 2-8GB used
+  return { L1_GPU_VRAM: {, used_mb: Math.floor(Math.random() * 6000 + 2000), // 2-8GB used
       total_mb: 8192, // 8GB RTX 3060
       utilization: 0
     },
@@ -113,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
           response_time_ms: responseTime,
-          details: healthy ? 'Service operational' : 'Service unreachable',
+          details: healthy ? 'Service operational' : 'Service unreachable'
         } as ServiceHealth
       })
     )
@@ -148,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
       overall_status: overallStatus,
       services: serviceChecks,
       nintendo_memory_banks: memoryBanks,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }
     return json(healthResponse, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503
@@ -157,10 +151,9 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: {
-        L1_GPU_VRAM: { used_mb: 0, total_mb: 0, utilization: 0 },
+      nintendo_memory_banks: { L1_GPU_VRAM: {, used_mb: 0, total_mb: 0, utilization: 0 },
         L2_SYSTEM_RAM: { used_mb: 0, total_mb: 0, utilization: 0 },
-        L3_REDIS_CACHE: { used_mb: 0, total_mb: 0, utilization: 0 }
+        L3_REDIS_CACHE: {, used_mb: 0, total_mb: 0, utilization: 0 }
       },
       timestamp: new Date().toISOString(),
       error: 'Health check system failure'

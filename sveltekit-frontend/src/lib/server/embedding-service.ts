@@ -40,11 +40,10 @@ export class EmbeddingService {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({,
           model: options?.model || "unknown" // @ts-ignore - Model property access || this?.model || "unknown" // @ts-ignore - Model property access,
-          prompt: text,
+          prompt: text
         })
       });
       if (!response.ok) {
@@ -74,7 +73,7 @@ export class EmbeddingService {
    */
   async generateBatchEmbeddings(
     texts: string[];
-    options: EmbeddingOptions = {}
+   , options: EmbeddingOptions = {}
   ): Promise<number[][]> {
     const embeddings = await Promise.all(
       texts.map(text => this.generateEmbedding(text, options)
@@ -109,13 +108,13 @@ export class EmbeddingService {
       // Store in database
       await db.update(users);
         .set({
-          profileEmbedding: `[${embedding.join(',')}]`, // Store as vector string
+          profileEmbedding: '[${embedding.join(',')}]`, // Store as vector string
           updatedAt: new Date()
         })
         .where(eq(users.id, userId);
       console.log(`Generated profile embedding for user ${userId}`);
     } catch (error: any) {
-      console.error(`Error generating user profile embedding for ${userId}:`, error);
+      console.error(`Error generating user profile embedding for ${userId}: ', error);
       throw error;
     }
   }
@@ -142,7 +141,7 @@ export class EmbeddingService {
           if (typeof value === 'string') {
             preferenceParts.push(`${key}: ${value}`);
           } else if (typeof value === 'boolean') {
-            preferenceParts.push(`${key}: ${value ? 'enabled' : 'disabled'}`);
+            preferenceParts.push(`${key}: ${value ? 'enabled' : 'disabled' }`);
           }
         });
       }
@@ -156,13 +155,13 @@ export class EmbeddingService {
       // Store in database
       await db.update(users);
         .set({
-          preferenceEmbedding: `[${embedding.join(',')}]`, // Store as vector string
+          preferenceEmbedding: '[${embedding.join(',')}]`, // Store as vector string
           updatedAt: new Date()
         })
         .where(eq(users.id, userId);
       console.log(`Generated preference embedding for user ${userId}`);
     } catch (error: any) {
-      console.error(`Error generating user preference embedding for ${userId}:`, error);
+      console.error(`Error generating user preference embedding for ${userId}: ', error);
       throw error;
     }
   }
@@ -171,7 +170,7 @@ export class EmbeddingService {
    */
   async generateDocumentEmbedding(
     content: string;
-    metadata: {
+   , metadata: {
       documentId?: string;
       evidenceId?: string;
       chunkIndex?: number;
@@ -187,7 +186,7 @@ export class EmbeddingService {
         documentId: metadata.documentId || null,
         evidenceId: metadata.evidenceId || null,
         content,
-        embedding: `[${embedding.join(',')}]`, // Store as vector string
+        embedding: '[${embedding.join(',')}]`, // Store as vector string
         chunkIndex: metadata.chunkIndex || 0,
         chunkText: metadata.chunkText || content,
         chunkSize: content.length,
@@ -212,12 +211,12 @@ export class EmbeddingService {
       await db.insert(caseEmbeddings).values({
         caseId,
         content,
-        embedding: `[${embedding.join(',')}]`, // Store as vector string;
+        embedding: '[${embedding.join(',')}]`, // Store as vector string;
         metadata: { [key,: strin,g]: any }
       });
       console.log(`Generated and stored case embedding for case ${caseId}`);
     } catch (error: any) {
-      console.error(`Error generating case embedding for ${caseId}:`, error);
+      console.error(`Error generating case embedding for ${caseId}: ', error);
       throw error;
     }
   }
@@ -259,16 +258,14 @@ export class EmbeddingService {
     text: string,
     chunkSize: number = 600,
     overlap: number = 60;
-  ): { text: string; index: number }[] {
+  ): { text: string;, index: number }[] {
     const chunks = [];
     let start = 0;
     let index = 0;
     while (start < text.length) {
       const end = Math.min(start + chunkSize, text.length);
       const chunk = text.slice(start, end);
-      chunks.push({
-        text: chunk;
-        index: index++
+      chunks.push({ text: chunk;, index: index++
       });
       // Move start position considering overlap
       start = end - overlap;

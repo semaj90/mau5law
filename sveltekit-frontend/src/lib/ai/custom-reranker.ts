@@ -13,9 +13,7 @@ export interface RerankResult {
   position?: string;
   confidence?: number; // 0-100
 }
-export interface UserContext {
-  intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';
-  timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
+export interface UserContext { intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   focusedElement?: string;
   currentCase?: string;
   recentActions: string[];
@@ -47,9 +45,7 @@ export type ResultLike = {
   confidence?: number;
   originalScore?: number;
 };
-export interface SynthesisResult {
-  fixes: string[];
-  codeReview: string;
+export interface SynthesisResult { fixes: string[];, codeReview: string;
   analysis: string;
   summary: string;
   nextSteps: string[];
@@ -64,7 +60,7 @@ export class LegalAIReranker {
     role: 1.8,
     workflow: 1.2,
     recency: 0.8,
-    confidence: 1.5,
+    confidence: 1.5
   };
   /**
    * Advanced reranking with legal context awareness
@@ -99,7 +95,7 @@ export class LegalAIReranker {
         const finalScore = conf ? base * (conf / 100) : base;
         return {
           ...result,
-          rerankScore: finalScore,
+          rerankScore: finalScore
         } as RerankResult;
       })
     );
@@ -113,18 +109,18 @@ export class LegalAIReranker {
       prosecutor: {
         'evidence-analysis': 2.0,
         'case-precedent': 1.8,
-        'witness-testimony': 1.5,
+        'witness-testimony': 1.5
       },
       detective: {
         'forensic-data': 2.0,
         'timeline-analysis': 1.8,
-        'suspect-profile': 1.5,
+        'suspect-profile': 1.5
       },
       admin: {
         'case-management': 2.0,
         'user-activity': 1.5,
-        'system-reports': 1.3,
-      },
+        'system-reports': 1.3
+      }
     };
     const boosts = roleBoosts[role as keyof typeof roleBoosts];
     const contentType = result.metadata?.type;
@@ -134,10 +130,9 @@ export class LegalAIReranker {
    * Workflow state context scoring
    */
   private calculateWorkflowScore(result: RerankResult, workflowState: string): number {
-    const workflowBoosts = {
-      draft: { templates: 1.5, examples: 1.3 },
+    const workflowBoosts = { draft: {, templates: 1.5, examples: 1.3 },
       review: { checklist: 1.8, validation: 1.5 },
-      approved: { archive: 1.2, export: 1.5 },
+      approved: { archive: 1.2, export: 1.5 }
     };
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
     const actionType = result.metadata?.actionType;
@@ -185,9 +180,7 @@ export class LegalAIReranker {
   }
 }
 // Neo4j path context enhancement
-export interface Neo4jPathContext {
-  userPath: string[];
-  relatedCases: string[];
+export interface Neo4jPathContext { userPath: string[];, relatedCases: string[];
   frequentActions: string[];
   collaborators: string[];
   timeSpentByNode: Record<string, number>;
@@ -217,7 +210,7 @@ export async function enhancedSearchWithNeo4j(
       payload: payload,
       score: result.score,
       content: payload?.text,
-      metadata: metadata,
+      metadata: metadata
     };
     return {
       id: result.id.toString(),
@@ -227,11 +220,11 @@ export async function enhancedSearchWithNeo4j(
         ...metadata,
         neo4jPath: neo4jContext ? calculatePathScore(resultLike, neo4jContext) : 0,
         relatedCases: neo4jContext?.relatedCases || [],
-        userFrequency: neo4jContext ? calculateFrequencyScore(resultLike, neo4jContext) : 0,
+        userFrequency: neo4jContext ? calculateFrequencyScore(resultLike, neo4jContext) : 0
       },
       originalScore: result.score || 0,
       rerankScore: 0,
-      confidence: (result.score || 0) * 100,
+      confidence: (result.score || 0) * 100
     };
   });
   // Apply custom reranking with Neo4j context
@@ -288,12 +281,10 @@ export async function synthesizeMultiLLMOutput({
   llmOutputs,
   userHistory,
   uploadedFiles,
-  mcpServers,
-}: {
-  llmOutputs: AIModelOutput[];
-  userHistory: UserHistory;
+  mcpServers
+}: { llmOutputs: AIModelOutput[];, userHistory: UserHistory;
   uploadedFiles: UploadedFile[];
-  mcpServers: MCPServerData[];
+ , mcpServers: MCPServerData[];
 }): Promise<SynthesisResult> {
   // 1. Cache and auto-encode all inputs for fast retrieval and training
   const cacheKey = JSON.stringify({ llmOutputs, userHistory, uploadedFiles, mcpServers });
@@ -336,13 +327,12 @@ export async function synthesizeMultiLLMOutput({
     summary,
     nextSteps,
     generativeAutocomplete,
-    selfPrompt,
+    selfPrompt
   };
   // 6. Optionally train/update cache with user feedback
   await dimensionalCache.cacheDimensionalArray(cacheKey, result, {
     userId: 'user-123',
     sessionId: 'session-456',
-    behaviorPattern: 'power_user',
-  });
+    behaviorPattern: 'power_user` });
   return result;
 }

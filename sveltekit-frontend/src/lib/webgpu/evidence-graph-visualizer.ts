@@ -30,7 +30,7 @@ export function renderFallbackCanvas(
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#111';
   ctx.font = '12px sans-serif';
-  ctx.fillText(`Nodes: ${nodes.length} Edges: ${edges.length}`, 10, 20);
+  ctx.fillText(`Nodes: ${nodes.length}, Edges: ${edges.length}`, 10, 20);
 }
 
 export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas };
@@ -44,9 +44,7 @@ export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas };
  */
 
 // --- Type Definitions ---
-export interface GraphNode {
-  id: string;
-  type: 'Evidence' | 'Entity' | 'Case';
+export interface GraphNode { id: string;, type: 'Evidence' | 'Entity' | 'Case';
   label: string;
   confidence?: number;
   // For GPU rendering
@@ -62,9 +60,7 @@ export interface GraphEdge {
   relation: string;
 }
 
-export interface GraphData {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
+export interface GraphData { nodes: GraphNode[];, edges: GraphEdge[];
 }
 
 // --- Minimal local GPU types to avoid: 'any' casts ---
@@ -98,8 +94,7 @@ class EvidenceGraphVisualizer {
         context.configure({
           device,
           format: presentationFormat,
-          alphaMode: 'premultiplied',
-        });
+          alphaMode: 'premultiplied` });
 
         this.context = context;
         this.isWebGPU = true;
@@ -133,7 +128,7 @@ class EvidenceGraphVisualizer {
     if (this.isWebGPU) {
       this.renderWebGPU(data);
     } else {
-      this.renderCanvas2D(data as { nodes: Required<GraphNode>[]; edges: GraphEdge[] });
+      this.renderCanvas2D(data as { nodes: Required<GraphNode>[];, edges: GraphEdge[] });
     }
   }
 
@@ -147,7 +142,7 @@ class EvidenceGraphVisualizer {
     console.log('[WebGPU] Rendering graph:', data);
   }
 
-  private renderCanvas2D(data: { nodes: Required<GraphNode>[]; edges: GraphEdge[] }): void {
+  private renderCanvas2D(data: {, nodes: Required<GraphNode>[]; edges: GraphEdge[] }): void {
     const ctx = this.context as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 

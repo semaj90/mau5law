@@ -3,9 +3,7 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
-export interface Toast {
-  id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+export interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
@@ -101,7 +99,7 @@ class ToastService {
   failUpload(toastId: string, message: string, retryCallback?: () => void) {
     this.update(toastId, {
       type: 'error',
-      message: `${message}${retryCallback ? ' Click to retry.' : ''}`,
+      message: '${message}${retryCallback ? ' Click to retry.' : '' }`,
       duration: retryCallback ? 0 : 8000
     });
   }

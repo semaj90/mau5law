@@ -312,7 +312,7 @@
           {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
             {@const ActivityIconComp = getActivityIcon(activity.type)}
             <div
-              class="flex" items-start gap-3 p-3 border-l-4 {activity.status === 'success'
+              class="flex items-start gap-3" p-3 border-l-4 {activity.status === 'success'
                 ? 'border-green-500 bg-green-50'
                 : activity.status === 'error'
                   ? 'border-red-500 bg-red-50'

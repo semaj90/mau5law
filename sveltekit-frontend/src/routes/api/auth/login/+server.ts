@@ -8,9 +8,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { authService, auth } from '$lib/server/auth';
 import { isAuthError, formatErrorResponse } from '$lib/server/errors';
 
-interface LoginRequest {
-  email: string;
-  password: string;
+interface LoginRequest { email: string;, password: string;
 }
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
@@ -25,7 +23,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       const formData = await request.formData();
       data = {
         email: formData.get('email') as string,
-        password: formData.get('password') as string,
+        password: formData.get('password') as string
       };
     } else {
       throw new Error('Invalid content type');
@@ -37,10 +35,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         {
           success: false,
           error: {
-            message: 'Email and password are required',
+           , message: 'Email and password are required',
             code: 'INVALID_REQUEST',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -56,7 +54,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const sessionCookie = auth.createSessionCookie(session.id);
     cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      path: '/',
+      path: '/'
     });
 
     // Return success with user data
@@ -69,12 +67,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          avatarUrl: user.avatarUrl,
+          avatarUrl: user.avatarUrl
         },
         session: {
-          id: session.id,
-          expiresAt: session.expiresAt,
-        },
+         , id: session.id,
+          expiresAt: session.expiresAt
+        }
       },
       { status: 200 }
     );
@@ -92,10 +90,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       {
         success: false,
         error: {
-          message: 'An unexpected error occurred',
+         , message: 'An unexpected error occurred',
           code: 'UNKNOWN_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );

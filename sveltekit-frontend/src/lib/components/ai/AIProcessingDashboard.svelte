@@ -363,7 +363,7 @@ import type { Document } from '$lib/types';
       <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each processingResults as result (result.taskId)}
-            <div class="p-3 bg-yorha-bg-secondary rounded-md border border-yorha-border" transition:fly={{ y: -20, duration: 300 }}>
+            <div class="p-3 bg-yorha-bg-secondary rounded-md border border-yorha-border" transitionfly={{ y: -20, duration: 300 }}>
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center space-x-2">
                   <Badge class={result.success ? 'bg-yorha-success' : 'bg-yorha-danger'}>

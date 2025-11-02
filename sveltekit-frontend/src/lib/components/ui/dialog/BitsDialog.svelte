@@ -1,5 +1,6 @@
 <!-- Modern Bits-UI Dialog Component for Legal AI App -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   import * as Dialog from './index';
   import X from 'lucide-svelte';
   import { cn } from '$lib/utils';

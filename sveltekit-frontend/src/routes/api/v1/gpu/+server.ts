@@ -2,9 +2,7 @@ import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 
 // New narrow types and helpers
-type GPURequestBody = {
-  service: string;
-  operation: string;
+type GPURequestBody = { service: string;, operation: string;
   data: number[];
   [key: string]: any;
 };
@@ -44,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       result: body.data.map(n => n * 1),
       processing_ms: 5,
-      gpu_utilized: false,
+      gpu_utilized: false
     });
   } catch (err: any) {
     console.error('GPU proxy error:', getErrorMessage(err));

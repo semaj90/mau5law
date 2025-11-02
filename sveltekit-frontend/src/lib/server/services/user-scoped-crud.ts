@@ -19,26 +19,20 @@ export const CreateCaseSchema = z.object({
   status: z.enum(['open', 'closed', 'pending', 'archived']).default('open'),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   category: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 export const UpdateCaseSchema = CreateCaseSchema.partial();
 export type CreateCaseData = z.infer<typeof CreateCaseSchema>;
 export type UpdateCaseData = z.infer<typeof UpdateCaseSchema>;
 
-export interface ListOptions {
-  page: number;
-  limit: number;
+export interface ListOptions { page: number;, limit: number;
   sortBy: 'title' | 'created_at' | 'updated_at' | 'status' | 'priority';
   sortOrder: 'asc' | 'desc';
   status?: string;
   priority?: string;
 }
 
-export interface ListResult<T> {
-  items: T[];
-  pagination: {
-    page: number;
-    limit: number;
+export interface ListResult<T> { items: T[];, pagination: { page: number;, limit: number;
     totalPages: number;
     totalCount: number;
     hasNext: boolean;
@@ -67,7 +61,7 @@ export class CasesCRUDService {
       created_at: (cases as any).createdAt ?? (cases as any).created_at,
       updated_at: (cases as any).updatedAt ?? (cases as any).updated_at,
       status: (cases as any).status,
-      priority: (cases as any).priority,
+      priority: (cases as any).priority
     };
     const orderByField = sortMap[sortBy] ?? (cases as any).updatedAt;
     const orderBy = sortOrder === 'asc' ? asc(orderByField) : desc(orderByField);
@@ -97,8 +91,8 @@ export class CasesCRUDService {
         totalPages,
         totalCount,
         hasNext: page < totalPages,
-        hasPrev: page > 1,
-      },
+        hasPrev: page > 1
+      }
     };
   }
 
@@ -131,7 +125,7 @@ export class CasesCRUDService {
         category: data.category ?? null,
         metadata: data.metadata ?? {},
         createdAt: now,
-        updatedAt: now,
+        updatedAt: now
       })
       .returning();
 
@@ -147,7 +141,7 @@ export class CasesCRUDService {
       .update(cases)
       .set({
         ...data,
-        updatedAt: now,
+        updatedAt: now
       })
       .where(and(eq((cases as any).id, id), eq((cases as any).userId, this.userId)))
       .returning();
@@ -182,10 +176,10 @@ export const CreateEvidenceSchema = z.object({
   aiSummary: z.string().optional(),
   summary: z.string().optional(),
   isAdmissible: z.boolean().optional(),
-  confidentialityLevel: z.string().optional(),
+  confidentialityLevel: z.string().optional()
 });
 export const UpdateEvidenceSchema = CreateEvidenceSchema.partial().extend({
-  id: cuidSchema,
+  id: cuidSchema
 });
 export type CreateEvidenceData = z.infer<typeof CreateEvidenceSchema>;
 export type UpdateEvidenceData = z.infer<typeof UpdateEvidenceSchema>;
@@ -201,7 +195,7 @@ export class EvidenceCRUDService {
     const sortMap: Record<string, any> = {
       title: (evidence as any).title,
       created_at: (evidence as any).createdAt ?? (evidence as any).created_at,
-      updated_at: (evidence as any).updatedAt ?? (evidence as any).updated_at,
+      updated_at: (evidence as any).updatedAt ?? (evidence as any).updated_at
     };
     const orderByField = sortMap[sortBy] ?? (evidence as any).updatedAt;
     const orderBy = sortOrder === 'asc' ? asc(orderByField) : desc(orderByField);
@@ -216,13 +210,13 @@ export class EvidenceCRUDService {
   }
 
   async listByCase(caseId: string, options: Partial<ListOptions> = {}): Promise<any> {
-    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc' } = options;
+    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc` } = options;
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, any> = {
       title: (evidence as any).title,
       created_at: (evidence as any).createdAt ?? (evidence as any).created_at,
-      updated_at: (evidence as any).updatedAt ?? (evidence as any).updated_at,
+      updated_at: (evidence as any).updatedAt ?? (evidence as any).updated_at
     };
     const orderByField = sortMap[sortBy] ?? (evidence as any).updatedAt;
     const orderBy = sortOrder === 'asc' ? asc(orderByField) : desc(orderByField);
@@ -300,7 +294,7 @@ export class EvidenceCRUDService {
         uploadedAt: now,
         updatedAt: now,
         confidentialityLevel: data.confidentialityLevel ?? null,
-        isAdmissible: data.isAdmissible ?? null,
+        isAdmissible: data.isAdmissible ?? null
       })
       .returning({ id: (evidence as any).id });
 

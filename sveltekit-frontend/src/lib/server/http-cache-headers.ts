@@ -53,13 +53,13 @@ export const CACHE_STRATEGIES = {
     maxAge: 300,
     staleWhileRevalidate: 600,
     private: true,
-    mustRevalidate: true,
+    mustRevalidate: true
   },
   // Real-time data - minimal caching
   REALTIME: {
     maxAge: 60,
     mustRevalidate: true,
-    private: true,
+    private: true
   },
   // Immutable content (with versioned URLs)
   IMMUTABLE: {
@@ -112,7 +112,7 @@ function generateETag(content: any): string {
 export function applyCacheHeaders(
   response: Response,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
-  options: {
+ , options: {
     content?: any;
     generateETag?: boolean;
     lastModified?: Date;
@@ -147,7 +147,7 @@ export function applyCacheHeaders(
 export function cachedJson(
   data: any,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
-  options: {
+ , options: {
     status?: number;
     generateETag?: boolean;
     lastModified?: Date;
@@ -157,8 +157,7 @@ export function cachedJson(
   const response = new Response(jsonString, {
     status: options.status || 200,
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json' }
   });
   return applyCacheHeaders(response, strategy, {
     content: data,
@@ -173,7 +172,7 @@ export function checkConditionalHeaders(
   request: Request,
   etag?: string
   lastModified?: Date;
-): { isNotModified: boolean; shouldSend304: boolean } {
+): { isNotModified: boolean;, shouldSend304: boolean } {
   const ifNoneMatch = request.headers.get('If-None-Match');
   const ifModifiedSince = request.headers.get('If-Modified-Since');
   let isNotModified = false;
@@ -217,7 +216,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
 export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>,(,
   handler: T,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
-  options: {
+ , options: {
     generateETag?: boolean;
     getLastModified?: (...args: any[]) => Date | undefined;
     skipConditionalCheck?: boolean;

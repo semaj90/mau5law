@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ params }) => {
       return json({
         canvasData: '{}',
         positions: [],
-        lastModified: new Date().toISOString(),
+        lastModified: new Date().toISOString()
       });
     }
 
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ params }) => {
     const rows = await db
       .select({
         canvasData: cases.canvasData,
-        updatedAt: cases.updatedAt,
+        updatedAt: cases.updatedAt
       })
       .from(cases)
       .where(eq(cases.id, caseId));
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
     return json({
       canvasData,
-      lastModified: caseData.updatedAt ? caseData.updatedAt.toISOString() : null,
+      lastModified: caseData.updatedAt ? caseData.updatedAt.toISOString() : null
     });
   } catch (error: any) {
     console.error('Error fetching canvas data:', error);
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       console.warn('Cases table not available, returning mock response');
       return json({
         success: true,
-        savedAt: new Date().toISOString(),
+        savedAt: new Date().toISOString()
       });
     }
 
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       .update(cases)
       .set({
         canvasData: canvasDataToStore,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(cases.id, caseId))
       .returning();
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 
     return json({
       success: true,
-      savedAt: updatedCase.updatedAt ? updatedCase.updatedAt.toISOString() : new Date().toISOString(),
+      savedAt: updatedCase.updatedAt ? updatedCase.updatedAt.toISOString() : new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Error saving canvas data:', error);

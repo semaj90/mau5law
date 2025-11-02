@@ -11,7 +11,7 @@ import {
   isRedisHealthy,
   queuedTasks,
   type RedisOptimizationResult,
-  type QueuedTask,
+  type QueuedTask
 } from '$lib/stores/unified';
 type QueryContext = {
   endpoint?: string;
@@ -75,7 +75,7 @@ export function useRedisAI() {
     getTaskResult,
     clearError() {
       error = null;
-    },
+    }
   };
 }
 export function useRedisMonitoring() {
@@ -114,7 +114,7 @@ export function useRedisMonitoring() {
       return get(isRedisHealthy);
     },
     refresh,
-    clearCache,
+    clearCache
   };
 }
 export function useRedisTaskQueue(defaultPollInterval = 5000) {
@@ -184,7 +184,7 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
     getTask,
     getAllTasks,
     getTasksByStatus,
-    getTasksForUser,
+    getTasksForUser
   };
 }
 export function useRedisComponentCache(componentName: string, config: ComponentCacheConfig = {}) {
@@ -200,7 +200,7 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
     }
     const result = await redisOrchestratorClient.processQuery(queryText, {
       endpoint: componentName,
-      ...context,
+      ...context
     });
     const resultWithCacheFlag = result as { cached?: any };
     if (config.autoCache !== false && resultWithCacheFlag.cached) {
@@ -229,7 +229,7 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
       size: componentCache.size,
       hits: cacheHits,
       misses: cacheMisses,
-      hitRate: total > 0 ? (cacheHits / total) * 100 : 0,
+      hitRate: total > 0 ? (cacheHits / total) * 100 : 0
     };
   }
   return {
@@ -240,7 +240,7 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
       return getCacheStats();
     },
     queryWithCache,
-    clearComponentCache,
+    clearComponentCache
   };
 }
 export function useRedisForm() {
@@ -266,16 +266,15 @@ export function useRedisForm() {
         lastSubmission = {
           type: 'queued' as const,
           taskId,
-          estimatedTime: '30-45 seconds',
-        };
+          estimatedTime: '30-45 seconds` };
       } else {
         const result = await redisOrchestratorClient.processQuery(queryText, {
           endpoint,
-          useOrchestrator: options.useCache !== false,
+          useOrchestrator: options.useCache !== false
         });
         lastSubmission = {
           type: 'immediate' as const,
-          result,
+          result
         };
       }
       return lastSubmission;
@@ -299,7 +298,7 @@ export function useRedisForm() {
     submitForm,
     clearError() {
       submitError = null;
-    },
+    }
   };
 }
 function extractQueryFromForm(formData: Record<string, unknown>): string {

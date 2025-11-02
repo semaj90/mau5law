@@ -20,16 +20,16 @@ const AnalysisRequestSchema = z.object({
       includeNLP: z.boolean().default(true),
       includeLegalReview: z.boolean().default(true),
       includeForensics: z.boolean().default(false),
-      confidence: z.number().min(0).max(1).default(0.7),
+      confidence: z.number().min(0).max(1).default(0.7)
     })
     .optional(),
   context: z
     .object({
       caseId: cuidSchema.optional(),
       relatedEvidence: z.array(cuidSchema).optional(),
-      legalContext: z.string().optional(),
+      legalContext: z.string().optional()
     })
-    .optional(),
+    .optional()
 });
 // Configuration for AI services
 const OLLAMA_BASE_URL = getOllamaBaseUrl();
@@ -40,7 +40,7 @@ const LEGAL_MODEL = 'gemma3-legal:latest';
 const AI_SERVICE_CONFIG = {
   ollamaBaseUrl: OLLAMA_BASE_URL,
   cudaServiceUrl: CUDA_SERVICE_URL,
-  legalModel: LEGAL_MODEL,
+  legalModel: LEGAL_MODEL
 } as const;
 
 // Add typed definitions to avoid `any`
@@ -77,9 +77,7 @@ type AnalysisContext = {
 };
 
 /* Base and specialized analysis result types */
-type BaseAnalysisResult = {
-  confidence: number;
-  findings: string[];
+type BaseAnalysisResult = { confidence: number;, findings: string[];
   recommendations: string[];
   alerts: string[];
   timestamp?: string;
@@ -123,9 +121,7 @@ type ForensicAnalysisResult = BaseAnalysisResult & {
   forensicMarkers?: string[];
 };
 
-type AnalysisAggregate = {
-  type: AnalysisType;
-  timestamp: string;
+type AnalysisAggregate = { type: AnalysisType;, timestamp: string;
   confidence: number;
   findings: string[];
   recommendations: string[];
@@ -168,7 +164,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Get evidence to verify it exists and user has access
     const evidence = await evidenceService.getById(evidenceId);
     if (!evidence) {
-      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND` }));
     }
     console.log(`Starting AI analysis for evidence ${evidenceId} with type: ${analysisType}`);
     // Perform AI analysis based on evidence type and content
@@ -183,9 +179,9 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           timestamp: new Date().toISOString(),
           analyzedBy: getUserId(locals),
           options,
-          version: '1.0',
-        },
-      },
+          version: '1.0'
+        }
+      }
     };
     // Update evidence with analysis results
     // Note: Update would need proper implementation in the evidence service
@@ -199,19 +195,19 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         evidence: {
           id: evidence.id,
           title: evidence.title,
-          evidenceType: evidence.evidenceType,
+          evidenceType: evidence.evidenceType
         },
         // include updatedMetadata so the variable is used and visible to clients
-        updatedMetadata,
+        updatedMetadata
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_analyzed',
         analysisType,
         // expose the service config so the constants are referenced and linter/type checks are satisfied
-        aiServiceConfig: AI_SERVICE_CONFIG,
-      },
+        aiServiceConfig: AI_SERVICE_CONFIG
+      }
     });
   } catch (err: any) {
     console.error('Error analyzing evidence:', err);
@@ -221,20 +217,20 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid analysis request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
     const errMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     if (errMessage.includes('not found') || errMessage.includes('access denied')) {
-      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND` }));
     }
     return error(
       500,
       makeHttpErrorPayload({
         message: 'Failed to analyze evidence',
         code: 'ANALYSIS_FAILED',
-        details: errMessage,
+        details: errMessage
       })
     );
   }
@@ -254,7 +250,7 @@ async function performAIAnalysis(
     confidence: 0,
     findings: [],
     recommendations: [],
-    alerts: [],
+    alerts: []
   };
 
   try {
@@ -299,7 +295,7 @@ async function performAIAnalysis(
       confidence: analysisResults.confidence,
       findings: analysisResults.findings,
       // attach error details in a field under a known key
-      ...({ error: 'Analysis failed', details } as unknown as AnalysisAggregate),
+      ...({ error: 'Analysis failed', details } as unknown as AnalysisAggregate)
     };
   }
 }
@@ -324,7 +320,7 @@ async function analyzeContent(evidence: EvidenceRecord, _options: AnalysisOption
     findings: [],
     recommendations: [],
     alerts: [],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -342,7 +338,7 @@ async function analyzeLegal(_evidence: EvidenceRecord, _context: AnalysisContext
     recommendations: ['Verify source', 'Obtain expert testimony'],
     findings: [],
     alerts: [],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -356,7 +352,7 @@ async function analyzeMetadata(evidence: EvidenceRecord): Promise<MetadataAnalys
       size: evidence.metadata?.fileSize ?? 'unknown',
       type: evidence.evidenceType,
       created: evidence.createdAt,
-      modified: evidence.updatedAt,
+      modified: evidence.updatedAt
     },
     integrity: 'verified',
     authenticity: 'confirmed',
@@ -364,7 +360,7 @@ async function analyzeMetadata(evidence: EvidenceRecord): Promise<MetadataAnalys
     findings: [],
     recommendations: [],
     alerts: [],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -381,7 +377,7 @@ async function analyzeForensic(_evidence: EvidenceRecord): Promise<ForensicAnaly
     findings: [],
     recommendations: [],
     alerts: [],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 

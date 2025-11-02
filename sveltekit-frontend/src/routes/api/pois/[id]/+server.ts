@@ -35,7 +35,7 @@ export const PUT: RequestHandler = async ({ request, params, locals: { db } }) =
         threatLevel: data.threatLevel,
         status: data.status,
         tags: data.tags,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(personsOfInterest.id, params.id)) // Added closing parenthesis
       .returning();

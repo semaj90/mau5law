@@ -18,38 +18,28 @@ class SIMDJSONParser {
     return result;
   }
 }
-export interface TensorChunk {
-  id: string;
-  chunkIndex: number;
+export interface TensorChunk { id: string;, chunkIndex: number;
   totalChunks: number;
   data: any[];
   embedding?: number[];
   tensorSlice?: Float32Array;
-  metadata: {
-    originalSize: number;
-    chunkSize: number;
+  metadata: { originalSize: number;, chunkSize: number;
     processingTime: number;
     gpuAccelerated: boolean;
   };
 }
-export interface StreamingResult {
-  id: string;
-  content: string;
+export interface StreamingResult { id: string;, content: string;
   embedding: number[];
   tensorSlice: Float32Array;
   score: number;
   metadata: { [key: string]: any };
-  chunkInfo: {
-    index: number;
-    total: number;
+  chunkInfo: { index: number;, total: number;
     size: number;
   };
 }
 
 // Add a top-level type for pipeline execution results (must not be declared inside the class)
-export type PipelineExecutionResult = {
-  totalResults: number;
-  chunksProcessed: number;
+export type PipelineExecutionResult = { totalResults: number;, chunksProcessed: number;
   tensorSlices: number;
   processingTime: number;
   gpuAccelerated: boolean;
@@ -156,7 +146,7 @@ export class AdvancedSIMDPipeline {
           tensorSlice: splicedTensors.primary, // Use primary tensor slice
           score: 1.0,
           metadata: {
-            chunkId: chunk.id,
+           , chunkId: chunk.id,
             itemIndex: index,
             tensorSlices: splicedTensors.slices.length,
             gpuOptimized: true,
@@ -180,9 +170,7 @@ export class AdvancedSIMDPipeline {
    * 5️⃣ Multi-dimensional Tensor Splicing
    * Split embeddings into smaller tensors for RTX 3060 VRAM efficiency
    */
-  private spliceEmbeddingTensor(embedding: Float32Array): {
-    primary: Float32Array;
-    slices: Float32Array[];
+  private spliceEmbeddingTensor(embedding: Float32Array): { primary: Float32Array;, slices: Float32Array[];
     metadata: any;
   } {
     const sliceSize = 256; // tuned for RTX 3060
@@ -261,7 +249,7 @@ export class AdvancedSIMDPipeline {
       // Execute routes concurrently with error handling
       await Promise.all(routingPromises);
     } catch (error) {
-      console.error(`❌ Service worker routing failed for ${result.id}:`, error);
+      console.error(`❌ Service worker routing failed for ${result.id}: ', error);
     }
   }
   private async routeTensorToMinIO(result: StreamingResult): Promise<void> {
@@ -269,7 +257,7 @@ export class AdvancedSIMDPipeline {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: result.id,
+       , id: result.id,
         type: 'tensor_chunk',
         content: result.content,
         tensorSlice: Array.from(result.tensorSlice),
@@ -283,7 +271,7 @@ export class AdvancedSIMDPipeline {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: result.id,
+       , id: result.id,
         embedding: result.embedding,
         tensorSlice: Array.from(result.tensorSlice),
         content: result.content,
@@ -298,9 +286,9 @@ export class AdvancedSIMDPipeline {
   private async routeTensorToPostgreSQL(result: StreamingResult): Promise<void> {
     await fetch('/api/v1/unified', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        id: result.id,
+       , id: result.id,
         title: result.metadata.title || `Tensor Chunk ${result.chunkInfo.index}`,
         content: result.content.substring(0, 500),
         score: result.score,

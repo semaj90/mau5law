@@ -3,25 +3,17 @@
  * Handles Ollama detection and configuration app-wide
  */
 
-export interface EnvironmentConfig {
-  ollama: {
-    baseUrl: string;
+export interface EnvironmentConfig { ollama: {, baseUrl: string;
     port: number;
     isDetected: boolean;
   }
-  redis: {
-    url: string;
-    host: string;
+  redis: { url: string;, host: string;
     port: number;
   }
-  postgres: {
-    url: string;
-    host: string;
+  postgres: { url: string;, host: string;
     port: number;
   }
-  development: {
-    isDev: boolean;
-    debug: boolean;
+  development: { isDev: boolean;, debug: boolean;
     verbose: boolean;
   }
   readonly minioEndpoint: string;
@@ -91,8 +83,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
     development: {
       isDev: process.env.NODE_ENV === 'development',
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
-      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true'
-    },
+      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true' },
     readonly minioEndpoint: import.meta.env.VITE_MINIO_ENDPOINT || 'http://localhost:9000',
     readonly minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
     readonly minioSecretKey: import.meta.env.VITE_MINIO_SECRET_KEY || 'minio123',
@@ -103,7 +94,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
 /**
  * Get Ollama configuration with runtime detection
  */
-export function getOllamaConfig(): { baseUrl: string; port: number } {
+export function getOllamaConfig(): { baseUrl: string;, port: number } {
   // Check environment variables
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
   if (envUrl) {
@@ -111,7 +102,7 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
       const url = new URL(envUrl.startsWith('http') ? envUrl : `http://${envUrl}`)
       return {
         baseUrl: envUrl,
-        port: parseInt(url.port) || 11434,
+        port: parseInt(url.port) || 11434
       }
     } catch (error) {
       console.warn('Invalid OLLAMA_URL format:', envUrl);

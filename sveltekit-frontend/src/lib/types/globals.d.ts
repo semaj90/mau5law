@@ -14,9 +14,7 @@ export interface LokiCollection<T = unknown> {
   map?: (fn: (item: T) => unknown) => unknown[];
   get?: (id: string) => T | undefined;
 }
-export interface LokiDB {
-  listCollections: () => LokiCollection<unknown>[];
-  getCollection: (name: string) => LokiCollection<unknown> | undefined;
+export interface LokiDB { listCollections: () => LokiCollection<unknown>[];, getCollection: (name: string) => LokiCollection<unknown> | undefined;
 }
 // Expose runtime globals inside a declare global block so they merge correctly
 declare global {
@@ -31,13 +29,11 @@ declare global {
   }
 }
 // Minimal SpeechRecognition interface for browser APIs
-interface SpeechRecognition {
-  continuous: boolean;
-  interimResults: boolean;
+interface SpeechRecognition { continuous: boolean;, interimResults: boolean;
   lang: string;
   start: () => void;
   stop: () => void;
-  onresult?: (_event: { results: ArrayLike<{ 0: { transcript: string } }> }) => void;
+  onresult?: (_event: {, results: ArrayLike<{, 0: {, transcript: string } }> }) => void;
   onerror?: (_event: { error?: string }) => void;
 }
 // Common model descriptor returned by Ollama / model registries

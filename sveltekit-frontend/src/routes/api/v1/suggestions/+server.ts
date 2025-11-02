@@ -101,7 +101,7 @@ const suggestionRequestSchema = z.object({
       caseId: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional(),
-      documentType: z.string().optional(),
+      documentType: z.string().optional()
     })
     .optional(),
   options: z
@@ -110,9 +110,9 @@ const suggestionRequestSchema = z.object({
       similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
       includeTypos: z.boolean().optional().default(true),
       includeSemanticSuggestions: z.boolean().optional().default(true),
-      graphDepth: z.number().min(1).max(5).optional().default(3),
+      graphDepth: z.number().min(1).max(5).optional().default(3)
     })
-    .optional(),
+    .optional()
 });
 // GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10
 export const GET: RequestHandler = async ({ url, request: _request }) => {
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         {
           message: 'Suggestion service not available',
           code: 'SERVICE_UNAVAILABLE',
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
         },
         { status: 501 }
       );
@@ -157,15 +157,15 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         caseId || practiceArea
           ? {
               caseId: caseId || undefined,
-              practiceArea: practiceArea || undefined,
+              practiceArea: practiceArea || undefined
             }
           : undefined,
       options: {
         maxSuggestions,
         similarityThreshold: threshold,
         includeTypos,
-        includeSemanticSuggestions: true,
-      },
+        includeSemanticSuggestions: true
+      }
     };
     // Generate suggestions
     const result = await svc.generateSuggestions(suggestionQuery);
@@ -179,8 +179,8 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         requestTime: new Date().toISOString(),
         processingTimeMs: processingTime,
         streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
-        version: '1.0',
-      },
+        version: '1.0'
+      }
     };
     return json(response, {
       status: 200,
@@ -189,8 +189,8 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         'X-Suggestions-Count': suggestionsArr.length.toString(),
         'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(),
         'Cache-Control': 'public, max-age=300', // 5 minutes cache
-        Vary: 'Accept-Encoding',
-      },
+        Vary: 'Accept-Encoding'
+      }
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -202,7 +202,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
       {
         message: 'Failed to generate suggestions',
         code: 'SUGGESTION_ERROR',
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
       },
       { status: 500 }
     );
@@ -219,7 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           message: 'Suggestion service not available',
           code: 'SERVICE_UNAVAILABLE',
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
         },
         { status: 501 }
       );
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
       originalQuery: validatedData.query,
       userIntent: validatedData.userIntent,
       context: validatedData.context,
-      options: validatedData.options,
+      options: validatedData.options
     };
     // Generate suggestions with full context
     const result = await svc.generateSuggestions(suggestionQuery);
@@ -260,9 +260,9 @@ export const POST: RequestHandler = async ({ request }) => {
         optimizations: {
           quicEnabled: (cacheInfo.quicStreamsUsed ?? 0) > 0,
           graphTraversalUsed: (cacheInfo.graphTraversalTime ?? 0) > 0,
-          cacheHitRatio,
-        },
-      },
+          cacheHitRatio
+        }
+      }
     };
     return json(response, {
       status: 200,
@@ -272,8 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(),
         'X-Graph-Nodes': (graphContext?.nodesTraversed ?? 0).toString(),
         'X-Cache-Hit-Ratio': cacheHitRatio.toFixed(3),
-        'Cache-Control': 'public, max-age=300',
-      },
+        'Cache-Control': `public, max-age=300` }
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -284,7 +283,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Invalid request format',
           code: 'VALIDATION_ERROR',
           errors: err.errors, // typed access to ZodError.errors
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
         },
         { status: 400 }
       );
@@ -297,7 +296,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         message: 'Failed to generate suggestions',
         code: 'SUGGESTION_ERROR',
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
       },
       { status: 500 }
     );
@@ -314,7 +313,7 @@ export const DELETE: RequestHandler = async () => {
           success: false,
           message: 'Clear cache not implemented by suggestion service',
           code: 'NOT_IMPLEMENTED',
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
         },
         { status: 501 }
       );
@@ -330,7 +329,7 @@ export const DELETE: RequestHandler = async () => {
       success: true,
       message: 'Suggestion cache cleared',
       processingTimeMs: processingTime,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -343,7 +342,7 @@ export const DELETE: RequestHandler = async () => {
       {
         message: 'Failed to clear cache',
         code: 'CACHE_CLEAR_ERROR',
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
       },
       { status: 500 }
     );

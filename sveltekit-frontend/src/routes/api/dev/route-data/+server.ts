@@ -33,7 +33,7 @@ export async function GET(): Promise<any> {
     const analytics = generateEnhancedAnalytics(routeData);
     return json({
       ...routeData,
-      analytics,
+      analytics
     });
   } catch (error) {
     console.error('Failed to generate route data:', error)
@@ -41,7 +41,7 @@ export async function GET(): Promise<any> {
       {
         error: 'Failed to load route data',
         message: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -87,7 +87,7 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
   // Check for potential issues
   const deprecatedCount = statusBreakdown['deprecated'] || 0;
   if (deprecatedCount > 0) {
-    recommendations.push(`Consider migrating ${deprecatedCount} deprecated route${deprecatedCount > 1 ? 's' : ''}`);
+    recommendations.push(`Consider migrating ${deprecatedCount} deprecated route${deprecatedCount > 1 ? 's' : '' }`);
   }
   const experimentalCount = statusBreakdown['experimental'] || 0;
   if (experimentalCount > 5) {
@@ -108,12 +108,12 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
   const missingConfig = routeData.counts?.issues?.filesMissingConfig || 0;
   if (missingConfig > 0) {
     recommendations.push(
-      `${missingConfig} file route${missingConfig > 1 ? 's' : ''} missing configuration - add to routes-config.ts for better organization`
+      `${missingConfig} file route${missingConfig > 1 ? 's' : '' } missing configuration - add to routes-config.ts for better organization`
     );
   }
   const missingFiles = routeData.counts?.issues?.configMissingFiles || 0;
   if (missingFiles > 0) {
-    recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : ''} missing implementation files`);
+    recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : '' } missing implementation files`);
   }
   // Performance recommendations
   if (apiRoutes > 20) {
@@ -129,9 +129,9 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
       staticPages,
       deepestNesting,
       totalConfiguredRoutes: totalRoutes,
-      totalFileRoutes: fileRoutes.length,
+      totalFileRoutes: fileRoutes.length
     },
     recommendations,
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: new Date().toISOString()
   };
 }

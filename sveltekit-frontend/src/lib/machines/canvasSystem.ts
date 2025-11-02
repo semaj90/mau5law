@@ -1,26 +1,24 @@
 import interpret, { createMachine, assign } from 'xstate';
 import type { CanvasNode, CanvasConnection, InteractiveCanvasState } from '$lib/types/canvas';
-export interface CanvasContext {
-  nodes: CanvasNode[];
-  connections: CanvasConnection[];
+export interface CanvasContext { nodes: CanvasNode[];, connections: CanvasConnection[];
   selectedNode: string | null;
   draggedNode: string | null;
   canvasState: InteractiveCanvasState;
   error: string | null;
 }
 type CanvasEvent =
-  | { type: 'ADD_NODE'; node: CanvasNode }
-  | { type: 'REMOVE_NODE'; nodeId: string }
-  | { type: 'UPDATE_NODE'; nodeId: string; updates: Partial<CanvasNode> }
-  | { type: 'SELECT_NODE'; nodeId: string | null }
-  | { type: 'START_DRAG'; nodeId: string }
+  | { type: 'ADD_NODE';, node: CanvasNode }
+  | { type: 'REMOVE_NODE';, nodeId: string }
+  | { type: 'UPDATE_NODE'; nodeId: string;, updates: Partial<CanvasNode> }
+  | { type: 'SELECT_NODE';, nodeId: string | null }
+  | { type: 'START_DRAG';, nodeId: string }
   | { type: 'END_DRAG' }
-  | { type: 'ADD_CONNECTION'; connection: CanvasConnection }
-  | { type: 'REMOVE_CONNECTION'; connectionId: string }
+  | { type: 'ADD_CONNECTION';, connection: CanvasConnection }
+  | { type: 'REMOVE_CONNECTION';, connectionId: string }
   | { type: 'SAVE_STATE' }
-  | { type: 'LOAD_STATE'; state: InteractiveCanvasState }
+  | { type: 'LOAD_STATE';, state: InteractiveCanvasState }
   | { type: 'CLEAR_CANVAS' }
-  | { type: 'ERROR'; error: string }
+  | { type: 'ERROR';, error: string }
   | { type: 'CLEAR_ERROR' };
 function isInteractiveCanvasState(obj: any): obj is InteractiveCanvasState {
   if (typeof obj !== 'object' || obj === null) return false;
@@ -51,85 +49,75 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
       canvasState: {
         nodes: [],
         connections: [],
-        viewport: { x: 0, y: 0, zoom: 1 },
+        viewport: { x: 0, y: 0, zoom: 1 }
       },
-      error: null,
+      error: null
     },
-    states: {
-      idle: {
-        on: {
-          ADD_NODE: {
-            actions: ['addNode'],
+    states: { idle: {, on: { ADD_NODE: {, actions: ['addNode']
           },
           REMOVE_NODE: {
-            actions: ['removeNode'],
+            actions: ['removeNode']
           },
           UPDATE_NODE: {
-            actions: ['updateNode'],
+            actions: ['updateNode']
           },
           SELECT_NODE: {
-            actions: ['selectNode'],
+            actions: ['selectNode']
           },
           START_DRAG: {
             target: 'dragging',
-            actions: ['startDrag'],
+            actions: ['startDrag']
           },
           ADD_CONNECTION: {
-            actions: ['addConnection'],
+            actions: ['addConnection']
           },
           REMOVE_CONNECTION: {
-            actions: ['removeConnection'],
+            actions: ['removeConnection']
           },
           SAVE_STATE: {
-            target: 'saving',
+            target: 'saving'
           },
           LOAD_STATE: {
-            actions: 'loadState',
+            actions: 'loadState'
           },
           CLEAR_CANVAS: {
-            actions: ['clearCanvas'],
+            actions: ['clearCanvas']
           },
           ERROR: {
-            actions: ['setError'],
+            actions: ['setError']
           },
           CLEAR_ERROR: {
-            actions: ['clearError'],
-          },
-        },
+            actions: ['clearError']
+          }
+        }
       },
-      dragging: {
-        on: {
-          END_DRAG: {
+      dragging: { on: {, END_DRAG: {
             target: 'idle',
-            actions: ['endDrag'],
+            actions: ['endDrag']
           },
           UPDATE_NODE: {
-            actions: ['updateNode'],
-          },
-        },
+            actions: ['updateNode']
+          }
+        }
       },
-      saving: {
-        invoke: {
-          src: 'saveState',
+      saving: { invoke: {, src: 'saveState',
           onDone: {
             target: 'idle',
-            actions: ['saveDone'],
+            actions: ['saveDone']
           },
           onError: {
             target: 'idle',
-            actions: ['setError'],
-          },
-        },
-      },
-    },
+            actions: ['setError']
+          }
+        }
+      }
+    }
   },
-  {
-    actions: {
-      addNode: assign({
-        nodes: (context, event) => {
+  { actions: {, addNode: assign({
+       , nodes: (context, event) => {
           if (event.type !== 'ADD_NODE') return context.nodes;
           return [...context.nodes, event.node];
-        },
+        }
       }),
       removeNode: assign({
         nodes: (context, event) => {
@@ -139,55 +127,55 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
         connections: (context, event) => {
           if (event.type !== 'REMOVE_NODE') return context.connections;
           return context.connections.filter(conn => conn.sourceId !== event.nodeId && conn.targetId !== event.nodeId);
-        },
+        }
       }),
       updateNode: assign({
         nodes: (context, event) => {
           if (event.type !== 'UPDATE_NODE') return context.nodes;
           return context.nodes.map(node => (node.id === event.nodeId ? { ...node, ...event.updates } : node));
-        },
+        }
       }),
       selectNode: assign({
         selectedNode: (context, event) => {
           if (event.type !== 'SELECT_NODE') return context.selectedNode;
           return event.nodeId;
-        },
+        }
       }),
       startDrag: assign({
         draggedNode: (context, event) => {
           if (event.type !== 'START_DRAG') return context.draggedNode;
           return event.nodeId;
-        },
+        }
       }),
       endDrag: assign({
-        draggedNode: () => null,
+        draggedNode: () => null
       }),
       addConnection: assign({
         connections: (context, event) => {
           if (event.type !== 'ADD_CONNECTION') return context.connections;
           return [...context.connections, event.connection];
-        },
+        }
       }),
       removeConnection: assign({
         connections: (context, event) => {
           if (event.type !== 'REMOVE_CONNECTION') return context.connections;
           return context.connections.filter(conn => conn.id !== event.connectionId);
-        },
+        }
       }),
       clearCanvas: assign({
         nodes: () => [],
         connections: () => [],
         selectedNode: () => null,
-        draggedNode: () => null,
+        draggedNode: () => null
       }),
       setError: assign({
         error: (context, event) => {
           if (event.type !== 'ERROR') return context.error;
           return event.error;
-        },
+        }
       }),
       clearError: assign({
-        error: () => null,
+        error: () => null
       }),
       loadState: assign({
         canvasState: (context, event) => {
@@ -195,19 +183,19 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
             return {
               nodes: [],
               connections: [],
-              viewport: { x: 0, y: 0, zoom: 1 },
+              viewport: { x: 0, y: 0, zoom: 1 }
             };
           }
           return event.state;
-        },
+        }
       }),
       saveDone: assign({
         // make the onDone event handling tolerant of xstate versions (event.data or event.output)
         canvasState: (context, event: any) => {
           const resolved = resolveDoneEventOutput(event) ?? context.canvasState;
           return resolved;
-        },
-      }),
+        }
+      })
     },
     services: {
       // typed context parameter to avoid implicit any
@@ -215,14 +203,14 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
         const state: InteractiveCanvasState = {
           nodes: context.nodes,
           connections: context.connections,
-          viewport: context.canvasState?.viewport ?? { x: 0, y: 0, zoom: 1 },
+          viewport: context.canvasState?.viewport ?? { x: 0, y: 0, zoom: 1 }
         };
         if (typeof window !== 'undefined') {
           localStorage.setItem('canvasState', JSON.stringify(state));
         }
         return state;
-      },
-    },
+      }
+    }
   }
 );
 export const createCanvasActor = () => {

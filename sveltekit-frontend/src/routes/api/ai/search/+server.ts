@@ -8,7 +8,7 @@
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -26,7 +26,7 @@ const SearchSchema = z.object({
   query: z.string().min(1),
   limit: z.number().int().positive().optional().default(10),
   threshold: z.number().min(0).max(1).optional().default(0.0),
-  documentType: z.string().optional(),
+  documentType: z.string().optional()
 });
 
 // --- ADDED: explicit types to avoid `any` usage ---
@@ -45,9 +45,7 @@ type AISimilarDocument = {
   [k: string]: any;
 };
 
-type FormattedResult = {
-  content: string | null;
-  similarity: number | null;
+type FormattedResult = { content: string | null;, similarity: number | null;
   documentId: string | null;
   documentType: string;
   confidence: number | null;
@@ -79,7 +77,7 @@ function filterAndFormatResults(
       documentId: result?.documentId ?? null,
       documentType: metadata.documentType ?? 'unknown',
       confidence: analysis.confidence ?? null,
-      tags: analysis.tags ?? [],
+      tags: analysis.tags ?? []
     };
   });
 }
@@ -105,8 +103,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         data: {
           query,
           results: formattedResults,
-          totalResults: formattedResults.length,
-        },
+          totalResults: formattedResults.length
+        }
       },
       { status: 200 }
     );
@@ -128,7 +126,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       query: queryParam,
       limit: limitParam ? Number(limitParam) : undefined,
       threshold: thresholdParam ? Number(thresholdParam) : undefined,
-      documentType,
+      documentType
     });
 
     const { query, limit, threshold } = parsed;
@@ -145,8 +143,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         data: {
           query,
           results: formattedResults,
-          totalResults: formattedResults.length,
-        },
+          totalResults: formattedResults.length
+        }
       },
       { status: 200 }
     );

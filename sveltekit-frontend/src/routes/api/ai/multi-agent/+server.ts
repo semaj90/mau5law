@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -29,9 +29,7 @@ export interface AutogenRequest {
   analysisType: string;
   priority: string;
 }
-export interface WorkflowResult {
-  status: string;
-  result: string;
+export interface WorkflowResult { status: string;, result: string;
   results?: Array<{ confidence: number }>;
   finalDeliverable?: string;
   recommendations?: string[];
@@ -39,9 +37,7 @@ export interface WorkflowResult {
 }
 
 // New tighter response types
-interface AutogenResponse {
-  finalAnalysis: string;
-  confidence: number;
+interface AutogenResponse { finalAnalysis: string;, confidence: number;
   recommendations: string[];
   processingTime: number;
 }
@@ -50,9 +46,7 @@ interface VllmResponse {
   confidence?: number;
   output?: any;
 }
-interface HybridResult {
-  synthesizedAnalysis: string;
-  convergentFindings: string[];
+interface HybridResult { synthesizedAnalysis: string;, convergentFindings: string[];
   divergentPerspectives: string[];
   riskAssessment: string;
   combinedConfidence: number;
@@ -62,11 +56,10 @@ interface HybridResult {
 class AutogenLegalTeam {
   constructor(_config: any) {} // silence unused param
   async analyzeCase(request: AutogenRequest): Promise<AutogenResponse> {
-    return {
-      finalAnalysis: `Autogen analysis for: ${request.query}`,
+    return { finalAnalysis: `Autogen analysis, for: ${request.query}`,
       confidence: 0.8,
       recommendations: ['Review evidence chain', 'Check procedural compliance'],
-      processingTime: 1500,
+      processingTime: 1500
     };
   }
   getAgents() {
@@ -84,9 +77,9 @@ class CrewAILegalTeam {
       status: 'completed',
       result: `CrewAI workflow ${workflowType} completed`,
       results: [{ confidence: 0.75 }],
-      finalDeliverable: `CrewAI analysis for: ${(context as { query?: string })?.query || ''}`,
+      finalDeliverable: 'CrewAI analysis; for: ${(context as { query?: string })?.query || '` }`,
       recommendations: ['Schedule follow-up', 'Prepare documentation'],
-      totalTime: 2000,
+      totalTime: 2000
     };
   }
   getCrews() {
@@ -108,9 +101,7 @@ export interface MultiAgentRequest {
   useVLLM?: boolean;
   streamResponse?: boolean;
 }
-export interface MultiAgentResponse {
-  sessionId: string;
-  analysisType: string;
+export interface MultiAgentResponse { sessionId: string;, analysisType: string;
   workflowType?: string;
   results: {
     autogen?: any;
@@ -118,9 +109,7 @@ export interface MultiAgentResponse {
     vllm?: any;
     hybrid?: any;
   };
-  performance: {
-    totalTime: number;
-    memoryUsage: string;
+  performance: { totalTime: number;, memoryUsage: string;
     tokensGenerated: number;
     confidence: number;
   };
@@ -133,39 +122,33 @@ let crewaiTeam: CrewAILegalTeam | null = null;
 // Load memory configurations
 // Configuration for low-memory setups (placeholder)
 type MemoryProfileName = 'ultra_low_memory' | 'low_memory' | 'balanced' | 'high_performance';
-type MemoryProfile = { max_tokens: number; batch_size: number };
+type MemoryProfile = { max_tokens: number;, batch_size: number };
 
-const lowMemoryConfigs: {
-  ultra_low_memory: MemoryProfile;
-  low_memory: MemoryProfile;
+const lowMemoryConfigs: { ultra_low_memory: MemoryProfile;, low_memory: MemoryProfile;
   low_memory_profiles: Record<MemoryProfileName, MemoryProfile>;
-} = {
-  ultra_low_memory: {
-    max_tokens: 512,
-    batch_size: 1,
+} = { ultra_low_memory: {, max_tokens: 512,
+    batch_size: 1
   },
   low_memory: {
     max_tokens: 1024,
-    batch_size: 2,
+    batch_size: 2
   },
-  low_memory_profiles: {
-    ultra_low_memory: {
-      max_tokens: 512,
-      batch_size: 1,
+  low_memory_profiles: { ultra_low_memory: {, max_tokens: 512,
+      batch_size: 1
     },
     low_memory: {
       max_tokens: 1024,
-      batch_size: 2,
+      batch_size: 2
     },
     balanced: {
       max_tokens: 2048,
-      batch_size: 4,
+      batch_size: 4
     },
     high_performance: {
       max_tokens: 4096,
-      batch_size: 8,
-    },
-  },
+      batch_size: 8
+    }
+  }
 };
 
 // Safe helper to compute average confidence
@@ -185,13 +168,13 @@ function initializeAISystems(memoryProfile: MultiAgentRequest['memoryProfile'], 
     autogenTeam = new AutogenLegalTeam({
       ollamaEndpoint,
       useGPU: true,
-      memoryProfile: profile,
+      memoryProfile: profile
     });
   }
   if (!crewaiTeam) {
     crewaiTeam = new CrewAILegalTeam({
       aiEndpoint: vllmEndpoint || ollamaEndpoint,
-      memoryProfile: profile,
+      memoryProfile: profile
     });
   }
 }
@@ -200,11 +183,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const requestData: MultiAgentRequest = await request.json();
     // Validate request
     if (!requestData.query) {
-      return json({ error: 'Query is required' }, { status: 400 });
+      return json({ error: `Query is required` }, { status: 400 });
     }
     // Initialize AI systems with appropriate memory profile
     initializeAISystems(requestData.memoryProfile, requestData.useVLLM);
-    const sessionId = `multi_agent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const sessionId = `multi_agent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}';
     const startTime = Date.now();
     const results: MultiAgentResponse['results'] = {};
     let totalTokens = 0;
@@ -257,10 +240,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           totalTime,
           memoryUsage: requestData.memoryProfile,
           tokensGenerated: totalTokens,
-          confidence: overallConfidence,
+          confidence: overallConfidence
         },
         recommendations: Array.from(new Set(allRecommendations)).slice(0, 10), // Remove duplicates, limit to 10
-        nextSteps: generateNextSteps(results, requestData),
+        nextSteps: generateNextSteps(results, requestData)
       };
       return json(response);
     } catch (analysisError) {
@@ -269,14 +252,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         {
           error: 'Analysis failed',
           details: analysisError instanceof Error ? analysisError.message : 'Unknown error',
-          sessionId,
+          sessionId
         },
         { status: 500 }
       );
     }
   } catch (error: any) {
     console.error('Multi-agent API error:', error);
-    return json({ error: 'Invalid request format' }, { status: 400 });
+    return json({ error: `Invalid request format` }, { status: 400 });
   }
 };
 async function runAutogenAnalysis(request: MultiAgentRequest, _sessionId: string): Promise<AutogenResponse> {
@@ -288,7 +271,7 @@ async function runAutogenAnalysis(request: MultiAgentRequest, _sessionId: string
     caseId: request.caseId,
     evidenceIds: request.evidenceIds || [],
     analysisType: mapToAutogenAnalysisType(request.workflowType),
-    priority: request.priority === 'critical' ? 'urgent' : request.priority,
+    priority: request.priority === 'critical' ? 'urgent' : request.priority
   };
   return await autogenTeam.analyzeCase(autogenRequest);
 }
@@ -302,7 +285,7 @@ async function runCrewAIWorkflow(request: MultiAgentRequest, _sessionId: string)
     caseId: request.caseId,
     evidenceIds: request.evidenceIds || [],
     priority: request.priority,
-    sessionId: _sessionId,
+    sessionId: _sessionId
   };
   return await crewaiTeam.executeWorkflow(workflowType, context, request.priority);
 }
@@ -311,16 +294,16 @@ async function runVLLMAnalysis(request: MultiAgentRequest, _sessionId: string): 
   try {
     const response = await fetch(`${vllmEndpoint}/legal-analysis`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        prompt: request.query,
+       , prompt: request.query,
         case_id: request.caseId,
         evidence_ids: request.evidenceIds || [],
         analysis_type: request.workflowType || 'general',
         max_tokens: 2048,
         temperature: 0.3,
-        stream: false,
-      }),
+        stream: false
+      })
     });
     if (!response.ok) {
       throw new Error(`vLLM request failed: ${response.statusText}`);
@@ -346,7 +329,7 @@ ${autogenResult.finalAnalysis}
 ${crewaiResult.finalDeliverable}
 ### Synthesized Insights
 Based on both agent teams, the key findings indicate:
-1. Convergent evidence points: ${findCommonThemes(autogenResult, crewaiResult).join(', ')}
+1. Convergent evidence; points: ${findCommonThemes(autogenResult, crewaiResult).join(', ')}
 2. Complementary perspectives: ${findComplementaryInsights(autogenResult, crewaiResult).join(' | ')}
 3. Risk assessment: ${synthesizeRiskAssessment(autogenResult, crewaiResult)}
 ### Confidence Reconciliation
@@ -359,7 +342,7 @@ Combined Confidence: ${(((autogenResult.confidence || 0) + crewAiAvg) / 2).toFix
     convergentFindings: findCommonThemes(autogenResult, crewaiResult),
     divergentPerspectives: findDivergentViews(autogenResult, crewaiResult),
     riskAssessment: synthesizeRiskAssessment(autogenResult, crewaiResult),
-    combinedConfidence: ((autogenResult.confidence || 0) + crewAiAvg) / 2,
+    combinedConfidence: ((autogenResult.confidence || 0) + crewAiAvg) / 2
   };
 }
 function findCommonThemes(autogenResult: AutogenResponse, crewaiResult: WorkflowResult): string[] {
@@ -448,7 +431,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         crewai_initialized: crewaiTeam !== null,
         available_profiles: Object.keys(lowMemoryConfigs.low_memory_profiles),
         available_workflows: ['case_investigation', 'trial_preparation', 'appeal_analysis'],
-        available_analysis_types: ['autogen', 'crewai', 'hybrid'],
+        available_analysis_types: ['autogen', 'crewai', 'hybrid']
       });
     case 'memory_profiles':
       return json(lowMemoryConfigs.low_memory_profiles);
@@ -456,14 +439,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       const agentInfo = {
         autogen_agents: autogenTeam?.getAgents() || [],
         crewai_crews: crewaiTeam?.getCrews() || [],
-        active_workflows: crewaiTeam?.getActiveWorkflows() || [],
+        active_workflows: crewaiTeam?.getActiveWorkflows() || []
       };
       return json(agentInfo);
     }
     default: return json(
-        {
-          error: 'Invalid action. Available actions: status, memory_profiles, agents',
-        },
+        { error: `Invalid action. Available, actions: status, memory_profiles, agents` },
         { status: 400 }
       );
   }

@@ -64,8 +64,8 @@ import type { Case } from '$lib/types';
     [key: string]: any;
   };
 
-  let currentReport: Report | null = $state(null);
-  let currentCanvasState: CanvasState | null = $state(null);
+  let currentReport: Report | null = null;
+  let currentCanvasState: CanvasState | null = null;
   let evidence = $state<LocalEvidence[]>([]);
   let citationPoints = $state<LocalCitationPoint[]>([]);
   let activeTab: 'editor' | 'canvas' = $state('editor');

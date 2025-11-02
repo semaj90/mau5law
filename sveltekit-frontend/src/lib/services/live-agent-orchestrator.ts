@@ -5,9 +5,7 @@ import type { Document } from '$lib/types';
 import { writable, derived } from 'svelte/store';
 // Orphaned content: import type { Writable
 // Types
-export interface LiveAgentConfig {
-  goBackendUrl: string;
-  ollamaUrl: string;
+export interface LiveAgentConfig { goBackendUrl: string;, ollamaUrl: string;
   enableWebSocket: boolean;
   enableSSE: boolean;
   enableGRPC: boolean;
@@ -15,18 +13,14 @@ export interface LiveAgentConfig {
   timeoutMs: number;
 }
 }
-export interface AgentRequest {
-  id: string;
-  type: 'analyze' | 'summarize' | 'embed' | 'search' | 'orchestrate';
+export interface AgentRequest { id: string;, type: 'analyze' | 'summarize' | 'embed' | 'search' | 'orchestrate';
   payload: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   context?: any;
   agents?: string[]; // ['go-llama', 'ollama-direct', 'context7', 'rag']
 }
 }
-export interface AgentResponse {
-  id: string;
-  agent: string;
+export interface AgentResponse { id: string;, agent: string;
   status: 'processing' | 'completed' | 'error' | 'timeout';
   result?: any;
   error?: string;
@@ -35,9 +29,7 @@ export interface AgentResponse {
   metadata?: any;
 }
 }
-export interface OrchestrationResult {
-  requestId: string;
-  responses: AgentResponse[];
+export interface OrchestrationResult { requestId: string;, responses: AgentResponse[];
   synthesized?: any;
   totalTime: number;
   successRate: number;
@@ -278,8 +270,7 @@ export class LiveAgentOrchestrator {
     return {
       ...result,
       agent: 'go-llama',
-      backend: 'go-service'
-    }
+      backend: `go-service` }
   }
   private async executeOllamaDirectAgent(request: AgentRequest): Promise<any> {
     const endpoint = '/api/generate';
@@ -302,14 +293,12 @@ export class LiveAgentOrchestrator {
     const response = await fetch(`,${this.config.ollamaUrl}${endpoint}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt,
-        stream: false
-        options: {
-          temperature: 0.7,
+        stream: false; options: {
+         , temperature: 0.7,
           num_ctx: 4096
         }
       )}),
@@ -323,8 +312,7 @@ export class LiveAgentOrchestrator {
       response: (result as { status?: any; value?: any; reason?: any; confidence?: any; response?: any }).response,
       model,
       agent: 'ollama-direct',
-      backend: 'ollama'
-    }
+      backend: `ollama` }
   }
   private async executeContext7Agent(request: AgentRequest): Promise<any> {
     // Context7 MCP integration
@@ -336,8 +324,7 @@ export class LiveAgentOrchestrator {
         'Add audit trail for compliance'
       ],
       agent: 'context7',
-      backend: 'mcp'
-    }
+      backend: `mcp` }
   }
   private async executeRAGAgent(request: AgentRequest): Promise<any> {
     // Enhanced RAG system integration
@@ -360,8 +347,7 @@ export class LiveAgentOrchestrator {
       return {
         ...result,
         agent: 'rag',
-        backend: 'enhanced-rag'
-      }
+        backend: `enhanced-rag` }
     }
     // Fallback to mock RAG response
     return {
@@ -369,12 +355,10 @@ export class LiveAgentOrchestrator {
         {
           document: 'Legal Document 1',
           relevance: 0.85,
-          excerpt: `,RAG search result fo,r: ${request.payload.query || request.payload.text}`
-        }
+          excerpt: ',RAG search result fo,r: ${request.payload.query || request.payload.text}' }
       ],
       agent: 'rag',
-      backend: 'mock'
-    }
+      backend: `mock` }
   }
   private getGoBackendEndpoint(requestType: string): string {
     switch (requestType) {
@@ -433,9 +417,7 @@ export class LiveAgentOrchestrator {
   public getConnectionStats() {
     return derived(
       [this.connectionStatus, this.agentHealth, this.activeRequests],
-      ([$status, $health, $active]) => ({
-        status: $status
-        healthyAgents: Object.entries($health).filter(([_, status]) => status === 'healthy').length,
+      ([$status, $health, $active]) => ({ status: $status, healthyAgents: Object.entries($health).filter(([_, status]) => status === 'healthy').length,
         totalAgents: Object.keys($health).length,
         activeRequests: $active.length,
         timestamp: new Date().toISOString()
@@ -459,8 +441,7 @@ export const liveAgentOrchestrator = new LiveAgentOrchestrator();
 // Helper functions for easy integration
 export function createAgentRequest()
   type: AgentRequest['type'],
-  payload: any
-  options: Partial<Pick<AgentRequest, 'priority' | 'context' | 'agents'> = {}
+  payload: any; options: Partial<Pick<AgentRequest, 'priority' | 'context' | 'agents'> = {}
 ): AgentRequest {
   return {
     id: `,req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,

@@ -36,7 +36,7 @@ async function ensureDbIndexes(): Promise<any> {
     console.warn('⚠️ Failed to ensure unique index for jobId (non-fatal):', e?.message || e);
   }
 }
-async function processJob(job: { id: string; text: string; model?: string }): Promise<any> {
+async function processJob(job: {, id: string; text: string; model?: string }): Promise<any> {
   console.log('📥 Processing job:', job.id);
   // Dedupe: skip if already processed
   try {
@@ -44,7 +44,7 @@ async function processJob(job: { id: string; text: string; model?: string }): Pr
     if (done) {
       console.log('⏭️  Skipping already-processed job', job.id);
       try {
-        await globalLoki.updateJob(job.id, { state: 'skipped', reason: 'dedupe' });
+        await globalLoki.updateJob(job.id, { state: 'skipped', reason: `dedupe` });
       } catch (error) {}
       return;
     }
@@ -55,7 +55,7 @@ async function processJob(job: { id: string; text: string; model?: string }): Pr
     try {
       locked = await (redis as any).set(`job:processed:${job.id}`, '1', {
         NX: true,
-        EX: 24 * 60 * 60,
+        EX: 24 * 60 * 60
       });
     } catch {
       // older ioredis style
@@ -84,10 +84,10 @@ async function processJob(job: { id: string; text: string; model?: string }): Pr
     console.warn('⚠️ Concurrency cap reached, deferring job start:', job.id);
   }
   try {
-    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || 'unknown' }); // @ts-ignore - Model property access
+    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || 'unknown` }); // @ts-ignore - Model property access
     const emb = (result as { embedding?: any; backend?: any }).embedding;
     console.log(
-      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown'}`
+      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown` }`
     );
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
@@ -99,11 +99,11 @@ async function processJob(job: { id: string; text: string; model?: string }): Pr
         chunk_index: 0,
         embedding: emb as unknown as any,
         metadata: {
-          source: 'pipeline',
+         , source: 'pipeline',
           jobId: job.id,
           model: result?.model || 'unknown', // @ts-ignore - Model property access
-          backend: (result as { embedding?: any; backend?: any }).backend,
-        } as any,
+          backend: (result as { embedding?: any; backend?: any }).backend
+        } as any
       } as any)
       .onConflictDoNothing({ target: sql`(metadata->>'jobId')` as any });
     // We can't directly know if inserted; do a cheap existence check
@@ -124,7 +124,7 @@ async function processJob(job: { id: string; text: string; model?: string }): Pr
         model: result?.model || 'unknown', // @ts-ignore - Model property access
         backend: (result as { embedding?: any; backend?: any }).backend,
         ts: Date.now(),
-        inserted,
+        inserted
       });
     } catch (error) {}
     try {
@@ -178,7 +178,7 @@ async function runRedisLoop(): Promise<any> {
       const popped = await cache.blpop('embedding:jobs', 0);
       if (!popped) continue;
       const [, raw] = popped;
-      const job = JSON.parse(raw) as { id: string; text: string; model?: string };
+      const job = JSON.parse(raw) as { id: string;, text: string; model?: string };
       try {
         await processJob(job);
       } catch (err: any) {
@@ -256,6 +256,6 @@ const safeJobMachine = (() => {
     },
     async failJob(id: string, err?: any, retry?: boolean) {
       console.warn(`jobMachine.failJob stub called for ${id} -`, err);
-    },
+    }
   } as const;
 })();

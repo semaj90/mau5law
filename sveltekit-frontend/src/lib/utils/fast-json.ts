@@ -43,7 +43,7 @@ export interface ParseOptions {
       return result;
     } catch (error) {
       console.error('FastJSON stringify error:', error);
-      throw new Error(`JSON stringify failed: ${(error as any)?.message || 'Unknown error'}`);
+      throw new Error(`JSON stringify failed: ${(error as any)?.message || 'Unknown error' }`);
     }
   }
   /**
@@ -62,7 +62,7 @@ export interface ParseOptions {
       if (recovered) {
         return JSON.parse(recovered, options?.reviver);
       }
-      throw new Error(`JSON parse failed: ${(error as any)?.message || 'Unknown error'}`);
+      throw new Error(`JSON parse failed: ${(error as any)?.message || 'Unknown error' }`);
     }
   }
   /**
@@ -84,7 +84,7 @@ export interface ParseOptions {
       return JSON.parse(JSON.stringify(obj));
     } catch (error) {
       console.error('FastJSON clone error:', error);
-      throw new Error(`JSON clone failed: ${(error as any)?.message || 'Unknown error'}`);
+      throw new Error(`JSON clone failed: ${(error as any)?.message || 'Unknown error' }`);
     }
   }
   /**
@@ -133,7 +133,7 @@ export interface ParseOptions {
    */ static getCacheStats() {
     return {
       size: FastJSON.cache.size,
-      maxSize: FastJSON.maxCacheSize,
+      maxSize: FastJSON.maxCacheSize
     };
   }
 }

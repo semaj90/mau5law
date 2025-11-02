@@ -10,8 +10,7 @@ import { EventEmitter } from 'events';
 // Replace loose any for DB with a minimal Drizzle-like shape
 type DrizzleDB = {
   select?: (...args: any[]) => Promise<Record<string, unknown>[]>;
-  insert?: (table: any) => {
-    values: (v: any) => { returning: () => Promise<Record<string, unknown>[]> };
+  insert?: (table: any) => { values: (v: any) => {;, returning: () => Promise<Record<string, unknown>[]> };
   };
 };
 
@@ -90,7 +89,7 @@ class StubOrchestrator extends EventEmitter {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
       qdrantUrl: config.qdrantUrl || 'http://localhost:6333',
       neo4jUrl: config.neo4jUrl || 'bolt://localhost:7687',
-      ...config,
+      ...config
     };
   }
 
@@ -109,7 +108,7 @@ class StubOrchestrator extends EventEmitter {
       activeConditions: this._conditions.size,
       queueLength: this.queue.length,
       persistence: this.persistenceMode,
-      availableTables: Object.keys(schema).slice(0, 25),
+      availableTables: Object.keys(schema).slice(0, 25)
     };
   }
   addCondition(c: Condition | null) {
@@ -135,7 +134,7 @@ class StubOrchestrator extends EventEmitter {
           return { ...(inserted?.[0] ?? {}), _table: table, persisted: true };
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB insert failed for table ${table}:`, msg);
+          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);
         }
       }
     }
@@ -216,7 +215,7 @@ class StubOrchestrator extends EventEmitter {
           }
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB access pattern failed for table ${table}:`, msg);
+          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);
         }
       }
     }
@@ -244,9 +243,9 @@ class StubOrchestrator extends EventEmitter {
         postgres: db ? 'connected' : 'disconnected',
         redis: 'connected',
         qdrant: 'connected',
-        neo4j: 'connected',
+        neo4j: 'connected'
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
   async syncData(type: string, data: any): Promise<DatabaseOrchestratorResponse> {
@@ -256,7 +255,7 @@ class StubOrchestrator extends EventEmitter {
     return {
       success: true,
       data: { connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: 'healthy' },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }
@@ -275,16 +274,16 @@ export function optimizeSystem(): Promise<Record<string, unknown>> {
   return Promise.resolve({ optimized: true, timestamp: new Date().toISOString() } as Record<string, unknown>);
 }
 export function testContext7Pipeline(): Promise<Record<string, unknown>> {
-  return Promise.resolve({ tested: true, status: 'passed' } as Record<string, unknown>);
+  return Promise.resolve({ tested: true, status: `passed` } as Record<string, unknown>);
 }
 export function testDatabaseOperations(): Promise<Record<string, unknown>> {
-  return Promise.resolve({ tested: true, operations: 'passed' } as Record<string, unknown>);
+  return Promise.resolve({ tested: true, operations: `passed` } as Record<string, unknown>);
 }
 export function runFullIntegrationTest(): Promise<Record<string, unknown>> {
   return Promise.resolve({
     tested: true,
     integration: 'passed',
-    components: ['database', 'api', 'frontend'],
+    components: ['database', 'api', 'frontend']
   } as Record<string, unknown>);
 }
 
@@ -319,21 +318,15 @@ function isSummaryLike(x: any): x is { summary: string } {
 }
 
 // Insert MMRSummaryResult near other type declarations to avoid parser confusion
-export interface MMRSummaryResult {
-  summary: string;
-  metadata: { method: string; processingTime: number; sentenceCount: number; sourceDocuments: number };
+export interface MMRSummaryResult { summary: string;, metadata: { method: string; processingTime: number; sentenceCount: number;, sourceDocuments: number };
   sources: string[];
   confidence: number;
 }
 
 type Nullable<T> = T | null | undefined;
 
-export type SynthesizedInput = {
-  originalQuery: string;
-  enhancedPrompt: string;
-  legalContext: {
-    entities: any[];
-    concepts: any[];
+export type SynthesizedInput = { originalQuery: string;, enhancedPrompt: string;
+  legalContext: { entities: any[];, concepts: any[];
     citations: any[];
     keyTerms: string[];
     complexity: number;
@@ -378,7 +371,7 @@ export async function createPatchStream(
   target: string,
   initialData: any,
   options?: { config?: any; [key: string]: any }
-): Promise<{ stream: ReadableStream<unknown>; writer: any | null }> {
+): Promise<{ stream: ReadableStream<unknown>;, writer: any | null }> {
   // Define a minimal runtime-friendly shape for external streamer constructors/instances.
   type StreamReturn = Promise<{ stream: ReadableStream<unknown>; writer?: any }>;
   type AdvancedPatchStreamerLike = {
@@ -396,15 +389,11 @@ export async function createPatchStream(
       const streamerInstance = new StreamerCtor(options?.config);
       // Prefer explicit createPatchStream, then fall back to getStream, then instance.stream
       if (typeof streamerInstance.createPatchStream === 'function') {
-        return (await streamerInstance.createPatchStream(target, initialData, options)) as {
-          stream: ReadableStream<unknown>;
-          writer: any | null;
+        return (await streamerInstance.createPatchStream(target, initialData, options)) as { stream: ReadableStream<unknown>;, writer: any | null;
         };
       }
       if (typeof streamerInstance.getStream === 'function') {
-        return (await streamerInstance.getStream(target, initialData)) as {
-          stream: ReadableStream<unknown>;
-          writer: any | null;
+        return (await streamerInstance.getStream(target, initialData)) as { stream: ReadableStream<unknown>;, writer: any | null;
         };
       }
       if (streamerInstance.stream) {
@@ -412,7 +401,7 @@ export async function createPatchStream(
       }
     }
   } catch (err: any) {
-    console.warn('[orchestrator] Patch streaming unavailable, using fallback:', String(err));
+    console.warn('[orchestrator] Patch streaming unavailable, using fallback: `, String(err));
   }
 
   // fallback simple stream
@@ -426,9 +415,9 @@ export async function createPatchStream(
           // noop if enqueue fails in some runtimes
         }
         controller.close();
-      },
+      }
     }),
-    writer: null,
+    writer: null
   };
 }
 
@@ -465,13 +454,13 @@ export async function generateMMRSummary(
       method: 'fallback',
       processingTime: 0,
       sentenceCount: 3,
-      sourceDocuments: docs.length,
+      sourceDocuments: docs.length
     },
     sources: docs.map((d: any) => {
       const doc = d as DocumentLike;
       return (doc?.title as string) || (doc?.id as string) || '';
     }),
-    confidence: 0.5,
+    confidence: 0.5
   };
 }
 
@@ -533,9 +522,9 @@ export async function processRAGPipeline(
       sentencesExtracted: 0,
       summaryGenerated: true,
       rerankingApplied: false,
-      cacheHit: false,
+      cacheHit: false
     },
-    confidence: 0.6,
+    confidence: 0.6
   };
 }
 
@@ -591,7 +580,7 @@ export async function synthesizeAIInput(
       citations: [],
       keyTerms: query.split(' ').filter(word => word.length > 3),
       complexity: 0.5,
-      domain: 'general',
+      domain: 'general'
     },
     intent: {
       primary: 'general',
@@ -599,7 +588,7 @@ export async function synthesizeAIInput(
       confidence: 0.3,
       category: 'general',
       urgency: 'medium',
-      scope: 'substantive',
+      scope: 'substantive'
     },
     embedding: [],
     metadata: {
@@ -609,10 +598,10 @@ export async function synthesizeAIInput(
       sessionContext: context?.sessionContext,
       timestamp: new Date().toISOString(),
       quality: 0.5,
-      processingTime: 0,
+      processingTime: 0
     },
     recommendations: ['Consider providing more specific legal details'],
-    contextualPrompts: [],
+    contextualPrompts: []
   };
 }
 
@@ -642,39 +631,36 @@ export async function analyzeLegalText(
   const words = text.split(/\s+/);
   const legalTerms = ['contract', 'liability', 'negligence', 'breach', 'damages', 'statute'];
   const foundTerms = legalTerms.filter(term => text.toLowerCase().includes(term.toLowerCase()));
-  return {
-    entities: foundTerms.map(term => ({
-      text: term,
+  return { entities: foundTerms.map(term => ({, text: term,
       type: 'LEGAL_CONCEPT',
       confidence: 0.7,
       startIndex: text.toLowerCase().indexOf(term.toLowerCase()),
-      endIndex: text.toLowerCase().indexOf(term.toLowerCase()) + term.length,
+      endIndex: text.toLowerCase().indexOf(term.toLowerCase()) + term.length
     })),
     concepts: foundTerms.map(term => ({
       concept: term,
       relevance: 0.8,
-      category: 'legal',
+      category: 'legal'
     })),
     sentiment: {
       polarity: 0,
       confidence: 0.5,
-      classification: 'neutral',
+      classification: 'neutral'
     },
     complexity: {
       readabilityScore: Math.min(words.length / 20, 1),
       legalComplexity: foundTerms.length / 10,
-      technicalTerms: foundTerms.length,
+      technicalTerms: foundTerms.length
     },
     keyPhrases: foundTerms.map(term => ({
       phrase: term,
       importance: 0.7,
-      category: 'legal',
-    })),
+      category: `legal` })),
     summary: {
       abstractive: (text || '').substring(0, 100) + '...',
       extractive: [text.split('.')[0] || text],
-      keyPoints: foundTerms.slice(0, 3),
-    },
+      keyPoints: foundTerms.slice(0, 3)
+    }
   };
 }
 
@@ -700,7 +686,7 @@ export async function processAIAssistantQuery(
       const docs = await Promise.all(
         context.documentIds.slice(0, context.maxDocuments || 10).map(async docId => {
           try {
-            const doc = await orchestrator.queryDatabase({ where: { id: docId } }, 'documents');
+            const doc = await orchestrator.queryDatabase({ where: {, id: docId } }, 'documents');
             return (doc && doc[0]) || null;
           } catch {
             return null;
@@ -714,7 +700,7 @@ export async function processAIAssistantQuery(
       ragResults = (await processRAGPipeline(query, relevantDocuments, {
         maxDocuments: context?.maxDocuments || 10,
         enableReranking: true,
-        generateSummary: true,
+        generateSummary: true
       })) as RAGOutput;
     }
     let legalAnalysis: Nullable<LegalAnalysis> = null;
@@ -723,7 +709,7 @@ export async function processAIAssistantQuery(
         includeEntities: true,
         includeConcepts: true,
         includeSentiment: true,
-        includeComplexity: true,
+        includeComplexity: true
       });
     }
     const result: Record<string, unknown> = {
@@ -733,7 +719,7 @@ export async function processAIAssistantQuery(
       relevantDocuments: (relevantDocuments || []).map((doc: DocumentLike) => ({
         id: doc?.id,
         title: doc?.title || doc?.name,
-        relevance: Math.random() * 0.5 + 0.5,
+        relevance: Math.random() * 0.5 + 0.5
       })),
       enhancedPrompt: (synthesizedInput?.enhancedPrompt as string) ?? '',
       recommendations: [
@@ -754,24 +740,22 @@ export async function processAIAssistantQuery(
         enabledFeatures: {
           legalBERT: context?.enableLegalBERT !== false,
           rag: context?.enableRAG === true,
-          synthesis: true,
-        },
-      },
+          synthesis: true
+        }
+      }
     };
     return result;
   } catch (err: any) {
-    console.error('[orchestrator] AI assistant pipeline failed:', String(err));
-    return {
-      synthesizedInput: {
-        originalQuery: query,
+    console.error('[orchestrator] AI assistant pipeline failed: `, String(err));
+    return { synthesizedInput: {, originalQuery: query,
         enhancedPrompt: query,
-        legalContext: { complexity: 0.5, domain: 'general' },
+        legalContext: { complexity: 0.5, domain: `general` }
       },
       error: (err instanceof Error ? err.message : String(err)),
       metadata: {
         processingTime: Date.now() - startTime,
-        fallback: true,
-      },
+        fallback: true
+      }
     };
   }
 }

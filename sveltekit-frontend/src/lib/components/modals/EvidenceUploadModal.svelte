@@ -1,8 +1,9 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import { uploadStore } from '$lib/stores/unified';
   import { formatFileSize } from '$lib/utils/file-utils';
   import AlertCircle from 'lucide-svelte/icons/alert-circle';
@@ -69,9 +70,9 @@
         aria-describedby="evidence-dropzone-instructions"
         class="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg transition-colors"
         class:border-primary={dragActive}
-        on:drop={handleDrop}
-        on:dragover={handleDragOver}
-        on:dragleave={handleDragLeave}
+        ondrop={handleDrop}
+        ondragover={handleDragOver}
+        ondragleave={handleDragLeave}
         onclick={() => fileInput?.click()}
         onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInput?.click()}
       >

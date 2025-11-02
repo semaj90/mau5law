@@ -11,7 +11,7 @@ export interface PubSubController {
   addChannels(channels: string[]): Promise<void>;
   addPatterns(patterns: string[]): Promise<void>;
   stop(): Promise<void>;
-  clients: { primary: RedisBasicCommands; subscriber: any; publisher: any }
+  clients: { primary: RedisBasicCommands; subscriber: any;, publisher: any }
 }
 export function createPubSubHelper(opts: PubSubHandlerOptions): PubSubController {
   const set = createRedisClientSet();

@@ -1,9 +1,7 @@
 import type { SearchResult } from '$lib/types';
 import type { LegalDocument } from './types/legal.js';
 
-export interface SearchResult {
-  document: LegalDocument;
-  score: number;
+export interface SearchResult { document: LegalDocument;, score: number;
   metadata?: { [key: string]: any };
   id: string;
   title: string;
@@ -19,21 +17,15 @@ export interface RerankingConfig {
   useSemanticSimilarity?: boolean;
 }
 
-export interface ScoredResult {
-  document: LegalDocument;
-  originalScore: number;
+export interface ScoredResult { document: LegalDocument;, originalScore: number;
   rerankScore: number;
   combinedScore: number;
-  metadata: {
-    modelUsed: string;
-    processingTime: number;
+  metadata: { modelUsed: string;, processingTime: number;
     confidence: number;
   };
 }
 
-export interface CrossEncoderConfig {
-  model: string;
-  maxResults: number;
+export interface CrossEncoderConfig { model: string;, maxResults: number;
   scoreWeight: number;
   batchSize: number;
   timeout: number;
@@ -55,7 +47,7 @@ export class CrossEncoderReranker {
       timeout: 5000,
       fallbackEnabled: true,
       minConfidenceThreshold: 0.3,
-      ...config,
+      ...config
     };
   }
 
@@ -76,7 +68,7 @@ export class CrossEncoderReranker {
 
       return sorted.map(item => {
         const rebuilt: SearchResult = {
-          document: item.document,
+         , document: item.document,
           id: item.document.id,
           title: item.document.title,
           content: (item.document as { content?: string }).content, // More specific type assertion
@@ -86,8 +78,8 @@ export class CrossEncoderReranker {
             originalScore: item.originalScore,
             rerankScore: item.rerankScore,
             reranking: item.metadata,
-            processingTime: Date.now() - startTime,
-          },
+            processingTime: Date.now() - startTime
+          }
         };
         return rebuilt;
       });
@@ -127,8 +119,8 @@ export class CrossEncoderReranker {
           metadata: {
             modelUsed: this.config.model,
             processingTime: Date.now() - batchStartTime,
-            confidence: this.calculateConfidence(rerankScore),
-          },
+            confidence: this.calculateConfidence(rerankScore)
+          }
         };
       });
     } catch (error: any) {
@@ -148,8 +140,8 @@ export class CrossEncoderReranker {
           metadata: {
             modelUsed: 'lexical-fallback',
             processingTime: Date.now() - batchStartTime,
-            confidence: 0.3,
-          },
+            confidence: 0.3
+          }
         };
       });
     }
@@ -187,14 +179,14 @@ export class CrossEncoderReranker {
     try {
       const resp = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model: 'llama3.1',
           prompt,
           stream: false,
-          options: { temperature: 0.1, top_p: 0.9, max_tokens: 256 },
+          options: {, temperature: 0.1, top_p: 0.9, max_tokens: 256 }
         }),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeout);
       if (!resp.ok) throw new Error(`Ollama API error: ${resp.status}`);
@@ -226,13 +218,13 @@ export class CrossEncoderReranker {
     return Promise.resolve(scores);
   }
 
-  private buildScoringPrompt(pairs: Array<{ query: string; passage: string }>): string {
+  private buildScoringPrompt(pairs: Array<{, query: string; passage: string }>): string {
     const examples = pairs.map((pair, i) => `Passage ${i + 1}: "${pair.passage.substring(0, 300)}..."`).join('\n');
     return `You are a legal document relevance scorer. Rate how well each passage answers the query on a scale of 0.0 to 1.0.
-Query: "${pairs[0]?.query ?? ''}"
+Query: "${pairs[0]?.query ?? '' }"
 ${examples}
 Provide only the scores in order, separated by commas. Example: 0.85, 0.23, 0.67
-Scores:`;
+Scores: ';
   }
 
   private parseScoresFromResponse(response: string, expectedCount: number): number[] {
@@ -300,7 +292,7 @@ Scores:`;
     this.modelCache.clear();
   }
 
-  getCacheStats(): { scoreCache: number; modelCache: number } {
+  getCacheStats(): { scoreCache: number;, modelCache: number } {
     return { scoreCache: this.scoreCache.size, modelCache: this.modelCache.size };
   }
 }
@@ -329,8 +321,8 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc1',
           title: 'Contract Formation Requirements',
           documentType: 'contract',
-          content: 'A valid contract requires offer, acceptance, and consideration.',
-        },
+          content: 'A valid contract requires offer, acceptance, and consideration.'
+        }
       },
       {
         id: 'doc2',
@@ -342,8 +334,8 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc2',
           title: 'Employment Termination',
           documentType: 'case',
-          content: 'Employment can be terminated with proper notice.',
-        },
+          content: 'Employment can be terminated with proper notice.'
+        }
       },
       {
         id: 'doc3',
@@ -355,14 +347,13 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc3',
           title: 'Property Rights',
           documentType: 'case',
-          content: 'Property ownership includes the right to exclude others.',
-        },
+          content: `Property ownership includes the right to exclude others.` }
       },
     ];
 
     const reranked = await rerankSearchResults('contract requirements formation', mockResults, {
       model: 'local-computation',
-      timeout: 1000,
+      timeout: 1000
     });
 
     const isValid =
@@ -375,7 +366,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
       reranked.map(r => ({
         id: r.id,
         score: r.score?.toFixed(3),
-        originalScore: r.metadata?.originalScore?.toFixed?.(3),
+        originalScore: r.metadata?.originalScore?.toFixed?.(3)
       }))
     );
     return isValid;

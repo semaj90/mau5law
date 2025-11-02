@@ -7,9 +7,7 @@ export interface LegalAIRequest {
   max_tokens?: number;
   temperature?: number;
 }
-export interface LegalAIResponse {
-  text: string;
-  tokens: number;
+export interface LegalAIResponse { text: string;, tokens: number;
   inference_time: number;
   model_used: string;
 }
@@ -77,7 +75,7 @@ try:
         print("TENSORRT_RESULT:", json.dumps(result))
     run_tensorrt_inference()
 except ImportError as e:
-    print("TENSORRT_ERROR: TensorRT-LLM not available:", str(e))
+    print("TENSORRT_ERROR: TensorRT-LLM not; available:", str(e))
     sys.exit(1)
 except Exception as e:
     print("TENSORRT_ERROR:", str(e))
@@ -192,10 +190,10 @@ try:
         print("PYTORCH_RESULT:", json.dumps(result))
     run_awq4_inference()
 except ImportError as e:
-    print(f"AWQ4_ERROR: Required packages not available: {e}")
+    print(f"AWQ4_ERROR: Required packages not; available: {e}")
     # Fallback to simple response
     result = {
-        "text": f"Legal AI Response: I've analyzed your query regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",
+        "text": f"Legal AI Response: I've analyzed your query; regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",
         "tokens": 35,
         "inference_time": 0.1,
         "model_used": "Fallback-Legal"
@@ -205,7 +203,7 @@ except Exception as e:
     print(f"AWQ4_ERROR: {e}")
     # Enhanced fallback with legal context
     result = {
-        "text": f"Legal Analysis: Your inquiry about: '{request.prompt[:100]}...' involves important legal considerations. While I cannot provide specific legal advice, I can highlight that such matters typically require review of: (1) applicable statutes and regulations, (2) contractual terms and conditions, (3) potential liability and risk factors, (4) compliance requirements. Please consult with a qualified attorney for specific guidance.",
+        "text": f"Legal Analysis: Your inquiry; about: '{request.prompt[:100]}...' involves important legal considerations. While I cannot provide specific legal advice, I can highlight that such matters typically require review of: (1) applicable statutes and regulations, (2) contractual terms and conditions, (3) potential liability and risk factors, (4) compliance requirements. Please consult with a qualified attorney for specific guidance.",
         "tokens": 45,
         "inference_time": 0.1,
         "model_used": "Enhanced-Fallback"
@@ -233,12 +231,10 @@ except Exception as e:
           }
         } else {
           // Emergency fallback
-          resolve({
-            text: `Legal Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
+          resolve({ text: `Legal, Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
             tokens: 15,
             inference_time: 0.05,
-            model_used: 'Emergency-Fallback'
-          });
+            model_used: 'Emergency-Fallback' });
         }
       });
       // Timeout after 60 seconds

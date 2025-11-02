@@ -87,7 +87,7 @@ export const OLLAMA_ENDPOINTS: Record<OllamaEndpoint, string> = (Object.keys(FAL
 BACKENDS.set('ollama', BASE_URL);
 
 function applyPath(base: string, path: string): string {
-  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+  return `${base}${path.startsWith('/') ? path : `/${path}` }`;
 }
 
 export function getOllamaEndpoint(endpoint: OllamaEndpoint, baseOverride?: string): string {
@@ -164,7 +164,7 @@ export const FALLBACK_CHAIN = {
     'gemma3-legal:latest', // Only gemma3-legal
   ],
   embeddings: [
-    'embeddinggemma', // Primary: Google's EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model
+    'embeddinggemma', // Primary: Google's; EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model
   ]
 }
 export const OLLAMA_CONFIG: OllamaConfig = {
@@ -175,8 +175,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   fallbackModel: 'gemma3-legal:latest',
   fallbackModels: {
     legal: 'gemma3-legal:latest',
-    general: 'gemma3-legal:latest'
-  },
+    general: `gemma3-legal:latest` },
   timeout: 60000, // 60 seconds for complex legal analysis
   maxRetries: 3,
   streamEnabled: true,

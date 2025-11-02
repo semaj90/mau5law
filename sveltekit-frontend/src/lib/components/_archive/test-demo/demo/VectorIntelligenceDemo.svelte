@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from "$lib/types/global";

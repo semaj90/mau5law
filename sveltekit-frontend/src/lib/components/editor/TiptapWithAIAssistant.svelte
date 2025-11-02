@@ -437,7 +437,7 @@ import type { Document } from '$lib/types';
   {#if aiAssistantVisible}
     <div
       class="ai-assistant-panel absolute top-0 right-0 w-80 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10"
-      transition:slide={{ axis: 'x', duration: 200 }}
+      transitionslide={{ axis: 'x', duration: 200 }}
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-semibold text-gray-800">AI Assistant</h3>
@@ -464,7 +464,7 @@ import type { Document } from '$lib/types';
         <div class="recommendations">
           <h4 class="font-medium text-gray-700 mb-2">Recommendations</h4>
           {#each $state.context.currentRecommendations as rec (rec.id)}
-            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transition:fade={{ duration: 150 }}>
+            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transitionfade={{ duration: 150 }}>
               <div class="flex items-start justify-between">
                 <div class="flex-1">
                   <div class="text-sm text-gray-800">{rec.text}</div>
@@ -504,7 +504,7 @@ import type { Document } from '$lib/types';
     <div
       class="inline-suggestion absolute bg-yellow-50 border border-yellow-300 rounded-lg p-3 shadow-lg z-20 max-w-xs"
       style="left: {recommendationPosition.x}px; top: {recommendationPosition.y + 25}px;"
-      transition:fade={{ duration: 150 }}
+      transitionfade={{ duration: 150 }}
     >
       <div class="text-sm text-gray-800 mb-2">{currentRecommendation}</div>
       <div class="flex justify-end space-x-2">

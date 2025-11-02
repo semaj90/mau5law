@@ -62,7 +62,7 @@
 <!-- AI Dialog -->
 {#if dialogOpen}
 	<!-- wrap toggleDialog to avoid signature mismatch when Svelte passes an event -->
-	<Dialog title="AI Assistant" open={dialogOpen} on:airequest={handleAIRequest} on:close={() => toggleDialog()} />
+	<Dialog title="AI Assistant" open={dialogOpen} onairequest={handleAIRequest} onclose={() => toggleDialog()} />
 {/if}
 <style>
 	.ai-fab-button {

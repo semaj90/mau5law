@@ -15,9 +15,7 @@ import {
 
 // Type definitions for non-standard browser APIs
 interface PerformanceWithMemory extends Performance {
-  memory?: {
-    usedJSHeapSize: number;
-    totalJSHeapSize: number;
+  memory?: { usedJSHeapSize: number;, totalJSHeapSize: number;
     jsHeapSizeLimit: number;
   };
 }
@@ -31,24 +29,18 @@ interface NavigatorWithUAData extends Navigator {
 // Type definitions for benchmark results
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
-interface BenchmarkResult {
-  standard: {
-    totalTime: number;
+interface BenchmarkResult { standard: {, totalTime: number;
     avgTime: number;
     parsesPerSecond: number;
   };
-  simd: {
-    totalTime: number;
-    avgTime: number;
+  simd: { totalTime: number;, avgTime: number;
     parsesPerSecond: number;
   };
   speedup: number;
   payloadBytes: number;
 }
 
-interface LoadTestResult {
-  totalRequests: number;
-  successfulRequests: number;
+interface LoadTestResult { totalRequests: number;, successfulRequests: number;
   failedRequests: number;
   avgResponseTime: number;
   maxResponseTime: number;
@@ -60,36 +52,26 @@ interface LoadTestResult {
   concurrency: number;
 }
 
-interface StressTestPhase {
-  concurrency: number;
-  avgResponseTime: number;
+interface StressTestPhase { concurrency: number;, avgResponseTime: number;
   successRate: number;
   throughput: number;
 }
 
-interface StressTestResult {
-  maxConcurrency: number;
-  breakingPoint: number;
+interface StressTestResult { maxConcurrency: number;, breakingPoint: number;
   totalRequests: number;
   phases: StressTestPhase[];
 }
 
-interface ConcurrentParsingResult {
-  totalRequests: number;
-  successfulRequests: number;
+interface ConcurrentParsingResult { totalRequests: number;, successfulRequests: number;
   responseTimes: number[];
   avgTime: number;
   throughput: number;
   successRate: number;
 }
 
-interface SpikeTestResult {
-  baseline: ConcurrentParsingResult;
-  spike: ConcurrentParsingResult;
+interface SpikeTestResult { baseline: ConcurrentParsingResult;, spike: ConcurrentParsingResult;
   recovery: ConcurrentParsingResult;
-  spikeImpact: {
-    responseTimeDegradation: number;
-    throughputImpact: number;
+  spikeImpact: { responseTimeDegradation: number;, throughputImpact: number;
     recoveryTime: number;
   };
 }
@@ -112,8 +94,8 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             ...standardBench,
             iterations,
-            totalTestTime: performance.now() - startTime,
-          },
+            totalTestTime: performance.now() - startTime
+          }
         });
       }
       case 'legal_document': {
@@ -127,10 +109,9 @@ export const GET: RequestHandler = async ({ url }) => {
             clauses: Array.from({ length: 200 }, (_, i) => ({
               id: `clause-${i}`,
               type: i % 5 === 0 ? 'termination' : 'standard',
-              text: 'Legal clause text content here: '.repeat(20),
+              text: 'Legal clause text content; here: '.repeat(20),
               entities: ['date', 'party', 'amount', 'jurisdiction'],
-              riskLevel: Math.random() > 0.7 ? 'high' : 'low',
-            })),
+              riskLevel: Math.random() > 0.7 ? 'high' : `low` }))
           },
           analysis: {
             sentiment: Math.random(),
@@ -138,15 +119,14 @@ export const GET: RequestHandler = async ({ url }) => {
             entities: Array.from({ length: 50 }, (_, i) => ({
               text: `Entity ${i}`,
               type: ['person', 'organization', 'date', 'money'][i % 4],
-              confidence: Math.random(),
+              confidence: Math.random()
             })),
             embeddings: Array.from({ length: 768 }, () => Math.random()),
             similarCases: Array.from({ length: 20 }, (_, i) => ({
               id: `case-${i}`,
               similarity: Math.random(),
-              title: `Similar Case ${i}`,
-            })),
-          },
+              title: `Similar Case ${i}` }))
+          }
         };
         // ...existing code that builds legalDoc.analysis...
         const legalBenchmark = await benchmarkCustomPayload(legalDoc, iterations);
@@ -157,8 +137,8 @@ export const GET: RequestHandler = async ({ url }) => {
             ...legalBenchmark,
             payloadSize: `${Math.round(JSON.stringify(legalDoc).length / 1024)}KB`,
             iterations,
-            requestedSize: $size,
-          },
+            requestedSize: $size
+          }
         });
       }
       case 'vector_operations': {
@@ -170,9 +150,9 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
             algorithm: 'cosine',
             threshold: 0.8,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           },
-          results: Array.from({ length: 1000 }, () => Math.random()),
+          results: Array.from({ length: 1000 }, () => Math.random())
         };
         const vectorBenchmark = await benchmarkCustomPayload(vectorData, iterations);
         return json({
@@ -184,8 +164,8 @@ export const GET: RequestHandler = async ({ url }) => {
             vectorDimensions: 1536,
             vectorCount: 1000,
             iterations,
-            requestedSize: $size,
-          },
+            requestedSize: $size
+          }
         });
       }
       case 'rabbitmq_message': {
@@ -194,15 +174,14 @@ export const GET: RequestHandler = async ({ url }) => {
           jobId: 'job-' + Date.now(),
           type: 'wasm_tensor_processing',
           priority: 2,
-          payload: {
-            documents: Array.from({ length: 50 }, (_, i) => ({
+          payload: { documents: Array.from({, length: 50 }, (_, i) => ({
               id: `doc-${i}`,
-              content: 'Document content here: '.repeat(100),
+              content: 'Document content; here: '.repeat(100),
               metadata: {
                 source: 'legal_database',
                 confidence: Math.random(),
-                processed: false,
-              },
+                processed: false
+              }
             })),
             processingPipeline: [
               'document-analysis',
@@ -211,15 +190,15 @@ export const GET: RequestHandler = async ({ url }) => {
               'similarity_compute',
               'legal-classification',
             ],
-            batchVectors: Array.from({ length: 100 }, () => Array.from({ length: 768 }, () => Math.random())),
+            batchVectors: Array.from({ length: 100 }, () => Array.from({ length: 768 }, () => Math.random()))
           },
           metadata: {
             userId: 'user-123',
             timestamp: Date.now(),
             source: 'api_endpoint',
             priority: 'high',
-            expectedDuration: 30000,
-          },
+            expectedDuration: 30000
+          }
         };
         const rabbitBenchmark = await benchmarkCustomPayload(rabbitMessage, iterations);
         return json({
@@ -229,30 +208,28 @@ export const GET: RequestHandler = async ({ url }) => {
             ...rabbitBenchmark,
             payloadSize: `${Math.round(JSON.stringify(rabbitMessage).length / 1024)}KB`,
             iterations,
-            requestedSize: $size,
-          },
+            requestedSize: $size
+          }
         });
       }
       case 'cache_operations': {
         // Benchmark with cache entry payload
         const cacheEntries = Array.from({ length: 100 }, (_, i) => ({
           key: `cache-key-${i}`,
-          data: {
-            embeddings: Array.from({ length: 384 }, () => Math.random()),
+          data: {, embeddings: Array.from({, length: 384 }, () => Math.random()),
             metadata: {
               created: Date.now(),
               hits: Math.floor(Math.random() * 100),
               lastAccess: Date.now(),
-              source: 'vector_computation',
-            },
+              source: `vector_computation` },
             similarityResults: Array.from({ length: 50 }, () => ({
               id: `result-${Math.random()}`,
               score: Math.random(),
-              metadata: { type: 'legal_doc' },
-            })),
+              metadata: { type: `legal_doc` }
+            }))
           },
           ttl: 30 * 60 * 1000,
-          tags: ['legal', 'embeddings', 'cached', 'wasm_processed'],
+          tags: ['legal', 'embeddings', 'cached', 'wasm_processed']
         }));
         const cacheBenchmark = await benchmarkCustomPayload({ entries: cacheEntries }, iterations);
         return json({
@@ -260,11 +237,11 @@ export const GET: RequestHandler = async ({ url }) => {
           scenario: 'cache_operations',
           data: {
             ...cacheBenchmark,
-            payloadSize: `${Math.round(JSON.stringify({ entries: cacheEntries }).length / 1024)}KB`,
+            payloadSize: `${Math.round(JSON.stringify({, entries: cacheEntries }).length / 1024)}KB`,
             entriesCount: cacheEntries.length,
             iterations,
-            requestedSize: $size,
-          },
+            requestedSize: $size
+          }
         });
       }
       case 'comparison': {
@@ -287,11 +264,11 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             scenarios: comparisonResults,
             summary: {
-              totalTests: scenarios.length,
+             , totalTests: scenarios.length,
               avgSpeedup,
-              totalTestTime: performance.now() - startTime,
-            },
-          },
+              totalTestTime: performance.now() - startTime
+            }
+          }
         });
       }
       case 'system_info': {
@@ -308,7 +285,7 @@ export const GET: RequestHandler = async ({ url }) => {
             metrics: stats,
             requestedSize: $size,
             system: {
-              platform:
+             , platform:
                 typeof navigator !== 'undefined'
                   ? // prefer userAgentData platform if available, fall back to navigator.platform
                     (navigator as NavigatorWithUAData).userAgentData?.platform || navigator.platform
@@ -319,18 +296,18 @@ export const GET: RequestHandler = async ({ url }) => {
                 ? {
                     used: Math.round(perfMemory.usedJSHeapSize / 1024 / 1024),
                     total: Math.round(perfMemory.totalJSHeapSize / 1024 / 1024),
-                    limit: Math.round(perfMemory.jsHeapSizeLimit / 1024 / 1024),
+                    limit: Math.round(perfMemory.jsHeapSizeLimit / 1024 / 1024)
                   }
-                : null,
-            },
-          },
+                : null
+            }
+          }
         });
       }
       default: {
         return json(
           {
             success: false,
-            error: `Unknown benchmark scenario: ${scenario}`,
+            error: `Unknown benchmark; scenario: ${scenario}`,
             availableScenarios: [
               'standard',
               'legal_document',
@@ -339,7 +316,7 @@ export const GET: RequestHandler = async ({ url }) => {
               'cache_operations',
               'comparison',
               'system_info',
-            ],
+            ]
           },
           { status: 400 }
         );
@@ -353,8 +330,8 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: {
           message,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -369,8 +346,7 @@ export const POST: RequestHandler = async ({ request }) => {
       duration = 10000, // 10 seconds
       concurrency = 10,
       payloadSize = 'medium',
-      scenario = 'mixed',
-    } = body;
+      scenario = 'mixed` } = body;
     const startTime = performance.now();
     switch (testType) {
       case 'load': {
@@ -382,8 +358,8 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             ...loadResults,
             configuration: { duration, concurrency, payloadSize, scenario },
-            totalTestTime: performance.now() - startTime,
-          },
+            totalTestTime: performance.now() - startTime
+          }
         });
       }
       case 'stress': {
@@ -395,8 +371,8 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             ...stressResults,
             configuration: { duration, payloadSize },
-            totalTestTime: performance.now() - startTime,
-          },
+            totalTestTime: performance.now() - startTime
+          }
         });
       }
       case 'spike': {
@@ -407,16 +383,16 @@ export const POST: RequestHandler = async ({ request }) => {
           testType: 'spike',
           data: {
             ...spikeResults,
-            configuration: { peakConcurrency: concurrency * 5, payloadSize },
-            totalTestTime: performance.now() - startTime,
-          },
+            configuration: {, peakConcurrency: concurrency * 5, payloadSize },
+            totalTestTime: performance.now() - startTime
+          }
         });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown test type: ${testType}`,
-            availableTypes: ['load', 'stress', 'spike'],
+            error: `Unknown test; type: ${testType}`,
+            availableTypes: ['load', 'stress', 'spike']
           },
           { status: 400 }
         );
@@ -429,8 +405,8 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: {
           message,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -453,19 +429,17 @@ async function benchmarkCustomPayload(payload: JsonValue, iterations: number): P
     JSON.parse(testData); // TODO: Replace with actual SIMD when available
   }
   const simdTime = performance.now() - simdStart;
-  return {
-    standard: {
-      totalTime: standardTime,
+  return { standard: {, totalTime: standardTime,
       avgTime: standardTime / iterations,
-      parsesPerSecond: (iterations / standardTime) * 1000,
+      parsesPerSecond: (iterations / standardTime) * 1000
     },
     simd: {
       totalTime: simdTime,
       avgTime: simdTime / iterations,
-      parsesPerSecond: (iterations / simdTime) * 1000,
+      parsesPerSecond: (iterations / simdTime) * 1000
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 1,
-    payloadBytes: testData.length,
+    payloadBytes: testData.length
   };
 }
 /**
@@ -485,7 +459,7 @@ async function runLoadTest(
     maxResponseTime: 0,
     minResponseTime: Infinity,
     responseTimes: [] as number[],
-    throughput: 0,
+    throughput: 0
   };
   const endTime = Date.now() + duration;
   const workers: Promise<void>[] = [];
@@ -522,7 +496,7 @@ async function runLoadTest(
     ...results,
     payloadSize: `${Math.round(testData.length / 1024)}KB`,
     testDuration: duration,
-    concurrency,
+    concurrency
   };
 }
 /**
@@ -533,7 +507,7 @@ async function runStressTest(maxDuration: number, payloadSize: string): Promise<
     maxConcurrency: 0,
     breakingPoint: 0,
     totalRequests: 0,
-    phases: [] as StressTestPhase[],
+    phases: [] as StressTestPhase[]
   };
   const payload = generateTestPayload(payloadSize, 'mixed');
   const testData = JSON.stringify(payload);
@@ -545,7 +519,7 @@ async function runStressTest(maxDuration: number, payloadSize: string): Promise<
       concurrency,
       avgResponseTime: phaseResults.avgTime,
       successRate: phaseResults.successRate,
-      throughput: phaseResults.throughput,
+      throughput: phaseResults.throughput
     });
     if (phaseResults.successRate < 0.95) {
       // 95% success threshold
@@ -577,8 +551,8 @@ async function runSpikeTest(peakConcurrency: number, payloadSize: string): Promi
     spikeImpact: {
       responseTimeDegradation: spikeResults.avgTime / baselineResults.avgTime,
       throughputImpact: spikeResults.throughput / baselineResults.throughput,
-      recoveryTime: recoveryResults.avgTime / baselineResults.avgTime,
-    },
+      recoveryTime: recoveryResults.avgTime / baselineResults.avgTime
+    }
   };
 }
 /**
@@ -595,7 +569,7 @@ async function runConcurrentParsing(
     responseTimes: [] as number[],
     avgTime: 0,
     throughput: 0,
-    successRate: 0,
+    successRate: 0
   };
   const startTime = performance.now();
   const workers: Promise<void>[] = [];
@@ -631,7 +605,7 @@ function generateTestPayload(size: string, scenario: string): JsonValue {
       small: 1,
       medium: 10,
       large: 100,
-      xlarge: 1000,
+      xlarge: 1000
     }[size] || 10;
   const baseItems = 10 * sizeMultiplier;
   const vectorDim = scenario === 'vector_operations' ? 768 : 128;
@@ -642,13 +616,13 @@ function generateTestPayload(size: string, scenario: string): JsonValue {
       id: `item-${i}`,
       data:
         scenario === 'vector_operations'
-          ? Array.from({ length: vectorDim }, () => Math.random())
+          ? Array.from({, length: vectorDim }, () => Math.random())
           : `Sample data item ${i} with content`.repeat(size === 'large' ? 100 : 10),
       metadata: {
         created: Date.now(),
         processed: Math.random() > 0.5,
-        confidence: Math.random(),
-      },
-    })),
+        confidence: Math.random()
+      }
+    }))
   };
 }

@@ -7,18 +7,14 @@ export interface WebGPUCapabilities {
   available: boolean;
   adapter?: GPUAdapter;
   device?: GPUDevice;
-  limits: {
-    maxBufferSize: number;
-    maxComputeWorkgroupSizeX: number;
+  limits: { maxBufferSize: number;, maxComputeWorkgroupSizeX: number;
     maxComputeWorkgroupSizeY: number;
     maxComputeWorkgroupSizeZ: number;
   };
   features: string[];
 }
 
-export interface VectorOperation {
-  type: 'similarity' | 'clustering' | 'embedding' | 'matrix_multiply';
-  inputA: Float32Array;
+export interface VectorOperation { type: 'similarity' | 'clustering' | 'embedding' | 'matrix_multiply';, inputA: Float32Array;
   inputB?: Float32Array;
   dimensions: number;
   options?: {
@@ -28,9 +24,7 @@ export interface VectorOperation {
   };
 }
 
-export interface ComputeResult {
-  type: string;
-  result: Float32Array;
+export interface ComputeResult { type: string;, result: Float32Array;
   executionTime: number;
   workgroupsDispatched: number;
   bufferSize: number;
@@ -45,7 +39,7 @@ class WebGPUAccelerator {
 
   // Clean WGSL shader sources (minimal and syntactically valid)
   private readonly shaderSources: Record<string, string> = {
-    vectorSimilarity: `
+    vectorSimilarity: '
       struct Params { dims: u32 };
       @group(0) @binding(0) var<storage, read> vectorA: array<f32>;
       @group(0) @binding(1) var<storage, read> vectorB: array<f32>;
@@ -75,8 +69,7 @@ class WebGPUAccelerator {
         }
         result[0] = similarity;
       }
-    `,
-  };
+    ' };
 
   async initialize(): Promise<WebGPUCapabilities> {
     if (this.initialized && this.capabilities) return this.capabilities;
@@ -85,7 +78,7 @@ class WebGPUAccelerator {
       const gpu = (navigator as any).gpu;
       if (!gpu) throw new Error('WebGPU not supported in this browser');
 
-      const adapter = await gpu.requestAdapter({ powerPreference: 'high-performance' });
+      const adapter = await gpu.requestAdapter({ powerPreference: `high-performance` });
       if (!adapter) throw new Error('No WebGPU adapter available');
 
       const device = await adapter.requestDevice({});
@@ -99,9 +92,9 @@ class WebGPUAccelerator {
           maxBufferSize: (device.limits?.maxStorageBufferBindingSize as number) || 0,
           maxComputeWorkgroupSizeX: device.limits?.maxComputeWorkgroupSizeX || 0,
           maxComputeWorkgroupSizeY: device.limits?.maxComputeWorkgroupSizeY || 0,
-          maxComputeWorkgroupSizeZ: device.limits?.maxComputeWorkgroupSizeZ || 0,
+          maxComputeWorkgroupSizeZ: device.limits?.maxComputeWorkgroupSizeZ || 0
         },
-        features: Array.from((adapter as any).features || []),
+        features: Array.from((adapter as any).features || [])
       };
 
       await this.initializeShaders();
@@ -115,9 +108,9 @@ class WebGPUAccelerator {
           maxBufferSize: 0,
           maxComputeWorkgroupSizeX: 0,
           maxComputeWorkgroupSizeY: 0,
-          maxComputeWorkgroupSizeZ: 0,
+          maxComputeWorkgroupSizeZ: 0
         },
-        features: [],
+        features: []
       };
       return this.capabilities;
     }
@@ -127,7 +120,7 @@ class WebGPUAccelerator {
     if (!this.device) return;
     for (const [name, source] of Object.entries(this.shaderSources)) {
       try {
-        const shaderModule = this.device.createShaderModule({ code: source, label: `${name}_module` });
+        const shaderModule = this.device.createShaderModule({ code: source, label: '${name}_module' });
         this.computeShaders.set(name, shaderModule);
       } catch (err) {
         console.error('Shader creation failed for', name, err);
@@ -172,7 +165,7 @@ class WebGPUAccelerator {
     const paramsBuf = device.createBuffer({
       size: 4,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: false,
+      mappedAtCreation: false
     });
     const readBuf = device.createBuffer({ size: 4, usage: usageRead, mappedAtCreation: false });
 
@@ -194,13 +187,12 @@ class WebGPUAccelerator {
         // result buffer is writable by the shader
         { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
         // params are provided as a uniform
-        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
-      ],
+        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform' } }
+      ]
     });
 
-    const pipeline = device.createComputePipeline({
-      layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: shader, entryPoint: 'main' },
+    const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
+      compute: { module: shader, entryPoint: `main` }
     });
 
     const bindGroup = device.createBindGroup({
@@ -209,8 +201,8 @@ class WebGPUAccelerator {
         { binding: 0, resource: { buffer: aBuf } },
         { binding: 1, resource: { buffer: bBuf } },
         { binding: 2, resource: { buffer: resultBuf } },
-        { binding: 3, resource: { buffer: paramsBuf } },
-      ],
+        { binding: 3, resource: {, buffer: paramsBuf } }
+      ]
     });
 
     const cmdEncoder = device.createCommandEncoder();
@@ -304,7 +296,7 @@ class WebGPUAccelerator {
       initialized: this.initialized,
       capabilities: this.capabilities,
       shadersLoaded: this.computeShaders.size,
-      buffersActive: this.bufferPool.size,
+      buffersActive: this.bufferPool.size
     };
   }
 

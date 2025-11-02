@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         fileSize: evidence.fileSize,
         uploadedAt: evidence.uploadedAt,
         caseName: cases.name,
-        caseNumber: cases.caseNumber,
+        caseNumber: cases.caseNumber
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id))
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       results.push({
         hash,
         found: relatedEvidence.length > 0,
-        evidence: relatedEvidence,
+        evidence: relatedEvidence
       });
     });
   }
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         id: evidence.id,
         fileName: evidence.fileName,
         hash: evidence.hash,
-        uploadedAt: evidence.uploadedAt,
+        uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
       .where(inArray(evidence.id, evidenceIds));
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         fileName: item.fileName,
         storedHash: item.hash,
         hasHash: Boolean(item.hash),
-        uploadedAt: item.uploadedAt,
+        uploadedAt: item.uploadedAt
       });
     });
   }
@@ -77,15 +77,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     totalProcessed: results.length,
     verified: results.filter((entry) => Boolean((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length,
     missing: results.filter((entry) => !((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length,
-    processedAt: new Date().toISOString(),
+    processedAt: new Date().toISOString()
   };
 
   return json({
     success: true,
     results,
     stats,
-    message: `Processed ${results.length} item(s) for bulk hash operations`,
-  });
+    message: `Processed ${results.length} item(s) for bulk hash operations' });
 };
 
 export const GET: RequestHandler = async ({ locals }) => {
@@ -99,7 +98,7 @@ export const GET: RequestHandler = async ({ locals }) => {
       id: evidence.id,
       fileName: evidence.fileName,
       hash: evidence.hash,
-      uploadedAt: evidence.uploadedAt,
+      uploadedAt: evidence.uploadedAt
     })
     .from(evidence)
     .orderBy(desc(evidence.uploadedAt))
@@ -114,12 +113,12 @@ export const GET: RequestHandler = async ({ locals }) => {
     withoutHashes: withoutHashes.length,
     hashCoverage:
       recentEvidence.length === 0 ? '0.0' : ((withHashes.length / recentEvidence.length) * 100).toFixed(1),
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: new Date().toISOString()
   };
 
   return json({
     stats,
-    recentEvidence: recentEvidence.slice(0, 10),
+    recentEvidence: recentEvidence.slice(0, 10)
   });
 };
 

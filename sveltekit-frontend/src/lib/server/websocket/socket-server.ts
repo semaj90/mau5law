@@ -124,14 +124,14 @@ class RealTimeServer {
       type: 'update',
       channel,
       data: parsedMessage;
-      timestamp: new Date().toISOString()
+     , timestamp: new Date().toISOString()
     });
     this.clients.forEach((client, clientId) => {
       if (client.subscriptions.has(channel) && client.ws.readyState === client.ws.OPEN) {
         try {
           client.ws.send(payload);
         } catch (error: any) {
-          console.error(`Failed to send to client ${clientId}:`, error);
+          console.error(`Failed to send to client ${clientId}: ', error);
           this.clients.delete(clientId);
         }
       }
@@ -154,7 +154,7 @@ class RealTimeServer {
   public async publishEvidenceUpdate(
     evidenceId: string,
     action: string;
-    data: any,
+   , data: any,
     userId?: string;
   ) {
     await this.publishUpdate(

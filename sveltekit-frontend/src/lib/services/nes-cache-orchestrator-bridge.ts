@@ -16,7 +16,7 @@ export class NESCacheOrchestrator {
 
   async storeSprite(
     key: string,
-    sprite: { data: any; metadata?: Record<string, unknown>; region?: string }
+    sprite: {, data: any; metadata?: Record<string, unknown>; region?: string }
   ): Promise<boolean> {
     this.sprites.set(key, sprite);
     return true;
@@ -30,7 +30,7 @@ export class NESCacheOrchestrator {
     this.sprites.delete(key);
   }
 
-  async getMemoryStats(): Promise<{ cacheHitRate: number; totalItems: number; totalMemory: number }> {
+  async getMemoryStats(): Promise<{ cacheHitRate: number; totalItems: number;, totalMemory: number }> {
     return {
       cacheHitRate: 0.9,
       totalItems: this.sprites.size,

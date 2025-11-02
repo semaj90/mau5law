@@ -1,8 +1,6 @@
 import type { Case } from '$lib/types';
 import { writable } from 'svelte/store';
-export interface Notification {
-  id: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'system';
+export interface Notification { id: string;, type: 'info' | 'success' | 'warning' | 'error' | 'system';
   title?: string;
   message: string;
   duration?: number;
@@ -39,7 +37,7 @@ function createNotificationStore() {
       closable: options.closable ?? true,
       icon: options.icon,
       position: options.position || 'top-right',
-      showProgress: options.showProgress ?? true,
+      showProgress: options.showProgress ?? true
     };
     update(notifications => [...notifications, notification]);
     // Auto-remove if not persistent and has a positive duration
@@ -75,8 +73,7 @@ function createNotificationStore() {
       ...options,
       type: 'system',
       persistent: options.persistent ?? true,
-      position: options.position || 'center',
-    });
+      position: options.position || 'center` });
   }
   // Legal AI specific notifications
   function caseUpdate(message: string, caseId?: string): string {
@@ -85,7 +82,7 @@ function createNotificationStore() {
       type: 'info',
       title,
       icon: '📋',
-      duration: 7000,
+      duration: 7000
     });
   }
   function evidenceProcessed(message: string, evidenceId?: string): string {
@@ -94,7 +91,7 @@ function createNotificationStore() {
       type: 'success',
       title,
       icon: '🔍',
-      duration: 5000,
+      duration: 5000
     });
   }
   function aiAnalysisComplete(message: string, confidence?: number): string {
@@ -103,7 +100,7 @@ function createNotificationStore() {
       type: 'success',
       title: 'AI Analysis Complete',
       icon: '🤖',
-      duration: 8000,
+      duration: 8000
     });
   }
   function securityAlert(message: string): string {
@@ -112,7 +109,7 @@ function createNotificationStore() {
       title: 'Security Alert',
       icon: '🚨',
       persistent: true,
-      position: 'center',
+      position: 'center'
     });
   }
   function systemStatus(message: string, isOnline: boolean = true): string {
@@ -121,8 +118,7 @@ function createNotificationStore() {
       title: 'System Status',
       icon: isOnline ? '🟢' : '🔴',
       persistent: !isOnline,
-      position: 'top-left',
-    });
+      position: `top-left` });
   }
   return {
     subscribe,
@@ -139,7 +135,7 @@ function createNotificationStore() {
     evidenceProcessed,
     aiAnalysisComplete,
     securityAlert,
-    systemStatus,
+    systemStatus
   };
 }
 export const notificationStore = createNotificationStore();

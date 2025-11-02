@@ -224,8 +224,8 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
  */
 export function matchRoute(
   pattern: string;
-  path: string;
-): { match: boolean; params: Record<string, string> } {
+ , path: string;
+): { match: boolean;, params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);
   if (patternParts.length !== pathParts.length) {
@@ -282,9 +282,7 @@ export function generateRouteUrl(
 /**
  * Route validation utility
  */
-export function validateRoute(route: GeneratedRoute | RouteDefinition): {
-  valid: boolean;
-  errors: string[];
+export function validateRoute(route: GeneratedRoute | RouteDefinition): { valid: boolean;, errors: string[];
 } {
   const errors: string[] = [];
   // Check required fields
@@ -311,9 +309,7 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): {
 /**
  * Route debugging utility
  */
-export function debugRoutes(): {
-  totalRoutes: number;
-  staticRoutes: number;
+export function debugRoutes(): { totalRoutes: number;, staticRoutes: number;
   dynamicRoutes: number;
   routeList: Array<any>, {
   const dynamicRoutes = getAllDynamicRoutes();
@@ -364,5 +360,4 @@ export const ROUTE_STATUS = {
   ACTIVE: 'active',
   BETA: 'beta',
   EXPERIMENTAL: 'experimental',
-  DEPRECATED: 'deprecated'
-} as const;
+  DEPRECATED: `deprecated` } as const;

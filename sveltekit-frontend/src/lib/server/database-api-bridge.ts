@@ -7,9 +7,7 @@ import type { Case } from '$lib/types';
  */
 import { queryLegalDocumentsSSR, type SSRResponse } from './api-ssr-helpers.js';
 // Type definitions based on database schema
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   content: string;
   document_type: 'contract' | 'brief' | 'evidence' | 'statute' | 'regulation' | 'case_law';
   jurisdiction: string;
@@ -21,9 +19,7 @@ export interface LegalDocument {
   client_id?: string;
   status: 'active' | 'archived' | 'draft';
 }
-export interface LegalCase {
-  id: string;
-  title: string;
+export interface LegalCase { id: string;, title: string;
   description: string;
   case_type: 'civil' | 'criminal' | 'corporate' | 'family' | 'intellectual_property';
   jurisdiction: string;
@@ -34,9 +30,7 @@ export interface LegalCase {
   metadata: { [key: string]: any }
   priority: 'low' | 'medium' | 'high' | 'urgent';
 }
-export interface EvidenceItem {
-  id: string;
-  title: string;
+export interface EvidenceItem { id: string;, title: string;
   description: string;
   evidence_type: 'document' | 'testimony' | 'physical' | 'digital' | 'expert_opinion';
   file_path?: string;
@@ -47,9 +41,7 @@ export interface EvidenceItem {
   created_at: Date;
   updated_at: Date;
 }
-export interface ConversationRecord {
-  id: string;
-  user_id: string;
+export interface ConversationRecord { id: string;, user_id: string;
   title: string;
   case_id?: string;
   context: { [key: string]: any }
@@ -58,9 +50,7 @@ export interface ConversationRecord {
   message_count: number;
   last_activity: Date;
 }
-export interface MessageRecord {
-  id: string;
-  conversation_id: string;
+export interface MessageRecord { id: string;, conversation_id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   model?: string;
@@ -98,8 +88,7 @@ export class LegalDatabaseBridge {
       updated_at: now,
       case_id: _document.case_id,
       client_id: _document.client_id,
-      status: _document.status || 'draft',
-    };
+      status: _document.status || 'draft` };
     try {
       // Use the existing SSR helper for JSONB operations
       await this.executeQuery(
@@ -159,17 +148,17 @@ export class LegalDatabaseBridge {
           operator: '@>',
           value: query,
           conditions: {
-            document_type: query.documentType,
+           , document_type: query.documentType,
             jurisdiction: query.jurisdiction,
             case_id: query.caseId,
-            client_id: query.clientId,
-          },
+            client_id: query.clientId
+          }
         },
         {
           limit: options.limit || 50,
           offset: options.offset || 0,
           useVector: options.useVector,
-          cacheResults: true,
+          cacheResults: true
         }
       );
       return documents.map(row => this.mapRowToDocument(row));
@@ -216,8 +205,7 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       metadata: caseData.metadata || {},
-      priority: caseData.priority || 'medium',
-    };
+      priority: caseData.priority || 'medium` };
     try {
       await this.executeQuery(
         `INSERT INTO legal_cases (id, title, description, case_type, jurisdiction, status, client_id, metadata, priority, created_at, updated_at)
@@ -272,7 +260,7 @@ export class LegalDatabaseBridge {
       relevance_score: evidenceData.relevance_score || 0.5,
       admissibility_status: evidenceData.admissibility_status || 'unknown',
       created_at: now,
-      updated_at: now,
+      updated_at: now
     };
     try {
       await this.executeQuery(
@@ -323,7 +311,7 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       message_count: 0,
-      last_activity: now,
+      last_activity: now
     };
     try {
       await this.executeQuery(
@@ -359,7 +347,7 @@ export class LegalDatabaseBridge {
       token_count: messageData.token_count,
       processing_time: messageData.processing_time,
       metadata: messageData.metadata || {},
-      created_at: now,
+      created_at: now
     };
     try {
       // Insert message
@@ -419,7 +407,7 @@ export class LegalDatabaseBridge {
       updated_at: new Date(row.updated_at),
       case_id: row.case_id,
       client_id: row.client_id,
-      status: row.status,
+      status: row.status
     };
   }
   private mapRowToCase(row: any): LegalCase {
@@ -434,7 +422,7 @@ export class LegalDatabaseBridge {
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-      priority: row.priority,
+      priority: row.priority
     };
   }
   private mapRowToEvidence(row: any): EvidenceItem {
@@ -449,7 +437,7 @@ export class LegalDatabaseBridge {
       relevance_score: row.relevance_score,
       admissibility_status: row.admissibility_status,
       created_at: new Date(row.created_at),
-      updated_at: new Date(row.updated_at),
+      updated_at: new Date(row.updated_at)
     };
   }
   private mapRowToMessage(row: any): MessageRecord {
@@ -462,7 +450,7 @@ export class LegalDatabaseBridge {
       token_count: row.token_count,
       processing_time: row.processing_time,
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-      created_at: new Date(row.created_at),
+      created_at: new Date(row.created_at)
     };
   }
   // Execute query helper (would integrate with actual PostgreSQL client)
@@ -473,7 +461,7 @@ export class LegalDatabaseBridge {
     // Mock response structure
     return {
       rows: [],
-      rowCount: 0,
+      rowCount: 0
     };
   }
   // Health check
@@ -493,7 +481,7 @@ export class LegalDatabaseBridge {
         legal_cases: await this.executeQuery('SELECT COUNT(*) FROM legal_cases'),
         evidence_items: await this.executeQuery('SELECT COUNT(*) FROM evidence_items'),
         conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),
-        messages: await this.executeQuery('SELECT COUNT(*) FROM messages'),
+        messages: await this.executeQuery('SELECT COUNT(*) FROM messages')
       };
       return Object.entries(stats).reduce(
         (acc, [table, result]) => {
@@ -520,8 +508,8 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
-      },
+        source: 'api'
+      }
     };
   } catch (error) {
     return {
@@ -530,9 +518,9 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Document creation failed',
+      error: error instanceof Error ? error.message : 'Document creation failed'
     };
   }
 }
@@ -545,8 +533,8 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
-      },
+        source: 'api'
+      }
     };
   } catch (error) {
     return {
@@ -555,9 +543,9 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Case creation failed',
+      error: error instanceof Error ? error.message : 'Case creation failed'
     };
   }
 }
@@ -570,8 +558,8 @@ export async function apiSearchDocuments(searchQuery: any, options: any = {}): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
-      },
+        source: 'api'
+      }
     };
   } catch (error) {
     return {
@@ -580,9 +568,8 @@ export async function apiSearchDocuments(searchQuery: any, options: any = {}): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Document search failed',
-    };
+      error: error instanceof Error ? error.message : 'Document search failed` };
   }
 }

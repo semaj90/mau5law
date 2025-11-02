@@ -8,7 +8,7 @@ import { productionServiceClient } from '$lib/services/productionServiceClient';
 import { json, error } from '@sveltejs/kit';
 
 // Add a minimal local interface for the methods we call and cast the imported client.
-// This fixes the: "property does not exist on type: 'ProductionServiceClient'" errors.
+// This fixes the: "property does not exist on; type: 'ProductionServiceClient'" errors.
 type MinimalProductionClient = {
   checkAllServicesHealth(): Promise<Record<string, boolean>>;
   getPerformanceMetrics(): Promise<Array<{ avgLatency?: number; successRate?: number }>>;
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (err: any) {
     console.error('Cluster API Error:', err);
-    throw error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // POST handler processes cluster management actions
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (err: any) {
     console.error('Cluster Action Error:', err);
-    throw error(500, `Cluster action failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Cluster action failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 async function handleHealthCheck(): Promise<Response> {
@@ -64,17 +64,15 @@ async function handleHealthCheck(): Promise<Response> {
   const healthyServicesCount = Object.values(health).filter(Boolean).length;
   const healthPercentage = totalServices > 0 ? (healthyServicesCount / totalServices) * 100 : 0;
 
-  return json({
-    cluster: {
-      status: healthPercentage > 80 ? 'healthy' : healthPercentage > 50 ? 'degraded' : 'critical',
+  return json({ cluster: {, status: healthPercentage > 80 ? 'healthy' : healthPercentage > 50 ? 'degraded' : 'critical',
       health_percentage: Math.round(healthPercentage),
       total_services: totalServices,
       healthy_services: healthyServicesCount,
-      unhealthy_services: totalServices - healthyServicesCount,
+      unhealthy_services: totalServices - healthyServicesCount
     },
     services: health,
     performance: metrics,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleServicesStatus(): Promise<Response> {
@@ -84,43 +82,43 @@ async function handleServicesStatus(): Promise<Response> {
       'enhanced-rag': {
         status: health['enhanced-rag'] ? 'running' : 'down',
         port: 8094,
-        description: 'Primary AI Engine',
+        description: 'Primary AI Engine'
       },
       'upload-service': {
         status: health['upload-service'] ? 'running' : 'down',
         port: 8093,
-        description: 'File Processing',
-      },
+        description: 'File Processing'
+      }
     },
     tier2_enhanced: {
       'ai-summary': {
         status: health['ai-summary'] ? 'running' : 'down',
         port: 8096,
-        description: 'AI Summary Service',
+        description: 'AI Summary Service'
       },
       'cluster-manager': {
         status: health['cluster-manager'] ? 'running' : 'down',
         port: 8213,
-        description: 'Cluster Coordination',
-      },
+        description: 'Cluster Coordination'
+      }
     },
     tier3_specialized: {
       'legal-ai': { status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI' },
       'xstate-manager': {
         status: health['xstate-manager'] ? 'running' : 'down',
         port: 8212,
-        description: 'State Management',
-      },
-    },
+        description: 'State Management'
+      }
+    }
   };
   return json({
     services: serviceDetails,
     summary: {
-      total: Object.keys(health).length,
+     , total: Object.keys(health).length,
       running: Object.values(health).filter(Boolean).length,
-      down: Object.values(health).filter(h => !h).length,
+      down: Object.values(health).filter(h => !h).length
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleMetrics(): Promise<Response> {
@@ -138,65 +136,59 @@ async function handleMetrics(): Promise<Response> {
   const servicesTotal = Object.keys(health).length;
   const servicesUpCount = Object.values(health).filter(Boolean).length;
 
-  return json({
-    performance: {
-      tiers: performance,
+  return json({ performance: {, tiers: performance,
       overall: {
         avg_latency: avgLatency,
         avg_success_rate: avgSuccess,
-        total_endpoints: perfCount,
-      },
+        total_endpoints: perfCount
+      }
     },
     availability: {
-      uptime_percentage: servicesTotal > 0 ? (servicesUpCount / servicesTotal) * 100 : 0,
+     , uptime_percentage: servicesTotal > 0 ? (servicesUpCount / servicesTotal) * 100 : 0,
       services_up: servicesUpCount,
-      services_total: servicesTotal,
+      services_total: servicesTotal
     },
-    protocols: {
-      quic: { avg_latency: 5, success_rate: 0.99 },
+    protocols: { quic: {, avg_latency: 5, success_rate: 0.99 },
       grpc: { avg_latency: 15, success_rate: 0.98 },
       http: { avg_latency: 45, success_rate: 0.97 },
-      websocket: { avg_latency: 1, success_rate: 0.95 },
+      websocket: { avg_latency: 1, success_rate: 0.95 }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleClusterOverview(): Promise<Response> {
   const health = await prodClient.checkAllServicesHealth();
-  return json({
-    cluster: {
-      name: 'Legal AI Production Cluster',
+  return json({ cluster: {, name: 'Legal AI Production Cluster',
       version: '1.0.0',
       status: 'operational',
       node_count: 1,
-      service_count: Object.keys(health).length,
+      service_count: Object.keys(health).length
     },
     architecture: {
       protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
       tiers: ['Core Services', 'Enhanced Services', 'Specialized Services', 'Infrastructure'],
       load_balancing: 'Round Robin',
-      failover: 'Automatic',
+      failover: 'Automatic'
     },
     endpoints: {
       health: '/api/v1/cluster/health',
       services: '/api/v1/cluster/services',
-      metrics: '/api/v1/cluster/metrics',
-    },
-    timestamp: new Date().toISOString(),
+      metrics: `/api/v1/cluster/metrics` },
+    timestamp: new Date().toISOString()
   });
 }
 async function handleServiceRestart(serviceName: string): Promise<Response> {
   return json({
     success: true,
     message: `Service ${serviceName} restart initiated`,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleServiceScaling(serviceName: string, instances: number): Promise<Response> {
   return json({
     success: true,
     message: `Service ${serviceName} scaled to ${instances} instances`,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 async function handleServiceDeployment(serviceConfig: any): Promise<Response> {
@@ -204,6 +196,6 @@ async function handleServiceDeployment(serviceConfig: any): Promise<Response> {
     success: true,
     message: 'Service deployment initiated',
     config: serviceConfig,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

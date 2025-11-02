@@ -1,22 +1,16 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-interface SystemHealthResponse {
-  system_overview: {
-    healthy_services: number;
+interface SystemHealthResponse { system_overview: {, healthy_services: number;
     total_services: number;
     uptime_hours: number;
     last_updated: string;
   };
   services: Array<any>;
-  performance: {
-    cpu_usage: number;
-    memory_usage: number;
+  performance: { cpu_usage: number;, memory_usage: number;
     disk_usage: number;
   };
-  cluster_info?: {
-    active_workers: number;
-    total_capacity: number;
+  cluster_info?: { active_workers: number;, total_capacity: number;
     load_average: number;
   };
 }
@@ -26,9 +20,7 @@ interface APIOperationRequest {
   data?: any;
 }
 
-interface APIOperationResponse {
-  success: boolean;
-  operation: string;
+interface APIOperationResponse { success: boolean;, operation: string;
   result?: any;
   timestamp: string;
   processing_time?: number;
@@ -46,7 +38,7 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     { name: 'Neo4j Graph DB', port: 7474 },
     { name: 'MinIO Object Storage', port: 9000 },
     { name: 'Qdrant Vector DB', port: 6333 },
-    { name: 'NATS Messaging', port: 4222 },
+    { name: 'NATS Messaging', port: 4222 }
   ];
 
   // Simulate health checks
@@ -54,31 +46,29 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     const isHealthy = Math.random() > 0.1; // 90% chance of being healthy
     return {
       ...service,
-      status: isHealthy ? 'healthy' : ('degraded' as const),
-      response_time: Math.floor(Math.random() * 500) + 10,
+      status: isHealthy ? 'healthy' : ('degraded' as const ),
+      response_time: Math.floor(Math.random() * 500) + 10
     };
   });
 
   const healthyCount = serviceResults.filter(item => item.status === 'healthy').length;
 
-  return {
-    system_overview: {
-      healthy_services: healthyCount,
+  return { system_overview: {, healthy_services: healthyCount,
       total_services: services.length,
       uptime_hours: Math.floor(process.uptime() / 3600),
-      last_updated: new Date().toISOString(),
+      last_updated: new Date().toISOString()
     },
     services: serviceResults,
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
-      disk_usage: Math.random() * 60 + 15,
+      disk_usage: Math.random() * 60 + 15
     },
     cluster_info: {
       active_workers: 8,
       total_capacity: 16,
-      load_average: Math.random() * 2 + 0.5,
-    },
+      load_average: Math.random() * 2 + 0.5
+    }
   };
 }
 
@@ -100,7 +90,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
             'Service health checks updated',
           ],
           performance_improvement: '15%',
-          memory_freed: '2.3 GB',
+          memory_freed: '2.3 GB'
         };
         break;
 
@@ -112,7 +102,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           library_docs_cached: 247,
           integration_tests_passed: 98,
           api_calls_last_hour: 156,
-          cache_hit_ratio: '89%',
+          cache_hit_ratio: '89%'
         };
         break;
 
@@ -124,7 +114,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           active_cases: 23,
           ai_processing_queue: 4,
           average_response_time: '1.2s',
-          accuracy_score: '94.7%',
+          accuracy_score: '94.7%'
         };
         break;
 
@@ -136,7 +126,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           recent_queries: 89,
           cached_precedents: 15670,
           citation_network_nodes: 45000,
-          similarity_matches_found: 234,
+          similarity_matches_found: 234
         };
         break;
 
@@ -148,14 +138,14 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           indexed_documents: 12450,
           search_latency: '23ms',
           similarity_threshold: 0.85,
-          results_returned: 50,
+          results_returned: 50
         };
         break;
 
       default:
         result = {
-          message: `Operation '${operation}' completed successfully`,
-          data: data || {},
+          message: 'Operation '${operation}' completed successfully`,
+          data: data || {}
         };
     }
 
@@ -165,7 +155,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       operation,
       result,
       timestamp: new Date().toISOString(),
-      processing_time: processingTime,
+      processing_time: processingTime
     };
   } catch (error) {
     console.error(`Operation ${operation} failed:`, error);
@@ -174,10 +164,9 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       operation,
       result: {
         error: String(error),
-        message: `Operation ${operation} failed`,
-      },
+        message: `Operation ${operation} failed' },
       timestamp: new Date().toISOString(),
-      processing_time: Date.now() - startTime,
+      processing_time: Date.now() - startTime
     };
   }
 }
@@ -209,10 +198,9 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         operation: 'unknown',
         result: {
-          error: String(error),
-          message: 'Failed to process operation',
-        },
-        timestamp: new Date().toISOString(),
+         , error: String(error),
+          message: `Failed to process operation` },
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

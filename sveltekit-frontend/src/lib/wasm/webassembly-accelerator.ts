@@ -4,9 +4,7 @@
  * Handles ECMAScript to WebAssembly compilation and execution
  */
 }
-export interface WasmModule {
-  instance: WebAssembly.Instance;
-  module: WebAssembly.Module;
+export interface WasmModule { instance: WebAssembly.Instance;, module: WebAssembly.Module;
   memory: WebAssembly.Memory;
   exports: { [key: string]: any }
 }
@@ -14,9 +12,7 @@ export interface WasmCompileOptions {
   optimize?: boolean;
   simd?: boolean;
   threads?: boolean;
-  memory?: {
-    initial: number;
-    maximum: number;
+  memory?: { initial: number;, maximum: number;
     shared?: boolean;
   }
 }
@@ -138,7 +134,7 @@ export class WebAssemblyAccelerator {
       );
       return result;
     } catch (error: any) {
-      console.error(`WASM function ${functionName} failed:`, error);
+      console.error(`WASM function ${functionName} failed: ', error);
       throw error;
     }
   }
@@ -333,7 +329,7 @@ export class WebAssemblyAccelerator {
   }
   private generateCacheKey(
     source: string;
-    options: WasmCompileOptions;
+   , options: WasmCompileOptions;
   ): string {
     const hash = this.simpleHash(source + JSON.stringify(options);
     return `wasm-compile-${hash}`;
@@ -362,7 +358,7 @@ export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
   return function (
     target: any,
     propertyKey: string;
-    descriptor: PropertyDescriptor;
+   , descriptor: PropertyDescriptor;
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any[]) {

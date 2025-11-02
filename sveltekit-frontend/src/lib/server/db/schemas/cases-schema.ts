@@ -20,12 +20,12 @@ export const cases = pgTable(
     title: text('title').notNull(),
     description: text('description'),
     status: text('status', {
-      enum: ['active', 'closed', 'pending', 'archived', 'investigation'],
+      enum: ['active', 'closed', 'pending', 'archived', 'investigation']
     })
       .notNull()
       .default('active'),
     priority: text('priority', {
-      enum: ['low', 'medium', 'high', 'urgent', 'critical'],
+      enum: ['low', 'medium', 'high', 'urgent', 'critical']
     })
       .notNull()
       .default('medium'),
@@ -46,7 +46,7 @@ export const cases = pgTable(
     // Detective mode and analysis
     detectiveMode: boolean('detective_mode').notNull().default(false),
     analysisDepth: text('analysis_depth', {
-      enum: ['basic', 'standard', 'comprehensive', 'forensic'],
+      enum: ['basic', 'standard', 'comprehensive', 'forensic']
     })
       .notNull()
       .default('standard'),
@@ -66,7 +66,7 @@ export const cases = pgTable(
     // Audit fields
     createdBy: uuid('created_by'),
     modifiedBy: uuid('modified_by'),
-    version: integer('version').notNull().default(1),
+    version: integer('version').notNull().default(1)
   },
   table => ({
     caseNumberIdx: uniqueIndex('cases_case_number_idx').on(table.caseNumber),
@@ -74,7 +74,7 @@ export const cases = pgTable(
     priorityIdx: index('cases_priority_idx').on(table.priority),
     detectiveModeIdx: index('cases_detective_mode_idx').on(table.detectiveMode),
     dateCreatedIdx: index('cases_date_created_idx').on(table.dateCreated),
-    assignedToIdx: index('cases_assigned_to_idx').on(table.assignedTo),
+    assignedToIdx: index('cases_assigned_to_idx').on(table.assignedTo)
   })
 );
 // Evidence Management Tables
@@ -105,7 +105,7 @@ export const evidence = pgTable(
         'financial',
         'forensic',
         'other',
-      ],
+      ]
     }).notNull(),
     // File and storage information
     fileName: text('file_name'),
@@ -136,7 +136,7 @@ export const evidence = pgTable(
     mentionedEntities: jsonb('mentioned_entities').default(sql`'[]'::jsonb`),
     // Classification and tags
     confidentialityLevel: text('confidentiality_level', {
-      enum: ['public', 'confidential', 'restricted', 'top_secret'],
+      enum: ['public', 'confidential', 'restricted', 'top_secret']
     })
       .notNull()
       .default('public'),
@@ -154,7 +154,7 @@ export const evidence = pgTable(
     archived: boolean('archived').notNull().default(false),
     // Audit fields
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by')
   },
   table => {
     const idxs = {
@@ -164,7 +164,7 @@ export const evidence = pgTable(
       analyzedIdx: index('evidence_analyzed_idx').on(table.analyzed),
       dateCreatedIdx: index('evidence_date_created_idx').on(table.dateCreated),
       confidentialityIdx: index('evidence_confidentiality_idx').on(table.confidentialityLevel),
-      checksumIdx: index('evidence_checksum_idx').on(table.checksum),
+      checksumIdx: index('evidence_checksum_idx').on(table.checksum)
     };
     return idxs;
   }
@@ -191,7 +191,7 @@ export const caseTimeline = pgTable(
         'note_added',
         'assignment_changed',
         'custom_event',
-      ],
+      ]
     }).notNull(),
     title: text('title').notNull(),
     description: text('description'),
@@ -202,7 +202,7 @@ export const caseTimeline = pgTable(
     // Event metadata
     eventData: jsonb('event_data').default(sql`'{}'::jsonb`),
     importance: text('importance', {
-      enum: ['low', 'medium', 'high', 'critical'],
+      enum: ['low', 'medium', 'high', 'critical']
     })
       .notNull()
       .default('medium'),
@@ -211,13 +211,13 @@ export const caseTimeline = pgTable(
     dateCreated: timestamp('date_created').notNull().defaultNow(),
     // Audit
     createdBy: uuid('created_by'),
-    automated: boolean('automated').notNull().default(false),
+    automated: boolean('automated').notNull().default(false)
   },
   table => ({
     caseIdIdx: index('timeline_case_id_idx').on(table.caseId),
     eventDateIdx: index('timeline_event_date_idx').on(table.eventDate),
     eventTypeIdx: index('timeline_event_type_idx').on(table.eventType),
-    importanceIdx: index('timeline_importance_idx').on(table.importance),
+    importanceIdx: index('timeline_importance_idx').on(table.importance)
   })
 );
 // Citations and References
@@ -241,7 +241,7 @@ export const citations = pgTable(
         'news_article',
         'academic_paper',
         'other',
-      ],
+      ]
     }).notNull(),
     title: text('title').notNull(),
     author: text('author'),
@@ -257,7 +257,7 @@ export const citations = pgTable(
     // Relationship to case
     relevanceScore: integer('relevance_score').default(5),
     citationPurpose: text('citation_purpose', {
-      enum: ['support', 'distinguish', 'authority', 'background', 'counter_argument'],
+      enum: ['support', 'distinguish', 'authority', 'background', 'counter_argument']
     })
       .notNull()
       .default('support'),
@@ -278,14 +278,14 @@ export const citations = pgTable(
       .default(sql`ARRAY[]::text[]`),
     // Audit
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by')
   },
   table => ({
     caseIdIdx: index('citations_case_id_idx').on(table.caseId),
     citationTypeIdx: index('citations_type_idx').on(table.citationType),
     relevanceIdx: index('citations_relevance_idx').on(table.relevanceScore),
     verifiedIdx: index('citations_verified_idx').on(table.verified),
-    publicationDateIdx: index('citations_pub_date_idx').on(table.publicationDate),
+    publicationDateIdx: index('citations_pub_date_idx').on(table.publicationDate)
   })
 );
 // Case Notes and Detective Analysis
@@ -309,7 +309,7 @@ export const caseNotes = pgTable(
         'meeting_notes',
         'detective_insight',
         'pattern_analysis',
-      ],
+      ]
     })
       .notNull()
       .default('general'),
@@ -329,13 +329,13 @@ export const caseNotes = pgTable(
     // Organization
     category: text('category'),
     priority: text('priority', {
-      enum: ['low', 'medium', 'high', 'urgent'],
+      enum: ['low', 'medium', 'high', 'urgent']
     })
       .notNull()
       .default('medium'),
     // Status and workflow
     status: text('status', {
-      enum: ['draft', 'review', 'approved', 'archived'],
+      enum: ['draft', 'review', 'approved', 'archived']
     })
       .notNull()
       .default('draft'),
@@ -353,14 +353,14 @@ export const caseNotes = pgTable(
       .default(sql`ARRAY[]::uuid[]`),
     // Audit
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by')
   },
   table => ({
     caseIdIdx: index('notes_case_id_idx').on(table.caseId),
     noteTypeIdx: index('notes_type_idx').on(table.noteType),
     statusIdx: index('notes_status_idx').on(table.status),
     priorityIdx: index('notes_priority_idx').on(table.priority),
-    dateCreatedIdx: index('notes_date_created_idx').on(table.dateCreated),
+    dateCreatedIdx: index('notes_date_created_idx').on(table.dateCreated)
   })
 );
 // Define relationships between tables
@@ -368,36 +368,36 @@ export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
   timeline: many(caseTimeline),
   citations: many(citations),
-  notes: many(caseNotes),
+  notes: many(caseNotes)
 }));
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
-  timelineEvents: many(caseTimeline),
+  timelineEvents: many(caseTimeline)
 }));
 export const timelineRelations = relations(caseTimeline, ({ one }) => ({
   case: one(cases, {
     fields: [caseTimeline.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   evidence: one(evidence, {
     fields: [caseTimeline.evidenceId],
-    references: [evidence.id],
-  }),
+    references: [evidence.id]
+  })
 }));
 export const citationsRelations = relations(citations, ({ one }) => ({
   case: one(cases, {
     fields: [citations.caseId],
-    references: [cases.id],
-  }),
+    references: [cases.id]
+  })
 }));
 export const notesRelations = relations(caseNotes, ({ one }) => ({
   case: one(cases, {
     fields: [caseNotes.caseId],
-    references: [cases.id],
-  }),
+    references: [cases.id]
+  })
 }));
 // Export all types for use in application
 export type Case = typeof cases.$inferSelect;

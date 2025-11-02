@@ -216,7 +216,7 @@ import type { Case } from '$lib/types';
             <button
               type="button"
               class="nier-modal-overlay fixed inset-0 bg-black/50 flex items-center justify-center z-40"
-              transition:fade={{ duration: 200 }}
+              transitionfade={{ duration: 200 }}
               onclick={closeModal}
               onkeydown={handleOverlayKeydown}
               aria-label="Close dialog"
@@ -224,7 +224,7 @@ import type { Case } from '$lib/types';
 
             <div
               class="nier-modal z-50 max-w-lg w-full bg-white dark:bg-nier-black rounded-lg p-6 shadow-lg mx-4"
-              transition:fly={{ y: 8, duration: 200 }}
+              transitionfly={{ y: 8, duration: 200 }}
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-title"

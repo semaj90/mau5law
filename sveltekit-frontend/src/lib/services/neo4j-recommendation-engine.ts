@@ -19,7 +19,7 @@ export class Neo4jRecommendationEngine {
     // ...existing method logic...
   }
 
-  async getRecommendations(query: { userId: string; context: string; type: string; useAI: boolean; limit: number; }): Promise<Recommendation[]> {
+  async getRecommendations(query: { userId: string; context: string; type: string; useAI: boolean;, limit: number; }): Promise<Recommendation[]> {
     console.log('Generating mock recommendations for:', query.context);
     // Mock implementation for demonstration
     return [
@@ -28,14 +28,14 @@ export class Neo4jRecommendationEngine {
         description: 'Identified three highly relevant precedents based on your query.',
         score: 0.92,
         confidence: 0.95,
-        aiGenerated: true,
+        aiGenerated: true
       },
       {
         title: 'Potential Legal Arguments',
         description: 'Suggested two novel legal arguments by cross-referencing with recent rulings.',
         score: 0.88,
         confidence: 0.90,
-        aiGenerated: true,
+        aiGenerated: true
       },
     ];
   }

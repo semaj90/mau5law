@@ -2,9 +2,7 @@ import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 import * as crypto from "crypto";
 // JWT Payload type definition
-export interface JWTPayload {
-  userId: string;
-  exp: number;
+export interface JWTPayload { userId: string;, exp: number;
   iat?: number;
   [key: string]: any;
 }
@@ -27,7 +25,7 @@ export async function hashPassword(password: string): Promise<string> {
  */
 export async function verifyPassword(
   password: string;
-  hashed: string
+ , hashed: string
 ): Promise<boolean> {
   return bcrypt.compare(password, hashed);
 }

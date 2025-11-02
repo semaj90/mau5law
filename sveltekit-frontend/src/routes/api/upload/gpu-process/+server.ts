@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       const r = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: forward as unknown as BodyInit,
+        body: forward as unknown as BodyInit
       }).catch(() => null);
 
       if (!r || !r.ok) {
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       uploadResult = {
         filename: asString(jsonBody.filename) || 'inline',
         content: asString(jsonBody.content) || '',
-        size: asNumber(jsonBody.size),
+        size: asNumber(jsonBody.size)
       };
     } else {
       return json({ success: false, error: 'No file or metadata provided' }, { status: 400 });
@@ -88,31 +88,28 @@ export const POST: RequestHandler = async ({ request }) => {
     let gpuProcessingResult: any = null;
     if (ENABLE_GPU && enable_gpu) {
       try {
-        const gpuReq = {
-          document: {
-            id: uploadResult?.id,
+        const gpuReq = { document: {, id: uploadResult?.id,
             filename: uploadResult?.filename,
-            size: uploadResult?.size,
+            size: uploadResult?.size
           },
           options: {
             use_tensor_cores:
               asBoolean(jsonBody.use_tensor_cores) === true || formData?.get('use_tensor_cores') === 'true',
             quantization: asString(jsonBody.quantization) ?? String(formData?.get('quantization') || '4bit'),
             negative_latent_space:
-              asBoolean(jsonBody.negative_latent_space) === true || formData?.get('negative_latent_space') === 'true',
-          },
+              asBoolean(jsonBody.negative_latent_space) === true || formData?.get('negative_latent_space') === 'true` }
         };
 
         const gpuResp = await fetch(`${CUDA_SERVICE_URL}/cuda/compute`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(gpuReq),
+          body: JSON.stringify(gpuReq)
         }).catch(() => null);
 
         if (!gpuResp || !gpuResp.ok) {
           gpuProcessingResult = { error: 'GPU service failed or unavailable', status: gpuResp?.status };
         } else {
-          gpuProcessingResult = await gpuResp.json().catch(() => ({ info: 'no-json' }));
+          gpuProcessingResult = await gpuResp.json().catch(() => ({ info: `no-json` }));
         }
       } catch (err) {
         gpuProcessingResult = { error: String(err) };
@@ -133,7 +130,7 @@ export const GET: RequestHandler = async () => {
     const cudaHealth = await fetch(`${CUDA_SERVICE_URL}/health`)
       .then(r => r.ok)
       .catch(() => false);
-    return json({ success: true, health: { upload: uploadHealth, cuda: cudaHealth, gpuEnabled: ENABLE_GPU } });
+    return json({ success: true, health: {, upload: uploadHealth, cuda: cudaHealth, gpuEnabled: ENABLE_GPU } });
   } catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });
   }

@@ -49,7 +49,7 @@
   on:drop|preventDefault={handleDrop}
   on:dragenter|preventDefault={handleDragEnter}
   on:dragover|preventDefault={() => (dragActive = true)}
-  on:dragleave={() => (dragActive = false)}
+  ondragleave={() => (dragActive = false)}
   onclick={() => fileInput?.click()}
   onkeydown={handleKeyDown}
   tabindex="0"

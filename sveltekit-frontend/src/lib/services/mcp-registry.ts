@@ -6,18 +6,14 @@ import path from 'path';
 import Redis from 'ioredis';
 import { performance } from 'node:perf_hooks';
 
-export type McpServerRecord = {
-  name: string;
-  description: string;
+export type McpServerRecord = { name: string;, description: string;
   region?: string;
   lastUpdated?: string;
-  endpoints: Array<{ id: string; url: string; protocol: string }>;
+  endpoints: Array<{ id: string; url: string;, protocol: string }>;
   capabilities: string[];
-  cores: Array<{ id: string; role: string; status: string; host?: string; capacity?: number }>;
+  cores: Array<{ id: string; role: string;, status: string; host?: string; capacity?: number }>;
   metadata?: Record<string, unknown>;
-  health?: {
-    ok: boolean;
-    latency: number | null;
+  health?: { ok: boolean;, latency: number | null;
     checkedAt?: string;
   };
 };
@@ -30,7 +26,7 @@ function getRedis(): Redis | null {
   if (!REDIS_URL) return null;
   if (!redisClient) {
     redisClient = new Redis(REDIS_URL, {
-      maxRetriesPerRequest: 2,
+      maxRetriesPerRequest: 2
     });
   }
   return redisClient;
@@ -125,9 +121,7 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Respons
   }
 }
 
-export async function pingMcpServer(server: McpServerRecord): Promise<{
-  ok: boolean;
-  latency: number | null;
+export async function pingMcpServer(server: McpServerRecord): Promise<{ ok: boolean;, latency: number | null;
   checkedAt: string;
 }> {
   const endpoint = server.endpoints?.[0]?.url;
@@ -142,13 +136,13 @@ export async function pingMcpServer(server: McpServerRecord): Promise<{
     return {
       ok: response.ok,
       latency,
-      checkedAt: new Date().toISOString(),
+      checkedAt: new Date().toISOString()
     };
   } catch {
     return {
       ok: false,
       latency: null,
-      checkedAt: new Date().toISOString(),
+      checkedAt: new Date().toISOString()
     };
   }
 }

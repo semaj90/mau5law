@@ -25,9 +25,7 @@ const generateId = (): string => {
 
 // Enhanced case service with proper typing and error handling
 // Types
-export interface Report {
-  id: string;
-  title: string;
+export interface Report { id: string;, title: string;
   content?: string;
   posX: number;
   posY: number;
@@ -42,9 +40,7 @@ export interface Report {
   metadata?: { [key: string]: any };
   reportType?: string;
 }
-export interface Evidence {
-  id: string;
-  title: string;
+export interface Evidence { id: string;, title: string;
   fileUrl: string;
   posX: number;
   posY: number;
@@ -62,9 +58,7 @@ export interface Evidence {
   name?: string;
   url?: string;
 }
-export interface POI {
-  id: string;
-  name: string;
+export interface POI { id: string;, name: string;
   posX: number;
   posY: number;
   relationship?: string;
@@ -86,9 +80,7 @@ export interface POI {
   tags?: string[];
   createdBy?: string;
 }
-export interface CaseData {
-  id: string;
-  title: string;
+export interface CaseData { id: string;, title: string;
   description?: string;
   reports: Report[];
   evidence: Evidence[];
@@ -117,7 +109,7 @@ export function createCaseService() {
 
       const opts: RequestInit = {
         ...options,
-        headers: mergedHeaders,
+        headers: mergedHeaders
       };
 
       const response = await fetch(url, opts);
@@ -176,11 +168,11 @@ export function createCaseService() {
         ...data,
         caseId: currentCaseId,
         id: generateId(),
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       const newReport = await apiCall<Report>('/api/reports', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
       reports.update(items => [...items, newReport]);
       return newReport;
@@ -201,11 +193,11 @@ export function createCaseService() {
         ...data,
         caseId: currentCaseId,
         id: generateId(),
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       const newEvidence = await apiCall<Evidence>('/api/evidence', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
       evidence.update(items => [...items, newEvidence]);
       return newEvidence;
@@ -226,11 +218,11 @@ export function createCaseService() {
         ...data,
         caseId: currentCaseId,
         id: generateId(),
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       const newPOI = await apiCall<POI>('/api/pois', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
       pois.update(items => [...items, newPOI]);
       return newPOI;
@@ -244,12 +236,12 @@ export function createCaseService() {
   async function updatePosition(
     type: 'report' | 'evidence' | 'poi',
     id: string,
-    position: { x: number; y: number }
+    position: {, x: number; y: number }
   ): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}/position`, {
         method: 'PATCH',
-        body: JSON.stringify({ posX: position.x, posY: position.y }),
+        body: JSON.stringify({, posX: position.x, posY: position.y })
       });
       // Update local state
       // Use a generic helper so the returned array preserves the original item type (Report/Evidence/POI)
@@ -269,15 +261,14 @@ export function createCaseService() {
       }
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to update ${type} position:`, msg);
+      console.error(`Failed to update ${type} position: ', msg);
     }
   }
   // Delete item
   async function deleteItem(type: 'report' | 'evidence' | 'poi', id: string): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}`, {
-        method: 'DELETE',
-      });
+        method: 'DELETE` });
       // Update local state
       // Generic filter preserving the original item type
       const filterOut = <T extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
@@ -295,7 +286,7 @@ export function createCaseService() {
       }
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to delete ${type}:`, msg);
+      console.error(`Failed to delete ${type}: ', msg);
     }
   }
   // Save all changes
@@ -309,10 +300,10 @@ export function createCaseService() {
       await apiCall(`/api/cases/${currentCaseId}/save-all`, {
         method: 'POST',
         body: JSON.stringify({
-          reports: get(reports),
+         , reports: get(reports),
           evidence: get(evidence),
-          pois: get(pois),
-        }),
+          pois: get(pois)
+        })
       });
       error.set(null);
     } catch (err: any) {
@@ -347,7 +338,7 @@ export function createCaseService() {
     updatePosition,
     deleteItem,
     saveAll,
-    reset,
+    reset
   };
 }
 // Export singleton instance

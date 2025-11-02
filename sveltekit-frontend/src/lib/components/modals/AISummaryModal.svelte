@@ -1,11 +1,12 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 
   const { onclose } = $props<{ onclose: ((event?: any) }>()
   import { aiService } from '$lib/services/aiService';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
-  import { Button } from '$lib/components/ui/button.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   // use icon components from the icons subpath (lucide-svelte exports individual files)
   import { Copy } from 'lucide-svelte/icons/copy.svelte';
   import X from 'lucide-svelte/icons/x.svelte';
@@ -45,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
 </script>
-<Dialog.Root open={isOpen} on:close={closeModal}>
+<Dialog.Root open={isOpen} onclose={closeModal}>
   <Dialog.Content class="max-w-5xl">
     <div class="dialog-header">
       <Dialog.Title>AI Summary</Dialog.Title>

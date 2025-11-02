@@ -8,9 +8,9 @@ async function getEmbedding(text: string): Promise<number[]> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'nomic-embed-text',
-      prompt: text,
-    }),
+     , model: 'nomic-embed-text',
+      prompt: text
+    })
   });
   const data = await response.json();
   return data.embedding;
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       filename: title,
       content,
       embedding: JSON.stringify(embedding),
-      user_id: parseInt(getUserId(locals)),
+      user_id: parseInt(getUserId(locals))
     })
     .returning();
   return new Response(JSON.stringify(doc[0]));

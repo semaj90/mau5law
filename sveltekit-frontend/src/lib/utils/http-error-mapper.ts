@@ -26,7 +26,7 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
       code: `server_error_${status}`,
       status,
       message: `Upstream service error (${status})`,
-      details: parsed ?? text,
+      details: parsed ?? text
     };
   }
 
@@ -39,7 +39,7 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
       code,
       status,
       message: String(msg),
-      details: parsed ?? text,
+      details: parsed ?? text
     };
   }
 
@@ -47,7 +47,7 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
     code: 'unknown_response_error',
     status,
     message: 'Unexpected response from upstream service',
-    details: parsed ?? text,
+    details: parsed ?? text
   };
 }
 

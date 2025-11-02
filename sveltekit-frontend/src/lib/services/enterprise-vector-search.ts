@@ -27,7 +27,7 @@ export interface VectorSearchQuery {
   filters?: {
     documentTypes?: string[];
     jurisdictions?: string[];
-    dateRange?: { start: Date; end: Date }
+    dateRange?: { start: Date;, end: Date }
     authors?: string[];
     tags?: string[];
     minConfidence?: number;
@@ -58,9 +58,7 @@ export interface VectorSearchResult {
   };
   similarity: number;
   relevanceScore: number;
-  rankingFactors: {
-    semanticScore: number;
-    keywordScore: number;
+  rankingFactors: { semanticScore: number;, keywordScore: number;
     metadataScore: number;
     recencyScore: number;
     authorityScore: number;
@@ -70,36 +68,26 @@ export interface VectorSearchResult {
   explanation?: string;
 }
 // Document Metadata
-export interface DocumentMetadata {
-  indexedAt: Date;
-  lastUpdated: Date;
+export interface DocumentMetadata { indexedAt: Date;, lastUpdated: Date;
   documentHash: string;
   embeddingModel: string;
   embeddingVersion: string;
   extractedEntities: LegalEntity[];
   keyTerms: string[];
   topics: string[];
-  classification: {
-    type: string;
-    confidence: number;
+  classification: { type: string;, confidence: number;
     category: string;
     subcategory?: string;
   };
-  quality: {
-    contentQuality: number;
-    completeness: number;
+  quality: { contentQuality: number;, completeness: number;
     accuracy: number;
   };
-  relationships: {
-    citedDocuments: string[];
-    citingDocuments: string[];
+  relationships: { citedDocuments: string[];, citingDocuments: string[];
     relatedDocuments: string[];
   };
 }
 // Document Snippet
-export interface DocumentSnippet {
-  text: string;
-  startOffset: number;
+export interface DocumentSnippet { text: string;, startOffset: number;
   endOffset: number;
   relevanceScore: number;
   highlightedText: string;
@@ -115,28 +103,20 @@ export interface SearchAnalytics {
   cacheHit: boolean;
   indexesUsed: string[];
   queryPlan?: string;
-  relevanceFeedback?: {
-    clickedResults: number[];
-    dwell_times: number[];
+  relevanceFeedback?: { clickedResults: number[];, dwell_times: number[];
     userSatisfaction?: number;
   };
 }
 // Index Statistics
-export interface IndexStatistics {
-  totalDocuments: number;
-  totalEmbeddings: number;
+export interface IndexStatistics { totalDocuments: number;, totalEmbeddings: number;
   indexSize: number; // bytes
   avgEmbeddingDimensions: number;
   lastIndexUpdate: Date;
   indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';
-  performanceMetrics: {
-    avgQueryTime: number;
-    cacheHitRate: number;
+  performanceMetrics: { avgQueryTime: number;, cacheHitRate: number;
     indexUtilization: number;
   };
-  storageBreakdown: {
-    embeddings: number;
-    metadata: number;
+  storageBreakdown: { embeddings: number;, metadata: number;
     fullText: number;
     indexes: number;
   };
@@ -144,7 +124,7 @@ export interface IndexStatistics {
 export class EnterpriseVectorSearchService {
   private embeddingModel: string;
   private _vectorConfig: typeof drizzleVectorConfig; // renamed to avoid unused var lint
-  private searchCache: Map<string, { results: VectorSearchResult[]; timestamp: number }> = new Map();
+  private searchCache: Map<string, { results: VectorSearchResult[];, timestamp: number }> = new Map();
   private analytics: SearchAnalytics[] = [];
   private indexStats: IndexStatistics;
   constructor() {
@@ -176,11 +156,11 @@ export class EnterpriseVectorSearchService {
   /**
    * Perform hybrid vector + keyword search
    */
-  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number; processingTime: number }> {
+  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number;, processingTime: number }> {
     // use slice instead of deprecated substr
     const queryId = `search_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const startTime = Date.now();
-    console.log(`🔍 Executing hybrid search: "${query.text}" (Query ID: ${queryId})`);
+    console.log(`🔍 Executing hybrid search: "${query.text}" (Query, ID: ${queryId})`);
     try {
       // 1. Check cache first
       const cacheKey = this.generateCacheKey(query);
@@ -262,7 +242,7 @@ export class EnterpriseVectorSearchService {
   /**
    * Index a single document with optimized embedding generation
    */
-  async indexDocument(document: LegalDocument): Promise<{ success: boolean; documentId: string; processingTime: number; metadata: DocumentMetadata }> {
+  async indexDocument(document: LegalDocument): Promise<{ success: boolean; documentId: string; processingTime: number;, metadata: DocumentMetadata }> {
     console.log(`📥 Indexing document: ${document.id}`);
     const startTime = Date.now();
     try {
@@ -336,7 +316,7 @@ export class EnterpriseVectorSearchService {
       skipDuplicates = true,
       updateExisting = false
     } = options;
-    console.log(`📦 Starting batch indexing: ${documents.length} documents (batch size: ${batchSize})`);
+    console.log(`📦 Starting batch indexing: ${documents.length} documents (batch, size: ${batchSize})`);
     const startTime = Date.now();
     const results: Array<any> = [];
     let successful = 0;
@@ -367,7 +347,7 @@ export class EnterpriseVectorSearchService {
         const batchResults = await Promise.allSettled(batchPromises);
         batchResults.forEach((r: PromiseSettledResult<any>) => {
           if (r.status === 'fulfilled') {
-            const value = r.value as { documentId: string; success: boolean; skipped?: boolean; error?: string };
+            const value = r.value as { documentId: string;, success: boolean; skipped?: boolean; error?: string };
             if (value.success) successful++;
             else failed++;
             results.push(value);
@@ -455,9 +435,7 @@ export class EnterpriseVectorSearchService {
   /**
    * Get comprehensive search analytics and performance metrics
    */
-  getAnalytics(timeRange?: { start: Date; end: Date }): {
-    queryStats: {
-      totalQueries: number;
+  getAnalytics(timeRange?: { start: Date;, end: Date }): { queryStats: {, totalQueries: number;
       avgExecutionTime: number;
       cacheHitRate: number;
       popularQueries: Array<any>;
@@ -538,8 +516,7 @@ export class EnterpriseVectorSearchService {
       const tempDoc: LegalDocument = {
         id: 'temp_query',
         content: query,
-        type: 'query'
-      };
+        type: 'query' };
       const analysis = await enhancedAIAnalysis.analyzeDocument(tempDoc);
       return analysis.embedding;
     } catch (error) {
@@ -556,17 +533,14 @@ export class EnterpriseVectorSearchService {
     const mockResults: VectorSearchResult[] = [];
     for (let i = 0; i < Math.min(limit, 15); i++) {
       const similarity = Math.random() * (0.95 - threshold) + threshold;
-      mockResults.push({
-        document: {
-          id: `doc_${i}`,
+      mockResults.push({ document: {, id: `doc_${i}`,
           content: `Sample legal document content ${i}...`,
           title: `Legal Document ${i}`,
-          type: 'contract'
-        },
+          type: 'contract' },
         similarity,
         relevanceScore: similarity,
         rankingFactors: {
-          semanticScore: similarity,
+         , semanticScore: similarity,
           keywordScore: 0,
           metadataScore: 0,
           recencyScore: 0,
@@ -581,13 +555,10 @@ export class EnterpriseVectorSearchService {
     // Simulated keyword search implementation
     const keywords = queryText.toLowerCase().split(/\s+/);
     // Mock keyword search results
-    return [{
-      document: {
-        id: 'keyword_match_1',
-        content: `Document containing keywords: ${keywords.join(', ')}`,
+    return [{ document: {, id: 'keyword_match_1',
+        content: 'Document containing; keywords: ${keywords.join(', ')}`,
         title: 'Keyword Matched Document',
-        type: 'statute'
-      },
+        type: 'statute' },
       similarity: 0,
       relevanceScore: 0.7,
       rankingFactors: {
@@ -682,8 +653,7 @@ export class EnterpriseVectorSearchService {
         endOffset: content.indexOf(sentence) + sentence.length,
         relevanceScore: 0.8,
         highlightedText: this.highlightQuery(sentence, query),
-        context: `Snippet ${index + 1}`
-      }));
+        context: `Snippet ${index + 1}' }));
       return result;
     });
   }
@@ -705,7 +675,7 @@ export class EnterpriseVectorSearchService {
       options: { ...query.options, useCache: undefined }
     })}`;
   }
-  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string; metadata: DocumentMetadata }): Promise<void> {
+  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string;, metadata: DocumentMetadata }): Promise<void> {
     // In production, this would store in PostgreSQL with pgvector
     console.log(`💾 Storing vector for document ${doc.id}`);
     // Simulated storage delay

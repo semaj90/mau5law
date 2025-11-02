@@ -32,17 +32,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const safeCacheKey = typeof cacheKey === 'string' ? cacheKey : '';
     const safeCompressionRatio = Number(shader.metrics?.compressionRatio ?? 1);
     const safeDecodingTime = Number(shader.metrics?.decodingTime ?? 0);
-    const responseData = {
-      shader: {
-        sourceCode: shader.sourceCode,
+    const responseData = { shader: {, sourceCode: shader.sourceCode,
         metadata: shader.metadata,
-        metrics: shader.metrics,
+        metrics: shader.metrics
       },
       cacheKey: safeCacheKey,
       timestamp: Date.now(),
       compressionSavings: `${((1 - 1 / safeCompressionRatio) * 100).toFixed(1)}%`,
-      decodingTime: `${safeDecodingTime.toFixed(2)}ms`,
-    };
+      decodingTime: `${safeDecodingTime.toFixed(2)}ms` };
     if (preferredFormat === 'json') {
       return json(responseData);
     }
@@ -57,8 +54,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'content-type': contentType,
         'x-encoding-format': format,
         'x-compression-ratio': String(metrics?.compressionRatio ?? ''),
-        'x-encode-time': `${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms`,
-      },
+        'x-encode-time': `${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms' }
     });
   } catch (error: any) {
     console.error('Binary shader cache GET error:', getErrorMessage(error));
@@ -94,20 +90,20 @@ export const POST: RequestHandler = async ({ request }) => {
     const workflowType = typeof payload.workflowType === 'string' ? payload.workflowType : undefined;
 
     if (!sourceCode || compiledBinaryRaw === undefined) {
-      return json({ error: 'Missing required fields: sourceCode, compiledBinary' }, { status: 400 });
+      return json({ error: 'Missing required, fields: sourceCode, compiledBinary' }, { status: 400 });
     }
 
     // Convert to ArrayBuffer using helper
     const binaryData = await toArrayBuffer(compiledBinaryRaw);
     if (!binaryData) {
-      return json({ error: 'Unsupported compiledBinary format' }, { status: 400 });
+      return json({ error: `Unsupported compiledBinary format` }, { status: 400 });
     }
 
     // Store shader with binary optimization
     const entry = await safeStoreShader({
       sourceCode,
       compiledBinary: binaryData,
-      metadata: metadata || {},
+      metadata: metadata || {}
     });
 
     // Get workflow optimization recommendations
@@ -126,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         shaderType: String(entry.shaderType ?? 'unknown'),
         encodingFormat: String(entry.encodingFormat ?? 'unknown'),
         compressionRatio: Number(entry.compressionRatio ?? 1),
-        memoryFootprint: Number(entry.memoryFootprint ?? 0),
+        memoryFootprint: Number(entry.memoryFootprint ?? 0)
       },
       optimizationRecommendations,
       metrics: {
@@ -137,8 +133,8 @@ export const POST: RequestHandler = async ({ request }) => {
             ? 'excellent'
             : Number(entry.compressionRatio ?? 1) > 1.2
               ? 'good'
-              : 'moderate',
-      },
+              : 'moderate'
+      }
     };
     return json(response);
   } catch (error: any) {
@@ -151,7 +147,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   try {
     const { shaders, workflowType } = await request.json();
     if (!Array.isArray(shaders) || shaders.length === 0) {
-      return json({ error: 'Invalid or empty shaders array' }, { status: 400 });
+      return json({ error: `Invalid or empty shaders array` }, { status: 400 });
     }
     // Process shaders in batch for better performance
     const startTime = performance.now();
@@ -175,10 +171,8 @@ export const PUT: RequestHandler = async ({ request }) => {
         shaderType: asString(s['shaderType'], 'unknown'),
         encodingFormat: asString(s['encodingFormat'], 'json'),
         compressionRatio: asNumber(s['compressionRatio'], 1),
-        memoryFootprint: asNumber(s['memoryFootprint'] ?? s['size'], 0),
-      } as {
-        cacheKey: string;
-        shaderType: string;
+        memoryFootprint: asNumber(s['memoryFootprint'] ?? s['size'], 0)
+      } as { cacheKey: string;, shaderType: string;
         encodingFormat: string;
         compressionRatio: number;
         memoryFootprint: number;
@@ -196,7 +190,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         cacheKey: s.cacheKey,
         shaderType: s.shaderType,
         encodingFormat: s.encodingFormat,
-        compressionRatio: s.compressionRatio,
+        compressionRatio: s.compressionRatio
       })),
       batchMetrics: {
         averageCompressionRatio: results.totalCompressionRatio / Math.max(1, mappedShaders.length),
@@ -207,8 +201,8 @@ export const PUT: RequestHandler = async ({ request }) => {
           const safeCr = cr || 1;
           return total + mf * (1 - 1 / safeCr);
         }, 0),
-        recommendedFormat: String(workflowOptimization?.recommendedEncodingFormat ?? 'cbor'),
-      },
+        recommendedFormat: String(workflowOptimization?.recommendedEncodingFormat ?? 'cbor')
+      }
     };
     return json(response);
   } catch (error: any) {
@@ -226,7 +220,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     // Retrieve shader optimized for WebGPU (use safe helper)
     const webgpuShader = await safeRetrieveForWebGPU(cacheKey);
     if (!webgpuShader) {
-      return json({ error: 'Shader not found' }, { status: 404 });
+      return json({ error: `Shader not found` }, { status: 404 });
     }
 
     // Normalize binaryAssets to ArrayBuffer[]
@@ -250,7 +244,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         createShaderModule: true,
         binaryData: assets.length,
         estimatedLoadTime: `${(compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
-      },
+      }
     });
   } catch (error: any) {
     console.error('WebGPU shader cache error:', getErrorMessage(error));
@@ -265,7 +259,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Binary encoding metrics cleared',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Metrics clear error:', getErrorMessage(error));
@@ -280,8 +274,7 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Accept, X-Encoding-Format',
-      'Access-Control-Expose-Headers': 'X-Encoding-Format, X-Compression-Ratio, X-Encode-Time',
-    },
+      'Access-Control-Expose-Headers': `X-Encoding-Format, X-Compression-Ratio, X-Encode-Time` }
   });
 };
 
@@ -407,9 +400,7 @@ type ShaderEntry = {
   [id: string]: any;
 };
 
-type NormalizedEntry = {
-  id: string | null;
-  cacheKey: string | null;
+type NormalizedEntry = { id: string | null;, cacheKey: string | null;
   shaderType: string;
   encodingFormat: string;
   compressionRatio: number;
@@ -417,10 +408,7 @@ type NormalizedEntry = {
   _raw: ShaderRaw;
 };
 
-type BatchEncodeResult = {
-  encodedShaders: Array<{
-    cacheKey: string;
-    shaderType: string;
+type BatchEncodeResult = { encodedShaders: Array<{; cacheKey: string;, shaderType: string;
     encodingFormat: string;
     compressionRatio: number;
     memoryFootprint: number;
@@ -443,7 +431,7 @@ function getMethod(obj: Record<string, unknown> | undefined, candidates: string[
   return null;
 }
 
-// New helpers: safe retrieval wrappers to avoid testing: 'void' and support multiple API shapes
+// New helpers: safe retrieval wrappers to avoid; testing: 'void' and support multiple API shapes
 async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null> {
   const candidates = [
     'retrieveShader',
@@ -543,7 +531,7 @@ function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
     encodingFormat: asString(encodingFormat, 'unknown'),
     compressionRatio: asNumber(compressionRatio, 1),
     memoryFootprint: asNumber(memoryFootprint, 0),
-    _raw: entry as ShaderRaw,
+    _raw: entry as ShaderRaw
   };
 }
 
@@ -598,11 +586,11 @@ async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult
         shaderType: typeof r['shaderType'] === 'string' ? (r['shaderType'] as string) : 'unknown',
         encodingFormat: 'json',
         compressionRatio: 1,
-        memoryFootprint: typeof r['size'] === 'number' ? (r['size'] as number) : 0,
+        memoryFootprint: typeof r['size'] === 'number' ? (r['size'] as number) : 0
       };
     }),
     totalCompressionRatio: 1,
-    totalEncodingTime: 0,
+    totalEncodingTime: 0
   };
 }
 

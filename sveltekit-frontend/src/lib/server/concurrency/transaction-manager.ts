@@ -15,9 +15,7 @@ export interface TransactionOptions {
   sessionId?: string;
   metadata?: Record<string, unknown>;
 }
-export interface TransactionContext {
-  transactionId: string;
-  startTime: Date;
+export interface TransactionContext { transactionId: string;, startTime: Date;
   userId?: string;
   sessionId?: string;
   // Strongly typed lock records to avoid `any`
@@ -25,16 +23,14 @@ export interface TransactionContext {
   metadata?: Record<string, unknown>;
 }
 // Typed representation of locks tracked by the transaction manager
-export type LockRecord = {
-  entityType: LockType;
-  entityId: string;
+export type LockRecord = { entityType: LockType;, entityId: string;
   mode: LockMode;
 };
 
 // Health check return type (avoid `any`)
 export interface HealthCheckResult {
   activeTransactions: number;
-  oldestTransaction?: { id: string; age: number };
+  oldestTransaction?: { id: string;, age: number };
   locksHeld: number;
 }
 export class TransactionManager {
@@ -51,7 +47,7 @@ export class TransactionManager {
       userId,
       sessionId,
       locks: [],
-      metadata,
+      metadata
     };
     this.activeTransactions.set(transactionId, context);
     console.log(`📝 Starting transaction ${transactionId} with ${isolationLevel} isolation`);
@@ -97,7 +93,7 @@ export class TransactionManager {
       const lock = await advisoryLocks.acquireLock(entityType, entityId, mode, {
         userId: ctx.userId,
         sessionId: ctx.sessionId,
-        timeout: options.timeout,
+        timeout: options.timeout
       });
       if (!lock) {
         throw new Error(`Failed to acquire ${mode} lock for ${entityType} ${entityId}`);
@@ -111,7 +107,7 @@ export class TransactionManager {
         try {
           await advisoryLocks.releaseLock(entityType, entityId, mode);
         } catch (err) {
-          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}:`, err);
+          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);
         }
       }
     }, options);
@@ -131,8 +127,8 @@ export class TransactionManager {
       metadata: {
         ...options.metadata,
         operationType: 'chain_of_custody',
-        evidenceId,
-      },
+        evidenceId
+      }
     });
   }
   /**
@@ -150,8 +146,8 @@ export class TransactionManager {
       metadata: {
         ...options.metadata,
         operationType: 'case_modification',
-        caseId,
-      },
+        caseId
+      }
     });
   }
   /**
@@ -172,8 +168,8 @@ export class TransactionManager {
         ...options.metadata,
         operationType: 'document_analysis',
         documentId,
-        readOnly: isReadOnly,
-      },
+        readOnly: isReadOnly
+      }
     });
   }
   /**
@@ -192,15 +188,15 @@ export class TransactionManager {
       metadata: {
         ...options.metadata,
         operationType: 'vector_index_update',
-        indexName,
-      },
+        indexName
+      }
     });
   }
   /**
    * Batch operation with multiple entity locks
    */
   async withMultiEntityTransaction<T>(
-    entities: Array<{ type: LockType; id: string; mode?: LockMode }>,
+    entities: Array<{, type: LockType; id: string; mode?: LockMode }>,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
@@ -212,7 +208,7 @@ export class TransactionManager {
         const lock = await advisoryLocks.acquireLock(entity.type, entity.id, entity.mode || LOCK_MODES.EXCLUSIVE, {
           userId: ctx.userId,
           sessionId: ctx.sessionId,
-          timeout: options.timeout,
+          timeout: options.timeout
         });
         if (!lock) {
           throw new Error(`Failed to acquire lock for ${entity.type} ${entity.id}`);
@@ -220,7 +216,7 @@ export class TransactionManager {
         ctx.locks.push({
           entityType: entity.type,
           entityId: entity.id,
-          mode: entity.mode || LOCK_MODES.EXCLUSIVE,
+          mode: entity.mode || LOCK_MODES.EXCLUSIVE
         });
       }
       try {
@@ -280,7 +276,7 @@ export class TransactionManager {
       try {
         await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
       } catch (error) {
-        console.warn(`Warning: Failed to release lock during cleanup:`, error);
+        console.warn(`Warning: Failed to release lock during; cleanup:`, error);
       }
     }
     // Remove from active transactions
@@ -292,7 +288,7 @@ export class TransactionManager {
   async healthCheck(): Promise<HealthCheckResult> {
     const transactions = Array.from(this.activeTransactions.values());
     const now = Date.now();
-    let oldestTransaction: { id: string; age: number } | undefined;
+    let oldestTransaction: { id: string;, age: number } | undefined;
     let totalLocks = 0;
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();
@@ -304,7 +300,7 @@ export class TransactionManager {
     return {
       activeTransactions: transactions.length,
       oldestTransaction,
-      locksHeld: totalLocks,
+      locksHeld: totalLocks
     };
   }
 }

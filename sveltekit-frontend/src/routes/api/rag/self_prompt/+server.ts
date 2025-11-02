@@ -5,9 +5,7 @@ import { getRedisService } from '$lib/server/redis/redis-service';
 import { db } from '$lib/server/database';
 import { getEmbedding } from '$lib/server/services/embedding-service';
 import postgres from 'postgres';
-interface Passage {
-  id: string;
-  text: string;
+interface Passage { id: string;, text: string;
   pagerank?: number;
 }
 const sql = (db as any).session?.client as ReturnType<typeof postgres> | undefined;
@@ -82,14 +80,14 @@ function composePrompt(
 export const POST: RequestHandler = async ({ request }) => {
   const t0 = performance.now();
   const { query, k = 5, neighborK = 12, useCache = true } = await request.json();
-  if (!query) return new Response(JSON.stringify({ error: 'query required' }), { status: 400 });
+  if (!query) return new Response(JSON.stringify({ error: `query required` }), { status: 400 });
   const redis = getRedisService();
-  const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK}`;
+  const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK}';
   if (useCache) {
     const cached = await redis.getCache(cacheKey);
     if (cached) {
       return new Response(JSON.stringify({ ...cached, cached: true, took_ms: Math.round(performance.now() - t0) }), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
     }
   }
@@ -108,10 +106,10 @@ export const POST: RequestHandler = async ({ request }) => {
     coreIds: core.map(p => p.id),
     neighborCount: neighbors.length,
     concepts,
-    cached: false,
+    cached: false
   };
   await redis.setCache(cacheKey, payload, REDIS_TTL_SECONDS);
   return new Response(JSON.stringify({ ...payload, took_ms: Math.round(performance.now() - t0) }), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` }
   });
 };

@@ -31,8 +31,8 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
     metadata: {
       version: '1.0',
       processed: false,
-      tags: ['legal', 'document', 'test'],
-    },
+      tags: ['legal', 'document', 'test']
+    }
   };
   switch (size) {
     case 'small':
@@ -66,7 +66,7 @@ const fallbackCacheService = (() => {
     },
     getSIMD: async (k: string): Promise<unknown | null> => {
       return map.has(k) ? (map.get(k) as unknown) : null;
-    },
+    }
   };
 })();
 
@@ -76,9 +76,7 @@ type SIMDTestType = 'simd_health' | 'json_parsing_benchmark' | 'cache_performanc
 type BenchmarkResults = Record<string, unknown>;
 
 // Use commas inside type blocks to avoid parser ambiguities
-type CachePerformanceResult = {
-  data_size: number;
-  standard_cache_ms: number;
+type CachePerformanceResult = { data_size: number;, standard_cache_ms: number;
   simd_cache_ms: number | null;
   speedup_factor: number | null;
   cache_hit: boolean;
@@ -96,9 +94,7 @@ type RedisOperationResult = {
   message?: string;
 };
 
-type TestResponse = {
-  test_type: SIMDTestType | string;
-  iterations: number;
+type TestResponse = { test_type: SIMDTestType | string;, iterations: number;
   timestamp: string;
   results: Record<string, unknown>;
 };
@@ -110,15 +106,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const iterations = Number(body?.iterations ?? 100);
 
     if (!test_type || typeof test_type !== 'string') {
-      return json({ error: 'test_type required' }, { status: 400 });
+      return json({ error: `test_type required` }, { status: 400 });
     }
 
-    // use explicit TestResponse type instead of `any`
+    // use explicit TestResponse type instead of `any'
     const results: TestResponse = {
       test_type,
       iterations,
       timestamp: new Date().toISOString(),
-      results: {},
+      results: {}
     };
 
     switch (test_type) {
@@ -129,13 +125,13 @@ export const POST: RequestHandler = async ({ request }) => {
           results.results = {
             simd_available: !!health,
             health: health ?? null,
-            message: health ? 'SIMD service is operational' : 'SIMD service did not return health',
+            message: health ? 'SIMD service is operational' : 'SIMD service did not return health'
           };
         } catch (error: any) {
           results.results = {
             simd_available: false,
             error: String(error),
-            message: 'SIMD service unavailable - start with: cd go-microservice && go run simd-server.go',
+            message: 'SIMD service unavailable - start; with: cd go-microservice && go run simd-server.go'
           };
         }
         break;
@@ -152,8 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } catch (error: any) {
             benchmarkResults[size] = {
               error: String(error),
-              message: 'SIMD benchmark failed - service may be unavailable',
-            };
+              message: `SIMD benchmark failed - service may be unavailable` };
           }
         }
         results.results = benchmarkResults;
@@ -190,7 +185,7 @@ export const POST: RequestHandler = async ({ request }) => {
           standard_cache_ms: standardTime,
           simd_cache_ms: simdTime,
           speedup_factor: simdTime ? standardTime / simdTime : null,
-          cache_hit: cachedData !== null,
+          cache_hit: cachedData !== null
         };
         results.results = perfResult;
         break;
@@ -209,7 +204,7 @@ export const POST: RequestHandler = async ({ request }) => {
             operation: 'redis_json_set',
             time_ms: cacheTime,
             success: cacheResult?.success ?? true,
-            data_size: JSON.stringify(testData).length,
+            data_size: JSON.stringify(testData).length
           });
           // Test SIMD parsing (if available)
           const parseStart = performance.now();
@@ -220,13 +215,13 @@ export const POST: RequestHandler = async ({ request }) => {
             time_ms: parseTime,
             parse_time_ns: parseResult?.parse_time_ns ?? null,
             fields_parsed: parseResult?.field_count ?? null,
-            data_size: parseResult?.size ?? JSON.stringify(testData).length,
+            data_size: parseResult?.size ?? JSON.stringify(testData).length
           });
         } catch (error: any) {
           operations.push({
             operation: 'error',
             error: String(error),
-            message: 'Redis/SIMD operations failed',
+            message: 'Redis/SIMD operations failed'
           });
         }
         results.results = { operations };
@@ -234,10 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       default: return json(
-          {
-            error:
-              'Invalid test_type. Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations',
-          },
+          { error: `Invalid test_type., Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations` },
           { status: 400 }
         );
     }
@@ -262,16 +254,16 @@ export const GET: RequestHandler = async () => {
       method: 'POST',
       body: {
         test_type: 'simd_health | json_parsing_benchmark | cache_performance | redis_json_operations',
-        iterations: 100,
-      },
+        iterations: 100
+      }
     },
     go_service: {
-      start_command: 'cd go-microservice && go run simd-server.go',
+     , start_command: 'cd go-microservice && go run simd-server.go',
       endpoints: [
         'http://localhost:8080/health',
         'http://localhost:8080/simd-parse',
-        'http://localhost:8080/redis-json',
-      ],
-    },
+        'http://localhost:8080/redis-json'
+      ]
+    }
   });
 };

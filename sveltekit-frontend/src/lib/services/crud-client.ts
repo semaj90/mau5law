@@ -32,9 +32,7 @@ export interface SearchOptions extends PaginationOptions {
 }
 
 /* Entity type definitions */
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   firstName?: string;
   lastName?: string;
   name?: string;
@@ -44,9 +42,7 @@ export interface User {
   updatedAt: string | Date;
 }
 
-export interface Case {
-  id: string;
-  title: string;
+export interface Case { id: string;, title: string;
   description?: string;
   status: 'open' | 'closed' | 'pending' | 'archived';
   priority?: 'low' | 'medium' | 'high' | 'critical';
@@ -56,9 +52,7 @@ export interface Case {
   updatedAt: string | Date;
 }
 
-export interface Evidence {
-  id: string;
-  title: string;
+export interface Evidence { id: string;, title: string;
   description?: string;
   evidenceType: string;
   caseId?: string;
@@ -69,9 +63,7 @@ export interface Evidence {
   updatedAt: string | Date;
 }
 
-export interface LegalDocument {
-  id: string;
-  title: string;
+export interface LegalDocument { id: string;, title: string;
   documentType: string;
   content?: string;
   citation?: string;
@@ -94,9 +86,7 @@ export type CriminalHistory =
   | Record<string, unknown>
   | null;
 
-export interface Criminal {
-  id: string;
-  firstName: string;
+export interface Criminal { id: string;, firstName: string;
   lastName: string;
   aliasNames?: string[];
   dateOfBirth?: string | Date;
@@ -107,9 +97,7 @@ export interface Criminal {
   updatedAt: string | Date;
 }
 
-export interface PersonOfInterest {
-  id: string;
-  firstName: string;
+export interface PersonOfInterest { id: string;, firstName: string;
   lastName: string;
   alias?: string;
   relationship?: string;
@@ -158,8 +146,8 @@ export class CrudClient {
     const options: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     };
     if (body) {
       options.body = JSON.stringify(body);
@@ -212,7 +200,7 @@ export class CrudClient {
   async list<T extends EntityData>(entity: EntityName, options: PaginationOptions = {}): Promise<CrudResponse<T[]>> {
     const paramsObj: Record<string, string> = {
       action: 'list',
-      entity,
+      entity
     };
     if (options.page != null) paramsObj.page = String(options.page);
     if (options.limit != null) paramsObj.limit = String(options.limit);
@@ -227,7 +215,7 @@ export class CrudClient {
     const paramsObj: Record<string, string> = {
       action: options.vector ? 'vector_search' : 'search',
       entity,
-      search: options.query,
+      search: options.query
     };
     if (options.page != null) paramsObj.page = String(options.page);
     if (options.limit != null) paramsObj.limit = String(options.limit);
@@ -318,20 +306,20 @@ export class CrudClient {
       query,
       vector: true,
       similarity_threshold,
-      limit,
+      limit
     } as SearchOptions);
   }
 
   // Health check
   async healthCheck(): Promise<CrudResponse> {
     try {
-      const params = new URLSearchParams({ action: 'health' });
+      const params = new URLSearchParams({ action: `health` });
       return this.request<unknown>('GET', params);
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error ?? 'Health check failed');
       return {
         success: false,
-        error: message,
+        error: message
       };
     }
   }

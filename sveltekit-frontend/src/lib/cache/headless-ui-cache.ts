@@ -5,16 +5,12 @@
  */
 import { vectorWasm } from '../wasm/vector-wasm-wrapper.js';
 import { browser } from '$app/environment';
-export interface CacheEntry<T = any> {
-  key: string;
-  data: T;
+export interface CacheEntry<T = any> { key: string;, data: T;
   timestamp: number;
   ttl: number;
   version: string;
   embedding?: Float32Array;
-  metadata?: {
-    size: number;
-    hits: number;
+  metadata?: { size: number;, hits: number;
     lastAccess: number;
     source: 'server' | 'client' | 'hybrid';
     computeCost: number; // Relative cost to regenerate
@@ -66,9 +62,9 @@ export class HeadlessUICache {
         semantic: true,
         cost: true,
         syncWithRedis: true,
-        conflictResolution: 'server',
+        conflictResolution: 'server'
       },
-      ...config,
+      ...config
     };
     this.initialize();
   }
@@ -182,8 +178,8 @@ export class HeadlessUICache {
         hits: 0,
         lastAccess: Date.now(),
         source,
-        computeCost: this.estimateComputeCost(data),
-      },
+        computeCost: this.estimateComputeCost(data)
+      }
     };
     // Generate semantic embedding if text provided
     if (semanticText && this.config.strategy.semantic) {
@@ -285,7 +281,7 @@ export class HeadlessUICache {
       // Get server cache manifest
       const response = await fetch('/api/cache/manifest', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
       if (!response.ok) return;
       const serverManifest = await response.json();
@@ -308,7 +304,7 @@ export class HeadlessUICache {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
       if (!response.ok) return null;
       const data = await response.json();
@@ -332,8 +328,7 @@ export class HeadlessUICache {
           data: entry.data,
           ttl: entry.ttl,
           version: entry.version,
-          source: 'client',
-        }),
+          source: `client` })
       });
     } catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
@@ -453,8 +448,7 @@ export class HeadlessUICache {
       memoryEntries: this.memoryCache.size,
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
-      lastSync: this.syncTimer ? 'active' : 'inactive',
-    };
+      lastSync: this.syncTimer ? 'active' : `inactive` };
   }
   /**
    * Clear all caches

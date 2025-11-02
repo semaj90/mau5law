@@ -11,6 +11,6 @@ export const GET: RequestHandler = async ({ request }) => {
   // For now, we'll proxy via Vite config or handle in Go backend
   return new Response('WebSocket endpoint - use /ws/rag via WebSocket protocol', {
     status: 426,
-    headers: { 'Upgrade': 'Required' },
+    headers: { 'Upgrade': 'Required' }
   });
 };

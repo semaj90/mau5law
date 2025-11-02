@@ -3,6 +3,7 @@
   Tests GPU accelerated authentication, XState integration, and Context7 documentation
 -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -10,7 +11,7 @@ import type { User } from '$lib/types';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
-  import * as Card from '$lib/components/ui/card.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
   import * as Alert from '$lib/components/ui/alert.svelte';
   import * as Tabs from '$lib/components/ui/tabs.svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';

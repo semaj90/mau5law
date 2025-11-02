@@ -11,16 +11,12 @@ interface User {
   // Add other user properties as needed from your authentication system
 }
 
-interface Session {
-  id: string;
-  userId: string;
+interface Session { id: string;, userId: string;
   expiresAt: Date;
   // Add other session properties as needed
 }
 
-interface Case {
-  id: string;
-  name: string;
+interface Case { id: string;, name: string;
   description?: string;
   status?: string;
   createdAt?: string;
@@ -48,7 +44,7 @@ export const load = (async ({ locals, fetch }) => {
       id: 'dev-user-001',
       email: 'dev@localhost',
       name: 'Development Tester',
-      role: 'prosecutor',
+      role: 'prosecutor'
     };
 
     session = {
@@ -88,6 +84,6 @@ export const load = (async ({ locals, fetch }) => {
     cases,
     error,
     devMode: dev,
-    devBypassActive: devBypass,
+    devBypassActive: devBypass
   };
 }) satisfies import('./$types').PageServerLoad;

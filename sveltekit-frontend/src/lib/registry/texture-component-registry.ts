@@ -4,17 +4,13 @@
  */
 import type { MemoryBank } from '$lib/config/legal-priorities';
 }
-export interface TextureSlot {
-  slotId: string;
-  textureId: string;
+export interface TextureSlot { slotId: string;, textureId: string;
   memoryBank: MemoryBank;
   size: number; // bytes
   lastAccessed: number;
   lockCount: number; // Reference counting
 }
-export interface ComponentManifest {
-  componentName: string;
-  textureSlots: string[];
+export interface ComponentManifest { componentName: string;, textureSlots: string[];
   memoryBank: MemoryBank;
   sharingPolicy: 'exclusive' | 'shared' | 'pooled';
   updateFrequency: 'static' | 'periodic' | 'realtime';
@@ -22,17 +18,13 @@ export interface ComponentManifest {
   maxTextureSize?: number;
   estimatedUsage?: number; // bytes
 }
-export interface ComponentRegistration {
-  componentId: string;
-  manifest: ComponentManifest;
+export interface ComponentRegistration { componentId: string;, manifest: ComponentManifest;
   textureSlots: Map<string, TextureSlot>;
   isActive: boolean;
   registrationTime: number;
   lastActivity: number;
 }
-export interface MemoryBankStats {
-  bank: MemoryBank;
-  totalSize: number;
+export interface MemoryBankStats { bank: MemoryBank;, totalSize: number;
   usedSize: number;
   availableSize: number;
   componentCount: number;
@@ -40,9 +32,7 @@ export interface MemoryBankStats {
   fragmentationRatio: number;
   hitRate: number;
 }
-export interface RegistryStats {
-  totalComponents: number;
-  activeComponents: number;
+export interface RegistryStats { totalComponents: number;, activeComponents: number;
   totalTextures: number;
   memoryBanks: Record<MemoryBank, MemoryBankStats>;
   conflicts: number;
@@ -194,8 +184,7 @@ class ComponentTextureRegistry {
    */
   private canAllocateInBank(bank: MemoryBank, size: number): boolean {
     // Import memory bank configuration
-    const bankConfig = {
-      INTERNAL_RAM: { size: 1024 * 1024 },    // 1MB
+    const bankConfig = { INTERNAL_RAM: {, size: 1024 * 1024 },    // 1MB
       CHR_ROM: { size: 2 * 1024 * 1024 },     // 2MB
       PRG_ROM: { size: 4 * 1024 * 1024 },     // 4MB
       SAVE_RAM: { size: Infinity }             // Unlimited

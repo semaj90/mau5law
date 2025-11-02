@@ -8,25 +8,25 @@ import type { User } from '../types/user.js';
 import crypto from "crypto";
 // Legal Case Events - Strongly Typed
 export type LegalCaseEvent =
-  | { type: 'LOAD_CASE'; caseId: string }
-  | { type: 'CREATE_CASE'; caseData: Partial<CaseForm> }
-  | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<CaseForm> }
-  | { type: 'DELETE_CASE'; caseId: string }
-  | { type: 'ADD_EVIDENCE'; evidenceData: EvidenceData }
-  | { type: 'REMOVE_EVIDENCE'; evidenceId: string }
-  | { type: 'ADD_DOCUMENT'; documentData: DocumentData }
-  | { type: 'REMOVE_DOCUMENT'; documentId: string }
-  | { type: 'ADD_TIMELINE_EVENT'; event: Partial<TimelineEvent> }
-  | { type: 'UPDATE_TIMELINE_EVENT'; eventId: string; updates: Partial<TimelineEvent> }
-  | { type: 'START_AI_ANALYSIS'; query: string; analysisType?: AnalysisType }
+  | { type: 'LOAD_CASE';, caseId: string }
+  | { type: 'CREATE_CASE';, caseData: Partial<CaseForm> }
+  | { type: 'UPDATE_CASE'; caseId: string;, updates: Partial<CaseForm> }
+  | { type: 'DELETE_CASE';, caseId: string }
+  | { type: 'ADD_EVIDENCE';, evidenceData: EvidenceData }
+  | { type: 'REMOVE_EVIDENCE';, evidenceId: string }
+  | { type: 'ADD_DOCUMENT';, documentData: DocumentData }
+  | { type: 'REMOVE_DOCUMENT';, documentId: string }
+  | { type: 'ADD_TIMELINE_EVENT';, event: Partial<TimelineEvent> }
+  | { type: 'UPDATE_TIMELINE_EVENT'; eventId: string;, updates: Partial<TimelineEvent> }
+  | { type: 'START_AI_ANALYSIS';, query: string; analysisType?: AnalysisType }
   | { type: 'CANCEL_AI_ANALYSIS' }
-  | { type: 'ASSIGN_USER'; userId: string; role: AssignmentRole }
-  | { type: 'UNASSIGN_USER'; userId: string }
-  | { type: 'SET_PRIORITY'; priority: CaseForm['priority'] }
-  | { type: 'SET_STATUS'; status: CaseForm['status'] }
+  | { type: 'ASSIGN_USER'; userId: string;, role: AssignmentRole }
+  | { type: 'UNASSIGN_USER';, userId: string }
+  | { type: 'SET_PRIORITY';, priority: CaseForm['priority'] }
+  | { type: 'SET_STATUS';, status: CaseForm['status'] }
   | { type: 'LOAD_LEGAL_CONTEXT'; jurisdictionCode?: string }
   | { type: 'REFRESH_METRICS' }
-  | { type: 'EXPORT_CASE'; format: ExportFormat }
+  | { type: 'EXPORT_CASE';, format: ExportFormat }
   | { type: 'ARCHIVE_CASE'; reason?: string }
   | { type: 'RESTORE_CASE' }
   | { type: 'RETRY' }
@@ -86,9 +86,7 @@ export interface EvidenceData {
   custodyChain: CustodyEntry[];
   metadata: Record<string, unknown>;
 }
-export interface EvidenceItem extends EvidenceData {
-  id: string;
-  caseId: string;
+export interface EvidenceItem extends EvidenceData { id: string;, caseId: string;
   status: 'pending' | 'verified' | 'challenged' | 'excluded';
   verifiedBy?: string;
   verifiedAt?: Date;
@@ -103,9 +101,7 @@ export interface DocumentData {
   confidentiality: 'public' | 'confidential' | 'attorney_client' | 'work_product';
   tags: string[];
 }
-export interface DocumentItem extends DocumentData {
-  id: string;
-  caseId: string;
+export interface DocumentItem extends DocumentData { id: string;, caseId: string;
   uploadedAt: Date;
   uploadedBy: string;
   fileSize: number;
@@ -123,9 +119,7 @@ export type AnalysisType =
   | 'evidence_correlation'
   | 'legal_research';
 }
-export interface AIAnalysisResult {
-  id: string;
-  type: AnalysisType;
+export interface AIAnalysisResult { id: string;, type: AnalysisType;
   query: string;
   result: string;
   confidence: number;
@@ -134,17 +128,13 @@ export interface AIAnalysisResult {
   createdAt: Date;
   processingTime: number;
 }
-export interface AnalysisRequest {
-  id: string;
-  type: AnalysisType;
+export interface AnalysisRequest { id: string;, type: AnalysisType;
   query: string;
   priority: 'low' | 'normal' | 'high' | 'urgent';
   requestedAt: Date;
   estimatedTime?: number;
 }
-export interface AnalysisSource {
-  type: 'document' | 'precedent' | 'statute' | 'regulation';
-  id: string;
+export interface AnalysisSource { type: 'document' | 'precedent' | 'statute' | 'regulation';, id: string;
   title: string;
   relevanceScore: number;
   excerpt: string;
@@ -158,9 +148,7 @@ export type AssignmentRole =
   | 'consultant'
   | 'client';
 }
-export interface CaseAssignment {
-  userId: string;
-  user: User;
+export interface CaseAssignment { userId: string;, user: User;
   role: AssignmentRole;
   assignedAt: Date;
   assignedBy: string;
@@ -170,64 +158,46 @@ export interface CaseAssignment {
 }
 export type ExportFormat = 'pdf' | 'docx' | 'json' | 'csv' | 'zip';
 }
-export interface JurisdictionInfo {
-  code: string;
-  name: string;
+export interface JurisdictionInfo { code: string;, name: string;
   type: 'federal' | 'state' | 'local';
   courts: CourtInfo[];
   statutes: StatuteReference[];
 }
-export interface CourtInfo {
-  id: string;
-  name: string;
+export interface CourtInfo { id: string;, name: string;
   level: 'trial' | 'appellate' | 'supreme';
   address: string;
   jurisdiction: string;
   rules: RuleReference[];
 }
-export interface LegalReference {
-  id: string;
-  type: 'statute' | 'regulation' | 'case_law' | 'rule';
+export interface LegalReference { id: string;, type: 'statute' | 'regulation' | 'case_law' | 'rule';
   citation: string;
   title: string;
   summary: string;
   relevanceScore: number;
   applicability: 'direct' | 'analogous' | 'distinguishable';
 }
-export interface LegalPrecedent extends LegalReference {
-  court: string;
-  date: Date;
+export interface LegalPrecedent extends LegalReference { court: string;, date: Date;
   outcome: string;
   keyFacts: string[];
   legalPrinciples: string[];
 }
-export interface StatuteReference extends LegalReference {
-  code: string;
-  section: string;
+export interface StatuteReference extends LegalReference { code: string;, section: string;
   effectiveDate: Date;
   amendments: Amendment[];
 }
-export interface RuleReference extends LegalReference {
-  ruleNumber: string;
-  category: string;
+export interface RuleReference extends LegalReference { ruleNumber: string;, category: string;
   lastModified: Date;
 }
-export interface Amendment {
-  date: Date;
-  description: string;
+export interface Amendment { date: Date;, description: string;
   impact: 'major' | 'minor' | 'technical';
 }
-export interface PerformanceData {
-  loadTime: number;
-  queryTime: number;
+export interface PerformanceData { loadTime: number;, queryTime: number;
   renderTime: number;
   memoryUsage: number;
   cacheHitRatio: number;
   errorRate: number;
 }
-export interface AuditLogEntry {
-  id: string;
-  timestamp: Date;
+export interface AuditLogEntry { id: string;, timestamp: Date;
   userId: string;
   action: string;
   resource: string;
@@ -240,24 +210,18 @@ export interface CaseFilters {
   priority?: CaseForm['priority'][];
   caseType?: CaseForm['caseType'][];
   assignedTo?: string[];
-  dateRange?: { start: Date; end: Date }
+  dateRange?: { start: Date;, end: Date }
   tags?: string[];
 }
-export interface SortOptions {
-  field: keyof CaseForm | 'lastActivity' | 'priority' | 'dueDate';
-  direction: 'asc' | 'desc';
+export interface SortOptions { field: keyof CaseForm | 'lastActivity' | 'priority' | 'dueDate';, direction: 'asc' | 'desc';
 }
-export interface ErrorState {
-  code: string;
-  message: string;
+export interface ErrorState { code: string;, message: string;
   details?: string;
   timestamp: Date;
   recoverable: boolean;
   context?: Record<string, unknown>;
 }
-export interface CasePermissions {
-  canView: boolean;
-  canEdit: boolean;
+export interface CasePermissions { canView: boolean;, canEdit: boolean;
   canDelete: boolean;
   canAddEvidence: boolean;
   canAddDocuments: boolean;
@@ -267,35 +231,25 @@ export interface CasePermissions {
 }
 export type AccessLevel = 'read_only' | 'contributor' | 'editor' | 'admin' | 'owner';
 }
-export interface ActiveCollaborator {
-  userId: string;
-  user: User;
+export interface ActiveCollaborator { userId: string;, user: User;
   status: 'online' | 'away' | 'editing';
   lastActivity: Date;
   currentSection?: string;
 }
-export interface CaseNotification {
-  id: string;
-  type: 'info' | 'warning' | 'error' | 'update';
+export interface CaseNotification { id: string;, type: 'info' | 'warning' | 'error' | 'update';
   title: string;
   message: string;
   timestamp: Date;
   read: boolean;
   actions?: NotificationAction[];
 }
-export interface NotificationAction {
-  label: string;
-  action: string;
+export interface NotificationAction { label: string;, action: string;
   style?: 'primary' | 'secondary' | 'danger';
 }
-export interface ConflictResolutionState {
-  hasConflicts: boolean;
-  conflicts: DataConflict[];
+export interface ConflictResolutionState { hasConflicts: boolean;, conflicts: DataConflict[];
   resolutionStrategy: 'auto' | 'manual' | 'latest_wins' | 'merge';
 }
-export interface DataConflict {
-  field: string;
-  localValue: any;
+export interface DataConflict { field: string;, localValue: any;
   remoteValue: any;
   timestamp: Date;
   userId: string;
@@ -308,9 +262,7 @@ export interface CustodyEntry {
   condition: string;
   witnessed?: string;
 }
-export interface Challenge {
-  id: string;
-  type: 'authenticity' | 'relevance' | 'hearsay' | 'privilege' | 'chain_of_custody';
+export interface Challenge { id: string;, type: 'authenticity' | 'relevance' | 'hearsay' | 'privilege' | 'chain_of_custody';
   challenger: string;
   reason: string;
   status: 'pending' | 'sustained' | 'overruled';
@@ -364,7 +316,7 @@ export const legalCaseMachine = createMachine({
       canAddDocuments: false,
       canAssignUsers: false,
       canExport: false,
-      canArchive: false,
+      canArchive: false
     },
     accessLevel: 'read_only',
     collaborators: [],
@@ -375,30 +327,24 @@ export const legalCaseMachine = createMachine({
       resolutionStrategy: 'auto'
     }
   },
-  states: {
-    idle: {
-      on: {
-        LOAD_CASE: {
-          target: 'loading',
+  states: { idle: {, on: { LOAD_CASE: {, target: 'loading',
           actions: assign({
-            caseId: ({ event }) => event.caseId,
+           , caseId: ({ event }) => event.caseId,
             isLoading: true,
-            error: null,
+            error: null
           })
         },
         CREATE_CASE: {
           target: 'creating',
           actions: assign({
             isLoading: true,
-            error: null,
+            error: null
           })
         }
       }
     },
-    loading: {
-      invoke: {
-        id: 'loadCase',
-        src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
+    loading: { invoke: {, id: 'loadCase',
+        src: fromPromise(async ({ input }: { input: {, caseId: string } }) => {
           // removed unused response assignment
           if (!response.ok) {
             throw new Error(`Failed to load case ${response.statusText}`);
@@ -413,7 +359,7 @@ export const legalCaseMachine = createMachine({
             isLoading: false,
             lastUpdated: new Date(),
             error: null,
-            retryCount: 0,
+            retryCount: 0
           })
         },
         onError: {
@@ -425,17 +371,15 @@ export const legalCaseMachine = createMachine({
               message: (event.error as any)?.message || 'Failed to load case',
               timestamp: new Date(),
               recoverable: true,
-              context: { caseId: context.caseId },
+              context: { caseId: context.caseId }
             }),
             lastError: new Date()
           })
         }
       }
     },
-    creating: {
-      invoke: {
-        id: 'createCase',
-        src: fromPromise(async ({ input }: { input: { caseData: Partial<CaseForm> } }) => {
+    creating: { invoke: {, id: 'createCase',
+        src: fromPromise(async ({ input }: { input: {, caseData: Partial<CaseForm> } }) => {
           const response = await fetch('/api/v1/cases', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -471,20 +415,15 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-    loaded: {
-      on: {
-        UPDATE_CASE: {
+    loaded: { on: {, UPDATE_CASE: {
           target: 'updating',
           actions: assign({
             isLoading: true
           })
         },
         DELETE_CASE: {
-          target: 'deleting'
-        },
-        ADD_EVIDENCE: {
-          actions: assign({
-            evidence: ({ context, event }) => [
+          target: 'deleting' },
+        ADD_EVIDENCE: { actions: assign({, evidence: ({ context, event }) => [
               ...context.evidence,
               {
                 ...event.evidenceData,
@@ -495,9 +434,7 @@ export const legalCaseMachine = createMachine({
             ]
           })
         },
-        ADD_DOCUMENT: {
-          actions: assign({
-            documents: ({ context, event }) => [
+        ADD_DOCUMENT: { actions: assign({, documents: ({ context, event }) => [
               ...context.documents,
               {
                 ...event.documentData,
@@ -517,21 +454,17 @@ export const legalCaseMachine = createMachine({
           target: 'analyzing',
           actions: assign({
             isAnalyzing: true,
-            analysisProgress: 0,
+            analysisProgress: 0
           })
         },
-        SET_STATUS: {
-          actions: assign({
-            currentCase: ({ context, event }) =>;
+        SET_STATUS: { actions: assign({, currentCase: ({ context, event }) =>;
               context,.currentCase ? {
                 ...context.currentCase,
                 status: event.status
               } : null
           })
         },
-        SET_PRIORITY: {
-          actions: assign({
-            currentCase: ({ context, event }) =>;
+        SET_PRIORITY: { actions: assign({, currentCase: ({ context, event }) =>;
               context,.currentCase ? {
                 ...context.currentCase,
                 priority: event.priority
@@ -540,10 +473,8 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-    updating: {
-      invoke: {
-        id: 'updateCase',
-        src: fromPromise(async ({ input }: { input: { caseId: string; updates: Partial<CaseForm> } }) => {
+    updating: { invoke: {, id: 'updateCase',
+        src: fromPromise(async ({ input }: { input: {, caseId: string; updates: Partial<CaseForm> } }) => {
           const response = await fetch(`/api/v1/cases/${input.caseId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -563,7 +494,7 @@ export const legalCaseMachine = createMachine({
           actions: assign({
             currentCase: ({ event }) => event.output,
             isLoading: false,
-            lastUpdated: new Date(),
+            lastUpdated: new Date()
           })
         },
         onError: {
@@ -580,10 +511,8 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-    analyzing: {
-      invoke: {
-        id: 'runAnalysis',
-        src: fromPromise(async ({ input }: { input: { query: string; analysisType?: AnalysisType; caseId?: string } }) => {
+    analyzing: { invoke: {, id: 'runAnalysis',
+        src: fromPromise(async ({ input }: { input: {, query: string; analysisType?: AnalysisType; caseId?: string } }) => {
           const response = await fetch('/api/v1/ai/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -607,7 +536,7 @@ export const legalCaseMachine = createMachine({
           actions: assign({
             aiAnalysis: ({ event }) => event.output,
             isAnalyzing: false,
-            analysisProgress: 100,
+            analysisProgress: 100
           })
         },
         onError: {
@@ -624,23 +553,18 @@ export const legalCaseMachine = createMachine({
           })
         }
       },
-      on: {
-        CANCEL_AI_ANALYSIS: {
-          target: 'loaded',
+      on: { CANCEL_AI_ANALYSIS: {, target: 'loaded',
           actions: assign({
             isAnalyzing: false,
-            analysisProgress: 0,
+            analysisProgress: 0
           })
         }
       }
     },
-    deleting: {
-      invoke: {
-        id: 'deleteCase',
-        src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
+    deleting: { invoke: {, id: 'deleteCase',
+        src: fromPromise(async ({ input }: { input: {, caseId: string } }) => {
           const response = await fetch(`/api/v1/cases/${input.caseId}`, {
-            method: 'DELETE'
-          });
+            method: 'DELETE' });
           if (!response.ok) {
             throw new Error(`Failed to delete case ${response.statusText}`);
           }
@@ -671,9 +595,7 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-    error: {
-      on: {
-        RETRY: [
+    error: { on: {, RETRY: [
           {
             target: 'loading',
             guard: ({ context }) => context.retryCount < 3,
@@ -682,10 +604,8 @@ export const legalCaseMachine = createMachine({
               error: null
             })
           },
-          {
-            actions: assign({
-              error: {
-                code: 'MAX_RETRIES_EXCEEDED',
+          { actions: assign({, error: {
+               , code: 'MAX_RETRIES_EXCEEDED',
                 message: 'Maximum retry attempts exceeded',
                 timestamp: new Date(),
                 recoverable: false
@@ -698,7 +618,7 @@ export const legalCaseMachine = createMachine({
           actions: assign({
             currentCase: null,
             caseId: null;
-            error: null,
+           , error: null,
             retryCount: 0,
             isLoading: false
           })

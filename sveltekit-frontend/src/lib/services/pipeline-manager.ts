@@ -57,9 +57,7 @@ const loadEndToEndPipeline = async (): Promise<EndToEndModule> =>
 // -----------------------------------------------------------------------------
 export type PipelineType = 'optimized' | 'advanced' | 'end-to-end';
 
-export interface PipelineConfig {
-  type: PipelineType;
-  enableGPU: boolean;
+export interface PipelineConfig { type: PipelineType;, enableGPU: boolean;
   enableConcurrency: boolean;
   enableMemoryOptimization: boolean;
   maxMemoryMB: number;
@@ -67,18 +65,14 @@ export interface PipelineConfig {
   cacheStrategy: 'redis' | 'lru' | 'hybrid';
 }
 
-export interface PipelineMetrics {
-  totalProcessingTime: number;
-  cacheHitRate: number;
+export interface PipelineMetrics { totalProcessingTime: number;, cacheHitRate: number;
   memoryUsageMB: number;
   gpuUtilization: number;
   concurrentOperations: number;
   throughputPerSecond: number;
 }
 
-export interface PipelineResult {
-  id: string;
-  type: PipelineType;
+export interface PipelineResult { id: string;, type: PipelineType;
   results: any[]; // changed from any[] to unknown[]
   metrics: PipelineMetrics;
   success: boolean;
@@ -103,15 +97,11 @@ export interface GPUHealth {
   freeMemoryMB?: number;
 }
 
-export interface MemoryStats {
-  used: number;
-  total: number;
+export interface MemoryStats { used: number;, total: number;
   percentage: number;
 }
 
-export interface SystemHealth {
-  pipelines: {
-    optimized: boolean;
+export interface SystemHealth { pipelines: {, optimized: boolean;
     advanced: boolean;
     'end-to-end': boolean;
   };
@@ -142,7 +132,7 @@ type RawMetrics = {
 };
 
 export class PipelineManager {
-  private activeOperations = new Map<string, { type: PipelineType; startTime: number }>();
+  private activeOperations = new Map<string, { type: PipelineType;, startTime: number }>();
   private metrics: PipelineMetrics[] = [];
   private readonly DEFAULT_CONFIG: PipelineConfig = {
     type: 'optimized',
@@ -151,8 +141,7 @@ export class PipelineManager {
     enableMemoryOptimization: true,
     maxMemoryMB: 512,
     workerThreads: 4,
-    cacheStrategy: 'hybrid',
-  };
+    cacheStrategy: 'hybrid` };
 
   /**
    * 🚀 Auto-Route to Best Pipeline Based on Data Size and Requirements
@@ -163,7 +152,7 @@ export class PipelineManager {
     console.log(`🎯 Starting ${finalConfig.type} pipeline: ${operationId}`);
     this.activeOperations.set(operationId, {
       type: finalConfig.type,
-      startTime: Date.now(),
+      startTime: Date.now()
     });
 
     try {
@@ -212,7 +201,7 @@ export class PipelineManager {
           break;
         }
         default:
-          throw new Error(`Unknown pipeline type: ${finalConfig.type}`);
+          throw new Error(`Unknown pipeline; type: ${finalConfig.type}`);
       }
 
       const metrics = this.transformMetrics(pipelineMetricsRaw, finalConfig.type);
@@ -221,22 +210,21 @@ export class PipelineManager {
         type: finalConfig.type,
         results,
         metrics,
-        success: true,
+        success: true
       };
 
       this.metrics.push(metrics);
       console.log(`✅ Pipeline ${operationId} completed successfully`);
       return finalResult;
     } catch (error) {
-      console.error(`❌ Pipeline ${operationId} failed:`, error);
+      console.error(`❌ Pipeline ${operationId} failed: ', error);
       return {
         id: operationId,
         type: finalConfig.type,
         results: [],
         metrics: this.getEmptyMetrics(),
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown pipeline error',
-      };
+        error: error instanceof Error ? error.message : 'Unknown pipeline error` };
     } finally {
       this.activeOperations.delete(operationId);
     }
@@ -274,7 +262,7 @@ export class PipelineManager {
    * 🔄 Batch Process Multiple Queries with Optimal Pipeline Selection
    */
   async batchProcess(
-    requests: Array<{ cacheKey: string; config?: Partial<PipelineConfig> }>
+    requests: Array<{, cacheKey: string; config?: Partial<PipelineConfig> }>
   ): Promise<PipelineResult[]> {
     console.log(`📦 Batch processing ${requests.length} pipeline requests`);
     const results: PipelineResult[] = [];
@@ -297,9 +285,7 @@ export class PipelineManager {
   async searchAllPipelines(
     query: string,
     limit = 10
-  ): Promise<{
-    optimizedResults: PipelineSearchHit[];
-    advancedResults: PipelineSearchHit[];
+  ): Promise<{ optimizedResults: PipelineSearchHit[];, advancedResults: PipelineSearchHit[];
     endToEndResults: PipelineSearchHit[];
     combinedResults: PipelineSearchHit[];
   }> {
@@ -342,7 +328,7 @@ export class PipelineManager {
     const combinedResults: PipelineSearchHit[] = [
       ...optimizedResults.map(r => ({ ...r, source: 'optimized' as const })),
       ...advancedResults.map(r => ({ ...r, source: 'advanced' as const })),
-      ...endToEndResults.map(r => ({ ...r, source: 'end-to-end' as const })),
+      ...endToEndResults.map(r => ({ ...r, source: 'end-to-end' as const }))
     ]
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, limit);
@@ -351,7 +337,7 @@ export class PipelineManager {
       optimizedResults,
       advancedResults,
       endToEndResults,
-      combinedResults,
+      combinedResults
     };
   }
 
@@ -364,14 +350,14 @@ export class PipelineManager {
     const pipelinesAvailability = {
       optimized: true,
       advanced: Boolean(gpuHealth?.cudaAvailable ?? false),
-      'end-to-end': true,
+      'end-to-end': true
     };
 
     const memoryUsage = process.memoryUsage();
     const memoryData: MemoryStats = {
       used: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       total: Math.round(memoryUsage.heapTotal / 1024 / 1024),
-      percentage: Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100),
+      percentage: Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100)
     };
 
     const avgProcessingTime =
@@ -386,16 +372,14 @@ export class PipelineManager {
       redis: true,
       memory: memoryData,
       activeOperations: this.activeOperations.size,
-      averageProcessingTime: Math.round(avgProcessingTime),
+      averageProcessingTime: Math.round(avgProcessingTime)
     };
   }
 
   /**
    * 📈 Generate Performance Report
    */
-  generatePerformanceReport(): {
-    architecture: string;
-    totalOperations: number;
+  generatePerformanceReport(): { architecture: string;, totalOperations: number;
     averageTime: number;
     throughput: number;
     memoryEfficiency: number;
@@ -410,7 +394,7 @@ export class PipelineManager {
           : 0,
       throughput: this.calculateThroughput(),
       memoryEfficiency: this.calculateMemoryEfficiency(),
-      recommendations: this.generateRecommendations(),
+      recommendations: this.generateRecommendations()
     };
 
     console.log('📈 Performance Report Generated');
@@ -457,7 +441,7 @@ export class PipelineManager {
       memoryUsageMB: rawMetrics?.memoryUsageMB ?? 128,
       gpuUtilization: gpuAccelerated ? (rawMetrics?.gpuUtilization ?? 80) : 0,
       concurrentOperations: workerThreads,
-      throughputPerSecond: throughput,
+      throughputPerSecond: throughput
     };
   }
 
@@ -468,7 +452,7 @@ export class PipelineManager {
       memoryUsageMB: 0,
       gpuUtilization: 0,
       concurrentOperations: 0,
-      throughputPerSecond: 0,
+      throughputPerSecond: 0
     };
   }
 

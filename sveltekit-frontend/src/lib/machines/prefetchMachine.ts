@@ -15,36 +15,30 @@ export interface PrefetchContext {
   embeddings: number[][];
   modelWeights: Float32Array | null;
   // Performance metrics
-  metrics: {
-    hits: number;
-    misses: number;
+  metrics: { hits: number;, misses: number;
     avgPredictionTime: number;
     lastPredictionAccuracy: number;
   }
   // Current session data
   docId: string | null;
   currentRoute: string;
-  viewportData: {
-    width: number;
-    height: number;
+  viewportData: { width: number;, height: number;
     scrollY: number;
   }
 }
 type PrefetchEvent =
-  | { type: 'USER_ACTION'; action: string; context: any }
+  | { type: 'USER_ACTION'; action: string;, context: any }
   | { type: 'PREDICT_INTENT' }
   | { type: 'PREFETCH_RESOURCES' }
-  | { type: 'UPDATE_EMBEDDINGS'; embeddings: number[][] }
-  | { type: 'VIEWPORT_CHANGE'; viewport: any }
-  | { type: 'ROUTE_CHANGE'; route: string }
+  | { type: 'UPDATE_EMBEDDINGS';, embeddings: number[][] }
+  | { type: 'VIEWPORT_CHANGE';, viewport: any }
+  | { type: 'ROUTE_CHANGE';, route: string }
   | { type: 'RESET_METRICS' }
   | { type: 'TRAIN_MODEL' }
-  | { type: 'CACHE_HIT'; resource: string }
-  | { type: 'CACHE_MISS'; resource: string }
+  | { type: 'CACHE_HIT';, resource: string }
+  | { type: 'CACHE_MISS';, resource: string }
 export const prefetchMachine = createMachine({
-  types: { [key,: strin,g]: any } as {
-    context: PrefetchContext;
-    events: PrefetchEvent;
+  types: { [key,: strin,g]: any } as { context: PrefetchContext;, events: PrefetchEvent;
   },
   id: "prefetch",
   initial: "initializing",
@@ -64,14 +58,12 @@ export const prefetchMachine = createMachine({
     docId: null,
     currentRoute: '',
     viewportData: {
-      width: (typeof window !== 'undefined' && window?.innerWidth) || 1920,
+     , width: (typeof window !== 'undefined' && window?.innerWidth) || 1920,
       height: (typeof window !== 'undefined' && window?.innerHeight) || 1080,
       scrollY: 0
     }
   },
-  states: {
-    initializing: {
-      invoke: {
+  states: { initializing: {, invoke: {
         src: 'initializePredictionModel',
         onDone: {
           target: 'idle',
@@ -82,9 +74,7 @@ export const prefetchMachine = createMachine({
         onError: 'idle'
       }
     },
-    idle: {
-      on: {
-        USER_ACTION: {
+    idle: { on: {, USER_ACTION: {
           actions: [
             assign({
               userActions: ({ context, event }) => [
@@ -101,32 +91,22 @@ export const prefetchMachine = createMachine({
         },
         PREDICT_INTENT: 'predicting',
         PREFETCH_RESOURCES: 'prefetching',
-        UPDATE_EMBEDDINGS: {
-          actions: assign({
-            embeddings: ({ event }) => (event as any).embeddings || []
+        UPDATE_EMBEDDINGS: { actions: assign({, embeddings: ({ event }) => (event as any).embeddings || []
           })
         },
-        VIEWPORT_CHANGE: {
-          actions: assign({
-            viewportData: ({ event }) => (event as any).viewport || { width: 1920, height: 1080, scrollY: 0 }
+        VIEWPORT_CHANGE: { actions: assign({, viewportData: ({ event }) => (event as any).viewport || { width: 1920, height: 1080, scrollY: 0 }
           })
         },
-        ROUTE_CHANGE: {
-          actions: assign({
-            currentRoute: ({ event }) => (event as any).route || ''
+        ROUTE_CHANGE: { actions: assign({, currentRoute: ({ event }) => (event as any).route || ''
           })
         },
-        CACHE_HIT: {
-          actions: assign({
-            metrics: ({ context }) => ({
+        CACHE_HIT: { actions: assign({, metrics: ({ context }) => ({
               ...context.metrics,
               hits: context.metrics.hits + 1
             })
           })
         },
-        CACHE_MISS: {
-          actions: assign({
-            metrics: ({ context }) => ({
+        CACHE_MISS: { actions: assign({, metrics: ({ context }) => ({
               ...context.metrics,
               misses: context.metrics.misses + 1
             })
@@ -135,9 +115,7 @@ export const prefetchMachine = createMachine({
         TRAIN_MODEL: 'training'
       }
     },
-    predicting: {
-      invoke: {
-        src: 'predictUserIntent',
+    predicting: { invoke: {, src: 'predictUserIntent',
         onDone: {
           target: 'idle',
           actions: [
@@ -160,9 +138,7 @@ export const prefetchMachine = createMachine({
         }
       }
     },
-    prefetching: {
-      invoke: {
-        src: 'prefetchResources',
+    prefetching: { invoke: {, src: 'prefetchResources',
         onDone: {
           target: 'idle',
           actions: 'logPrefetchSuccess'
@@ -173,9 +149,7 @@ export const prefetchMachine = createMachine({
         }
       }
     },
-    training: {
-      invoke: {
-        src: 'trainPredictionModel',
+    training: { invoke: {, src: 'trainPredictionModel',
         onDone: {
           target: 'idle',
           actions: [
@@ -196,9 +170,7 @@ export const prefetchMachine = createMachine({
       }
     }
   }
-}).provide({
-  actions: {
-    triggerPredictionAfterDelay: () => {
+}).provide({ actions: {, triggerPredictionAfterDelay: () => {
       // Debounce predictions to avoid excessive API calls
       setTimeout(() => {
         // This would send PREDICT_INTENT event after delay
@@ -346,12 +318,11 @@ async function prefetchEmbedding(resource: string): Promise<any> {
   // Call batch embedding service
   const response = await fetch('http://localhost:8081/batch-embed', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({,
       docId: `prefetch-${resource}`,
       chunks: [`Prefetch request for ${resource}`],
-      model: 'nomic-embed-text'
-    })
+      model: `nomic-embed-text` })
   });
   return (response as { ok?: any }).ok;
 }

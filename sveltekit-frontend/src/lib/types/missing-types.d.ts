@@ -17,38 +17,26 @@ declare class DockerResourceOptimizer {
   static getCurrentUsage(): Promise<any>;
 }
 // RAG/Search types
-declare interface RAGSearchResult {
-  id: string;
-  content: string;
+declare interface RAGSearchResult { id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
 }
-declare interface TextChunk {
-  text: string;
-  index: number;
+declare interface TextChunk { text: string;, index: number;
   metadata?: { [key: string]: any };
 }
-declare interface RAGDocument {
-  id: string;
-  content: string;
+declare interface RAGDocument { id: string;, content: string;
   embedding?: number[];
   metadata?: { [key: string]: any };
 }
 // Store types
-declare const enhancedRAGStore: {
-  search: (query: string) => Promise<RAGSearchResult[]>;
-  add: (doc: RAGDocument) => Promise<void>;
+declare const enhancedRAGStore: { search: (query: string) => Promise<RAGSearchResult[]>;, add: (doc: RAGDocument) => Promise<void>;
 };
 declare const documentVectors: any;
 // Routing types
-declare interface DynamicRouteConfig {
-  path: string;
-  component: any;
+declare interface DynamicRouteConfig { path: string;, component: any;
   metadata?: { [key: string]: any };
 }
-declare interface GeneratedRoute {
-  path: string;
-  handler: any;
+declare interface GeneratedRoute { path: string;, handler: any;
 }
 declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
 // Document processing types
@@ -96,7 +84,7 @@ declare module '@langchain/community/vectorstores/pgvector' {
   export enum DistanceStrategy {
     EUCLIDEAN = 'euclidean',
     COSINE = 'cosine',
-    INNER_PRODUCT = 'innerProduct',
+    INNER_PRODUCT = 'innerProduct'
   }
 }
 declare module '@langchain/community/vectorstores/neo4j_vector' {
@@ -159,9 +147,7 @@ export function generateEmbedding(text: string, options?: any): Promise<number[]
 export function withRetry<T>(fn: () => Promise<T>, retries?: number): Promise<T>;
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T>;
 // Production type definitions
-export interface GenericLegalAnalysisResult {
-  score: number;
-  confidence: number;
+export interface GenericLegalAnalysisResult { score: number;, confidence: number;
   categories: string[];
   entities: string[];
   sentiment: string;
@@ -169,9 +155,7 @@ export interface GenericLegalAnalysisResult {
   recommendations: string[];
   legalRelevance?: number;
 }
-export interface LegalEmbeddingResult {
-  embedding: number[];
-  model: string;
+export interface LegalEmbeddingResult { embedding: number[];, model: string;
   dimensions: number;
   processingTime: number;
 }

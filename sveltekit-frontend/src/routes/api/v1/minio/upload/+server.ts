@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 url?: any;
                 metadata?: any;
               }
-            ).error || 'Upload failed',
+            ).error || 'Upload failed'
         }),
         { status: 500 }
       );
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             url?: any;
             metadata?: any;
           }
-        ).metadata,
+        ).metadata
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );

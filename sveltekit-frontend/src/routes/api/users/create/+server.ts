@@ -5,9 +5,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Add a narrow local type for the insert payload to avoid relying on a missing export
-type NewUserInsert = {
-  email: string;
-  name: string;
+type NewUserInsert = { email: string;, name: string;
   first_name: string;
   last_name: string;
   role: string;
@@ -42,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       password: userData.password || 'password123',
       avatar_url: userData.avatarUrl || null,
       created_at: new Date(),
-      updated_at: new Date(),
+      updated_at: new Date()
     };
 
     const result = await db.insert(users).values(newUser).returning();
@@ -52,7 +50,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         {
           success: true,
           message: 'User created successfully',
-          user: result[0],
+          user: result[0]
         },
         { status: 201 }
       );
@@ -61,7 +59,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         {
           success: false,
           message: 'Failed to create user',
-          error: 'Database insertion failed',
+          error: 'Database insertion failed'
         },
         { status: 500 }
       );
@@ -72,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         message: 'Failed to create user',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -89,14 +87,14 @@ export const GET: RequestHandler = async ({ locals }) => {
       method: 'POST',
       endpoint: '/api/users/create',
       body: {
-        email: 'user@example.com',
+       , email: 'user@example.com',
         name: 'Full Name',
         firstName: 'First (optional)',
         lastName: 'Last (optional)',
         role: 'prosecutor|detective|analyst|admin (optional, defaults to prosecutor)',
         password: 'password (optional, defaults to password123)',
-        avatarUrl: 'URL to avatar image (optional)',
-      },
+        avatarUrl: 'URL to avatar image (optional)'
+      }
     },
     examples: [
       {
@@ -104,8 +102,8 @@ export const GET: RequestHandler = async ({ locals }) => {
         body: {
           email: 'prosecutor@example.com',
           name: 'John Prosecutor',
-          role: 'prosecutor',
-        },
+          role: 'prosecutor'
+        }
       },
       {
         description: 'Create a detective',
@@ -113,8 +111,8 @@ export const GET: RequestHandler = async ({ locals }) => {
           email: 'detective@example.com',
           name: 'Sarah Detective',
           role: 'detective',
-          password: 'customPassword123',
-        },
+          password: 'customPassword123'
+        }
       },
       {
         description: 'Create an analyst',
@@ -123,9 +121,9 @@ export const GET: RequestHandler = async ({ locals }) => {
           name: 'Mike Analyst',
           firstName: 'Mike',
           lastName: 'Analyst',
-          role: 'analyst',
-        },
+          role: 'analyst'
+        }
       },
-    ],
+    ]
   });
 };

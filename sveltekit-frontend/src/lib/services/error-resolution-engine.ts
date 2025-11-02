@@ -7,18 +7,14 @@ import { browser } from '$app/environment';
 import type { ServiceDefinition, ServiceStatus, ErrorResolution } from './master-service-coordinator.js';
 import { masterServiceCoordinator } from './master-service-coordinator.js';
 
-export interface RecoveryAction {
-  type: 'restart' | 'reconnect' | 'scale' | 'fallback' | 'cleanup' | 'configure' | 'wait';
-  target: string;
+export interface RecoveryAction { type: 'restart' | 'reconnect' | 'scale' | 'fallback' | 'cleanup' | 'configure' | 'wait';, target: string;
   parameters: { [key: string]: any };
   timeout: number;
   retries: number;
   description: string;
 }
 
-export interface ErrorPattern {
-  id: string;
-  name: string;
+export interface ErrorPattern { id: string;, name: string;
   pattern: RegExp;
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'network' | 'service' | 'resource' | 'configuration' | 'dependency' | 'performance';
@@ -27,9 +23,7 @@ export interface ErrorPattern {
   recoveryActions: RecoveryAction[];
 }
 
-export interface ErrorAnalysis {
-  id: string;
-  serviceId: string;
+export interface ErrorAnalysis { id: string;, serviceId: string;
   error: Error | string;
   pattern?: ErrorPattern;
   timestamp: number;
@@ -41,9 +35,7 @@ export interface ErrorAnalysis {
   recoveryTime?: number;
 }
 
-export interface SystemMetrics {
-  cpuUsage: number;
-  memoryUsage: number;
+export interface SystemMetrics { cpuUsage: number;, memoryUsage: number;
   networkLatency: number;
   diskUsage: number;
   gpuUtilization: number;
@@ -54,9 +46,7 @@ export interface SystemMetrics {
 
 // Add a local typed alias for performance.memory to avoid `any` casts
 type PerfWithMemory = Performance & {
-  memory?: {
-    usedJSHeapSize: number;
-    totalJSHeapSize: number;
+  memory?: { usedJSHeapSize: number;, totalJSHeapSize: number;
     jsHeapSizeLimit?: number;
   };
 };
@@ -112,14 +102,14 @@ export class ErrorResolutionEngine {
     gpuUtilization: 0,
     serviceLoadAvg: 0,
     errorRate: 0,
-    recoveryRate: 0,
+    recoveryRate: 0
   });
   public recoveryStats = writable({
     totalErrors: 0,
     autoResolved: 0,
     manualResolved: 0,
     unresolved: 0,
-    avgRecoveryTime: 0,
+    avgRecoveryTime: 0
   });
 
   // Pre-defined error patterns for common issues
@@ -140,7 +130,7 @@ export class ErrorResolutionEngine {
           parameters: { duration: 5000 },
           timeout: 10000,
           retries: 3,
-          description: 'Wait for network stabilization',
+          description: 'Wait for network stabilization'
         },
         {
           type: 'reconnect',
@@ -148,9 +138,9 @@ export class ErrorResolutionEngine {
           parameters: { maxAttempts: 5, backoffMs: 2000 },
           timeout: 30000,
           retries: 1,
-          description: 'Attempt service reconnection',
+          description: 'Attempt service reconnection'
         },
-      ],
+      ]
     },
     {
       id: 'connection_refused',
@@ -167,9 +157,9 @@ export class ErrorResolutionEngine {
           parameters: { graceful: true, waitMs: 10000 },
           timeout: 60000,
           retries: 2,
-          description: 'Restart service with graceful shutdown',
+          description: 'Restart service with graceful shutdown'
         },
-      ],
+      ]
     },
     // Resource Errors
     {
@@ -187,7 +177,7 @@ export class ErrorResolutionEngine {
           parameters: { caches: true, tempFiles: true },
           timeout: 30000,
           retries: 1,
-          description: 'Clear caches and temporary files',
+          description: 'Clear caches and temporary files'
         },
         {
           type: 'restart',
@@ -195,9 +185,9 @@ export class ErrorResolutionEngine {
           parameters: { graceful: true, waitMs: 5000 },
           timeout: 45000,
           retries: 1,
-          description: 'Restart service to free memory',
+          description: 'Restart service to free memory'
         },
-      ],
+      ]
     },
     // CUDA/GPU Errors
     {
@@ -215,7 +205,7 @@ export class ErrorResolutionEngine {
           parameters: { resetContext: true, clearMemory: true },
           timeout: 20000,
           retries: 2,
-          description: 'Reset GPU context and clear memory',
+          description: 'Reset GPU context and clear memory'
         },
         {
           type: 'fallback',
@@ -223,9 +213,9 @@ export class ErrorResolutionEngine {
           parameters: { useCPU: true, disableGPU: false },
           timeout: 10000,
           retries: 1,
-          description: 'Temporarily fallback to CPU processing',
+          description: 'Temporarily fallback to CPU processing'
         },
-      ],
+      ]
     },
     // Dependency Errors
     {
@@ -243,9 +233,9 @@ export class ErrorResolutionEngine {
           parameters: { checkInterval: 10000, maxWait: 300000 },
           timeout: 300000,
           retries: 30,
-          description: 'Wait for dependency recovery',
+          description: 'Wait for dependency recovery'
         },
-      ],
+      ]
     },
     // Performance Errors
     {
@@ -263,7 +253,7 @@ export class ErrorResolutionEngine {
           parameters: { instances: 2, loadBalance: true },
           timeout: 60000,
           retries: 1,
-          description: 'Scale service to handle load',
+          description: 'Scale service to handle load'
         },
         {
           type: 'cleanup',
@@ -271,9 +261,9 @@ export class ErrorResolutionEngine {
           parameters: { caches: false, connections: true },
           timeout: 20000,
           retries: 1,
-          description: 'Clear connection pools',
+          description: 'Clear connection pools'
         },
-      ],
+      ]
     },
     // Configuration Errors
     {
@@ -291,9 +281,8 @@ export class ErrorResolutionEngine {
           parameters: { useDefaults: true, backup: true },
           timeout: 30000,
           retries: 1,
-          description: 'Restore default configuration',
-        },
-      ],
+          description: 'Restore default configuration` },
+      ]
     },
   ];
 
@@ -381,7 +370,7 @@ export class ErrorResolutionEngine {
       severity: pattern ? pattern.severity : service.critical ? 'critical' : 'high',
       category: pattern ? pattern.category : 'service',
       autoFixAttempted: false,
-      resolved: false,
+      resolved: false
     };
     this.recoveryQueue.push(analysis);
     this.processedErrors.set(errorId, analysis);
@@ -404,7 +393,7 @@ export class ErrorResolutionEngine {
       severity: 'medium',
       category: 'performance',
       autoFixAttempted: false,
-      resolved: false,
+      resolved: false
     };
     this.recoveryQueue.push(analysis);
     this.processedErrors.set(errorId, analysis);
@@ -443,7 +432,7 @@ export class ErrorResolutionEngine {
       }
       this.processedErrors.set(analysis.id, analysis);
     } catch (error: any) {
-      console.error(`Error during recovery for ${analysis.id}:`, this.formatError(error));
+      console.error(`Error during recovery for ${analysis.id}: ', this.formatError(error));
       analysis.autoFixAttempted = true;
       this.processedErrors.set(analysis.id, analysis);
       this.updateRecoveryStats('unresolved');
@@ -524,7 +513,7 @@ export class ErrorResolutionEngine {
             await this.coordinator.restartService(analysis.serviceId, action.parameters);
             return true;
           }
-          // Fallback: mark as: "attempted" and return true so the engine can continue
+          // Fallback: mark; as: "attempted" and return true so the engine can continue
           return true;
         }
         case 'scale': {
@@ -559,7 +548,7 @@ export class ErrorResolutionEngine {
         default: return false;
       }
     } catch (err: any) {
-      console.error(`Error executing recovery action ${action.type} for ${analysis.id}:`, this.formatError(err));
+      console.error(`Error executing recovery action ${action.type} for ${analysis.id}: ', this.formatError(err));
       return false;
     }
   }

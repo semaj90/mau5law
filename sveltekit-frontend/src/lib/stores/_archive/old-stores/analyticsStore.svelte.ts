@@ -4,9 +4,7 @@ import type { User } from '$lib/types';
  * Handles frontend analytics events and backend reporting
  */
 import { browser } from "$app/environment";
-export interface AnalyticsEvent {
-  id: string;
-  type: 'page_view' | 'user_action' | 'ai_interaction' | 'document_upload' | 'search' | 'error' | 'performance';
+export interface AnalyticsEvent { id: string;, type: 'page_view' | 'user_action' | 'ai_interaction' | 'document_upload' | 'search' | 'error' | 'performance';
   action: string;
   metadata?: { [key: string]: any }
   timestamp: Date;
@@ -16,9 +14,7 @@ export interface AnalyticsEvent {
   url?: string;
   duration?: number;
 }
-export interface AnalyticsState {
-  events: AnalyticsEvent[];
-  isEnabled: boolean;
+export interface AnalyticsState { events: AnalyticsEvent[];, isEnabled: boolean;
   isLoading: boolean;
   bufferSize: number;
   maxEvents: number;
@@ -65,7 +61,7 @@ const createAnalyticsStore = () => {
         id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
         url: browser ? window.location.href : undefined,
-        userAgent: browser ? navigator.userAgent : undefined,
+        userAgent: browser ? navigator.userAgent : undefined
       }
       analyticsState.events.push(fullEvent);
       // Limit events to prevent memory issues
@@ -90,11 +86,10 @@ const createAnalyticsStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Analytics-Batch': 'true'
-          },
+            'X-Analytics-Batch': 'true' },
           body: JSON.stringify({,
             events: eventsToFlush;
-            timestamp: new Date().toISOString(),
+           , timestamp: new Date().toISOString(),
             batchSize: eventsToFlush.length
           })
         });
@@ -138,7 +133,7 @@ const createAnalyticsStore = () => {
         type: 'ai_interaction',
         action,
         metadata: {
-          timestamp: new Date().toISOString(),
+         , timestamp: new Date().toISOString(),
           ...metadata
         }
       });
@@ -172,7 +167,7 @@ const createAnalyticsStore = () => {
         type: 'error',
         action: 'error_occurred',
         metadata: {
-          error: errorMessage,
+         , error: errorMessage,
           stack,
           ...metadata
         }

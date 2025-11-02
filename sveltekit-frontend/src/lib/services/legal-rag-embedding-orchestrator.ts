@@ -18,23 +18,17 @@ declare module './multi-embedding-vector-service.js' {
 }
 
 // Define types for better clarity and type safety
-export interface EmbeddingResult {
-  vector: number[];
-  model: string;
+export interface EmbeddingResult { vector: number[];, model: string;
   // Add other relevant metadata if available from multiEmbeddingVectorService
 }
 
-export interface EmbeddingsBundle {
-  case_context: number[];
-  legal_domain: number[];
+export interface EmbeddingsBundle { case_context: number[];, legal_domain: number[];
   jurisdictional: number[];
   temporal: number[];
   models_used: string[];
 }
 
-export interface VectorSearchResultItem {
-  id: string;
-  content: string;
+export interface VectorSearchResultItem { id: string;, content: string;
   metadata?: Record<string, unknown>;
   similarity_scores?: Record<string, number>;
   // Add other properties returned by the vector search service
@@ -49,7 +43,7 @@ export interface SearchOptions {
   query_type?: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
   jurisdiction_filter?: string;
   practice_area_filter?: string;
-  date_range?: { start: Date; end: Date };
+  date_range?: { start: Date;, end: Date };
   max_results?: number;
   include_related_cases?: boolean;
   include_statutory_authority?: boolean;
@@ -57,17 +51,13 @@ export interface SearchOptions {
   confidence_threshold?: number;
 }
 
-export interface LegalCase {
-  id: string;
-  title: string;
+export interface LegalCase { id: string;, title: string;
   jurisdiction: string;
   practice_area: string;
   case_type: 'civil' | 'criminal' | 'appellate' | 'constitutional' | 'administrative';
   status: 'active' | 'closed' | 'pending' | 'appeal';
   filing_date: Date;
-  parties: {
-    plaintiff: string[];
-    defendant: string[];
+  parties: { plaintiff: string[];, defendant: string[];
     counsel: string[];
   };
   court: string;
@@ -79,18 +69,14 @@ export interface LegalCase {
   legal_precedents: string[];
   evidence_ids: string[];
   document_ids: string[];
-  metadata: {
-    complexity_score: number;
-    precedent_value: number;
+  metadata: { complexity_score: number;, precedent_value: number;
     settlement_probability?: number;
     estimated_duration?: string;
     budget_category?: string;
   };
 }
 
-export interface LegalLaw {
-  id: string;
-  title: string;
+export interface LegalLaw { id: string;, title: string;
   jurisdiction: string;
   law_type: 'statute' | 'regulation' | 'ordinance' | 'constitutional' | 'case_law' | 'administrative';
   section: string;
@@ -104,35 +90,25 @@ export interface LegalLaw {
   penalties: string[];
   exceptions: string[];
   interpretations: Array<any>;
-  metadata: {
-    complexity_level: 'basic' | 'intermediate' | 'advanced' | 'expert';
-    applicability_score: number;
+  metadata: { complexity_level: 'basic' | 'intermediate' | 'advanced' | 'expert';, applicability_score: number;
     controversy_level: number;
     enforcement_frequency: number;
   };
 }
 
-export interface RAGContext {
-  case_id: string;
-  query_type: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
+export interface RAGContext { case_id: string;, query_type: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
   relevant_laws: LegalLaw[];
   relevant_cases: LegalCase[];
   relevant_documents: any[];
-  contextual_embeddings: {
-    case_context: number[];
-    legal_domain: number[];
+  contextual_embeddings: { case_context: number[];, legal_domain: number[];
     jurisdictional: number[];
     temporal: number[];
   };
-  confidence_scores: {
-    law_relevance: number;
-    case_relevance: number;
+  confidence_scores: { law_relevance: number;, case_relevance: number;
     document_relevance: number;
     overall_confidence: number;
   };
-  search_metadata: {
-    embedding_models_used: string[];
-    search_time_ms: number;
+  search_metadata: { embedding_models_used: string[];, search_time_ms: number;
     total_results_considered: number;
     filters_applied: string[];
   };
@@ -142,7 +118,7 @@ class LegalRAGEmbeddingOrchestrator {
   // Removed in-memory caches, now using Redis as per instructions
   // private caseCache: Map<string, LegalCase> = new Map();
   // private lawCache: Map<string, LegalLaw> = new Map();
-  // private ragCache: Map<string, { context: RAGContext; timestamp: Date }> = new Map();
+  // private ragCache: Map<string, { context: RAGContext;, timestamp: Date }> = new Map();
 
   constructor() {
     // The constructor no longer initializes in-memory maps.
@@ -150,44 +126,37 @@ class LegalRAGEmbeddingOrchestrator {
   }
 
   // Embedding strategies by legal content type
-  private embeddingStrategies: Record<string, {
-    primary_model: string;
-    hybrid_models: string[];
+  private embeddingStrategies: Record<string, { primary_model: string;, hybrid_models: string[];
     metadata_schema: string;
     boost_fields: string[];
     temporal_weight: number;
   }> = {
     'case-law': {
-      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest
-      hybrid_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
+      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest; hybrid_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
       metadata_schema: 'legal-case',
       boost_fields: ['case_type', 'jurisdiction', 'practice_area'],
       temporal_weight: 0.8
     },
     'statute': {
-      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest
-      hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest; hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'citation',
       boost_fields: ['jurisdiction', 'law_type', 'effective_date'],
       temporal_weight: 0.6
     },
     'regulation': {
-      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest
-      hybrid_models: ['embeddinggemma:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest; hybrid_models: ['embeddinggemma:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'citation',
       boost_fields: ['jurisdiction', 'enforcement_frequency'],
       temporal_weight: 0.7
     },
     'case-document': {
-      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest
-      hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest; hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'document',
       boost_fields: ['document_type', 'case_id', 'relevance_score'],
       temporal_weight: 0.9
     },
     'user-query': {
-      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest
-      hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest; hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'user-query',
       boost_fields: ['intent', 'practice_area'],
       temporal_weight: 1.0
@@ -221,7 +190,7 @@ class LegalRAGEmbeddingOrchestrator {
       query_type?: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
       jurisdiction_filter?: string;
       practice_area_filter?: string;
-      date_range?: { start: Date; end: Date };
+      date_range?: {, start: Date; end: Date };
       max_results?: number;
       include_related_cases?: boolean;
       include_statutory_authority?: boolean;
@@ -236,7 +205,7 @@ class LegalRAGEmbeddingOrchestrator {
     const cachedRaw = await redis.get(cacheKey);
     if (cachedRaw) {
       try {
-        const cached = JSON.parse(cachedRaw) as { context: RAGContext; timestamp: string };
+        const cached = JSON.parse(cachedRaw) as { context: RAGContext;, timestamp: string };
         if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5 minutes TTL
           return cached.context;
         }
@@ -470,7 +439,7 @@ class LegalRAGEmbeddingOrchestrator {
       `Case Type: ${legalCase.case_type}`,
       `Jurisdiction: ${legalCase.jurisdiction}`,
       `Practice Area: ${legalCase.practice_area}`,
-      `Key Issues: ${Array.isArray(legalCase.key_issues) ? legalCase.key_issues.join(', ') : ''}`
+      `Key Issues: ${Array.isArray(legalCase.key_issues) ? legalCase.key_issues.join(', ') : '' }`
     ].join(' | ');
     return `[${contextElements}] ${query}`;
   }
@@ -481,9 +450,7 @@ class LegalRAGEmbeddingOrchestrator {
     cases: LegalCase[],
     documents: any[],
     embeddings: any
-  ): {
-    law_relevance: number;
-    case_relevance: number;
+  ): { law_relevance: number;, case_relevance: number;
     document_relevance: number;
     overall_confidence: number;
   } {
@@ -502,7 +469,7 @@ class LegalRAGEmbeddingOrchestrator {
       law_relevance: lawRelevance,
       case_relevance: caseRelevance,
       document_relevance: documentRelevance,
-      overall_confidence: Math.max(0, Math.min(1, overallConfidence)),
+      overall_confidence: Math.max(0, Math.min(1, overallConfidence))
     };
   }
 
@@ -636,7 +603,7 @@ class LegalRAGEmbeddingOrchestrator {
     }
 
     // Fetch from PostgreSQL using Drizzle ORM
-    // Assuming: 'cases' is a table in your schema and has a: 'case_id' column
+    // Assuming: 'cases' is a table in your schema and has; a: 'case_id' column
     const caseData = await db.query.cases.findFirst({ where: eq(schema.cases.id, caseId) });
 
     if (caseData) {

@@ -19,25 +19,19 @@ export interface AuthResult {
   lockoutUntil?: Date | null;
 }
 
-export interface LoginAttempt {
-  email: string;
-  password: string;
+export interface LoginAttempt { email: string;, password: string;
   ipAddress: string;
   userAgent: string;
   rememberMe?: boolean;
 }
 
-export interface RegisterData {
-  email: string;
-  password: string;
+export interface RegisterData { email: string;, password: string;
   firstName: string;
   lastName: string;
   role?: string;
 }
 
-export interface SecuritySettings {
-  maxLoginAttempts: number;
-  lockoutDurationMinutes: number;
+export interface SecuritySettings { maxLoginAttempts: number;, lockoutDurationMinutes: number;
   sessionExpiryDays: number;
   requireEmailVerification: boolean;
   enforcePasswordComplexity: boolean;
@@ -51,7 +45,7 @@ export class EnhancedAuthService {
     sessionExpiryDays: 30,
     requireEmailVerification: true,
     enforcePasswordComplexity: true,
-    enable2FA: false,
+    enable2FA: false
   };
 
   constructor(settings?: Partial<SecuritySettings>) {
@@ -69,7 +63,7 @@ export class EnhancedAuthService {
           action: 'login_failed',
           ipAddress: loginData.ipAddress,
           userAgent: loginData.userAgent,
-          metadata: { email: loginData.email, reason: 'user_not_found' },
+          metadata: {, email: loginData.email, reason: 'user_not_found' }
         });
         return { success: false, error: 'Invalid email or password' };
       }
@@ -80,12 +74,12 @@ export class EnhancedAuthService {
           action: 'login_blocked',
           ipAddress: loginData.ipAddress,
           userAgent: loginData.userAgent,
-          metadata: { reason: 'account_locked', lockoutUntil: existingUser.lockoutUntil },
+          metadata: {, reason: 'account_locked', lockoutUntil: existingUser.lockoutUntil }
         });
         return {
           success: false,
           error: 'Account is temporarily locked due to multiple failed login attempts',
-          lockoutUntil: existingUser.lockoutUntil,
+          lockoutUntil: existingUser.lockoutUntil
         };
       }
 
@@ -101,7 +95,7 @@ export class EnhancedAuthService {
         return {
           success: false,
           error: 'Please verify your email address before logging in',
-          requiresVerification: true,
+          requiresVerification: true
         };
       }
 
@@ -124,7 +118,7 @@ export class EnhancedAuthService {
         action: 'login_success',
         ipAddress: loginData.ipAddress,
         userAgent: loginData.userAgent,
-        metadata: { rememberMe: loginData.rememberMe },
+        metadata: {, rememberMe: loginData.rememberMe }
       });
       return { success: true, user: existingUser, session };
     } catch (error: any) {
@@ -157,7 +151,7 @@ export class EnhancedAuthService {
           lastName,
           role,
           emailVerificationToken,
-          isActive: !this.securitySettings.requireEmailVerification,
+          isActive: !this.securitySettings.requireEmailVerification
         })
         .returning();
 
@@ -168,7 +162,7 @@ export class EnhancedAuthService {
         action: 'register_success',
         ipAddress: this.getClientIP(request),
         userAgent: request.request.headers.get('user-agent') || '',
-        metadata: { role, requiresVerification: this.securitySettings.requireEmailVerification },
+        metadata: { role, requiresVerification: this.securitySettings.requireEmailVerification }
       });
 
       if (this.securitySettings.requireEmailVerification && emailVerificationToken && newUser) {
@@ -207,7 +201,7 @@ export class EnhancedAuthService {
         action: 'logout_success',
         ipAddress: this.getClientIP(request),
         userAgent: request.request.headers.get('user-agent') || '',
-        metadata: { sessionId },
+        metadata: { sessionId }
       });
     } catch (error: any) {
       console.error('Logout error:', error);
@@ -233,7 +227,7 @@ export class EnhancedAuthService {
         action: 'email_verified',
         ipAddress: 'system',
         userAgent: 'system',
-        metadata: { token },
+        metadata: { token }
       });
       return { success: true, user };
     } catch (error: any) {
@@ -259,7 +253,7 @@ export class EnhancedAuthService {
         action: 'password_reset_requested',
         ipAddress: this.getClientIP(request),
         userAgent: request.request.headers.get('user-agent') || '',
-        metadata: { resetExpires },
+        metadata: { resetExpires }
       });
       return { success: true };
     } catch (error: any) {
@@ -288,7 +282,7 @@ export class EnhancedAuthService {
           passwordResetToken: null,
           passwordResetExpires: null,
           loginAttempts: 0,
-          lockoutUntil: null,
+          lockoutUntil: null
         })
         .where(eq(users.id, user.id));
       await this.logAuthEvent({
@@ -296,16 +290,16 @@ export class EnhancedAuthService {
         action: 'password_reset_success',
         ipAddress: 'system',
         userAgent: 'system',
-        metadata: { token },
+        metadata: { token }
       });
       return { success: true, user };
     } catch (error: any) {
       console.error('Password reset error:', error);
-      return { success: false, error: 'Password reset failed' };
+      return { success: false, error: `Password reset failed` };
     }
   }
 
-  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number; securitySettings: SecuritySettings } | null> {
+  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number;, securitySettings: SecuritySettings } | null> {
     try {
       const recentLogs = await db
         .select()
@@ -317,12 +311,12 @@ export class EnhancedAuthService {
         .select()
         .from(sessions)
         // replaced gte(sessions.expiresAt, new Date()) with SQL expression
-        .where(and(eq(sessions.userId, userId), sql`${sessions.expiresAt} >= ${new Date()}`));
+        .where(and(eq(sessions.userId, userId), sql`${sessions.expiresAt} >= ${new Date()}'));
       const activeSessionsCount = Array.isArray(activeSessionsRows) ? activeSessionsRows.length : 0;
       return {
         recentActivity: recentLogs,
         activeSessionsCount,
-        securitySettings: this.securitySettings,
+        securitySettings: this.securitySettings
       };
     } catch (error: any) {
       console.error('Security summary error:', error);
@@ -346,7 +340,7 @@ export class EnhancedAuthService {
       action: 'login_failed',
       ipAddress: loginData.ipAddress,
       userAgent: loginData.userAgent,
-      metadata: { attempts: newAttempts },
+      metadata: {, attempts: newAttempts }
     });
   }
 
@@ -358,11 +352,9 @@ export class EnhancedAuthService {
     }
   }
 
-  private async logAuthEvent(entry: {
-    userId: string | null;
-    action: string;
+  private async logAuthEvent(entry: { userId: string | null;, action: string;
     ipAddress: string;
-    userAgent: string;
+   , userAgent: string;
     metadata?: Record<string, unknown>;
     createdAt?: Date;
   }) {
@@ -373,7 +365,7 @@ export class EnhancedAuthService {
         ipAddress: entry.ipAddress,
         userAgent: entry.userAgent,
         metadata: entry.metadata || {},
-        createdAt: entry.createdAt || new Date(),
+        createdAt: entry.createdAt || new Date()
       });
     } catch (e: any) {
       console.warn('Failed to log auth event', e);
@@ -385,7 +377,7 @@ export class EnhancedAuthService {
       return { isValid: false, error: 'All fields are required' };
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: 'Invalid email format' };
     if (this.securitySettings.enforcePasswordComplexity && !this.validatePassword(data.password))
-      return { isValid: false, error: 'Password does not meet complexity requirements' };
+      return { isValid: false, error: `Password does not meet complexity requirements` };
     return { isValid: true };
   }
 
@@ -422,8 +414,8 @@ export class EnhancedAuthService {
     try {
       // explicit possible signatures for createSession
       type CreateById = (userId: string) => Promise<Session>;
-      type CreateWithOpts = (opts: { userId: string; expiresIn?: number }) => Promise<Session>;
-      type CreateWithUserOnly = (opts: { userId: string }) => Promise<Session>;
+      type CreateWithOpts = (opts: {, userId: string; expiresIn?: number }) => Promise<Session>;
+      type CreateWithUserOnly = (opts: {, userId: string }) => Promise<Session>;
       type LuciaCreateSession = CreateById | CreateWithOpts | CreateWithUserOnly;
 
       const create = (lucia as unknown as { createSession?: LuciaCreateSession }).createSession;

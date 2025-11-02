@@ -592,7 +592,7 @@ import type { Case } from '$lib/types';
     </div>
   {:else if $state.matches('complete') && $state.context.synthesisResult}
     <!-- Synthesis Results -->
-    <div class="space-y-6" transition:fly={{ y: 20, duration: 300 }}>
+    <div class="space-y-6" transitionfly={{ y: 20, duration: 300 }}>
       <!-- Executive Summary -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
@@ -616,7 +616,7 @@ import type { Case } from '$lib/types';
           </div>
           <div class="text-center">
             <div
-              class="text-2xl" font-bold {getScoreColor(
+              class="text-2xl font-bold" {getScoreColor(
                 $state.context.synthesisResult.strengthAssessment.evidenceQuality
               )}"
             >
@@ -634,7 +634,7 @@ import type { Case } from '$lib/types';
           </div>
           <div class="text-center">
             <div
-              class="text-2xl" font-bold {getScoreColor(
+              class="text-2xl font-bold" {getScoreColor(
                 $state.context.synthesisResult.strengthAssessment.witnessCredibility
               )}"
             >
@@ -644,7 +644,7 @@ import type { Case } from '$lib/types';
           </div>
           <div class="text-center">
             <div
-              class="text-2xl" font-bold {getScoreColor(
+              class="text-2xl font-bold" {getScoreColor(
                 $state.context.synthesisResult.strengthAssessment.expertOpinions
               )}"
             >

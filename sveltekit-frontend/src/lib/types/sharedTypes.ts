@@ -5,57 +5,43 @@ import type { SearchResult } from '$lib/types';
  */
 
 // Core Types
-export interface EmbeddingItem {
-  id: string;
-  vector: number[];
+export interface EmbeddingItem { id: string;, vector: number[];
   source: string;
   meta?: Record<string, unknown>;
 }
 
-export interface SearchResult {
-  id: string;
-  score: number;
+export interface SearchResult { id: string;, score: number;
   source: string;
   snippet?: string;
   tags?: string[];
   metadata?: LegalMetadata;
 }
 
-export interface BoundingBox {
-  x: number;
-  y: number;
+export interface BoundingBox { x: number;, y: number;
   width: number;
   height: number;
   confidence?: number;
   label?: string;
 }
 
-export interface OCRResult {
-  text: string;
-  confidence: number;
+export interface OCRResult { text: string;, confidence: number;
   layout: LayoutInfo;
   language: string;
   boundingBoxes?: BoundingBox[];
   processingTime?: number;
 }
 
-export interface LayoutInfo {
-  blocks: Array<{
-    bbox: BoundingBox;
+export interface LayoutInfo { blocks: Array<{, bbox: BoundingBox;
     text: string;
     confidence: number;
   }>;
-  tables?: Array<{
-    rows: number;
-    cols: number;
+  tables?: Array<{ rows: number;, cols: number;
     cells: string[][];
   }>;
   headers?: string[];
 }
 
-export interface Recommendation {
-  id: string;
-  score: number;
+export interface Recommendation { id: string;, score: number;
   reasoning: string;
   action?: string;
   priority?: 'low' | 'medium' | 'high' | 'critical';
@@ -70,17 +56,13 @@ export interface DocumentItem {
   source: string;
 }
 
-export interface VisionItem {
-  id: string;
-  labels: string[];
+export interface VisionItem { id: string;, labels: string[];
   boundingBoxes?: BoundingBox[];
   embeddings?: number[];
   confidence: number;
 }
 
-export interface Candidate {
-  id: string;
-  text: string;
+export interface Candidate { id: string;, text: string;
   relevanceScore?: number;
   rerankedScore?: number;
 }
@@ -95,37 +77,27 @@ export interface LLMOutput {
 
 // Legal Domain Types
 export interface LegalMetadata {
-  case {
-    id: string;
-    jurisdiction: string;
+  case { id: string;, jurisdiction: string;
     parties: Party[];
     datesFiled: string[];
     courtLevel: 'district' | 'appellate' | 'supreme';
   };
-  classification: {
-    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-    practiceArea: string[];
+  classification: { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, practiceArea: string[];
     confidenceLevel: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
   };
-  processing: {
-    extractedEntities: string[];
-    keyTerms: string[];
+  processing: { extractedEntities: string[];, keyTerms: string[];
     sentiment: number;
     complexity: number;
   };
 }
 
-export interface Party {
-  name: string;
-  role: 'plaintiff' | 'defendant' | 'witness' | 'attorney' | 'other';
+export interface Party { name: string;, role: 'plaintiff' | 'defendant' | 'witness' | 'attorney' | 'other';
   type: 'individual' | 'corporation' | 'government';
 }
 
 // Contextual Understanding (Redis + HMM + LangExtract)
-export interface ContextualState {
-  sessionId: string;
-  userId: string;
+export interface ContextualState { sessionId: string;, userId: string;
   conversationHistory: ConversationTurn[];
   currentIntent: string;
   extractedEntities: LegalEntity[];
@@ -135,9 +107,7 @@ export interface ContextualState {
   lastUpdated: number;
 }
 
-export interface ConversationTurn {
-  timestamp: number;
-  userMessage: string;
+export interface ConversationTurn { timestamp: number;, userMessage: string;
   agentResponse: string;
   intent: string;
   entities: LegalEntity[];
@@ -145,35 +115,27 @@ export interface ConversationTurn {
   hmmState: number;
 }
 
-export interface LegalEntity {
-  type: 'person' | 'organization' | 'date' | 'location' | 'case_number' | 'statute' | 'clause';
-  value: string;
+export interface LegalEntity { type: 'person' | 'organization' | 'date' | 'location' | 'case_number' | 'statute' | 'clause';, value: string;
   confidence: number;
-  span: { start: number; end: number };
+  span: { start: number;, end: number };
   startPos?: number;
   endPos?: number;
 }
 
-export interface HMMState {
-  currentState: number;
-  transitionProb: number;
+export interface HMMState { currentState: number;, transitionProb: number;
   emissionProb: number;
   pattern: number[];
   stateHistory: number[];
 }
 
-export interface NextStepPrediction {
-  action: string;
-  confidence: number;
+export interface NextStepPrediction { action: string;, confidence: number;
   description: string;
   requiredContext: string[];
   estimatedDuration: number;
 }
 
 // LangExtract Types
-export interface LangExtractResult {
-  parties: Party[];
-  dates: LegalDate[];
+export interface LangExtractResult { parties: Party[];, dates: LegalDate[];
   clauses: Clause[];
   jurisdiction: string;
   documentType: string;
@@ -182,16 +144,12 @@ export interface LangExtractResult {
   processingTime: number;
 }
 
-export interface LegalDate {
-  text: string;
-  normalized: string | null;
+export interface LegalDate { text: string;, normalized: string | null;
   type: 'filing' | 'execution' | 'expiration' | 'hearing' | 'deadline' | 'other';
   confidence: number;
 }
 
-export interface Clause {
-  number: number;
-  heading: string;
+export interface Clause { number: number;, heading: string;
   text: string;
   type: 'termination' | 'indemnification' | 'confidentiality' | 'payment' | 'liability' | 'other';
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -199,15 +157,11 @@ export interface Clause {
 }
 
 // Tricubic / SOM / HMM Types
-export interface TricubicSearchOptions {
-  topK: number;
-  workers: number;
+export interface TricubicSearchOptions { topK: number;, workers: number;
   interpolationWeight: number;
 }
 
-export interface SOMCluster {
-  centroid: number[];
-  memberIndices: number[];
+export interface SOMCluster { centroid: number[];, memberIndices: number[];
   variance: number;
 }
 

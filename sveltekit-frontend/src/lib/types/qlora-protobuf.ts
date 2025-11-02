@@ -13,48 +13,36 @@ export interface QLoRAProtobufTopologyRequest {
   binaryResponse: boolean;
   timestamp: number;
 }
-export interface QLoRAProtobufMetrics {
-  hmmPredictionScore: number;
-  somClusterAccuracy: number;
+export interface QLoRAProtobufMetrics { hmmPredictionScore: number;, somClusterAccuracy: number;
   webgpuOptimizationGain: number;
   cacheEfficiency: number;
   tensorOperations?: number;
   memoryUsage?: number;
   gpuUtilization?: number;
 }
-export interface QLoRAProtobufLearningData {
-  dataFlywheelSamples: number;
-  modelUpdateApplied: boolean;
+export interface QLoRAProtobufLearningData { dataFlywheelSamples: number;, modelUpdateApplied: boolean;
   accuracyImprovement: number;
   trainingIterations?: number;
   lossReduction?: number;
   convergenceScore?: number;
 }
-export interface QLoRAProtobufTopologyResponse {
-  prediction: {
-    type: string;
+export interface QLoRAProtobufTopologyResponse { prediction: {, type: string;
     confidence: number;
     vectors: Float32Array; // 1536-dimension vectors
     clusters: number[];
-    topology: {
-      nodes: number;
-      edges: number;
+    topology: { nodes: number;, edges: number;
       connectivity: number;
     };
   };
   accuracy: number;
-  topology: {
-    structure: string;
-    complexity: number;
+  topology: { structure: string;, complexity: number;
     patternMatch: number;
   };
   cacheHit: boolean;
   processingTime: number;
   metrics: QLoRAProtobufMetrics;
   learningData?: QLoRAProtobufLearningData;
-  binaryMetadata: {
-    compressionRatio: number;
-    originalSize: number;
+  binaryMetadata: { compressionRatio: number;, originalSize: number;
     compressedSize: number;
     encoding: 'gzip' | 'brotli' | 'lz4';
   };
@@ -73,7 +61,7 @@ export class QLoRABinaryCodec {
       if (value instanceof Float32Array) {
         return {
           __type: 'Float32Array',
-          data: Array.from(value),
+          data: Array.from(value)
         };
       }
       return value;
@@ -101,9 +89,7 @@ export class QLoRABinaryCodec {
   static getCompressionStats(
     original: any,
     compressed: Uint8Array
-  ): {
-    originalSize: number;
-    compressedSize: number;
+  ): { originalSize: number;, compressedSize: number;
     compressionRatio: number;
   } {
     const originalString = typeof original === 'string' ? original : JSON.stringify(original);
@@ -113,7 +99,7 @@ export class QLoRABinaryCodec {
     return {
       originalSize,
       compressedSize,
-      compressionRatio: Math.round((originalSize / compressedSize) * 100) / 100,
+      compressionRatio: Math.round((originalSize / compressedSize) * 100) / 100
     };
   }
 }
@@ -159,7 +145,7 @@ export class QLoRANetworkCacheKey {
       context: request.context || '',
       topologyType: request.topologyType,
       accuracyTarget: request.accuracyTarget,
-      trainingMode: request.trainingMode,
+      trainingMode: request.trainingMode
     };
     const hex = await this.sha256Hex(JSON.stringify(cacheableParams));
     return `qlora:neural:${hex.substring(0, 16)}`;
@@ -175,9 +161,7 @@ export class QLoRANetworkCacheKey {
 /**
  * Performance monitoring for binary transport
  */
-export interface QLoRABinaryPerformanceMetrics {
-  requestSize: number;
-  responseSize: number;
+export interface QLoRABinaryPerformanceMetrics { requestSize: number;, responseSize: number;
   compressionRatio: number;
   processingTime: number;
   cacheHit: boolean;
@@ -194,7 +178,7 @@ export class QLoRAPerformanceMonitor {
     // Push typed metric with internal timestamp (no any casts)
     this.metrics.push({
       ...metrics,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     // Keep only last 100 entries for memory efficiency
     if (this.metrics.length > 100) {
@@ -203,9 +187,7 @@ export class QLoRAPerformanceMonitor {
   }
   static getAverageMetrics(): Partial<QLoRABinaryPerformanceMetrics> {
     if (this.metrics.length === 0) return {};
-    type Accumulator = {
-      requestSize: number;
-      responseSize: number;
+    type Accumulator = { requestSize: number;, responseSize: number;
       compressionRatio: number;
       processingTime: number;
       cacheHitCount: number;
@@ -224,7 +206,7 @@ export class QLoRAPerformanceMonitor {
         responseSize: 0,
         compressionRatio: 0,
         processingTime: 0,
-        cacheHitCount: 0,
+        cacheHitCount: 0
       } as Accumulator
     );
     const count = this.metrics.length;
@@ -233,7 +215,7 @@ export class QLoRAPerformanceMonitor {
       responseSize: Math.round(totals.responseSize / count),
       compressionRatio: Math.round((totals.compressionRatio / count) * 100) / 100,
       processingTime: Math.round(totals.processingTime / count),
-      cacheHit: totals.cacheHitCount / count > 0.5,
+      cacheHit: totals.cacheHitCount / count > 0.5
     };
   }
 }

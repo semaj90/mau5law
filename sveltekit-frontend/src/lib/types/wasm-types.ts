@@ -28,9 +28,7 @@ declare global {
 }
 }
 // LLVM Compilation Options
-export interface LLVMCompileOptions {
-  moduleId: string;
-  optimizationLevel: '-O0' | '-O1' | '-O2' | '-O3' | '-Os' | '-Oz';
+export interface LLVMCompileOptions { moduleId: string;, optimizationLevel: '-O0' | '-O1' | '-O2' | '-O3' | '-Os' | '-Oz';
   features: string[];
   memorySize: number;
   target?: string;
@@ -40,9 +38,7 @@ export interface LLVMCompileOptions {
   linkFlags?: string[];
 }
 // Compilation Result
-export interface CompilationResult {
-  success: boolean;
-  wasmBinary: ArrayBuffer | null;
+export interface CompilationResult { success: boolean;, wasmBinary: ArrayBuffer | null;
   exports: string[];
   compileTime: number;
   memoryUsage: number;
@@ -51,16 +47,12 @@ export interface CompilationResult {
   error: string | null;
 }
 // WebAssembly Module Interface
-export interface WASMModule {
-  instance: WebAssembly.Instance;
-  module: WebAssembly.Module;
+export interface WASMModule { instance: WebAssembly.Instance;, module: WebAssembly.Module;
   memory: WebAssembly.Memory;
   exports: { [key: string]: any }
 }
 // Legal-specific WASM configurations
-export interface WASMLLMConfig {
-  modelPath: string;
-  maxTokens: number;
+export interface WASMLLMConfig { modelPath: string;, maxTokens: number;
   temperature: number;
   topP?: number;
   topK?: number;
@@ -70,14 +62,10 @@ export interface WASMLLMConfig {
   legalDomainOptimizations?: boolean;
 }
 // WASM LLM Response
-export interface WASMLLMResponse {
-  text: string;
-  tokens: number;
+export interface WASMLLMResponse { text: string;, tokens: number;
   processingTimeMs: number;
   confidence: number;
-  metadata: {
-    model: string;
-    promptTokens: number;
+  metadata: { model: string;, promptTokens: number;
     completionTokens: number;
     totalTokens: number;
     citationCount?: number;
@@ -87,24 +75,18 @@ export interface WASMLLMResponse {
   }
 }
 // WebGPU Device Information
-export interface WebGPUDevice {
-  device: GPUDevice;
-  queue: GPUCommandQueue;
+export interface WebGPUDevice { device: GPUDevice;, queue: GPUCommandQueue;
   adapter: GPUAdapter;
   features: string[];
   limits: Record<string, number>;
   isAvailable: boolean;
 }
 // WebGPU Compute Shader
-export interface WebGPUComputeShader {
-  module: GPUShaderModule;
-  pipeline: GPUComputePipeline;
+export interface WebGPUComputeShader { module: GPUShaderModule;, pipeline: GPUComputePipeline;
   bindGroupLayout: GPUBindGroupLayout;
 }
 // Vector Operation Types
-export interface WebGPUVectorOperation {
-  operationType: 'embedding' | 'similarity' | 'search' | 'clustering';
-  inputVectors: Float32Array[];
+export interface WebGPUVectorOperation { operationType: 'embedding' | 'similarity' | 'search' | 'clustering';, inputVectors: Float32Array[];
   outputSize: number;
   parameters?: {
     dimensions?: number;
@@ -114,33 +96,25 @@ export interface WebGPUVectorOperation {
   }
 }
 // Performance Metrics
-export interface WASMPerformanceMetrics {
-  compileTimeMs: number;
-  loadTimeMs: number;
+export interface WASMPerformanceMetrics { compileTimeMs: number;, loadTimeMs: number;
   executionTimeMs: number;
   memoryUsageBytes: number;
   throughputOpsPerSecond?: number;
   cacheHitRate?: number;
 }
 // Legal Document Processing
-export interface LegalDocumentProcessor {
-  id: string;
-  type: 'contract' | 'brief' | 'evidence' | 'statute' | 'case_law';
+export interface LegalDocumentProcessor { id: string;, type: 'contract' | 'brief' | 'evidence' | 'statute' | 'case_law';
   wasmModule: string;
   requiredMemoryMB: number;
   supportedFormats: string[];
-  capabilities: {
-    textExtraction: boolean;
-    citationExtraction: boolean;
+  capabilities: { textExtraction: boolean;, citationExtraction: boolean;
     entityRecognition: boolean;
     riskAssessment: boolean;
     complianceCheck: boolean;
   }
 }
 // WASM Memory Management
-export interface WASMMemoryLayout {
-  heapBase: number;
-  heapSize: number;
+export interface WASMMemoryLayout { heapBase: number;, heapSize: number;
   stackBase: number;
   stackSize: number;
   dataBase: number;
@@ -187,9 +161,7 @@ export interface WASMError extends Error {
   nativeTrace?: string;
 }
 // WASM Resource Limits
-export interface WASMResourceLimits {
-  maxMemoryPages: number;
-  maxTableElements: number;
+export interface WASMResourceLimits { maxMemoryPages: number;, maxTableElements: number;
   maxFunctions: number;
   maxGlobals: number;
   maxImports: number;
@@ -199,24 +171,18 @@ export interface WASMResourceLimits {
   executionTimeoutMs: number;
 }
 // Legal-specific WASM Configuration
-export interface LegalWASMConfig {
-  enableTextProcessing: boolean;
-  enableDocumentParsing: boolean;
+export interface LegalWASMConfig { enableTextProcessing: boolean;, enableDocumentParsing: boolean;
   enableVectorOperations: boolean;
   enableRiskAssessment: boolean;
   enableComplianceChecking: boolean;
   jurisdiction: string[];
   practiceAreas: string[];
   confidentialityLevel: 'public' | 'confidential' | 'restricted';
-  performance: {
-    optimizationLevel: number;
-    memoryPoolSizeMB: number;
+  performance: { optimizationLevel: number;, memoryPoolSizeMB: number;
     maxConcurrentOperations: number;
     cacheEnabled: boolean;
   }
-  security: {
-    sandboxEnabled: boolean;
-    allowFileAccess: boolean;
+  security: { sandboxEnabled: boolean;, allowFileAccess: boolean;
     allowNetworkAccess: boolean;
     maxExecutionTime: number;
   }

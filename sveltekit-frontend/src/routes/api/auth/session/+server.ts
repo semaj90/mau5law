@@ -16,19 +16,19 @@ export const GET: RequestHandler = async ({ cookies }) => {
           message: 'No session found',
           data: {
             authenticated: false,
-            user: null,
+            user: null
           },
           meta: {
-            timestamp: new Date().toISOString(),
-            version: '1.0.0',
-          },
+           , timestamp: new Date().toISOString(),
+            version: '1.0.0'
+          }
         },
         {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            ...(dev && { 'Access-Control-Allow-Origin': '*' }),
-          },
+            ...(dev && { 'Access-Control-Allow-Origin': '*' })
+          }
         }
       );
     }
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         path: '/',
         httpOnly: true,
         secure: !dev,
-        sameSite: 'strict',
+        sameSite: 'strict'
       });
       return json(
         {
@@ -51,19 +51,19 @@ export const GET: RequestHandler = async ({ cookies }) => {
           message: 'Invalid or expired session',
           data: {
             authenticated: false,
-            user: null,
+            user: null
           },
           meta: {
-            timestamp: new Date().toISOString(),
-            version: '1.0.0',
-          },
+           , timestamp: new Date().toISOString(),
+            version: '1.0.0'
+          }
         },
         {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            ...(dev && { 'Access-Control-Allow-Origin': '*' }),
-          },
+            ...(dev && { 'Access-Control-Allow-Origin': '*' })
+          }
         }
       );
     }
@@ -77,22 +77,22 @@ export const GET: RequestHandler = async ({ cookies }) => {
           authenticated: true,
           user: safeUser,
           session: {
-            id: sessionId,
+           , id: sessionId,
             expiresAt: (result as { success?: any; user?: any; session?: any }).session?.expiresAt,
-            isActive: (result as { success?: any; user?: any; session?: any }).session?.isActive,
-          },
+            isActive: (result as { success?: any; user?: any; session?: any }).session?.isActive
+          }
         },
         meta: {
           timestamp: new Date().toISOString(),
-          version: '1.0.0',
-        },
+          version: '1.0.0'
+        }
       },
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          ...(dev && { 'Access-Control-Allow-Origin': '*' }),
-        },
+          ...(dev && { 'Access-Control-Allow-Origin': '*' })
+        }
       }
     );
   } catch (err: any) {
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
       path: '/',
       httpOnly: true,
       secure: !dev,
-      sameSite: 'strict',
+      sameSite: 'strict'
     });
     return json(
       {
@@ -110,17 +110,16 @@ export const GET: RequestHandler = async ({ cookies }) => {
         message: 'Session validation failed',
         data: {
           authenticated: false,
-          user: null,
+          user: null
         },
         code: 'SESSION_VALIDATION_ERROR',
         meta: {
-          timestamp: new Date().toISOString(),
-          version: '1.0.0',
-        },
+         , timestamp: new Date().toISOString(),
+          version: '1.0.0'
+        }
       },
       {
-        status: 200, // Return 200 but with authenticated: false
-        headers: { 'Content-Type': 'application/json' },
+        status: 200, // Return 200 but with authenticated: false; headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -134,6 +133,6 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400', // 24 hours
-    },
+    }
   });
 };

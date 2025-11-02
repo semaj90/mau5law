@@ -12,7 +12,7 @@ type ServiceResponse = { success: boolean; [key: string]: any };
 // New: explicit minimal actor type to avoid `any`
 type WorkflowActor =
   | {
-      send?: (event: { type: string; data?: any }) => void;
+      send?: (event: {, type: string; data?: any }) => void;
       stop?: () => void | Promise<void>;
     }
   | undefined;
@@ -23,7 +23,7 @@ class IngestionService {
   config = {
     enableRabbitMQ: true,
     enableRedisQueues: true,
-    maxConcurrency: 4,
+    maxConcurrency: 4
   };
 
   constructor() {
@@ -34,26 +34,23 @@ class IngestionService {
     this.workflowActor?.send?.({ type: 'ENQUEUE', data: job });
     return {
       success: true,
-      message: `Enqueued job ${job.id}`,
-    };
+      message: `Enqueued job ${job.id}` };
   }
 
   async process(job: IngestionJob): Promise<ServiceResponse> {
     this.workflowActor?.send?.({ type: 'PROCESS', data: job });
     return {
       success: true,
-      message: `Processed job ${job.id}`,
-    };
+      message: `Processed job ${job.id}` };
   }
 
   // Cleanup and maintenance
   async clearCompletedJobs(): Promise<ServiceResponse> {
-    this.workflowActor?.send?.({ type: 'CLEAR_COMPLETED' });
+    this.workflowActor?.send?.({ type: `CLEAR_COMPLETED` });
     const cleared = jobTracker.clearCompletedJobs();
     return {
       success: true,
-      message: `Cleared ${cleared} completed jobs`,
-    };
+      message: `Cleared ${cleared} completed jobs' };
   }
 
   async resetStats(): Promise<ServiceResponse> {
@@ -61,8 +58,7 @@ class IngestionService {
     jobTracker.reset();
     return {
       success: true,
-      message: 'Statistics reset',
-    };
+      message: `Statistics reset` };
   }
 
   async shutdown(): Promise<void> {

@@ -24,7 +24,7 @@ export async function GET({ params }: RequestEvent): Promise<Response> {
     }
     return json({
       success: true,
-      document: document[0],
+      document: document[0]
     });
   } catch (error: any) {
     // Changed 'any' to 'unknown'
@@ -44,7 +44,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<Response> 
     // Update in real database (no mock fallback)
     const updates: DocumentUpdate = {
       // Changed 'any' to 'DocumentUpdate'
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     if (title !== undefined) updates.originalFilename = title;
     if (content !== undefined) {
@@ -66,7 +66,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<Response> 
     }
     return json({
       success: true,
-      document: updatedDocument[0],
+      document: updatedDocument[0]
     });
   } catch (error: any) {
     // Changed 'any' to 'unknown'
@@ -88,7 +88,7 @@ export async function DELETE({ params }: RequestEvent): Promise<Response> {
     }
     return json({
       success: true,
-      message: 'Document deleted successfully',
+      message: 'Document deleted successfully'
     });
   } catch (error: any) {
     // Changed 'any' to 'unknown'

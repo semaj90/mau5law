@@ -38,9 +38,7 @@ interface Base64FP32QuantizerModule {
   quantizeGemmaOutput(base64Data: string, options?: Partial<QuantizationOptions>): Promise<Base64QuantizationResult>;
 }
 
-export interface ChatMessage {
-  id: string;
-  userId: string;
+export interface ChatMessage { id: string;, userId: string;
   content: string;
   timestamp: Date;
   sessionId: string;
@@ -58,39 +56,27 @@ export interface ChatMessage {
     };
   };
 }
-export interface ChatEmbedding {
-  chatId: string;
-  embedding: number[]; // Gemma embeddings
+export interface ChatEmbedding { chatId: string;, embedding: number[]; // Gemma embeddings
   quantizedEmbedding: string; // FP32 quantized version, stored as base64 string
   timestamp: Date;
-  temporalContext: {
-    dayOfWeek: number; // 0-6
-    hourOfDay: number; // 0-23
+  temporalContext: { dayOfWeek: number; // 0-6, hourOfDay: number; // 0-23
     monthOfYear: number; // 1-12
     seasonality: 'spring' | 'summer' | 'fall' | 'winter';
     businessHours: boolean;
   };
   semanticHash: string; // For fast similarity checks
 }
-export interface IntentPrediction {
-  predictedIntent: string;
-  confidence: number;
+export interface IntentPrediction { predictedIntent: string;, confidence: number;
   suggestedQuestions: string[];
   didYouMean: string[];
-  contextualRecommendations: {
-    similarPastQueries: ChatMessage[];
-    relatedTopics: string[];
+  contextualRecommendations: { similarPastQueries: ChatMessage[];, relatedTopics: string[];
     nextSteps: string[];
   };
-  temporalInsights: {
-    commonAtThisTime: string[];
-    seasonalTrends: string[];
+  temporalInsights: { commonAtThisTime: string[];, seasonalTrends: string[];
     userPatterns: string[];
   };
 }
-export interface SemanticSearchResult {
-  message: ChatMessage;
-  similarity: number;
+export interface SemanticSearchResult { message: ChatMessage;, similarity: number;
   temporalRelevance: number;
   combinedScore: number;
   embedding: ChatEmbedding;
@@ -147,7 +133,7 @@ export class ChatVectorStorage {
       'settlement options',
       'mediation',
       'arbitration',
-    ],
+    ]
   };
   constructor() {
     this.initializeVectorStorage();
@@ -220,7 +206,7 @@ export class ChatVectorStorage {
         quantizedEmbedding,
         timestamp: message.timestamp,
         temporalContext,
-        semanticHash,
+        semanticHash
       };
       // Step 6: Store in pgvector (using Drizzle ORM)
       await this.storeToPGVector(message, chatEmbedding);
@@ -241,8 +227,7 @@ export class ChatVectorStorage {
       // Use the enhanced caching bridge to get Gemma embeddings
       const result: CachedEmbeddingResult = await enhancedCachingRevolutionaryBridge.getCachedEmbeddingUnified(text, {
         enableSIMDAcceleration: true,
-        compressionLevel: 'medium',
-      });
+        compressionLevel: 'medium` });
       // Check if result has the expected structure for embeddings with explicit checks
       if (result && result.embeddings && result.embeddings.embedding) {
         return result.embeddings.embedding;
@@ -336,7 +321,7 @@ export class ChatVectorStorage {
       hourOfDay,
       monthOfYear,
       seasonality,
-      businessHours: businessHours(dayOfWeek, hourOfDay),
+      businessHours: businessHours(dayOfWeek, hourOfDay)
     };
   }
 
@@ -377,7 +362,7 @@ export class ChatVectorStorage {
         timestamp: message.timestamp,
         sessionId: message.sessionId,
         messageType: message.messageType,
-        metadata: message.metadata,
+        metadata: message.metadata
       });
 
       await tx.insert(chatEmbeddings).values({
@@ -386,7 +371,7 @@ export class ChatVectorStorage {
         quantizedEmbedding: embedding.quantizedEmbedding, // Now directly a base64 string
         timestamp: embedding.timestamp,
         temporalContext: embedding.temporalContext,
-        semanticHash: embedding.semanticHash,
+        semanticHash: embedding.semanticHash
       });
     });
     console.log(`💾 Stored to pgvector: ${message.id} with ${embedding.embedding.length}D embedding`);
@@ -442,13 +427,13 @@ export class ChatVectorStorage {
         contextualRecommendations: {
           similarPastQueries: [],
           relatedTopics: [],
-          nextSteps: [],
+          nextSteps: []
         },
         temporalInsights: {
           commonAtThisTime: [],
           seasonalTrends: [],
-          userPatterns: [],
-        },
+          userPatterns: []
+        }
       };
     }
   }
@@ -499,17 +484,16 @@ export class ChatVectorStorage {
             // Fix: Keep quantizedEmbedding as string as per ChatEmbedding interface.
             // The base64ToFloat32Array conversion is for internal use if Float32Array is needed for calculations,
             // but the returned object's property should match the interface.
-            quantizedEmbedding: row.embedding.quantizedEmbedding,
+            quantizedEmbedding: row.embedding.quantizedEmbedding
           },
-          reasonForMatch: `Semantic similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}`,
-        };
+          reasonForMatch: `Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}` };
       })
       .sort((a, b) => b.combinedScore - a.combinedScore); // Sort by combined score
   }
   private analyzeIntentPatterns(
     message: string,
     similarMessages: SemanticSearchResult[]
-  ): { intent: string; confidence: number } {
+  ): { intent: string;, confidence: number } {
     const messageLower = message.toLowerCase();
     // Check against legal intent patterns
     let bestIntent = 'general_inquiry';
@@ -586,7 +570,7 @@ export class ChatVectorStorage {
     return {
       similarPastQueries,
       relatedTopics,
-      nextSteps,
+      nextSteps
     };
   }
   private extractRelatedTopics(similarMessages: SemanticSearchResult[], intent: string): string[] {
@@ -603,7 +587,7 @@ export class ChatVectorStorage {
       'legal_research': ['precedent', 'statutes', 'case law', 'citations'],
       'document_drafting': ['templates', 'formatting', 'legal language'],
       'compliance_check': ['regulations', 'requirements', 'audit'],
-      'dispute_analysis': ['resolution', 'mediation', 'litigation'],
+      'dispute_analysis': ['resolution', 'mediation', 'litigation']
     };
     if (intentTopics[intent]) {
       intentTopics[intent].forEach(topic => topics.add(topic));
@@ -636,7 +620,7 @@ export class ChatVectorStorage {
         'Gather relevant documents and facts',
         'Assess legal options and risks',
         'Consider alternative dispute resolution',
-      ],
+      ]
     };
     return (
       nextSteps[intent] || [
@@ -679,7 +663,7 @@ export class ChatVectorStorage {
     return {
       commonAtThisTime,
       seasonalTrends,
-      userPatterns,
+      userPatterns
     };
   }
   /**
@@ -689,7 +673,7 @@ export class ChatVectorStorage {
     userId: string,
     query: string,
     options?: {
-      timeRange?: { start: Date; end: Date };
+      timeRange?: { start: Date;, end: Date };
       intentFilter?: string[];
       minSimilarity?: number;
       maxResults?: number;
@@ -731,7 +715,7 @@ export class ChatVectorStorage {
   /**
    * Get chat analytics and insights
    */
-  async getChatAnalytics(userId: string, timeRange?: { start: Date; end: Date }) {
+  async getChatAnalytics(userId: string, timeRange?: { start: Date;, end: Date }) {
     const whereClause = timeRange
       ? and(
           eq(chatMessages.userId, userId),
@@ -750,8 +734,7 @@ export class ChatVectorStorage {
     const mostCommonIntents = await db
       .select({
         intent: sql<string>`${chatMessages.metadata} ->> 'intent'`, // Corrected Drizzle JSONB access
-        count: sql<number>`count(*)`,
-      })
+        count: sql<number>`count(*)` })
       .from(chatMessages)
       .where(and(whereClause, sql`${chatMessages.metadata} ->> 'intent'`.isNotNull())) // Corrected Drizzle JSONB access
       .groupBy(sql`${chatMessages.metadata} ->> 'intent'`) // Corrected Drizzle JSONB access
@@ -771,7 +754,7 @@ export class ChatVectorStorage {
       temporalPatterns: {}, // Placeholder
       topTopics: [], // Placeholder
       averageSessionLength: 0, // Placeholder
-      lastActive: lastActiveMessage[0]?.timestamp || new Date(0),
+      lastActive: lastActiveMessage[0]?.timestamp || new Date(0)
     };
   }
   /**
@@ -832,6 +815,6 @@ export async function searchUserChatHistory(
 ): Promise<SemanticSearchResult[]> {
   return await chatVectorStorage.searchChatHistory(userId, searchQuery, {
     maxResults,
-    minSimilarity: 0.6,
+    minSimilarity: 0.6
   });
 }

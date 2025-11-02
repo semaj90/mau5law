@@ -5,9 +5,7 @@ import { json } from '@sveltejs/kit';
 // "is not a module" errors. If you want compile-time WebGPU types, install the package as a
 // devDependency and add it to tsconfig: "types": ["@webgpu/types"] instead of importing it here.
 
-export interface TestResult {
-  test: string;
-  status: 'success' | 'error' | 'warning';
+export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
   data?: any; // changed from `any` to `unknown`
   error?: string;
 }
@@ -25,13 +23,13 @@ export const GET: RequestHandler = async () => {
     results.push({
       test: 'webgpu_availability',
       status: 'warning',
-      data: { available: false, reason: 'WebGPU only available in browser context' },
+      data: {, available: false, reason: 'WebGPU only available in browser context' }
     });
     // Test 2: WebGL Context
     results.push({
       test: 'webgl_context',
       status: 'warning',
-      data: { available: false, reason: 'WebGL only available in browser context' },
+      data: {, available: false, reason: 'WebGL only available in browser context' }
     });
     // Test 3: WebGPU Polyfill Import
     try {
@@ -42,13 +40,13 @@ export const GET: RequestHandler = async () => {
       results.push({
         test: 'webgpu_polyfill_import',
         status: 'success',
-        data: { imported: true, type: typeof webgpuPolyfill },
+        data: {, imported: true, type: typeof webgpuPolyfill }
       });
     } catch (error: any) {
       results.push({
         test: 'webgpu_polyfill_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       });
     }
     // Test 4: WebGPU Shared Types Import
@@ -61,10 +59,10 @@ export const GET: RequestHandler = async () => {
         test: 'webgpu_shared_types_import',
         status: 'success',
         data: {
-          imported: true,
+         , imported: true,
           typesChecked: ['GPU', 'GPUDevice', 'GPUAdapter'],
-          note: 'Type imports are compile-time checks; runtime availability is separate.',
-        },
+          note: 'Type imports are compile-time checks; runtime availability is separate.'
+        }
       });
     } catch (error: any) {
       // This catch block would only be hit if the static import itself caused a runtime error,
@@ -72,7 +70,7 @@ export const GET: RequestHandler = async () => {
       results.push({
         test: 'webgpu_shared_types_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       });
     }
     // Test 5: WebGL Shader Cache Import
@@ -82,13 +80,13 @@ export const GET: RequestHandler = async () => {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'success',
-        data: { imported: true, shaderCount, cacheCreated: typeof createWebGLShaderCache === 'function' },
+        data: {, imported: true, shaderCount, cacheCreated: typeof createWebGLShaderCache === 'function' }
       });
     } catch (error: any) {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       });
     }
     // Test 6: NES Memory Architecture Import
@@ -98,13 +96,13 @@ export const GET: RequestHandler = async () => {
       results.push({
         test: 'nes_memory_import',
         status: 'success',
-        data: { imported: true, memoryStats },
+        data: {, imported: true, memoryStats }
       });
     } catch (error: any) {
       results.push({
         test: 'nes_memory_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
       });
     }
     // Test 7: GPU Memory Test (Simulated)
@@ -112,12 +110,12 @@ export const GET: RequestHandler = async () => {
       test: 'gpu_memory_simulation',
       status: 'success',
       data: {
-        simulated: true,
+       , simulated: true,
         note: 'This is a simulated GPU memory test; no actual hardware check is performed.',
         gpuInfo: 'NVIDIA GeForce RTX 3060 Ti',
         memoryAvailable: '8GB VRAM',
-        webgpuSupport: 'Requires browser context',
-      },
+        webgpuSupport: 'Requires browser context'
+      }
     });
     return json({
       success: true,
@@ -129,10 +127,9 @@ export const GET: RequestHandler = async () => {
         failed: results.filter(item => item.status === 'error'),
         warnings: results.filter(item => item.status === 'warning').length,
         gpuMemoryTestSimulated: true,
-        gpuMemoryTestNote: 'GPU memory test is simulated; no real hardware check is performed.',
+        gpuMemoryTestNote: 'GPU memory test is simulated; no real hardware check is performed.'
       },
-      note: 'WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture. GPU memory test is simulated for transparency.',
-    });
+      note: 'WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture. GPU memory test is simulated for transparency.` });
   } catch (error: any) {
     // Normalize unknown error to an Error instance for safe message extraction
     const err = error instanceof Error ? error : new Error(String(error));
@@ -140,7 +137,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         error: err.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

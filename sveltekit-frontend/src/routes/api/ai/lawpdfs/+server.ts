@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -41,31 +41,21 @@ export interface LawPdfRequest {
 }
 
 // Define specific types for entities and legal concepts
-export interface Entity {
-  text: string;
-  type: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT';
+export interface Entity { text: string;, type: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT';
   confidence: number;
 }
 
-export interface LegalConcept {
-  concept: string;
-  relevance: number;
+export interface LegalConcept { concept: string;, relevance: number;
 }
 
-export interface LawPdfResponse {
-  summary: string;
-  entities: Entity[]; // Changed from Array<any>
+export interface LawPdfResponse { summary: string;, entities: Entity[]; // Changed from Array<any>
   legalConcepts: LegalConcept[]; // Changed from Array<any>
   keyTerms: string[];
-  riskAssessment: {
-    riskLevel: 'low' | 'medium' | 'high';
-    riskFactors: string[];
+  riskAssessment: { riskLevel: 'low' | 'medium' | 'high';, riskFactors: string[];
     recommendations: string[];
   };
   embedding?: number[];
-  metadata: {
-    processingTime: number;
-    modelUsed: string;
+  metadata: { processingTime: number;, modelUsed: string;
     embeddingModel: string;
     localProcessing: boolean;
     confidence: number;
@@ -73,9 +63,7 @@ export interface LawPdfResponse {
 }
 
 // Define interface for file processing results
-interface FileProcessingResult {
-  filename: string;
-  success: boolean;
+interface FileProcessingResult { filename: string;, success: boolean;
   error?: string;
   documentId?: string;
   sessionId?: string;
@@ -109,7 +97,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
       fileName: _fileName = 'document.pdf', // Marked fileName as unused
       analysisType = 'comprehensive',
       useLocalModels = true,
-      modelPreferences = {},
+      modelPreferences = {}
     } = body;
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 });
@@ -127,7 +115,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
     response.metadata = {
       ...response.metadata,
       processingTime: Date.now() - startTime,
-      localProcessing: useLocalModels,
+      localProcessing: useLocalModels
     };
     return json(response);
   } catch (error: any) {
@@ -138,14 +126,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
       {
         error: 'Document processing failed',
         details: message,
-        fallbackSuggestion: 'Try with useLocalModels: false for cloud processing',
+        fallbackSuggestion: 'Try with; useLocalModels: false for cloud processing'
       },
       { status: 500 }
     );
   }
 };
 async function handleFileUpload(request: Request, _locals: App.Locals): Promise<Response> {
-  // Changed locals: any to _locals: App.Locals and Promise<any> to Promise<Response>
+  // Changed locals: any to; _locals: App.Locals and Promise<any> to Promise<Response>
   // locals is unused but kept for SvelteKit signature
   try {
     console.log('[LawPDF] Handling file upload with evidence processing pipeline');
@@ -163,7 +151,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
         results.push({
           filename: file.name,
           success: false,
-          error: 'Only PDF files are supported',
+          error: 'Only PDF files are supported'
         });
         continue;
       }
@@ -190,8 +178,8 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           },
           body: JSON.stringify({
             evidenceId,
-            steps,
-          }),
+            steps
+          })
         });
         if (!processResponse.ok) {
           throw new Error(`Evidence processing failed: ${processResponse.status}`);
@@ -206,15 +194,14 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           contentLength: file.size,
           embeddingGenerated: enableEmbedding,
           processingTime: 'In progress',
-          webSocketUrl: `${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}`,
-        });
+          webSocketUrl: '${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}` });
       } catch (error: any) {
         // Changed any to unknown
         console.error(`[LawPDF] Failed to process file ${file.name}:`, error);
         results.push({
           filename: file.name,
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         });
       }
     }
@@ -225,7 +212,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
       message: `${successCount}/${files.length} files queued for processing`,
       totalFiles: files.length,
       successfulFiles: successCount,
-      failedFiles: files.length - successCount,
+      failedFiles: files.length - successCount
     });
   } catch (error: any) {
     // Changed any to unknown
@@ -234,7 +221,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
       {
         success: false,
         error: 'File upload processing failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -252,18 +239,18 @@ async function processWithLocalModels(
     // 1. Generate comprehensive legal summary with gemma3-legal
     const summaryResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: summaryModel.replace(':latest', ''),
+       , model: summaryModel.replace(':latest', ''),
         prompt: legalPrompt,
         stream: false,
         options: {
           temperature: 0.3, // Lower temperature for legal accuracy
           top_p: 0.9,
           max_tokens: 1500,
-          stop: ['<|end|>', '\n\n---'],
-        },
-      }),
+          stop: ['<|end|>', '\n\n---']
+        }
+      })
     });
     if (!summaryResponse.ok) {
       throw new Error(`Ollama summary failed: ${summaryResponse.status}`);
@@ -275,11 +262,11 @@ async function processWithLocalModels(
     try {
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: embeddingModel.replace(':latest', ''),
+         , model: embeddingModel.replace(':latest', ''),
           prompt: content.substring(0, 2000), // Limit for embedding
-        }),
+        })
       });
       if (embeddingResponse.ok) {
         const embeddingData = await embeddingResponse.json();
@@ -303,8 +290,8 @@ async function processWithLocalModels(
         modelUsed: summaryModel,
         embeddingModel,
         localProcessing: true,
-        confidence: parsedAnalysis.confidence,
-      },
+        confidence: parsedAnalysis.confidence
+      }
     };
   } catch (error: any) {
     // Changed any to unknown
@@ -336,16 +323,15 @@ async function processWithCloudFallback(content: string, analysisType: string): 
       modelUsed: 'fallback-processor',
       embeddingModel: 'none',
       localProcessing: false,
-      confidence: 0.6,
-    },
+      confidence: 0.6
+    }
   };
 }
 function buildLegalAnalysisPrompt(content: string, analysisType: string): string {
   const basePrompt = `As a legal AI assistant, analyze this document and provide a comprehensive legal analysis.
 Document Content:
 ${content.substring(0, 3000)}
-Please provide your analysis in the following structured format:
-SUMMARY:
+Please provide your analysis in the following structured format:; SUMMARY:
 [Provide a clear, concise summary of the document's main legal points]
 ENTITIES:
 [List key persons, organizations, locations, and dates mentioned]
@@ -360,21 +346,16 @@ Focus on accuracy and legal precision. Use clear, professional language.`;
     basic: basePrompt,
     comprehensive: basePrompt + '\n\nProvide detailed analysis with citations and cross-references where applicable.',
     'legal-focused':
-      basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.',
-  };
+      basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.` };
   return enhancedPrompts[analysisType] || enhancedPrompts['comprehensive'];
 }
-function parseGemmaLegalResponse(response: string): {
-  summary: string;
-  entities: LawPdfResponse['entities'];
+function parseGemmaLegalResponse(response: string): { summary: string;, entities: LawPdfResponse['entities'];
   legalConcepts: LawPdfResponse['legalConcepts'];
   keyTerms: string[];
   riskAssessment: LawPdfResponse['riskAssessment'];
   confidence: number;
 } {
-  const sections: {
-    summary: string;
-    entities: LawPdfResponse['entities'];
+  const sections: { summary: string;, entities: LawPdfResponse['entities'];
     legalConcepts: LawPdfResponse['legalConcepts'];
     keyTerms: string[];
     riskAssessment: LawPdfResponse['riskAssessment'];
@@ -387,16 +368,16 @@ function parseGemmaLegalResponse(response: string): {
     riskAssessment: {
       riskLevel: 'medium',
       riskFactors: [],
-      recommendations: [],
+      recommendations: []
     },
-    confidence: 0.8,
+    confidence: 0.8
   };
   try {
     const summaryMatch = response.match(/SUMMARY:\s*(.*?)(?=\n\n|ENTITIES:|$)/s);
     if (summaryMatch) {
       sections.summary = summaryMatch[1].trim();
     }
-    const entitiesMatch = response.match(/ENTITIES:\s*(.*?)(?=\n\n|LEGAL CONCEPTS:|$)/s);
+    const entitiesMatch = response.match(/ENTITIES:\s*(.*?)(?=\n\n|LEGAL; CONCEPTS:|$)/s);
     if (entitiesMatch) {
       const entityLines = entitiesMatch[1].split('\n').filter((line: string) => line.trim()); // Added type for line, closed filter
       sections.entities = entityLines
@@ -404,22 +385,22 @@ function parseGemmaLegalResponse(response: string): {
           // Added type for line
           text: line.replace(/^[-•*]\s*/, '').trim(),
           type: 'LEGAL_CONCEPT' as const,
-          confidence: 0.8,
+          confidence: 0.8
         }))
         .slice(0, 10);
     }
-    const conceptsMatch = response.match(/LEGAL CONCEPTS:\s*(.*?)(?=\n\n|KEY TERMS:|$)/s);
+    const conceptsMatch = response.match(/LEGAL CONCEPTS:\s*(.*?)(?=\n\n|KEY; TERMS:|$)/s);
     if (conceptsMatch) {
       const conceptLines = conceptsMatch[1].split('\n').filter((line: string) => line.trim()); // Added type for line, closed filter
       sections.legalConcepts = conceptLines
         .map((line: string) => ({
           // Added type for line
           concept: line.replace(/^[-•*]\s*/, '').trim(),
-          relevance: 0.8,
+          relevance: 0.8
         }))
         .slice(0, 8);
     }
-    const termsMatch = response.match(/KEY TERMS:\s*(.*?)(?=\n\n|RISK ASSESSMENT:|$)/s);
+    const termsMatch = response.match(/KEY TERMS:\s*(.*?)(?=\n\n|RISK; ASSESSMENT:|$)/s);
     if (termsMatch) {
       sections.keyTerms = termsMatch[1]
         .split(/[,\n]/)
@@ -462,15 +443,15 @@ function extractBasicEntities(content: string) {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     ORGANIZATION: /\b[A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company)\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
-    LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi,
+    LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi
   };
   for (const [type, pattern] of Object.entries(patterns)) {
     const matches = content.match(pattern) || [];
     matches.slice(0, 5).forEach(match => {
       entities.push({
         text: match,
-        type: type as: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT', // More specific type casting
-        confidence: 0.7,
+        type: type; as: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT', // More specific type casting
+        confidence: 0.7
       });
     });
   }
@@ -491,7 +472,7 @@ function detectLegalConcepts(content: string) {
     .map((concept: string) => ({
       // Added type for concept
       concept,
-      relevance: 0.7,
+      relevance: 0.7
     }));
 }
 function extractKeyTerms(content: string) {
@@ -515,11 +496,11 @@ function assessBasicRisk(content: string) {
   const hasHighRisk = highRiskKeywords.some((keyword: string) => content.toLowerCase().includes(keyword)); // Added type for keyword, closed some
   const hasMediumRisk = mediumRiskKeywords.some(
     (
-      keyword: string // Added type for keyword
+      keyword: string // Added type for keyword;
     ) => content.toLowerCase().includes(keyword)
   );
   return {
-    riskLevel: hasHighRisk ? ('high' as const) : hasMediumRisk ? ('medium' as const) : ('low' as const),
+    riskLevel: hasHighRisk ? ('high' as const ) : hasMediumRisk ? ('medium' as const ) : ('low' as const ),
     riskFactors: hasHighRisk
       ? ['High liability exposure detected']
       : hasMediumRisk
@@ -529,7 +510,7 @@ function assessBasicRisk(content: string) {
       ? ['Review with legal counsel', 'Consider liability caps']
       : hasMediumRisk
         ? ['Standard legal review recommended']
-        : ['Minimal legal review required'],
+        : ['Minimal legal review required']
   };
 }
 // TODO: Add: 'documentProcessing' to the type definition in $lib/middleware/redis-orchestrator-middleware.ts

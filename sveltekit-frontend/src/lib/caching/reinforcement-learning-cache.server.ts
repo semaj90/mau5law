@@ -27,7 +27,7 @@ class ReinforcementLearningCache {
     this.learningModel = {
       weights: new Map<string, number>(),
       learningRate: 0.01,
-      lastUpdate: Date.now(),
+      lastUpdate: Date.now()
     };
     this.isInitialized = true;
     console.log('Reinforcement Learning Cache (server-only) initialized.');
@@ -98,9 +98,7 @@ class ReinforcementLearningCache {
   /**
    * Gets cache statistics
    */
-  getStats(): {
-    size: number;
-    hitRatio: number;
+  getStats(): { size: number;, hitRatio: number;
     modelWeights: number;
     lastUpdate: number;
   } {
@@ -108,7 +106,7 @@ class ReinforcementLearningCache {
       size: this.cache.size,
       hitRatio: this.hitRatio,
       modelWeights: this.learningModel?.weights.size ?? 0,
-      lastUpdate: this.learningModel?.lastUpdate ?? 0,
+      lastUpdate: this.learningModel?.lastUpdate ?? 0
     };
   }
   /**

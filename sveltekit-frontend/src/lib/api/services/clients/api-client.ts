@@ -41,7 +41,7 @@ export async function apiFetch<T = any>(
   try {
     const response = await fetch(url, {
       ...fetchOptions,
-      signal: controller.signal,
+      signal: controller.signal
     });
     clearTimeout(timeoutId);
 

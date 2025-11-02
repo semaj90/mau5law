@@ -4,9 +4,7 @@
  * using the embeddings API with `embeddinggemma:latest` by default.
  * Returns null on any failure or if the server is unavailable.
  */
-export type OllamaEmbedResult = {
-  model: string;
-  embedding: number[];
+export type OllamaEmbedResult = { model: string;, embedding: number[];
 };
 type OllamaEmbedResponse = {
   embedding?: number[];

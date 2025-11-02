@@ -2,9 +2,7 @@
  * SIMD JSON Web Worker Client
  * Provides easy interface for off-main-thread JSON parsing
  */
-interface SIMDWorkerMessage {
-  type: string;
-  id: string;
+interface SIMDWorkerMessage { type: string;, id: string;
   data?: any;
   error?: string;
   success?: boolean;
@@ -19,9 +17,7 @@ export class SIMDJSONWorkerClient {
   private messageId = 0;
   private pendingRequests = new Map<
     string,
-    {
-      resolve: (_value: any) => void;
-      reject: (error: Error) => void;
+    { resolve: (_value: any) => void;, reject: (error: Error) => void;
       timeout?: NodeJS.Timeout;
     }
   >();
@@ -64,7 +60,7 @@ export class SIMDJSONWorkerClient {
     // Handle initialization complete
     if (type === 'INIT_COMPLETE') {
       this.isReady = message.success || false;
-      console.log(`🔧 SIMD JSON Worker initialization: ${this.isReady ? 'success' : 'failed'}`);
+      console.log(`🔧 SIMD JSON Worker initialization: ${this.isReady ? 'success' : 'failed' }`);
     }
     // Handle pending requests
     const pending = this.pendingRequests.get(id);
@@ -86,7 +82,7 @@ export class SIMDJSONWorkerClient {
         pending.resolve({
           data: message.data,
           metadata: message.metadata,
-          success: true,
+          success: true
         });
         break;
       case 'PARSE_ERROR':
@@ -94,7 +90,7 @@ export class SIMDJSONWorkerClient {
         pending.reject(new Error(message.error || 'Unknown worker error'));
         break;
       default:
-        pending.reject(new Error(`Unknown message type: ${type}`));
+        pending.reject(new Error(`Unknown message; type: ${type}`));
     }
   }
   /**
@@ -116,13 +112,13 @@ export class SIMDJSONWorkerClient {
       this.pendingRequests.set(id, {
         resolve,
         reject,
-        timeout: timeoutId,
+        timeout: timeoutId
       });
       // Send message to worker
       this.worker!.postMessage({
         type,
         id,
-        data,
+        data
       });
     });
   }
@@ -215,7 +211,7 @@ export class SIMDJSONWorkerClient {
         totalTime: 0,
         avgTime: 0,
         errors: 0,
-        simdReady: false,
+        simdReady: false
       };
     }
     try {

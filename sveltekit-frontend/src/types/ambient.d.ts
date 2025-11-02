@@ -41,9 +41,7 @@ declare module '$env/dynamic/private' {
 // Add more specific typings progressively as files are stabilized.
 declare module 'fabric';
 // Redis service shape used across the codebase (trimmed to commonly used methods)
-declare interface SimpleRedis {
-  connect: (...args: any[]) => Promise<unknown>;
-  disconnect: (...args: any[]) => Promise<unknown>;
+declare interface SimpleRedis { connect: (...args: any[]) => Promise<unknown>;, disconnect: (...args: any[]) => Promise<unknown>;
   ping: (...args: any[]) => Promise<unknown>;
   quit: (...args: any[]) => Promise<unknown>;
   xAdd: (...args: any[]) => Promise<unknown>;

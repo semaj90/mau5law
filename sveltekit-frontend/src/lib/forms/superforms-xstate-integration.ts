@@ -43,10 +43,8 @@ type AnalysisContext = {
 // ============================================================================
 // FORM STATE INTEGRATION TYPES
 // ============================================================================
-export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any };
-export interface FormMachineIntegration<M extends { getSnapshot: () => unknown }> {
-  form: ReturnType<typeof superForm>;
-  actor: M;
+export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any;, context: any };
+export interface FormMachineIntegration<M extends { getSnapshot: () => unknown }> { form: ReturnType<typeof superForm>;, actor: M;
   state: Writable<unknown>;
   context: Writable<unknown>;
   isValid: Readable<boolean>;
@@ -94,7 +92,7 @@ export function createDocumentUploadForm(
       } else {
         actor.send({ type: 'SUBMIT', data: formData });
       }
-    },
+    }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
@@ -168,7 +166,7 @@ export function createDocumentUploadForm(
     isValid,
     isSubmitting,
     errors,
-    progress,
+    progress
   };
 }
 // ============================================================================
@@ -197,7 +195,7 @@ export function createCaseCreationForm(
       } else {
         actor.send({ type: 'SUBMIT_CASE', data: formData });
       }
-    },
+    }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
@@ -244,7 +242,7 @@ export function createCaseCreationForm(
     if (stateValue === 'completed' && options.onSuccess) options.onSuccess(caseCtx?.createdCase);
     else if (caseCtx?.error && options.onError) options.onError(caseCtx.error);
   });
-  actor.send({ type: 'START_CREATION' } as unknown);
+  actor.send({ type: `START_CREATION` } as unknown);
   return {
     form,
     actor,
@@ -253,7 +251,7 @@ export function createCaseCreationForm(
     isValid,
     isSubmitting,
     errors,
-    progress,
+    progress
   };
 }
 // ============================================================================
@@ -285,7 +283,7 @@ export function createSearchForm(
       } else {
         actor.send({ type: 'SEARCH', data: formData });
       }
-    },
+    }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
@@ -324,7 +322,7 @@ export function createSearchForm(
       options.onSuccess({ results: searchCtx?.results, analytics: searchCtx?.analytics });
     else if (stateValue === 'error' && options.onError) options.onError(searchCtx?.error ?? 'Search failed');
   });
-  actor.send({ type: 'LOAD_HISTORY' } as unknown);
+  actor.send({ type: `LOAD_HISTORY` } as unknown);
   return {
     form,
     actor,
@@ -333,7 +331,7 @@ export function createSearchForm(
     isValid,
     isSubmitting,
     errors,
-    progress,
+    progress
   };
 }
 // ============================================================================
@@ -358,7 +356,7 @@ export function createAIAnalysisForm(
       } else {
         actor.send({ type: 'START_ANALYSIS', data: formData });
       }
-    },
+    }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
@@ -398,7 +396,7 @@ export function createAIAnalysisForm(
         results: analysisCtx?.analysisResults,
         confidence: analysisCtx?.confidence,
         processingTime: analysisCtx?.processingTime,
-        tokensUsed: analysisCtx?.tokensUsed,
+        tokensUsed: analysisCtx?.tokensUsed
       });
     } else if (stateValue === 'error' && options.onError) {
       const analysisErrCtx = contextValue as AnalysisContext | undefined;
@@ -413,7 +411,7 @@ export function createAIAnalysisForm(
     isValid,
     isSubmitting,
     errors,
-    progress,
+    progress
   };
 }
 // ============================================================================
@@ -431,7 +429,7 @@ export function createFormValidator<T extends z.ZodType>(schema: T) {
     },
     validateAsync: async (data: any): Promise<z.infer<T>> => {
       return schema.parseAsync(data);
-    },
+    }
   };
 }
 export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
@@ -457,7 +455,7 @@ export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
     getStepErrors: (step: number, data: any) => {
       if (step >= 0 && step < schemas.length) return createFormValidator(schemas[step]).getErrors(data);
       return {};
-    },
+    }
   };
 }
 // ============================================================================
@@ -509,11 +507,10 @@ export const formValidators = {
   documentUpload: createFormValidator(DocumentUploadSchema),
   caseCreation: createFormValidator(CaseCreationSchema),
   searchQuery: createFormValidator(SearchQuerySchema),
-  aiAnalysis: createFormValidator(AIAnalysisSchema),
+  aiAnalysis: createFormValidator(AIAnalysisSchema)
 };
 export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: 'legal-ai:ai-analysis',
-} as const;
+  AI_ANALYSIS: `legal-ai:ai-analysis` } as const;

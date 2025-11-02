@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -39,9 +39,7 @@ interface User {
   legalSpecialties?: string[];
 }
 
-interface EnhancedContext {
-  caseId: string;
-  evidence: EvidenceItem[];
+interface EnhancedContext { caseId: string;, evidence: EvidenceItem[];
   userId: string;
   analysisType: string;
   model: string;
@@ -56,19 +54,13 @@ interface EnhancedContext {
   };
 }
 
-interface ModelCheck {
-  available: boolean;
-  models: string[];
+interface ModelCheck { available: boolean;, models: string[];
 }
 
-interface RiskAssessment {
-  level: 'low' | 'medium' | 'high';
-  factors: string[];
+interface RiskAssessment { level: 'low' | 'medium' | 'high';, factors: string[];
 }
 
-interface AuditLog {
-  userId: string;
-  caseId: string;
+interface AuditLog { userId: string;, caseId: string;
   analysisType: string;
   model: string;
   confidence?: number;
@@ -103,9 +95,7 @@ type RAGResponse = {
 //   return getEnvUrl('ENHANCED_RAG_URL', 'http://enhanced-rag:8094', 'http://localhost:8094');
 // }
 
-export interface ProcessEvidenceRequest {
-  caseId: string;
-  evidence: EvidenceItem[];
+export interface ProcessEvidenceRequest { caseId: string;, evidence: EvidenceItem[];
   userId: string;
   model: string;
   analysisType?: 'summary' | 'risk_analysis' | 'legal_research' | 'case_comparison';
@@ -113,9 +103,7 @@ export interface ProcessEvidenceRequest {
   maxTokens?: number;
   stream?: boolean;
 }
-export interface LegalAnalysisResponse {
-  summary: string;
-  sources: Source[];
+export interface LegalAnalysisResponse { summary: string;, sources: Source[];
   confidence: number;
   legalConcepts: string[];
   recommendations: string[];
@@ -144,28 +132,26 @@ const originalPOSTHandler: RequestHandler = async event => {
       analysisType = 'summary',
       temperature = 0.3, // Lower for legal precision
       maxTokens = 2048,
-      stream = false,
+      stream = false
     } = body;
     // Validate required fields
     if (!caseId || !evidence || !userId) {
       return json(
-        {
-          error: 'Missing required fields: caseId, evidence, userId',
+        { error: 'Missing required, fields: caseId, evidence, userId'
         },
         { status: 400 }
       );
     }
     // Verify user matches authenticated user
     if (userId !== user.id) {
-      return json({ error: 'User ID mismatch' }, { status: 403 });
+      return json({ error: `User ID mismatch` }, { status: 403 });
     }
     // Check Ollama model availability
     const modelCheck = await checkOllamaModel(model);
     if (!modelCheck.available) {
       return json(
         {
-          error: `Model ${model} not available. Available models: ${modelCheck.models.join(', ')}`,
-        },
+          error: 'Model ${model} not available. Available, models: ${modelCheck.models.join(', `)}` },
         { status: 503 }
       );
     }
@@ -183,8 +169,8 @@ const originalPOSTHandler: RequestHandler = async event => {
       metadata: {
         userRole: user.role,
         userSpecialties: user.legalSpecialties || [],
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     // Route to Enhanced RAG service GPU processing
     const ragResponse = await fetch(`${getEnhancedRagEndpoint()}/api/gpu/compute`, {
@@ -192,14 +178,14 @@ const originalPOSTHandler: RequestHandler = async event => {
       headers: {
         'Content-Type': 'application/json',
         'X-User-ID': userId,
-        'X-Case-ID': caseId,
+        'X-Case-ID': caseId
       },
       body: JSON.stringify({
         input_data: enhancedContext,
         operation: 'legal_analysis',
         model: model,
-        context: enhancedContext,
-      }),
+        context: enhancedContext
+      })
     });
     if (!ragResponse.ok) {
       // Fallback to direct Ollama if RAG service unavailable
@@ -235,7 +221,7 @@ const originalPOSTHandler: RequestHandler = async event => {
       recommendations: generateRecommendations(ragResult as Partial<LegalAnalysisResponse>, analysisType),
       riskAssessment: assessLegalRisk(ragResult as Partial<LegalAnalysisResponse>, evidence),
       processingTime: performance.now() - startTime,
-      tokenCount: tokenCountValue,
+      tokenCount: tokenCountValue
     };
     // Log analysis for audit trail
     await logAnalysis({
@@ -244,7 +230,7 @@ const originalPOSTHandler: RequestHandler = async event => {
       analysisType,
       model,
       confidence: enhancedResult.confidence,
-      processingTime: enhancedResult.processingTime,
+      processingTime: enhancedResult.processingTime
     });
     return json(enhancedResult);
   } catch (err) {
@@ -254,7 +240,7 @@ const originalPOSTHandler: RequestHandler = async event => {
       {
         error: 'Failed to process evidence',
         details: message,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       },
       { status: 500 }
     );
@@ -289,7 +275,7 @@ async function checkOllamaModel(model: string): Promise<ModelCheck> {
     return { available: availableModels.includes(model), models: availableModels };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('Ollama availability check failed:', message);
+    console.error('Ollama availability check failed: `, message);
     return { available: false, models: [] };
   }
 }
@@ -311,8 +297,7 @@ Focus on: Applicable statutes, case precedents, legal principles, and jurisdicti
 Format: Comprehensive research memo with citations and legal analysis.`,
     case_comparison: `${basePrompt}
 Focus on: Similarities/differences in facts, legal issues, holdings, and reasoning.
-Format: Comparative analysis highlighting relevant patterns and distinctions.`,
-  };
+Format: Comparative analysis highlighting relevant patterns and distinctions.` };
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary;
 }
 
@@ -325,20 +310,20 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
     const url = `${getOllamaEndpoint()}/api/generate`;
     const resp = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       signal: controller.signal,
       body: JSON.stringify({
         model: context?.model || 'unknown',
         prompt,
         system: context.systemPrompt,
         options: {
-          temperature: context.temperature,
+         , temperature: context.temperature,
           num_predict: context.maxTokens,
           top_p: 0.9,
-          repeat_penalty: 1.1,
+          repeat_penalty: 1.1
         },
-        stream: false,
-      }),
+        stream: false
+      })
     });
     clearTimeout(timeout);
     if (!resp.ok) {
@@ -355,7 +340,7 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
       recommendations: [],
       riskAssessment: undefined,
       processingTime: performance.now() - startTime,
-      tokenCount: estimateTokenCount(summaryText),
+      tokenCount: estimateTokenCount(summaryText)
     };
     return responseObj;
   } catch (err) {
@@ -463,7 +448,7 @@ async function logAnalysis(data: AuditLog): Promise<void> {
     // In production, log to database or audit service
     console.log('Legal analysis logged:', {
       timestamp: new Date().toISOString(),
-      ...data,
+      ...data
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

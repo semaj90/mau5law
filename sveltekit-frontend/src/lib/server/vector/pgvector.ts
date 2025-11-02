@@ -15,9 +15,7 @@ const isNumber = (v: any): v is number => typeof v === 'number';
 const isStringArray = (v: any): v is string[] => Array.isArray(v) && v.every(e => typeof e === 'string');
 
 // Define LegalCaseInfo type locally as it's not exported from sharedTypes
-export type LegalCaseInfo = {
-  id: string;
-  jurisdiction: string;
+export type LegalCaseInfo = { id: string;, jurisdiction: string;
   parties: Party[];
   datesFiled: string[];
   courtLevel: 'district' | 'appellate' | 'supreme';
@@ -33,7 +31,7 @@ export async function upsertToPGVector(item: DocumentItem | VisionItem): Promise
   const doc = {
     id,
     source: (item as DocumentItem).source ?? null,
-    meta: (item as DocumentItem).meta ?? null,
+    meta: (item as DocumentItem).meta ?? null
   };
 
   const sql = `
@@ -78,9 +76,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     classification?: any;
     processing?: any;
   };
-  type RowType = {
-    id: string;
-    doc: { source?: string; meta?: MetaShape } | null;
+  type RowType = { id: string;, doc: { source?: string; meta?: MetaShape } | null;
     vector: number[];
     score: number;
   };
@@ -134,7 +130,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
         parties = rawCaseData.parties.map(name => ({
           name,
           role: DEFAULT_PARTY_ROLE,
-          type: DEFAULT_PARTY_TYPE,
+          type: DEFAULT_PARTY_TYPE
         }));
       }
       if (isStringArray(rawCaseData.datesFiled)) datesFiled = rawCaseData.datesFiled;
@@ -154,8 +150,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a string
       parties,
       datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty
-      courtLevel: courtLevel ?? 'district',
-    };
+      courtLevel: courtLevel ?? 'district` };
 
     // Corrected classification parsing with type guard and defaults
     let classification: LegalMetadata['classification'] = {
@@ -173,7 +168,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       extractedEntities: [],
       keyTerms: [],
       sentiment: 0,
-      complexity: 0,
+      complexity: 0
     };
     if (isProcessingInfo(meta?.processing)) {
       processing = meta!.processing;
@@ -190,7 +185,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     const normalized: LegalMetadata = {
       // Add other known properties from MetaShape if they are part of LegalMetadata
       // and need to be preserved. Avoid spreading: 'meta' directly to prevent type issues.
-      // For example, if LegalMetadata can have a: 'title' property:
+      // For example, if LegalMetadata can have a: 'title'; property:
       // title: isString(meta?.title) ? (meta!.title as string) : undefined,
       case defaultCase, // Assign the validated case information
       classification: classification, // Assign the validated classification information
@@ -210,7 +205,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       score: r.score,
       source: r.doc?.source ?? 'unknown',
       snippet: rawSnippet, // Assign the extracted raw snippet here
-      metadata: meta,
+      metadata: meta
     };
   }); // No need for: 'as SearchResult[]' if types are correctly aligned
 }

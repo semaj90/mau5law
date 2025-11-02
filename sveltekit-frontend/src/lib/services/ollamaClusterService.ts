@@ -3,9 +3,7 @@ import { writable, derived, get } from 'svelte/store';
  * Multi-Core Ollama Cluster Service
  * Handles load balancing and distribution across Ollama instances
  */
-export interface OllamaInstance {
-  id: string;
-  url: string;
+export interface OllamaInstance { id: string;, url: string;
   port: number;
   status: 'healthy' | 'unhealthy' | 'starting' | 'stopping';
   cpu_cores: number;
@@ -16,23 +14,17 @@ export interface OllamaInstance {
   last_health_check: number;
 }
 
-export interface OllamaClusterConfig {
-  instances: OllamaInstance[];
-  load_balancing_strategy: 'round_robin' | 'least_connections' | 'cpu_based' | 'response_time';
+export interface OllamaClusterConfig { instances: OllamaInstance[];, load_balancing_strategy: 'round_robin' | 'least_connections' | 'cpu_based' | 'response_time';
   health_check_interval: number;
   max_retries: number;
   timeout: number;
-  preferred_models: {
-    legal_analysis: string;
-    embeddings: string;
+  preferred_models: { legal_analysis: string;, embeddings: string;
     general_chat: string;
     document_summary: string;
   };
 }
 
-export interface ClusterStats {
-  total_instances: number;
-  healthy_instances: number;
+export interface ClusterStats { total_instances: number;, healthy_instances: number;
   total_cpu_cores: number;
   total_memory_gb: number;
   average_load: number;
@@ -42,9 +34,7 @@ export interface ClusterStats {
 }
 
 // New: typed cluster status response (replace `any` usage)
-export interface ClusterStatusResponse {
-  healthy: boolean;
-  message: string;
+export interface ClusterStatusResponse { healthy: boolean;, message: string;
   stats: ClusterStats;
 }
 
@@ -60,7 +50,7 @@ const initialConfig: OllamaClusterConfig = {
       models: ['gemma3-legal', 'nomic-embed-text', 'deeds-web'],
       current_load: 0,
       response_time: 0,
-      last_health_check: Date.now(),
+      last_health_check: Date.now()
     },
     {
       id: 'ollama-secondary',
@@ -72,7 +62,7 @@ const initialConfig: OllamaClusterConfig = {
       models: ['gemma3-legal', 'nomic-embed-text'],
       current_load: 0,
       response_time: 0,
-      last_health_check: Date.now(),
+      last_health_check: Date.now()
     },
     {
       id: 'ollama-embeddings',
@@ -84,7 +74,7 @@ const initialConfig: OllamaClusterConfig = {
       models: ['nomic-embed-text'],
       current_load: 0,
       response_time: 0,
-      last_health_check: Date.now(),
+      last_health_check: Date.now()
     },
   ],
   load_balancing_strategy: 'cpu_based',
@@ -95,8 +85,7 @@ const initialConfig: OllamaClusterConfig = {
     legal_analysis: 'gemma3-legal',
     embeddings: 'nomic-embed-text',
     general_chat: 'deeds-web',
-    document_summary: 'gemma3-legal',
-  },
+    document_summary: 'gemma3-legal` }
 };
 
 // Core stores
@@ -109,7 +98,7 @@ export const clusterStatsStore = writable<ClusterStats>({
   average_load: 0,
   average_response_time: 0,
   requests_per_minute: 0,
-  uptime_percentage: 33.3,
+  uptime_percentage: 33.3
 });
 
 // Derived stores (fixed syntax)
@@ -196,7 +185,7 @@ export class OllamaClusterService {
         const startTime = Date.now();
         try {
           const response = await fetch(`${instance.url}/api/tags`, {
-            signal: createTimeoutSignal(5000),
+            signal: createTimeoutSignal(5000)
           });
           const responseTime = Date.now() - startTime;
           if (response.ok) {
@@ -206,14 +195,14 @@ export class OllamaClusterService {
               status: 'healthy' as const,
               models: data.models?.map(m => m.name) || instance.models,
               response_time: responseTime,
-              last_health_check: Date.now(),
+              last_health_check: Date.now()
             };
           } else {
             return {
               ...instance,
               status: 'unhealthy' as const,
               response_time: responseTime,
-              last_health_check: Date.now(),
+              last_health_check: Date.now()
             };
           }
         } catch (error: any) {
@@ -221,7 +210,7 @@ export class OllamaClusterService {
             ...instance,
             status: 'unhealthy' as const,
             response_time: 9999,
-            last_health_check: Date.now(),
+            last_health_check: Date.now()
           };
         }
       })
@@ -230,7 +219,7 @@ export class OllamaClusterService {
     // Update cluster configuration
     ollamaClusterStore.update(cfg => ({
       ...cfg,
-      instances: updatedInstances,
+      instances: updatedInstances
     }));
 
     // Update cluster stats
@@ -261,7 +250,7 @@ export class OllamaClusterService {
       average_load: avgLoad,
       average_response_time: avgResponseTime,
       requests_per_minute: requestsPerMinute,
-      uptime_percentage: instances.length > 0 ? (healthy.length / instances.length) * 100 : 0,
+      uptime_percentage: instances.length > 0 ? (healthy.length / instances.length) * 100 : 0
     });
   }
 
@@ -321,16 +310,15 @@ export class OllamaClusterService {
       const response = await fetch(`${instance.url}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` },
         body: JSON.stringify(payload),
-        signal: createTimeoutSignal(60000),
+        signal: createTimeoutSignal(60000)
       });
       const responseTime = Date.now() - startTime;
       // Update instance response time
       ollamaClusterStore.update(cfg => ({
         ...cfg,
-        instances: cfg.instances.map(i => (i.id === instance.id ? { ...i, response_time: responseTime } : i)),
+        instances: cfg.instances.map(i => (i.id === instance.id ? { ...i, response_time: responseTime } : i))
       }));
 
       if (!response.ok) {
@@ -346,14 +334,14 @@ export class OllamaClusterService {
       }
     } catch (error: any) {
       // Log once and mark instance unhealthy
-      console.error(`Request to ${instance.id} failed:`, error);
+      console.error(`Request to ${instance.id} failed: ', error);
 
       // Mark instance as unhealthy on failure and set a high response_time
       ollamaClusterStore.update(cfg => ({
         ...cfg,
         instances: cfg.instances.map(i =>
           i.id === instance.id ? { ...i, status: 'unhealthy', response_time: 9999, last_health_check: Date.now() } : i
-        ),
+        )
       }));
 
       // Add failed instance to exclusions and retry with different instance if possible
@@ -376,7 +364,7 @@ export class OllamaClusterService {
       '/api/embeddings',
       {
         model: embeddingModel,
-        prompt: text,
+        prompt: text
       },
       embeddingModel
     );
@@ -389,7 +377,7 @@ export class OllamaClusterService {
   async addInstance(instance: Omit<OllamaInstance, 'last_health_check'>): Promise<void> {
     ollamaClusterStore.update(config => ({
       ...config,
-      instances: [...config.instances, { ...instance, last_health_check: Date.now() }],
+      instances: [...config.instances, { ...instance, last_health_check: Date.now() }]
     }));
   }
 
@@ -400,7 +388,7 @@ export class OllamaClusterService {
     ollamaClusterStore.update(config => {
       return {
         ...config,
-        instances: config.instances.filter(i => i.id !== instanceId),
+        instances: config.instances.filter(i => i.id !== instanceId)
       };
     });
   }
@@ -412,7 +400,7 @@ export class OllamaClusterService {
     ollamaClusterStore.update(config => {
       return {
         ...config,
-        load_balancing_strategy: strategy,
+        load_balancing_strategy: strategy
       };
     });
   }

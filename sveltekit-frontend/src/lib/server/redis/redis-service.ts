@@ -15,7 +15,7 @@ type RedisClientLike = {
   // cache commands (various shim/name permutations)
   setEx?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
   setex?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
-  set?: (key: string, value: string, opts?: any) => Promise<'OK' | null> | void;
+  set?: (key: string; value: string, opts?: any) => Promise<'OK' | null> | void;
   get?: (key: string) => Promise<string | null> | void;
   del?: (key: string) => Promise<number> | void;
 };
@@ -48,7 +48,7 @@ class RedisService {
     const url = (import.meta.env?.REDIS_URL as string) || (process.env.REDIS_URL as string) || 'redis://127.0.0.1:6379';
     const config: RedisConfig = {
       url,
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 3
     };
     try {
       // create primary client
@@ -79,7 +79,7 @@ class RedisService {
     }
   }
   private handleError(clientName: string, error: any) {
-    console.error(`[RedisService] ${clientName} error:`, error);
+    console.error(`[RedisService] ${clientName} error: ', error);
     this.isConnected = $state(false);
   }
   // Evidence Updates
@@ -89,7 +89,7 @@ class RedisService {
       evidenceId,
       data: evidenceData,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishEvidenceUpdated(evidenceId: string, changes: any, userId?: string) {
@@ -98,7 +98,7 @@ class RedisService {
       evidenceId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishEvidenceDeleted(evidenceId: string, userId?: string) {
@@ -106,7 +106,7 @@ class RedisService {
       type: 'EVIDENCE_DELETED',
       evidenceId,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Case Updates
@@ -116,7 +116,7 @@ class RedisService {
       caseId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishCaseStatusChanged(caseId: string, oldStatus: string, newStatus: string, userId?: string) {
@@ -126,14 +126,14 @@ class RedisService {
       oldStatus,
       newStatus,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Canvas Updates
   public async publishCanvasNodeMoved(
     caseId: string,
     nodeId: string,
-    position: { x: number; y: number },
+    position: {, x: number; y: number },
     userId?: string
   ) {
     await this.publish('canvas_update', {
@@ -142,7 +142,7 @@ class RedisService {
       nodeId,
       position,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishCanvasNodeAdded(caseId: string, nodeData: any, userId?: string) {
@@ -151,7 +151,7 @@ class RedisService {
       caseId,
       nodeData,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishCanvasStateChanged(caseId: string, state: any, userId?: string) {
@@ -160,7 +160,7 @@ class RedisService {
       caseId,
       state,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // POI Updates
@@ -170,7 +170,7 @@ class RedisService {
       poiId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Report Updates
@@ -180,7 +180,7 @@ class RedisService {
       reportId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // User Activity
@@ -190,7 +190,7 @@ class RedisService {
       userId,
       activity,
       metadata,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Generic publish method
@@ -205,7 +205,7 @@ class RedisService {
         await this.publisher.publish(channel, message as string);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Failed to publish to ${channel}:`, error);
+      console.error(`[RedisService] Failed to publish to ${channel}: ', error);
     }
   }
   // Cache operations with robust method detection
@@ -225,7 +225,7 @@ class RedisService {
         console.warn('[RedisService] No supported SET method available on client');
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache set error for key: "${key}":`, error);
+      console.error(`[RedisService] Cache set error for key: "${key}": ', error);
     }
   }
   public async getCache(key: string) {
@@ -234,7 +234,7 @@ class RedisService {
       const cached = typeof this.client.get === 'function' ? await this.client.get(key) : null;
       return cached ? JSON.parse(cached) : null;
     } catch (error: any) {
-      console.error(`[RedisService] Cache get error for key: "${key}":`, error);
+      console.error(`[RedisService] Cache get error for key: "${key}": ', error);
       return null;
     }
   }
@@ -245,7 +245,7 @@ class RedisService {
         await this.client.del(key);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache delete error for key: "${key}":`, error);
+      console.error(`[RedisService] Cache delete error for key: "${key}": ', error);
     }
   }
   // trackEvent - corrected variable usage
@@ -254,7 +254,7 @@ class RedisService {
       event,
       data,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // diagnostics
@@ -267,8 +267,7 @@ class RedisService {
   public getStats() {
     return {
       connected: this.isConnected,
-      status: this.isConnected ? 'connected' : 'disconnected',
-    };
+      status: this.isConnected ? 'connected' : 'disconnected` };
   }
   public async disconnect() {
     try {

@@ -8,9 +8,7 @@ import { browser } from '$app/environment';
 import { writable, get } from 'svelte/store';
 
 // --- Typed interfaces for external services (requested) ---
-export type UltraJSONParser = {
-  parse: (s: string) => unknown;
-  stringify: (v: any) => string;
+export type UltraJSONParser = { parse: (s: string) => unknown;, stringify: (v: any) => string;
 };
 
 export type WasmClusteringService = {
@@ -44,7 +42,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     const endpoint = await getOllamaEndpoint();
     const resp = await fetch(`${endpoint}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({ model, prompt: Array.isArray(texts) && texts.length === 1 ? texts[0] : texts })
     });
     if (!resp.ok) {
@@ -94,7 +92,7 @@ export const redisAdapter = {
 
 // Qdrant adapter (calls backend api)
 export const qdrantAdapter = {
-  async upsertCollection(collection: string, vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>) {
+  async upsertCollection(collection: string, vectors: Array<{, id: string; values: number[]; payload?: Record<string, unknown> }>) {
     try {
       const r = await fetch('/api/qdrant/upsert', {
         method: 'POST',
@@ -123,7 +121,7 @@ export const qdrantAdapter = {
 
 // Postgres JSONB store adapter (server endpoints)
 export const pgJsonStore = {
-  async upsertDocument(doc: { id: string; body: Record<string, unknown> }) {
+  async upsertDocument(doc: {, id: string; body: Record<string, unknown> }) {
     try {
       const r = await fetch('/api/postgres/json/upsert', {
         method: 'POST',
@@ -151,16 +149,12 @@ export const pgJsonStore = {
 };
 
 // --- CHR-ROM UI Pattern Types ---
-export interface CHRROMPattern {
-  id: string;
-  type: 'text_block' | 'component_state' | 'svg_icon' | 'summary_card' | 'entity_list' | 'citation_block';
+export interface CHRROMPattern { id: string;, type: 'text_block' | 'component_state' | 'svg_icon' | 'summary_card' | 'entity_list' | 'citation_block';
   priority: 1 | 2 | 3 | 4 | 5;
   bankId: number;
   compressedData: Uint8Array;
   renderableHTML: string;
-  metadata: {
-    cacheKey: string;
-    createdAt: number;
+  metadata: { cacheKey: string;, createdAt: number;
     expiresAt: number;
     useCount: number;
     lastAccessed: number;
@@ -182,17 +176,13 @@ export interface GeneratedPattern {
 }
 
 // New: Prediction shape used by behavior analysis
-export type Prediction = {
-  action: string;
-  probability: number;
+export type Prediction = { action: string;, probability: number;
   estimatedTimeUntilAction?: number;
   requiredPatterns?: string[];
 };
 
 // Update: use Prediction[] instead of Array<any>
-export interface UserActivityPattern {
-  userId: string;
-  currentContext: {
+export interface UserActivityPattern { userId: string;, currentContext: {
     documentId?: string;
     caseId?: string;
     searchQuery?: string;
@@ -205,14 +195,12 @@ export interface UserActivityPattern {
   predictedActions: Prediction[];
 }
 
-export interface PrecomputationConfig {
-  enableBackgroundProcessing: boolean;
-  maxCacheSize: number;
+export interface PrecomputationConfig { enableBackgroundProcessing: boolean;, maxCacheSize: number;
   patternExpirationTime: number;
   predictionAccuracy: number;
   backgroundProcessingInterval: number;
   maxConcurrentComputations: number;
-  priorityThresholds: { high: number; medium: number; low: number };
+  priorityThresholds: { high: number; medium: number;, low: number };
 }
 
 export class CHRROMPrecomputationService {
@@ -220,7 +208,7 @@ export class CHRROMPrecomputationService {
   private patternCache = new Map<string, CHRROMPattern>();
   private _userActivityHistory = new Map<string, UserActivityPattern[]>(); // renamed to indicate intentionally unused
   private backgroundWorker: Worker | null = null;
-  private precomputationQueue: Array<{ pattern: string; priority: number }> = [];
+  private precomputationQueue: Array<{ pattern: string;, priority: number }> = [];
   private isProcessing = $state(false);
 
   public cacheStatus = writable({
@@ -228,13 +216,13 @@ export class CHRROMPrecomputationService {
     cacheSize: 0,
     hitRate: 0,
     missRate: 0,
-    topPatterns: [] as Array<{ id: string; useCount: number; type: string }>,
+    topPatterns: [] as Array<{ id: string; useCount: number;, type: string }>,
     backgroundTasksActive: 0
   });
 
   public userPredictions = writable({
     currentUser: '',
-    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number; preparationStatus: string }>, // explicit shape instead of any
+    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number;, preparationStatus: string }>, // explicit shape instead of any
     confidenceScore: 0
   });
 
@@ -274,7 +262,7 @@ export class CHRROMPrecomputationService {
   private async initializeBackgroundWorker(): Promise<void> {
     try {
       const workerCode = this.generateWorkerCode();
-      const blob = new Blob([workerCode], { type: 'application/javascript' });
+      const blob = new Blob([workerCode], { type: `application/javascript` });
       const url = URL.createObjectURL(blob);
       this.backgroundWorker = new Worker(url);
       this.backgroundWorker.onmessage = (event: MessageEvent) => {
@@ -328,7 +316,7 @@ export class CHRROMPrecomputationService {
         }
         generateCitationPattern(citations) {
           citations = citations || [];
-          const citationHTML = citations.map(c => \`<div class="chr-citation"><strong>\${c.citation}</strong> <em>\${c.court||''}</em></div>\`).join('');
+          const citationHTML = citations.map(c => \`<div class="chr-citation"><strong>\${c.citation}</strong> <em>\${c.court||'` }</em></div>\`).join('');
           return {
             type: 'citation_block',
             renderableHTML: \`<div class="chr-rom-citation-block"><h5>Citations (\${citations.length})</h5>\${citationHTML}</div>\`,
@@ -347,7 +335,7 @@ export class CHRROMPrecomputationService {
           else throw new Error('Unknown pattern type: ' + type);
           self.postMessage({ type: 'pattern_generated', data: { ...result, taskId, originalType: type } });
         } catch (err) {
-          self.postMessage({ type: 'computation_error', data: { error: err && err.message } });
+          self.postMessage({ type: 'computation_error', data: {, error: err && err.message } });
         }
       };
     `;
@@ -475,7 +463,7 @@ export class CHRROMPrecomputationService {
       const pattern = await this.generatePattern(task.pattern, task.priority);
       if (pattern) await this.storePatternInCHRROM(pattern);
     } catch (error) {
-      console.warn(`Failed to generate pattern ${task.pattern}:`, error);
+      console.warn(`Failed to generate pattern ${task.pattern}: ', error);
     } finally {
       this.isProcessing = false;
       this.updateCacheStatus();
@@ -519,7 +507,7 @@ export class CHRROMPrecomputationService {
     }
 
     // fallback if no worker available
-    const generated: GeneratedPattern = { type: 'summary_card', renderableHTML: `<div>Generated quick summary for ${contextId}</div>`, originalType: 'summary' };
+    const generated: GeneratedPattern = { type: 'summary_card', renderableHTML: `<div>Generated quick summary for ${contextId}</div>`, originalType: `summary` };
     return this.createCHRROMPattern(patternId, generated, priority, contextId);
   }
 
@@ -558,8 +546,7 @@ export class CHRROMPrecomputationService {
         lastAccessed: Date.now(),
         userContext: 'current_user',
         documentContext: contextId ? [contextId] : [],
-        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown'
-      }
+        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown` }
     };
   }
 
@@ -699,7 +686,7 @@ export class CHRROMPrecomputationService {
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number; backgroundEfficiency: number } {
+  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number;, backgroundEfficiency: number } {
     const cacheData = get(this.cacheStatus);
     return { totalPatterns: cacheData.totalPatterns, cacheHitRate: cacheData.hitRate, averageResponseTime: 0, memoryUsage: cacheData.cacheSize, backgroundEfficiency: cacheData.backgroundTasksActive > 0 ? (cacheData.totalPatterns / cacheData.backgroundTasksActive) * 100 : 100 };
   }
@@ -712,7 +699,7 @@ export const chrRomService = new CHRROMPrecomputationService({
   predictionAccuracy: 0.85,
   backgroundProcessingInterval: 1500,
   maxConcurrentComputations: 4,
-  priorityThresholds: { high: 0.8, medium: 0.5, low: 0.3 }
+  priorityThresholds: {, high: 0.8, medium: 0.5, low: 0.3 }
 });
 
 export const getCachedPattern = (patternId: string) => chrRomService.getCHRROMPattern(patternId);

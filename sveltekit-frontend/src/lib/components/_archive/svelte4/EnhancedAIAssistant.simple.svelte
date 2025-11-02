@@ -3,6 +3,7 @@ https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   import { Brain, Loader2, Quote, Search, Settings, Trash2 } from 'lucide-svelte';
   import * as Dialog from 'bits-ui/Dialog';

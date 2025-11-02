@@ -37,8 +37,8 @@ import type { Case } from '$lib/types';
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
   let animationFrameId = 0;
-  let hoveredNode: CanvasDataPoint | null = $state(null);
-  let selectedNode: CanvasDataPoint | null = $state(null);
+  let hoveredNode: CanvasDataPoint | null = null;
+  let selectedNode: CanvasDataPoint | null = null;
   let mousePos = $state({ x: 0, y: 0 });
   let isWebGPUSupported = $state<boolean>(false);
   // Theme configurations

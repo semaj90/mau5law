@@ -6,9 +6,7 @@ import { db } from '$lib/server/db/index';
 import { users, cases, reports, evidence, criminals, personsOfInterest } from '$lib/server/db/unified-schema';
 import { sql } from 'drizzle-orm';
 
-export interface TestResult {
-  test: string;
-  status: 'success' | 'error';
+export interface TestResult { test: string;, status: 'success' | 'error';
   data?: any;
   error?: string;
 }
@@ -23,14 +21,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'database_connection',
           status: 'success',
-          data: connectionTest[0] || { status: 'Connected', count: connectionTest.length },
+          data: connectionTest[0] || {, status: 'Connected', count: connectionTest.length }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'database_connection',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -44,21 +42,21 @@ export const GET: RequestHandler = async ({ url }) => {
             firstName: users.firstName,
             lastName: users.lastName,
             role: users.role,
-            isActive: users.isActive,
+            isActive: users.isActive
           })
           .from(users)
           .limit(5);
         results.push({
           test: 'users_read',
           status: 'success',
-          data: { count: usersList.length, users: usersList },
+          data: {, count: usersList.length, users: usersList }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'users_read',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -70,14 +68,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'cases_read',
           status: 'success',
-          data: { count: casesList.length, cases: casesList },
+          data: {, count: casesList.length, cases: casesList }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'cases_read',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -89,14 +87,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'reports_read',
           status: 'success',
-          data: { count: reportsList.length, reports: reportsList },
+          data: {, count: reportsList.length, reports: reportsList }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'reports_read',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -108,14 +106,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'evidence_read',
           status: 'success',
-          data: { count: evidenceList.length, evidence: evidenceList },
+          data: {, count: evidenceList.length, evidence: evidenceList }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'evidence_read',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -126,14 +124,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'persons_of_interest_read',
           status: 'success',
-          data: { count: poiList.length, personsOfInterest: poiList },
+          data: {, count: poiList.length, personsOfInterest: poiList }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'persons_of_interest_read',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -144,14 +142,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'criminals_read',
           status: 'success',
-          data: { count: criminalsList.length, criminals: criminalsList },
+          data: {, count: criminalsList.length, criminals: criminalsList }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'criminals_read',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -164,14 +162,14 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'pgvector_extension',
           status: 'success',
-          data: vectorTest.rows.length > 0 ? { available: true } : { available: false },
+          data: vectorTest.rows.length > 0 ? { available: true } : {, available: false }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         results.push({
           test: 'pgvector_extension',
           status: 'error',
-          error: msg,
+          error: msg
         });
       }
     }
@@ -182,8 +180,8 @@ export const GET: RequestHandler = async ({ url }) => {
       summary: {
         total: results.length,
         passed: results.filter(item => item.status === 'success').length,
-        failed: results.filter(item => item.status === 'error').length,
-      },
+        failed: results.filter(item => item.status === 'error').length
+      }
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
@@ -191,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: msg,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

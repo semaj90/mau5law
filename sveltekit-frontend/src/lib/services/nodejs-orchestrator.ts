@@ -10,9 +10,7 @@ import { flashAttention2Service } from './flashattention2-rtx3060.js';
 // Worker Types - ONLY gemma3-legal GGUF and nomic-embed supported
 export type WorkerType = 'GEMMA3_LEGAL_GGUF' | 'NOMIC_EMBED' | 'DOCUMENT_PROCESSING' | 'WEB_GPU_RTX3060' | 'SERVICE_WORKER';
 // Worker Configuration - Enforces specific models
-export interface WorkerConfig {
-  type: WorkerType;
-  id: string;
+export interface WorkerConfig { type: WorkerType;, id: string;
   maxTasks: number;
   timeout: number;
   retryAttempts: number;
@@ -24,17 +22,13 @@ export interface WorkerConfig {
   ollamaUrl: string; // Ollama endpoint for model
 }
 // GPU Error Processing Configuration
-export interface GPUErrorProcessingConfig {
-  enableFlashAttention: boolean;
-  rtx3060Optimization: boolean;
+export interface GPUErrorProcessingConfig { enableFlashAttention: boolean;, rtx3060Optimization: boolean;
   errorBatchSize: number;
   attentionSequenceLength: number;
   memoryOptimization: 'speed' | 'memory' | 'balanced';
 }
 // Task Definition with GPU Error Processing
-export interface Task {
-  id: string;
-  type: WorkerType;
+export interface Task { id: string;, type: WorkerType;
   payload: any;
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   timeout: number;
@@ -48,9 +42,7 @@ export interface Task {
   errorData?: any; // For GPU error processing tasks
 }
 // Worker Status with GPU metrics
-export interface WorkerStatus {
-  id: string;
-  type: WorkerType;
+export interface WorkerStatus { id: string;, type: WorkerType;
   status: 'IDLE' | 'BUSY' | 'ERROR' | 'SHUTDOWN';
   currentTask?: string;
   tasksCompleted: number;
@@ -65,9 +57,7 @@ export interface WorkerStatus {
   ggufLoaded?: boolean; // Whether GGUF model is loaded
 }
 // Orchestration Metrics with GPU Error Processing
-export interface OrchestrationMetrics {
-  totalWorkers: number;
-  activeWorkers: number;
+export interface OrchestrationMetrics { totalWorkers: number;, activeWorkers: number;
   totalTasks: number;
   completedTasks: number;
   failedTasks: number;
@@ -339,8 +329,7 @@ export class NodeJSOrchestrator {
       maxRetries: 3,
       estimatedDuration: Math.max(500, text.length * 2),
       gpuRequired: false,
-      model: 'nomic-embed-text'
-    };
+      model: `nomic-embed-text` };
     const taskId = await this.submitTask(task);
     this.nomicEmbedTasksCount++;
     return taskId;
@@ -386,14 +375,14 @@ export class NodeJSOrchestrator {
   private async createWorker(workerId: string, config: WorkerConfig): Promise<void> {
     try {
       const workerScript = this.generateWorkerScript(config);
-      const blob = new Blob([workerScript], { type: 'application/javascript' });
+      const blob = new Blob([workerScript], { type: `application/javascript` });
       const worker = new Worker(URL.createObjectURL(blob));
       // Setup worker event handlers
       worker.onmessage = (_event: any) => {
         this.handleWorkerMessage(workerId, event.data);
       });
       worker.onerror = (error) => {
-        console.error(`Worker ${workerId} error:`, error);
+        console.error(`Worker ${workerId} error: ', error);
         this.handleWorkerError(workerId, error);
       };
       // Initialize worker with model constraints
@@ -421,8 +410,7 @@ export class NodeJSOrchestrator {
           lastActivity: Date.now(),
           errors: 0,
           model: config?.model || "unknown",
-          ggufLoaded: config.type === 'GEMMA3_LEGAL_GGUF'
-        });
+          ggufLoaded: config.type === 'GEMMA3_LEGAL_GGUF` });
         return newStatuses;
       });
       console.log(`✅ Worker ${workerId} (${config.type}) created with model: ${config?.model || "unknown"}`);
@@ -460,7 +448,7 @@ export class NodeJSOrchestrator {
         self.postMessage({
           type: 'STATUS_UPDATE',
           data: {
-            tasksCompleted: tasksProcessed,
+           , tasksCompleted: tasksProcessed,
             averageProcessingTime: avgTime,
             memoryUsage: Math.floor(memoryUsage / 1024 / 1024), // MB
             lastActivity: Date.now(),
@@ -500,7 +488,7 @@ export class NodeJSOrchestrator {
               self.postMessage({
                 type: 'STATUS_RESPONSE',
                 data: {
-                  tasksCompleted: tasksProcessed,
+                 , tasksCompleted: tasksProcessed,
                   memoryUsage: (performance).memory?.usedJSHeapSize || 0,
                   isReady: workerConfig !== null && modelLoaded,
                   model: workerConfig?.model || 'none',
@@ -514,8 +502,7 @@ export class NodeJSOrchestrator {
             type: 'TASK_ERROR',
             taskId: taskId,
             error: error.message || 'Unknown error',
-            model: workerConfig?.model || 'unknown'
-          });
+            model: workerConfig?.model || 'unknown` });
         }
       }
     `;
@@ -539,13 +526,13 @@ export class NodeJSOrchestrator {
             // GGUF inference via Ollama
             const response = await fetch('${config.ollamaUrl}/api/generate', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': `application/json` },
               body: JSON.stringify({
                 model: 'gemma3-legal',
                 prompt: prompt,
                 stream: false,
                 options: {
-                  temperature: temperature || 0.7,
+                 , temperature: temperature || 0.7,
                   num_predict: maxTokens || 512,
                   num_ctx: 2048,
                   num_gpu: 35 // RTX 3060 Ti layers
@@ -577,9 +564,9 @@ export class NodeJSOrchestrator {
             // Nomic embedding via Ollama
             const response = await fetch('${config.ollamaUrl}/api/embeddings', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': `application/json` },
               body: JSON.stringify({
-                model: 'nomic-embed-text',
+               , model: 'nomic-embed-text',
                 prompt: text
               })
             });
@@ -624,7 +611,7 @@ export class NodeJSOrchestrator {
                 model: 'gemma3-legal'
               };
             }
-            return { processed: true, operation, model: 'gemma3-legal' };
+            return { processed: true, operation, model: `gemma3-legal` };
           }
         `;
       case 'DOCUMENT_PROCESSING':
@@ -635,9 +622,9 @@ export class NodeJSOrchestrator {
             if (operation === 'LEGAL_ANALYSIS') {
               const response = await fetch('${config.ollamaUrl}/api/generate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': `application/json` },
                 body: JSON.stringify({
-                  model: 'gemma3-legal',
+                 , model: 'gemma3-legal',
                   prompt: \`Analyze this legal document for key legal concepts, obligations, and risks: \${document.substring(0, 1000)}\`,
                   stream: false
                 })
@@ -650,13 +637,13 @@ export class NodeJSOrchestrator {
                 processingType: operation
               };
             }
-            return { processed: true, operation, model: 'gemma3-legal' };
+            return { processed: true, operation, model: `gemma3-legal` };
           }
         `;
       default: return `
           async function processTask(data): Promise<any> {
             await new Promise(resolve => setTimeout(resolve, 100));
-            return { processed: true, data, model: 'gemma3-legal' };
+            return { processed: true, data, model: `gemma3-legal` };
           }
         `;
     }
@@ -704,7 +691,7 @@ export class NodeJSOrchestrator {
       }
     ]);
     // Update worker status to idle
-    this.updateWorkerStatus(workerId, { status: 'IDLE' });
+    this.updateWorkerStatus(workerId, { status: `IDLE` });
     // Process next task
     this.processNextTask();
   }
@@ -733,8 +720,7 @@ export class NodeJSOrchestrator {
           duration: Date.now() - task.timestamp,
           timestamp: Date.now(),
           workerInfo: `${workerId} (${task.type}) - ${message.error}`,
-          model: message?.model || task?.model || 'unknown'
-        }
+          model: message?.model || task?.model || 'unknown` }
       ]);
     }
     // Update worker status
@@ -746,9 +732,9 @@ export class NodeJSOrchestrator {
    * Handle worker error with recreation
    */
   private handleWorkerError(workerId: string, error: ErrorEvent): void {
-    console.error(`Worker ${workerId} crashed:`, error);
+    console.error(`Worker ${workerId} crashed: ', error);
     // Mark worker as error state
-    this.updateWorkerStatus(workerId, { status: 'ERROR' });
+    this.updateWorkerStatus(workerId, { status: `ERROR` });
     // Try to recreate worker
     const config = this.workerConfigs.get(workerId);
     if (config) {
@@ -880,7 +866,7 @@ export class NodeJSOrchestrator {
       errorRate: this.totalTasks > 0 ? totalErrors / this.totalTasks : 0,
       gemma3LegalTasks: this.gemma3LegalTasksCount,
       nomicEmbedTasks: this.nomicEmbedTasksCount,
-      flashAttentionTasks: this.flashAttentionTasksCount,
+      flashAttentionTasks: this.flashAttentionTasksCount
     });
   }
   /**
@@ -976,9 +962,7 @@ export class NodeJSOrchestrator {
     return {
       initialized: true,
       workers: Array.from(currentStatuses.values()),
-      models: {
-        gemma3Legal: {
-          active: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal' && s.status === 'BUSY').length,
+      models: { gemma3Legal: {, active: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal' && s.status === 'BUSY').length,
           total: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal').length,
           ggufLoaded: Array.from(currentStatuses.values()).filter(s => s.model === 'gemma3-legal' && s.ggufLoaded).length
         },
@@ -1044,7 +1028,7 @@ export function createNodeJSOrchestrator(config?: Partial<GPUErrorProcessingConf
         tasksPerMinute: $metrics.throughputPerSecond * 60,
         averageLatency: $metrics.averageTaskTime,
         resourceUtilization: {
-          cpu: $metrics.cpuUtilization,
+         , cpu: $metrics.cpuUtilization,
           memory: $metrics.memoryUtilization,
           gpu: $metrics.gpuUtilization
         },
@@ -1071,6 +1055,5 @@ export const nodeJSOrchestrator = new NodeJSOrchestrator({
   rtx3060Optimization: true,
   errorBatchSize: 8,
   attentionSequenceLength: 2048,
-  memoryOptimization: 'balanced'
-});
+  memoryOptimization: `balanced` });
 export default NodeJSOrchestrator;

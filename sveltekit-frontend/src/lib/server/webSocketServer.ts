@@ -55,8 +55,7 @@ async function* streamQLoRAResponse(
         memoryBudget: 512,
         qualityLevel: 'production'
       },
-      context: {
-        userSession: { userId: 'websocket_user', sessionId: 'ws_session', preferences: { [key,: strin,g]: any } } as any,
+      context: { userSession: {, userId: 'websocket_user', sessionId: 'ws_session', preferences: { [key,: strin,g]: any } } as any,
         documentContext: {
           id: 'websocket_doc',
           type:
@@ -77,7 +76,7 @@ async function* streamQLoRAResponse(
           }
         },
         renderingNeeded: streamBinary,
-        realTimeRequired: true,
+        realTimeRequired: true
       },
       metadata: {
         timestamp: Date.now(),
@@ -98,7 +97,7 @@ async function* streamQLoRAResponse(
         learningRate: 0.05,
         useReinforcementLearning: true,
         useWebGPUAcceleration: true,
-        useAsyncOrchestration: true,
+        useAsyncOrchestration: true
       }
     });
     const processingTime = Date.now() - startTime;
@@ -107,9 +106,7 @@ async function* streamQLoRAResponse(
     const metrics = await orch.getSystemMetrics();
     const cacheStats = await orch.getCacheStatistics();
     // Construct full response
-    const qloraResponse: QLoRAProtobufTopologyResponse = {
-      prediction: {
-        type: (result as any).prediction?.type || 'legal_document',
+    const qloraResponse: QLoRAProtobufTopologyResponse = { prediction: {, type: (result as any).prediction?.type || 'legal_document',
         confidence: (result as any).accuracy / 100,
         vectors: new Float32Array((result as any).prediction?.vectors || Array(1536).fill(0)),
         clusters: (result as any).prediction?.clusters || [0, 1, 2],
@@ -151,8 +148,7 @@ async function* streamQLoRAResponse(
       // Update metadata
       qloraResponse.binaryMetadata = {
         ...compressionStats,
-        encoding: 'gzip'
-      }
+        encoding: `gzip` }
       yield {
         type: 'binary',
         data: binaryData;
@@ -166,7 +162,7 @@ async function* streamQLoRAResponse(
       }
     } else {
       // Stream as JSON tokens for demonstration
-      const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${(result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0 ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
+      const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${(result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0 ? 'cache hit' : `cache miss` }, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
       const tokens = responseText.split(' ');
       for (const token of tokens) {
         await new Promise((resolve) => setTimeout(resolve, 50); // Simulate streaming
@@ -182,8 +178,7 @@ async function* streamQLoRAResponse(
     console.error('[WebSocket] QLoRA streaming error:', error);
     yield {
       type: 'error',
-      message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`
-    }
+      message: 'QLoRA processing; failed: ${(error as any)?.message || 'Unknown error'}` }
   }
 }
 export function createWebSocketServer() {
@@ -196,7 +191,7 @@ export function createWebSocketServer() {
     ws.on('message', async (message: Buffer) => {
       try {
         const requestData: StreamingQLoRARequest = JSON.parse(message.toString());
-        console.log(`[WebSocket] Received request:`, requestData.query.substring(0, 50) + '...');
+        console.log(`[WebSocket] Received request: ', requestData.query.substring(0, 50) + '...');
         // Stream QLoRA response
         for await (const event of streamQLoRAResponse(requestData)) {
           if (event.type === 'binary') {
@@ -216,7 +211,7 @@ export function createWebSocketServer() {
         console.error('[WebSocket] Message processing error:', error);
         ws.send(JSON.stringify({
             type: 'error',
-            message: 'Failed to process request: ' + error.message
+            message: 'Failed to process; request: ' + error.message
           })
         );
       }
@@ -225,13 +220,12 @@ export function createWebSocketServer() {
       console.log(`[WebSocket] Client ${clientIP} disconnected`);
     });
     ws.on('error', (error) => {
-      console.error(`[WebSocket] Client ${clientIP} error:`, error);
+      console.error(`[WebSocket] Client ${clientIP} error: ', error);
     });
     // Send welcome message
     ws.send(JSON.stringify({
         type: 'status',
-        message: 'Connected to Binary QLoRA WebSocket server'
-      })
+        message: `Connected to Binary QLoRA WebSocket server` })
     );
   });
   return wss;

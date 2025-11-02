@@ -1,9 +1,7 @@
 import type { User } from '$lib/types';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-export interface User {
-  id: string;
-  email: string;
+export interface User { id: string;, email: string;
   name?: string;
   role?: string;
   firstName?: string;
@@ -23,26 +21,18 @@ export interface ApiResponse {
   requiresVerification?: boolean;
 }
 
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
+export interface AuthState { user: User | null;, isAuthenticated: boolean;
   isLoading: boolean;
   session: AuthSession | null;
   lastActivity: Date | null;
-  securitySettings: {
-    sessionTimeoutMinutes: number;
-    requireReauth: boolean;
+  securitySettings: { sessionTimeoutMinutes: number;, requireReauth: boolean;
     enable2FA: boolean;
   };
 }
-export interface LoginCredentials {
-  email: string;
-  password: string;
+export interface LoginCredentials { email: string;, password: string;
   rememberMe?: boolean;
 }
-export interface RegisterData {
-  email: string;
-  password: string;
+export interface RegisterData { email: string;, password: string;
   firstName: string;
   lastName: string;
   acceptTerms: boolean;
@@ -57,10 +47,10 @@ class EnhancedAuthStore {
         session: null,
         lastActivity: null,
         securitySettings: {
-          sessionTimeoutMinutes: 30,
+         , sessionTimeoutMinutes: 30,
           requireReauth: false,
-          enable2FA: false,
-        },
+          enable2FA: false
+        }
       })
     : {
         user: null,
@@ -71,8 +61,8 @@ class EnhancedAuthStore {
         securitySettings: {
           sessionTimeoutMinutes: 30,
           requireReauth: false,
-          enable2FA: false,
-        },
+          enable2FA: false
+        }
       };
   private _error = browser ? $state<string | null>(null) : null;
   private _sessionCheckInterval: NodeJS.Timeout | null = null;
@@ -107,7 +97,7 @@ class EnhancedAuthStore {
   get userInitials() {
     if (!this._state.user) return 'GU';
     const { firstName, lastName } = this._state.user;
-    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
+    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || '` }`.toUpperCase();
   }
   get isAdmin() {
     return this._state.user?.role === 'admin';
@@ -135,13 +125,13 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ...credentials,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent,
-        }),
+          userAgent: navigator.userAgent
+        })
       });
       const result: ApiResponse = await response.json();
       if (response.ok && result.success) {
@@ -174,13 +164,13 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ...data,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent,
-        }),
+          userAgent: navigator.userAgent
+        })
       });
       const result: ApiResponse = await response.json();
       if (response.ok && result.success) {
@@ -213,11 +203,11 @@ class EnhancedAuthStore {
         await fetch('/api/auth/logout', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            sessionId: this._state.session.id,
-          }),
+           , sessionId: this._state.session.id
+          })
         });
       }
     } catch (error: any) {
@@ -232,9 +222,9 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token })
       });
       const result: ApiResponse = await response.json();
       if (result.success) {
@@ -253,9 +243,9 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/request-password-reset', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email })
       });
       return await response.json();
     } catch (error: any) {
@@ -268,9 +258,9 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ token, newPassword }),
+        body: JSON.stringify({ token, newPassword })
       });
       const result: ApiResponse = await response.json();
       if (result.success) {
@@ -291,9 +281,9 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/update-profile', {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates)
       });
       const result: ApiResponse = await response.json();
       if (result.success) {
@@ -313,9 +303,9 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ currentPassword, newPassword }),
+        body: JSON.stringify({ currentPassword, newPassword })
       });
       return await response.json();
     } catch (error: any) {
@@ -328,8 +318,7 @@ class EnhancedAuthStore {
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: 'include',
-      });
+        credentials: `include` });
       if (response.ok) {
         const result: ApiResponse = await response.json();
         if (result.success && result.user) {
@@ -381,7 +370,7 @@ class EnhancedAuthStore {
       admin: ['*'],
       prosecutor: ['case:read', 'case:write', 'evidence:read', 'evidence:write', 'document:read', 'document:write'],
       detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],
-      user: ['case:read', 'document:read'],
+      user: ['case:read', 'document:read']
     };
     const userPermissions = rolePermissions[this._state.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('*') || userPermissions.includes(permission);

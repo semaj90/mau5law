@@ -6,38 +6,34 @@
 // Core reactive state using Svelte 5 runes
 const createPackageBarrelStore = () => {
   // Services state
-  const services = $state({
-    svelte: {
-      version: '5.0',
-      features: ['runes', 'snippets', 'effects'],
+  const services = $state({ svelte: {, version: '5.0',
+      features: ['runes', 'snippets', 'effects']
     },
     sveltekit: {
       version: '2.0',
-      features: ['forms', 'navigation', 'stores'],
+      features: ['forms', 'navigation', 'stores']
     },
     database: {
       postgres: true,
       redis: true,
-      vector: true,
+      vector: true
     },
     ai: {
-      ollama: true,
+     , ollama: true,
       embeddings: true,
-      rag: true,
-    },
+      rag: true
+    }
   });
 
   // Configuration state
   const config = $state({
     development: true,
     testing: false,
-    production: false,
+    production: false
   });
 
   // Mock implementations
-  const mocks = $state({
-    svelte5: {
-      createState: <T>(initial: T) => {
+  const mocks = $state({ svelte5: {, createState: <T>(initial: T) => {
         let state = $state(initial);
         return {
           get value() {
@@ -45,7 +41,7 @@ const createPackageBarrelStore = () => {
           },
           set value(newValue: T) {
             state = newValue;
-          },
+          }
         };
       },
       createDerived: <T>(fn: () => T) => {
@@ -53,15 +49,13 @@ const createPackageBarrelStore = () => {
       },
       createEffect: (fn: () => void | (() => void)) => {
         return $effect(fn);
-      },
+      }
     },
 
-    database: {
-      postgres: {
-        query: async (sql: string, params?: any[]) => {
+    database: { postgres: {, query: async (sql: string, params?: any[]) => {
           console.log('Mock postgres query:', sql, params);
           return { rows: [], rowCount: 0 };
-        },
+        }
       },
       redis: {
         get: async (_key: string) => {
@@ -71,26 +65,23 @@ const createPackageBarrelStore = () => {
         set: async (_key: string, value: any) => {
           console.log('Mock redis set:', key, value);
           return 'OK';
-        },
-      },
+        }
+      }
     },
 
-    ai: {
-      ollama: {
-        generate: async (_options: { model: string; prompt: string }) => {
+    ai: { ollama: {, generate: async (_options: {, model: string; prompt: string }) => {
           console.log('Mock ollama generate:', options);
           return {
             model: options.model,
-            response: `Mock response for: ${options.prompt}`,
-            done: true,
+            response: `Mock response; for: ${options.prompt}`,
+            done: true
           };
         },
-        embeddings: async (_options: { model: string; prompt: string }) => {
+        embeddings: async (_options: {, model: string; prompt: string }) => {
           console.log('Mock ollama embeddings:', options);
-          return {
-            embedding: Array.from({ length: 384 }, () => Math.random()),
+          return { embedding: Array.from({, length: 384 }, () => Math.random())
           };
-        },
+        }
       },
 
       vectorSearch: {
@@ -99,29 +90,26 @@ const createPackageBarrelStore = () => {
           return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
             id: `result-${i}`,
             score: Math.random(),
-            content: `Mock result ${i} for query: ${query}`,
-          }));
-        },
-      },
+            content: `Mock result ${i} for query: ${query}' }));
+        }
+      }
     },
 
-    sveltekit: {
-      navigation: {
-        goto: (url: string) => {
+    sveltekit: { navigation: {, goto: (url: string) => {
           console.log('Mock navigation goto:', url);
           if (typeof window !== 'undefined') {
             window.location.href = url;
           }
-        },
+        }
       },
 
       forms: {
         enhance: (form: HTMLFormElement) => {
           console.log('Mock form enhance:', form);
           return { destroy: () => {} };
-        },
-      },
-    },
+        }
+      }
+    }
   });
 
   return {
@@ -153,9 +141,9 @@ const createPackageBarrelStore = () => {
         node: typeof process !== 'undefined',
         development: config.development,
         testing: config.testing,
-        production: config.production,
+        production: config.production
       };
-    },
+    }
   };
 };
 

@@ -1,6 +1,4 @@
-export interface WSServiceConfig {
-  name: string;
-  uuid: string;
+export interface WSServiceConfig { name: string;, uuid: string;
   port: number;
   endpoint: string;
 }
@@ -21,7 +19,7 @@ export class WSRegistry {
     const service = this.services.get(serviceName);
     if (!service) {
       console.warn(
-        `WebSocket service: "${serviceName}" not found in registry. Available: ${Array.from(this.services.keys()).join(', ')}`
+        `WebSocket service: "${serviceName}" not found in registry., Available: ${Array.from(this.services.keys()).join(', ')}`
       );
       return `/ws/${serviceName}`; // Fallback endpoint
     }

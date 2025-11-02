@@ -27,9 +27,7 @@ import type { User } from '$lib/data/types';
 /**
  * User Store State
  */
-interface UserStoreState {
-  currentUser: User | null;
-  isAuthenticated: boolean;
+interface UserStoreState { currentUser: User | null;, isAuthenticated: boolean;
   isLoading: boolean;
   sessionToken: string | null;
   error: string | null;
@@ -335,7 +333,7 @@ export const userError = derived(
  *   import { userStore, isAuthenticated, currentUser, userLoading } from '$lib/stores/unified'
  *
  * Usage patterns:
- *   Old: $user?.id, $profile?.name
+ *  ; Old: $user?.id, $profile?.name
  *   New: $currentUser?.id, $currentUser?.name
  *
  *   Old: $isLoading from auth

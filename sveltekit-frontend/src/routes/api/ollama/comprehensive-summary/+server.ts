@@ -9,7 +9,7 @@ import type { APIResponse } from '$lib/types';
 // Safely import the server-only summarizer logic
 import {
   ComprehensiveOllamaSummarizer,
-  type ComprehensiveSummaryRequest,
+  type ComprehensiveSummaryRequest
 } from '$lib/services/comprehensive-ollama-summarizer';
 
 const comprehensiveOllamaSummarizer = new ComprehensiveOllamaSummarizer();
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error:
-            'Invalid request. "content" must be a string with at least 10 characters and: "type" must be one of: document, case, evidence, legal-brief, contract.',
+            'Invalid request. "content" must be a string with at least 10 characters and: "type" must be one; of: document, case, evidence, legal-brief, contract.'
         },
         { status: 400 }
       );
@@ -54,9 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         data: summaryResponse,
         metadata: {
-          timestamp: new Date().toISOString(),
-          processingTimeMs: Date.now() - started,
-        },
+         , timestamp: new Date().toISOString(),
+          processingTimeMs: Date.now() - started
+        }
       } as APIResponse<typeof summaryResponse>,
       { status: 200 }
     );
@@ -73,9 +73,9 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: { code: 'INTERNAL_ERROR', message: errorMessage },
         metadata: {
-          timestamp: new Date().toISOString(),
-          processingTimeMs: 0,
-        },
+         , timestamp: new Date().toISOString(),
+          processingTimeMs: 0
+        }
       } as APIResponse<never>,
       { status: 500 }
     );

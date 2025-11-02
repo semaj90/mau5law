@@ -26,24 +26,19 @@ if (legalCaseActor) {
   });
 }
 // Actions that send events to the XState machine
-export const legalCaseActions = {
-  loadCases: () => legalCaseActor?.send({ type: 'LOAD_CASES' }),
+export const legalCaseActions = { loadCases: () => legalCaseActor?.send({, type: 'LOAD_CASES' }),
   selectCase: (caseId: string) =>
     legalCaseActor?.send({ type: 'SELECT_CASE', caseId }),
   updateCase: (caseData: any) =>
     legalCaseActor?.send({ type: 'UPDATE_CASE', caseData }),
-  generateEmbedding: (payload: {
-    caseId: string;
-    evidenceText: string;
-    userId: string;
+  generateEmbedding: (payload: { caseId: string;, evidenceText: string;
+   , userId: string;
   }) => legalCaseActor?.send({
     type: 'GENERATE_EMBEDDING',
     ...payload
   }),
-  searchRelatedEvidence: (payload: {
-    caseId: string;
-    query: string;
-    userId: string;
+  searchRelatedEvidence: (payload: { caseId: string;, query: string;
+   , userId: string;
     limit?: number;
   }) => legalCaseActor?.send({
     type: 'SEARCH_RELATED_EVIDENCE',

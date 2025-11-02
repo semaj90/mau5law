@@ -15,7 +15,7 @@ interface DeviceCapabilities {
   cores: number;
   gpu: 'basic' | 'discrete' | 'integrated' | 'unknown';
   connection: 'slow' | 'fast' | 'unknown';
-  screenSize: { width: number; height: number };
+  screenSize: { width: number;, height: number };
   pixelRatio: number;
   webgl: boolean;
   webgpu: boolean;
@@ -39,21 +39,21 @@ export class GamingEvolutionManager {
       nesSettings: {
         strictPalette: true,
         enableScanlines: true,
-        pixelScale: 2,
+        pixelScale: 2
       },
       snesSettings: {
         enableGradients: true,
         enableModeViitColors: true,
-        layerCount: 4,
+        layerCount: 4
       },
       n64Settings: {
         ...(N64_TEXTURE_PRESETS?.balanced ?? {}),
         enableRealTimeReflections: false,
-        textureQuality: 'standard',
+        textureQuality: 'standard'
       },
       yorhaIntegration: true,
       bitsUICompatibility: true,
-      ...config,
+      ...config
     } as unknown as ProgressiveGamingConfig;
     // initialize currentState with safe defaults
     // only accept configured default eras that are known; avoid comparing against unrelated literals
@@ -72,11 +72,11 @@ export class GamingEvolutionManager {
       colorPalette: {
         background: ['#0F0F0F', '#1A1A1A', '#2F2F2F'],
         sprites: ['#FFFFFF', '#CCCCCC', '#999999'],
-        ui: ['#4A90E2', '#357ABD', '#2E6DA4'],
+        ui: ['#4A90E2', '#357ABD', '#2E6DA4']
       },
       soundEnabled: true,
       particleEffects: true,
-      retroShaders: true,
+      retroShaders: true
     } as GamingThemeState;
     this.boundHandleDeviceChange = this.handleDeviceChange;
     this.initialize();
@@ -104,7 +104,7 @@ export class GamingEvolutionManager {
     // memory pressure monitoring if available
     try {
       // performance.memory is non-standard; guard access
-      const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } };
+      const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } };
       if (perfAny && typeof perfAny.memory !== 'undefined') {
         this.monitorMemoryPressure();
       }
@@ -127,11 +127,11 @@ export class GamingEvolutionManager {
       connection: this.detectConnectionSpeed(),
       screenSize: {
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: window.innerHeight
       },
       pixelRatio: window.devicePixelRatio || 1,
       webgl: this.hasWebGL(),
-      webgpu: await this.hasWebGPU(),
+      webgpu: await this.hasWebGPU()
     };
     this.capabilities = capabilities;
     // lightweight logging for diagnostics
@@ -217,7 +217,7 @@ export class GamingEvolutionManager {
   private monitorMemoryPressure(): void {
     const checkMemory = () => {
       try {
-        const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } };
+        const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } };
         const memory = perfAny.memory;
         if (!memory) return;
         const memoryRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
@@ -257,7 +257,7 @@ export class GamingEvolutionManager {
   private updatePerformanceLevel(level: GamingThemeState['performanceLevel']): void {
     this.currentState = {
       ...this.currentState,
-      performanceLevel: level,
+      performanceLevel: level
     };
     // Auto-adjust era based on performance
     if (this.config.enableAutoEvolution) {
@@ -291,7 +291,7 @@ export class GamingEvolutionManager {
     if (era === this.currentState.currentEra) return;
     this.currentState = {
       ...this.currentState,
-      isTransitioning: true,
+      isTransitioning: true
     };
     this.notifyListeners();
     // Wait for transition
@@ -299,7 +299,7 @@ export class GamingEvolutionManager {
     this.currentState = {
       ...this.currentState,
       currentEra: era,
-      isTransitioning: false,
+      isTransitioning: false
     };
     this.notifyListeners();
     console.log(`🎮 Gaming era switched to: ${era}`);

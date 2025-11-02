@@ -14,7 +14,7 @@ function getNATSService(): EnhancedNATSMessagingService {
       user: 'legal_ai_client',
       pass: 'legal_ai_2024',
       name: 'SvelteKit Legal AI Client',
-      max_reconnect_attempts: -1,
+      max_reconnect_attempts: -1
     });
     // Auto-connect on first use
     natsService.connect().catch(error => {
@@ -48,8 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unsupported action: ${String(body.action)}`,
-          },
+            error: `Unsupported; action: ${String(body.action)}' },
           { status: 400 }
         );
     }
@@ -59,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'NATS operation failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -84,7 +83,7 @@ export const GET: RequestHandler = async () => {
       compat.getMetrics ? compat.getMetrics() : Promise.resolve({} as Metrics),
       compat.getSystemStatus
         ? compat.getSystemStatus()
-        : Promise.resolve({ connection_status: 'unknown' } as SystemStatus),
+        : Promise.resolve({ connection_status: 'unknown' } as SystemStatus)
     ]);
 
     return json({
@@ -106,7 +105,7 @@ export const GET: RequestHandler = async () => {
         ai_analysis: ['legal.ai.analysis.started', 'legal.ai.analysis.completed', 'legal.ai.analysis.failed'],
         search_retrieval: ['legal.search.query', 'legal.search.results'],
         real_time_communication: ['legal.chat.message', 'legal.chat.response', 'legal.chat.streaming'],
-        system_monitoring: ['system.health', 'system.metrics'],
+        system_monitoring: ['system.health', 'system.metrics']
       },
       capabilities: {
         message_publishing: true,
@@ -116,8 +115,8 @@ export const GET: RequestHandler = async () => {
         durable_consumers: true,
         wildcard_subscriptions: true,
         message_persistence: true,
-        real_time_streaming: true,
-      },
+        real_time_streaming: true
+      }
     });
   } catch (error: any) {
     return json(
@@ -125,7 +124,7 @@ export const GET: RequestHandler = async () => {
         service: 'Enhanced NATS Messaging',
         status: 'degraded',
         error: 'Unable to get NATS status',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 503 }
     );
@@ -153,7 +152,7 @@ async function handlePublish(nats: EnhancedNATSMessagingService, body: Record<st
     action: 'publish',
     subject: body.subject,
     message_id: correlation ?? 'auto-generated',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -188,7 +187,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
     success: true,
     action: 'publish_batch',
     message_count: (messages as unknown[]).length,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -208,7 +207,7 @@ async function handleRequest(nats: EnhancedNATSMessagingService, body: Record<st
     action: 'request',
     subject: body.subject,
     response,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -225,8 +224,7 @@ async function handleSubscribe(
       success: false,
       error: 'HTTP subscriptions not supported',
       suggestion: 'Use WebSocket endpoint for real-time subscriptions',
-      websocket_url: '/api/v1/nats/ws',
-    },
+      websocket_url: `/api/v1/nats/ws` },
     { status: 400 }
   );
 }
@@ -247,7 +245,7 @@ async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: Recor
     success: true,
     action: 'unsubscribe',
     subject: body.subject,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -269,7 +267,7 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Reco
     action: 'create_stream',
     stream_name: cfg.name,
     subjects: cfg.subjects,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -292,6 +290,6 @@ async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: Re
     action: 'create_consumer',
     stream_name: streamName,
     consumer_name: consumerCfg.name,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

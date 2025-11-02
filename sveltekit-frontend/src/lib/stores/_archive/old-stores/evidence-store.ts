@@ -5,9 +5,7 @@ import { derived, writable, get } from 'svelte/store'; // Added: 'get'
 
 // New small types to avoid: 'any'
 type ISODateString = string;
-export interface ChainOfCustodyEntry {
-  actor: string;
-  action: 'collected' | 'transferred' | 'analyzed' | 'sealed' | string;
+export interface ChainOfCustodyEntry { actor: string;, action: 'collected' | 'transferred' | 'analyzed' | 'sealed' | string;
   timestamp: ISODateString | Date;
   notes?: string;
   location?: string;
@@ -16,7 +14,7 @@ export interface ChainOfCustodyEntry {
 export interface LabAnalysis {
   reportId?: string;
   summary?: string;
-  findings?: Array<{ test: string; result: string; confidence?: number }>;
+  findings?: Array<{ test: string;, result: string; confidence?: number }>;
   performedAt?: ISODateString | Date;
   performedBy?: string;
 }
@@ -29,18 +27,14 @@ export interface AIAnalysis {
   details?: Record<string, unknown>;
 }
 
-export interface CanvasPosition {
-  x: number;
-  y: number;
+export interface CanvasPosition { x: number;, y: number;
   width?: number;
   height?: number;
   rotation?: number;
 }
 
 // === TYPES ===
-export interface Evidence {
-  id: string;
-  caseId: string;
+export interface Evidence { id: string;, caseId: string;
   criminalId?: string;
   title: string;
   description?: string;
@@ -70,18 +64,14 @@ export interface Evidence {
   uploadedAt: ISODateString | Date; // allow string from API or Date
   updatedAt: ISODateString | Date; // allow string from API or Date
   // Add missing properties for compatibility
-  analysis?: {
-    summary: string;
-    keyPoints: string[];
+  analysis?: { summary: string;, keyPoints: string[];
     relevance: number;
     admissibility: 'admissible' | 'questionable' | 'inadmissible';
     reasoning: string;
     suggestedTags: string[];
   };
 }
-export interface UploadFile {
-  id: string;
-  file: File;
+export interface UploadFile { id: string;, file: File;
   progress: number;
   status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error';
   preview?: string;
@@ -99,9 +89,7 @@ interface UploadApiResponseData {
 }
 
 // Added missing interfaces for store types
-export interface EvidenceGridState {
-  items: Evidence[];
-  searchQuery: string;
+export interface EvidenceGridState { items: Evidence[];, searchQuery: string;
   filteredItems: Evidence[];
   sortBy: 'uploadedAt' | 'title' | 'evidenceType' | 'fileSize';
   sortOrder: 'asc' | 'desc';
@@ -111,9 +99,7 @@ export interface EvidenceGridState {
   error?: string;
 }
 
-export interface UploadModalState {
-  isOpen: boolean;
-  files: UploadFile[];
+export interface UploadModalState { isOpen: boolean;, files: UploadFile[];
   step: 'select' | 'preview' | 'uploading' | 'completed';
   isProcessing: boolean;
   caseId?: string;
@@ -130,14 +116,14 @@ export const evidenceGrid: Writable<EvidenceGridState> = writable({
   sortOrder: 'desc',
   selectedItems: new Set(),
   viewMode: 'grid',
-  isLoading: false,
+  isLoading: false
 });
 // Upload Modal Store
 export const uploadModal: Writable<UploadModalState> = writable({
   isOpen: false,
   files: [],
   step: 'select',
-  isProcessing: false,
+  isProcessing: false
 });
 // === FUSE.JS SEARCH ===
 let fuseInstance: Fuse<Evidence> | null = null;
@@ -149,11 +135,11 @@ const fuseOptions = {
     { name: 'tags', weight: 0.2 },
     { name: 'evidenceType', weight: 0.1 },
     { name: 'fileName', weight: 0.1 },
-    { name: 'aiSummary', weight: 0.1 },
+    { name: 'aiSummary', weight: 0.1 }
   ],
   threshold: 0.3,
   includeScore: true,
-  includeMatches: true,
+  includeMatches: true
 };
 // Derived store for filtered evidence
 export const filteredEvidence = derived(evidenceGrid, $evidenceGrid => {
@@ -214,7 +200,7 @@ export const evidenceActions = {
       items,
       filteredItems: items,
       isLoading: false,
-      error: undefined,
+      error: undefined
     }));
   },
   // Load evidence from API
@@ -222,7 +208,7 @@ export const evidenceActions = {
     evidenceGrid.update(state => ({
       ...state,
       isLoading: true,
-      error: undefined,
+      error: undefined
     }));
     try {
       const url = caseId ? `/api/evidence?caseId=${caseId}` : '/api/evidence';
@@ -235,15 +221,14 @@ export const evidenceActions = {
         ...state,
         items,
         filteredItems: items,
-        isLoading: false,
+        isLoading: false
       }));
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       evidenceGrid.update(state => ({
         ...state,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to load evidence',
-      }));
+        error: error instanceof Error ? error.message : 'Failed to load evidence` }));
     }
   },
   // Update search query
@@ -278,8 +263,7 @@ export const evidenceActions = {
   async deleteEvidence(evidenceId: string) {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE',
-      });
+        method: 'DELETE` });
       if (!response.ok) {
         // Simplified response check
         throw new Error(`Failed to delete evidence: ${response.statusText}`);
@@ -287,14 +271,14 @@ export const evidenceActions = {
       evidenceGrid.update(state => ({
         ...state,
         items: state.items.filter(item => item.id !== evidenceId), // Access id directly
-        selectedItems: new Set([...state.selectedItems].filter(id => id !== evidenceId)),
+        selectedItems: new Set([...state.selectedItems].filter(id => id !== evidenceId))
       }));
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       console.error('Delete evidence error:', error);
       throw error;
     }
-  },
+  }
 };
 export const uploadActions = {
   // Open upload modal
@@ -306,7 +290,7 @@ export const uploadActions = {
       files: [],
       step: 'select',
       isProcessing: false,
-      error: undefined,
+      error: undefined
     }));
   },
   // Close upload modal
@@ -317,7 +301,7 @@ export const uploadActions = {
       files: [],
       step: 'select',
       isProcessing: false,
-      error: undefined,
+      error: undefined
     }));
   },
   // Add files for upload
@@ -327,13 +311,12 @@ export const uploadActions = {
       id: crypto.randomUUID(),
       file,
       progress: 0,
-      status: 'pending',
+      status: 'pending'
     }));
     uploadModal.update(state => ({
       ...state,
       files: [...state.files, ...uploadFiles],
-      step: 'preview',
-    }));
+      step: 'preview` }));
     // Generate previews for supported file types
     uploadFiles.forEach(uploadFile => {
       if (uploadFile.file.type.startsWith('image/')) {
@@ -341,7 +324,7 @@ export const uploadActions = {
         reader.onload = (e: ProgressEvent<FileReader>) => {
           uploadModal.update(state => ({
             ...state,
-            files: state.files.map(f => (f.id === uploadFile.id ? { ...f, preview: e.target?.result as string } : f)),
+            files: state.files.map(f => (f.id === uploadFile.id ? { ...f, preview: e.target?.result as string } : f))
           }));
         };
         reader.readAsDataURL(uploadFile.file);
@@ -352,7 +335,7 @@ export const uploadActions = {
   removeFile(fileId: string) {
     uploadModal.update(state => ({
       ...state,
-      files: state.files.filter(f => f.id !== fileId),
+      files: state.files.filter(f => f.id !== fileId)
     }));
   },
   // Set upload step
@@ -364,7 +347,7 @@ export const uploadActions = {
     uploadModal.update(state => ({
       ...state,
       isProcessing: true,
-      error: undefined,
+      error: undefined
     }));
     try {
       const state = get(uploadModal); // Corrected: Use get() to access current store value
@@ -373,7 +356,7 @@ export const uploadActions = {
         // Update file status to uploading
         uploadModal.update(modalState => ({
           ...modalState,
-          files: modalState.files.map(f => (f.id === uploadFile.id ? { ...f, status: 'uploading' as const } : f)),
+          files: modalState.files.map(f => (f.id === uploadFile.id ? { ...f, status: 'uploading' as const } : f))
         }));
         const formData = new FormData();
         formData.append('file', uploadFile.file);
@@ -385,7 +368,7 @@ export const uploadActions = {
             const progress = Math.round((e.loaded / e.total) * 100);
             uploadModal.update(modalState => ({
               ...modalState,
-              files: modalState.files.map(f => (f.id === uploadFile.id ? { ...f, progress } : f)),
+              files: modalState.files.map(f => (f.id === uploadFile.id ? { ...f, progress } : f))
             }));
           }
         });
@@ -403,10 +386,10 @@ export const uploadActions = {
                         status: 'completed' as const,
                         progress: 100,
                         aiAnalysis: (result as UploadApiResponseData).aiAnalysis,
-                        extractedText: (result as UploadApiResponseData).extractedText,
+                        extractedText: (result as UploadApiResponseData).extractedText
                       }
                     : f
-                ),
+                )
               }));
               resolve();
             } else {
@@ -415,7 +398,7 @@ export const uploadActions = {
                 ...modalState,
                 files: modalState.files.map(f =>
                   f.id === uploadFile.id ? { ...f, status: 'error' as const, error: error } : f
-                ),
+                )
               }));
               reject(new Error(error));
             }
@@ -426,7 +409,7 @@ export const uploadActions = {
               ...modalState,
               files: modalState.files.map(f =>
                 f.id === uploadFile.id ? { ...f, status: 'error' as const, error: error } : f
-              ),
+              )
             }));
             reject(new Error(error));
           };
@@ -438,15 +421,14 @@ export const uploadActions = {
       await evidenceActions.loadEvidence(state.caseId);
       uploadModal.update(modalState => ({
         ...modalState,
-        isProcessing: false,
+        isProcessing: false
       }));
     } catch (error: any) {
       uploadModal.update(state => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message : 'Upload failed',
-      }));
+        error: error instanceof Error ? error.message : 'Upload failed` }));
     }
-  },
+  }
 };
 export default evidenceActions;

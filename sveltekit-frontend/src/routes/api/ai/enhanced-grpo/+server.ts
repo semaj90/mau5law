@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -29,7 +29,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
+       , model: 'nomic-embed-text',
         prompt: text.slice(0, 2048)
       })
     })
@@ -51,7 +51,7 @@ async function getAIResponse(query: string): Promise<any> {
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: `<|thinking|>
-Let me analyze this legal query step by step:
+Let me analyze this legal query step by, step:
 1. Identify the key legal concepts
 2. Consider relevant legal principles
 3. Provide structured reasoning
@@ -157,14 +157,10 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
   }
 }
 // Save enhanced response to database
-async function saveEnhancedResponse(data: {
-  query: string
-  response: string
-  thinking: string
-  structuredReasoning: any
-  queryEmbedding: number[]
+async function saveEnhancedResponse(data: { query: string, response: string; thinking: string
+  structuredReasoning: any; queryEmbedding: number[]
   responseEmbedding: number[];
-  confidence: number
+ , confidence: number
   userId?: string
   legalDomain?: string
 }): Promise<void> {
@@ -190,10 +186,10 @@ async function saveEnhancedResponse(data: {
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).thinking},
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning)},
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.premises.concat((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.inferences, (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.conclusions))},
-        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')}]`}:: vector
-        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]`}:: vector
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')}]` }:: vector
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]' }:: vector
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).confidence},
-        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general'},
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general` },
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).userId || null},
         'gemma3-legal:latest',
         NOW(),
@@ -219,13 +215,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       analysisType = 'reasoning',
       enableRecommendations = true,
       maxRecommendations = 5,
-      legalDomain = 'general'
-    } = requestData
+      legalDomain = 'general` } = requestData
     // Validate input
     if (!query && !text) {
       return json({
         error: 'Query or text is required',
-        success: false,
+        success: false
       }, { status: 400 })
     }
     const inputText = query || text
@@ -336,11 +331,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       error: 'Enhanced analysis failed',
       details: error.message || 'Unknown error occurred',
       metadata: {
-        processing_time: 0,
+       , processing_time: 0,
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
         thinking_enabled: false,
-        error_type: error.constructor.name,
+        error_type: error.constructor.name
       }
     }, { status: 500 })
   }
@@ -393,20 +388,20 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           recent_responses: recentResponses.rows.map(row => ({
-            id: row.id as string,
+           , id: row.id as string,
             query: row.query as string,
             snippet: (row.response as string).slice(0, 200) + '...',
             confidence: parseFloat(row.confidence as string || '0.8'),
             legal_domain: row.legal_domain as string,
             created_at: row.created_at as string,
-            usage_count: row.usage_count as number,
+            usage_count: row.usage_count as number
           })
         })
       default: return json({,
           success: true,
           message: 'Enhanced GRPO API is operational',
           available_operations: ['trending', 'recent'],
-          database_tables: ['ai_responses', 'grpo_feedback', 'recommendation_scores'],
+          database_tables: ['ai_responses', 'grpo_feedback', 'recommendation_scores']
         })
     }
   } catch (error: any) {
@@ -436,7 +431,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     if (!responseId || !userRating || userRating < 1 || userRating > 5) {
       return json({
         error: 'responseId and userRating (1-5) are required',
-        success: false,
+        success: false
       }, { status: 400 })
     }
     // Record feedback
@@ -477,8 +472,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Feedback recorded successfully',
       feedback_id: responseId,
-      impact: 'Learning algorithms updated with your feedback',
-    })
+      impact: 'Learning algorithms updated with your feedback` })
   } catch (error: any) {
     console.error('Feedback recording error:', error)
     return json({

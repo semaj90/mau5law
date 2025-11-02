@@ -2,16 +2,12 @@
  * Accessibility Validator for Legal AI Platform
  * Validates UX patterns and accessibility compliance
  */
-interface AccessibilityRule {
-  name: string;
-  description: string;
+interface AccessibilityRule { name: string;, description: string;
   severity: 'error' | 'warning' | 'info';
   validate: (element: Element) => boolean;
   fix?: string;
 }
-interface AccessibilityReport {
-  element: Element;
-  rule: AccessibilityRule;
+interface AccessibilityReport { element: Element;, rule: AccessibilityRule;
   passed: boolean;
   message: string;
 }
@@ -29,7 +25,7 @@ export class AccessibilityValidator {
         const hasTextContent = element.textContent?.trim().length > 0;
         return hasAriaLabel || hasAriaLabelledBy || hasTextContent;
       },
-      fix: 'Add aria-label, aria-labelledby, or text content to the button',
+      fix: 'Add aria-label, aria-labelledby, or text content to the button'
     },
     // Focus Management Rules
     {
@@ -42,7 +38,7 @@ export class AccessibilityValidator {
         const computedStyle = window.getComputedStyle(element, ':focus-visible');
         return computedStyle.outline !== 'none' || computedStyle.boxShadow !== 'none';
       },
-      fix: 'Add focus-visible styles with outline or box-shadow',
+      fix: 'Add focus-visible styles with outline or box-shadow'
     },
     // Color Contrast Rules
     {
@@ -60,7 +56,7 @@ export class AccessibilityValidator {
         const isLegalTheme = style.getPropertyValue('--legal-ai-primary');
         return isLegalTheme ? true : backgroundColor !== color;
       },
-      fix: 'Ensure color contrast ratio is at least 4.5:1 for normal text',
+      fix: 'Ensure color contrast ratio is at least 4.5:1 for normal text'
     },
     // Dialog Accessibility Rules
     {
@@ -76,7 +72,7 @@ export class AccessibilityValidator {
         const hasAriaDescribedBy = element.hasAttribute('aria-describedby');
         return (hasAriaLabel || hasAriaLabelledBy) && hasAriaDescribedBy;
       },
-      fix: 'Add aria-label/aria-labelledby and aria-describedby to dialogs',
+      fix: 'Add aria-label/aria-labelledby and aria-describedby to dialogs'
     },
     // Form Accessibility Rules
     {
@@ -93,7 +89,7 @@ export class AccessibilityValidator {
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         return hasLabel || hasAriaLabel || hasAriaLabelledBy;
       },
-      fix: 'Associate form inputs with labels using for/id or aria-label',
+      fix: 'Associate form inputs with labels using for/id or aria-label'
     },
     // Legal AI Specific Rules
     {
@@ -115,8 +111,7 @@ export class AccessibilityValidator {
         );
         return !isEnhancedComponent || hasLegalClasses;
       },
-      fix: 'Use legal AI design tokens and CSS variables',
-    },
+      fix: `Use legal AI design tokens and CSS variables` },
   ];
   /**
    * Validate accessibility for a single element
@@ -128,8 +123,7 @@ export class AccessibilityValidator {
       passed: rule.validate(element),
       message: rule.passed
         ? `✅ ${rule.name}: Passed`
-        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : ''}`,
-    }));
+        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : `` }` }));
   }
   /**
    * Validate accessibility for entire page
@@ -158,9 +152,7 @@ export class AccessibilityValidator {
   /**
    * Generate accessibility report
    */
-  generateReport(): {
-    summary: {
-      total: number;
+  generateReport(): { summary: {, total: number;
       errors: number;
       warnings: number;
       info: number;
@@ -168,14 +160,12 @@ export class AccessibilityValidator {
     issues: AccessibilityReport[];
   } {
     const issues = this.validatePage();
-    return {
-      summary: {
-        total: issues.length,
+    return { summary: {, total: issues.length,
         errors: issues.filter(i => i.rule.severity === 'error').length,
         warnings: issues.filter(i => i.rule.severity === 'warning').length,
-        info: issues.filter(i => i.rule.severity === 'info').length,
+        info: issues.filter(i => i.rule.severity === 'info').length
       },
-      issues,
+      issues
     };
   }
   /**
@@ -200,7 +190,7 @@ export class AccessibilityValidator {
     });
     observer.observe(document.body, {
       childList: true,
-      subtree: true,
+      subtree: true
     });
   }
 }

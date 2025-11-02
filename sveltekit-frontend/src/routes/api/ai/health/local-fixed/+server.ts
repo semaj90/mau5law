@@ -6,23 +6,21 @@ import { ollamaService } from '$lib/services/ollama-service';
 type OllamaModel = { name?: string };
 type OllamaTagsResponse = { models?: OllamaModel[] };
 
-type HealthResult = {
-  success: boolean;
-  message: string;
+type HealthResult = { success: boolean;, message: string;
   models?: string[];
 };
 
 type GenerationResponse = { response?: string | string[] | null };
 type GenerationResult =
-  | { success: true; provider: string; model: string; response: string | string[] | null; executionTime: number }
-  | { success: false; provider: string; error: string; executionTime: number; troubleshooting?: string[] };
+  | { success: true; provider: string; model: string; response: string | string[] | null;, executionTime: number }
+  | { success: false; provider: string; error: string;, executionTime: number; troubleshooting?: string[] };
 
 // Updated: Test Ollama connection directly
 async function testOllamaConnection(): Promise<HealthResult> {
   try {
     const versionResponse = await fetch('http://localhost:11434/api/version', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (!versionResponse.ok) {
       return { success: false, message: 'Ollama not responding on port 11434' };
@@ -30,7 +28,7 @@ async function testOllamaConnection(): Promise<HealthResult> {
 
     const modelsResponse = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
 
     if (modelsResponse.ok) {
@@ -39,17 +37,16 @@ async function testOllamaConnection(): Promise<HealthResult> {
       return {
         success: true,
         message: `Ollama is running with ${modelNames.length} models`,
-        models: modelNames,
+        models: modelNames
       };
     }
 
     return {
       success: true,
-      message: 'Ollama is running but model list unavailable',
-    };
+      message: `Ollama is running but model list unavailable` };
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: `Ollama connection failed: ${msg}` };
+    return { success: false, message: 'Ollama connection; failed: ${msg}' };
   }
 }
 
@@ -58,17 +55,17 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
   try {
     const response = await fetch('http://localhost:3005/healthz', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
 
     if (response.ok) {
       return { success: true, message: 'llama.cpp server is running' };
     } else {
-      return { success: false, message: 'llama.cpp server not responding properly' };
+      return { success: false, message: `llama.cpp server not responding properly` };
     }
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: `llama.cpp connection failed: ${msg}` };
+    return { success: false, message: 'llama.cpp connection; failed: ${msg}' };
   }
 }
 
@@ -136,12 +133,10 @@ export const GET: RequestHandler = async () => {
       success: true,
       timestamp: new Date().toISOString(),
       executionTime,
-      services: {
-        ollama: {
-          service: ollamaServiceCheck,
-          direct: ollamaDirectCheck,
+      services: { ollama: {, service: ollamaServiceCheck,
+          direct: ollamaDirectCheck
         },
-        llamaCpp: llamaCppCheck,
+        llamaCpp: llamaCppCheck
       },
       recommendations: {
         preferredService: ollamaDirectCheck?.success ? 'ollama' : llamaCppCheck?.success ? 'llamacpp' : 'none',
@@ -154,8 +149,8 @@ export const GET: RequestHandler = async () => {
           'Check if Ollama is running on port 11434',
           'Check if llama.cpp is running on port 8080',
           'Ensure Gemma3 model is loaded in Ollama',
-        ],
-      },
+        ]
+      }
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
@@ -165,10 +160,9 @@ export const GET: RequestHandler = async () => {
         success: false,
         available: false,
         error: msg,
-        services: {
-          ollama: { available: false },
-          llamaCpp: { available: false },
-        },
+        services: { ollama: {, available: false },
+          llamaCpp: {, available: false }
+        }
       },
       { status: 500 }
     );
@@ -185,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       provider: 'none',
       error: 'No available local LLM services',
-      executionTime: Date.now() - startTime,
+      executionTime: Date.now() - startTime
     };
 
     if (service === 'ollama' || service === 'auto') {
@@ -198,11 +192,11 @@ export const POST: RequestHandler = async ({ request }) => {
             prompt,
             stream: false,
             options: {
-              temperature: 0.7,
-              num_predict: 200,
-            },
+             , temperature: 0.7,
+              num_predict: 200
+            }
           }),
-          signal: AbortSignal.timeout(30000),
+          signal: AbortSignal.timeout(30000)
         });
 
         if (response.ok) {
@@ -212,23 +206,23 @@ export const POST: RequestHandler = async ({ request }) => {
             provider: 'ollama',
             model: 'gemma3-legal',
             response: data?.response ?? null,
-            executionTime: Date.now() - startTime,
+            executionTime: Date.now() - startTime
           };
         } else {
           // fallback model
           const fallbackResponse = await fetch('http://localhost:11434/api/generate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               model: 'gemma2:2b',
               prompt,
               stream: false,
               options: {
-                temperature: 0.7,
-                num_predict: 200,
-              },
+               , temperature: 0.7,
+                num_predict: 200
+              }
             }),
-            signal: AbortSignal.timeout(30000),
+            signal: AbortSignal.timeout(30000)
           });
 
           if (fallbackResponse.ok) {
@@ -238,14 +232,14 @@ export const POST: RequestHandler = async ({ request }) => {
               provider: 'ollama',
               model: 'gemma2:2b',
               response: data?.response ?? null,
-              executionTime: Date.now() - startTime,
+              executionTime: Date.now() - startTime
             };
           } else {
             result = {
               success: false,
               provider: 'ollama',
-              error: `Generation failed: ${response.statusText}`,
-              executionTime: Date.now() - startTime,
+              error: `Generation; failed: ${response.statusText}`,
+              executionTime: Date.now() - startTime
             };
           }
         }
@@ -254,8 +248,8 @@ export const POST: RequestHandler = async ({ request }) => {
         result = {
           success: false,
           provider: 'ollama',
-          error: `Generation error: ${msg}`,
-          executionTime: Date.now() - startTime,
+          error: `Generation; error: ${msg}`,
+          executionTime: Date.now() - startTime
         };
       }
     }
@@ -270,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Start Ollama: run scripts/start-local-llms.ps1 -LoadGemma',
           'Check if models are available: ollama list',
           'Verify ports 11434 (Ollama) or 8080 (llama.cpp) are accessible',
-        ],
+        ]
       };
     }
 
@@ -280,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: msg,
+        error: msg
       },
       { status: 500 }
     );

@@ -7,9 +7,7 @@ import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
 // Agent Types for AutoGen-style orchestration
-interface LegalAgent {
-  id: string;
-  role: 'router' | 'contract' | 'litigation' | 'compliance' | 'research' | 'synthesis';
+interface LegalAgent { id: string;, role: 'router' | 'contract' | 'litigation' | 'compliance' | 'research' | 'synthesis';
   name: string;
   description: string;
   specialization: string[];
@@ -18,26 +16,20 @@ interface LegalAgent {
   isActive: boolean;
 }
 // Query Analysis Result
-interface QueryIntent {
-  primaryDomain: 'contract' | 'litigation' | 'compliance' | 'research' | 'general';
-  complexity: 'simple' | 'moderate' | 'complex' | 'expert';
+interface QueryIntent { primaryDomain: 'contract' | 'litigation' | 'compliance' | 'research' | 'general';, complexity: 'simple' | 'moderate' | 'complex' | 'expert';
   urgency: 'low' | 'medium' | 'high' | 'critical';
   requiredAgents: string[];
   suggestedWorkflow: string[];
   confidence: number;
 }
 // Orchestration Plan
-interface OrchestrationPlan {
-  queryId: string;
-  intent: QueryIntent;
+interface OrchestrationPlan { queryId: string;, intent: QueryIntent;
   selectedAgents: LegalAgent[];
   executionSteps: ExecutionStep[];
   expectedDuration: number;
   fallbackPlan?: OrchestrationPlan;
 }
-interface ExecutionStep {
-  stepId: string;
-  agentId: string;
+interface ExecutionStep { stepId: string;, agentId: string;
   action: 'analyze' | 'research' | 'draft' | 'review' | 'synthesize';
   prompt: string;
   expectedOutput: string;
@@ -45,14 +37,10 @@ interface ExecutionStep {
   timeout: number;
 }
 // Ollama Integration
-interface OllamaModelInfo {
-  name: string;
-  size: number;
+interface OllamaModelInfo { name: string;, size: number;
   digest: string;
   modified_at: string;
-  details: {
-    format: string;
-    family: string;
+  details: { format: string;, family: string;
     families: string[];
     parameter_size: string;
     quantization_level: string;
@@ -185,8 +173,7 @@ export class QLoRAOllamaOrchestrator {
       throw new Error('Router agent not available');
     }
     const intentAnalysisPrompt = `
-Analyze this legal query and provide structured intent classification:
-Query: "${query}"
+Analyze this legal query and provide structured intent classification:; Query: "${query}"
 Context: ${JSON.stringify(context)}
 Classify the query and respond with JSON:;
 {
@@ -221,7 +208,7 @@ Classify the query and respond with JSON:;
   async executeOrchestration(plan: OrchestrationPlan, onProgress?: (step: ExecutionStep, result: string) => void): Promise<any> {
     const startTime = performance.now();
     const results = new Map<string, string>();
-    console.log('🚀 Executing orchestration plan:', plan.queryId);
+    console.log('🚀 Executing orchestration plan: `, plan.queryId);
     console.log(`   • ${plan.selectedAgents.length} agents selected`);
     console.log(`   • ${plan.executionSteps.length} steps planned`);
     try {
@@ -312,16 +299,14 @@ Classify the query and respond with JSON:;
         await this.pullOllamaModel(agent.modelPath);
       }
       // Load model in WASM loader
-      const modelKey = await qloraWasmLoader.loadDistilledModel({
-        baseModel: {
-          name: agent.modelPath,
+      const modelKey = await qloraWasmLoader.loadDistilledModel({ baseModel: {, name: agent.modelPath,
           path: `${this.distilledModelsPath}/${agent.modelPath}`,
           size: 256, // Default distilled size
           contextLength: 2048,
           vocabulary: 32000
         },
         adapter: {
-          name: `${agentId}-adapter`,
+         , name: `${agentId}-adapter`,
           path: `${this.distilledModelsPath}/${agentId}-adapter.bin`,
           rank: 16,
           alpha: 32,
@@ -360,15 +345,15 @@ Classify the query and respond with JSON:;
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/pull`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: modelName })
+        headers: { 'Content-Type': `application/json' },
+        body: JSON.stringify({, name: modelName })
       });
       if (!response.ok) {
         throw new Error(`Failed to pull model: ${response.status}`);
       }
       console.log(`📥 Model ${modelName} pulled successfully`);
     } catch (error) {
-      console.error(`❌ Failed to pull model ${modelName}:`, error);
+      console.error(`❌ Failed to pull model ${modelName}: ', error);
       throw error;
     }
   }
@@ -461,7 +446,7 @@ Provide a comprehensive synthesis that:
 2. Highlights key findings and recommendations
 3. Identifies any contradictions or gaps
 4. Provides clear next steps
-Synthesis:`;
+Synthesis: ';
     const modelKey = this.activeModels.get(synthesisAgent.id)!;
     const synthesis = await qloraWasmLoader.generateText(modelKey, synthesisPrompt, {
       maxTokens: 512,
@@ -477,8 +462,7 @@ Synthesis:`;
       'contract_analysis': 'contract_specialist',
       'case_analysis': 'litigation_specialist',
       'compliance_audit': 'compliance_specialist',
-      'legal_research': 'research_specialist'
-    }
+      'legal_research': `research_specialist' }
     return skills.map(skill => skillMapping[skill]).filter(Boolean);
   }
   private heuristicIntentAnalysis(text: string): QueryIntent {
@@ -511,7 +495,7 @@ Synthesis:`;
         stepId: `step_${index + 1}_${agent.role}`,
         agentId: agent.id,
         action: 'analyze',
-        prompt: `As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,
+        prompt: 'As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,
         expectedOutput: `${agent.role}_analysis`,
         dependencies: index === 0 ? [] : [`step_${index}_${workingAgents[index-1].role}`],
         timeout: 30000

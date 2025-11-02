@@ -6,22 +6,18 @@ import pool from '$lib/server/db/client';
 import { sql } from 'drizzle-orm';
 
 // Row types returned by the DB queries
-type CaseRow = {
-  id: string;
-  title: string;
+type CaseRow = { id: string;, title: string;
   status: string;
   created_at: string | Date | null;
 };
-type POIRow = {
-  id: string;
-  name: string;
+type POIRow = { id: string;, name: string;
   status: string;
   created_at: string | Date | null;
 };
 
 // Typed dashboard output shapes
-type RecentCase = { id: string; title: string; status: string; createdAt: Date };
-type RecentPOI = { id: string; name: string; status: string; createdAt: Date };
+type RecentCase = { id: string; title: string; status: string;, createdAt: Date };
+type RecentPOI = { id: string; name: string; status: string;, createdAt: Date };
 
 export const load: ServerLoad = async ({ locals }) => {
   // Validate user/session; redirect to login if not authenticated
@@ -48,7 +44,7 @@ export const load: ServerLoad = async ({ locals }) => {
       id: r.id,
       title: r.title,
       status: r.status,
-      createdAt: r.created_at ? new Date(r.created_at) : new Date(),
+      createdAt: r.created_at ? new Date(r.created_at) : new Date()
     }));
   } catch (err) {
     // Fallback sample data if DB read fails
@@ -64,7 +60,7 @@ export const load: ServerLoad = async ({ locals }) => {
       id: r.id,
       name: r.name,
       status: r.status,
-      createdAt: r.created_at ? new Date(r.created_at) : new Date(),
+      createdAt: r.created_at ? new Date(r.created_at) : new Date()
     }));
   } catch (err) {
     // Fallback sample POI if DB read fails
@@ -76,7 +72,7 @@ export const load: ServerLoad = async ({ locals }) => {
     ...sessionInfo,
     // Dashboard data
     recentCases,
-    recentCriminals,
+    recentCriminals
   };
 };
 
@@ -86,5 +82,5 @@ export const actions: Actions = {
     cookies.delete('auth-session', { path: '/' });
     // Redirect back to homepage after logout
     throw redirect(303, '/');
-  },
+  }
 };

@@ -1,14 +1,33 @@
-// @ts-nocheck - Complex experimental service with external dependencies
 /**
  * WebAssembly Clustering Support
  * High-performance clustering algorithms for legal document processing
  */
-}
 export interface WebAssemblyClusteringConfig {
   algorithm: 'kmeans' | 'som' | 'dbscan';
   wasmPath?: string;
   fallbackToJS?: boolean;
 }
+
+// New interfaces for KMeans
+export interface KMeansConfig {
+  maxIterations?: number;
+  tolerance?: number;
+}
+
+export interface KMeansResult { clusters: number[];, centroids: number[][];
+  iterations: number;
+}
+
+// New interfaces for SOM
+export interface SOMConfig { width: number;, height: number;
+  learningRate?: number;
+  radius?: number;
+  iterations?: number;
+}
+
+export interface SOMResult { weights: number[][][];, clusters: number[];
+}
+
 export class WebAssemblyClusteringService {
   private wasmInstance: WebAssembly.Instance | null = null;
   private isWasmSupported: boolean = $state(false);
@@ -17,8 +36,7 @@ export class WebAssemblyClusteringService {
   }
   private checkWebAssemblySupport(): boolean {
     try {
-      return typeof WebAssembly === 'object' &&
-             typeof WebAssembly.instantiate === 'function';
+      return typeof WebAssembly === 'object' && typeof WebAssembly.instantiate === 'function';
     } catch {
       return false;
     }
@@ -36,19 +54,16 @@ export class WebAssemblyClusteringService {
       // const wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmPath)
       // this.wasmInstance = wasmModule.instance
       // Simulate successful loading
-      this.wasmInstance = { exports: { [key,: strin,g]: any } } as WebAssembly.Instance;
+      this.wasmInstance = { exports: {} } as WebAssembly.Instance; // Simplified mock for WebAssembly.Instance
       console.log('WASM clustering module loaded successfully');
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed 'any' to 'unknown'
       console.error('Failed to load WASM clustering module:', error);
       return false;
     }
   }
-  async performKMeansClustering(
-    embeddings: number[][],
-    k: number;
-    config: any;
-  ): Promise<any> {
+  async performKMeansClustering(embeddings: number[][], k: number, config: KMeansConfig): Promise<KMeansResult> {
     if (this.wasmInstance && this.isWasmSupported) {
       try {
         // In a real implementation, you would call WASM functions here
@@ -60,26 +75,25 @@ export class WebAssemblyClusteringService {
           clusters,
           centroids,
           iterations: config.maxIterations || 100
-        }
-      } catch (error: any) {
+        };
+      } catch (error: unknown) {
+        // Changed 'any' to 'unknown'
         console.warn('WASM K-Means failed, falling back to JavaScript:', error);
       }
     }
     // Fallback to JavaScript implementation
     return this.jsKMeansClustering(embeddings, k, config);
   }
-  async performSOMTraining(
-    embeddings: number[][];
-    config: any;
-  ): Promise<any> {
+  async performSOMTraining(embeddings: number[][], config: SOMConfig): Promise<SOMResult> {
     if (this.wasmInstance && this.isWasmSupported) {
       try {
         console.log('Using WASM SOM training...');
         // Mock WASM SOM implementation
         const weights = this.mockSOMWeights(config.width, config.height, embeddings[0].length);
         const clusters = this.mockSOMClustering(embeddings, weights);
-        return { weights, clusters }
-      } catch (error: any) {
+        return { weights, clusters };
+      } catch (error: unknown) {
+        // Changed 'any' to 'unknown'
         console.warn('WASM SOM failed, falling back to JavaScript:', error);
       }
     }
@@ -89,7 +103,7 @@ export class WebAssemblyClusteringService {
   // Mock implementations for demonstration
   private mockKMeansClustering(embeddings: number[][], k: number): number[] {
     // Simple random assignment for demo - real WASM would implement proper K-Means
-    return embeddings.map(() => Math.floor(Math.random() * k);
+    return embeddings.map(() => Math.floor(Math.random() * k));
   }
   private calculateCentroids(embeddings: number[][], clusters: number[], k: number): number[][] {
     const centroids: number[][] = [];
@@ -98,11 +112,16 @@ export class WebAssemblyClusteringService {
       const clusterPoints = embeddings.filter((_, idx) => clusters[idx] === i);
       if (clusterPoints.length === 0) {
         // Random centroid if no points assigned
-        centroids.push(Array(dimensions).fill(0).map(() => Math.random());
+        centroids.push(
+          Array(dimensions)
+            .fill(0)
+            .map(() => Math.random())
+        );
         continue;
       }
       const centroid = Array(dimensions).fill(0);
-      clusterPoints.forEach((point: any) => {
+      clusterPoints.forEach((point: number[]) => {
+        // Changed 'any' to 'number[]'
         point.forEach((value, dim) => {
           centroid[dim] += value;
         });
@@ -119,7 +138,9 @@ export class WebAssemblyClusteringService {
     for (let i = 0; i < width; i++) {
       weights[i] = [];
       for (let j = 0; j < height; j++) {
-        weights[i][j] = Array(dimensions).fill(0).map(() => Math.random();
+        weights[i][j] = Array(dimensions)
+          .fill(0)
+          .map(() => Math.random());
       }
     }
     return weights;
@@ -132,11 +153,7 @@ export class WebAssemblyClusteringService {
     });
   }
   // JavaScript fallback implementations
-  private async jsKMeansClustering(
-    embeddings: number[][],
-    k: number;
-    config: any;
-  ): Promise<any> {
+  private async jsKMeansClustering(embeddings: number[][], k: number, config: KMeansConfig): Promise<KMeansResult> {
     console.log('Using JavaScript K-Means clustering fallback...');
     // Simple K-Means implementation
     const clusters = this.mockKMeansClustering(embeddings, k);
@@ -145,20 +162,15 @@ export class WebAssemblyClusteringService {
       clusters,
       centroids,
       iterations: config.maxIterations || 100
-    }
+    };
   }
-  private async jsSOMTraining(
-    embeddings: number[][];
-    config: any;
-  ): Promise<any> {
+  private async jsSOMTraining(embeddings: number[][], config: SOMConfig): Promise<SOMResult> {
     console.log('Using JavaScript SOM training fallback...');
     const weights = this.mockSOMWeights(config.width, config.height, embeddings[0].length);
     const clusters = this.mockSOMClustering(embeddings, weights);
-    return { weights, clusters }
+    return { weights, clusters };
   }
-  getPerformanceMetrics(): {
-    wasmSupported: boolean;
-    wasmLoaded: boolean;
+  getPerformanceMetrics(): { wasmSupported: boolean;, wasmLoaded: boolean;
     recommendedForDataSize: (dataSize: number) => boolean;
   } {
     return {
@@ -168,7 +180,7 @@ export class WebAssemblyClusteringService {
         // Recommend WASM for larger datasets (>1000 documents)
         return this.isWasmSupported && this.wasmInstance !== null && dataSize > 1000;
       }
-    }
+    };
   }
 }
 // Singleton instance

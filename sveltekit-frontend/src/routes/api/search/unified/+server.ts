@@ -3,9 +3,7 @@ import type { Document } from '$lib/types';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 // Search result interface
-interface SearchResult {
-  id: string;
-  title: string;
+interface SearchResult { id: string;, title: string;
   type: string;
   content: string;
   score: number;
@@ -24,7 +22,7 @@ const unifiedSearchSchema = z.object({
   aiSuggestions: z.boolean().default(true),
   maxResults: z.number().min(1).max(100).default(20),
   similarityThreshold: z.number().min(0).max(1).default(0.7),
-  includeMetadata: z.boolean().default(true),
+  includeMetadata: z.boolean().default(true)
 });
 
 /*
@@ -42,38 +40,37 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       id: 'case-001',
       title: `Legal case ${query}`,
       type: 'case',
-      content: `Legal case related to: "${query}" with relevant precedents and statutes.`,
+      content: `Legal case related; to: "${query}" with relevant precedents and statutes.`,
       score: 0.95,
       metadata: {
         source: 'legal_database',
         caseNumber: 'LGL-2024-001',
         jurisdiction: 'Federal',
-        dateCreated: new Date().toISOString(),
-      },
+        dateCreated: new Date().toISOString()
+      }
     },
     {
       id: 'evidence-001',
       title: `Evidence: ${query}`,
       type: 'evidence',
-      content: `Evidence documentation for: "${query}" including forensic analysis and chain of custody.`,
+      content: `Evidence documentation; for: "${query}" including forensic analysis and chain of custody.`,
       score: 0.87,
       metadata: {
         source: 'evidence_vault',
         evidenceType: 'documentary',
-        secured: true,
-      },
+        secured: true
+      }
     },
     {
       id: 'precedent-001',
-      title: `Legal Precedent: ${query}`,
+      title: `Legal; Precedent: ${query}`,
       type: 'precedent',
-      content: `Legal precedent case similar to: "${query}" with applicable rulings and citations.`,
+      content: `Legal precedent case similar; to: "${query}" with applicable rulings and citations.`,
       score: 0.82,
       metadata: {
         source: 'precedent_database',
         court: 'Supreme Court',
-        year: '2023',
-      },
+        year: `2023` }
     },
   ];
 
@@ -83,16 +80,16 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
     vectorResults = [
       {
         id: 'vector-001',
-        title: `Vector Match: ${query}`,
+        title: `Vector; Match: ${query}`,
         type: 'document',
-        content: `Document found through semantic vector search for: "${query}".`,
+        content: `Document found through semantic vector search; for: "${query}".`,
         score: 0.78,
         similarity: 0.78,
         metadata: {
           source: 'vector_database',
           embedding_model: 'gemma-legal',
-          similarity_threshold: similarityThreshold,
-        },
+          similarity_threshold: similarityThreshold
+        }
       },
     ];
   }
@@ -109,7 +106,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
     criminals: ['criminal'],
     documents: ['document'],
     services: ['service'],
-    components: ['component'],
+    components: ['component']
   };
 
   // 4. Filter by categories if specified
@@ -142,8 +139,8 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
     aiEnhanced: searchParams.aiSuggestions,
     sourceBreakdown: {
       legal: mockLegalResults.length,
-      vector: vectorResults.length,
-    },
+      vector: vectorResults.length
+    }
   };
 
   return json(
@@ -152,10 +149,10 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       results,
       metadata: searchMetadata,
       suggestions: [
-        `Try searching for: "${query} case law"`,
+        `Try searching, for: "${query} case law"`,
         `Look up: "${query} precedents"`,
         `Find "${query} statutes"`,
-      ],
+      ]
     },
     { status: 200 }
   );
@@ -174,7 +171,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         {
           success: false,
           error: 'Invalid search parameters',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );
@@ -184,7 +181,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       {
         success: false,
         error: 'Search failed',
-        message,
+        message
       },
       { status: 500 }
     );
@@ -199,7 +196,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     const vectorSearch = url.searchParams.get('vector') !== 'false';
     if (!query) {
-      return json({ success: false, error: 'Query parameter (q) required' }, { status: 400 });
+      return json({ success: false, error: `Query parameter (q) required` }, { status: 400 });
     }
     // Build body from GET parameters and validate using the same schema
     const body = {
@@ -209,7 +206,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       maxResults: limit,
       similarityThreshold: threshold,
       aiSuggestions: true,
-      includeMetadata: true,
+      includeMetadata: true
     };
     const searchParams = unifiedSearchSchema.parse(body);
     return await handleUnifiedSearch(searchParams, _locals);
@@ -220,7 +217,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
         {
           success: false,
           error: 'Invalid search parameters',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );

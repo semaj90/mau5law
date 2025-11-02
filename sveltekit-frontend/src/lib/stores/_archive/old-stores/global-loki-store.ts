@@ -7,9 +7,7 @@
 import Loki from 'lokijs';
 import type { Collection } from 'lokijs';
 import type Redis from 'ioredis';
-export interface JobState {
-  id: string;
-  type: string;
+export interface JobState { id: string;, type: string;
   state: 'queued' | 'processing' | 'completed' | 'failed' | 'skipped';
   progress?: number;
   result?: any;
@@ -30,7 +28,7 @@ export class GlobalLokiStore {
     this.db = new Loki('global-jobs.loki');
     this.coll = this.db.addCollection<JobState>('jobs', {
       unique: ['id'],
-      indices: ['state', 'type', 'createdAt'],
+      indices: ['state', 'type', 'createdAt']
     });
   }
   /**
@@ -109,7 +107,7 @@ export class GlobalLokiStore {
       metadata: jobMeta.metadata || {},
       createdAt: now,
       updatedAt: now,
-      ...jobMeta,
+      ...jobMeta
     };
     // Update local collection
     try {
@@ -138,7 +136,7 @@ export class GlobalLokiStore {
     const updated: JobState = {
       ...existing,
       ...patch,
-      updatedAt: Date.now(),
+      updatedAt: Date.now()
     };
     // Update local collection
     try {
@@ -156,7 +154,7 @@ export class GlobalLokiStore {
   async startProcessing(jobId: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'processing',
-      progress: 0,
+      progress: 0
     });
   }
   /**
@@ -172,7 +170,7 @@ export class GlobalLokiStore {
     return this.updateJob(jobId, {
       state: 'completed',
       progress: 100,
-      result,
+      result
     });
   }
   /**
@@ -181,7 +179,7 @@ export class GlobalLokiStore {
   async failJob(jobId: string, error: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'failed',
-      error,
+      error
     });
   }
   /**
@@ -190,7 +188,7 @@ export class GlobalLokiStore {
   async skipJob(jobId: string, reason: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'skipped',
-      error: reason,
+      error: reason
     });
   }
   /**
@@ -220,9 +218,7 @@ export class GlobalLokiStore {
   /**
    * Get job statistics
    */
-  getStats(): {
-    total: number;
-    byState: Record<string, number>;
+  getStats(): { total: number;, byState: Record<string, number>;
     byType: Record<string, number>;
   } {
     const jobs = this.getAllJobs();
@@ -235,7 +231,7 @@ export class GlobalLokiStore {
     return {
       total: jobs.length,
       byState,
-      byType,
+      byType
     };
   }
   /**
@@ -243,8 +239,7 @@ export class GlobalLokiStore {
    */
   async cleanup(olderThanMs: number = 24 * 60 * 60 * 1000): Promise<number> {
     const cutoff = Date.now() - olderThanMs;
-    const oldJobs = this.coll.find({
-      $and: [{ state: { $in: ['completed', 'failed'] } }, { updatedAt: { $lt: cutoff } }],
+    const oldJobs = this.coll.find({ $and: [{, state: {, $in: ['completed', 'failed'] } }, { updatedAt: {, $lt: cutoff } }]
     });
     for (const job of oldJobs) {
       this.coll.remove(job);

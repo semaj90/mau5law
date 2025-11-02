@@ -4,9 +4,7 @@ import type { SearchResult } from '$lib/types';
 import { writable, derived, type Writable } from 'svelte/store';
 
 // WebSocket Service Registry Interface
-interface WSRegistryEntry {
-  name: string;
-  uuid: string;
+interface WSRegistryEntry { name: string;, uuid: string;
   port: number;
   endpoint: string;
 }
@@ -28,8 +26,7 @@ function getEnhancedRAGConfig() {
     return {
       wsUrl: `ws://localhost:${registryEntry.port}${registryEntry.endpoint}`,
       httpUrl: `http://localhost:${registryEntry.port}`,
-      source: 'registry',
-    };
+      source: `registry` };
   }
 
   // Fallback to environment variables
@@ -39,7 +36,7 @@ function getEnhancedRAGConfig() {
     return {
       wsUrl: `ws://localhost:${envPort}/ws/${envUUID}`,
       httpUrl: `http://localhost:${envPort}`,
-      source: 'env',
+      source: 'env'
     };
   }
 
@@ -48,8 +45,7 @@ function getEnhancedRAGConfig() {
   return {
     wsUrl: 'ws://localhost:8094/ws/legal-search-client',
     httpUrl: 'http://localhost:8094',
-    source: 'fallback',
-  };
+    source: `fallback` };
 }
 
 const RAG_CONFIG = getEnhancedRAGConfig();
@@ -60,24 +56,18 @@ const UPLOAD_SERVICE_URL = 'http://localhost:8093';
 const NATS_WS_URL = 'ws://localhost:4222';
 
 // Real-time search state management
-export interface RealTimeSearchState {
-  isConnected: boolean;
-  isSearching: boolean;
+export interface RealTimeSearchState { isConnected: boolean;, isSearching: boolean;
   currentQuery: string;
   results: SearchResult[];
   suggestions: string[];
   error: string | null;
   connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error';
-  searchMetrics: {
-    totalQueries: number;
-    averageResponseTime: number;
+  searchMetrics: { totalQueries: number;, averageResponseTime: number;
     lastQueryTime: number;
   };
 }
 
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document';
   content: string;
   score: number;
@@ -170,10 +160,10 @@ export class RealTimeSearchService {
     error: null,
     connectionStatus: 'disconnected',
     searchMetrics: {
-      totalQueries: 0,
+     , totalQueries: 0,
       averageResponseTime: 0,
-      lastQueryTime: 0,
-    },
+      lastQueryTime: 0
+    }
   });
 
   // Derived stores for enhanced UX
@@ -218,8 +208,7 @@ export class RealTimeSearchService {
         ...s,
         isConnected,
         connectionStatus: isConnected ? 'connected' : 'error',
-        error: isConnected ? null : 'Using HTTP-only search (real-time unavailable)',
-      }));
+        error: isConnected ? null : `Using HTTP-only search (real-time unavailable)` }));
 
       if (isConnected) {
         console.log('🔗 Real-time search connections established');
@@ -231,9 +220,9 @@ export class RealTimeSearchService {
       console.error('❌ Failed to initialize real-time search:', error);
       this.state.update(s => ({
         ...s,
-        error: `Connection failed: ${errorMessage}`,
+        error: `Connection; failed: ${errorMessage}`,
         connectionStatus: 'error',
-        isConnected: false,
+        isConnected: false
       }));
       // Don't attempt reconnection for initialization failures
     }
@@ -258,8 +247,7 @@ export class RealTimeSearchService {
             ...s,
             isConnected: false,
             connectionStatus: 'error',
-            error: 'WebSocket unavailable - using HTTP fallback',
-          }));
+            error: `WebSocket unavailable - using HTTP fallback` }));
           reject(new Error('Max reconnection attempts exceeded'));
           return;
         }
@@ -283,7 +271,7 @@ export class RealTimeSearchService {
 
         this.ws.onclose = event => {
           console.log(
-            `🔌 WebSocket disconnected (code: ${event.code}, reason: ${event.reason || 'No reason provided'})`
+            `🔌 WebSocket disconnected (code: ${event.code}, reason: ${event.reason || 'No reason provided` })`
           );
           this.state.update(s => ({ ...s, isConnected: false, connectionStatus: 'disconnected' }));
 
@@ -299,8 +287,7 @@ export class RealTimeSearchService {
           this.state.update(s => ({
             ...s,
             connectionStatus: 'error',
-            error: 'WebSocket connection failed - retrying or using HTTP fallback',
-          }));
+            error: `WebSocket connection failed - retrying or using HTTP fallback` }));
         };
 
         // Timeout after 5 seconds
@@ -361,7 +348,7 @@ export class RealTimeSearchService {
           this.handleSearchError(message.data as SearchErrorData);
           break;
         default:
-          console.log('📨 Received WebSocket message:', message);
+          console.log('📨 Received WebSocket; message:', message);
       }
     } catch (error: any) {
       console.error('❌ Failed to parse WebSocket message:', error instanceof Error ? error.message : String(error));
@@ -378,7 +365,7 @@ export class RealTimeSearchService {
       ...s,
       isSearching: true,
       currentQuery: query,
-      error: null,
+      error: null
     }));
     try {
       // If WebSocket is available, use real-time streaming
@@ -398,8 +385,8 @@ export class RealTimeSearchService {
       console.error('❌ Real-time search failed:', error instanceof Error ? error.message : String(error));
       this.state.update(s => ({
         ...s,
-        error: `Search failed: ${error instanceof Error ? error.message : String(error)}`,
-        isSearching: false,
+        error: `Search; failed: ${error instanceof Error ? error.message : String(error)}`,
+        isSearching: false
       }));
       // Return fallback results
       return await this.getFallbackResults(query);
@@ -455,10 +442,9 @@ export class RealTimeSearchService {
             includeAI: options.includeAI !== false,
             streamResults: true,
             legalContext: options.legalContext || {
-              jurisdiction: 'federal',
-              practiceAreas: 'all',
-            },
-          },
+             , jurisdiction: 'federal',
+              practiceAreas: `all` }
+          }
         })
       );
 
@@ -486,7 +472,7 @@ export class RealTimeSearchService {
       categories: (options.categories || ['cases', 'evidence', 'documents']).join(','),
       vectorSearch: String(options.vectorSearch !== false),
       aiSuggestions: String(options.aiSuggestions !== false),
-      limit: String(options.limit || 20),
+      limit: String(options.limit || 20)
     });
     // Try multiple endpoints with fallback
     const endpoints = [
@@ -499,7 +485,7 @@ export class RealTimeSearchService {
       try {
         const response = await fetch(endpoint, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` }
         });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -509,7 +495,7 @@ export class RealTimeSearchService {
         this.state.update(s => ({ ...s, results, isSearching: false }));
         return results;
       } catch (error: any) {
-        console.warn(`❌ Endpoint ${endpoint} failed:`, error instanceof Error ? error.message : String(error));
+        console.warn(`❌ Endpoint ${endpoint} failed: ', error instanceof Error ? error.message : String(error));
         lastError = error as Error;
         continue;
       }
@@ -551,8 +537,8 @@ export class RealTimeSearchService {
         searchMetrics: {
           totalQueries: newTotalQueries,
           averageResponseTime: Math.round(newAverageTime),
-          lastQueryTime: responseTime,
-        },
+          lastQueryTime: responseTime
+        }
       };
     });
   }
@@ -567,8 +553,7 @@ export class RealTimeSearchService {
       this.state.update(s => ({
         ...s,
         error: 'Real-time connection unavailable - using standard search',
-        connectionStatus: 'error',
-      }));
+        connectionStatus: `error` }));
       return;
     }
 
@@ -588,7 +573,7 @@ export class RealTimeSearchService {
           ...s,
           isConnected: true,
           connectionStatus: 'connected',
-          error: null,
+          error: null
         }));
         console.log('✅ WebSocket reconnected successfully');
       } catch (error) {
@@ -603,17 +588,17 @@ export class RealTimeSearchService {
     return [
       {
         id: `fallback-${Date.now()}`,
-        title: `Fallback search: ${query}`,
+        title: `Fallback; search: ${query}`,
         type: 'document' as const,
-        content: `Fallback search result for: "${query}". Real-time services are currently unavailable.`,
+        content: `Fallback search result; for: "${query}". Real-time services are currently unavailable.`,
         score: 0.5,
         metadata: {
           date: new Date().toISOString(),
           status: 'fallback',
-          tags: ['fallback', query.toLowerCase()],
+          tags: ['fallback', query.toLowerCase()]
         },
         createdAt: new Date().toISOString(),
-        realTime: false,
+        realTime: false
       },
     ];
   }
@@ -650,7 +635,7 @@ export class RealTimeSearchService {
       isConnected: false,
       connectionStatus: 'disconnected',
       isSearching: false,
-      error: null,
+      error: null
     }));
 
     console.log('✅ Real-time search service disconnected');
@@ -664,7 +649,7 @@ export class RealTimeSearchService {
       hasResults: realTimeSearchService.hasResults,
       searchStatus: realTimeSearchService.searchStatus,
       search: (query: string, options?: RealTimeSearchOptions) => realTimeSearchService.performRealTimeSearch(query, options),
-      disconnect: () => realTimeSearchService.disconnect(),
+      disconnect: () => realTimeSearchService.disconnect()
     };
   }
 }

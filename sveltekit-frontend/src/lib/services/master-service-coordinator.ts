@@ -15,9 +15,7 @@ import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goBinaryService } from './go-binary-integration.js';
 
-export interface ServiceDefinition {
-  id: string;
-  name: string;
+export interface ServiceDefinition { id: string;, name: string;
   displayName: string;
   port: number;
   protocol: 'http' | 'grpc' | 'quic' | 'websocket';
@@ -31,9 +29,7 @@ export interface ServiceDefinition {
   timeoutMs: number;
 }
 
-export interface ServiceStatus {
-  id: string;
-  status: 'starting' | 'healthy' | 'degraded' | 'failed' | 'unknown';
+export interface ServiceStatus { id: string;, status: 'starting' | 'healthy' | 'degraded' | 'failed' | 'unknown';
   lastCheck: number;
   responseTime: number;
   errorCount: number;
@@ -44,17 +40,13 @@ export interface ServiceStatus {
   build?: string;
 }
 
-export interface ErrorResolution {
-  errorType: string;
-  description: string;
+export interface ErrorResolution { errorType: string;, description: string;
   autoFix: boolean;
   actions: Array<any>;
   priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export interface PerformanceMetrics {
-  totalRequests: number;
-  successRate: number;
+export interface PerformanceMetrics { totalRequests: number;, successRate: number;
   avgResponseTime: number;
   throughput: number;
   errorRate: number;
@@ -187,7 +179,7 @@ export class MasterServiceCoordinator {
       capabilities: ['low-latency', 'udp-transport', 'multiplexing'],
       dependencies: ['enhanced-rag'],
       maxRetries: 3,
-      timeoutMs: 5000,
+      timeoutMs: 5000
     },
     {
       id: 'cluster-http',
@@ -411,7 +403,7 @@ export class MasterServiceCoordinator {
       });
       console.log(`✅ Started service: ${service.displayName} (${service.port})`);
     } catch (error: any) {
-      console.error(`❌ Failed to start service ${service.name}:`, error);
+      console.error(`❌ Failed to start service ${service.name}: ', error);
       this.updateServiceStatus(service.id, {
         status: 'failed',
         lastCheck: Date.now()
@@ -501,7 +493,7 @@ export class MasterServiceCoordinator {
         status: 'failed',
         lastCheck: Date.now(),
         responseTime,
-        errorCount: (currentStatus?.errorCount || 0) + 1,
+        errorCount: (currentStatus?.errorCount || 0) + 1
       });
       if (service.critical && !this.errorRecoveryActive) {
         await this.triggerErrorRecovery(service, error);
@@ -647,8 +639,7 @@ export class MasterServiceCoordinator {
             }
           }
         ],
-        priority: service.critical ? 'critical' : 'high'
-      };
+        priority: service.critical ? 'critical' : `high` };
 
       this.activeErrors.update(errors => [...errors, resolution]);
 
@@ -683,7 +674,7 @@ export class MasterServiceCoordinator {
             console.warn('Unknown recovery action', action);
         }
       } catch (error: any) {
-        console.error(`Failed to execute recovery action ${action.type}:`, error);
+        console.error(`Failed to execute recovery action ${action.type}: ', error);
       }
     }
   }
@@ -718,16 +709,14 @@ export class MasterServiceCoordinator {
    * Stop all services gracefully
    */
   public async stopAllServices(): Promise<void> {
-    console.log('🛑 Stopping all services...');,
-    if (this.healthCheckInterval !== null) {,
-      clearInterval(this.healthCheckInterval);,
-      this.healthCheckInterval = null;
+    console.log('🛑 Stopping all services...'); if (this.healthCheckInterval !== null) {,
+      clearInterval(this.healthCheckInterval); this.healthCheckInterval = null;
     }
     for (let tier = 4; tier >= 1; tier--) {
       const tierServices = this.services.filter(s => s.tier === tier);
       console.log(`Stopping Tier ${tier} services: ${tierServices.map(s => s.name).join(', ')}`);
       tierServices.forEach(service => {
-        this.updateServiceStatus(service.id, { status: 'unknown' });
+        this.updateServiceStatus(service.id, { status: `unknown` });
       });
       await this.sleep(1000);
     }

@@ -2,23 +2,17 @@
  * UTF-8 to FP32 Text Converter for SvelteKit
  * Optimized for GPU processing and neural network inputs
  */
-export interface TextConversionOptions {
-  normalizationMethod: 'unicode' | 'range' | 'gaussian' | 'sigmoid';
-  outputRange: [number, number]; // Min/max values for FP32 output
+export interface TextConversionOptions { normalizationMethod: 'unicode' | 'range' | 'gaussian' | 'sigmoid';, outputRange: [number, number]; // Min/max values for FP32 output
   paddingValue: number; // Value to use for padding
   maxLength?: number; // Maximum sequence length
   preserveSpecialChars: boolean; // Keep special characters vs normalize them
   encoding: 'utf8' | 'utf16' | 'ascii' | 'latin1';
 }
-export interface ConversionResult {
-  fp32Array: Float32Array;
-  originalLength: number;
+export interface ConversionResult { fp32Array: Float32Array;, originalLength: number;
   paddedLength: number;
   specialCharsCount: number;
   conversionTime: number;
-  metadata: {
-    minValue: number;
-    maxValue: number;
+  metadata: { minValue: number;, maxValue: number;
     meanValue: number;
     uniqueChars: number;
     byteLength: number;
@@ -79,7 +73,7 @@ export class UTF8ToFP32Converter {
       '"': -0.37,
       '(': -0.39,
       ')': -0.41,
-      '$': -0.43,
+      '$': -0.43
     };
     Object.assign(this.specialCharMap, programmingChars);
     console.log(`📝 Initialized special character map with ${Object.keys(this.specialCharMap).length} characters`);
@@ -96,7 +90,7 @@ export class UTF8ToFP32Converter {
       maxLength: undefined,
       preserveSpecialChars: true,
       encoding: 'utf8',
-      ...options,
+      ...options
     };
     try {
       // Step 1: Encode text to bytes based on encoding type
@@ -120,10 +114,10 @@ export class UTF8ToFP32Converter {
         paddedLength: finalArray.length,
         specialCharsCount: this.countSpecialCharacters(text),
         conversionTime,
-        metadata,
+        metadata
       };
       console.log(`🔢 Converted: "${text.substring(0, 30)}..." to FP32 in ${conversionTime.toFixed(2)}ms`);
-      console.log(`📊 Original: ${text.length} chars → FP32: ${finalArray.length} values`);
+      console.log(`📊 Original: ${text.length} chars →, FP32: ${finalArray.length} values`);
       console.log(`📈 Range: [${metadata.minValue.toFixed(4)}, ${metadata.maxValue.toFixed(4)}]`);
       return result;
     } catch (error) {
@@ -157,8 +151,7 @@ export class UTF8ToFP32Converter {
         const latin1Array = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
           const code = text.charCodeAt(i);
-          latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with: '?'
-        }
+          latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with: `?` }
         return latin1Array;
       }
       default: return this.textEncoder.encode(text);
@@ -284,7 +277,7 @@ export class UTF8ToFP32Converter {
       maxValue: Math.max(...values),
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
       uniqueChars,
-      byteLength: bytes.length,
+      byteLength: bytes.length
     };
   }
   private countSpecialCharacters(text: string): number {
@@ -326,7 +319,7 @@ export class UTF8ToFP32Converter {
       maxLength: undefined,
       preserveSpecialChars: true,
       encoding: 'utf8',
-      ...options,
+      ...options
     };
     try {
       // Reverse normalization to get byte values
@@ -415,7 +408,7 @@ export class UTF8ToFP32Converter {
       {
         options,
         specialCharMap: this.specialCharMap,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       null,
       2
@@ -459,7 +452,6 @@ export function normalizeTextForGPU(text: string, maxLength: number = 512): Floa
     maxLength,
     paddingValue: 0.0,
     preserveSpecialChars: true,
-    encoding: 'utf8',
-  });
+    encoding: `utf8` });
   return result.fp32Array;
 }

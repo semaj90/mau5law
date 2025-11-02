@@ -6,16 +6,12 @@ import type { SearchResult } from '$lib/types';
  * Standardized types for document processing and search
  */
 }
-export interface DocumentType {
-  id: string;
-  title: string;
+export interface DocumentType { id: string;, title: string;
   content: string;
   type: 'legal' | 'case' | 'evidence' | 'research' | 'document';
   metadata?: { [key: string]: any }
 }
-export interface RAGSearchResult {
-  id: string;
-  content: string;
+export interface RAGSearchResult { id: string;, content: string;
   score: number;
   metadata: { [key: string]: any }
   type: DocumentType['type'];
@@ -24,9 +20,7 @@ export interface RAGSearchResult {
   explanation?: string;
   relevantChunks?: TextChunk[];
   highlights?: string[];
-  legalRelevance?: {
-    overall: number;
-    factual: number;
+  legalRelevance?: { overall: number;, factual: number;
     procedural: number;
     precedential: number;
     jurisdictional: number;
@@ -42,18 +36,14 @@ export interface RAGQuery {
   limit?: number;
   threshold?: number;
 }
-export interface RAGResponse {
-  results: RAGSearchResult[];
-  query: string;
+export interface RAGResponse { results: RAGSearchResult[];, query: string;
   totalResults: number;
   processingTime: number;
 }
 // Fix for optimization files that expect: "research" type
 export type ExtendedDocumentType = DocumentType['type'] | 'research';
 }
-export interface OptimizedRAGDocument {
-  id: string;
-  content: string;
+export interface OptimizedRAGDocument { id: string;, content: string;
   type: ExtendedDocumentType;
   embedding?: number[];
   metadata: { [key: string]: any }
@@ -67,9 +57,7 @@ export function normalizeDocumentType(type: string): DocumentType['type'] {
   return isValidDocumentType(type) ? type : 'document';
 }
 // Enhanced document processing types
-export interface DocumentChunk {
-  id: string;
-  documentId: string;
+export interface DocumentChunk { id: string;, documentId: string;
   content: string;
   embedding: number[];
   metadata: { [key: string]: any }
@@ -81,21 +69,15 @@ export interface VectorSearchOptions {
   includeMetadata?: boolean;
   filters?: { [key: string]: any }
 }
-export interface EmbeddingConfig {
-  model: string;
-  dimensions: number;
+export interface EmbeddingConfig { model: string;, dimensions: number;
   provider: 'openai' | 'ollama' | 'local';
 }
 // Missing exports referenced by optimization files
-export interface RAGDocument {
-  id: string;
-  title: string;
+export interface RAGDocument { id: string;, title: string;
   content: string;
   type: DocumentType['type'];
   embedding?: number[];
-  metadata: {
-    source: string;
-    type: string;
+  metadata: { source: string;, type: string;
     jurisdiction: string;
     practiceArea: string[];
     confidentialityLevel: number;
@@ -108,16 +90,12 @@ export interface RAGDocument {
   updatedAt?: Date;
   version?: string;
 }
-export interface SearchResult {
-  id: string;
-  content: string;
+export interface SearchResult { id: string;, content: string;
   score: number;
   type: DocumentType['type'];
   metadata: { [key: string]: any }
 }
-export interface TextChunk {
-  id: string;
-  content: string;
+export interface TextChunk { id: string;, content: string;
   documentId: string;
   index: number;
   metadata: { [key: string]: any }
@@ -129,9 +107,7 @@ export interface TextChunk {
   chunkType?: string;
 }
 // RAG source types
-export interface RAGSource {
-  id: string;
-  title: string;
+export interface RAGSource { id: string;, title: string;
   content: string;
   relevance: number;
   type: 'document' | 'evidence' | 'case' | 'legal' | 'research';

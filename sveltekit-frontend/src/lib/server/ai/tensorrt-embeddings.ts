@@ -30,27 +30,26 @@ export class TensorRtEmbeddings extends Embeddings {
           shape: [1],
           datatype: 'BYTES',
           parameters: { binary_data: false },
-          data: [Buffer.from(text, 'utf-8').toString('base64')],
+          data: [Buffer.from(text, 'utf-8').toString('base64')]
         },
       ],
       outputs: [
         {
           name: 'VECTOR',
-          parameters: { binary_data: false },
+          parameters: { binary_data: false }
         },
-      ],
+      ]
     };
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       const message = await response.text();
       throw new Error(`TensorRT inference failed: ${response.status} ${message}`);
     }
-    const result = (await response.json()) as {
-      outputs: Array<{ name: string; data?: number[]; shape: number[] }>;
+    const result = (await response.json()) as { outputs: Array<{ name: string; data?: number[];, shape: number[] }>;
     };
     const output = result.outputs?.find((item) => item.name === 'VECTOR');
     if (!output?.data) {

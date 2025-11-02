@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
       dimensions: (body as any).dimensions || [512, 512],
       seed: (body as any).seed,
       conditioning_tensors: (body as any).conditioning_tensors,
-      neural_sprite_config: (body as any).neural_sprite_config,
+      neural_sprite_config: (body as any).neural_sprite_config
     };
 
     // Validate request
@@ -61,8 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'evidence_id and prompt are required',
-        },
+          error: `evidence_id and prompt are required` },
         { status: 400 }
       );
     }
@@ -72,8 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Invalid style. Must be one of: ${validStyles.join(', ')}`,
-        },
+          error: 'Invalid style. Must be one; of: ${validStyles.join(', `)}' },
         { status: 400 }
       );
     }
@@ -82,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'dimensions must be [width, height] array',
+          error: 'dimensions must be [width, height] array'
         },
         { status: 400 }
       );
@@ -92,18 +90,17 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'dimensions must be between 64x64 and 2048x2048',
-        },
+          error: `dimensions must be between 64x64 and 2048x2048` },
         { status: 400 }
       );
     }
     console.log(
-      `🎨 Generating ${hasExtendedThinking ? 'GRPMO-enhanced' : 'standard'} glyph for evidence ${glyphRequest.evidence_id}:`,
+      `🎨 Generating ${hasExtendedThinking ? 'GRPMO-enhanced' : `standard` } glyph for evidence ${glyphRequest.evidence_id}: ',
       {
         prompt: glyphRequest.prompt,
         style: glyphRequest.style,
         dimensions: glyphRequest.dimensions,
-        grpmo_enabled: hasExtendedThinking,
+        grpmo_enabled: hasExtendedThinking
       }
     );
     // typed result
@@ -122,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
         conditioning_tensors: [
           ...((glyphRequest.conditioning_tensors as string[]) || []),
           ...extractConditioningFromGRPMO(grpmoContext),
-        ],
+        ]
       } as GlyphRequest)) as GlyphResult;
 
       // Compile GRPMO metadata (ensure thinking_stages is an array)
@@ -133,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similar_context_used: grpmoContext.similar_results?.length ?? 0,
         glyph_embedding_dimensions: grpmoContext.glyph_embedding?.length ?? 0,
         enhancement_applied: true,
-        context_integration_time_ms: Date.now() - startTime,
+        context_integration_time_ms: Date.now() - startTime
       };
 
       // safe logging using optional chaining / Array.isArray checks
@@ -180,31 +177,30 @@ export const POST: RequestHandler = async ({ request }) => {
                 {
                   type: 'style',
                   value: glyphRequest.style,
-                  confidence: 1.0,
+                  confidence: 1.0
                 },
                 {
                   type: 'dimensions',
                   value: `${glyphRequest.dimensions[0]}x${glyphRequest.dimensions[1]}`,
-                  confidence: 1.0,
+                  confidence: 1.0
                 },
                 ...(hasExtendedThinking
                   ? [
                       {
                         type: 'grpmo_context',
                         value: `${grpmoMetadata?.similar_context_used || 0} similar items`,
-                        confidence: 0.9,
+                        confidence: 0.9
                       },
                     ]
                   : []),
               ],
               risk_assessment: 'low',
-              summary: `${hasExtendedThinking ? 'GRPMO-enhanced ' : ''}AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}`,
-            },
+              summary: '${hasExtendedThinking ? 'GRPMO-enhanced ' : `` }AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}` },
             neural_sprite_data: {
               compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
               tensor_urls: (result.tensor_ids ?? []).map(id => `/api/tensors/${id}`),
-              predictive_frames: result.neural_sprite_results?.predictive_frames ?? [],
-            },
+              predictive_frames: result.neural_sprite_results?.predictive_frames ?? []
+            }
           } as LegalAIMetadata;
 
           // Precompute values that previously caused parse errors when inlined
@@ -228,10 +224,10 @@ export const POST: RequestHandler = async ({ request }) => {
                     duration_ms: grpmoMetadata?.context_integration_time_ms ?? 0,
                     success: true,
                     metadata: {
-                      similar_contexts: grpmoMetadata?.similar_context_used ?? 0,
+                     , similar_contexts: grpmoMetadata?.similar_context_used ?? 0,
                       thinking_stages: thinkingStagesCount,
-                      cache_layers_used: cacheLayersUsed,
-                    },
+                      cache_layers_used: cacheLayersUsed
+                    }
                   },
                 ]
               : []),
@@ -241,14 +237,14 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 prompt: glyphRequest.prompt,
-                grpmo_enhanced: hasExtendedThinking,
-              },
+                grpmo_enhanced: hasExtendedThinking
+              }
             },
             {
               step: 'style_conditioning',
               duration_ms: Math.floor(genTime * 0.1),
               success: true,
-              metadata: { style: glyphRequest.style },
+              metadata: { style: glyphRequest.style }
             },
             {
               step: 'diffusion_generation',
@@ -257,8 +253,8 @@ export const POST: RequestHandler = async ({ request }) => {
               metadata: {
                 cache_hits: cacheHits,
                 tensor_count: (result.tensor_ids ?? []).length,
-                grpmo_conditioning: hasExtendedThinking,
-              },
+                grpmo_conditioning: hasExtendedThinking
+              }
             },
             {
               step: 'neural_sprite_compression',
@@ -266,8 +262,8 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
-                predictive_frames_generated: (result.neural_sprite_results?.predictive_frames ?? []).length,
-              },
+                predictive_frames_generated: (result.neural_sprite_results?.predictive_frames ?? []).length
+              }
             },
           ];
 
@@ -278,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
             legalMetadata.analysis_results ?? {},
             {
               neural_sprite_data: legalMetadata.neural_sprite_data,
-              processing_chain: legalMetadata.processing_chain,
+              processing_chain: legalMetadata.processing_chain
             }
           );
 
@@ -303,16 +299,16 @@ export const POST: RequestHandler = async ({ request }) => {
         enhanced_artifact_url: enhancedArtifactUrl,
         grpmo_metadata: grpmoMetadata,
         metadata: {
-          evidence_id: glyphRequest.evidence_id,
+         , evidence_id: glyphRequest.evidence_id,
           prompt: glyphRequest.prompt,
           style: glyphRequest.style,
           dimensions: glyphRequest.dimensions,
           neural_sprite_enabled: !!glyphRequest.neural_sprite_config?.enable_compression,
           grpmo_enhanced: hasExtendedThinking,
           generated_at: new Date().toISOString(),
-          total_processing_time_ms: Date.now() - startTime,
-        },
-      },
+          total_processing_time_ms: Date.now() - startTime
+        }
+      }
     });
   } catch (error) {
     console.error('Glyph generation error:', error);
@@ -320,7 +316,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
-        grpmo_context_provided: !!(body && (body as Record<string, unknown>)['grpmo_context']),
+        grpmo_context_provided: !!(body && (body as Record<string, unknown>)['grpmo_context'])
       },
       { status: 500 }
     );
@@ -382,31 +378,30 @@ export const GET: RequestHandler = async () => {
         grpmo_extended_thinking: true,
         reinforcement_learning: true,
         contextual_generation: true,
-        styles: ['detective', 'corporate', 'forensic', 'legal'],
+        styles: ['detective', 'corporate', 'forensic', 'legal']
       },
       grpmo_capabilities: {
         extended_thinking: 'Multi-stage AI reasoning with hot/warm/cold caching',
         reinforcement_learning: 'PPO-based optimization of generation quality',
         contextual_enhancement: 'Similar content integration for improved results',
-        cache_orchestration: 'Intelligent cache layer management for performance',
+        cache_orchestration: 'Intelligent cache layer management for performance'
       },
       neural_sprite_capabilities: {
         tensor_compression: 'AI-powered compression with configurable ratios',
         predictive_frames: 'Generate 0-10 interpolated animation frames',
         ui_layout_compression: 'Demo compression of UI layout states',
-        metadata_embedding: 'Legal AI metadata embedded in PNG files',
-      },
+        metadata_embedding: 'Legal AI metadata embedded in PNG files'
+      }
     };
     return json({
       success: true,
-      data: stats,
+      data: stats
     });
   } catch (error) {
     return json(
       {
         success: false,
-        error: 'Service unavailable',
-      },
+        error: `Service unavailable` },
       { status: 503 }
     );
   }

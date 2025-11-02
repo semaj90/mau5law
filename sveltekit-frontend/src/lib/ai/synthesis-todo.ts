@@ -12,7 +12,7 @@ export async function runSynthesisExample(): Promise<SynthesisResult> {
     llmOutputs,
     userHistory,
     uploadedFiles,
-    mcpServers,
+    mcpServers
   });
   // Stub: Log output for dev feedback
   console.log('Synthesis result:', result);
@@ -28,7 +28,7 @@ export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
     llmOutputs,
     userHistory,
     uploadedFiles,
-    mcpServers,
+    mcpServers
   });
   // Stub: Log output for dev feedback
   console.log('Full synthesis pipeline result:', result);
@@ -100,6 +100,6 @@ export async function phase10SemanticAudit(_query: string): Promise<unknown> {
   // return results
   return {
     status: 'stub',
-    message: 'Phase 10 semantic audit integration pending.',
+    message: 'Phase 10 semantic audit integration pending.'
   };
 }

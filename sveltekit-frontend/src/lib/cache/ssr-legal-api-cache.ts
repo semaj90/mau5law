@@ -7,17 +7,13 @@ import type { User } from '$lib/types';
 import { parallelCacheOrchestrator } from './parallel-cache-orchestrator';
 import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics } from './parallel-cache-orchestrator';
 import { browser } from '$app/environment';
-export interface SSRCacheConfig {
-  defaultTTL: number;
-  maxAge: number;
+export interface SSRCacheConfig { defaultTTL: number;, maxAge: number;
   staleWhileRevalidate: number;
   quantizeResponses: boolean;
   enableRAG: boolean;
   legalOptimizations: boolean;
 }
-export interface LegalAPIResponse {
-  success: boolean;
-  data: any;
+export interface LegalAPIResponse { success: boolean;, data: any;
   meta?: {
     userId?: string;
     timestamp?: string;
@@ -26,9 +22,7 @@ export interface LegalAPIResponse {
     cached?: boolean;
     cacheLayer?: string;
   };
-  pagination?: {
-    page: number;
-    limit: number;
+  pagination?: { page: number;, limit: number;
     total: number;
     totalPages: number;
     hasNext: boolean;
@@ -39,9 +33,7 @@ export interface LegalAPIResponse {
 // New, stricter helper types
 type Params = Record<string, string | number | boolean | undefined>;
 
-export interface SSRCacheEntry {
-  key: string;
-  data: LegalAPIResponse;
+export interface SSRCacheEntry { key: string;, data: LegalAPIResponse;
   timestamp: number;
   ttl: number;
   etag: string;
@@ -56,9 +48,7 @@ function isLegalAPIResponse(obj: any): obj is LegalAPIResponse {
 }
 
 // Move and export CacheStatsResult to top-level (interfaces cannot be declared inside a class)
-export interface CacheStatsResult {
-  hitRate: number;
-  totalRequests: number;
+export interface CacheStatsResult { hitRate: number;, totalRequests: number;
   totalHits: number;
   avgResponseTime: number;
   cacheSize: number;
@@ -73,7 +63,7 @@ class SSRLegalAPICache {
     staleWhileRevalidate: 86400, // 24 hours
     quantizeResponses: true,
     enableRAG: true,
-    legalOptimizations: true,
+    legalOptimizations: true
   };
   private responseQuantizer = new ResponseQuantizer();
   private ragContextCache = new Map<string, Array<Record<string, unknown>>>();
@@ -108,7 +98,7 @@ class SSRLegalAPICache {
         type: options.ragContext ? 'rag' : 'hybrid',
         priority: this.determinePriority(endpoint),
         keys: [cacheKey],
-        ttl: options.ttl || this.config.defaultTTL,
+        ttl: options.ttl || this.config.defaultTTL
       };
       // Execute parallel cache lookup
       const result = (await parallelCacheOrchestrator.executeParallel(cacheRequest)) as
@@ -147,7 +137,7 @@ class SSRLegalAPICache {
           ...(cachedResponse.meta ?? {}),
           cached: true,
           cacheLayer: cacheHit.source,
-          processingTime: this.now() - startTime,
+          processingTime: this.now() - startTime
         };
         const latencyNum = typeof result?.metrics?.totalLatency === 'number' ? result.metrics!.totalLatency! : null;
         const latencyStr = latencyNum !== null ? latencyNum.toFixed(2) : '0';
@@ -195,15 +185,14 @@ class SSRLegalAPICache {
         etag: this.generateETag(processedResponse),
         contentType: 'application/json',
         quantized: options.quantize !== false && this.config.quantizeResponses,
-        ragContext: options.ragContext,
+        ragContext: options.ragContext
       };
       // Store across cache tiers
       await parallelCacheOrchestrator.storeParallel(cacheKey, this.serializeEntry(cacheEntry), {
         tier: this.selectOptimalTier(endpoint, processedResponse),
         ttl: cacheEntry.ttl,
         priority: this.determinePriority(endpoint), // Removed incorrect type assertion syntax
-        type: 'ssr_legal_api',
-      });
+        type: 'ssr_legal_api` });
       console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
     } catch (error) {
       console.error('SSR cache store failed:', error);
@@ -238,7 +227,7 @@ class SSRLegalAPICache {
       method,
       params,
       body,
-      headers,
+      headers
     });
     // Cache successful GET responses
     if (method === 'GET' && response && response.success) {
@@ -247,7 +236,7 @@ class SSRLegalAPICache {
         ttl,
         quantize,
         ragContext: ragContextData,
-        userId,
+        userId
       });
     }
     return response as unknown as T;
@@ -289,7 +278,7 @@ class SSRLegalAPICache {
       `api:v1:timeline:*:${userId}:*`,
       `api:v1:recommendations:*:${userId}:*`,
       `api:v1:citations:*:${userId}:*`,
-      `api:v1:detective:*:${userId}:*`,
+      `api:v1:detective:*:${userId}:*`
     ];
     // Determine which known patterns appear related to the requested pattern.
     const matchedPatterns = patterns.filter(p => {
@@ -301,7 +290,7 @@ class SSRLegalAPICache {
     const invalidated = matchedPatterns.length;
     // Note: actual invalidation would call parallelCacheOrchestrator if supported.
     console.log(
-      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any'}) — matched ${invalidated} known pattern(s)`
+      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any` }) — matched ${invalidated} known pattern(s)`
     );
     return invalidated;
   }
@@ -332,7 +321,7 @@ class SSRLegalAPICache {
       avgResponseTime: Number(current.totalLatency ?? 0),
       cacheSize: Number((cacheStats.l1Size ?? 0) + (cacheStats.l2Size ?? 0) + (cacheStats.l3Size ?? 0)),
       quantizedResponses: 0, // Would need instrumentation to track this
-      ragContextEntries: this.ragContextCache.size,
+      ragContextEntries: this.ragContextCache.size
     };
   }
   // Private helper methods
@@ -416,9 +405,9 @@ class SSRLegalAPICache {
       method: options.method || 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...options.headers
       },
-      body: options.body ? JSON.stringify(options.body) : undefined,
+      body: options.body ? JSON.stringify(options.body) : undefined
     });
 
     const text = await res.text();
@@ -446,7 +435,7 @@ class SSRLegalAPICache {
         {
           model: meta.aiModel,
           timestamp: meta.timestamp,
-          processingTime: meta.processingTime,
+          processingTime: meta.processingTime
         },
       ];
     }

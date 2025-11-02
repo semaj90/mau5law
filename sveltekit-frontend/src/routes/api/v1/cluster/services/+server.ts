@@ -3,23 +3,21 @@ import { json } from '@sveltejs/kit';
 import {
   productionServiceRegistry,
   GO_SERVICES_REGISTRY,
-  type ServiceDefinition,
+  type ServiceDefinition
 } from '$lib/services/production-service-registry';
 import { context7OrchestrationService } from '$lib/services/context7-orchestration-integration';
 
 /* clarified literal types matching registry API */
 type Category = 'ai_rag' | 'file_upload' | 'xstate_orchestration' | 'protocol' | 'infrastructure';
 type Tier = 'tier1' | 'tier2' | 'tier3' | 'tier4';
-type ServiceWithHealth = ServiceDefinition & { healthy: boolean; lastHealthCheck: string };
+type ServiceWithHealth = ServiceDefinition & { healthy: boolean;, lastHealthCheck: string };
 
 /* runtime allowed lists for safe narrowing */
 const ALLOWED_CATEGORIES: Category[] = ['ai_rag', 'file_upload', 'xstate_orchestration', 'protocol', 'infrastructure'];
 const ALLOWED_TIERS: Tier[] = ['tier1', 'tier2', 'tier3', 'tier4'];
 
 /* === NEW: Safe partial orchestration API describing optional methods === */
-type OrchestrationApi = Partial<{
-  updateServiceHealth: () => Promise<void> | void;
-  getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
+type OrchestrationApi = Partial<{ updateServiceHealth: () => Promise<void> | void;, getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
   getOrchestrationPlan: () =>
     | {
         startupSequence?: any[];
@@ -68,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return {
             ...service,
             healthy,
-            lastHealthCheck: new Date().toISOString(),
+            lastHealthCheck: new Date().toISOString()
           } as ServiceWithHealth;
         })
       );
@@ -81,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
       : { startupSequence: [], healthChecks: [], protocolRouting: {} }) ?? {
       startupSequence: [],
       healthChecks: [],
-      protocolRouting: {},
+      protocolRouting: {}
     };
 
     const response = {
@@ -91,13 +89,13 @@ export const GET: RequestHandler = async ({ url }) => {
         total: services.length,
         byCategory: getCategoryBreakdown(services),
         byTier: getTierBreakdown(services),
-        protocols: getProtocolBreakdown(services),
+        protocols: getProtocolBreakdown(services)
       },
       orchestration: {
         startupOrder: Array.isArray(orchestrationPlan.startupSequence) ? orchestrationPlan.startupSequence.length : 0,
         healthEndpoints: Array.isArray(orchestrationPlan.healthChecks) ? orchestrationPlan.healthChecks.length : 0,
-        protocolRoutes: orchestrationPlan.protocolRouting ? Object.keys(orchestrationPlan.protocolRouting).length : 0,
-      },
+        protocolRoutes: orchestrationPlan.protocolRouting ? Object.keys(orchestrationPlan.protocolRouting).length : 0
+      }
     };
     return json(response);
   } catch (error: any) {
@@ -106,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'Services query failed',
         message: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -134,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Action failed',
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -168,13 +166,13 @@ function getProtocolBreakdown(services: ServiceDefinition[]): Record<string, num
 }
 
 async function handleStartServices(serviceNames: string[], _options?: any): Promise<Response> {
-  const results: Record<string, { success: boolean; message: string }> = {};
+  const results: Record<string, { success: boolean;, message: string }> = {};
   for (const serviceName of serviceNames) {
     const service = productionServiceRegistry.getServiceByName(serviceName);
     if (!service) {
       results[serviceName] = {
         success: false,
-        message: 'Service not found in registry',
+        message: 'Service not found in registry'
       };
       continue;
     }
@@ -182,35 +180,34 @@ async function handleStartServices(serviceNames: string[], _options?: any): Prom
       const healthy = await productionServiceRegistry.checkServiceHealth(serviceName);
       results[serviceName] = {
         success: healthy,
-        message: healthy ? 'Service is running' : 'Service failed to start',
+        message: healthy ? 'Service is running' : 'Service failed to start'
       };
     } catch (error: any) {
       results[serviceName] = {
         success: false,
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error.message : String(error)
       };
     }
   }
   return json({
     action: 'start_services',
     results,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
 async function handleStopServices(serviceNames: string[]): Promise<Response> {
-  const results: Record<string, { success: boolean; message: string }> = {};
+  const results: Record<string, { success: boolean;, message: string }> = {};
   for (const serviceName of serviceNames) {
     // In production, this would actually stop the service
     results[serviceName] = {
       success: true,
-      message: 'Stop command sent (simulation)',
-    };
+      message: `Stop command sent (simulation)` };
   }
   return json({
     action: 'stop_services',
     results,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -233,7 +230,7 @@ async function handleRestartTier(tier?: string): Promise<Response> {
     tier,
     results,
     servicesAffected: tierServices.length,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -247,7 +244,7 @@ async function handleGenerateStartupScript(): Promise<Response> {
     action: 'generate_startup_script',
     script: startupScript,
     services: Object.keys(GO_SERVICES_REGISTRY).length,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -267,6 +264,6 @@ async function handleUpdateOrchestration(options?: Record<string, unknown>): Pro
     metrics,
     plan,
     options,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

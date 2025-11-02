@@ -27,8 +27,8 @@ export const load: PageServerLoad = async ({ locals }) => {
         maxConcurrentStreams: 8,
         maxBatchSize: 1000,
         avgLatency: 45, // milliseconds,
-        throughput: 850, // documents per second,
-      },
+        throughput: 850, // documents per second
+      }
     };
   } catch (err) {
     console.error('Error loading CUDA streaming data:', err);
@@ -51,13 +51,13 @@ export const actions: Actions = {
         operationType,
         inputData,
         batchSize,
-        userId: getUserId(locals),
+        userId: getUserId(locals)
       });
       return json({
         success: true,
         sessionId,
         stream: streamingResult,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (err) {
       console.error('Failed to start CUDA stream:', err);
@@ -75,7 +75,7 @@ export const actions: Actions = {
       return json({
         success: true,
         message: 'Streaming session terminated',
-        sessionId,
+        sessionId
       });
     } catch (err) {
       console.error('Failed to stop CUDA stream:', err);
@@ -95,7 +95,7 @@ export const actions: Actions = {
       const processingResult = await processCudaDocument(documentData, {
         processingType,
         useGpu,
-        userId: getUserId(locals),
+        userId: getUserId(locals)
       });
       const processingTime = Date.now() - startTime;
       return json({
@@ -103,13 +103,13 @@ export const actions: Actions = {
         result: processingResult,
         processingTime,
         gpuAccelerated: useGpu,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (err) {
       console.error('CUDA document processing failed:', err);
       return fail(500, { error: 'Document processing failed' });
     }
-  },
+  }
 };
 async function getGPUSystemInfo(): Promise<any> {
   // Mock GPU info - replace with actual CUDA/GPU detection
@@ -128,8 +128,8 @@ async function getGPUSystemInfo(): Promise<any> {
     powerDraw: 320, // Watts,
     utilization: {
       gpu: 15, // percentage,
-      memory: 8, // percentage,
-    },
+      memory: 8, // percentage
+    }
   };
 }
 async function getStreamingStats(): Promise<any> {
@@ -142,7 +142,7 @@ async function getStreamingStats(): Promise<any> {
     errorRate: 0.02, // percentage,
     uptime: 23847, // seconds,
     queueSize: 12,
-    memoryUsage: 8.4, // GB,
+    memoryUsage: 8.4, // GB
   };
 }
 async function getRecentProcessingResults(): Promise<any> {
@@ -155,7 +155,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: true,
       throughput: 667, // docs/sec,
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago,
-      status: 'completed',
+      status: 'completed'
     },
     {
       sessionId: 'stream_1234567891',
@@ -165,7 +165,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: true,
       throughput: 471,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago,
-      status: 'completed',
+      status: 'completed'
     },
     {
       sessionId: 'stream_1234567892',
@@ -175,8 +175,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: false, // Fallback to CPU,
       throughput: 225,
       timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago,
-      status: 'completed',
-    },
+      status: `completed` },
   ];
 }
 async function initializeCudaStream(sessionId: string, options: any): Promise<void> {
@@ -186,7 +185,7 @@ async function initializeCudaStream(sessionId: string, options: any): Promise<vo
     status: 'initialized',
     processingQueue: [],
     estimatedThroughput: 750,
-    queuePosition: 1,
+    queuePosition: 1
   };
 }
 async function terminateCudaStream(sessionId: string): Promise<any> {
@@ -204,31 +203,28 @@ async function processCudaDocument(documentData: string, options: any): Promise<
       ,
       { text: 'Legal Contract', type: 'DOCUMENT_TYPE', confidence: 0.95 },
       { text: 'TechCorp Inc.', type: 'ORGANIZATION', confidence: 0.92 },
-      { text: '$2.5M', type: 'MONEY', confidence: 0.98 },
+      { text: '$2.5M', type: 'MONEY', confidence: 0.98 }
     ],
     similarity_scores: [0.89, 0.76, 0.82, 0.91],
     processing_method: options.useGpu ? 'CUDA_GPU' : 'CPU_FALLBACK',
     performance_metrics: {
       gpu_utilization: options.useGpu ? Math.random() * 80 + 10 : 0,
       memory_used: Math.random() * 2 + 0.5, // GB,
-      tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200,
-    },
+      tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200
+    }
   };
 }
 function getDefaultGPUData() {
-  return {
-    gpuInfo: {
-      gpuAvailable: false,
+  return { gpuInfo: {, gpuAvailable: false,
       gpuName: 'No GPU Detected',
       cudaVersion: 'N/A',
       totalMemory: '0GB',
-      availableMemory: '0GB',
-    },
+      availableMemory: `0GB` },
     sessionStats: {
       activeSessions: 0,
       totalSessionsToday: 0,
       avgProcessingTime: 0,
-      throughputCurrent: 0,
+      throughputCurrent: 0
     },
     recentProcessing: [],
     supportedOperations: [],
@@ -236,7 +232,7 @@ function getDefaultGPUData() {
       maxConcurrentStreams: 0,
       maxBatchSize: 0,
       avgLatency: 0,
-      throughput: 0,
-    },
+      throughput: 0
+    }
   };
 }

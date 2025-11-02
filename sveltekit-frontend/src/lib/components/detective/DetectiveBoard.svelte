@@ -268,13 +268,13 @@ import type { Case } from '$lib/types';
 		findModal.show = true;
 		findModal.query = item?.title || '';
 		findModal.results = [];
-		findModal.loading = $state(false);
+		findModal.loading = false;
 		findModal.error = '';
 		findModal.suggestions = [];
 	}
 
 	function closeFindModal() {
-		findModal.show = $state(false);
+		findModal.show = false;
 	}
 
 	function runFindSearch(item: any): Promise<void> {
@@ -307,7 +307,7 @@ import type { Case } from '$lib/types';
 			} catch (e) {
 				findModal.error += ' Qdrant search failed.';
 			}
-			findModal.loading = $state(false);
+			findModal.loading = false;
 		})();
 	}
 
@@ -652,9 +652,9 @@ import type { Case } from '$lib/types';
 				<AIAssistantPanel
 					{caseId}
 					{selectedEvidenceIds}
-					on:evidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect(e.detail.evidenceId)}
-					on:evidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight(e.detail.evidenceIds)}
-					on:actionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger(e.detail)}
+					onevidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect(e.detail.evidenceId)}
+					onevidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight(e.detail.evidenceIds)}
+					onactionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger(e.detail)}
 				/>
 			{/if}
 	</main>

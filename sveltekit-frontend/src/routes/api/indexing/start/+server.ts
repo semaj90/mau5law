@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-// NOTE: Dependencies may need to be installed: npm install fast-glob axios
+// NOTE: Dependencies may need to be; installed: npm install fast-glob axios
 // import fg from 'fast-glob'
 // import axios from 'axios'
 import type { RequestHandler } from './$types.js';

@@ -8,37 +8,27 @@ import { z } from 'zod';
 // Request schema + inferred type
 const VectorRequestSchema = z.object({
   query: z.string().min(1).optional(),
-  limit: z.number().min(1).max(100).default(10),
+  limit: z.number().min(1).max(100).default(10)
 });
 type VectorRequest = z.infer<typeof VectorRequestSchema>;
 
 // Response item types
-interface SearchResult {
-  id: string;
-  similarity: number;
+interface SearchResult { id: string;, similarity: number;
   title: string;
   type?: 'document' | 'snippet' | string;
 }
 
-interface SimilarityPair {
-  source: string;
-  target: string;
+interface SimilarityPair { source: string;, target: string;
   score: number;
 }
 
-interface ClusterResult {
-  cluster: number;
-  documents: string[];
+interface ClusterResult { cluster: number;, documents: string[];
 }
 
-interface HealthStatus {
-  status: string;
-  timestamp: string;
+interface HealthStatus { status: string;, timestamp: string;
 }
 
-interface EmbedResult {
-  id: string;
-  vector: number[];
+interface EmbedResult { id: string;, vector: number[];
   dimensions: number;
 }
 
@@ -67,13 +57,13 @@ export const GET: RequestHandler = async ({ params, url }) => {
     const response: VectorResponse = {
       success: true,
       data: [],
-      endpoint,
+      endpoint
     };
     switch (endpoint) {
       case 'search':
         response.data = [
           { id: '1', similarity: 0.95, title: 'Sample Evidence 1' },
-          { id: '2', similarity: 0.87, title: 'Sample Evidence 2' },
+          { id: '2', similarity: 0.87, title: 'Sample Evidence 2' }
         ];
         break;
       case 'similarity':
@@ -100,7 +90,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -116,7 +106,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid request data',
+          error: 'Invalid request data'
         },
         { status: 400 }
       );
@@ -124,7 +114,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const response: VectorResponse = {
       success: true,
       data: [],
-      endpoint,
+      endpoint
     };
     // Simple mock responses based on endpoint
     switch (endpoint) {
@@ -133,9 +123,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
           {
             id: 'evidence-1',
             similarity: 0.92,
-            title: `Evidence matching: ${validatedData.data.query}`,
-            type: 'document',
-          },
+            title: `Evidence; matching: ${validatedData.data.query}`,
+            type: 'document` },
         ];
         break;
       case 'embed':
@@ -145,7 +134,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             vector: Array(384)
               .fill(0)
               .map(() => Math.random()),
-            dimensions: 384,
+            dimensions: 384
           },
         ];
         break;
@@ -157,8 +146,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Processing error',
-      },
+        error: error instanceof Error ? error.message : 'Processing error` },
       { status: 500 }
     );
   }

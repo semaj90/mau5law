@@ -117,7 +117,7 @@ import type { Document } from '$lib/types';
   <!-- Converted UnoCSS attributify props to class to satisfy TS HTMLProps -->
   <div class="mb-8 border border-gray-200 rounded-lg p-4">
     <!-- fixed Svelte event binding -->
-    <SimpleFileUpload on:uploadcomplete={handleUploadComplete} />
+    <SimpleFileUpload onuploadcomplete={handleUploadComplete} />
   </div>
   <!-- Upload Results -->
   {#if uploadResults.length > 0}

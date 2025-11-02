@@ -9,16 +9,14 @@ import type {
   OrchestrationOptions,
   PerformanceMetrics,
   ServiceCapabilities,
-  EmergencyRecoveryContext,
+  EmergencyRecoveryContext
 } from '$lib/types/orchestration';
 import os from 'os';
 
 // --- ADDED: local lightweight types to avoid missing exports and unsafe `any` usage ---
 type HealthState = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
 
-type ServiceStatus = {
-  name: string;
-  status: HealthState;
+type ServiceStatus = { name: string;, status: HealthState;
   health_score: number;
   last_check: string;
   error?: string;
@@ -39,15 +37,11 @@ type OperationSummary = {
 };
 
 // Added result types to replace Promise<any> usages
-type SafeModeResult = {
-  safe_mode_enabled: boolean;
-  critical_services_running: number;
+type SafeModeResult = { safe_mode_enabled: boolean;, critical_services_running: number;
   non_essential_services_stopped: number;
 };
 
-type RecoveryResult = {
-  recovery_completed: boolean;
-  strategy_used: string;
+type RecoveryResult = { recovery_completed: boolean;, strategy_used: string;
   recovery_time_ms: number;
 };
 
@@ -102,7 +96,7 @@ export class ServiceOrchestrator {
       services_requested: servicesToStart.length,
       services_started: successCount,
       results,
-      startup_time_ms: Date.now(),
+      startup_time_ms: Date.now()
     };
   }
 
@@ -137,7 +131,7 @@ export class ServiceOrchestrator {
     return {
       services_requested: servicesToStop.length,
       services_stopped: successCount,
-      results,
+      results
     };
   }
 
@@ -149,7 +143,7 @@ export class ServiceOrchestrator {
     return {
       stop_phase: stopResult,
       start_phase: startResult,
-      restart_completed: true,
+      restart_completed: true
     };
   }
 
@@ -166,13 +160,13 @@ export class ServiceOrchestrator {
       } catch (error: any) {
         results[serviceName] = {
           success: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         };
       }
     }
     return {
       scaling_results: results,
-      target_scale: options?.scale_factor,
+      target_scale: options?.scale_factor
     };
   }
 
@@ -191,7 +185,7 @@ export class ServiceOrchestrator {
       } catch (error: any) {
         results[serviceName] = {
           success: false,
-          error: error instanceof Error ? error.message : 'Deployment failed',
+          error: error instanceof Error ? error.message : 'Deployment failed'
         };
         if (options?.stop_on_failure !== false) {
           break;
@@ -200,8 +194,7 @@ export class ServiceOrchestrator {
     }
     return {
       deployment_results: results,
-      deployment_strategy: options?.deployment_strategy ?? 'rolling',
-    };
+      deployment_strategy: options?.deployment_strategy ?? 'rolling` };
   }
 
   // Health Monitoring
@@ -218,8 +211,7 @@ export class ServiceOrchestrator {
           status: 'unhealthy',
           health_score: 0,
           last_check: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'Health check failed',
-        };
+          error: error instanceof Error ? error.message : `Health check failed` };
       }
     }
     const healthyCount = Object.values(healthData).filter(item => item.status === 'healthy').length;
@@ -233,7 +225,7 @@ export class ServiceOrchestrator {
       degraded_services: degradedCount,
       unhealthy_services: unhealthyCount,
       services: healthData,
-      check_timestamp: new Date().toISOString(),
+      check_timestamp: new Date().toISOString()
     } as HealthCheckReport;
   }
 
@@ -250,7 +242,7 @@ export class ServiceOrchestrator {
       network_health: networkHealth,
       resource_health: resourceHealth,
       dependency_health: dependencyHealth,
-      comprehensive: true,
+      comprehensive: true
     } as HealthCheckReport;
   }
 
@@ -267,7 +259,7 @@ export class ServiceOrchestrator {
       emergency_mode: this.emergencyMode,
       uptime: process.uptime(),
       memory_usage: process.memoryUsage(),
-      load_average: this.getLoadAverage(),
+      load_average: this.getLoadAverage()
     };
   }
 
@@ -280,7 +272,7 @@ export class ServiceOrchestrator {
       service_response_times: await this.getServiceResponseTimes(),
       error_rates: await this.getErrorRates(),
       throughput: await this.getThroughput(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     } as PerformanceMetrics;
   }
 
@@ -295,7 +287,7 @@ export class ServiceOrchestrator {
       emergency_recovery: true,
       load_balancing: true,
       service_discovery: true,
-      configuration_management: true,
+      configuration_management: true
     } as ServiceCapabilities;
   }
 
@@ -304,7 +296,7 @@ export class ServiceOrchestrator {
       core: [],
       enhanced: [],
       specialized: [],
-      infrastructure: [],
+      infrastructure: []
     };
     for (const [name, config] of this.services) {
       servicesByTier[config.tier].push(name);
@@ -320,12 +312,12 @@ export class ServiceOrchestrator {
     const results = await this.stopServices(allServices, {
       graceful_shutdown: false,
       force_kill: true,
-      timeout_ms: 5000,
+      timeout_ms: 5000
     });
     return {
       emergency_shutdown: true,
       services_stopped: results.services_stopped,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 
@@ -336,7 +328,7 @@ export class ServiceOrchestrator {
     // startServices already returns Promise<OperationSummary>
     return await this.startServices(criticalServices, {
       priority: 'critical',
-      health_check_required: true,
+      health_check_required: true
     });
   }
 
@@ -351,7 +343,7 @@ export class ServiceOrchestrator {
     return {
       safe_mode_enabled: true,
       critical_services_running: criticalServices.length,
-      non_essential_services_stopped: nonEssentialServices.length,
+      non_essential_services_stopped: nonEssentialServices.length
     };
   }
 
@@ -378,7 +370,7 @@ export class ServiceOrchestrator {
     return {
       recovery_completed: true,
       strategy_used: recoveryStrategy,
-      recovery_time_ms: Date.now() - new Date(context.failure_timestamp).getTime(),
+      recovery_time_ms: Date.now() - new Date(context.failure_timestamp).getTime()
     };
   }
 
@@ -391,7 +383,7 @@ export class ServiceOrchestrator {
         name: config.name,
         status: 'unknown',
         health_score: 0,
-        last_check: new Date().toISOString(),
+        last_check: new Date().toISOString()
       });
     }
     console.log(`🏗️ Initialized ${this.services.size} managed services`);
@@ -413,7 +405,7 @@ export class ServiceOrchestrator {
         name: 'enhanced-semantic-architecture',
         tier: 'specialized',
         port: 8201,
-        binary: 'enhanced-semantic-architecture.exe',
+        binary: 'enhanced-semantic-architecture.exe'
       },
       { name: 'enhanced-legal-ai', tier: 'specialized', port: 8202, binary: 'enhanced-legal-ai.exe' },
       { name: 'enhanced-legal-ai-clean', tier: 'specialized', port: 8203, binary: 'enhanced-legal-ai-clean.exe' },
@@ -435,14 +427,13 @@ export class ServiceOrchestrator {
         name: 'modular-cluster-service-production',
         tier: 'infrastructure',
         port: 8215,
-        binary: 'modular-cluster-service-production.exe',
-      },
+        binary: `modular-cluster-service-production.exe` },
       {
         name: 'enhanced-api-endpoints',
         tier: 'core',
         port: 8094,
         binary: 'enhanced-api-endpoints.exe',
-        critical: true,
+        critical: true
       },
     ];
   }
@@ -523,7 +514,7 @@ export class ServiceOrchestrator {
       name: serviceName,
       status: 'healthy',
       health_score: 95,
-      last_check: new Date().toISOString(),
+      last_check: new Date().toISOString()
     };
   }
 
@@ -660,7 +651,7 @@ export class ServiceOrchestrator {
       strategy: 'blue_green',
       green: { results: green, deployed: Object.keys(green).length },
       blue: { results: blue, deployed: Object.keys(blue).length },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 
@@ -670,7 +661,7 @@ export class ServiceOrchestrator {
       name: serviceName,
       status: 'degraded',
       health_score: 50,
-      last_check: new Date().toISOString(),
+      last_check: new Date().toISOString()
     });
     // simulate deployment time
     await this.sleep(200);
@@ -679,7 +670,7 @@ export class ServiceOrchestrator {
       name: serviceName,
       status: 'healthy',
       health_score: 95,
-      last_check: new Date().toISOString(),
+      last_check: new Date().toISOString()
     });
     return { deployed: true, service: serviceName, timestamp: new Date().toISOString() };
   }
@@ -700,7 +691,7 @@ export class ServiceOrchestrator {
       disk_percent: await this.getDiskUsage(),
       network_io: await this.getNetworkIO(),
       uptime_seconds: process.uptime(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 
@@ -711,7 +702,7 @@ export class ServiceOrchestrator {
     return {
       reachable,
       average_latency_ms: latencyMs,
-      last_checked: new Date().toISOString(),
+      last_checked: new Date().toISOString()
     };
   }
 
@@ -724,7 +715,7 @@ export class ServiceOrchestrator {
       memory_mb: mem,
       healthy,
       notes: healthy ? 'resources within expected bounds' : 'resources under pressure',
-      last_checked: new Date().toISOString(),
+      last_checked: new Date().toISOString()
     };
   }
 
@@ -744,7 +735,7 @@ export class ServiceOrchestrator {
             status: 'unhealthy',
             health_score: 0,
             last_check: new Date().toISOString(),
-            error: err instanceof Error ? err.message : String(err),
+            error: err instanceof Error ? err.message : String(err)
           };
         }
       }
@@ -774,7 +765,7 @@ export class ServiceOrchestrator {
     return Number((Math.random() * 50 + 20).toFixed(2));
   }
 
-  private async getNetworkIO(): Promise<{ rx_bytes: number; tx_bytes: number }> {
+  private async getNetworkIO(): Promise<{ rx_bytes: number;, tx_bytes: number }> {
     // Mock counters
     return { rx_bytes: Math.floor(Math.random() * 1e6), tx_bytes: Math.floor(Math.random() * 1e6) };
   }

@@ -1,5 +1,6 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
@@ -7,11 +8,11 @@ import type { Document } from '$lib/types';
   import { quintOut } from "svelte/easing";
   import { fade } from "svelte/transition";
   // Bits-UI components
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
   import * as Tooltip from '$lib/components/ui/tooltip.svelte';
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Input } from '$lib/components/ui/input.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
   import { Label } from '$lib/components/ui/label.svelte';
   import { Textarea } from '$lib/components/ui/textarea.svelte';
   import {
@@ -89,7 +90,7 @@ import type { Document } from '$lib/types';
       query = "";
       // Close AI dialog - assuming a state variable controls it
       // For bits-ui, the Dialog component manages its own open state or takes an `open` prop.
-      // If `aiOpen` is a prop, it would be `aiOpen = $state(false);`
+      // If `aiOpen` is a prop, it would be `aiOpen = false;`
       // If it's internal state, it's handled by the DialogTrigger/Close.
     } catch (err) {
       error = err instanceof Error ? err.message : "AI request failed";

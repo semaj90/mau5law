@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
@@ -20,7 +21,7 @@ import type { Case } from '$lib/types';
     type NoteFilters,
   } from '$lib/stores/enhanced-saved-notes';
   import xstateIntegration from '$lib/services/xstate-integration'; // Import xstateIntegration
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
   import { Badge } from '$lib/components/ui/badge.svelte';
   // Import components into intermediate names and cast to any to avoid TS errors
   import { Input_ } from '$lib/components/ui/input/Input.svelte';
@@ -52,11 +53,11 @@ import type { Case } from '$lib/types';
   let searchQuery: string = '';
   let selectedNoteType: string = '';
   let selectedRiskLevel: string = '';
-  let showFilters: boolean = $state(false);
-  let showCreateNote: boolean = $state(false);
+  let showFilters: boolean = false;
+  let showCreateNote: boolean = false;
   let editingNote: LegalNote | null = null;
   let semanticResults: LegalNote[] = [];
-  let showSemanticSearch: boolean = $state(false);
+  let showSemanticSearch: boolean = false;
   // New note form
   let newNote: {
     title: string;

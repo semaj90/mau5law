@@ -12,11 +12,11 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!initialized) {
       return new Response(
         JSON.stringify({
-          error: 'MinIO service unavailable',
+          error: 'MinIO service unavailable'
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -32,18 +32,18 @@ export const GET: RequestHandler = async ({ url }) => {
         bucket,
         prefix,
         files: files.map(file => ({
-          name: file.name,
+         , name: file.name,
           size: file.size,
           lastModified: file.lastModified,
           contentType: file.contentType,
-          url: file.url,
+          url: file.url
         })),
         total: files.length,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
@@ -51,11 +51,11 @@ export const GET: RequestHandler = async ({ url }) => {
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to list files',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -66,11 +66,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!bucket || !fileName) {
       return new Response(
         JSON.stringify({
-          error: 'Bucket and fileName are required',
+          error: 'Bucket and fileName are required'
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -79,11 +79,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!initialized) {
       return new Response(
         JSON.stringify({
-          error: 'MinIO service unavailable',
+          error: 'MinIO service unavailable'
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -92,11 +92,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!deleted) {
       return new Response(
         JSON.stringify({
-          error: 'Failed to delete file',
+          error: 'Failed to delete file'
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
     }
@@ -104,11 +104,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
       JSON.stringify({
         success: true,
         message: `File ${fileName} deleted from ${bucket}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
@@ -116,11 +116,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to delete file',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       }
     );
   }

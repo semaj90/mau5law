@@ -3,9 +3,7 @@ import type { Document } from '$lib/types';
  * Document API Service
  * Handles document processing, upload, and management operations
  */
-export interface DocumentMetadata {
-  filename: string;
-  fileSize: number;
+export interface DocumentMetadata { filename: string;, fileSize: number;
   mimeType: string;
   uploadedAt: string;
   caseId?: string;
@@ -14,23 +12,17 @@ export interface DocumentMetadata {
   isConfidential?: boolean;
 }
 
-export interface ProcessingResult {
-  documentId: string;
-  status: 'processing' | 'completed' | 'failed';
+export interface ProcessingResult { documentId: string;, status: 'processing' | 'completed' | 'failed';
   extractedText?: string;
   embeddings?: number[][];
-  analysis?: {
-    summary: string;
-    entities: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
+  analysis?: { summary: string;, entities: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
     sentiment: string;
     classification: string;
   };
   error?: string;
 }
 
-export interface UploadProgress {
-  documentId: string;
-  progress: number;
+export interface UploadProgress { documentId: string;, progress: number;
   stage: string;
   status: 'uploading' | 'processing' | 'completed' | 'error';
 }
@@ -47,9 +39,7 @@ export interface SearchDocumentsResult {
   total: number;
 }
 
-export interface ProcessingAnalytics {
-  totalDocuments: number;
-  processingStats: { completed: number; processing: number; failed: number };
+export interface ProcessingAnalytics { totalDocuments: number;, processingStats: { completed: number; processing: number;, failed: number };
   averageProcessingTime: number;
   documentTypes: Record<string, number>;
 }
@@ -86,7 +76,7 @@ export class DocumentApiService {
 
       const response = await fetch(`${this.baseUrl}/documents/upload`, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (!response.ok) {
@@ -100,7 +90,7 @@ export class DocumentApiService {
       console.error('Document upload failed:', message);
       return {
         success: false,
-        error: message,
+        error: message
       };
     }
   }
@@ -120,8 +110,8 @@ export class DocumentApiService {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}/process`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(options),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(options)
       });
 
       if (!response.ok) {
@@ -135,7 +125,7 @@ export class DocumentApiService {
       return {
         documentId,
         status: 'failed',
-        error: message,
+        error: message
       };
     }
   }
@@ -207,7 +197,7 @@ export class DocumentApiService {
         documents: [],
         total: 0,
         page: options.page ?? 1,
-        limit: options.limit ?? 10,
+        limit: options.limit ?? 10
       };
     }
   }
@@ -218,8 +208,7 @@ export class DocumentApiService {
   async deleteDocument(documentId: string): Promise<{ success: boolean; error?: string }> {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}`, {
-        method: 'DELETE',
-      });
+        method: `DELETE` });
 
       if (!response.ok) {
         throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
@@ -231,7 +220,7 @@ export class DocumentApiService {
       console.error('Document deletion failed:', message);
       return {
         success: false,
-        error: message,
+        error: message
       };
     }
   }
@@ -246,8 +235,8 @@ export class DocumentApiService {
     try {
       const response = await fetch(`${this.baseUrl}/documents/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, ...options }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ query, ...options })
       });
 
       if (!response.ok) {
@@ -284,7 +273,7 @@ export class DocumentApiService {
         totalDocuments: 0,
         processingStats: { completed: 0, processing: 0, failed: 0 },
         averageProcessingTime: 0,
-        documentTypes: {},
+        documentTypes: {}
       };
     }
   }
@@ -294,17 +283,15 @@ export class DocumentApiService {
    */
   async processLegalDocuments(
     files: File[],
-    options: { caseId: string; jurisdiction?: string; enhanceRAG?: boolean }
+    options: {, caseId: string; jurisdiction?: string; enhanceRAG?: boolean }
   ): Promise<
-    | {
-        success: boolean;
-        caseId: string;
+    | { success: boolean;, caseId: string;
         documentsProcessed: number;
         totalProcessingTime: number;
         documents: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
         error?: string;
       }
-    | { success: false; error: string }
+    | { success: false;, error: string }
   > {
     try {
       const formData = new FormData();
@@ -315,7 +302,7 @@ export class DocumentApiService {
 
       const response = await fetch(`${this.baseUrl}/legal/ingest`, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (!response.ok) {
@@ -323,21 +310,19 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as
-        | {
-            success: boolean;
-            caseId: string;
+        | { success: boolean;, caseId: string;
             documentsProcessed: number;
             totalProcessingTime: number;
             documents: Record<string, unknown>[];
             error?: string;
           }
-        | { success: false; error: string };
+        | { success: false;, error: string };
     } catch (error: any) {
       const message = this.formatError(error);
       console.error('Legal document processing failed:', message);
       return {
         success: false,
-        error: message,
+        error: message
       };
     }
   }

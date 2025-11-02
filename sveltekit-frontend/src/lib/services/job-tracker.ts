@@ -8,16 +8,12 @@ import type { IngestionJob } from '$lib/machines/ingestion-workflow-machine.js';
 interface JobRecord extends IngestionJob {
   // LokiJS metadata
   $loki?: number;
-  meta?: {
-    created: number;
-    revision: number;
+  meta?: { created: number;, revision: number;
     updated: number;
     version: number;
   }
 }
-interface WorkerStats {
-  id: string;
-  startedAt: string;
+interface WorkerStats { id: string;, startedAt: string;
   totalProcessed: number;
   averageTime: number;
   currentLoad: number;
@@ -36,7 +32,7 @@ class JobTracker {
       autoloadCallback: this.initialize.bind(this),
       autosave: true,
       autosaveInterval: 5000, // Save every 5 seconds
-      persistenceMethod: 'memory' // Can be: 'fs' for file persistence
+      persistenceMethod: 'memory' // Can; be: 'fs' for file persistence
     });
   }
   private initialize() {
@@ -113,9 +109,7 @@ class JobTracker {
       .limit(limit)
       .data();
   }
-  getJobStats(): {
-    total: number;
-    byState: Record<IngestionJob['state'], number>;
+  getJobStats(): { total: number;, byState: Record<IngestionJob['state'], number>;
     byPriority: Record<string, number>;
     averageProcessingTime: number;
     successRate: number;
@@ -204,8 +198,7 @@ class JobTracker {
   getActiveWorkers(): WorkerStats[] {
     this.ensureInitialized();
     const cutoffTime = new Date(Date.now() - 30000).toISOString(); // 30 seconds ago
-    return this.workers.find({
-      lastHeartbeat: { $gt: cutoffTime },
+    return this.workers.find({ lastHeartbeat: {, $gt: cutoffTime },
       status: { $in: ['active', 'idle'] }
     });
   }
@@ -246,25 +239,15 @@ class JobTracker {
       .simplesort('timestamp', true)
       .data();
   }
-  getDashboardData(): {
-    jobs: {
-      active: JobRecord[];
+  getDashboardData(): { jobs: {, active: JobRecord[];
       recent: JobRecord[];
       stats: any;
     }
-    workers: {
-      active: WorkerStats[];
-      stats: {
-        total: number;
-        active: number;
+    workers: { active: WorkerStats[];, stats: { total: number;, active: number;
         errors: number;
       }
     }
-    metrics: {
-      recentActivity: any[];
-      performance: {
-        averageJobTime: number;
-        throughput: number;
+    metrics: { recentActivity: any[];, performance: { averageJobTime: number;, throughput: number;
         errorRate: number;
       }
     }
@@ -280,9 +263,7 @@ class JobTracker {
     // Calculate error rate
     const errorMetrics = recentMetrics.filter(m => m.type === 'job_updated' && m.data.state === 'failed');
     const errorRate = recentMetrics.length > 0 ? errorMetrics.length / recentMetrics.length: 0;
-    return {
-      jobs: {
-        active: this.getJobsByState('processing').concat(this.getJobsByState('queued')),
+    return { jobs: {, active: this.getJobsByState('processing').concat(this.getJobsByState('queued')),
         recent: this.getRecentJobs(20),
         stats: jobStats
       },
@@ -311,8 +292,7 @@ class JobTracker {
   clearCompletedJobs(olderThan?: string): number {
     this.ensureInitialized();
     const cutoff = olderThan || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // 24 hours ago
-    const oldJobs = this.jobs.find({
-      state: { $in: ['completed', 'failed'] },
+    const oldJobs = this.jobs.find({ state: {, $in: ['completed', 'failed'] },
       completedAt: { $lt: cutoff }
     });
     oldJobs.forEach(job => {
@@ -320,9 +300,7 @@ class JobTracker {
     });
     return oldJobs.length;
   }
-  exportData(): {
-    jobs: JobRecord[];
-    workers: WorkerStats[];
+  exportData(): { jobs: JobRecord[];, workers: WorkerStats[];
     metrics: any[];
   } {
     this.ensureInitialized();

@@ -17,12 +17,10 @@ type SynthResult = {
   metadata?: Record<string, unknown>;
 };
 
-type Metric = { name: string; value: number };
+type Metric = { name: string;, value: number };
 
 // --- added typed interfaces to replace: 'any' usage ---
-type CacheStats = {
-	hits: number;
-	misses: number;
+type CacheStats = { hits: number;, misses: number;
 	hitRate: number;
 	memoryUsage: number;
 };
@@ -34,9 +32,7 @@ type CacheModule = {
 };
 
 // Define TestResult interface
-interface TestResult {
-  query: string;
-  success: boolean;
+interface TestResult { query: string;, success: boolean;
   processingTime: number;
   confidence?: number;
   sourcesUsed?: any[];
@@ -46,9 +42,9 @@ interface TestResult {
 
 // Stream update/result shapes returned by aiOrchestrator.processStream
 type ProcessResult = SynthResult;
-type StreamStage = { type: 'stage'; stage: string; detail?: string };
-type StreamChunk = { type: 'chunk'; chunk: string };
-type StreamComplete = { type: 'complete'; result: ProcessResult };
+type StreamStage = { type: 'stage';, stage: string; detail?: string };
+type StreamChunk = { type: 'chunk';, chunk: string };
+type StreamComplete = { type: 'complete';, result: ProcessResult };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete;
 
 // Safe error-to-string helper
@@ -62,9 +58,7 @@ function errToString(err: any): string {
 }
 
 // SSE stream storage for real-time updates
-type ActiveStreamState = {
-  query: string;
-  startTime: number;
+type ActiveStreamState = { query: string;, startTime: number;
   status: 'initializing' | 'processing' | 'complete' | 'error';
   lastUpdate?: any;
   updates?: any[];
@@ -101,8 +95,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       activeStreams.set(streamId, {
         query,
         startTime,
-        status: 'initializing',
-      });
+        status: 'initializing` });
       // Start async processing
       processStreamingRequest(streamId, query, context, options as Record<string, unknown>);
       // Return stream ID immediately
@@ -110,15 +103,14 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         success: true,
         streamId,
         message: 'Streaming synthesis initiated',
-        streamUrl: `/api/ai-synthesizer/stream/${streamId}`,
-      });
+        streamUrl: `/api/ai-synthesizer/stream/${streamId}' });
     }
 
     // Non-streaming request - process synchronously
     const rawResult = (await aiOrchestrator.process(query, {
       ...(options as Record<string, unknown>),
       context,
-      requestId,
+      requestId
     })) as SynthResult;
 
     // Track metrics
@@ -132,15 +124,15 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       success: true,
       requestId,
       result: {
-        synthesis: sres.synthesis ?? '',
+       , synthesis: sres.synthesis ?? '',
         sources: sres.sources ?? [],
         confidence: sres.confidence ?? 0,
         metadata: {
           ...(sres.metadata ?? {}),
           requestId,
-          processingTime,
-        },
-      },
+          processingTime
+        }
+      }
     });
   } catch (err: any) {
     const errMsg = errToString(err);
@@ -156,7 +148,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         success: false,
         error: errMsg || 'An error occurred during synthesis',
         requestId,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: statusCode }
     );
@@ -171,15 +163,15 @@ export const GET: RequestHandler = async ({ url }) => {
       const testQueries = [
         {
           query: 'What are the elements of negligence in tort law?',
-          expectedSources: ['neo4j', 'pgvector', 'context7'],
+          expectedSources: ['neo4j', 'pgvector', 'context7']
         },
         {
           query: 'Explain the difference between void and voidable contracts',
-          expectedSources: ['rag', 'ollama'],
+          expectedSources: ['rag', 'ollama']
         },
         {
           query: 'What is the statute of limitations for breach of contract?',
-          expectedSources: ['neo4j', 'context7', 'ollama'],
+          expectedSources: ['neo4j', 'context7', 'ollama']
         },
       ];
       // renamed to avoid accidental redeclaration collisions in this file
@@ -189,7 +181,7 @@ export const GET: RequestHandler = async ({ url }) => {
         try {
           const raw = (await aiOrchestrator.process(test.query, {
             test: true,
-            timeout: 10000,
+            timeout: 10000
           })) as SynthResult;
 
           // Safely extract sourcesUsed, ensuring it's an array
@@ -202,14 +194,14 @@ export const GET: RequestHandler = async ({ url }) => {
             processingTime: Date.now() - startTime,
             confidence: raw.confidence ?? 0,
             sourcesUsed: sourcesUsedArray,
-            expectedSources: test.expectedSources,
+            expectedSources: test.expectedSources
           });
         } catch (err: any) {
           testResults.push({
             query: test.query,
             success: false,
             error: errToString(err),
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           });
         }
       }
@@ -225,7 +217,7 @@ export const GET: RequestHandler = async ({ url }) => {
         avgProcessingTime: Math.round(avgProcessingTime),
         results: testResults,
         services: await aiOrchestrator.health(),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -266,24 +258,23 @@ export const GET: RequestHandler = async ({ url }) => {
         ollama: health.services.ollama || 'unknown',
         enhancedRAG: health.services.enhancedRAG || 'unknown',
         gpuOrchestrator: health.services.gpuOrchestrator || 'unknown',
-        context7: health.services.context7 || 'unknown',
+        context7: health.services.context7 || 'unknown'
       },
       models: {
         primary: 'gemma3-legal:latest',
         embeddings: 'nomic-embed-text',
-        fallback: 'gemma2:2b',
-      },
+        fallback: 'gemma2:2b` },
       cache: {
         hits: cacheStats.hits,
         misses: cacheStats.misses,
         hitRate: cacheStats.hitRate,
-        memoryUsage: cacheStats.memoryUsage,
+        memoryUsage: cacheStats.memoryUsage
       },
       monitoring: {
         totalRequests: (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0,
         totalErrors: (metrics.find(m => m?.name === 'api_errors_total') as Metric | undefined)?.value ?? 0,
         avgResponseTime: (metrics.find(m => m?.name === 'api_request_duration_avg') as Metric | undefined)?.value ?? 0,
-        uptime: process.uptime(),
+        uptime: process.uptime()
       },
       features: {
         neo4j: health.services.neo4j === 'healthy',
@@ -297,8 +288,8 @@ export const GET: RequestHandler = async ({ url }) => {
         autosolve: true,
         streaming: true,
         caching: true,
-        monitoring: true,
-      },
+        monitoring: true
+      }
     };
 
     // Determine overall health
@@ -319,7 +310,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         status: 'error',
         error: errMsg,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -342,7 +333,7 @@ async function processStreamingRequest(
     const streamGenerator = aiOrchestrator.processStream(query, {
       ...(options ?? {}),
       context,
-      streamId,
+      streamId
     }) as AsyncIterable<StreamUpdate>;
 
     // Collect stream updates (typed) and avoid name collisions
@@ -373,7 +364,7 @@ async function processStreamingRequest(
     }
   } catch (err: any) {
     const errMsg = errToString(err);
-    logger.error(`[API] Streaming error for ${streamId}:`, errMsg);
+    logger.error(`[API] Streaming error for ${streamId}: ', errMsg);
     const stream = activeStreams.get(streamId);
     if (stream) {
       stream.status = 'error';

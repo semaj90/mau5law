@@ -27,11 +27,11 @@ const WorkerTriggerSchema = z.object({
       tags: z.array(z.string()).optional(),
       trigger: z.string().optional(),
       userId: z.string().optional(),
-      timestamp: z.string().optional(),
+      timestamp: z.string().optional()
     })
     .optional(),
   correlationId: z.string().optional(),
-  retry: z.boolean().default(false),
+  retry: z.boolean().default(false)
 });
 type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>;
 /*
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!triggerData.metadata?.timestamp) {
       triggerData.metadata = {
         ...triggerData.metadata,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
     // Validate case exists if caseId provided
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       documentId: triggerData.documentId || '',
       metadata: JSON.stringify(triggerData.metadata || {}),
       retry: triggerData.retry ? '1' : '0',
-      timestamp: Date.now().toString(),
+      timestamp: Date.now().toString()
     };
     // Add to Redis stream for worker consumption
     const streamName = 'autotag:requests';
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       type: triggerData.type,
       action: triggerData.action,
       caseId: triggerData.caseId,
-      correlationId: triggerData.correlationId,
+      correlationId: triggerData.correlationId
     });
     // Optional: Send to PostgreSQL notification as well
     if (triggerData.type === 'case_created' && triggerData.caseId) {
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             case_type: triggerData.metadata?.caseType || 'civil',
             trigger: triggerData.metadata?.trigger || 'api',
             correlation_id: triggerData.correlationId,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}'
         `);
         console.log(`📡 PostgreSQL NOTIFY sent for case ${triggerData.caseId}`);
@@ -111,22 +111,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         correlationId: triggerData.correlationId,
         triggerType: triggerData.type,
         action: triggerData.action,
-        caseId: triggerData.caseId,
+        caseId: triggerData.caseId
       },
       metadata: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: '2.0',
-      },
+        version: `2.0` }
     });
   } catch (validationError) {
     console.error('❌ Worker trigger validation failed:', validationError);
     if (validationError instanceof z.ZodError) {
-      return error(400, `Invalid trigger data: ${validationError.errors[0]?.message || 'Validation failed'}`);
+      return error(400, `Invalid trigger data: ${validationError.errors[0]?.message || 'Validation failed` }`);
     }
     return error(
       500,
-      `Worker trigger failed: ${validationError instanceof Error ? validationError.message : 'Unknown error'}`
+      `Worker trigger failed: ${validationError instanceof Error ? validationError.message : `Unknown error` }`
     );
   }
 };
@@ -134,15 +133,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 // Based on node-redis types and usage in this file.
 interface RedisStreamInfo {
   length: number;
-  'first-entry': { id: string; message: Record<string, string> } | null;
-  'last-entry': { id: string; message: Record<string, string> } | null;
+  'first-entry': { id: string;, message: Record<string, string> } | null;
+  'last-entry': { id: string;, message: Record<string, string> } | null;
 }
 
-interface RedisStreamEvent {
-  id: string;
-  message: {
-    timestamp: string;
-    type: string;
+interface RedisStreamEvent { id: string;, message: { timestamp: string;, type: string;
     action: string;
     caseId: string;
     evidenceId: string;
@@ -177,7 +172,7 @@ export const GET: RequestHandler = async () => {
       evidenceId: event.message.evidenceId || null,
       documentId: event.message.documentId || null,
       metadata: JSON.parse(event.message.metadata || '{}'),
-      retry: event.message.retry === '1',
+      retry: event.message.retry === '1'
     }));
     return json({
       success: true,
@@ -186,18 +181,17 @@ export const GET: RequestHandler = async () => {
           ? {
               length: streamInfo.length,
               firstEntry: streamInfo['first-entry'],
-              lastEntry: streamInfo['last-entry'],
+              lastEntry: streamInfo['last-entry']
             }
           : null,
         recentEvents: events,
-        workerStatus: 'active', // TODO: Implement actual worker health check
-        lastProcessed: events.length > 0 ? events[0].timestamp : null,
+        workerStatus: 'active', // TODO: Implement actual worker health check; lastProcessed: events.length > 0 ? events[0].timestamp : null
       },
       metadata: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: '2.0',
-      },
+        version: '2.0'
+      }
     });
   } catch (e) {
     const error = ensureError(e);
@@ -206,9 +200,8 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         error: {
-          message: 'Worker status check failed',
-          code: 'WORKER_STATUS_ERROR',
-        },
+         , message: 'Worker status check failed',
+          code: `WORKER_STATUS_ERROR` }
       },
       { status: 500 }
     );
@@ -237,15 +230,15 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       data: {
-        deletedEvents: deletedCount,
+       , deletedEvents: deletedCount,
         streamName,
-        clearedAt: new Date().toISOString(),
+        clearedAt: new Date().toISOString()
       },
       metadata: {
         timestamp: new Date().toISOString(),
         operation: 'stream-clear',
-        version: '2.0',
-      },
+        version: '2.0'
+      }
     });
   } catch (e) {
     const error = ensureError(e);
@@ -254,9 +247,8 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: {
-          message: 'Worker stream clear failed',
-          code: 'STREAM_CLEAR_ERROR',
-        },
+         , message: 'Worker stream clear failed',
+          code: `STREAM_CLEAR_ERROR` }
       },
       { status: 500 }
     );

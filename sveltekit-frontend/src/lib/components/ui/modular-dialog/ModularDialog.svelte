@@ -1,5 +1,6 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   // Use runtime adapter to normalize bits-ui shapes
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';

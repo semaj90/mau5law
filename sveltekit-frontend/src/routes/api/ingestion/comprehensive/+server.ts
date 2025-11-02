@@ -7,12 +7,9 @@ import type { RequestHandler } from './$types.js'
 import { ingestionService } from '$lib/server/workflows/ingestion-service.js'
 
 // Define types for job details
-interface JobDetails {
-  id: string;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'retrying' | 'paused';
+interface JobDetails { id: string;, status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'retrying' | 'paused';
   progress: number; // 0-100
-  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
-  createdAt: string; // ISO date string
+  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'; createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   error?: string;
   // Add other relevant job properties as needed by ingestionService
@@ -20,8 +17,7 @@ interface JobDetails {
 
 // Define types for workflow details (simplified XState representation)
 interface WorkflowState {
-  state: string | Record<string, string>; // Changed: 'value' to: 'state' to match ingestionService output
-  context: Record<string, unknown>; // Changed: 'any' to: 'unknown'
+  state: string | Record<string, string>; // Changed: 'value' to: 'state' to match ingestionService output; context: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
   history?: string[]; // Optional history of states
   // Add other relevant XState properties as needed by ingestionService
 }
@@ -51,19 +47,19 @@ interface IngestionDashboardData {
 
 // Define types for POST request body actions using a discriminated union
 type PostAction =
-  | { action: 'submit_document'; documentId: string; chunks: string[]; metadata?: Record<string, unknown> } // Changed: 'unknown[]' to: 'string[]'
-  | { action: 'get_job'; jobId: string }
+  | { action: 'submit_document'; documentId: string;, chunks: string[]; metadata?: Record<string, unknown> } // Changed: 'unknown[]'; to: 'string[]'
+  | { action: 'get_job';, jobId: string }
   | { action: 'get_dashboard' }
-  | { action: 'retry_job'; jobId: string }
-  | { action: 'cancel_job'; jobId: string }
+  | { action: 'retry_job';, jobId: string }
+  | { action: 'cancel_job';, jobId: string }
   | { action: 'pause_processing' }
   | { action: 'resume_processing' }
-  | { action: 'set_concurrency'; concurrency: number }
+  | { action: 'set_concurrency';, concurrency: number }
   | { action: 'clear_completed' }
   | { action: 'reset_stats' };
 
 // Initialize the ingestion service
-// await ingestionService.initialize() // REMOVED: This was causing the: "Declaration or statement expected" error.
+// await ingestionService.initialize() // REMOVED: This was causing; the: "Declaration or statement expected" error.
 
 let isIngestionServiceInitialized = $state<boolean>(false);
 
@@ -81,14 +77,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action, ...params } = data; // params will be correctly typed based on action
     switch (action) {
       case 'submit_document': {
-        // params is now { documentId: string; chunks: any[]; metadata?: Record<string, any> }
+        // params is now { documentId: string;, chunks: any[]; metadata?: Record<string, any> }
         const { documentId, chunks, metadata } = params as Extract<PostAction, { action: 'submit_document' }>;
         // Validate input
         if (!documentId || !chunks || !Array.isArray(chunks)) {
           return json(
             {
               success: false,
-              error: 'Missing required fields: documentId, chunks',
+              error: 'Missing required; fields: documentId, chunks'
             },
             { status: 400 }
           );
@@ -105,8 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
           jobId: result.jobId,
           queuePosition: result.queuePosition,
           estimatedTime: result.estimatedTime,
-          trackingUrl: `/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}`,
-        });
+          trackingUrl: `/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}' });
       }
       case 'get_job': {
         // params is now { jobId: string }
@@ -121,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           job: result.job,
-          workflow: result.workflow,
+          workflow: result.workflow
         });
       }
       case 'get_dashboard': {
@@ -129,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const dashboardData: IngestionDashboardData = ingestionService.getDashboardData();
         return json({
           success: true,
-          dashboard: dashboardData,
+          dashboard: dashboardData
         });
       }
       case 'retry_job': {
@@ -147,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message,
+          message: result.message
         });
       }
       case 'cancel_job': {
@@ -165,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message,
+          message: result.message
         });
       }
       case 'pause_processing': {
@@ -179,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message || 'Processing paused successfully',
+          message: result.message || 'Processing paused successfully'
         });
       }
       case 'resume_processing': {
@@ -193,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message || 'Processing resumed successfully',
+          message: result.message || 'Processing resumed successfully'
         });
       }
       case 'set_concurrency': {
@@ -203,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Concurrency is required',
+              error: 'Concurrency is required'
             },
             { status: 400 }
           );
@@ -217,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message,
+          message: result.message
         });
       }
       case 'clear_completed': {
@@ -231,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message || 'Completed jobs cleared successfully',
+          message: result.message || 'Completed jobs cleared successfully'
         });
       }
       case 'reset_stats': {
@@ -245,14 +240,12 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message || 'Stats reset successfully',
-        });
+          message: result.message || 'Stats reset successfully` });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
-          },
+            error: `Unknown; action: ${action}' },
           { status: 400 }
         );
     }
@@ -262,7 +255,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -279,15 +272,14 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 307,
         headers: {
           'Location': '/api/ingestion/comprehensive',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json` }
       });
     }
     if (action === 'get_dashboard') {
       const dashboardData: IngestionDashboardData = ingestionService.getDashboardData();
       return json({
         success: true,
-        dashboard: dashboardData,
+        dashboard: dashboardData
       });
     }
     // default: return API documentation
@@ -300,7 +292,7 @@ export const GET: RequestHandler = async ({ url }) => {
         description: 'XState + LokiJS + RabbitMQ + Drizzle ORM integration',
         endpoints: {
           'POST /api/ingestion/comprehensive': {
-            actions: [
+           , actions: [
               'submit_document - Submit document for processing',
               'get_job - Get job status by ID',
               'get_dashboard - Get monitoring dashboard data',
@@ -311,11 +303,11 @@ export const GET: RequestHandler = async ({ url }) => {
               'set_concurrency - Set processing concurrency',
               'clear_completed - Clear completed jobs',
               'reset_stats - Reset all statistics',
-            ],
-          },
+            ]
+          }
         },
-        workflow: dashboardDataForDocs.workflow,
-      },
+        workflow: dashboardDataForDocs.workflow
+      }
     });
   } catch (error) {
     console.error('❌ Ingestion API GET error:', error);
@@ -323,7 +315,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -343,7 +335,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       {
         success: true,
         message: 'PATCH endpoint for real-time updates received. Functionality to be implemented.',
-        receivedPayload: body,
+        receivedPayload: body
       },
       { status: 200 }
     );
@@ -353,7 +345,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Internal server error during PATCH operation',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

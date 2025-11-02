@@ -7,24 +7,18 @@ import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api
 import type { RequestHandler } from './$types.js';
 
 type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
-type EvidenceResult = typeof evidence.$inferSelect & {
-  caseTitle: string | null;
-  similarity: number;
+type EvidenceResult = typeof evidence.$inferSelect & { caseTitle: string | null;, similarity: number;
   content?: string;
 };
 type DocumentResult = typeof legalDocuments.$inferSelect & { similarity: number };
 type PersonResult = typeof users.$inferSelect & { similarity: number; content?: string };
 
-interface SearchResults {
-  cases: CaseResult[];
-  evidence: EvidenceResult[];
+interface SearchResults { cases: CaseResult[];, evidence: EvidenceResult[];
   documents: DocumentResult[];
   people: PersonResult[];
 }
 
-interface VectorSearchResult {
-  id: string;
-  content: string;
+interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata: {
     type: keyof SearchResults;
@@ -39,7 +33,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json(
         {
           success: false,
-          error: 'Unauthorized',
+          error: 'Unauthorized'
         },
         { status: 401 }
       );
@@ -53,7 +47,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json(
         {
           success: false,
-          error: 'Query must be at least 2 characters long',
+          error: 'Query must be at least 2 characters long'
         },
         { status: 400 }
       );
@@ -63,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       cases: [],
       evidence: [],
       documents: [],
-      people: [],
+      people: []
     };
     let totalResults = 0;
     // Search Cases
@@ -87,7 +81,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .limit(limit);
         results.cases = caseResults.map(case_ => ({
           ...case_,
-          similarity: calculateSimilarity(searchQuery, case_.title + ' ' + (case_.description || '')),
+          similarity: calculateSimilarity(searchQuery, case_.title + ' ' + (case_.description || ''))
         }));
         totalResults += caseResults.length;
       } catch (error) {
@@ -100,7 +94,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const evidenceResults = await db
           .select({
             ...evidence,
-            caseTitle: cases.title,
+            caseTitle: cases.title
           })
           .from(evidence)
           .leftJoin(cases, helpers.eq(evidence.caseId, cases.id))
@@ -110,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               helpers.or(
                 helpers.ilike(evidence.title, `%${searchQuery}%`),
                 helpers.ilike(evidence.description, `%${searchQuery}%`),
-                sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%`}`
+                sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%` }`
               )
             )
           )
@@ -118,7 +112,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .limit(limit);
         results.evidence = evidenceResults.map(item => ({
           ...item,
-          similarity: calculateSimilarity(searchQuery, (item.title || '') + ' ' + (item.description || '')),
+          similarity: calculateSimilarity(searchQuery, (item.title || '') + ' ' + (item.description || ''))
         }));
         totalResults += evidenceResults.length;
       } catch (error) {
@@ -142,7 +136,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .limit(limit);
         results.documents = documentResults.map(doc => ({
           ...doc,
-          similarity: calculateSimilarity(searchQuery, doc.title + ' ' + (doc.content || '').substring(0, 500)),
+          similarity: calculateSimilarity(searchQuery, doc.title + ' ' + (doc.content || '').substring(0, 500))
         }));
         totalResults += documentResults.length;
       } catch (error) {
@@ -171,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           similarity: calculateSimilarity(
             searchQuery,
             (person.name || '') + ' ' + (person.email || '') + ' ' + (person.department || '')
-          ),
+          )
         }));
         totalResults += userResults.length;
       } catch (error) {
@@ -184,7 +178,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const vectorResults = (await vectorOps.performRAGSearch({
           query: searchQuery,
           userId: userId || user.id,
-          limit: 5,
+          limit: 5
         })) as VectorSearchResult[];
         // Merge vector results with existing results
         for (const result of vectorResults) {
@@ -198,7 +192,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 ...result.metadata,
                 id: result.id,
                 content: result.content,
-                similarity: result.similarity,
+                similarity: result.similarity
               };
               switch (type) {
                 case 'cases':
@@ -232,8 +226,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       results,
       meta: {
         totalResults,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     return json(response);
   } catch (error) {
@@ -242,7 +236,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: 'Internal server error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

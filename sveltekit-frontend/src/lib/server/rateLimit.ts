@@ -1,9 +1,7 @@
 // Simple in-memory sliding window rate limiter (per key)
 // For production, replace with Redis-based implementation.
 }
-export interface Bucket {
-  tokens: number;
-  updated: number; // epoch ms
+export interface Bucket { tokens: number;, updated: number; // epoch ms
 }
 const buckets = new Map<string, Bucket>();
 }

@@ -51,7 +51,7 @@ export const cognitiveCache = {
       const client = await getRedisClient();
       await client.del(key);
     } catch (error) {
-      console.error(`Error deleting from cache for key ${key}:`, error);
+      console.error(`Error deleting from cache for key ${key}: ', error);
     }
   },
   async getJsonbDocument<T>(key: string): Promise<T | null> {

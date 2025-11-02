@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
         services: servicesMap,
         systemHealth: coordinator.systemHealth ?? { status: 'unknown' },
         activeErrors: Array.isArray(coordinator.activeErrors) ? coordinator.activeErrors : [],
-        performance: coordinator.performance ?? {},
+        performance: coordinator.performance ?? {}
       };
     }
 
@@ -87,14 +87,14 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         data: {
-          systemHealth: systemStatus.systemHealth,
+         , systemHealth: systemStatus.systemHealth,
           healthyServices: healthyServices.length,
           totalServices: systemStatus.services.size,
           criticalErrors: activeErrors.filter(e => e.priority === 'critical').length,
           performance: systemStatus.performance,
-          uptime: Date.now(),
+          uptime: Date.now()
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const serviceStatus = systemStatus.services.get(serviceId);
         if (!serviceStatus) {
           return json(
-            { success: false, error: `Service '${serviceId}' not found`, timestamp: new Date().toISOString() },
+            { success: false, error: 'Service '${serviceId}` not found`, timestamp: new Date().toISOString() },
             { status: 404 }
           );
         }
@@ -128,9 +128,9 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: `Unknown action: ${action}`,
+        error: `Unknown; action: ${action}`,
         availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 400 }
     );
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const service = findServiceById(target as string);
       if (!service)
         return json(
-          { success: false, error: `Service '${target}' not found`, timestamp: new Date().toISOString() },
+          { success: false, error: 'Service '${target}` not found`, timestamp: new Date().toISOString() },
           { status: 404 }
         );
       // Note: actual restart logic omitted for safety in frontend code
@@ -186,7 +186,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         message: `Service restart initiated for ${service.displayName || service.id}`,
         serviceId: target,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         message: 'Forced health check initiated for all services',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -207,9 +207,9 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: `Unknown action: ${action}`,
+        error: `Unknown; action: ${action}`,
         availableActions: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 400 }
     );

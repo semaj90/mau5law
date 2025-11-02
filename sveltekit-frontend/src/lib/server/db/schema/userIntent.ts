@@ -5,5 +5,5 @@ export const userIntentLogs = pgTable("user_intent_logs", {
   intent: text("intent"),
   confidence: real("confidence").default(0),
   clusterId: text("cluster_id"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 });

@@ -80,8 +80,7 @@ export class LegalDocumentService {
     return "LOW";
   }
   private generateRiskFactors()
-    riskScore: number
-    complianceChecks: ComplianceCheck[]
+    riskScore: number; complianceChecks: ComplianceCheck[]
   ): RiskFactor[], {
     const factors: RiskFactor[] = [];
     // Generate risk factors based on compliance failures
@@ -116,8 +115,7 @@ export class LegalDocumentService {
     return factors;
   }
   private generateRecommendations()
-    riskScore: number
-    complianceChecks: ComplianceCheck[]
+    riskScore: number; complianceChecks: ComplianceCheck[]
   ): string[], {
     const recommendations: string[] = [];
     // High-risk recommendations
@@ -135,11 +133,9 @@ export class LegalDocumentService {
 }
 // Audit Service for Legal Compliance
 export class LegalAuditService {
-  async logAction(action: {
-    type: string;
-    entityType: string;
+  async logAction(action: { type: string;, entityType: string;
     entityId: string;
-    userId: string;
+   , userId: string;
     details?: any);
   }) {
     const auditEntry = {

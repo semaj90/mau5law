@@ -1,13 +1,13 @@
 /**
  * Actual Database Schema - Matches Production PostgreSQL Structure
  * This schema reflects the ACTUAL tables in the database, not idealized versions
- * Updated: 2025-10-02 with 512-dim embeddinggemma:latest vectors
+ * Updated: 2025-10-02 with 512-dim; embeddinggemma:latest vectors
  */
 import { pgTable, uuid, integer, varchar, text, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { customType } from 'drizzle-orm/pg-core';
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
-const vector = customType<{ data: number[]; config: { dimensions?: number } }>({
+const vector = customType<{ data: number[];, config: { dimensions?: number } }>({
   dataType(config) {
     return `vector(${config?.dimensions || 512})`;
   },
@@ -17,7 +17,7 @@ const vector = customType<{ data: number[]; config: { dimensions?: number } }>({
   fromDriver(value: any): number[] {
     const vectorString = String(value);
     return vectorString.slice(1, -1).split(',').map(Number);
-  },
+  }
 });
 // Users table
 export const users = pgTable('users', {
@@ -26,7 +26,7 @@ export const users = pgTable('users', {
   passwordHash: varchar('password_hash', { length: 255 }),
   name: varchar('name', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // Cases table - MATCHES ACTUAL DATABASE
 export const cases = pgTable(
@@ -45,10 +45,10 @@ export const cases = pgTable(
     priority: text('priority').default('medium'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default({}),
+    metadata: jsonb('metadata').default({})
   },
   table => ({
-    caseNumberUnique: index('cases_case_number_unique').on(table.caseNumber),
+    caseNumberUnique: index('cases_case_number_unique').on(table.caseNumber)
   })
 );
 // Evidence table - MATCHES ACTUAL DATABASE
@@ -63,7 +63,7 @@ export const evidence = pgTable('evidence', {
   fileUrl: text('file_url'),
   metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 // Documents table (if needed for vector operations)
 export const documents = pgTable('documents', {
@@ -75,5 +75,5 @@ export const documents = pgTable('documents', {
   content: text('content'),
   metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });

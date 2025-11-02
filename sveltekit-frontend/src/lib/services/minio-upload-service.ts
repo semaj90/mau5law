@@ -9,23 +9,17 @@ import { browser } from '$app/environment';
 // Keep existing orchestrator import (assume it's available)
 import { recommendationOrchestrator } from './recommendation-orchestrator.js';
 
-export interface MinIOConfig {
-  endpoint: string;
-  accessKey: string;
+export interface MinIOConfig { endpoint: string;, accessKey: string;
   secretKey: string;
   useSSL: boolean;
   region?: string;
-  buckets: {
-    documents: string;
-    evidence: string;
+  buckets: { documents: string;, evidence: string;
     cases: string;
     temp: string;
   };
 }
 
-export interface UploadTask {
-  id: string;
-  file: File;
+export interface UploadTask { id: string;, file: File;
   bucket: string;
   objectName: string;
   progress: number;
@@ -38,12 +32,10 @@ export interface UploadTask {
   error?: string;
   metadata?: { [key: string]: any };
   chunkSize: number;
-  chunks: Array<{ index: number; status: 'pending' | 'uploading' | 'completed' | 'failed'; retryCount: number }>;
+  chunks: Array<{ index: number; status: 'pending' | 'uploading' | 'completed' | 'failed';, retryCount: number }>;
 }
 
-export interface UploadStats {
-  totalFiles: number;
-  completedFiles: number;
+export interface UploadStats { totalFiles: number;, completedFiles: number;
   failedFiles: number;
   totalBytes: number;
   uploadedBytes: number;
@@ -52,9 +44,7 @@ export interface UploadStats {
   estimatedTimeRemaining: number;
 }
 
-export interface ParallelProcessor {
-  id: string;
-  workerId: number;
+export interface ParallelProcessor { id: string;, workerId: number;
   status: 'idle' | 'busy' | 'error';
   currentTask?: string;
   processedTasks: number;
@@ -82,7 +72,7 @@ export class MinIOUploadService {
       uploadedBytes: 0,
       averageSpeed: 0,
       concurrentUploads: 0,
-      estimatedTimeRemaining: 0,
+      estimatedTimeRemaining: 0
     });
     this.processors = writable<ParallelProcessor[]>([]);
     void this.initializeWorkers();
@@ -101,8 +91,8 @@ export class MinIOUploadService {
             this.handleWorkerMessage(i, event.data);
           };
           worker.onerror = error => {
-            console.error(`Worker ${i} error:`, error);
-            this.updateProcessor(i, { status: 'error' });
+            console.error(`Worker ${i} error: ', error);
+            this.updateProcessor(i, { status: `error` });
           };
           worker.postMessage({ type: 'init', config: this.config, workerId: i });
           this.workers.push(worker);
@@ -111,7 +101,7 @@ export class MinIOUploadService {
             workerId: i,
             status: 'idle',
             processedTasks: 0,
-            averageTaskTime: 0,
+            averageTaskTime: 0
           });
         } catch (e) {
           // If worker creation fails, keep going (server-side or unsupported env)
@@ -121,7 +111,7 @@ export class MinIOUploadService {
             workerId: i,
             status: 'error',
             processedTasks: 0,
-            averageTaskTime: 0,
+            averageTaskTime: 0
           });
         }
       }
@@ -150,7 +140,7 @@ export class MinIOUploadService {
     this.uploadStats.update(stats => ({
       ...stats,
       totalFiles: stats.totalFiles + tasks.length,
-      totalBytes: stats.totalBytes + tasks.reduce((sum, t) => sum + t.file.size, 0),
+      totalBytes: stats.totalBytes + tasks.reduce((sum, t) => sum + t.file.size, 0)
     }));
     // Start processing if not already running
     if (!this.isProcessing) {
@@ -168,7 +158,7 @@ export class MinIOUploadService {
     const chunks = Array.from({ length: chunkCount }, (_, index) => ({
       index,
       status: 'pending' as const,
-      retryCount: 0,
+      retryCount: 0
     }));
     return {
       id: `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -186,8 +176,8 @@ export class MinIOUploadService {
         originalName: file.name,
         mimeType: file.type,
         size: file.size,
-        ...(options?.metadata || {}),
-      },
+        ...(options?.metadata || {})
+      }
     };
   }
 
@@ -197,7 +187,7 @@ export class MinIOUploadService {
     const random = Math.random().toString(36).substr(2, 9);
     const extension = file.name.split('.').pop() || '';
     const baseName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').substring(0, 100);
-    return `${timestamp}/${random}/${baseName}${extension ? '.' + extension : ''}`;
+    return `${timestamp}/${random}/${baseName}${extension ? '.' + extension : `` }`;
   }
 
   // Start processing upload queue
@@ -244,11 +234,11 @@ export class MinIOUploadService {
   private async assignTaskToProcessor(task: UploadTask, processor: ParallelProcessor): Promise<void> {
     this.updateProcessor(processor.workerId, {
       status: 'busy',
-      currentTask: task.id,
+      currentTask: task.id
     });
     this.updateTask(task.id, {
       status: 'uploading',
-      startedAt: Date.now(),
+      startedAt: Date.now()
     });
     const worker = this.workers[processor.workerId];
     try {
@@ -259,27 +249,27 @@ export class MinIOUploadService {
           {
             type: 'upload',
             task: {
-              id: task.id,
+             , id: task.id,
               fileName: task.file.name,
               fileSize: task.file.size,
               bucket: task.bucket,
               objectName: task.objectName,
               chunkSize: task.chunkSize,
               chunks: task.chunks,
-              metadata: task.metadata,
-            },
+              metadata: task.metadata
+            }
           },
           [buffer as unknown as Transferable] // transfer buffer if supported
         );
       } else {
         // If no worker available, fallback to marking processing (could be extended to direct upload)
         console.warn('No worker available for upload, marking as processing:', task.id);
-        this.updateTask(task.id, { status: 'processing' });
+        this.updateTask(task.id, { status: `processing` });
       }
       // Update concurrent uploads count
       this.uploadStats.update(stats => ({
         ...stats,
-        concurrentUploads: stats.concurrentUploads + 1,
+        concurrentUploads: stats.concurrentUploads + 1
       }));
     } catch (error) {
       console.error('Failed to assign task to processor:', error);
@@ -349,7 +339,7 @@ export class MinIOUploadService {
     this.updateTask(taskId, {
       progress: Math.min(100, Math.max(0, Math.round(progress))),
       speed,
-      eta,
+      eta
     });
     // Update overall stats
     this.updateOverallStats();
@@ -370,21 +360,21 @@ export class MinIOUploadService {
         ...(task?.metadata || {}),
         etag: payload.etag,
         location: payload.location,
-        versionId: payload.versionId,
-      },
+        versionId: payload.versionId
+      }
     });
     // Free up processor
     const proc = this.getProcessor(workerId);
     this.updateProcessor(workerId, {
       status: 'idle',
       currentTask: undefined,
-      processedTasks: (proc?.processedTasks ?? 0) + 1,
+      processedTasks: (proc?.processedTasks ?? 0) + 1
     });
     // Update stats
     this.uploadStats.update(stats => ({
       ...stats,
       completedFiles: stats.completedFiles + 1,
-      concurrentUploads: Math.max(0, stats.concurrentUploads - 1),
+      concurrentUploads: Math.max(0, stats.concurrentUploads - 1)
     }));
     // Recommendation
     if (task) {
@@ -397,7 +387,7 @@ export class MinIOUploadService {
         priority: 'medium',
         source: 'minio-upload',
         action: () => this.openFile(task.objectName),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     console.log(`✅ Upload completed: ${taskId}`);
@@ -407,16 +397,15 @@ export class MinIOUploadService {
   private handleUploadFailed(workerId: number, taskId: string, payload: { error?: string } = {}): void {
     this.updateTask(taskId, {
       status: 'failed',
-      error: payload?.error ?? 'unknown',
-    });
+      error: payload?.error ?? 'unknown` });
     this.updateProcessor(workerId, {
       status: 'idle',
-      currentTask: undefined,
+      currentTask: undefined
     });
     this.uploadStats.update(stats => ({
       ...stats,
       failedFiles: stats.failedFiles + 1,
-      concurrentUploads: Math.max(0, stats.concurrentUploads - 1),
+      concurrentUploads: Math.max(0, stats.concurrentUploads - 1)
     }));
     console.error(`❌ Upload failed: ${taskId}`, payload?.error);
   }
@@ -460,7 +449,7 @@ export class MinIOUploadService {
       ...stats,
       uploadedBytes: totalUploadedBytes,
       averageSpeed,
-      estimatedTimeRemaining,
+      estimatedTimeRemaining
     }));
   }
 
@@ -492,7 +481,7 @@ export class MinIOUploadService {
               ['jpg', 'jpeg', 'png', 'tiff', 'bmp'].includes(t.file.name.split('.').pop()?.toLowerCase() || '')
             )
           ),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     // Document analysis recommendation
@@ -510,7 +499,7 @@ export class MinIOUploadService {
           this.startDocumentAnalysis(
             tasks.filter(t => ['pdf', 'doc', 'docx', 'txt'].includes(t.file.name.split('.').pop()?.toLowerCase() || ''))
           ),
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     for (const rec of recommendations) {
@@ -611,14 +600,14 @@ export class MinIOUploadService {
   public async cancelUpload(taskId: string): Promise<boolean> {
     const task = this.getTask(taskId);
     if (!task) return false;
-    this.updateTask(taskId, { status: 'failed', error: 'Cancelled by user' });
+    this.updateTask(taskId, { status: 'failed', error: `Cancelled by user` });
     const processor = this.getProcessors().find(p => p.currentTask === taskId);
     if (processor) {
       const worker = this.workers[processor.workerId];
       worker?.postMessage({ type: 'cancel', taskId });
       this.updateProcessor(processor.workerId, {
         status: 'idle',
-        currentTask: undefined,
+        currentTask: undefined
       });
     }
     return true;
@@ -631,7 +620,7 @@ export class MinIOUploadService {
       status: 'queued',
       progress: 0,
       error: undefined,
-      chunks: task.chunks.map(chunk => ({ ...chunk, status: 'pending', retryCount: 0 })),
+      chunks: task.chunks.map(chunk => ({ ...chunk, status: 'pending', retryCount: 0 }))
     });
     if (!this.isProcessing) void this.startProcessing();
     return true;
@@ -644,7 +633,7 @@ export class MinIOUploadService {
     this.uploadStats.update(stats => ({
       ...stats,
       totalFiles: Math.max(0, stats.totalFiles - completedCount),
-      completedFiles: Math.max(0, stats.completedFiles - completedCount),
+      completedFiles: Math.max(0, stats.completedFiles - completedCount)
     }));
     return completedCount;
   }

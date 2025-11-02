@@ -14,7 +14,7 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
+  CardFooter
 } from '$lib/components/ui/enhanced-bits.svelte';
 // Note: CardCompound does not exist in enhanced-bits, so we don't re-export it here.
 export { default as Card } from './Card.svelte';

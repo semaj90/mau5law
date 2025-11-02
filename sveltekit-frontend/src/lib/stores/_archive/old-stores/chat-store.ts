@@ -73,7 +73,7 @@ export const chatConfig = writable({
   autoScroll: true,
   showTypingIndicators: true,
   enableRecommendations: true,
-  streamingEnabled: true,
+  streamingEnabled: true
 });
 // Derived stores for computed values
 export const messageCount = derived(chatMessages, ($messages) => $messages.length);
@@ -125,7 +125,7 @@ export const chatActions = {
       const response = await fetch('/api/chat/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, case_id: caseId })
+        body: JSON.stringify({, user_id: userId, case_id: caseId })
       });
       if (!response.ok) {
         throw new Error('Failed to create session');

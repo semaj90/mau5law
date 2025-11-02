@@ -2,7 +2,7 @@
 /**
  * Legal Document Graph Visualization - WebGPU Implementation
  *
- * Advanced: "Graph on a Texture" system for legal document networks:
+ * Advanced: "Graph on a Texture" system for legal document; networks:
  * - GPU-accelerated graph layout and rendering
  * - Dimensional tensor stores for nodes, edges, and metadata
  * - Interactive 3D exploration of legal relationships
@@ -12,50 +12,38 @@
  */
 import type { GraphVisualizationData, LegalEntity, DocumentCache } from '$lib/db/client-db';
 
-export interface WebGPUGraphConfig {
-  maxNodes: number;
-  maxEdges: number;
+export interface WebGPUGraphConfig { maxNodes: number;, maxEdges: number;
   canvasWidth: number;
   canvasHeight: number;
   enablePhysics: boolean;
   renderDistance: number;
   lodLevels: number;
 }
-export interface GraphNode {
-  id: string;
-  position: [number, number, number];
+export interface GraphNode { id: string;, position: [number, number, number];
   velocity: [number, number, number];
   force: [number, number, number];
   mass: number;
   size: number;
   color: [number, number, number, number];
   type: 'document' | 'case' | 'entity' | 'precedent';
-  metadata: {
-    title: string;
-    importance: number;
+  metadata: { title: string;, importance: number;
     connections: number;
     lastAccessed: number;
   };
 }
-export interface GraphEdge {
-  source: number;
-  target: number;
+export interface GraphEdge { source: number;, target: number;
   weight: number;
   type: 'citation' | 'similarity' | 'reference' | 'temporal';
   strength: number;
   color: [number, number, number, number];
 }
-export interface TensorStore {
-  nodeBuffer: GPUBuffer;
-  edgeBuffer: GPUBuffer;
+export interface TensorStore { nodeBuffer: GPUBuffer;, edgeBuffer: GPUBuffer;
   metadataBuffer: GPUBuffer;
   positionTexture: GPUTexture;
   colorTexture: GPUTexture;
   adjacencyTexture: GPUTexture;
 }
-export interface GraphRenderState {
-  nodeCount: number;
-  edgeCount: number;
+export interface GraphRenderState { nodeCount: number;, edgeCount: number;
   cameraPosition: [number, number, number];
   cameraTarget: [number, number, number];
   zoom: number;
@@ -65,9 +53,7 @@ export interface GraphRenderState {
   timeRange: [number, number];
 }
 
-export type PerformanceStats = {
-  fps: number;
-  frameTime: number;
+export type PerformanceStats = { fps: number;, frameTime: number;
   nodeCount: number;
   edgeCount: number;
   gpuMemoryUsage: number;
@@ -118,7 +104,7 @@ export class WebGPULegalDocumentGraph {
       enablePhysics: true,
       renderDistance: 1000,
       lodLevels: 4,
-      ...config,
+      ...config
     };
     this.renderState = {
       nodeCount: 0,
@@ -129,7 +115,7 @@ export class WebGPULegalDocumentGraph {
       selectedNode: null,
       highlightedNodes: new Set(),
       filterType: 'all',
-      timeRange: [0, Date.now()],
+      timeRange: [0, Date.now()]
     };
   }
 
@@ -144,8 +130,8 @@ export class WebGPULegalDocumentGraph {
     this.device = await adapter.requestDevice({
       requiredFeatures: [],
       requiredLimits: {
-        maxStorageBufferBindingSize: 134217728,
-      },
+       , maxStorageBufferBindingSize: 134217728
+      }
     });
     this.context = this.canvas.getContext('webgpu') as GPUCanvasContext;
     if (!this.context) throw new Error('Failed to get WebGPU context');
@@ -155,7 +141,7 @@ export class WebGPULegalDocumentGraph {
         ? webgpu.getPreferredCanvasFormat()
         : ('bgra8unorm' as GPUTextureFormat);
     this.preferredFormat = format;
-    this.context.configure({ device: this.device, format, alphaMode: 'premultiplied' });
+    this.context.configure({ device: this.device, format, alphaMode: `premultiplied` });
 
     await this.createTensorStores();
     await this.initializeShaders();
@@ -179,7 +165,7 @@ export class WebGPULegalDocumentGraph {
     // Tiled compute shader using workgroup memory to scale better than naive N^2
     const cs = `
       struct Node { pos : vec3<f32>; vel : vec3<f32>; mass : f32; };
-      struct Params { nodeCount: u32; pad0: u32; pad1: u32; pad2: u32; };
+      struct Params { nodeCount: u32; pad0: u32; pad1: u32;, pad2: u32; };
 
       @group(0) @binding(0) var<storage, read_write> nodes : array<Node>;
       @group(0) @binding(1) var<uniform> params : Params;
@@ -240,7 +226,7 @@ export class WebGPULegalDocumentGraph {
     const computeModule = this.device.createShaderModule({ code: cs });
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: { module: computeModule, entryPoint: 'cs_main' },
+      compute: {, module: computeModule, entryPoint: 'cs_main' }
     });
   }
 
@@ -252,14 +238,14 @@ export class WebGPULegalDocumentGraph {
       layout: computeLayout,
       entries: [
         { binding: 0, resource: { buffer: this.tensorStore.nodeBuffer } },
-        { binding: 1, resource: { buffer: this.uniformBuffer! } },
-      ],
+        { binding: 1, resource: {, buffer: this.uniformBuffer! } }
+      ]
     });
 
     const renderLayout = this.renderPipeline.getBindGroupLayout(0);
     // provide uniform buffer if present
     const entries: GPUBindGroupEntry[] = [];
-    if (this.uniformBuffer) entries.push({ binding: 0, resource: { buffer: this.uniformBuffer } });
+    if (this.uniformBuffer) entries.push({ binding: 0, resource: {, buffer: this.uniformBuffer } });
     this.renderBindGroup = this.device.createBindGroup({ layout: renderLayout, entries });
   }
 
@@ -271,46 +257,46 @@ export class WebGPULegalDocumentGraph {
 
     const nodeBuffer = this.device.createBuffer({
       size: nodeBufferSize,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const edgeBuffer = this.device.createBuffer({
       size: edgeBufferSize,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const metadataBuffer = this.device.createBuffer({
       size: metadataBufferSize,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const dim = Math.ceil(Math.sqrt(this.config.maxNodes));
     const positionTexture = this.device.createTexture({
       size: [dim, dim, 1],
       format: 'rgba32float',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
     const colorTexture = this.device.createTexture({
       size: [dim, dim, 1],
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
     const adjacencyTexture = this.device.createTexture({
       size: [this.config.maxNodes, 1, 1],
       format: 'r8unorm',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
     this.tensorStore = { nodeBuffer, edgeBuffer, metadataBuffer, positionTexture, colorTexture, adjacencyTexture };
 
     this.uniformBuffer = this.device.createBuffer({
       size: 256,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     // grid/spatial hashing helpers are not needed on GPU with tiled approach,
     // but leave placeholders for future explicit grid buffers
     const gridHelperBuffer = this.device.createBuffer({
       size: 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // attach helper to tensorStore for future use
     // assign helper buffer with a safer cast to unknown -> extended interface
@@ -343,13 +329,13 @@ export class WebGPULegalDocumentGraph {
         // No vertex buffers declared here - actual data binding is left for future extension
       },
       fragment: {
-        module: this.fragmentShaderModule,
+       , module: this.fragmentShaderModule,
         entryPoint: 'fs_main',
         // reuse the preferred format determined during initialize(), fallback if missing
-        targets: [{ format: this.preferredFormat ?? ('bgra8unorm' as GPUTextureFormat) }],
+        targets: [{ format: this.preferredFormat ?? ('bgra8unorm' as GPUTextureFormat) }]
       },
       primitive: { topology: 'point-list' },
-      depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: 'less' },
+      depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: `less` }
     });
   }
 
@@ -378,8 +364,8 @@ export class WebGPULegalDocumentGraph {
           title: n.label ?? '',
           importance: n.metadata?.importance ?? 0.5,
           connections: 0,
-          lastAccessed: Date.now(),
-        },
+          lastAccessed: Date.now()
+        }
       }));
       // map edges
       this.edges = (graphData.edges || []).map(e => {
@@ -391,7 +377,7 @@ export class WebGPULegalDocumentGraph {
           weight: e.weight ?? 1,
           type: this.parseEdgeType(e.type),
           strength: e.strength ?? 1,
-          color: this.parseColor(e.color),
+          color: this.parseColor(e.color)
         } as GraphEdge;
       });
       // connection counts
@@ -590,11 +576,11 @@ export class WebGPULegalDocumentGraph {
       colorAttachments: [
         {
           view,
-          clearValue: { r: 0.06, g: 0.06, b: 0.1, a: 1.0 },
+          clearValue: {, r: 0.06, g: 0.06, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: 'store',
+          storeOp: 'store'
         },
-      ],
+      ]
     });
     rpass.setPipeline(this.renderPipeline);
     // set render bind group if available (uniforms, textures, etc.)
@@ -630,8 +616,7 @@ export class WebGPULegalDocumentGraph {
             frameDelta: Math.round(stats.frameTime),
             gpuActive: !!this.device,
             fallbackMode: !this.device,
-            note: 'webgpu-frame',
-          })
+            note: `webgpu-frame` })
         )
         .catch(err => {
           // Best-effort diagnostic if dynamic import or capture fails
@@ -670,7 +655,7 @@ export class WebGPULegalDocumentGraph {
     } catch (err) {
       // Non-blocking diagnostic to avoid silent failures
       // This is intentionally non-throwing (best-effort cleanup)
-      console.warn(`[WebGPU Legal Graph] failed to destroy ${name ?? 'resource'}`, err);
+      console.warn(`[WebGPU Legal Graph] failed to destroy ${name ?? 'resource` }`, err);
     }
   }
 
@@ -691,7 +676,7 @@ export class WebGPULegalDocumentGraph {
       document: 'document',
       case 'case',
       entity: 'entity',
-      precedent: 'precedent',
+      precedent: 'precedent'
     };
     return (typeString && m[typeString]) || 'document';
   }
@@ -700,8 +685,7 @@ export class WebGPULegalDocumentGraph {
       citation: 'citation',
       similarity: 'similarity',
       reference: 'reference',
-      temporal: 'temporal',
-    };
+      temporal: `temporal` };
     return (typeString && m[typeString]) || 'reference';
   }
   private encodeNodeType(t: GraphNode['type']): number {
@@ -716,7 +700,7 @@ export class WebGPULegalDocumentGraph {
       nodeCount: this.renderState.nodeCount,
       edgeCount: this.renderState.edgeCount,
       gpuMemoryUsage: this.estimateGPUMemory(),
-      cacheHitRate: undefined,
+      cacheHitRate: undefined
     };
   }
 

@@ -22,9 +22,7 @@ interface WorkflowStepOptions {
  * Coordinates all legal AI services in end-to-end workflows
  * Handles complex multi-step operations with proper error handling and monitoring
  */
-interface OrchestrationRequest {
-  workflow: 'legal-research' | 'document-processing' | 'case-creation' | 'evidence-analysis' | 'qlora-distillation';
-  parameters: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] }; // Updated type
+interface OrchestrationRequest { workflow: 'legal-research' | 'document-processing' | 'case-creation' | 'evidence-analysis' | 'qlora-distillation';, parameters: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] }; // Updated type
   options?: {
     useGPU?: boolean;
     cacheResults?: boolean;
@@ -41,9 +39,7 @@ interface OrchestrationResult extends BitsUICompatibleObject {
   // Change: allow object-shaped results (previously BitsUICompatibleData caused many mismatch errors)
   result?: BitsUICompatibleObject;
   error?: string;
-  metrics: {
-    totalTime: number;
-    apiCalls: number;
+  metrics: { totalTime: number;, apiCalls: number;
     cacheHits: number;
     gpuAccelerated: boolean;
   };
@@ -67,9 +63,7 @@ interface WorkflowStep extends BitsUICompatibleObject {
 type WorkflowStepResult = BitsUICompatibleObject; // Simplified to extend the object type
 
 // Search Legal Documents
-interface SearchLegalDocumentsParams {
-  query: string;
-  jurisdiction: string;
+interface SearchLegalDocumentsParams { query: string;, jurisdiction: string;
   maxResults?: number;
   useAI?: boolean;
   previousResults?: WorkflowStepResult[];
@@ -93,9 +87,7 @@ interface EnhancedLegalSearchResult extends BitsUICompatibleObject {
 }
 
 // Analyze Precedents
-interface AnalyzePrecedentsParams {
-  query: string;
-  jurisdiction: string;
+interface AnalyzePrecedentsParams { query: string;, jurisdiction: string;
   userRole?: string;
   previousResults?: WorkflowStepResult[];
 }
@@ -172,9 +164,7 @@ interface DocumentSummaryResult extends BitsUICompatibleObject {
 }
 
 // Score Case Strength
-interface ScoreCaseStrengthParams {
-  title: string;
-  description: string;
+interface ScoreCaseStrengthParams { title: string;, description: string;
   caseType: string;
   jurisdiction: string;
   previousResults?: WorkflowStepResult[];
@@ -186,9 +176,7 @@ interface CaseScoringResult extends BitsUICompatibleObject {
 }
 
 // Suggest Research Topics
-interface SuggestResearchTopicsParams {
-  caseType: string;
-  title: string;
+interface SuggestResearchTopicsParams { caseType: string;, title: string;
   description: string;
   maxSuggestions?: number;
   previousResults?: WorkflowStepResult[];
@@ -212,9 +200,7 @@ interface CaseTimelineResult extends BitsUICompatibleObject {
 }
 
 // Process Evidence Metadata
-interface ProcessEvidenceMetadataParams {
-  evidenceId: string;
-  metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
+interface ProcessEvidenceMetadataParams { evidenceId: string;, metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
   extractAdditional?: boolean;
   previousResults?: WorkflowStepResult[];
 }
@@ -250,9 +236,7 @@ interface EvidenceReportResult extends BitsUICompatibleObject {
 }
 
 // --- New Interfaces for QLoRA Distillation Workflow ---
-interface TriggerQLoRADistillationParams {
-  userId: string;
-  domain: string;
+interface TriggerQLoRADistillationParams { userId: string;, domain: string;
   triggerType: 'manual' | 'automatic' | 'scheduled';
   parameters?: {
     minFeedbackCount?: number;
@@ -388,8 +372,8 @@ class LegalAIOrchestrator {
         totalTime: 0,
         apiCalls: 0,
         cacheHits: 0,
-        gpuAccelerated: request.options?.useGPU || false,
-      },
+        gpuAccelerated: request.options?.useGPU || false
+      }
     };
     this.activeWorkflows.set(workflowId, result);
     try {
@@ -399,7 +383,7 @@ class LegalAIOrchestrator {
           name: stepConfig.name,
           status: 'processing',
           duration: 0,
-          apiEndpoint: stepConfig.endpoint,
+          apiEndpoint: stepConfig.endpoint
         };
         result.steps.push(step);
         result.metrics.apiCalls++;
@@ -443,13 +427,13 @@ class LegalAIOrchestrator {
   ): Promise<EnhancedLegalSearchResult> {
     const response = await fetch('/api/ai/enhanced-legal-search', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        query: params.query,
+       , query: params.query,
         jurisdiction: params.jurisdiction,
         maxResults: params.maxResults || 20,
-        useAI: true,
-      }),
+        useAI: true
+      })
     });
     if (!response.ok) {
       throw new Error(`Search failed: ${response.status}`);
@@ -470,15 +454,14 @@ class LegalAIOrchestrator {
       )?.results || [];
     const response = await fetch('/api/ai/legal-research', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        topic: params.query, // Using params.query as: 'topic'
-        jurisdiction: params.jurisdiction,
+        topic: params.query, // Using params.query as: 'topic'; jurisdiction: params.jurisdiction,
         sources: ['cases', 'statutes'],
         includeAnalysis: true,
         userRole: params.userRole,
         retrievedDocuments: searchResults, // Fix: Pass search results to the API
-      }),
+      })
     });
     if (!response.ok) {
       throw new Error(`Precedent analysis failed: ${response.status}`);
@@ -490,7 +473,7 @@ class LegalAIOrchestrator {
     params: GenerateResearchSummaryParams,
     _options?: WorkflowStepOptions
   ): Promise<ChatResponse> {
-    // Fix: Use a type guard to correctly type: 'r' and ensure: 'analysis' property exists
+    // Fix: Use a type guard to correctly type: 'r' and; ensure: 'analysis' property exists
     const precedentAnalysisResult = params.previousResults?.find(
       (r): r is LegalResearchAnalysisResult =>
         (r as LegalResearchAnalysisResult).analysis !== undefined &&
@@ -501,12 +484,11 @@ class LegalAIOrchestrator {
 
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: `Generate a comprehensive legal research summary for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({, message: `Generate a comprehensive legal research summary, for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
         model: 'gemma3-legal:latest',
-        temperature: 0.3,
-      }),
+        temperature: 0.3
+      })
     });
     if (!response.ok) {
       throw new Error(`Summary generation failed: ${response.status}`);
@@ -520,13 +502,13 @@ class LegalAIOrchestrator {
   ): Promise<DocumentEntityExtractionResult> {
     const response = await fetch('/api/ai/analyze-evidence', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        content: params.content,
+       , content: params.content,
         documentType: params.documentType || 'legal_document',
         extractEntities: true,
-        includeKeyTerms: true,
-      }),
+        includeKeyTerms: true
+      })
     });
     if (!response.ok) {
       throw new Error(`Entity extraction failed: ${response.status}`);
@@ -540,12 +522,11 @@ class LegalAIOrchestrator {
   ): Promise<DocumentAnalysisResult> {
     const response = await fetch('/api/ai/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        text: params.content, // Using params.content as: 'text'
-        analysisType: 'legal_document',
-        includeMetadata: true,
-      }),
+        text: params.content, // Using params.content as: 'text'; analysisType: 'legal_document',
+        includeMetadata: true
+      })
     });
     if (!response.ok) {
       throw new Error(`Document analysis failed: ${response.status}`);
@@ -559,13 +540,13 @@ class LegalAIOrchestrator {
   ): Promise<DocumentSummaryResult> {
     const response = await fetch('/api/ai/summarize', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        content: params.content,
+       , content: params.content,
         maxLength: params.maxLength || 500,
         includeKeyPoints: params.includeKeyPoints || true,
-        legalFocus: params.legalFocus || true,
-      }),
+        legalFocus: params.legalFocus || true
+      })
     });
     if (!response.ok) {
       throw new Error(`Document summarization failed: ${response.status}`);
@@ -579,13 +560,13 @@ class LegalAIOrchestrator {
   ): Promise<CaseScoringResult> {
     const response = await fetch('/api/ai/case-scoring', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        caseTitle: params.title,
+       , caseTitle: params.title,
         description: params.description,
         caseType: params.caseType,
-        jurisdiction: params.jurisdiction,
-      }),
+        jurisdiction: params.jurisdiction
+      })
     });
     if (!response.ok) {
       throw new Error(`Case scoring failed: ${response.status}`);
@@ -599,12 +580,12 @@ class LegalAIOrchestrator {
   ): Promise<ResearchSuggestionsResult> {
     const response = await fetch('/api/ai/suggestions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        context: `New ${params.caseType} case ${params.title}. ${params.description}`,
+       , context: `New ${params.caseType} case ${params.title}. ${params.description}`,
         suggestionType: 'research',
-        maxSuggestions: params.maxSuggestions || 10,
-      }),
+        maxSuggestions: params.maxSuggestions || 10
+      })
     });
     if (!response.ok) {
       throw new Error(`Research suggestions failed: ${response.status}`);
@@ -624,16 +605,16 @@ class LegalAIOrchestrator {
         {
           name: 'Initial Research Due',
           date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          type: 'deadline',
+          type: 'deadline'
         },
         {
           name: 'Discovery Phase',
           date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          type: 'phase',
+          type: 'phase'
         },
       ],
       // Allow ISO string timestamps (now.toISOString()) as well as BitsUICompatibleData
-      generated: now.toISOString(),
+      generated: now.toISOString()
     };
     return timeline;
   }
@@ -644,12 +625,12 @@ class LegalAIOrchestrator {
   ): Promise<EvidenceMetadataProcessingResult> {
     const response = await fetch('/api/storage/evidence-metadata', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        evidenceId: params.evidenceId,
+       , evidenceId: params.evidenceId,
         metadata: params.metadata,
-        extractAdditional: params.extractAdditional || true,
-      }),
+        extractAdditional: params.extractAdditional || true
+      })
     });
     if (!response.ok) {
       throw new Error(`Evidence metadata processing failed: ${response.status}`);
@@ -665,10 +646,9 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        query: params.caseContext || params.title,
+       , query: params.caseContext || params.title,
         evidenceItems: params.evidenceItems,
-        analysisDepth: params.analysisDepth || 'comprehensive',
-      }),
+        analysisDepth: params.analysisDepth || 'comprehensive` })
     });
     if (!response.ok) {
       throw new Error(`Evidence relevance analysis failed: ${response.status}`);
@@ -680,7 +660,7 @@ class LegalAIOrchestrator {
     params: GenerateEvidenceReportParams,
     _options?: WorkflowStepOptions
   ): Promise<EvidenceReportResult> {
-    // Fix: Use a type guard to correctly type: 'r' and ensure: 'relevanceScore' property exists.
+    // Fix: Use a type guard to correctly type: 'r' and; ensure: 'relevanceScore' property exists.
     const relevanceData =
       params.previousResults?.find(
         (r): r is EvidenceRelevanceAnalysisResult =>
@@ -689,13 +669,13 @@ class LegalAIOrchestrator {
       )?.relevanceScore || 0.5;
     const response = await fetch('/api/ai/generate-report', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        reportType: 'evidence_analysis',
+       , reportType: 'evidence_analysis',
         evidenceId: params.evidenceId,
         relevanceScore: relevanceData,
-        includeRecommendations: true,
-      }),
+        includeRecommendations: true
+      })
     });
     if (!response.ok) {
       throw new Error(`Evidence report generation failed: ${response.status}`);
@@ -709,8 +689,8 @@ class LegalAIOrchestrator {
   ): Promise<TriggerQLoRADistillationResult> {
     const response = await fetch('/api/qlora-distillation', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify(params)
     });
 
     if (!response.ok) {
@@ -721,32 +701,32 @@ class LegalAIOrchestrator {
   // Helper methods
   private getWorkflowSteps(workflow: OrchestrationRequest['workflow']) {
     // Use specific workflow type
-    type WorkflowConfig = { name: string; endpoint: string }[];
+    type WorkflowConfig = { name: string;, endpoint: string }[];
     const workflows: Record<OrchestrationRequest['workflow'], WorkflowConfig> = {
       // Explicitly type workflows object: 'legal-research': [
         { name: 'search-legal-documents', endpoint: '/api/ai/enhanced-legal-search' },
         { name: 'analyze-precedents', endpoint: '/api/ai/legal-research' },
-        { name: 'generate-research-summary', endpoint: '/api/ai/chat' },
+        { name: 'generate-research-summary', endpoint: '/api/ai/chat' }
       ],
       'document-processing': [
         { name: 'extract-document-entities', endpoint: '/api/ai/analyze-evidence' },
         { name: 'analyze-document-content', endpoint: '/api/ai/analyze' },
-        { name: 'generate-document-summary', endpoint: '/api/ai/summarize' },
+        { name: 'generate-document-summary', endpoint: '/api/ai/summarize' }
       ],
       'case-creation': [
         { name: 'score-case-strength', endpoint: '/api/ai/case-scoring' },
         { name: 'suggest-research-topics', endpoint: '/api/ai/suggestions' },
-        { name: 'create-case-timeline', endpoint: 'internal' },
+        { name: 'create-case-timeline', endpoint: 'internal' }
       ],
       'evidence-analysis': [
         { name: 'process-evidence-metadata', endpoint: '/api/storage/evidence-metadata' },
         { name: 'analyze-evidence-relevance', endpoint: '/api/ai/evidence-search' },
-        { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' },
+        { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' }
       ],
       'qlora-distillation': [
         // New workflow
-        { name: 'trigger-qlora-distillation', endpoint: '/api/qlora-distillation' },
-      ],
+        { name: 'trigger-qlora-distillation', endpoint: '/api/qlora-distillation' }
+      ]
     };
     return workflows[workflow] || [];
   }
@@ -766,7 +746,7 @@ class LegalAIOrchestrator {
       workflow,
       completedSteps: steps.filter(step => step.status === 'completed').length,
       totalSteps: steps.length,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
     switch (workflow) {
       case 'legal-research':
@@ -775,7 +755,7 @@ class LegalAIOrchestrator {
           searchResults: (results[0] as unknown as EnhancedLegalSearchResult)?.results || [],
           precedentAnalysis: (results[1] as unknown as LegalResearchAnalysisResult)?.analysis || '',
           summary: (results[2] as unknown as ChatResponse)?.response || '',
-          recommendations: (results[1] as unknown as LegalResearchAnalysisResult)?.recommendations || [],
+          recommendations: (results[1] as unknown as LegalResearchAnalysisResult)?.recommendations || []
         } as BitsUICompatibleObject;
       case 'document-processing':
         return {
@@ -783,7 +763,7 @@ class LegalAIOrchestrator {
           entities: (results[0] as unknown as DocumentEntityExtractionResult)?.entities || [],
           analysis: (results[1] as unknown as DocumentAnalysisResult)?.analysis || {},
           summary: (results[2] as unknown as DocumentSummaryResult)?.summary || '',
-          keyTerms: (results[2] as unknown as DocumentSummaryResult)?.keyTerms || [],
+          keyTerms: (results[2] as unknown as DocumentSummaryResult)?.keyTerms || []
         } as BitsUICompatibleObject;
       case 'case-creation':
         return {
@@ -791,7 +771,7 @@ class LegalAIOrchestrator {
           caseScore: (results[0] as unknown as CaseScoringResult)?.score || 0,
           researchSuggestions: (results[1] as unknown as ResearchSuggestionsResult)?.suggestions || [],
           // Provide a typed empty default to satisfy the expected CaseTimelineResult shape
-          timeline: (results[2] as unknown as CaseTimelineResult) || ({} as CaseTimelineResult),
+          timeline: (results[2] as unknown as CaseTimelineResult) || ({} as CaseTimelineResult)
         } as BitsUICompatibleObject;
       case 'evidence-analysis':
         return {
@@ -800,7 +780,7 @@ class LegalAIOrchestrator {
             (results[0] as unknown as EvidenceMetadataProcessingResult) || ({} as EvidenceMetadataProcessingResult),
           relevanceAnalysis:
             (results[1] as unknown as EvidenceRelevanceAnalysisResult) || ({} as EvidenceRelevanceAnalysisResult),
-          report: (results[2] as unknown as EvidenceReportResult)?.report || '',
+          report: (results[2] as unknown as EvidenceReportResult)?.report || ''
         } as BitsUICompatibleObject;
       case 'qlora-distillation': // New case
         return {
@@ -809,8 +789,7 @@ class LegalAIOrchestrator {
             (results[0] as unknown as TriggerQLoRADistillationResult) || ({} as TriggerQLoRADistillationResult),
           message:
             (results[0] as unknown as TriggerQLoRADistillationResult)?.message || 'QLoRA distillation job initiated.',
-          statusUrl: (results[0] as unknown as TriggerQLoRADistillationResult)?.statusUrl || '',
-        } as BitsUICompatibleObject;
+          statusUrl: (results[0] as unknown as TriggerQLoRADistillationResult)?.statusUrl || '` } as BitsUICompatibleObject;
       default: return { ...baseResult, results } as BitsUICompatibleObject;
     }
   }
@@ -851,11 +830,11 @@ export const POST: RequestHandler = withSSRHandler(
       // Cast to BitsUICompatibleData using unknown to satisfy the helper's expected type
       return createSSRResponse(result as unknown as BitsUICompatibleData, {
         gpuAccelerated: requestData.options?.useGPU,
-        cacheKey: requestData.options?.cacheResults ? `orchestrator_${result.workflowId}` : undefined,
+        cacheKey: requestData.options?.cacheResults ? `orchestrator_${result.workflowId}` : undefined
       });
     } catch (error) {
       return createSSRErrorResponse(
-        `Orchestration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Orchestration failed: ${error instanceof Error ? error.message : `Unknown error` }`,
         500
       );
     }
@@ -865,6 +844,6 @@ export const POST: RequestHandler = withSSRHandler(
     cacheKey: (event: RequestEvent) => {
       const url = new URL(event.request.url);
       return `orchestrator_${url.searchParams.get('workflow')}_${Date.now()}`;
-    },
+    }
   }
 );

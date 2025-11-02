@@ -228,13 +228,13 @@ import type { Message } from '$lib/types';
 		position = { x: Math.max(0, Math.min(newX, maxX)), y: Math.max(0, Math.min(newY, maxY)) };
 	}
 	function stopDrag() {
-		isDragging = $state(false);
+		isDragging = false;
 		document.removeEventListener('mousemove', handleDrag);
 		document.removeEventListener('mouseup', stopDrag);
 	}
 	// Controls
 	function closeWindow() {
-		visible = $state(false);
+		visible = false;
 		onclose?.();
 	}
 	function minimizeWindow() {
@@ -251,7 +251,7 @@ import type { Message } from '$lib/types';
 	}
 	function updateSettings() {
 		onsettingschange?.({ settings });
-		settingsOpen = $state(false);
+		settingsOpen = false;
 	}
 	function formatTime(d: Date) {
 		return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

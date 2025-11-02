@@ -9,9 +9,7 @@ import { redisService } from '$lib/server/redis-service';
 import { getVectorCacheStats, clearVectorCache } from '$lib/server/vector-cache';
 import { getCache as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';
 
-interface CacheMetrics {
-  redis: {
-    connected: boolean;
+interface CacheMetrics { redis: {, connected: boolean;
     status: string;
     memory: Record<string, unknown> | null;
     keyspace: Record<string, unknown> | null;
@@ -27,12 +25,10 @@ interface CacheMetrics {
   };
   performance: {
     hitRates: Record<string, number>;
-    avgResponseTimes: Record<string, number | { avg: number; p95: number; p99: number }>;
+    avgResponseTimes: Record<string, number | { avg: number; p95: number;, p99: number }>;
     topQueries: string[];
   };
-  storage: {
-    totalKeys: number;
-    keysByPrefix: Record<string, number>;
+  storage: { totalKeys: number;, keysByPrefix: Record<string, number>;
     memoryUsage: string;
     estimatedCost: string;
   };
@@ -61,20 +57,16 @@ type KeyMetadata = {
   error?: string;
 };
 
-type KeyListResponse = {
-  success: boolean;
-  pattern: string;
+type KeyListResponse = { success: boolean;, pattern: string;
   totalMatches: number;
   returned: number;
   keys: KeyMetadata[];
   timestamp: string;
 };
 
-type MemoryPrefixStats = { keys: number; totalMemory: number };
+type MemoryPrefixStats = { keys: number;, totalMemory: number };
 
-type MemoryAnalysisResponse = {
-  success: boolean;
-  redis: {
+type MemoryAnalysisResponse = { success: boolean;, redis: {
     usedMemory?: string | null;
     usedMemoryPeak?: string | null;
     memoryFragmentationRatio?: number | null;
@@ -180,13 +172,13 @@ async function safeRedisGetStats(): Promise<any> {
     return {
       connected,
       status: rs.status ?? 'unknown',
-      reconnectAttempts: rs.reconnectAttempts ?? 0,
+      reconnectAttempts: rs.reconnectAttempts ?? 0
     };
   } catch {
     return {
       connected: false,
       status: rs.status ?? 'unknown',
-      reconnectAttempts: rs.reconnectAttempts ?? 0,
+      reconnectAttempts: rs.reconnectAttempts ?? 0
     };
   }
 }
@@ -224,19 +216,13 @@ async function safeRedisGetInfo(): Promise<any> {
 }
 
 // Insert new response types (placed near other local types)
-type PerformanceMetricsResponse = {
-  success: true;
-  timeRange: string;
-  redis: {
-    totalCommandsProcessed: number;
-    instantaneousOpsPerSec: number;
+type PerformanceMetricsResponse = { success: true;, timeRange: string;
+  redis: { totalCommandsProcessed: number;, instantaneousOpsPerSec: number;
     keyspaceHits: number;
     keyspaceMisses: number;
     hitRatio: number;
   };
-  network: {
-    totalNetInput: number;
-    totalNetOutput: number;
+  network: { totalNetInput: number;, totalNetOutput: number;
     instantaneousInputKbps: number;
     instantaneousOutputKbps: number;
   };
@@ -244,23 +230,14 @@ type PerformanceMetricsResponse = {
   timestamp: string;
 };
 
-type SystemHealthResponse = {
-  success: boolean;
-  healthy: boolean;
+type SystemHealthResponse = { success: boolean;, healthy: boolean;
   healthScore: number;
-  components: {
-    redis: {
-      status: string;
-      connected: boolean;
+  components: { redis: {; status: string;, connected: boolean;
       reconnectAttempts?: number;
     };
-    vectorCache: {
-      status: string;
-      memoryEntries: number;
+    vectorCache: { status: string;, memoryEntries: number;
     };
-    summaryCache: {
-      status: string;
-      memoryStats: Record<string, unknown> | null;
+    summaryCache: { status: string;, memoryStats: Record<string, unknown> | null;
     };
   };
   timestamp: string;
@@ -307,7 +284,7 @@ export const GET: RequestHandler = async ({ url }) => {
           {
             success: false,
             error: 'Invalid action',
-            availableActions: ['dashboard', 'keys', 'memory', 'performance', 'health'],
+            availableActions: ['dashboard', 'keys', 'memory', 'performance', 'health']
           },
           { status: 400 }
         );
@@ -317,7 +294,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -345,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             success: false,
             error: 'Invalid action',
-            availableActions: ['clear-cache', 'clear-vector-cache', 'warm-cache', 'analyze-keys', 'optimize-memory'],
+            availableActions: ['clear-cache', 'clear-vector-cache', 'warm-cache', 'analyze-keys', 'optimize-memory']
           },
           { status: 400 }
         );
@@ -355,7 +332,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -388,39 +365,36 @@ async function getDashboardMetrics(timeRange: string): Promise<CacheMetrics> {
   const responseTimeMetrics = await calculateResponseTimes();
   const processingTime = performance.now() - startTime;
 
-  return {
-    redis: {
-      connected: Boolean(redisStats.connected),
+  return { redis: {, connected: Boolean(redisStats.connected),
       status: redisStats.status ? String(redisStats.status) : redisStats.connected ? 'ok' : 'disconnected',
       memory: (redisInfo?.memory as Record<string, unknown>) ?? null,
       keyspace: (redisInfo?.keyspace as Record<string, unknown>) ?? null,
-      info: (redisInfo as Record<string, unknown>) ?? null,
+      info: (redisInfo as Record<string, unknown>) ?? null
     },
     vectorCache: {
       memory: (vectorStats?.memory as Record<string, unknown>) ?? null,
-      config: (vectorStats?.config as Record<string, unknown>) ?? null,
+      config: (vectorStats?.config as Record<string, unknown>) ?? null
     },
     summaryCache: {
       memory: (summaryStats as Record<string, unknown>) ?? null,
-      itemCount: summaryCount,
+      itemCount: summaryCount
     },
     performance: {
       hitRates: hitRates as Record<string, number>,
-      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number; p99: number }>,
-      topQueries: [],
+      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number;, p99: number }>,
+      topQueries: []
     },
     storage: {
       totalKeys: allKeys.length,
       keysByPrefix,
-      // CHANGED: use helper to coerce unknown field to string to satisfy TS
-      memoryUsage:
+      // CHANGED: use helper to coerce unknown field to string to satisfy TS; memoryUsage:
         getStringField(redisInfo?.memory as Record<string, unknown> | null | undefined, 'used_memory_human') ??
         'Unknown',
-      estimatedCost: calculateCostSavings(hitRates),
+      estimatedCost: calculateCostSavings(hitRates)
     },
     // include the requested timeRange and processing time to avoid unused variable lints
     requestedTimeRange: timeRange,
-    processingTimeMs: Math.round(processingTime),
+    processingTimeMs: Math.round(processingTime)
   };
 }
 
@@ -445,10 +419,10 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
             type,
             ttl: ttl === -1 ? 'No expiration' : `${ttl}s`,
             memory: 'Unknown',
-            prefix: key.split(':')[0] || 'no-prefix',
+            prefix: key.split(':')[0] || 'no-prefix'
           } as KeyMetadata;
         } catch {
-          return { key, error: 'Redis unavailable' } as KeyMetadata;
+          return { key, error: `Redis unavailable` } as KeyMetadata;
         }
       }
 
@@ -464,14 +438,13 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
           type,
           ttl: ttl === -1 ? 'No expiration' : `${ttl}s`,
           memory: memory ?? 'Unknown',
-          prefix: key.split(':')[0] || 'no-prefix',
+          prefix: key.split(':')[0] || 'no-prefix'
         } as KeyMetadata;
       } catch {
         return {
           key,
           error: 'Failed to get metadata',
-          prefix: key.split(':')[0] || 'no-prefix',
-        } as KeyMetadata;
+          prefix: key.split(':')[0] || 'no-prefix` } as KeyMetadata;
       }
     })
   );
@@ -482,7 +455,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
     totalMatches: keys.length,
     returned: keyDetails.length,
     keys: keyDetails,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -525,11 +498,11 @@ async function getMemoryAnalysis(): Promise<MemoryAnalysisResponse> {
       usedMemory,
       usedMemoryPeak,
       memoryFragmentationRatio,
-      maxMemory,
+      maxMemory
     },
     distribution: memoryByPrefix,
     recommendations: generateMemoryRecommendations(mem ?? undefined),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -548,16 +521,16 @@ async function getPerformanceMetrics(timeRange: string): Promise<PerformanceMetr
       instantaneousOpsPerSec: Number(stats.instantaneous_ops_per_sec ?? 0),
       keyspaceHits: Number(stats.keyspace_hits ?? 0),
       keyspaceMisses: Number(stats.keyspace_misses ?? 0),
-      hitRatio: calculateRedisHitRatio(stats),
+      hitRatio: calculateRedisHitRatio(stats)
     },
     network: {
       totalNetInput: Number(stats.total_net_input_bytes ?? 0),
       totalNetOutput: Number(stats.total_net_output_bytes ?? 0),
       instantaneousInputKbps: Number(stats.instantaneous_input_kbps ?? 0),
-      instantaneousOutputKbps: Number(stats.instantaneous_output_kbps ?? 0),
+      instantaneousOutputKbps: Number(stats.instantaneous_output_kbps ?? 0)
     },
     recommendations: generatePerformanceRecommendations(redisInfo),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -593,24 +566,22 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     success: true,
     healthy: healthScore > 0.8,
     healthScore,
-    components: {
-      redis: {
-        status: isRedisHealthy ? 'healthy' : 'unhealthy',
+    components: { redis: {, status: isRedisHealthy ? 'healthy' : 'unhealthy',
         connected: Boolean(redisStats.connected),
-        reconnectAttempts: redisStats.reconnectAttempts,
+        reconnectAttempts: redisStats.reconnectAttempts
       },
       vectorCache: {
         status: vectorStats?.config?.redisEnabled ? 'healthy' : 'degraded',
         memoryEntries:
           Number((vectorStats?.memory as Record<string, number | undefined>)?.vectorEntries ?? 0) +
-          Number((vectorStats?.memory as Record<string, number | undefined>)?.embeddingEntries ?? 0),
+          Number((vectorStats?.memory as Record<string, number | undefined>)?.embeddingEntries ?? 0)
       },
       summaryCache: {
         status: 'healthy',
-        memoryStats: getSummaryMemoryStats(),
-      },
+        memoryStats: getSummaryMemoryStats()
+      }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -632,14 +603,13 @@ async function calculateHitRates(_keys: string[]): Promise<Record<string, number
     overall: 0.75,
     vector: 0.8,
     summary: 0.85,
-    legal: 0.7,
+    legal: 0.7
   };
 }
 
-async function calculateResponseTimes(): Promise<Record<string, { avg: number; p95: number; p99: number }>> {
-  return {
-    cached: { avg: 5, p95: 15, p99: 25 },
-    uncached: { avg: 150, p95: 300, p99: 500 },
+async function calculateResponseTimes(): Promise<Record<string, { avg: number; p95: number;, p99: number }>> {
+  return { cached: {, avg: 5, p95: 15, p99: 25 },
+    uncached: { avg: 150, p95: 300, p99: 500 }
   };
 }
 
@@ -700,7 +670,7 @@ function generatePerformanceRecommendations(
 // Management operations
 async function clearCacheByPattern(
   pattern: string
-): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number; timestamp: string }> {
+): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number;, timestamp: string }> {
   const keys = await redisService.keys(pattern);
   let cleared = 0;
   for (const key of keys) {
@@ -713,11 +683,11 @@ async function clearCacheByPattern(
     pattern,
     keysFound: keys.length,
     keysCleared: cleared,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
-async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean; timestamp: string }> {
+async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean;, timestamp: string }> {
   // Placeholder: accepts query list but doesn't use it yet.
   // Parameter intentionally prefixed with: "_" to satisfy linting rules for unused args.
   // Future implementation: iterate _queries to pre-populate caches, call relevant services, etc.
@@ -726,23 +696,21 @@ async function warmPopularCache(_queries: string[] = []): Promise<{ success: boo
 
 // ADD: analyzeKeyPatterns and optimizeMemoryUsage used by POST handler
 
-async function analyzeKeyPatterns(): Promise<{
-  success: true;
-  totalKeys: number;
+async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: number;
   counts: Record<string, number>;
-  sample: Array<{ key: string; prefix: string }>;
+  sample: Array<{ key: string;, prefix: string }>;
   timestamp: string;
 }> {
   try {
     const keys = Array.isArray(await redisService.keys('*')) ? await redisService.keys('*') : [];
     const counts = analyzeKeyPrefixes(keys);
-    const sample = keys.slice(0, 50).map(k => ({ key: k, prefix: k.split(':')[0] || 'no-prefix' }));
+    const sample = keys.slice(0, 50).map(k => ({ key: k, prefix: k.split(':')[0] || 'no-prefix` }));
     return {
       success: true,
       totalKeys: keys.length,
       counts,
       sample,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (e) {
     return {
@@ -750,14 +718,12 @@ async function analyzeKeyPatterns(): Promise<{
       totalKeys: 0,
       counts: {},
       sample: [],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }
 
-async function optimizeMemoryUsage(): Promise<{
-  success: boolean;
-  actions: string[];
+async function optimizeMemoryUsage(): Promise<{ success: boolean;, actions: string[];
   analysis: MemoryAnalysisResponse;
   timestamp: string;
 }> {
@@ -777,6 +743,6 @@ async function optimizeMemoryUsage(): Promise<{
     success: true,
     actions,
     analysis,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }

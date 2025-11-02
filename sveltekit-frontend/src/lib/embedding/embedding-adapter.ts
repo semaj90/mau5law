@@ -3,9 +3,7 @@ export interface EmbeddingAdapterOptions {
   dimensions?: number;
   deterministic?: boolean; // deterministic mode is useful for repeatable tests
 }
-export interface EmbeddingResult {
-  vector: Float32Array;
-  model: string;
+export interface EmbeddingResult { vector: Float32Array;, model: string;
   input: string;
 }
 export class EmbeddingAdapter {

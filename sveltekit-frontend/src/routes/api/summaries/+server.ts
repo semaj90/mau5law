@@ -12,9 +12,7 @@ import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
 import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
 
 // Request payload for summary generation
-export interface SummaryRequest {
-  type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';
-  targetId: string;
+export interface SummaryRequest { type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';, targetId: string;
   depth: 'quick' | 'comprehensive' | 'forensic';
   includeRAG: boolean;
   includeUserActivity: boolean;
@@ -22,9 +20,7 @@ export interface SummaryRequest {
   chunkSize?: number;
   userId?: string;
 }
-export interface AILLMOutput {
-  content: string;
-  model: string;
+export interface AILLMOutput { content: string;, model: string;
   confidence: number;
   tokens: number;
   processingTime: number;
@@ -38,28 +34,18 @@ export interface BasicVectorResult {
   relevance?: number;
   source?: string;
 }
-export interface EnhancedRAGOutput {
-  relevantDocs: Array<any>;
-  contextSummary: string;
-  searchMetrics: {
-    vectorSearchTime: number;
-    documentsRetrieved: number;
+export interface EnhancedRAGOutput { relevantDocs: Array<any>;, contextSummary: string;
+  searchMetrics: { vectorSearchTime: number;, documentsRetrieved: number;
     averageRelevance: number;
   };
 }
-export interface UserActivityContext {
-  recentQueries: string[];
-  preferredTopics: string[];
-  interactionPatterns: {
-    timeOfDay: string;
-    commonActions: string[];
+export interface UserActivityContext { recentQueries: string[];, preferredTopics: string[];
+  interactionPatterns: { timeOfDay: string;, commonActions: string[];
     focusAreas: string[];
   };
   recommendations: string[];
 }
-export interface SynthesizedOutput {
-  summary: string;
-  keyInsights: string[];
+export interface SynthesizedOutput { summary: string;, keyInsights: string[];
   actionItems: string[];
   confidence: number;
   sources: Array<any>;
@@ -100,7 +86,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: 'Failed to generate summary',
-        details: error?.message || String(error),
+        details: error?.message || String(error)
       },
       { status: 500 }
     );
@@ -120,7 +106,7 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
     llmOutput,
     ragOutput,
     userActivity,
-    request,
+    request
   });
   const totalTime = Date.now() - startTime;
   return json(
@@ -128,11 +114,11 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
       success: true,
       result: synthesizedResult,
       metadata: {
-        processingTime: totalTime,
+       , processingTime: totalTime,
         request: request,
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
-      },
+        version: '1.0.0'
+      }
     },
     { status: 200 }
   );
@@ -148,9 +134,9 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'status',
+             , type: 'status',
               message: 'Starting AI summary generation...',
-              progress: 0,
+              progress: 0
             })}\n\n`
           )
         );
@@ -159,9 +145,9 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                type: 'llm_chunk',
+               , type: 'llm_chunk',
                 content: chunk,
-                progress: 33,
+                progress: 33
               })}\n\n`
             )
           );
@@ -170,9 +156,9 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'status',
+             , type: 'status',
               message: 'Retrieving relevant documents...',
-              progress: 50,
+              progress: 50
             })}\n\n`
           )
         );
@@ -181,9 +167,9 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'status',
+             , type: 'status',
               message: 'Analyzing user activity patterns...',
-              progress: 75,
+              progress: 75
             })}\n\n`
           )
         );
@@ -192,9 +178,9 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'status',
+             , type: 'status',
               message: 'Synthesizing final summary...',
-              progress: 90,
+              progress: 90
             })}\n\n`
           )
         );
@@ -202,15 +188,15 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           llmOutput,
           ragOutput,
           userActivity,
-          request,
+          request
         });
         // Send final result
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'complete',
+             , type: 'complete',
               result: synthesizedResult,
-              progress: 100,
+              progress: 100
             })}\n\n`
           )
         );
@@ -219,14 +205,14 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: 'error',
-              error: error?.message || String(error),
+             , type: 'error',
+              error: error?.message || String(error)
             })}\n\n`
           )
         );
         controller.close();
       }
-    },
+    }
   });
   return new Response(stream, {
     headers: {
@@ -234,8 +220,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control',
-    },
+      'Access-Control-Allow-Headers': 'Cache-Control'
+    }
   });
 }
 
@@ -264,11 +250,9 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       sourceContent = '';
   }
   // Prepare prompt based on depth
-  const depthPrompts: Record<string, string> = {
-    quick: 'Provide a concise 2-3 sentence summary of:',
-    comprehensive: 'Provide a detailed analysis and comprehensive summary of:',
-    forensic: 'Conduct a thorough forensic analysis with legal implications for:',
-  };
+  const depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of:',
+    comprehensive: 'Provide a detailed analysis and comprehensive summary; of:',
+    forensic: `Conduct a thorough forensic analysis with legal implications; for:` };
   const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
   // Use chunking for large content
   const chunkSize = request.chunkSize || 2000;
@@ -280,7 +264,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
     const response = await ollamaService.generateResponse(promptText, {
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.3,
-      maxTokens: request.depth === 'forensic' ? 1000 : 500,
+      maxTokens: request.depth === 'forensic' ? 1000 : 500
     });
     // normalize the unknown response to a typed shape (avoid `any`)
     const { content, tokens } = normalizeLLMResponse(response);
@@ -293,7 +277,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
     model: 'gemma3-legal:latest',
     confidence: 0.85,
     tokens: totalTokens,
-    processingTime,
+    processingTime
   };
 }
 
@@ -305,12 +289,12 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   switch (request.type) {
     case 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
-      searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || ''}`.substring(0, 200);
+      searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || '` }`.substring(0, 200);
       break;
     }
     case 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
-      searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || ''}`.substring(0, 200);
+      searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || '` }`.substring(0, 200);
       break;
     }
     default:
@@ -319,7 +303,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   // Dual vector search: PostgreSQL pgvector + Qdrant
   const [pgResults, qdrantResults] = await Promise.all([
     vectorService.search(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => []),
-    qdrantService.searchSimilar(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => []),
+    qdrantService.searchSimilar(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => [])
   ]);
   // Combine and deduplicate results
   const allResults = [...(pgResults || []), ...(qdrantResults || [])] as BasicVectorResult[];
@@ -332,8 +316,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       id: doc.id,
       content: doc.content ?? doc.payload?.content ?? '',
       relevance: doc.score ?? doc.relevance ?? 0,
-      source: doc.source ?? 'vector_db',
-    }));
+      source: doc.source ?? 'vector_db` }));
   // Generate context summary using the most relevant docs
   const contextContent = relevantDocs.map(doc => doc.content).join('\n\n');
   const contextSummaryResp = await ollamaService.generateResponse(
@@ -341,7 +324,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
     {
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.2,
-      maxTokens: 300,
+      maxTokens: 300
     }
   );
   // use normalizer to safely read content
@@ -354,8 +337,8 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       vectorSearchTime: processingTime,
       documentsRetrieved: uniqueResults.length,
       averageRelevance:
-        relevantDocs.length > 0 ? relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length : 0,
-    },
+        relevantDocs.length > 0 ? relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length : 0
+    }
   };
 }
 
@@ -410,7 +393,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
   // Use Fuse<string> (no `any`) and don't pass object keys since items are strings.
   const fuse = new Fuse<string>(recentQueries, {
     threshold: 0.6,
-    includeScore: true,
+    includeScore: true
   });
 
   const recommendations = generateRecommendations(preferredTopics, fuse);
@@ -420,9 +403,9 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     interactionPatterns: {
       timeOfDay: 'morning',
       commonActions: ['case_analysis', 'evidence_upload', 'report_generation'],
-      focusAreas: preferredTopics.slice(0, 3),
+      focusAreas: preferredTopics.slice(0, 3)
     },
-    recommendations,
+    recommendations
   };
 }
 
@@ -431,12 +414,10 @@ async function synthesizeOutputs({
   llmOutput,
   ragOutput,
   userActivity,
-  request,
-}: {
-  llmOutput: AILLMOutput;
-  ragOutput: EnhancedRAGOutput | null;
+  request
+}: { llmOutput: AILLMOutput;, ragOutput: EnhancedRAGOutput | null;
   userActivity: UserActivityContext | null;
-  request: SummaryRequest;
+ , request: SummaryRequest;
 }): Promise<SynthesizedOutput> {
   // Update XState machine with collected data
   summaryService.send({ type: 'SYNTHESIZE_INSIGHTS' });
@@ -445,7 +426,7 @@ async function synthesizeOutputs({
   const weights: Record<WeightKey, number> = {
     llm: 0.6,
     rag: ragOutput ? 0.3 : 0,
-    userActivity: userActivity ? 0.1 : 0,
+    userActivity: userActivity ? 0.1 : 0
   };
 
   const totalWeight = (Object.values(weights) as number[]).reduce((sum, w) => sum + w, 0);
@@ -469,7 +450,7 @@ async function synthesizeOutputs({
     (userActivity ? 0.8 * weights.userActivity : 0);
   const nextSteps = await generateNextSteps(keyInsights, actionItems, request.type);
   const relatedCases = await findRelatedCases(request.targetId, request.type);
-  summaryService.send({ type: 'RESET' });
+  summaryService.send({ type: `RESET` });
   return {
     summary: llmOutput.content,
     keyInsights,
@@ -482,8 +463,8 @@ async function synthesizeOutputs({
         details: {
           model: llmOutput?.model || 'unknown',
           tokens: llmOutput.tokens,
-          processingTime: llmOutput.processingTime,
-        },
+          processingTime: llmOutput.processingTime
+        }
       },
       ...(ragOutput
         ? [
@@ -491,9 +472,9 @@ async function synthesizeOutputs({
               type: 'rag' as const,
               contribution: weights.rag,
               details: {
-                documentsUsed: ragOutput.relevantDocs.length,
-                averageRelevance: ragOutput.searchMetrics.averageRelevance,
-              },
+               , documentsUsed: ragOutput.relevantDocs.length,
+                averageRelevance: ragOutput.searchMetrics.averageRelevance
+              }
             },
           ]
         : []),
@@ -503,16 +484,16 @@ async function synthesizeOutputs({
               type: 'user_activity' as const,
               contribution: weights.userActivity,
               details: {
-                recentQueries: userActivity.recentQueries.length,
-                preferences: userActivity.preferredTopics.length,
-              },
+               , recentQueries: userActivity.recentQueries.length,
+                preferences: userActivity.preferredTopics.length
+              }
             },
           ]
         : []),
     ],
     nextSteps,
     relatedCases,
-    warnings: generateWarnings(confidence, ragOutput?.searchMetrics.documentsRetrieved || 0),
+    warnings: generateWarnings(confidence, ragOutput?.searchMetrics.documentsRetrieved || 0)
   };
 }
 
@@ -558,7 +539,7 @@ function generateRecommendations(topics: string[], fuse: Fuse<string>): string[]
       .filter(Boolean)
       .slice(0, 2);
     if (matches.length > 0) {
-      recs.push(`Consider exploring: "${topic}" in related cases such as: ${matches.join('; ')}`);
+      recs.push(`Consider exploring: "${topic}" in related cases such, as: ${matches.join('; ')}`);
     } else {
       recs.push(`Consider exploring ${topic} in related cases`);
     }
@@ -623,7 +604,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         status: 'completed',
         summaryId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 200 }
     );
@@ -641,14 +622,14 @@ export const GET: RequestHandler = async ({ url }) => {
         'Chunking & Async Processing',
       ],
       version: '1.0.0',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     },
     { status: 200 }
   );
 };
 
 // Add a small runtime-normalizer to avoid casting to `any`
-function normalizeLLMResponse(resp: any): { content: string; tokens: number } {
+function normalizeLLMResponse(resp: any): { content: string;, tokens: number } {
   if (!resp || typeof resp !== 'object') {
     return { content: String(resp ?? ''), tokens: 0 };
   }

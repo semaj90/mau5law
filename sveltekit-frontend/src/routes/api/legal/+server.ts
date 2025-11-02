@@ -10,15 +10,13 @@ import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module f
 // Redis client for coordination with MCP server (node-redis)
 // Use non-null assertion (!) on createClient to satisfy TypeScript, assuming: 'redis' package is correctly installed and exports it.
 const redisClient: RedisClientType = createClient!({
-  url: REDIS_URL || 'redis://localhost:6379',
+  url: REDIS_URL || 'redis://localhost:6379'
 });
 // connect asynchronously (non-blocking)
-redisClient.connect().catch((err: any) => console.error('Redis connect error:', err));
+redisClient.connect().catch((err: any) => console.error('Redis connect; error:', err));
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000';
-interface LegalJobRequest {
-  case_id: string;
-  messages: LegalMessage[];
+interface LegalJobRequest { case_id: string;, messages: LegalMessage[];
   model_config?: {
     model_type?: 'gemma3' | 'gemma-local' | 'autogen' | 'crewai';
     temperature?: number;
@@ -82,7 +80,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       messages: requestData.messages.map(msg => ({
         ...msg,
         message_id: msg.message_id || generateMessageId(),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })),
       model_config: {
         model_type: requestData.model_config?.model_type || 'gemma3',
@@ -91,7 +89,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
         enable_kv_reuse: true,
-        compression_type: 'float16',
+        compression_type: 'float16'
       },
       legal_context: {
         case_id: requestData.case_id,
@@ -99,19 +97,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         priority: requestData.legal_context?.priority || 'medium',
         legal_entities: requestData.legal_context?.legal_entities || [],
         precedent_refs: [],
-        confidence_score: 0.8,
+        confidence_score: 0.8
       },
       workflow_config: requestData.workflow_config || null,
       store_embeddings: true,
-      cache_strategy: 'rl_optimized',
-    };
+      cache_strategy: `rl_optimized` };
     // Submit job to MCP server
     const mcpResponse = await fetch(`${MCP_ENDPOINT}/api/legal/job`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(jobPayload),
+        'Content-Type': `application/json` },
+      body: JSON.stringify(jobPayload)
     });
     if (!mcpResponse.ok) {
       throw error(500, 'Failed to submit job to processing server');
@@ -127,7 +123,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         user_id: user?.id || 'anonymous',
         status: 'submitted',
         submitted_at: Date.now(),
-        estimated_completion: mcpResult.estimated_completion,
+        estimated_completion: mcpResult.estimated_completion
       })
     );
     return json({
@@ -136,11 +132,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       status: 'submitted',
       estimated_completion_ms: mcpResult.estimated_completion - Date.now(),
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
-      result_url: `/api/legal/result/${mcpResult.job_id}`,
-    });
+      result_url: `/api/legal/result/${mcpResult.job_id}` });
   } catch (err: any) {
-    console.error('Legal API error:', err);
-    // If the error is already a SvelteKit `error` object (has status and message properties),
+    console.error('Legal API error: ', err);
+    // If the error is already a SvelteKit `error' object (has status and message properties),
     // re-throw it directly to ensure SvelteKit handles it correctly.
     if (
       typeof err === 'object' &&
@@ -150,7 +145,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       'message' in err &&
       typeof (err as { message: any }).message === 'string'
     ) {
-      const svelteKitError = err as { status: number; message: string };
+      const svelteKitError = err as { status: number;, message: string };
       throw error(svelteKitError.status, svelteKitError.message); // Re-throw the SvelteKit error object directly
     }
     // For any other type of error, throw a generic 500 internal server error.
@@ -177,18 +172,18 @@ export const GET: RequestHandler = async ({ url }) => {
         job_id: jobId,
         status: 'completed',
         result: {
-          response: 'Legal analysis completed',
+         , response: 'Legal analysis completed',
           confidence: 0.9,
-          processing_time: Date.now() - jobData.submitted_at,
+          processing_time: Date.now() - jobData.submitted_at
         },
-        completed_at: Date.now(),
+        completed_at: Date.now()
       });
     } else {
       return json({
         job_id: jobId,
         status: 'processing',
         submitted_at: jobData.submitted_at,
-        estimated_completion: jobData.estimated_completion,
+        estimated_completion: jobData.estimated_completion
       });
     }
   } else if (caseId) {
@@ -206,12 +201,11 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     return json({
       case_id: caseId,
-      jobs: caseJobs.sort((a, b) => b.submitted_at - a.submitted_at),
+      jobs: caseJobs.sort((a, b) => b.submitted_at - a.submitted_at)
     });
   } else {
     throw error(400, 'Must provide job_id or case_id parameter');
   }
 };
 function generateMessageId(): string {
-  return `msg_${Date.now()}_${Math.random().toString(36).substring(7)}`
-}
+  return `msg_${Date.now()}_${Math.random().toString(36).substring(7)}` }

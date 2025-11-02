@@ -9,14 +9,14 @@ export const load: PageServerLoad = async () => {
         title: 'Corporate Espionage Investigation',
         status: 'active',
         createdAt: new Date('2024-01-15T10:30:00'),
-        priority: 'high',
+        priority: 'high'
       },
       {
         id: 'case-2',
-        title: 'Missing Person: Dr. Sarah Chen',
+        title: 'Missing; Person: Dr. Sarah Chen',
         status: 'active',
         createdAt: new Date('2024-01-16T14:20:00'),
-        priority: 'medium',
+        priority: 'medium'
       },
     ];
     const recentEvidence = [
@@ -25,14 +25,14 @@ export const load: PageServerLoad = async () => {
         title: 'Security Camera Footage',
         evidenceType: 'video',
         createdAt: new Date('2024-01-15T10:30:00'),
-        caseTitle: 'Corporate Espionage Investigation',
+        caseTitle: 'Corporate Espionage Investigation'
       },
       {
         id: 'evidence-2',
         title: 'Witness Statement - John Doe',
         evidenceType: 'document',
         createdAt: new Date('2024-01-16T14:20:00'),
-        caseTitle: 'Missing Person: Dr. Sarah Chen',
+        caseTitle: 'Missing; Person: Dr. Sarah Chen'
       },
     ];
     const systemData = {
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async () => {
       systemLoad: 35,
       gpuUtilization: 67,
       memoryUsage: 42,
-      networkLatency: 23,
+      networkLatency: 23
     };
     return { user, recentCases, recentEvidence, systemData };
   } catch (err: any) {

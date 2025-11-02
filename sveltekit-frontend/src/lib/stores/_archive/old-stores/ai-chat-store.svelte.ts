@@ -6,9 +6,7 @@ import type { User } from '$lib/types';
  */
 import { browser } from '$app/environment';
 
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
+export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   type?: 'user' | 'assistant' | 'system' | 'error' | 'command';
@@ -21,9 +19,7 @@ export interface ChatMessage {
   };
 }
 
-export interface ChatSession {
-  id: string;
-  title: string;
+export interface ChatSession { id: string;, title: string;
   messages: ChatMessage[];
   created_at: Date;
   updated_at: Date;
@@ -32,9 +28,7 @@ export interface ChatSession {
   evidence_id?: string;
 }
 
-export interface UserPreferences {
-  theme: 'yorha-dark' | 'yorha-light';
-  auto_save: boolean;
+export interface UserPreferences { theme: 'yorha-dark' | 'yorha-light';, auto_save: boolean;
   max_history: number;
   enable_rag: boolean;
   default_model: string;
@@ -42,9 +36,7 @@ export interface UserPreferences {
   export_format: 'json' | 'markdown' | 'txt';
 }
 
-export interface ChatState {
-  currentSession: ChatSession | null;
-  sessions: ChatSession[];
+export interface ChatState { currentSession: ChatSession | null;, sessions: ChatSession[];
   preferences: UserPreferences;
   isLoading: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
@@ -60,14 +52,14 @@ const defaultPreferences: UserPreferences = {
   enable_rag: true,
   default_model: 'enhanced-rag',
   notification_sound: false,
-  export_format: 'markdown',
+  export_format: 'markdown'
 };
 
 // Storage keys
 const STORAGE_KEYS = {
   SESSIONS: 'yorha-ai-chat-sessions',
   PREFERENCES: 'yorha-ai-chat-preferences',
-  CURRENT_SESSION: 'yorha-ai-current-session',
+  CURRENT_SESSION: 'yorha-ai-current-session'
 };
 
 /**
@@ -84,7 +76,7 @@ class AIChatStore {
     isLoading: false,
     connectionStatus: 'disconnected',
     ragServiceUrl: 'http://localhost:8093',
-    lastError: null,
+    lastError: null
   });
 
   // Derived values using $derived rune
@@ -110,7 +102,7 @@ class AIChatStore {
       messages: [],
       created_at: new Date(),
       updated_at: new Date(),
-      tags: ['yorha', 'legal-ai'],
+      tags: ['yorha', 'legal-ai']
     };
 
     this.state.currentSession = session;
@@ -149,7 +141,7 @@ class AIChatStore {
     const fullMessage: ChatMessage = {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: message.timestamp || new Date(),
+      timestamp: message.timestamp || new Date()
     };
 
     if (!this.state.currentSession) {
@@ -178,7 +170,7 @@ class AIChatStore {
       if (messageIndex >= 0) {
         this.state.currentSession.messages[messageIndex] = {
           ...this.state.currentSession.messages[messageIndex],
-          ...updates,
+          ...updates
         };
         this.state.currentSession.updated_at = new Date();
       }
@@ -211,8 +203,7 @@ class AIChatStore {
       const response = await fetch(`${this.RAG_SERVICE_URL}/api/chat`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
           message,
           context: context || 'legal-ai',
@@ -220,8 +211,8 @@ class AIChatStore {
           session_id: this.state.currentSession?.id || 'default',
           include_vector_search: true,
           max_tokens: 1000,
-          temperature: 0.7,
-        }),
+          temperature: 0.7
+        })
       });
 
       if (!response.ok) {
@@ -250,8 +241,7 @@ class AIChatStore {
 
     try {
       const response = await fetch(`${this.RAG_SERVICE_URL}/health`, {
-        method: 'GET',
-      });
+        method: `GET` });
 
       const isHealthy = response.ok;
       this.state.connectionStatus = isHealthy ? 'connected' : 'disconnected';
@@ -279,8 +269,8 @@ class AIChatStore {
             updated_at: s.updated_at.toISOString(),
             messages: s.messages.map(m => ({
               ...m,
-              timestamp: m.timestamp.toISOString(),
-            })),
+              timestamp: m.timestamp.toISOString()
+            }))
           }))
         )
       );
@@ -315,8 +305,8 @@ class AIChatStore {
           updated_at: new Date(s.updated_at),
           messages: s.messages.map((m: any) => ({
             ...m,
-            timestamp: new Date(m.timestamp),
-          })),
+            timestamp: new Date(m.timestamp)
+          }))
         }));
 
         const currentSessionId = localStorage.getItem(STORAGE_KEYS.CURRENT_SESSION);
@@ -346,7 +336,7 @@ class AIChatStore {
         md += `**Tags:** ${session.tags.join(', ')}\n\n`;
 
         session.messages.forEach(msg => {
-          md += `## ${msg.role === 'user' ? 'User' : 'YoRHa AI'} (${msg.timestamp.toLocaleTimeString()})\n\n`;
+          md += `## ${msg.role === 'user' ? 'User' : `YoRHa AI` } (${msg.timestamp.toLocaleTimeString()})\n\n`;
           md += `${msg.content}\n\n`;
         });
 

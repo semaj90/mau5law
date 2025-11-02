@@ -21,8 +21,8 @@ fn vs_main(@location(0) position: vec4<f32>) -> @builtin(position) vec4<f32> {
       documentTypes: ['contract'],
       caseTypes: ['civil'],
       visualizationTypes: ['timeline'],
-      complexity: 'medium' as const,
-    },
+      complexity: 'medium' as const
+    }
   },
   {
     key: 'test-evidence-fragment-001',
@@ -37,8 +37,8 @@ fn fs_main() -> @location(0) vec4<f32> {
       documentTypes: ['evidence'],
       caseTypes: ['criminal'],
       visualizationTypes: ['document'],
-      complexity: 'low' as const,
-    },
+      complexity: 'low' as const
+    }
   },
   {
     key: 'test-precedent-compute-001',
@@ -55,14 +55,14 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       documentTypes: ['precedent'],
       caseTypes: ['appellate'],
       visualizationTypes: ['graph'],
-      complexity: 'expert' as const,
-    },
+      complexity: 'expert' as const
+    }
   },
 ];
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { testType = 'comprehensive' } = body;
+    const { testType = 'comprehensive` } = body;
     const testResults = {
       testType,
       timestamp: new Date().toISOString(),
@@ -72,9 +72,9 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTests: 0,
         passedTests: 0,
         failedTests: 0,
-        executionTimeMs: 0,
+        executionTimeMs: 0
       },
-      errors: [] as string[],
+      errors: [] as string[]
     };
     const startTime = Date.now();
     console.log(`🧪 Starting shader cache integration tests: ${testType}`);
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
           await testReinforcementLearning(testResults);
           break;
         default:
-          throw new Error(`Unknown test type: ${testType}`);
+          throw new Error(`Unknown test; type: ${testType}`);
       }
     } catch (error: any) {
       testResults.errors.push(`Test execution failed: ${error.message}`);
@@ -111,15 +111,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: testResults.errors.length === 0,
       testResults,
       summary: {
-        passed: testResults.metrics.passedTests,
+       , passed: testResults.metrics.passedTests,
         failed: testResults.metrics.failedTests,
         total: testResults.metrics.totalTests,
         successRate:
           testResults.metrics.totalTests > 0
             ? ((testResults.metrics.passedTests / testResults.metrics.totalTests) * 100).toFixed(1) + '%'
             : '0%',
-        executionTime: testResults.metrics.executionTimeMs + 'ms',
-      },
+        executionTime: testResults.metrics.executionTimeMs + 'ms` }
     });
   } catch (error: any) {
     console.error('❌ Shader cache test endpoint error:', error);
@@ -127,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Test execution failed',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message : undefined
       },
       { status: 500 }
     );
@@ -153,7 +152,7 @@ async function runComprehensiveTests(testResults: any): Promise<any> {
 async function testColdPath(testResults: any): Promise<any> {
   testResults.results.coldPath = {
     description: 'Test first-time shader caching (network fetch → compile → store)',
-    tests: [],
+    tests: []
   };
   for (const shader of TEST_SHADERS) {
     const testName = `cold_path_${shader.key}`;
@@ -171,14 +170,13 @@ async function testColdPath(testResults: any): Promise<any> {
         shader: shader.key,
         success: true,
         latency,
-        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions`,
-      });
+        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions` });
       testResults.metrics.passedTests++;
     } catch (error: any) {
       testResults.results.coldPath.tests.push({
         shader: shader.key,
         success: false,
-        error: error.message,
+        error: error.message
       });
       testResults.metrics.failedTests++;
       testResults.errors.push(`Cold path test failed for ${shader.key}: ${error.message}`);
@@ -188,7 +186,7 @@ async function testColdPath(testResults: any): Promise<any> {
 async function testHotPath(testResults: any): Promise<any> {
   testResults.results.hotPath = {
     description: 'Test cached shader retrieval performance (memory/database)',
-    tests: [],
+    tests: []
   };
   for (const shader of TEST_SHADERS) {
     const testName = `hot_path_${shader.key}`;
@@ -204,8 +202,7 @@ async function testHotPath(testResults: any): Promise<any> {
           success: true,
           latency,
           fromCache: true,
-          details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}`,
-        });
+          details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}` });
         testResults.metrics.passedTests++;
       } else {
         // Not in cache, which is expected if cold path wasn't run first
@@ -214,15 +211,14 @@ async function testHotPath(testResults: any): Promise<any> {
           success: true,
           latency,
           fromCache: false,
-          details: `Shader not in cache (expected if cold path not run)`,
-        });
+          details: `Shader not in cache (expected if cold path not run)` });
         testResults.metrics.passedTests++;
       }
     } catch (error: any) {
       testResults.results.hotPath.tests.push({
         shader: shader.key,
         success: false,
-        error: error.message,
+        error: error.message
       });
       testResults.metrics.failedTests++;
       testResults.errors.push(`Hot path test failed for ${shader.key}: ${error.message}`);
@@ -232,14 +228,14 @@ async function testHotPath(testResults: any): Promise<any> {
 async function testPredictivePreloading(testResults: any): Promise<any> {
   testResults.results.predictivePreloading = {
     description: 'Test ML-based workflow analysis and shader preloading',
-    tests: [],
+    tests: []
   };
   testResults.metrics.totalTests++;
   try {
     const workflowSequence = [
       createMockWorkflowContext('doc-load', { documentType: 'contract', complexity: 'medium' }),
       createMockWorkflowContext('evidence-view', { documentType: 'evidence', complexity: 'low' }),
-      createMockWorkflowContext('timeline', { documentType: 'precedent', complexity: 'expert' }),
+      createMockWorkflowContext('timeline', { documentType: 'precedent', complexity: `expert` })
     ];
     for (const context of workflowSequence) {
       await gpuShaderCacheOrchestrator.analyzeAndPreload(context);
@@ -247,14 +243,13 @@ async function testPredictivePreloading(testResults: any): Promise<any> {
     testResults.results.predictivePreloading.tests.push({
       test: 'workflow_analysis',
       success: true,
-      details: `Analyzed ${workflowSequence.length} workflow steps for predictive patterns`,
-    });
+      details: `Analyzed ${workflowSequence.length} workflow steps for predictive patterns` });
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.predictivePreloading.tests.push({
       test: 'workflow_analysis',
       success: false,
-      error: error.message,
+      error: error.message
     });
     testResults.metrics.failedTests++;
     testResults.errors.push(`Predictive preloading test failed: ${error.message}`);
@@ -263,25 +258,23 @@ async function testPredictivePreloading(testResults: any): Promise<any> {
 async function testMultiDimensionalSearch(testResults: any): Promise<any> {
   testResults.results.multiDimensionalSearch = {
     description: 'Test semantic, temporal, and contextual shader search',
-    tests: [],
+    tests: []
   };
   const searchQueries = [
     {
       name: 'semantic_search',
-      query: { semanticQuery: 'legal document timeline visualization' },
+      query: { semanticQuery: 'legal document timeline visualization' }
     },
     {
       name: 'context_search',
-      query: { workflowStep: 'doc-load', legalContext: { documentType: 'contract' } },
+      query: { workflowStep: 'doc-load', legalContext: { documentType: `contract` } }
     },
     {
       name: 'temporal_search',
-      query: {
-        timeRange: {
-          start: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
-          end: new Date(),
-        },
-      },
+      query: { timeRange: {, start: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
+          end: new Date()
+        }
+      }
     },
   ];
   for (const searchQuery of searchQueries) {
@@ -292,14 +285,13 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
         query: searchQuery.name,
         success: true,
         resultCount: results.length,
-        details: `Found ${results.length} matching shaders`,
-      });
+        details: `Found ${results.length} matching shaders` });
       testResults.metrics.passedTests++;
     } catch (error: any) {
       testResults.results.multiDimensionalSearch.tests.push({
         query: searchQuery.name,
         success: false,
-        error: error.message,
+        error: error.message
       });
       testResults.metrics.failedTests++;
       testResults.errors.push(`Multi-dimensional search failed for ${searchQuery.name}: ${error.message}`);
@@ -309,7 +301,7 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
 async function testReinforcementLearning(testResults: any): Promise<any> {
   testResults.results.reinforcementLearning = {
     description: 'Test ML pattern recognition and adaptive caching',
-    tests: [],
+    tests: []
   };
   testResults.metrics.totalTests++;
   try {
@@ -318,18 +310,17 @@ async function testReinforcementLearning(testResults: any): Promise<any> {
       test: 'metrics_collection',
       success: true,
       metrics: {
-        cacheHits: metrics.cacheHits,
+       , cacheHits: metrics.cacheHits,
         cacheMisses: metrics.cacheMisses,
-        preloadSuccesses: metrics.preloadSuccesses,
+        preloadSuccesses: metrics.preloadSuccesses
       },
-      details: `Collected ${Object.keys(metrics).length} performance metrics`,
-    });
+      details: `Collected ${Object.keys(metrics).length} performance metrics` });
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.reinforcementLearning.tests.push({
       test: 'metrics_collection',
       success: false,
-      error: error.message,
+      error: error.message
     });
     testResults.metrics.failedTests++;
     testResults.errors.push(`Reinforcement learning test failed: ${error.message}`);
@@ -338,7 +329,7 @@ async function testReinforcementLearning(testResults: any): Promise<any> {
 async function testCacheManagement(testResults: any): Promise<any> {
   testResults.results.cacheManagement = {
     description: 'Test cache clearing and management operations',
-    tests: [],
+    tests: []
   };
   testResults.metrics.totalTests++;
   try {
@@ -349,14 +340,13 @@ async function testCacheManagement(testResults: any): Promise<any> {
     testResults.results.cacheManagement.tests.push({
       test: 'cache_clearing',
       success: true,
-      details: 'Successfully cleared cache entries',
-    });
+      details: `Successfully cleared cache entries` });
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.cacheManagement.tests.push({
       test: 'cache_clearing',
       success: false,
-      error: error.message,
+      error: error.message
     });
     testResults.metrics.failedTests++;
     testResults.errors.push(`Cache management test failed: ${error.message}`);
@@ -365,7 +355,7 @@ async function testCacheManagement(testResults: any): Promise<any> {
 async function testDatabaseIntegration(testResults: any): Promise<any> {
   testResults.results.databaseIntegration = {
     description: 'Test PostgreSQL + pgvector integration',
-    tests: [],
+    tests: []
   };
   testResults.metrics.totalTests++;
   try {
@@ -374,14 +364,13 @@ async function testDatabaseIntegration(testResults: any): Promise<any> {
     testResults.results.databaseIntegration.tests.push({
       test: 'database_connection',
       success: true,
-      details: 'Database schema and operations functional',
-    });
+      details: `Database schema and operations functional` });
     testResults.metrics.passedTests++;
   } catch (error: any) {
     testResults.results.databaseIntegration.tests.push({
       test: 'database_connection',
       success: false,
-      error: error.message,
+      error: error.message
     });
     testResults.metrics.failedTests++;
     testResults.errors.push(`Database integration test failed: ${error.message}`);
@@ -398,9 +387,8 @@ function createMockWorkflowContext(step: string, docContext: any) {
       documentType: docContext.documentType || 'contract',
       caseId: 'test-case-001',
       documentSize: 1024000,
-      complexity: docContext.complexity || 'medium',
-    },
-    timestamp: new Date(),
+      complexity: docContext.complexity || 'medium` },
+    timestamp: new Date()
   };
 }
 async function simulateColdPath(shader: any, context: any): Promise<any> {
@@ -417,11 +405,11 @@ async function simulateColdPath(shader: any, context: any): Promise<any> {
       performanceMetrics: {
         compileTimeMs: 50 + Math.random() * 100,
         binarySize: 2048 + Math.random() * 1024,
-        memoryUsage: 512 + Math.random() * 256,
+        memoryUsage: 512 + Math.random() * 256
       },
       lastAccessed: new Date(),
-      usageCount: 1,
+      usageCount: 1
     },
-    dependencies: [],
+    dependencies: []
   };
 }

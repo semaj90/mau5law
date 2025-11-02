@@ -6,13 +6,9 @@ import type { Case } from '$lib/types';
  * Built on top of the unified cache service for consistency
  */
 import { cache } from '$lib/server/cache/redis';
-export interface JobStatus {
-  id: string;
-  uploadId: string;
+export interface JobStatus { id: string;, uploadId: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
-  progress: {
-    stage: string;
-  percentage: number;
+  progress: { stage: string;, percentage: number;
   message: string;
   }
   fileName: string;
@@ -38,9 +34,7 @@ export interface JobStatus {
   metadata?: { [key: string]: any };
 }
 
-export interface QueueInfo {
-  size: number;
-  processing: number;
+export interface QueueInfo { size: number;, processing: number;
   completed: number;
   failed: number;
   lastProcessed?: string;

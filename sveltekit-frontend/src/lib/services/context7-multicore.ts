@@ -19,9 +19,7 @@ export interface Context7MulticoreConfig {
   enableMCP?: boolean;
 }
 
-export interface WorkerInfo {
-  id: string;
-  port: number;
+export interface WorkerInfo { id: string;, port: number;
   status: 'initializing' | 'healthy' | 'busy' | 'error';
   lastHealth: Date;
   tasksProcessed: number;
@@ -29,9 +27,7 @@ export interface WorkerInfo {
   capabilities: string[];
 }
 
-export interface ProcessingTask {
-  id: string;
-  type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
+export interface ProcessingTask { id: string;, type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
   data: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   createdAt: Date;
@@ -41,9 +37,7 @@ export interface ProcessingTask {
   error?: string;
 }
 
-export interface LoadBalancerStatus {
-  totalWorkers: number;
-  healthyWorkers: number;
+export interface LoadBalancerStatus { totalWorkers: number;, healthyWorkers: number;
   totalRequests: number;
   requestsPerSecond: number;
   averageResponseTime: number;
@@ -51,9 +45,7 @@ export interface LoadBalancerStatus {
   systemLoad: number;
 }
 
-export interface TensorData {
-  shape: number[];
-  dtype: 'float32' | 'float64' | 'int32' | 'int64';
+export interface TensorData { shape: number[];, dtype: 'float32' | 'float64' | 'int32' | 'int64';
   data: number[];
   metadata?: { [key: string]: any };
 }
@@ -74,9 +66,7 @@ export interface RecommendationRequest {
   priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export interface RecommendationResult {
-  recommendations: Array<unknown>;
-  context7Insights: string[];
+export interface RecommendationResult { recommendations: Array<unknown>;, context7Insights: string[];
   relatedErrors: string[];
   bestPractices: string[];
 }
@@ -97,7 +87,7 @@ class Context7MulticoreService extends EventEmitter {
     completedTasks: 0,
     failedTasks: 0,
     averageProcessingTime: 0,
-    systemUptime: 0,
+    systemUptime: 0
   };
 
   constructor(config: Context7MulticoreConfig = {}) {
@@ -110,7 +100,7 @@ class Context7MulticoreService extends EventEmitter {
       enableGoLlama: config.enableGoLlama ?? true,
       enableLegalBert: config.enableLegalBert ?? true,
       maxConcurrentTasks: config.maxConcurrentTasks ?? 50,
-      enableMCP: config.enableMCP ?? true,
+      enableMCP: config.enableMCP ?? true
     };
 
     // Defer full initialization so constructor remains sync-friendly; callers
@@ -151,7 +141,7 @@ class Context7MulticoreService extends EventEmitter {
           lastHealth: new Date(),
           tasksProcessed: 0,
           currentLoad: 0,
-          capabilities: this.getWorkerCapabilities(),
+          capabilities: this.getWorkerCapabilities()
         });
       }
     });
@@ -214,14 +204,14 @@ class Context7MulticoreService extends EventEmitter {
     let healthyCount = 0;
     for (const r of results) {
       if (r.status === 'fulfilled') {
-        // r is narrowed to PromiseFulfilledResult<{ workerId: string; healthy: boolean }>
+        // r is narrowed to PromiseFulfilledResult<{ workerId: string;, healthy: boolean }>
         if (r.value && r.value.healthy) healthyCount++;
       }
     }
     this.emit('health_check_completed', {
       total: this.workers.size,
       healthy: healthyCount,
-      timestamp: new Date(),
+      timestamp: new Date()
     });
   }
 
@@ -336,9 +326,9 @@ class Context7MulticoreService extends EventEmitter {
         ((await import('node-fetch')).default as unknown as FetchFn);
       const res = await fetchFn(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskId: _task.id, payload: _task.data }),
-        signal: controller.signal,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, taskId: _task.id, payload: _task.data }),
+        signal: controller.signal
       });
       clearTimeout(timeout);
       if (!res.ok) {
@@ -373,7 +363,7 @@ class Context7MulticoreService extends EventEmitter {
       case 'recommendation':
         return '/recommendation';
       default:
-        throw new Error(`Unknown task type: ${taskType}`);
+        throw new Error(`Unknown task; type: ${taskType}`);
     }
   }
 
@@ -389,7 +379,7 @@ class Context7MulticoreService extends EventEmitter {
       data: { text },
       priority,
       createdAt: new Date(),
-      status: 'queued',
+      status: 'queued'
     };
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
@@ -408,7 +398,7 @@ class Context7MulticoreService extends EventEmitter {
       data: { jsonString, schema },
       priority,
       createdAt: new Date(),
-      status: 'queued',
+      status: 'queued'
     };
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
@@ -422,8 +412,7 @@ class Context7MulticoreService extends EventEmitter {
       data: tensorData,
       priority,
       createdAt: new Date(),
-      status: 'queued',
-    };
+      status: `queued` };
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     return task;
@@ -444,7 +433,7 @@ class Context7MulticoreService extends EventEmitter {
     }
   }
 
-  getStatus(): { workers: number; queued: number; active: number } {
+  getStatus(): { workers: number; queued: number;, active: number } {
     return { workers: this.workers.size, queued: this.taskQueue.length, active: this.activeTasks.size };
   }
 

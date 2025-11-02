@@ -97,7 +97,7 @@ import type { Document } from '$lib/types';
 </script>
 <!-- Notification Container -->
 <div
-  class="document-notifications" fixed {position === 'top-right'
+  class="document-notifications fixed" {position === 'top-right'
     ? 'top-4 right-4'
     : 'bottom-4 right-4'} z-50 w-96 max-w-sm"
 >
@@ -220,7 +220,7 @@ import type { Document } from '$lib/types';
                 </div>
                 {#if typedNotification.data.priority}
                   <span
-                    class="inline-block" px-2 py-1 text-xs rounded-full {getPriorityColor(
+                    class="inline-block px-2 py-1" text-xs rounded-full {getPriorityColor(
                       typedNotification.data.priority
                     )}"
                   >

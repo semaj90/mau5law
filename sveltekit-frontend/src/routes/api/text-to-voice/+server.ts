@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text }),
-          signal: controller.signal,
+          signal: controller.signal
         }).catch(() => null);
 
         clearTimeout(timeout);

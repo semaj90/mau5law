@@ -14,9 +14,7 @@ const asNumber = (rows: CountRow[] | undefined): number => {
 };
 
 // add a minimal local DB/type shape for the operations used in this file
-type UserRow = {
-	id: string;
-	email: string;
+type UserRow = { id: string;, email: string;
 	name?: string;
 	firstName?: string;
 	lastName?: string;
@@ -35,11 +33,7 @@ type SelectChain = {
   from (table: any) => FromResult;
 };
 
-type DB = {
-  query: {
-    users: {
-      findFirst: (opts: {
-        columns: {
+type DB = { query: {, users: { findFirst: (opts: {;, columns: {
           id?: boolean;
           email?: boolean;
           name?: boolean;
@@ -60,7 +54,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   if (!userId) {
     return {
       profile: null,
-      stats: null,
+      stats: null
     };
   }
 
@@ -72,23 +66,21 @@ export const load: PageServerLoad = async ({ locals }) => {
   const _criminals = criminals as unknown;
 
   // use the typed-like `_db` and `_users/_cases/...` for the WHERE clause and selects
-  const profile = await _db.query.users.findFirst({
-    columns: {
-      id: true,
+  const profile = await _db.query.users.findFirst({ columns: {, id: true,
       email: true,
       name: true,
       firstName: true,
       lastName: true,
       role: true,
-      avatarUrl: true,
+      avatarUrl: true
     },
-    where: sql`${_users.id} = ${userId}`,
+    where: sql`${_users.id} = ${userId}`
   });
 
   if (!profile) {
     return {
       profile: null,
-      stats: null,
+      stats: null
     };
   }
 
@@ -103,7 +95,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       .from(_cases)
       .where(sql`status = 'closed'`),
     _db.select({ value: sql<number>`count(*)::int` }).from(_evidence),
-    _db.select({ value: sql<number>`count(*)::int` }).from(_criminals),
+    _db.select({ value: sql<number>`count(*)::int` }).from(_criminals)
   ]);
 
   return {
@@ -113,7 +105,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       openCases: asNumber(openCasesRow),
       closedCases: asNumber(closedCasesRow),
       totalEvidence: asNumber(evidenceRow),
-      personsOfInterest: asNumber(poiRow),
-    },
+      personsOfInterest: asNumber(poiRow)
+    }
   };
 };

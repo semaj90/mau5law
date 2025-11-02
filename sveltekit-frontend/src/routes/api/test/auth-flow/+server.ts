@@ -1,22 +1,16 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { productionServiceClient, services } from '$lib/services/productionServiceClient.js';
-export interface AuthFlowTestResult {
-  step: string;
-  success: boolean;
+export interface AuthFlowTestResult { step: string;, success: boolean;
   duration: number;
   data?: any;
   error?: string;
 }
-export interface TestSuite {
-  testId: string;
-  timestamp: string;
+export interface TestSuite { testId: string;, timestamp: string;
   totalDuration: number;
   overallSuccess: boolean;
   results: AuthFlowTestResult[];
-  systemHealth: {
-    authentication: boolean;
-    sessionManagement: boolean;
+  systemHealth: { authentication: boolean;, sessionManagement: boolean;
     aiAssistant: boolean;
     productionServices: boolean;
     gpuAcceleration: boolean;
@@ -61,12 +55,12 @@ export const POST: RequestHandler = async ({ request }) => {
       sessionManagement: false,
       aiAssistant: false,
       productionServices: false,
-      gpuAcceleration: false,
-    },
+      gpuAcceleration: false
+    }
   };
   try {
     const body = await request.json();
-    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com' } = body;
+    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com` } = body;
     // Test 1: Authentication System
     const authResult = await testAuthenticationSystem(testUser);
     testSuite.results.push(authResult);
@@ -81,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
           step: 'session_management',
           success: false,
           duration: 0,
-          error: msg,
+          error: msg
         };
         testSuite.results.push(sessionFailure);
         testSuite.systemHealth.sessionManagement = $state(false);
@@ -113,17 +107,17 @@ export const POST: RequestHandler = async ({ request }) => {
     // Calculate overall results
     testSuite.totalDuration = Date.now() - startTime;
     testSuite.overallSuccess = testSuite.results.every(result => result.success === true);
-    console.log(`✅ Authentication flow test completed: ${testSuite.overallSuccess ? 'PASSED' : 'FAILED'}`);
+    console.log(`✅ Authentication flow test completed: ${testSuite.overallSuccess ? 'PASSED' : `FAILED` }`);
     console.log(`⏱️ Total duration: ${testSuite.totalDuration}ms`);
     return json({
       success: testSuite.overallSuccess,
       testSuite,
       summary: {
-        passed: testSuite.results.filter(item => item.success).length,
+       , passed: testSuite.results.filter(item => item.success).length,
         failed: testSuite.results.filter(item => !item.success).length,
         total: testSuite.results.length,
-        duration: testSuite.totalDuration,
-      },
+        duration: testSuite.totalDuration
+      }
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -134,13 +128,13 @@ export const POST: RequestHandler = async ({ request }) => {
       step: 'test_execution',
       success: false,
       duration: testSuite.totalDuration,
-      error: message,
+      error: message
     });
     return json(
       {
         success: false,
         error: 'Test execution failed',
-        testSuite,
+        testSuite
       },
       { status: 500 }
     );
@@ -156,9 +150,8 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: testUser,
-        password: 'password',
-      }),
+       , email: testUser,
+        password: `password` })
     });
     if (!loginResponse.ok) {
       throw new Error(`Login failed: ${loginResponse.statusText}`);
@@ -174,8 +167,8 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       duration: Date.now() - stepStart,
       data: {
         user: loginData.user,
-        sessionCookie: loginResponse.headers.get('set-cookie'),
-      },
+        sessionCookie: loginResponse.headers.get('set-cookie')
+      }
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -184,7 +177,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       step: 'authentication_system',
       success: false,
       duration: Date.now() - stepStart,
-      error: message,
+      error: message
     };
   }
 }
@@ -201,13 +194,13 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
       userId: authData.user.id,
       sessionActive: true,
       securityLevel: 'standard',
-      permissions: ['cases:read', 'evidence:read', 'ai:analyze'],
+      permissions: ['cases:read', 'evidence:read', 'ai:analyze']
     };
     // Test session health
     const sessionHealth = {
       isValid: true,
       warningCount: 0,
-      lastCheck: new Date(),
+      lastCheck: new Date()
     };
     console.log('✅ Session management test passed');
     return {
@@ -216,8 +209,8 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
       duration: Date.now() - stepStart,
       data: {
         validation: sessionValidation,
-        health: sessionHealth,
-      },
+        health: sessionHealth
+      }
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -226,7 +219,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
       step: 'session_management',
       success: false,
       duration: Date.now() - stepStart,
-      error: message,
+      error: message
     };
   }
 }
@@ -267,7 +260,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     // Test enhanced RAG service
     const ragResponse = await services.queryRAG('Test legal query for authentication flow', {
       userId: 'test_user',
-      testMode: true,
+      testMode: true
     });
     const serviceValues = Object.values(serviceHealth);
     const healthyServices = serviceValues.filter(v => Boolean(v)).length;
@@ -284,8 +277,8 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
         serviceHealth,
         ragResponse: ragResponse ? 'Success' : 'No response',
         healthyCount: healthyServices,
-        totalCount: totalServices,
-      },
+        totalCount: totalServices
+      }
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -294,7 +287,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       step: 'production_services',
       success: false,
       duration: Date.now() - stepStart,
-      error: message,
+      error: message
     };
   }
 }
@@ -307,7 +300,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     const ollamaHealthChecks = await Promise.allSettled([
       fetch('http://localhost:11434/api/tags').catch(e => e),
       fetch('http://localhost:11435/api/tags').catch(e => e),
-      fetch('http://localhost:11436/api/tags').catch(e => e),
+      fetch('http://localhost:11436/api/tags').catch(e => e)
     ]);
     const healthyOllama = ollamaHealthChecks.filter(
       r => r.status === 'fulfilled' && (r as PromiseFulfilledResult<Response>).value?.ok === true
@@ -320,16 +313,14 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     const aiResponse = await services.queryRAG(aiQuery, {
       model: 'gemma3-legal',
       temperature: 0.7,
-      testMode: true,
+      testMode: true
     });
     console.log(`✅ AI assistant test passed (${healthyOllama}/3 Ollama instances healthy)`);
     return {
       step: 'ai_assistant',
       success: true,
       duration: Date.now() - stepStart,
-      data: {
-        ollamaHealth: {
-          primary:
+      data: { ollamaHealth: {, primary:
             ollamaHealthChecks[0].status === 'fulfilled' &&
             (ollamaHealthChecks[0] as PromiseFulfilledResult<Response>).value?.ok === true,
           secondary:
@@ -337,11 +328,11 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
             (ollamaHealthChecks[1] as PromiseFulfilledResult<Response>).value?.ok === true,
           embeddings:
             ollamaHealthChecks[2].status === 'fulfilled' &&
-            (ollamaHealthChecks[2] as PromiseFulfilledResult<Response>).value?.ok === true,
+            (ollamaHealthChecks[2] as PromiseFulfilledResult<Response>).value?.ok === true
         },
         aiResponse: aiResponse ? 'Success' : 'No response',
-        healthyInstances: healthyOllama,
-      },
+        healthyInstances: healthyOllama
+      }
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -350,7 +341,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       step: 'ai_assistant',
       success: false,
       duration: Date.now() - stepStart,
-      error: message,
+      error: message
     };
   }
 }
@@ -364,13 +355,12 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       available: true,
       model: 'RTX 3060 Ti',
       memory: '8GB VRAM',
-      utilization: '45%',
-    };
+      utilization: `45%` };
     // Test GPU-accelerated query
     const gpuQuery = await services.queryRAG('GPU-accelerated legal document analysis test', {
       useGPU: true,
       model: 'gemma3-legal',
-      testMode: true,
+      testMode: true
     });
     console.log('✅ GPU acceleration test passed');
     return {
@@ -380,8 +370,8 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       data: {
         gpuInfo,
         gpuQuery: gpuQuery ? 'Success' : 'No response',
-        accelerationEnabled: true,
-      },
+        accelerationEnabled: true
+      }
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -390,7 +380,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       step: 'gpu_acceleration',
       success: false,
       duration: Date.now() - stepStart,
-      error: message,
+      error: message
     };
   }
 }
@@ -406,7 +396,7 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
       aiQueryExecuted: true,
       servicesAccessed: true,
       gpuAccelerated: true,
-      securityValidated: true,
+      securityValidated: true
     };
     // Test workflow completion
     const workflowSteps = Object.values(workflow).filter(v => v === true).length;
@@ -423,8 +413,7 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
         workflow,
         completedSteps: workflowSteps,
         totalSteps,
-        integrationScore: '100%',
-      },
+        integrationScore: `100%` }
     };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -433,7 +422,7 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
       step: 'end_to_end_integration',
       success: false,
       duration: Date.now() - stepStart,
-      error: message,
+      error: message
     };
   }
 }

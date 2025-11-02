@@ -130,7 +130,7 @@
         };
       } catch (error) {
         console.warn('YoRHa API not available:', error);
-        systemStatus.connected = $state(false);
+        systemStatus.connected = false;
       }
     })();
   }); // close onMount properly

@@ -4,9 +4,7 @@ import { EventEmitter } from 'events';
 import path from 'path';
 import { generateEmbeddings } from '$lib/server/services/embedding-service';
 export type JobType = 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json' | 'other';
-export type Job = {
-  id: string;
-  type: JobType;
+export type Job = { id: string;, type: JobType;
   payload?: any; // Changed from 'any' to: 'unknown'
   options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: any }; // Changed from 'any' to: 'unknown'
 };
@@ -113,7 +111,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
         this.totalProcessed++; // Increment for embedding jobs too
         return { success: true, data: res, processingTimeMs };
       } catch (err: any) {
-        // Changed: 'any' to: 'unknown'
+        // Changed: 'any'; to: 'unknown'
         const errorMessage = err instanceof Error ? err.message : String(err);
         return { success: false, error: errorMessage, processingTimeMs: Date.now() - start };
       }
@@ -195,7 +193,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
       queuedJobs: this.queue.length,
       totalProcessed: this.totalProcessed,
       busyWorkers: this.slots.filter(s => s.busy).length,
-      idleWorkers: this.slots.filter(s => !s.busy).length,
+      idleWorkers: this.slots.filter(s => !s.busy).length
     };
   }
   // Merged with the: "rewritten" shutdown

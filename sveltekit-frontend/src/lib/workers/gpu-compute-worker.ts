@@ -10,15 +10,11 @@ declare type GPUAdapter = any;
 declare const GPUBufferUsage: any;
 declare const GPUMapMode: any;
 // Types for tensor operations
-export interface TensorOp {
-    type: 'matmul' | 'conv2d' | 'attention' | 'fft' | 'embedding';
-    inputA: Float32Array;
+export interface TensorOp { type: 'matmul' | 'conv2d' | 'attention' | 'fft' | 'embedding';, inputA: Float32Array;
     inputB?: Float32Array;
     params?: any;
 }
-export interface VertexCache {
-    url: string;
-    buffer: Float32Array;
+export interface VertexCache { url: string;, buffer: Float32Array;
     timestamp: number;
     score: number;
 }
@@ -39,9 +35,7 @@ class GPUWorker {
         // Load WebAssembly module
         // removed unused response assignment
         const wasmBuffer = await (response as { arrayBuffer?: any }).arrayBuffer();
-        const wasmModule = await WebAssembly.instantiate(wasmBuffer, {
-            env: {
-                memory: new WebAssembly.Memory({ initial: 256, maximum: 4096 }),
+        const wasmModule = await WebAssembly.instantiate(wasmBuffer, { env: {, memory: new WebAssembly.Memory({, initial: 256, maximum: 4096 }),
                 __memory_base: 0,
                 __table_base: 0,
                 abort: () => console.error('WASM abort')
@@ -55,10 +49,8 @@ class GPUWorker {
         if (!this.gpuDevice) return null;
         const shaderModule = this.gpuDevice.createShaderModule({
             code: `;
-                struct Matrix {
-                    data: array<f32>
-                    rows: u32;
-                    cols: u32
+                struct Matrix { data: array<f32>, rows: u32;
+                   , cols: u32
                 }
                 @group(0) @binding(0) var<storage, read> a: Matrix;
                 @group(0) @binding(1) var<storage, read> b: Matrix;
@@ -76,14 +68,12 @@ class GPUWorker {
                     }
                     (result as { data?: any }).data[row * b.cols + col] = sum;
                 }
-            `
-        });
+            ' });
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
-                module: shaderModule,
-                entryPoint: 'main',
-            }
+               , module: shaderModule,
+                entryPoint: `main` }
         });
     }
     // Create GPU pipeline for convolution
@@ -120,14 +110,12 @@ class GPUWorker {
                     }
                     output[y * width + x] = sum;
                 }
-            `
-        });
+            ' });
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
-                module: shaderModule,
-                entryPoint: 'main',
-            }
+               , module: shaderModule,
+                entryPoint: `main` }
         });
     }
     // Process tensor operation
@@ -179,9 +167,7 @@ class GPUWorker {
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
         });
         const resultSize = params.m * params.n * 4;
-        const resultBuffer = this.gpuDevice.createBuffer({
-            size: resultSize;
-            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        const resultBuffer = this.gpuDevice.createBuffer({ size: resultSize;, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
         });
         // Write data to buffers
         this.gpuDevice.queue.writeBuffer(aBuffer, 0, a);
@@ -206,9 +192,7 @@ class GPUWorker {
         );
         passEncoder.end();
         // Read back result
-        const readBuffer = this.gpuDevice.createBuffer({
-            size: resultSize;
-            usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+        const readBuffer = this.gpuDevice.createBuffer({ size: resultSize;, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
         });
         commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, resultSize);
         this.gpuDevice.queue.submit([commandEncoder.finish()]);
@@ -315,7 +299,7 @@ self.addEventListener('message', async (_event: any) => {
         case 'init':
             gpuWorker = new GPUWorker();
             await gpuWorker.initialize();
-            self.postMessage({ type: 'ready' });
+            self.postMessage({ type: `ready` });
             break;
         case 'process':
             if (gpuWorker) {

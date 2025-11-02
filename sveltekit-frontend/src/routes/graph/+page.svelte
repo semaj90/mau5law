@@ -269,7 +269,7 @@ await loadEngineData();
         <h3 class="font-bold text-nier-accent-warm">Query Results</h3>
         <div class="flex gap-4 text-sm text-nier-text-secondary">
           <span>Source:
-            <span class="font-mono" px-2 py-1 rounded text-xs
+            <span class="font-mono px-2 py-1" rounded text-xs
               {queryResult.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' :
                 queryResult.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' :
                 queryResult.metadata.source === 'remote' ? 'bg-yellow-500/20 text-yellow-400' :

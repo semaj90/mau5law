@@ -6,7 +6,7 @@ import { db } from '$lib/server/db';
 import { cases } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 
-type IncomingMessage = { role: 'system' | 'user' | 'assistant'; content: string };
+type IncomingMessage = { role: 'system' | 'user' | 'assistant';, content: string };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // simple validation of messages
     if (!messages.every(m => m && typeof m.role === 'string' && typeof m.content === 'string')) {
-      return json({ success: false, error: "Each message must have: 'role' and: 'content' strings" }, { status: 400 });
+      return json({ success: false, error: "Each message must have: 'role'; and: 'content' strings" }, { status: 400 });
     }
 
     // optionally fetch case context
@@ -34,14 +34,14 @@ export const POST: RequestHandler = async ({ request }) => {
             title: cases.title,
             status: cases.status,
             priority: cases.priority,
-            caseNumber: cases.caseNumber,
+            caseNumber: cases.caseNumber
           })
           .from(cases)
           .where(eq(cases.id, caseId))
           .limit(1);
         if (found && found.length > 0) {
           const c = found[0];
-          contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n- Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A'}\n`;
+          contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n- Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A` }\n`;
         }
       } catch (e) {
         // keep chat functional even if DB is unavailable
@@ -53,19 +53,18 @@ export const POST: RequestHandler = async ({ request }) => {
     const sys: ChatMessage = {
       role: 'system',
       content:
-        'You are YoRHa Legal AI. Provide concise, accurate legal assistance. When a case context is provided, ground your answers in it.',
-    };
+        'You are YoRHa Legal AI. Provide concise, accurate legal assistance. When a case context is provided, ground your answers in it.` };
 
     // augment only user messages with context to avoid duplicating assistant/system messages
     const userAugmented = contextPrefix
-      ? messages.map(m => (m.role === 'user' ? { ...m, content: `${contextPrefix}\n${m.content}` } : m))
+      ? messages.map(m => (m.role === 'user' ? { ...m, content: '${contextPrefix}\n${m.content}' } : m))
       : messages;
 
     // call Ollama chat client
     const response = await ollamaChat([sys, ...userAugmented], { model: model || 'gemma3-legal:latest' });
     const reply = response?.choices?.[0]?.message?.content ?? '';
 
-    return json({ success: true, reply, model: model || 'gemma3-legal:latest' });
+    return json({ success: true, reply, model: model || 'gemma3-legal:latest` });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('[AI Chat] Error:', message);

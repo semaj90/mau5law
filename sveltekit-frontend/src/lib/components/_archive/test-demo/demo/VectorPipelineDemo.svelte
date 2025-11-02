@@ -237,7 +237,7 @@
                       <td class="p-2">{job.event}</td>
                       <td class="p-2">
                         <span
-                          class="px-2" py-1 rounded text-xs font-medium
+                          class="px-2 py-1 rounded" text-xs font-medium
                           {job.status === 'succeeded'
                             ? 'bg-green-100 text-green-800'
                             : job.status === 'failed'

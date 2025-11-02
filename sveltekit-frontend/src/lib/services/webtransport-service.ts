@@ -2,9 +2,7 @@
 // WebTransport → WebSocket → HTTP
 // Optimized for ultra-low latency legal search
 
-export interface TransportConfig {
-  webtransportUrl: string;
-  websocketUrl: string;
+export interface TransportConfig { webtransportUrl: string;, websocketUrl: string;
   httpUrl: string;
   maxReconnectAttempts: number;
   reconnectInterval: number;
@@ -12,23 +10,17 @@ export interface TransportConfig {
 
 export type TransportType = 'webtransport' | 'websocket' | 'http' | 'none';
 
-export interface TransportState {
-  activeTransport: TransportType;
-  isConnected: boolean;
+export interface TransportState { activeTransport: TransportType;, isConnected: boolean;
   latency: number;
   reconnectAttempts: number;
   error: string | null;
 }
 
 // Add lightweight typed interfaces for WebTransport-like streams
-interface BidirectionalStream {
-  readable: ReadableStream<Uint8Array>;
-  writable: WritableStream<Uint8Array>;
+interface BidirectionalStream { readable: ReadableStream<Uint8Array>;, writable: WritableStream<Uint8Array>;
 }
 
-interface WebTransportLike {
-  incomingBidirectionalStreams: ReadableStream<BidirectionalStream>;
-  incomingUnidirectionalStreams: ReadableStream<ReadableStream<Uint8Array>>;
+interface WebTransportLike { incomingBidirectionalStreams: ReadableStream<BidirectionalStream>;, incomingUnidirectionalStreams: ReadableStream<ReadableStream<Uint8Array>>;
   createBidirectionalStream(): Promise<BidirectionalStream>;
   ready: Promise<void>;
   closed: Promise<void>;
@@ -48,7 +40,7 @@ export class WebTransportService {
     isConnected: false,
     latency: 0,
     reconnectAttempts: 0,
-    error: null,
+    error: null
   };
 
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -86,7 +78,7 @@ export class WebTransportService {
     this.setState({
       activeTransport: 'http',
       isConnected: true,
-      error: 'Using HTTP fallback (reduced real-time capabilities)',
+      error: 'Using HTTP fallback (reduced real-time capabilities)'
     });
     console.log('📡 Using HTTP-only mode');
   }
@@ -117,7 +109,7 @@ export class WebTransportService {
               activeTransport: 'webtransport',
               isConnected: true,
               reconnectAttempts: 0,
-              error: null,
+              error: null
             });
 
             this.setupWebTransportHandlers();
@@ -134,8 +126,7 @@ export class WebTransportService {
             console.log('🔌 WebTransport connection closed');
             this.setState({
               isConnected: false,
-              error: 'Connection closed',
-            });
+              error: 'Connection closed` });
             this.scheduleReconnection();
           })
           .catch(err => {
@@ -306,7 +297,7 @@ export class WebTransportService {
             activeTransport: 'websocket',
             isConnected: true,
             reconnectAttempts: 0,
-            error: null,
+            error: null
           });
           resolve();
         };
@@ -324,7 +315,7 @@ export class WebTransportService {
           console.log('🔌 WebSocket closed');
           this.setState({
             isConnected: false,
-            error: 'Connection closed',
+            error: 'Connection closed'
           });
           this.scheduleReconnection();
         };
@@ -359,9 +350,8 @@ export class WebTransportService {
       const response = await fetch(this.config.httpUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+          'Content-Type': 'application/json` },
+        body: JSON.stringify(data)
       });
 
       if (!response.ok) {
@@ -400,7 +390,7 @@ export class WebTransportService {
       this.setState({ latency });
       console.log(`⚡ Latency: ${latency.toFixed(2)}ms (${this.state.activeTransport})`);
     } catch (error) {
-      console.error(`❌ Send failed on ${this.state.activeTransport}:`, error);
+      console.error(`❌ Send failed on ${this.state.activeTransport}: ', error);
 
       // Try fallback
       if (this.state.activeTransport === 'webtransport') {
@@ -423,7 +413,7 @@ export class WebTransportService {
       console.warn('⚠️ Max reconnection attempts reached');
       this.setState({
         error: 'Max reconnection attempts exceeded',
-        isConnected: false,
+        isConnected: false
       });
       return;
     }
@@ -435,7 +425,7 @@ export class WebTransportService {
 
     this.reconnectTimer = setTimeout(() => {
       this.setState({
-        reconnectAttempts: this.state.reconnectAttempts + 1,
+        reconnectAttempts: this.state.reconnectAttempts + 1
       });
       this.connect();
     }, delay);
@@ -483,7 +473,7 @@ export class WebTransportService {
     this.setState({
       activeTransport: 'none',
       isConnected: false,
-      reconnectAttempts: 0,
+      reconnectAttempts: 0
     });
 
     console.log('🔌 All transports disconnected');

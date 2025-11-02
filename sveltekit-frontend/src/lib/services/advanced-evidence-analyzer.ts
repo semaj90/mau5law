@@ -17,31 +17,25 @@ export const EvidenceAnalysisSchema = z.object({
       deepAnalysis: z.boolean().default(false),
       legalContext: z.string().optional(),
       jurisdiction: z.string().optional(),
-      confidenceThreshold: z.number().min(0).max(1).default(0.7),
+      confidenceThreshold: z.number().min(0).max(1).default(0.7)
     })
-    .optional(),
+    .optional()
 });
 
-export interface AnalysisResult {
-  type: string;
-  confidence: number;
+export interface AnalysisResult { type: string;, confidence: number;
   results: any;
   processingTime: number;
   model: string;
   timestamp: Date;
 }
 
-export interface ComprehensiveAnalysis {
-  evidenceId: string;
-  overallScore: number;
+export interface ComprehensiveAnalysis { evidenceId: string;, overallScore: number;
   analyses: AnalysisResult[];
   summary: string;
   recommendations: string[];
   legalImplications: string[];
   relatedCases: string[];
-  processingMetrics: {
-    totalTime: number;
-    modelsUsed: string[];
+  processingMetrics: { totalTime: number;, modelsUsed: string[];
     confidenceAverage: number;
   };
 }
@@ -97,8 +91,8 @@ class AdvancedEvidenceAnalyzer {
       processingMetrics: {
         totalTime: Date.now() - startedAt,
         modelsUsed: analyses.map(item => item.model),
-        confidenceAverage: overallScore,
-      },
+        confidenceAverage: overallScore
+      }
     };
 
     return analysis;
@@ -106,7 +100,7 @@ class AdvancedEvidenceAnalyzer {
 
   private async loadEvidence(evidenceId: string): Promise<EvidenceRecord | null> {
     const record = await db.query.evidence.findFirst({
-      where: eq(evidenceTable.id, evidenceId),
+      where: eq(evidenceTable.id, evidenceId)
     });
     return record ?? null;
   }
@@ -157,11 +151,11 @@ class AdvancedEvidenceAnalyzer {
               summary,
               keySentences: this.extractKeySentences(text),
               embedding,
-              length: summary.length,
+              length: summary.length
             },
             processingTime: Date.now() - startedAt,
             model: this.summaryModel,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }
         case 'sentiment': {
@@ -172,7 +166,7 @@ class AdvancedEvidenceAnalyzer {
             results: sentiment,
             processingTime: Date.now() - startedAt,
             model: this.inferenceModel,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }
         case 'entities': {
@@ -183,7 +177,7 @@ class AdvancedEvidenceAnalyzer {
             results: entities,
             processingTime: Date.now() - startedAt,
             model: this.inferenceModel,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }
         case 'patterns': {
@@ -194,7 +188,7 @@ class AdvancedEvidenceAnalyzer {
             results: patterns,
             processingTime: Date.now() - startedAt,
             model: this.inferenceModel,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }
         case 'precedents': {
@@ -205,7 +199,7 @@ class AdvancedEvidenceAnalyzer {
             results: precedents,
             processingTime: Date.now() - startedAt,
             model: this.inferenceModel,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }
         case 'timeline': {
@@ -216,7 +210,7 @@ class AdvancedEvidenceAnalyzer {
             results: { timeline },
             processingTime: Date.now() - startedAt,
             model: this.inferenceModel,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }
         case 'ocr': {
@@ -236,7 +230,7 @@ class AdvancedEvidenceAnalyzer {
                   results: { text: existingOcr, embedding, engine: 'upstream' },
                   processingTime: Date.now() - startedAt,
                   model: this.inferenceModel,
-                  timestamp: new Date(),
+                  timestamp: new Date()
                 };
               }
             }
@@ -268,7 +262,7 @@ class AdvancedEvidenceAnalyzer {
                         results: { ocr: ocrResult, metadata: textResult?.metadata ?? null, embedding },
                         processingTime: Date.now() - startedAt,
                         model: this.inferenceModel,
-                        timestamp: new Date(),
+                        timestamp: new Date()
                       };
                     } catch (innerErr) {
                       // If OCR fails, fall back to any textual result and continue
@@ -284,7 +278,7 @@ class AdvancedEvidenceAnalyzer {
                     results: { text: content, metadata: textResult?.metadata ?? null, embedding },
                     processingTime: Date.now() - startedAt,
                     model: this.inferenceModel,
-                    timestamp: new Date(),
+                    timestamp: new Date()
                   };
                 }
 
@@ -302,7 +296,7 @@ class AdvancedEvidenceAnalyzer {
                       results: { ocr: ocrResult, embedding },
                       processingTime: Date.now() - startedAt,
                       model: this.inferenceModel,
-                      timestamp: new Date(),
+                      timestamp: new Date()
                     };
                   }
                 }
@@ -319,18 +313,18 @@ class AdvancedEvidenceAnalyzer {
               results: {
                 message:
                   'OCR not available for this evidence or upstream OCR not present. Returning available textual content only.',
-                charactersAvailable: availableText,
+                charactersAvailable: availableText
               },
               processingTime: Date.now() - startedAt,
               model: this.inferenceModel,
-              timestamp: new Date(),
+              timestamp: new Date()
             };
           } catch (error) {
             return this.createErrorResult(type, error, startedAt);
           }
         }
         default:
-          throw new Error(`Unsupported analysis type: ${type}`);
+          throw new Error(`Unsupported analysis; type: ${type}`);
       }
     } catch (error) {
       return this.createErrorResult(type, error, startedAt);
@@ -377,7 +371,7 @@ class AdvancedEvidenceAnalyzer {
     return keySentences.slice(0, 5);
   }
 
-  private analyseSentiment(text: string): { sentiment: string; score: number; confidence: number } {
+  private analyseSentiment(text: string): { sentiment: string; score: number;, confidence: number } {
     const positiveTerms = ['favorable', 'compliant', 'beneficial', 'support', 'approved'];
     const negativeTerms = ['breach', 'violation', 'risk', 'penalty', 'liability', 'dispute'];
 
@@ -394,9 +388,7 @@ class AdvancedEvidenceAnalyzer {
     return { sentiment, score, confidence: 0.55 + magnitude * 0.35 };
   }
 
-  private extractEntities(text: string): {
-    parties: string[];
-    locations: string[];
+  private extractEntities(text: string): { parties: string[];, locations: string[];
     amounts: string[];
     dates: string[];
     confidence: number;
@@ -411,19 +403,19 @@ class AdvancedEvidenceAnalyzer {
       locations: [...new Set(locationMatches)].slice(0, 10),
       amounts: [...new Set(amountMatches)].slice(0, 10),
       dates: [...new Set(dateMatches)].slice(0, 10),
-      confidence: 0.7,
+      confidence: 0.7
     };
   }
 
   private detectPatterns(
     text: string,
     options: z.infer<typeof EvidenceAnalysisSchema>['options']
-  ): { matched: string[]; warnings: string[]; confidence: number } {
+  ): { matched: string[]; warnings: string[];, confidence: number } {
     const patterns: Record<string, RegExp> = {
       breachOfContract: /\bbreach\b|\bviolation\b/i,
       intellectualProperty: /\bpatent\b|\btrademark\b|\bcopyright\b/i,
       employmentLaw: /\btermination\b|\bemployment\b|\bharassment\b/i,
-      compliance: /\bcompliance\b|\bregulation\b|\bpolicy\b/i,
+      compliance: /\bcompliance\b|\bregulation\b|\bpolicy\b/i
     };
 
     const matched = Object.entries(patterns)
@@ -438,14 +430,14 @@ class AdvancedEvidenceAnalyzer {
     return {
       matched,
       warnings,
-      confidence: matched.length ? 0.78 : 0.45,
+      confidence: matched.length ? 0.78 : 0.45
     };
   }
 
   private suggestPrecedents(
     text: string,
     options: z.infer<typeof EvidenceAnalysisSchema>['options']
-  ): { precedents: string[]; jurisdiction?: string; confidence: number } {
+  ): { precedents: string[]; jurisdiction?: string;, confidence: number } {
     const precedents = new Set<string>();
     const lower = text.toLowerCase();
 
@@ -463,11 +455,11 @@ class AdvancedEvidenceAnalyzer {
     return {
       precedents: Array.from(precedents),
       jurisdiction,
-      confidence: precedents.size ? 0.65 : 0.4,
+      confidence: precedents.size ? 0.65 : 0.4
     };
   }
 
-  private buildTimeline(text: string): Array<{ date: string; context: string }> {
+  private buildTimeline(text: string): Array<{ date: string;, context: string }> {
     const datePattern = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\w+\s+\d{1,2},?\s+\d{4}\b/g;
     const matches = text.match(datePattern) ?? [];
 
@@ -551,7 +543,7 @@ class AdvancedEvidenceAnalyzer {
       results: { error: message },
       processingTime: Date.now() - startedAt,
       model: 'error',
-      timestamp: new Date(),
+      timestamp: new Date()
     };
   }
 }

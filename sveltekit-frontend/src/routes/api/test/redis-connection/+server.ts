@@ -138,10 +138,10 @@ export const GET: RequestHandler = async ({ url }) => {
       message: 'Redis connection successful',
       testValue: retrievedValue, // Use retrievedValue for consistency
       redisInfo: {
-        server: info.includes('redis_version'), // Check if server info contains redis_version
-        jsonSupported,
+       , server: info.includes('redis_version'), // Check if server info contains redis_version
+        jsonSupported
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     // Use unknown for catch clause
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url }) => {
           errno: error.errno,
           syscall: error.syscall,
           address: error.address,
-          port: error.port,
+          port: error.port
         };
       }
     } else if (typeof error === 'string') {
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: errorMessage,
         details: errorDetails, // Use the collected details
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

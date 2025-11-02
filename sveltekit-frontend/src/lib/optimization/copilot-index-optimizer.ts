@@ -8,9 +8,7 @@ import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } from '.
 import { enhancedRAGStore } from '$lib/stores/unified';
 
 // Context7 MCP integration patterns
-export interface Context7Pattern {
-  id: string;
-  pattern: string;
+export interface Context7Pattern { id: string;, pattern: string;
   priority: 'high' | 'medium' | 'low';
   category: 'svelte5' | 'sveltekit' | 'typescript' | 'drizzle' | 'ui' | 'ai';
   boostFactor: number;
@@ -18,9 +16,7 @@ export interface Context7Pattern {
 }
 
 // Enhanced index optimization configuration
-export interface OptimizationConfig {
-  enableContext7Boost: boolean;
-  enableSemanticClustering: boolean;
+export interface OptimizationConfig { enableContext7Boost: boolean;, enableSemanticClustering: boolean;
   enablePatternRecognition: boolean;
   enablePerformanceOptimization: boolean;
   minRelevanceThreshold: number;
@@ -29,19 +25,15 @@ export interface OptimizationConfig {
 }
 
 // Defines the structure of the code context for suggestion generation
-export interface CodeContext {
-  language: string;
-  currentLine: string;
+export interface CodeContext { language: string;, currentLine: string;
   previousLines: string[];
   nextLines: string[];
-  cursorPosition: { line: number; character: number };
+  cursorPosition: { line: number;, character: number };
   fullContext: string;
 }
 
 // Defines the structure for a Copilot suggestion
-export interface CopilotSuggestion {
-  text: string;
-  priority: number;
+export interface CopilotSuggestion { text: string;, priority: number;
   confidence: number;
   context7Pattern: string;
   category: Context7Pattern['category'];
@@ -220,7 +212,7 @@ export class CopilotIndexOptimizer {
 
   async generateCopilotSuggestions(
     currentCode: string,
-    cursor: { line: number; character: number },
+    cursor: {, line: number; character: number },
     language: string,
   ): Promise<CopilotSuggestion[]> {
     try {
@@ -306,8 +298,7 @@ export class CopilotIndexOptimizer {
         title: headerText,
         content: sectionContent,
         priority: this.determineSectionPriority(headerText, sectionContent),
-        language: 'markdown'
-      });
+        language: `markdown` });
     }
     // Extract code blocks as separate sections
     let codeMatch;
@@ -492,7 +483,7 @@ export class CopilotIndexOptimizer {
   /**
    * Analyze code context for suggestions
    */
-  private analyzeCodeContext(code: string, cursor: { line: number; character: number }, language: string): CodeContext {
+  private analyzeCodeContext(code: string, cursor: {, line: number; character: number }, language: string): CodeContext {
     const lines = code.split('\n');
     const currentLine = lines[cursor.line] || '';
     const previousLines = lines.slice(Math.max(0, cursor.line - 5), cursor.line);
@@ -701,7 +692,7 @@ export class CopilotIndexOptimizer {
       searchTime: 0,
       cacheHits: 0,
       totalOptimizations: 0,
-      patternMatches: 0,
+      patternMatches: 0
     };
   }
 
@@ -756,7 +747,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const optimizedIndex = await copilotIndexOptimizer.optimizeCopilotIndex(copilotContent);
     return new Response(JSON.stringify(optimizedIndex), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': `application/json` }
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'An unknown error occurred';

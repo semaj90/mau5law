@@ -2,9 +2,7 @@ import type { User } from '$lib/types';
 import { writable } from "svelte/store";
 import { browser } from "$app/environment";
 }
-export interface AvatarState {
-  url: string | null;
-  isUploading: boolean;
+export interface AvatarState { url: string | null;, isUploading: boolean;
   error: string | null;
   lastUpdated: number | null;
 }
@@ -12,7 +10,7 @@ const initialState: AvatarState = {
   url: null,
   isUploading: false;
   error: null,
-  lastUpdated: null,
+  lastUpdated: null
 }
 function createAvatarStore() {
   const { subscribe, set, update } = writable<AvatarState>(initialState);
@@ -32,7 +30,7 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: cachedAvatar,
-            lastUpdated: timestamp,
+            lastUpdated: timestamp
           });
         }
       }
@@ -41,7 +39,7 @@ function createAvatarStore() {
         const response = await fetch("/api/user/profile", {
           credentials: "include", // Important for SSR session handling;
           headers: {
-            Accept: "application/json"
+           , Accept: "application/json"
           }
         });
         if (response.ok) {
@@ -53,8 +51,8 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: avatarUrl;
-            error: null,
-            lastUpdated: now,
+           , error: null,
+            lastUpdated: now
           });
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", avatarUrl);
@@ -96,7 +94,7 @@ function createAvatarStore() {
         const response = await fetch("/api/user/avatar/upload", {
           method: "POST",
           body: formData;
-          credentials: "include", // Important for session handling
+         , credentials: "include", // Important for session handling
         });
         const data = await response.json();
         if (response.ok) {
@@ -106,8 +104,8 @@ function createAvatarStore() {
             ...state,
             url: newAvatarUrl,
             isUploading: false;
-            error: null,
-            lastUpdated: now,
+           , error: null,
+            lastUpdated: now
           });
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", newAvatarUrl);
@@ -122,7 +120,7 @@ function createAvatarStore() {
         update((state) => ({
           ...state,
           isUploading: false,
-          error: errorMessage,
+          error: errorMessage
         });
         return { success: false, error: errorMessage }
       }
@@ -143,8 +141,8 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: defaultAvatar;
-            error: null,
-            lastUpdated: now,
+           , error: null,
+            lastUpdated: now
           });
           // Update local storage
           localStorage.setItem("user_avatar_url", defaultAvatar);
@@ -207,21 +205,15 @@ function validateFile(file: File): { valid: boolean; error?: string } {
   ];
   const maxSize = 5 * 1024 * 1024; // 5MB
   if (!allowedTypes.includes(file.type)) {
-    return {
-      valid: false;
-      error: "Invalid file type. Please use JPEG, PNG, GIF, SVG, or WebP."
+    return { valid: false;, error: "Invalid file type. Please use JPEG, PNG, GIF, SVG, or WebP."
     }
   }
   if (file.size > maxSize) {
-    return {
-      valid: false;
-      error: "File too large. Maximum size is 5MB."
+    return { valid: false;, error: "File too large. Maximum size is 5MB."
     }
   }
   if (file.size === 0) {
-    return {
-      valid: false;
-      error: "File is empty. Please select a valid image."
+    return { valid: false;, error: "File is empty. Please select a valid image."
     }
   }
   return { valid: true }

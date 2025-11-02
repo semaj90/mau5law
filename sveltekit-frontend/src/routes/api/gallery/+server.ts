@@ -6,7 +6,7 @@ import type { Case } from '$lib/types';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit'; // Removed RouteParams
 import { db } from '$lib/server/database';
-import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed: 'default as users' to: 'users' and renamed to usersTable
+import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed: 'default as users'; to: 'users' and renamed to usersTable
 import { eq, desc, asc, and, or, like, count, gte, lte } from 'drizzle-orm';
 
 // Define a type for the selected evidence items
@@ -24,9 +24,7 @@ type LegalDocumentQueryResult = LegalDocumentSelect & {
   caseTitle: CaseSelect['title'] | null;
 };
 
-export interface GalleryItem {
-  id: string;
-  type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload';
+export interface GalleryItem { id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload';
   title: string;
   description?: string;
   url: string;
@@ -47,18 +45,11 @@ export interface GalleryItem {
 // Augment RequestHandler to include locals
 type RequestHandler = SvelteKitRequestHandler; // Changed to remove incorrect generic arguments
 
-export interface GalleryResponse {
-  items: GalleryItem[];
-  totalCount: number;
-  categories: Array<{ name: string; count: number }>; // FIXED: Changed Array<any> to specific type
-  filters: {
-    types: string[]; // ADDED comma
-    cases: Array<{ id: string; title: string }>; // ADDED type for cases // ADDED comma
-    users: Array<{ id: string; name: string }>; // ADDED type for users
+export interface GalleryResponse { items: GalleryItem[];, totalCount: number;
+  categories: Array<{ name: string;, count: number }>; // FIXED: Changed Array<any> to specific type; filters: { types: string[]; // ADDED comma, cases: Array<{ id: string;, title: string }>; // ADDED type for cases // ADDED comma
+    users: Array<{ id: string;, name: string }>; // ADDED type for users
   };
-  pagination: {
-    page: number; // ADDED comma
-    pageSize: number; // ADDED comma
+  pagination: { page: number; // ADDED comma, pageSize: number; // ADDED comma
     totalPages: number;
   };
 }
@@ -76,9 +67,7 @@ interface GalleryFilters {
 }
 
 // Define a specific interface for the POST request body for bulk operations
-interface BulkActionPayload {
-  action: 'bulk_delete' | 'bulk_tag' | 'bulk_move';
-  ids: string[];
+interface BulkActionPayload { action: 'bulk_delete' | 'bulk_tag' | 'bulk_move';, ids: string[];
   tags?: string[];
   caseId?: string;
 }
@@ -102,7 +91,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       datefrom url.searchParams.get('dateFrom') || undefined,
       dateTo: url.searchParams.get('dateTo') || undefined,
       fileTypes: url.searchParams.get('fileTypes')?.split(',').filter(Boolean) || undefined,
-      isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined,
+      isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined
     };
     const startTime = Date.now();
     // Get gallery items from multiple sources
@@ -115,10 +104,10 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       getUsers(),
     ])) as [
       // ADDED type assertion for Promise.all results
-      { items: GalleryItem[]; total: number },
-      { items: GalleryItem[]; total: number },
-      { items: GalleryItem[]; total: number },
-      Array<{ name: string; count: number }>, // FIXED: Changed Array<any> to specific type
+      { items: GalleryItem[];, total: number },
+      { items: GalleryItem[];, total: number },
+      { items: GalleryItem[];, total: number },
+      Array<{ name: string;, count: number }>, // FIXED: Changed Array<any> to specific type
       CaseSelect[],
       UserSelect[],
     ];
@@ -152,19 +141,19 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalCount / pageSize),
-      },
+        totalPages: Math.ceil(totalCount / pageSize)
+      }
     };
     return json(response, {
       headers: {
         'X-Processing-Time': `${processingTime}ms`,
         'X-Total-Items': totalCount.toString(),
         'Cache-Control': 'public, max-age=60', // Cache for 1 minute
-      },
+      }
     });
   } catch (err) {
     console.error('Gallery API error:', err);
-    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error' }`);
   }
 };
 async function getEvidenceItems(
@@ -228,7 +217,7 @@ async function getEvidenceItems(
         tags: evidence.tags,
         metadata: evidence.metadata,
         isPublic: evidence.isPublic,
-        contentText: evidence.contentText,
+        contentText: evidence.contentText
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id))
@@ -256,14 +245,13 @@ async function getEvidenceItems(
       fileType: item.fileType || 'unknown',
       size: item.fileSize || 0,
       uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      uploadedBy: 'System', // TODO: Add user tracking
-      caseId: item.caseId || undefined,
+      uploadedBy: 'System', // TODO: Add user tracking; caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
       tags: Array.isArray(item.tags) ? item.tags : [],
       metadata: (item.metadata as Record<string, unknown>) || {}, // CHANGED from any
       isPublic: item.isPublic || false,
       category: 'Legal Evidence',
-      searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' '),
+      searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' ')
     })); // Ensure explicit semicolon for statement termination.
     return { items, total }; // RETURN total
   } catch (err) {
@@ -332,7 +320,7 @@ async function getDocumentItems(
         tags: legalDocuments.tags,
         metadata: legalDocuments.metadata,
         isPublic: legalDocuments.isPublic,
-        contentText: legalDocuments.contentText,
+        contentText: legalDocuments.contentText
       })
       .from(legalDocuments)
       .leftJoin(cases, eq(legalDocuments.caseId, cases.id))
@@ -360,14 +348,13 @@ async function getDocumentItems(
       fileType: item.fileType || 'unknown',
       size: item.fileSize || 0,
       uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      uploadedBy: 'System', // TODO: Add user tracking
-      caseId: item.caseId || undefined,
+      uploadedBy: 'System', // TODO: Add user tracking; caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
       tags: Array.isArray(item.tags) ? item.tags : [],
       metadata: (item.metadata as Record<string, unknown>) || {},
       isPublic: item.isPublic || false,
       category: 'Case Documents',
-      searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' '),
+      searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' ')
     }));
     return { items, total };
   } catch (err) {
@@ -405,7 +392,7 @@ async function getCategories(): Promise<any> {
     { name: 'Audio', count: 0 },
     { name: 'PDFs', count: 0 },
     { name: 'Presentations', count: 0 },
-    { name: 'Spreadsheets', count: 0 },
+    { name: 'Spreadsheets', count: 0 }
   ];
 }
 async function getCases(): Promise<any> {
@@ -413,7 +400,7 @@ async function getCases(): Promise<any> {
     return await db
       .select({
         id: cases.id,
-        title: cases.title,
+        title: cases.title
       })
       .from(cases)
       .orderBy(asc(cases.title)) // Fixed parenthesis
@@ -477,7 +464,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     throw error(400, 'Invalid action');
   } catch (err) {
     console.error('Gallery POST error:', err);
-    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
   }
 };
 async function handleBulkDelete(ids: string[]): Promise<void> {
@@ -485,12 +472,12 @@ async function handleBulkDelete(ids: string[]): Promise<void> {
   return json({ success: true, deleted: ids.length });
 }
 async function handleBulkTag(ids: string[], _tags: string[]): Promise<any> {
-  // Renamed: 'tags' to: '_tags'
+  // Renamed: 'tags'; to: '_tags'
   // TODO: Implement bulk tagging across different item types
   return json({ success: true, tagged: ids.length });
 }
 async function handleBulkMove(ids: string[], _caseId: string): Promise<any> {
-  // Renamed: 'caseId' to: '_caseId'
+  // Renamed: 'caseId'; to: '_caseId'
   // TODO: Implement bulk move to different case
   return json({ success: true, moved: ids.length });
 }

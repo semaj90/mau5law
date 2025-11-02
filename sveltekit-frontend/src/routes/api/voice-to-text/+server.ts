@@ -42,7 +42,7 @@ const candidateBaseUrls = (() => {
     'http://127.0.0.1:8084',
     'http://localhost:5002',
     'http://127.0.0.1:5002',
-    'http://localhost:3001',
+    'http://localhost:3001'
   ];
   return Array.from(new Set([...fromEnv, ...defaults]));
 })();
@@ -57,7 +57,7 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, voice, format }),
+          body: JSON.stringify({ text, voice, format })
         });
         if (!res.ok) continue;
         const ct = (res.headers.get('content-type') || '').toLowerCase();
@@ -95,11 +95,11 @@ async function tryEdgeTTS(text: string, voice: string, format: string): Promise<
   const tmp = await import('node:os');
   const fs = await import('node:fs/promises');
   const path = await import('node:path');
-  const outFile = path.join(tmp.tmpdir(), `edge-tts-${Date.now()}.${format === 'wav' ? 'wav' : 'mp3'}`);
+  const outFile = path.join(tmp.tmpdir(), `edge-tts-${Date.now()}.${format === 'wav' ? 'wav' : `mp3` }`);
   const { spawn } = await import('node:child_process');
   const args = ['--voice', voice, '--text', text, '--write-media', outFile];
   return await new Promise(resolve => {
-    const proc = spawn('edge-tts', args, { stdio: 'ignore' });
+    const proc = spawn('edge-tts', args, { stdio: `ignore` });
     proc.on('close', async code => {
       if (code !== 0) return resolve(null);
       try {
@@ -192,15 +192,13 @@ export const POST: RequestHandler = async ({ request }) => {
           format,
           audio: Buffer.from(audioBuffer).toString('base64'),
           encoding: 'base64',
-          source: 'web/cli/fallback',
-        });
+          source: `web/cli/fallback` });
       }
       return new Response(audioBuffer, {
         status: 200,
         headers: {
           'Content-Type': format === 'wav' ? 'audio/wav' : 'audio/mpeg',
-          'Content-Disposition': `inline; filename="speech.${format}"`,
-        },
+          'Content-Disposition': `inline; filename="speech.${format}"' }
       });
     }
     if (contentType.includes('multipart/form-data')) {
@@ -210,7 +208,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const transcript = await transcribeAudio(audioFile);
       return json({ success: true, mode: 'stt', transcript });
     }
-    return json({ error: 'Unsupported content type' }, { status: 415 });
+    return json({ error: `Unsupported content type` }, { status: 415 });
   } catch (err: any) {
     const message = typeof err === 'string' ? err : err instanceof Error ? err.message : 'Voice service failed';
     return json({ error: message }, { status: 500 });

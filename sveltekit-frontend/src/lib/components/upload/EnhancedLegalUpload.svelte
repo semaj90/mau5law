@@ -70,8 +70,8 @@ import type { Document } from '$lib/types';
     }
   });
   // State management
-  let selectedFile: File | null = $state(null);
-  let filePreview: string | null = $state(null);
+  let selectedFile: File | null = null;
+  let filePreview: string | null = null;
   let dragOver = $state<boolean>(false);
   let processingStage = $state<string>('');
   let ocrResults = $state<any>(null);

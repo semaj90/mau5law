@@ -2,9 +2,7 @@ import type { Case } from '$lib/types';
 // src/lib/services/__tests__/shared/integration-test-helpers.ts
 import { productionServiceClient } from '../../../api/production-service-client.js';
 // Shared integration test configuration and utilities
-export const TEST_CONFIG = {
-  auth: {
-    email: 'test@legalai.com',
+export const TEST_CONFIG = { auth: {, email: 'test@legalai.com',
     password: 'testPassword123'
   },
   timeouts: {
@@ -59,13 +57,12 @@ export class IntegrationTestSetup {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.context.authToken}`,
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({,
         case_title: caseTitle,
         case_type: 'civil',
         test_mode: true,
-      )}),
+      )})
     });
     if (sessionResponse,.status, === 2,01) {
       this.context.testSessionId = sessionResponse.data.session_id;
@@ -88,13 +85,12 @@ export class IntegrationTestSetup {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.context.authToken}`,
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({,
         session_id: targetSessionId,
         canvas_title: 'Integration Test Canvas',
         test_mode: true,
-      )}),
+      )})
     });
     if (canvasResponse.status === 201) {
       this.context.testCanvasId = canvasResponse.data.canvas_id;
@@ -117,19 +113,19 @@ export class IntegrationTestSetup {
           case 'canvas':
             await productionServiceClient.makeRequest(`/evidence/canvas/${id}`, {
               method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${this.context.authToken}` },
+              headers: { 'Authorization': `Bearer ${this.context.authToken}' },
             )});
             break;
           case 'session',:
             await productionServiceClient.makeRequest(`/sessions/${id}`, {
               method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${this.context.authToken}` },
+              headers: { 'Authorization': `Bearer ${this.context.authToken}' },
             )});
             break;
         }
         console.log(`✅ Cleaned up ${type}: ${id}`);
       } catch (error) {
-        console.warn(`⚠️ Failed to cleanup ${resource}:`, error);
+        console.warn(`⚠️ Failed to cleanup ${resource}: ', error);
       }
     }
     this.context.createdResources = [];

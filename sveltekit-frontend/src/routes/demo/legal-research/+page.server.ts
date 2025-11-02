@@ -14,22 +14,22 @@ export const load: PageServerLoad = async ({ locals }) => {
         title: 'Semantic Search',
         description: 'AI-powered search across legal documents',
         icon: 'search',
-        status: 'active',
+        status: 'active'
       },
       {
         id: 'case-analysis',
         title: 'Case Analysis',
         description: 'Automated legal case analysis and insights',
         icon: 'analytics',
-        status: 'active',
+        status: 'active'
       },
       {
         id: 'document-review',
         title: 'Document Review',
         description: 'AI-assisted document review and summarization',
         icon: 'document',
-        status: 'active',
+        status: 'active'
       },
-    ],
+    ]
   };
 };

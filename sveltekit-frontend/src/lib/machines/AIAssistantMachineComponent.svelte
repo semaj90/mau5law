@@ -167,7 +167,7 @@ import type { Document } from '$lib/types';
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
           <div
-            class="w-3" h-3 rounded-full {currentState === 'idle'
+            class="w-3 h-3 rounded-full" {currentState === 'idle'
               ? 'bg-green-500'
               : currentState === 'processing'
                 ? 'bg-yellow-500'
@@ -345,14 +345,14 @@ import type { Document } from '$lib/types';
       <div class="space-y-4 max-h-96 overflow-y-auto">
         {#each Array.isArray(context.conversationHistory) ? context.conversationHistory : [] as entry}
           <div
-            class="flex" gap-3 p-3 rounded-lg {entry.type === 'user'
+            class="flex gap-3 p-3 rounded-lg" {entry.type === 'user'
               ? 'bg-blue-50'
               : entry.type === 'ai'
                 ? 'bg-green-50'
                 : 'bg-red-50'}"
           >
             <div
-              class="flex-shrink-0" w-8 h-8 rounded-full flex items-center justify-center {entry.type === 'user'
+              class="flex-shrink-0 w-8 h-8" rounded-full flex items-center justify-center {entry.type === 'user'
                 ? 'bg-blue-600 text-white'
                 : entry.type === 'ai'
                   ? 'bg-green-600 text-white'
@@ -397,7 +397,7 @@ import type { Document } from '$lib/types';
             </div>
             <div class="flex items-center gap-2">
               <div
-                class="w-2" h-2 rounded-full {doc.status === 'analyzed'
+                class="w-2 h-2 rounded-full" {doc.status === 'analyzed'
                   ? 'bg-green-500'
                   : doc.status === 'analyzing'
                     ? 'bg-yellow-500'
@@ -409,7 +409,7 @@ import type { Document } from '$lib/types';
               <div class="mt-3 text-sm">
                 <div class="font-medium">
                   Risk Level: <span
-                    class="px-2" py-1 rounded text-xs {doc.aiAnalysis.riskLevel === 'low'
+                    class="px-2 py-1 rounded text-xs" {doc.aiAnalysis.riskLevel === 'low'
                       ? 'bg-green-100 text-green-800'
                       : doc.aiAnalysis.riskLevel === 'medium'
                         ? 'bg-yellow-100 text-yellow-800'

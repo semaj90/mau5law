@@ -14,7 +14,7 @@ declare module '$lib/ai/langchain-ollama-service.js' {
   import type { QueryResult, ProcessingResult } from '$lib/ai/langchain-ollama-service.js';
   export const langChainOllamaService: {
     testConnection(): Promise<boolean>;
-    queryDocuments(query: string, options: { maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
+    queryDocuments(query: string, options: {, maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
     processDocument(text: string, meta: Record<string, unknown>): Promise<ProcessingResult>;
     reset?(): void;
     getStats?(): Record<string, unknown> | Promise<Record<string, unknown>>;

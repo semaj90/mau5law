@@ -8,9 +8,7 @@ import type { RequestHandler } from './$types.js'
 type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 
-interface CacheEntry {
-  value: JsonValue;
-  timestamp: number;
+interface CacheEntry { value: JsonValue;, timestamp: number;
   ttl: number;
   version: string;
 }
@@ -48,7 +46,7 @@ export const GET: RequestHandler = async ({ params }) => {
     // Check if expired
     if (Date.now() - entry.timestamp > entry.ttl) {
       mockCache.delete(decodedKey);
-      return json({ success: false, error: 'Cache key expired' }, { status: 404 });
+      return json({ success: false, error: `Cache key expired` }, { status: 404 });
     }
 
     return json({
@@ -57,7 +55,7 @@ export const GET: RequestHandler = async ({ params }) => {
       value: entry.value,
       version: entry.version,
       timestamp: entry.timestamp,
-      ttl: entry.ttl,
+      ttl: entry.ttl
     });
   } catch (error: any) {
     const msg = getErrorMessage(error);

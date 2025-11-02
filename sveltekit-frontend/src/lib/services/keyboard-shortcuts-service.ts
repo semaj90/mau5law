@@ -8,9 +8,7 @@ import { writable, derived, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import crypto from "crypto";
 }
-export interface KeyboardShortcut {
-  id: string;
-  key: string;
+export interface KeyboardShortcut { id: string;, key: string;
   ctrl?: boolean;
   alt?: boolean;
   shift?: boolean;
@@ -23,17 +21,13 @@ export interface KeyboardShortcut {
   remote?: boolean; // Can be triggered remotely
 }
 }
-export interface RemoteCommand {
-  id: string;
-  command: string;
+export interface RemoteCommand { id: string;, command: string;
   args?: { [key: string]: any }
   source: 'keyboard' | 'api' | 'websocket' | 'voice';
   timestamp: number;
 }
 }
-export interface ShortcutCategory {
-  id: string;
-  name: string;
+export interface ShortcutCategory { id: string;, name: string;
   shortcuts: KeyboardShortcut[];
   enabled: boolean;
 }
@@ -98,7 +92,7 @@ class KeyboardShortcutsService {
         description: 'Toggle AI chat',
         category: 'ai',
         remote: true,
-        action: () => this.toggleAIChat(),
+        action: () => this.toggleAIChat()
       },
       {
         id: 'ai-analyze',
@@ -108,7 +102,7 @@ class KeyboardShortcutsService {
         category: 'ai',
         context: ['evidence', 'document'],
         remote: true,
-        action: () => this.analyzeWithAI(),
+        action: () => this.analyzeWithAI()
       },
       {
         id: 'ai-summarize',
@@ -118,7 +112,7 @@ class KeyboardShortcutsService {
         description: 'Summarize current content',
         category: 'ai',
         remote: true,
-        action: () => this.summarizeContent(),
+        action: () => this.summarizeContent()
       },
       // Case management shortcuts
       {
@@ -192,7 +186,7 @@ class KeyboardShortcutsService {
         description: 'Connect to remote control server',
         category: 'remote',
         remote: true,
-        action: () => this.connectRemote(),
+        action: () => this.connectRemote()
       },
       {
         id: 'remote-disconnect',
@@ -202,7 +196,7 @@ class KeyboardShortcutsService {
         description: 'Disconnect from remote control',
         category: 'remote',
         remote: true,
-        action: () => this.disconnectRemote(),
+        action: () => this.disconnectRemote()
       },
       {
         id: 'remote-status',
@@ -470,8 +464,7 @@ class KeyboardShortcutsService {
       cases: 'Case Management',
       evidence: 'Evidence',
       system: 'System',
-      remote: 'Remote Control'
-    }
+      remote: 'Remote Control' }
     return names[category] || category;
   }
   // Public API methods

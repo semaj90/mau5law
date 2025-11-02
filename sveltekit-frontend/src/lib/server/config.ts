@@ -8,9 +8,7 @@ import type { Document } from '$lib/types';
 // ============================================================================
 // CONTEXT7 MCP CONFIGURATION
 // ============================================================================
-export const MCP_CONFIG = {
-	context7: {
-		enabled: true,
+export const MCP_CONFIG = { context7: {, enabled: true,
 		// Official Context7 MCP command
 		officialCommand: 'npx -y @upstash/context7-mcp',
 		// Local mock server for development
@@ -31,8 +29,7 @@ export const MCP_CONFIG = {
 // AI SERVICES CONFIGURATION
 // ============================================================================
 export const AI_CONFIG = {
-	// Primary: Ollama with Gemma models
-	ollama: {
+	// Primary: Ollama with Gemma models; ollama: {
 		baseUrl: process.env.OLLAMA_URL || process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
 		models: {
 			// Legal-specific Gemma model for QA, analysis, function calling
@@ -114,11 +111,9 @@ export const AI_CONFIG = {
 // VECTOR SEARCH CONFIGURATION
 // ============================================================================
 export const VECTOR_SEARCH_CONFIG = {
-	// Primary: pgvector (PostgreSQL extension)
-	pgvector: {
+	// Primary: pgvector (PostgreSQL extension); pgvector: {
 		enabled: true,
-		dimensions: 768, // embeddinggemma:latest produces 768-dim vectors
-		indexType: 'hnsw', // Hierarchical Navigable Small World (best for large datasets)
+		dimensions: 768, // embeddinggemma:latest produces 768-dim vectors; indexType: 'hnsw', // Hierarchical Navigable Small World (best for large datasets)
 		// HNSW index parameters
 		hnsw: {
 			efConstruction: 200, // Higher = better quality, slower build
@@ -154,8 +149,7 @@ export const VECTOR_SEARCH_CONFIG = {
 
 	// Hybrid search configuration
 	hybrid: {
-		// Weighted fusion: 70% pgvector + 30% Qdrant
-		pgvectorWeight: 0.7,
+		// Weighted fusion: 70% pgvector + 30% Qdrant; pgvectorWeight: 0.7,
 		qdrantWeight: 0.3,
 		fusionMethod: 'weighted' as const, // 'weighted' | 'rrf' (reciprocal rank fusion)
 		minSimilarity: 0.5,
@@ -180,8 +174,8 @@ export const DATABASE_CONFIG = {
 		connectionTimeout: parseInt(process.env.DATABASE_CONNECT_TIMEOUT || '10'),
 		ssl:
 			process.env.NODE_ENV === 'production'
-				? ('require' as const)
-				: (false as const)
+				? ('require' as const )
+				: (false as const )
 	}
 };
 
@@ -320,7 +314,7 @@ export type FusionMethod = 'weighted' | 'rrf';
 // ============================================================================
 // CONFIGURATION VALIDATOR
 // ============================================================================
-export function validateConfig(): { valid: boolean; errors: string[] } {
+export function validateConfig(): { valid: boolean;, errors: string[] } {
 	const errors: string[] = [];
 
 	// Validate at least one AI provider is available
@@ -357,9 +351,7 @@ export function validateConfig(): { valid: boolean; errors: string[] } {
 // CONFIGURATION SUMMARY
 // ============================================================================
 export function getConfigSummary() {
-	return {
-		aiProviders: {
-			ollama: AI_CONFIG.ollama.baseUrl,
+	return { aiProviders: {, ollama: AI_CONFIG.ollama.baseUrl,
 			tensorrt: AI_CONFIG.tensorrt.enabled ? AI_CONFIG.tensorrt.tritonUrl : 'disabled',
 			vllm: AI_CONFIG.vllm.enabled ? AI_CONFIG.vllm.baseUrl : 'disabled',
 			openai: AI_CONFIG.openai.enabled ? 'enabled' : 'disabled'

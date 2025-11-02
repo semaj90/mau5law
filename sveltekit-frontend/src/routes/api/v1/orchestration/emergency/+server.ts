@@ -176,20 +176,20 @@ export const POST = async (event: RequestEvent) => {
           else
             result = {
               message: 'No failing services detected during health check; no automatic recovery performed',
-              health,
+              health
             };
         }
         break;
 
       default:
-        throw new Error(`Unsupported emergency action: ${body.emergency_action}`);
+        throw new Error(`Unsupported emergency; action: ${body.emergency_action}`);
     }
 
     return json({
       success: true,
       emergency_action: body.emergency_action,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Emergency Orchestration Error:', error);
@@ -198,7 +198,7 @@ export const POST = async (event: RequestEvent) => {
         success: false,
         error: 'Emergency orchestration failed',
         details: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

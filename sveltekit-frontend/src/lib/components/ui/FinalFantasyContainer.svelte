@@ -36,7 +36,7 @@
   }
 </script>
 <div
-  class="ff-container" relative bg-gradient-to-br {transparent
+  class="ff-container relative bg-gradient-to-br" {transparent
     ? 'from-transparent to-transparent border-opacity-40'
     : typeColors[type]}
          border-2 {glowEffect ? `shadow-2xl ${glowColors[type]}` : 'shadow-lg'}
@@ -52,18 +52,18 @@
   <!-- Title Bar -->
   {#if title}
     <div
-      class="relative" px-4 py-2 bg-gradient-to-r from-black/40 to-transparent
+      class="relative px-4 py-2" bg-gradient-to-r from-black/40 to-transparent
                 border-b border-white/20"
     >
       <h3
-        class="text-sm" font-bold text-white uppercase tracking-wider
+        class="text-sm font-bold text-white" uppercase tracking-wider
                 text-shadow-lg"
       >
         {title}
       </h3>
       <!-- FF-Style Title Decoration -->
       <div
-        class="absolute" right-2 top-1/2 -translate-y-1/2 w-1 h-1
+        class="absolute right-2 top-1"/2 -translate-y-1/2 w-1 h-1
                   bg-gradient-to-r from-yellow-400 to-orange-500
                   rounded-full animate-pulse"
       ></div>
@@ -75,12 +75,12 @@
   <!-- FF-Style Animated Border Lines -->
   {#if animated}
     <div
-      class="absolute" top-0 left-0 w-full h-px bg-gradient-to-r
+      class="absolute top-0 left-0" w-full h-px bg-gradient-to-r
                 from-transparent via-white/30 to-transparent
                 animate-pulse"
     ></div>
     <div
-      class="absolute" bottom-0 left-0 w-full h-px bg-gradient-to-r
+      class="absolute bottom-0 left-0" w-full h-px bg-gradient-to-r
                 from-transparent via-white/30 to-transparent
                 animate-pulse delay-1000"
     >{/if}

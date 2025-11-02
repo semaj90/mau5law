@@ -41,7 +41,7 @@ type Neo4jServiceType = {
   // now strongly-typed to return Recommendation[] or null
   getRecommendations?: (documents: any[]) => Promise<Recommendation[] | null>;
   // bulkSyncDocuments now returns a typed SyncResult or null
-  bulkSyncDocuments?: (documents: { id: string }[], opts?: { force?: boolean }) => Promise<SyncResult | null>;
+  bulkSyncDocuments?: (documents: {, id: string }[], opts?: { force?: boolean }) => Promise<SyncResult | null>;
   getCachedRecommendations?: (key: string) => Promise<Recommendation[] | null>;
   setCachedRecommendations?: (key: string, value: Recommendation[] | null) => Promise<void>;
   getDocumentNetworkAnalysis?: (ids: any[]) => Promise<unknown>;
@@ -58,11 +58,10 @@ const _neo4jModule = neo4jServiceModule as unknown as {
 const neo4jService: Neo4jServiceType = _neo4jModule.default ??
   _neo4jModule.neo4jService ??
   _neo4jModule ?? {
-    // runtime-safe fallback: ensure initialize exists to avoid crashing startup
-    initialize: async () => {
+    // runtime-safe fallback: ensure initialize exists to avoid crashing startup; initialize: async () => {
       // no-op fallback; real service should provide implementation
       console.warn('Neo4j service not provided; using fallback noop implementation.');
-    },
+    }
   };
 import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
 import { cache } from '$lib/server/cache/redis.js';
@@ -88,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Missing required fields: title, content',
+              error: 'Missing required; fields: title, content'
             },
             { status: 400 }
           );
@@ -101,15 +100,15 @@ export const POST: RequestHandler = async ({ request }) => {
           mimeType,
           fileSize,
           metadata: {
-            source: 'api',
+           , source: 'api',
             tags: metadata?.tags || [],
             category: metadata?.category || 'other',
             confidenceLevel: metadata?.confidenceLevel || 0.7,
             extractedEntities: metadata?.extractedEntities || [],
             keyTerms: metadata?.keyTerms || [],
             userId: metadata?.userId,
-            priority: metadata?.priority || 'normal',
-          },
+            priority: metadata?.priority || 'normal'
+          }
         });
 
         // Async Neo4j sync if document ingestion succeeded
@@ -119,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
             JSON.stringify({
               documentId: result.documentId,
               action: 'sync_document',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             })
           );
         }
@@ -127,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Build a type-safe response: only read properties that exist on the narrowed result
         const response: Record<string, unknown> = {
           success: !!result?.success,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
 
         if (result && 'documentId' in result) {
@@ -152,8 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'No file provided',
-            },
+              error: 'No file provided` },
             { status: 400 }
           );
         }
@@ -170,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
           content = fileBuffer.toString('utf8');
         } else {
           // Defer heavy OCR/parsing to ingestion pipeline; include original filename for context
-          content = `__binary_file__:${file.originalName || 'uploaded_file'}`;
+          content = `__binary_file__:${file.originalName || 'uploaded_file` }`;
         }
 
         // Use the existing ingestDocument API on UnifiedSearchService rather than a non-existent processUploadedFile
@@ -187,14 +185,14 @@ export const POST: RequestHandler = async ({ request }) => {
             shaderData: {
               originalName: file.originalName,
               // hint for downstream processors to run OCR/parse if we provided a binary placeholder
-              needsProcessing: !mimeType.startsWith('text/'),
-            },
-          },
+              needsProcessing: !mimeType.startsWith('text/')
+            }
+          }
         });
 
         return json({
           ...result,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -205,8 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Query text or vector required',
-            },
+              error: 'Query text or vector required` },
             { status: 400 }
           );
         }
@@ -219,16 +216,16 @@ export const POST: RequestHandler = async ({ request }) => {
             tags: filters?.tags,
             userId: filters?.userId,
             dateRange: filters?.dateRange,
-            confidenceMin: filters?.confidenceMin,
+            confidenceMin: filters?.confidenceMin
           },
           options: {
-            limit: options?.limit || 20,
+           , limit: options?.limit || 20,
             offset: options?.offset || 0,
             includeEmbeddings: options?.includeEmbeddings || false,
             includeSimilarity: options?.includeSimilarity ?? true,
             useCache: options?.useCache !== false,
-            neo4jRecommendations: options?.neo4jRecommendations || false,
-          },
+            neo4jRecommendations: options?.neo4jRecommendations || false
+          }
         });
 
         if (
@@ -252,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
             if (recs) {
               // normalize any returned recommendation(s) into the expected shape:
-              // - documents: string[] (prefer doc.id)
+              // -; documents: string[] (prefer doc.id)
               // helper: ensure each document entry is an object matching Recommendation.documents item
               const toDocObj = (d: any): { id?: string; [key: string]: any } => {
                 if (typeof d === 'string') return { id: d };
@@ -291,7 +288,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   score: typeof rr.score === 'number' ? rr.score : undefined,
                   reason: typeof rr.reason === 'string' ? rr.reason : undefined,
                   // include any extra fields for downstream debugging
-                  _raw: rr,
+                  _raw: rr
                 } as Recommendation;
               });
 
@@ -305,7 +302,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 score: n.score,
                 reason: n.reason,
                 // keep raw for debugging but not required by service
-                _raw: n._raw,
+                _raw: n._raw
               }));
 
               // assign normalized recommendations using the ID-only documents shape expected by the unified-search-service
@@ -322,7 +319,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           ...searchResult,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -333,8 +330,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document ID required',
-            },
+              error: 'Document ID required` },
             { status: 400 }
           );
         }
@@ -345,7 +341,7 @@ export const POST: RequestHandler = async ({ request }) => {
           similarDocs = {
             documents: [],
             similarities: [],
-            method: 'cosine_similarity',
+            method: 'cosine_similarity'
           };
           await cache.set(cacheKey, similarDocs, 600); // 10 minutes
         }
@@ -354,7 +350,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           similar: similarDocs,
           cached: similarDocs !== null,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -365,7 +361,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document IDs array required',
+              error: 'Document IDs array required'
             },
             { status: 400 }
           );
@@ -379,7 +375,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Neo4j bulkSyncDocuments not available',
+              error: 'Neo4j bulkSyncDocuments not available'
             },
             { status: 503 }
           );
@@ -414,7 +410,7 @@ export const POST: RequestHandler = async ({ request }) => {
           synced,
           failed,
           errors,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -424,13 +420,12 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document IDs array required',
-            },
+              error: 'Document IDs array required` },
             { status: 400 }
           );
         }
 
-        const cacheKey = `recommendations:${documentIds.join(',')}:${types?.join(',') || 'all'}`;
+        const cacheKey = `recommendations:${documentIds.join(',')}:${types?.join(',') || 'all` }`;
 
         // Try cached recommendations if available
         let recommendations: Recommendation[] | null = null;
@@ -476,7 +471,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           recommendations,
           cached: recommendations !== null,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -486,7 +481,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document IDs array required',
+              error: 'Document IDs array required'
             },
             { status: 400 }
           );
@@ -496,7 +491,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Neo4j network analysis not available',
+              error: 'Neo4j network analysis not available'
             },
             { status: 503 }
           );
@@ -509,7 +504,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.warn('Neo4j getDocumentNetworkAnalysis failed:', err);
           networkAnalysis = {
             error: 'network analysis failed',
-            details: err instanceof Error ? err.message : String(err),
+            details: err instanceof Error ? err.message : String(err)
           };
         }
 
@@ -517,7 +512,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           analysis: networkAnalysis,
           analysisType: analysisType || 'full',
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -531,14 +526,14 @@ export const POST: RequestHandler = async ({ request }) => {
             active: dashboardData.jobs.active.length,
             completed: dashboardData.jobs.stats.byState?.completed || 0,
             failed: dashboardData.jobs.stats.byState?.failed || 0,
-            total: dashboardData.jobs.stats.total,
+            total: dashboardData.jobs.stats.total
           },
           workers: {
-            active: dashboardData.workers.active.length,
-            total: dashboardData.workers.stats.total,
+           , active: dashboardData.workers.active.length,
+            total: dashboardData.workers.stats.total
           },
           system: dashboardData.system,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -548,8 +543,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Documents array required',
-            },
+              error: 'Documents array required` },
             { status: 400 }
           );
         }
@@ -572,14 +566,13 @@ export const POST: RequestHandler = async ({ request }) => {
               {
                 ...metadata,
                 priority: priority || 'normal',
-                batchId: `batch_${Date.now()}`,
-              }
+                batchId: `batch_${Date.now()}` }
             );
             results.push(result as BatchJobResult);
           } catch (err) {
             results.push({
               success: false,
-              error: err instanceof Error ? err.message : String(err),
+              error: err instanceof Error ? err.message : String(err)
             });
           }
         }
@@ -592,31 +585,29 @@ export const POST: RequestHandler = async ({ request }) => {
           successful,
           failed,
           results,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
       // === ANALYTICS & MONITORING ===
       case 'get_analytics': {
         const { timeRange } = params;
-        const analytics = {
-          system: {
-            uptime: process.uptime(),
+        const analytics = { system: {, uptime: process.uptime(),
             memory: process.memoryUsage(),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           search: await getSearchAnalytics(timeRange),
           ingestion: ingestionService.getDashboardData(),
           // use guarded helper instead of calling possibly-undefined method directly
           neo4j: await safeGetNeo4jHealth(),
           cache: await getCacheStats(),
-          performance: await getPerformanceMetrics(timeRange),
+          performance: await getPerformanceMetrics(timeRange)
         };
         return json({
           success: true,
           analytics,
           timeRange: timeRange || '1h',
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -631,17 +622,17 @@ export const POST: RequestHandler = async ({ request }) => {
             neo4j: neo4jHealth.connected === true,
             ingestion: true,
             redis: true,
-            database: true,
+            database: true
           },
           timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
+          uptime: process.uptime()
         };
         const allHealthy = Object.values(health.services).every(s => s === true);
         health.status = allHealthy ? 'healthy' : 'degraded';
         return json({
           success: true,
           health,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -649,7 +640,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: `Unknown action: ${action}`,
+            error: `Unknown; action: ${action}`,
             availableActions: [
               'ingest_document',
               'process_file',
@@ -662,7 +653,7 @@ export const POST: RequestHandler = async ({ request }) => {
               'submit_batch_job',
               'get_analytics',
               'health',
-            ],
+            ]
           },
           { status: 400 }
         );
@@ -675,7 +666,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : String(error),
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -689,9 +680,8 @@ export const GET: RequestHandler = async ({ url }) => {
       return new Response(null, {
         status: 307,
         headers: {
-          Location: '/api/unified',
-          'Content-Type': 'application/json',
-        },
+         , Location: '/api/unified',
+          'Content-Type': 'application/json` }
       });
     }
 
@@ -699,7 +689,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       api: {
-        name: 'Unified Legal AI API',
+       , name: 'Unified Legal AI API',
         version: '1.0.0',
         description: 'Comprehensive embed, vector, cache, shader, evidence, file storage - all searchable and cached',
         features: [
@@ -726,8 +716,8 @@ export const GET: RequestHandler = async ({ url }) => {
               'submit_batch_job - Batch processing',
               'get_analytics - System analytics',
               'health - Health check',
-            ],
-          },
+            ]
+          }
         },
         architecture: {
           services: [
@@ -748,9 +738,9 @@ export const GET: RequestHandler = async ({ url }) => {
             'Vite build optimization',
             'SIMD parsing acceleration',
             'Go microservices for low latency',
-          ],
-        },
-      },
+          ]
+        }
+      }
     });
   } catch (error) {
     console.error('❌ Unified API GET error:', error);
@@ -758,7 +748,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -845,8 +835,8 @@ async function getSearchAnalytics(_timeRange: string): Promise<any> {
     queryTypes: {
       semantic: 0.6,
       fulltext: 0.3,
-      hybrid: 0.1,
-    },
+      hybrid: 0.1
+    }
   };
 }
 async function getCacheStats(): Promise<any> {
@@ -855,7 +845,7 @@ async function getCacheStats(): Promise<any> {
     hitRate: Math.random() * 0.2 + 0.8,
     memoryUsage: Math.floor(Math.random() * 512) + 256, // MB
     keyCount: Math.floor(Math.random() * 10000) + 5000,
-    evictionRate: Math.random() * 0.1,
+    evictionRate: Math.random() * 0.1
   };
 }
 async function getPerformanceMetrics(_timeRange: string): Promise<any> {
@@ -866,7 +856,7 @@ async function getPerformanceMetrics(_timeRange: string): Promise<any> {
     resourceUtilization: {
       cpu: Math.random() * 0.4 + 0.3,
       memory: Math.random() * 0.3 + 0.4,
-      disk: Math.random() * 0.2 + 0.2,
-    },
+      disk: Math.random() * 0.2 + 0.2
+    }
   };
 }

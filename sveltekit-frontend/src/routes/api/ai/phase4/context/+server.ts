@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const gameElements = Array.isArray(ai.gameElements) ? (ai.gameElements as unknown[]) : [];
 
     // Use updateMemory flag at least by logging and returning it in processing info
-    console.log(`updateMemory flag for case ${caseId}:`, Boolean(updateMemory));
+    console.log(`updateMemory flag for case ${caseId}: ', Boolean(updateMemory));
 
     return json(
       {
@@ -82,8 +82,8 @@ export const POST: RequestHandler = async ({ request }) => {
           memoryLoaded: true,
           memoryUpdated: Boolean(updateMemory),
           contextItems: contextUsed.length,
-          integrations: ['ollama-ai', 'vector-search', 'case-memory'],
-        },
+          integrations: ['ollama-ai', 'vector-search', 'case-memory']
+        }
       },
       { status: 200 }
     );
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to generate contextual AI response',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: true,
         memory: {
-          caseId: memory.caseId,
+         , caseId: memory.caseId,
           contextVersion: memory.contextVersion,
           lastUpdated: memory.lastUpdated,
           evidenceCount: Array.isArray(memory.evidenceTimeline) ? memory.evidenceTimeline.length : 0,
@@ -122,14 +122,14 @@ export const GET: RequestHandler = async ({ url }) => {
           conversationCount: Array.isArray(memory.aiMemory?.conversationHistory)
             ? memory.aiMemory.conversationHistory.length
             : 0,
-          gameMemory: memory.gameMemory,
+          gameMemory: memory.gameMemory
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 200 }
     );
   } catch (error) {
     console.error('Load case memory error:', error);
-    return json({ error: 'Failed to load case memory' }, { status: 500 });
+    return json({ error: `Failed to load case memory` }, { status: 500 });
   }
 };

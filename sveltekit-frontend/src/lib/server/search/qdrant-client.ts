@@ -9,12 +9,12 @@ export async function qdrantSearch(embedding: number[], topK = 10): Promise<any>
   const body = {
     vector: embedding,
     top: topK,
-    include_payload: true,
+    include_payload: true
   };
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const text = await res.text();

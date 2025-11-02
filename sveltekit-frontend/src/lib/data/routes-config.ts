@@ -6,9 +6,7 @@ import type { SvelteComponent } from 'svelte'; // Add this import
  * Complete Routes Configuration for YoRHa Navigation
  * Comprehensive mapping of all available demo routes and features
  */
-export interface RouteDefinition {
-  id: string;
-  label: string;
+export interface RouteDefinition { id: string;, label: string;
   route: string;
   icon: string;
   description: string;
@@ -26,7 +24,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Enhanced RAG System with AI Model Orchestration',
     category: 'main',
     status: 'active',
-    tags: ['rag', 'ai', 'orchestration'],
+    tags: ['rag', 'ai', 'orchestration']
   },
   {
     id: 'cases',
@@ -36,7 +34,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal case management with AI analysis',
     category: 'main',
     status: 'active',
-    tags: ['legal', 'cases', 'management'],
+    tags: ['legal', 'cases', 'management']
   },
   {
     id: 'evidence',
@@ -46,7 +44,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Digital evidence processing with OCR and AI',
     category: 'main',
     status: 'active',
-    tags: ['evidence', 'ocr', 'analysis'],
+    tags: ['evidence', 'ocr', 'analysis']
   },
   {
     id: 'detective',
@@ -56,7 +54,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'YoRHa-themed detective command center with case management',
     category: 'main',
     status: 'active',
-    tags: ['detective', 'yorha', 'cases', 'command-center'],
+    tags: ['detective', 'yorha', 'cases', 'command-center']
   },
   {
     id: 'persons',
@@ -66,7 +64,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Person tracking and relationship mapping',
     category: 'main',
     status: 'active',
-    tags: ['detective', 'persons', 'tracking'],
+    tags: ['detective', 'persons', 'tracking']
   },
   {
     id: 'ai-assistant',
@@ -76,7 +74,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Multi-agent AI assistant with specialized legal knowledge',
     category: 'ai',
     status: 'active',
-    tags: ['ai', 'assistant', 'legal'],
+    tags: ['ai', 'assistant', 'legal']
   },
   {
     id: 'search',
@@ -86,7 +84,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Semantic search across legal documents and case law',
     category: 'main',
     status: 'active',
-    tags: ['search', 'semantic', 'legal'],
+    tags: ['search', 'semantic', 'legal']
   },
   {
     id: 'documents',
@@ -96,7 +94,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal document analysis and processing',
     category: 'legal',
     status: 'active',
-    tags: ['documents', 'legal', 'processing'],
+    tags: ['documents', 'legal', 'processing']
   },
   {
     id: 'reports',
@@ -106,7 +104,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Automated report generation with AI insights',
     category: 'main',
     status: 'active',
-    tags: ['reports', 'generation', 'ai'],
+    tags: ['reports', 'generation', 'ai']
   },
   {
     id: 'memory',
@@ -116,7 +114,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI memory and context management',
     category: 'ai',
     status: 'active',
-    tags: ['memory', 'ai', 'context'],
+    tags: ['memory', 'ai', 'context']
   },
   {
     id: 'chat',
@@ -126,7 +124,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Interactive chat with legal AI models',
     category: 'ai',
     status: 'active',
-    tags: ['chat', 'ai', 'conversation'],
+    tags: ['chat', 'ai', 'conversation']
   },
   // === AI DEMONSTRATIONS ===
   {
@@ -137,7 +135,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Overview of all AI demonstrations and capabilities',
     category: 'demo',
     status: 'active',
-    tags: ['demo', 'overview', 'ai'],
+    tags: ['demo', 'overview', 'ai']
   },
   {
     id: 'demo-ai-assistant',
@@ -147,7 +145,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Advanced AI assistant with legal specialization',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'assistant', 'demo'],
+    tags: ['ai', 'assistant', 'demo']
   },
   {
     id: 'demo-ai-complete-test',
@@ -157,7 +155,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Comprehensive AI system testing interface',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'testing', 'complete'],
+    tags: ['ai', 'testing', 'complete']
   },
   {
     id: 'demo-ai-dashboard',
@@ -167,7 +165,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Real-time AI performance and analytics dashboard',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'dashboard', 'analytics'],
+    tags: ['ai', 'dashboard', 'analytics']
   },
   {
     id: 'demo-ai-integration',
@@ -177,7 +175,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Multi-service AI integration showcase',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'integration', 'showcase'],
+    tags: ['ai', 'integration', 'showcase']
   },
   {
     id: 'demo-ai-pipeline',
@@ -187,7 +185,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI processing pipeline visualization',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'pipeline', 'processing'],
+    tags: ['ai', 'pipeline', 'processing']
   },
   {
     id: 'demo-ai-summary',
@@ -197,7 +195,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Intelligent document summarization with AI',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'summary', 'documents'],
+    tags: ['ai', 'summary', 'documents']
   },
   {
     id: 'demo-ai-test',
@@ -207,7 +205,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI model testing and evaluation tools',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'testing', 'evaluation'],
+    tags: ['ai', 'testing', 'evaluation']
   },
   {
     id: 'demo-component-gallery',
@@ -217,7 +215,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Showcase of UI components and design patterns',
     category: 'demo',
     status: 'active',
-    tags: ['components', 'ui', 'gallery'],
+    tags: ['components', 'ui', 'gallery']
   },
   {
     id: 'demo-document-ai',
@@ -227,7 +225,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI-powered document analysis and extraction',
     category: 'demo',
     status: 'active',
-    tags: ['document', 'ai', 'analysis'],
+    tags: ['document', 'ai', 'analysis']
   },
   {
     id: 'demo-enhanced-rag-semantic',
@@ -237,7 +235,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Advanced semantic search with RAG architecture',
     category: 'demo',
     status: 'active',
-    tags: ['rag', 'semantic', 'enhanced'],
+    tags: ['rag', 'semantic', 'enhanced']
   },
   {
     id: 'demo-enhanced-semantic-architecture',
@@ -247,7 +245,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Advanced semantic processing architecture',
     category: 'demo',
     status: 'active',
-    tags: ['semantic', 'architecture', 'advanced'],
+    tags: ['semantic', 'architecture', 'advanced']
   },
   {
     id: 'demo-gpu-legal-ai',
@@ -257,7 +255,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'GPU-accelerated legal AI processing',
     category: 'demo',
     status: 'active',
-    tags: ['gpu', 'legal', 'ai'],
+    tags: ['gpu', 'legal', 'ai']
   },
   {
     id: 'demo-inline-suggestions',
@@ -267,7 +265,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Real-time AI suggestions and completions',
     category: 'demo',
     status: 'active',
-    tags: ['ai', 'suggestions', 'inline'],
+    tags: ['ai', 'suggestions', 'inline']
   },
   {
     id: 'demo-langextract-ollama',
@@ -277,7 +275,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Language extraction with Ollama integration',
     category: 'demo',
     status: 'active',
-    tags: ['language', 'extraction', 'ollama'],
+    tags: ['language', 'extraction', 'ollama']
   },
   {
     id: 'demo-legal-ai-complete',
@@ -287,7 +285,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Complete legal AI system demonstration',
     category: 'demo',
     status: 'active',
-    tags: ['legal', 'ai', 'complete'],
+    tags: ['legal', 'ai', 'complete']
   },
   {
     id: 'demo-live-agents',
@@ -297,7 +295,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Real-time multi-agent AI coordination',
     category: 'demo',
     status: 'active',
-    tags: ['agents', 'live', 'coordination'],
+    tags: ['agents', 'live', 'coordination']
   },
   {
     id: 'demo-neural-sprite-engine',
@@ -307,7 +305,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Neural network-powered sprite rendering',
     category: 'demo',
     status: 'experimental',
-    tags: ['neural', 'sprite', 'engine'],
+    tags: ['neural', 'sprite', 'engine']
   },
   {
     id: 'demo-notes',
@@ -317,7 +315,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Intelligent note-taking with AI enhancement',
     category: 'demo',
     status: 'active',
-    tags: ['notes', 'ai', 'taking'],
+    tags: ['notes', 'ai', 'taking']
   },
   {
     id: 'demo-phase5',
@@ -327,7 +325,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Phase 5 development milestone demonstration',
     category: 'demo',
     status: 'active',
-    tags: ['phase5', 'milestone', 'demo'],
+    tags: ['phase5', 'milestone', 'demo']
   },
   {
     id: 'demo-professional-editor',
@@ -337,7 +335,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Professional document editing with AI assistance',
     category: 'demo',
     status: 'active',
-    tags: ['editor', 'professional', 'ai'],
+    tags: ['editor', 'professional', 'ai']
   },
   {
     id: 'demo-simple-test',
@@ -347,7 +345,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Simple testing interface for quick validation',
     category: 'demo',
     status: 'active',
-    tags: ['simple', 'test', 'interface'],
+    tags: ['simple', 'test', 'interface']
   },
   {
     id: 'demo-system-summary',
@@ -357,7 +355,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Comprehensive system status and metrics',
     category: 'demo',
     status: 'active',
-    tags: ['system', 'summary', 'metrics'],
+    tags: ['system', 'summary', 'metrics']
   },
   {
     id: 'demo-unified-architecture',
@@ -367,7 +365,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Unified system architecture demonstration',
     category: 'demo',
     status: 'active',
-    tags: ['unified', 'architecture', 'system'],
+    tags: ['unified', 'architecture', 'system']
   },
   {
     id: 'demo-unocss-svelte5',
@@ -377,7 +375,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'UnoCSS styling with Svelte 5 features',
     category: 'demo',
     status: 'active',
-    tags: ['unocss', 'svelte5', 'styling'],
+    tags: ['unocss', 'svelte5', 'styling']
   },
   {
     id: 'demo-vector-intelligence',
@@ -387,7 +385,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Vector-based intelligence and similarity search',
     category: 'demo',
     status: 'active',
-    tags: ['vector', 'intelligence', 'search'],
+    tags: ['vector', 'intelligence', 'search']
   },
   {
     id: 'demo-vector-search',
@@ -397,7 +395,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Advanced vector similarity search interface',
     category: 'demo',
     status: 'active',
-    tags: ['vector', 'search', 'similarity'],
+    tags: ['vector', 'search', 'similarity']
   },
   {
     id: 'demo-webgpu-acceleration',
@@ -407,7 +405,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'WebGPU-accelerated AI processing',
     category: 'demo',
     status: 'experimental',
-    tags: ['webgpu', 'acceleration', 'ai'],
+    tags: ['webgpu', 'acceleration', 'ai']
   },
   {
     id: 'demo-yorha-tables',
@@ -417,7 +415,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'YoRHa-themed data tables and visualization',
     category: 'demo',
     status: 'active',
-    tags: ['yorha', 'tables', 'visualization'],
+    tags: ['yorha', 'tables', 'visualization']
   },
   // === DEVELOPER TOOLS ===
   {
@@ -428,7 +426,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Model Context Protocol development tools',
     category: 'dev',
     status: 'active',
-    tags: ['mcp', 'tools', 'development'],
+    tags: ['mcp', 'tools', 'development']
   },
   {
     id: 'dev-context7-test',
@@ -438,7 +436,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Context7 integration testing interface',
     category: 'dev',
     status: 'active',
-    tags: ['context7', 'test', 'integration'],
+    tags: ['context7', 'test', 'integration']
   },
   {
     id: 'dev-copilot-optimizer',
@@ -448,7 +446,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI copilot optimization and tuning',
     category: 'dev',
     status: 'active',
-    tags: ['copilot', 'optimizer', 'ai'],
+    tags: ['copilot', 'optimizer', 'ai']
   },
   {
     id: 'dev-self-prompting',
@@ -458,7 +456,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Self-prompting AI system demonstration',
     category: 'dev',
     status: 'experimental',
-    tags: ['self-prompting', 'ai', 'demo'],
+    tags: ['self-prompting', 'ai', 'demo']
   },
   {
     id: 'dev-vector-search',
@@ -468,7 +466,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Vector search development and testing tools',
     category: 'dev',
     status: 'active',
-    tags: ['vector', 'search', 'development'],
+    tags: ['vector', 'search', 'development']
   },
   {
     id: 'dev-dynamic-routing-test',
@@ -478,7 +476,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Dynamic routing system testing and demonstration',
     category: 'dev',
     status: 'active',
-    tags: ['routing', 'dynamic', 'testing'],
+    tags: ['routing', 'dynamic', 'testing']
   },
   {
     id: 'routes-index',
@@ -488,7 +486,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Complete navigation index of all available routes and APIs',
     category: 'admin',
     status: 'active',
-    tags: ['navigation', 'index', 'routes', 'admin', 'api'],
+    tags: ['navigation', 'index', 'routes', 'admin', 'api']
   },
   // === ADMINISTRATIVE ===
   {
@@ -499,7 +497,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'System configuration and preferences',
     category: 'admin',
     status: 'active',
-    tags: ['settings', 'configuration', 'system'],
+    tags: ['settings', 'configuration', 'system']
   },
   {
     id: 'security',
@@ -509,7 +507,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Security monitoring and access control',
     category: 'admin',
     status: 'active',
-    tags: ['security', 'monitoring', 'access'],
+    tags: ['security', 'monitoring', 'access']
   },
   {
     id: 'profile',
@@ -519,7 +517,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'User profile management and preferences',
     category: 'admin',
     status: 'active',
-    tags: ['profile', 'user', 'management'],
+    tags: ['profile', 'user', 'management']
   },
   {
     id: 'help',
@@ -529,7 +527,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'System help and documentation',
     category: 'admin',
     status: 'active',
-    tags: ['help', 'documentation', 'support'],
+    tags: ['help', 'documentation', 'support']
   },
   // === SPECIALIZED INTERFACES ===
   {
@@ -540,7 +538,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Enhanced RAG system with advanced AI capabilities',
     category: 'demo',
     status: 'active',
-    tags: ['rag', 'enhanced', 'ai'],
+    tags: ['rag', 'enhanced', 'ai']
   },
   {
     id: 'context7',
@@ -550,7 +548,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Context7 MCP integration demonstration',
     category: 'demo',
     status: 'active',
-    tags: ['context7', 'mcp', 'integration'],
+    tags: ['context7', 'mcp', 'integration']
   },
   {
     id: 'gaming-demo',
@@ -560,7 +558,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Gaming-style interface with NieR Automata theme',
     category: 'demo',
     status: 'active',
-    tags: ['gaming', 'interface', 'nier'],
+    tags: ['gaming', 'interface', 'nier']
   },
   {
     id: 'yorha-dashboard',
@@ -570,7 +568,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Complete YoRHa-themed administrative dashboard',
     category: 'demo',
     status: 'active',
-    tags: ['yorha', 'dashboard', 'admin'],
+    tags: ['yorha', 'dashboard', 'admin']
   },
   // === CRITICAL SYSTEM ORCHESTRATION ROUTES ===
   // Core System Integration
@@ -582,7 +580,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Primary AI system demonstration and testing',
     category: 'ai',
     status: 'active',
-    tags: ['ai', 'demo', 'system', 'integration'],
+    tags: ['ai', 'demo', 'system', 'integration']
   },
   {
     id: 'dashboard',
@@ -592,7 +590,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Central system monitoring and control dashboard',
     category: 'main',
     status: 'active',
-    tags: ['dashboard', 'monitoring', 'system'],
+    tags: ['dashboard', 'monitoring', 'system']
   },
   {
     id: 'system-status',
@@ -602,7 +600,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Real-time system health and performance monitoring',
     category: 'admin',
     status: 'active',
-    tags: ['status', 'monitoring', 'health'],
+    tags: ['status', 'monitoring', 'health']
   },
   {
     id: 'gpu-demo',
@@ -612,7 +610,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'GPU acceleration demonstration and integration',
     category: 'demo',
     status: 'active',
-    tags: ['gpu', 'acceleration', 'performance'],
+    tags: ['gpu', 'acceleration', 'performance']
   },
   {
     id: 'semantic-search-demo',
@@ -622,7 +620,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Advanced semantic search with SSR and debouncing',
     category: 'ai',
     status: 'active',
-    tags: ['search', 'semantic', 'ai', 'ssr'],
+    tags: ['search', 'semantic', 'ai', 'ssr']
   },
   {
     id: 'webgpu-demo',
@@ -632,7 +630,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'WebGPU Redis cache optimizer and compute demos',
     category: 'demo',
     status: 'active',
-    tags: ['webgpu', 'cache', 'optimization'],
+    tags: ['webgpu', 'cache', 'optimization']
   },
   {
     id: 'investigation',
@@ -642,7 +640,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal investigation workspace with AI assistance',
     category: 'legal',
     status: 'active',
-    tags: ['investigation', 'workspace', 'legal'],
+    tags: ['investigation', 'workspace', 'legal']
   },
   {
     id: 'rag-demo',
@@ -652,7 +650,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Retrieval-Augmented Generation system demonstration',
     category: 'ai',
     status: 'active',
-    tags: ['rag', 'ai', 'retrieval', 'generation'],
+    tags: ['rag', 'ai', 'retrieval', 'generation']
   },
   {
     id: 'system-health',
@@ -662,7 +660,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'System health dashboard and diagnostics',
     category: 'admin',
     status: 'active',
-    tags: ['health', 'diagnostics', 'system'],
+    tags: ['health', 'diagnostics', 'system']
   },
   {
     id: 'studio',
@@ -672,7 +670,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Development studio and testing environment',
     category: 'dev',
     status: 'active',
-    tags: ['studio', 'development', 'testing'],
+    tags: ['studio', 'development', 'testing']
   },
   {
     id: 'showcase',
@@ -682,7 +680,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Enhanced Legal AI platform showcase',
     category: 'demo',
     status: 'active',
-    tags: ['showcase', 'platform', 'demo'],
+    tags: ['showcase', 'platform', 'demo']
   },
   {
     id: 'validation',
@@ -692,7 +690,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal AI platform integration validation suite',
     category: 'admin',
     status: 'active',
-    tags: ['validation', 'integration', 'testing'],
+    tags: ['validation', 'integration', 'testing']
   },
   {
     id: 'data-export',
@@ -702,7 +700,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Data export and backup functionality',
     category: 'admin',
     status: 'active',
-    tags: ['export', 'data', 'backup'],
+    tags: ['export', 'data', 'backup']
   },
   {
     id: 'data-import',
@@ -712,7 +710,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Data import and migration tools',
     category: 'admin',
     status: 'active',
-    tags: ['import', 'data', 'migration'],
+    tags: ['import', 'data', 'migration']
   },
   {
     id: 'api-endpoints',
@@ -722,7 +720,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'API endpoint monitoring and status',
     category: 'admin',
     status: 'active',
-    tags: ['api', 'endpoints', 'monitoring'],
+    tags: ['api', 'endpoints', 'monitoring']
   },
   // GPU & Performance Integration
   {
@@ -733,7 +731,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'WebGPU vector similarity testing suite',
     category: 'dev',
     status: 'active',
-    tags: ['webgpu', 'testing', 'vectors'],
+    tags: ['webgpu', 'testing', 'vectors']
   },
   {
     id: 'gpu-chat',
@@ -743,7 +741,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'GPU-accelerated chat interface',
     category: 'ai',
     status: 'active',
-    tags: ['gpu', 'chat', 'acceleration'],
+    tags: ['gpu', 'chat', 'acceleration']
   },
   {
     id: 'cache-demo',
@@ -753,7 +751,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'GPU cache system demonstration',
     category: 'demo',
     status: 'active',
-    tags: ['cache', 'gpu', 'performance'],
+    tags: ['cache', 'gpu', 'performance']
   },
   // Evidence & Legal Processing
   {
@@ -764,7 +762,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Visual evidence analysis and annotation',
     category: 'legal',
     status: 'active',
-    tags: ['evidence', 'canvas', 'visual'],
+    tags: ['evidence', 'canvas', 'visual']
   },
   {
     id: 'evidence-editor',
@@ -774,7 +772,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Visual evidence editor and processor',
     category: 'legal',
     status: 'active',
-    tags: ['evidence', 'editor', 'processing'],
+    tags: ['evidence', 'editor', 'processing']
   },
   {
     id: 'report-builder',
@@ -784,7 +782,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Automated legal report generation',
     category: 'legal',
     status: 'active',
-    tags: ['reports', 'builder', 'automation'],
+    tags: ['reports', 'builder', 'automation']
   },
   {
     id: 'summarize',
@@ -794,7 +792,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal document summarization with AI',
     category: 'ai',
     status: 'active',
-    tags: ['summarization', 'documents', 'ai'],
+    tags: ['summarization', 'documents', 'ai']
   },
   // AI & Machine Learning
   {
@@ -805,7 +803,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Enhanced AI Legal Assistant testing',
     category: 'ai',
     status: 'active',
-    tags: ['ai', 'testing', 'assistant'],
+    tags: ['ai', 'testing', 'assistant']
   },
   {
     id: 'ai-summary',
@@ -815,7 +813,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI-powered document summary generation',
     category: 'ai',
     status: 'active',
-    tags: ['ai', 'summary', 'generation'],
+    tags: ['ai', 'summary', 'generation']
   },
   {
     id: 'assistant',
@@ -825,7 +823,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'AI Legal Assistant interface',
     category: 'ai',
     status: 'active',
-    tags: ['assistant', 'ai', 'legal'],
+    tags: ['assistant', 'ai', 'legal']
   },
   // Administrative & System
   {
@@ -836,7 +834,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Document upload and processing system',
     category: 'main',
     status: 'active',
-    tags: ['upload', 'documents', 'processing'],
+    tags: ['upload', 'documents', 'processing']
   },
   {
     id: 'gallery',
@@ -846,7 +844,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Media gallery and file management',
     category: 'admin',
     status: 'active',
-    tags: ['gallery', 'media', 'files'],
+    tags: ['gallery', 'media', 'files']
   },
   {
     id: 'storage-audits',
@@ -856,7 +854,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Storage audit logs and monitoring',
     category: 'admin',
     status: 'active',
-    tags: ['storage', 'audits', 'monitoring'],
+    tags: ['storage', 'audits', 'monitoring']
   },
   // Testing & Development
   {
@@ -867,7 +865,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Test navigation hub and suite',
     category: 'dev',
     status: 'active',
-    tags: ['testing', 'hub', 'navigation'],
+    tags: ['testing', 'hub', 'navigation']
   },
   {
     id: 'test-integration',
@@ -877,7 +875,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Integration test suite',
     category: 'dev',
     status: 'active',
-    tags: ['integration', 'testing', 'suite'],
+    tags: ['integration', 'testing', 'suite']
   },
   {
     id: 'test-crud',
@@ -887,7 +885,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'CRUD operations test dashboard',
     category: 'dev',
     status: 'active',
-    tags: ['crud', 'testing', 'operations'],
+    tags: ['crud', 'testing', 'operations']
   },
   // Legal-Specific Features
   {
@@ -898,7 +896,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Persons of interest tracking and management',
     category: 'legal',
     status: 'active',
-    tags: ['persons', 'tracking', 'investigation'],
+    tags: ['persons', 'tracking', 'investigation']
   },
   {
     id: 'prosecutor',
@@ -908,7 +906,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Prosecutor-specific dashboard and tools',
     category: 'legal',
     status: 'active',
-    tags: ['prosecutor', 'dashboard', 'legal'],
+    tags: ['prosecutor', 'dashboard', 'legal']
   },
   {
     id: 'laws',
@@ -918,7 +916,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal resources and law database',
     category: 'legal',
     status: 'active',
-    tags: ['laws', 'resources', 'database'],
+    tags: ['laws', 'resources', 'database']
   },
   {
     id: 'citations',
@@ -928,7 +926,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Legal citations management',
     category: 'legal',
     status: 'active',
-    tags: ['citations', 'legal', 'management'],
+    tags: ['citations', 'legal', 'management']
   },
   {
     id: 'saved-citations',
@@ -938,7 +936,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Saved citations collection',
     category: 'legal',
     status: 'active',
-    tags: ['citations', 'saved', 'collection'],
+    tags: ['citations', 'saved', 'collection']
   },
   // Advanced Features
   {
@@ -949,7 +947,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'System brain graph visualization',
     category: 'admin',
     status: 'active',
-    tags: ['brain', 'graph', 'visualization'],
+    tags: ['brain', 'graph', 'visualization']
   },
   {
     id: 'graph',
@@ -959,7 +957,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'WASM graph engine and visualization',
     category: 'dev',
     status: 'active',
-    tags: ['wasm', 'graph', 'engine'],
+    tags: ['wasm', 'graph', 'engine']
   },
   {
     id: 'simd-ai-demo',
@@ -969,7 +967,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'SIMD AI demo platform',
     category: 'demo',
     status: 'active',
-    tags: ['simd', 'ai', 'performance'],
+    tags: ['simd', 'ai', 'performance']
   },
   {
     id: 'optimization-dashboard',
@@ -979,7 +977,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Advanced optimization dashboard',
     category: 'admin',
     status: 'active',
-    tags: ['optimization', 'performance', 'dashboard'],
+    tags: ['optimization', 'performance', 'dashboard']
   },
   // State Management & Monitoring
   {
@@ -990,7 +988,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'State machine registry and monitoring',
     category: 'dev',
     status: 'active',
-    tags: ['state', 'machines', 'xstate'],
+    tags: ['state', 'machines', 'xstate']
   },
   {
     id: 'status-monitoring',
@@ -1000,7 +998,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'System status monitoring dashboard',
     category: 'admin',
     status: 'active',
-    tags: ['status', 'monitoring', 'metrics'],
+    tags: ['status', 'monitoring', 'metrics']
   },
   // Authentication & User Management
   {
@@ -1011,7 +1009,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'User authentication and login',
     category: 'admin',
     status: 'active',
-    tags: ['auth', 'login', 'security'],
+    tags: ['auth', 'login', 'security']
   },
   {
     id: 'register',
@@ -1021,7 +1019,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'User registration and onboarding',
     category: 'admin',
     status: 'active',
-    tags: ['auth', 'registration', 'onboarding'],
+    tags: ['auth', 'registration', 'onboarding']
   },
   // Enhanced Legal Workflows
   {
@@ -1032,7 +1030,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Complete Legal AI suite interface',
     category: 'main',
     status: 'active',
-    tags: ['legal', 'ai', 'suite', 'comprehensive'],
+    tags: ['legal', 'ai', 'suite', 'comprehensive']
   },
   {
     id: 'enhanced-ai-demo',
@@ -1042,7 +1040,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Enhanced RAG Studio demonstration',
     category: 'ai',
     status: 'active',
-    tags: ['enhanced', 'rag', 'studio', 'ai'],
+    tags: ['enhanced', 'rag', 'studio', 'ai']
   },
   // Performance & Diagnostics
   {
@@ -1053,7 +1051,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Performance monitoring and analytics',
     category: 'admin',
     status: 'active',
-    tags: ['performance', 'monitoring', 'analytics'],
+    tags: ['performance', 'monitoring', 'analytics']
   },
   {
     id: 'proxy',
@@ -1063,7 +1061,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'Proxy diagnostic and debugging tools',
     category: 'dev',
     status: 'active',
-    tags: ['proxy', 'diagnostics', 'debugging'],
+    tags: ['proxy', 'diagnostics', 'debugging']
   },
   // YoRHa Extended Features
   {
@@ -1074,7 +1072,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'YoRHa Legal AI Terminal interface',
     category: 'demo',
     status: 'active',
-    tags: ['yorha', 'terminal', 'interface'],
+    tags: ['yorha', 'terminal', 'interface']
   },
   {
     id: 'yorha-analysis',
@@ -1084,7 +1082,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'YoRHa analysis dashboard',
     category: 'demo',
     status: 'active',
-    tags: ['yorha', 'analysis', 'dashboard'],
+    tags: ['yorha', 'analysis', 'dashboard']
   },
   {
     id: 'yorha-persons',
@@ -1094,7 +1092,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'YoRHa persons of interest interface',
     category: 'demo',
     status: 'active',
-    tags: ['yorha', 'persons', 'interest'],
+    tags: ['yorha', 'persons', 'interest']
   },
   // Auto-generated missing routes
   {
@@ -1105,7 +1103,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'admin cluster functionality',
     category: 'admin',
     status: 'active',
-    tags: ['auto-generated', 'admin', 'management'],
+    tags: ['auto-generated', 'admin', 'management']
   },
   {
     id: 'admin-gpu-demo',
@@ -1115,7 +1113,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'admin gpu demo functionality',
     category: 'admin',
     status: 'active',
-    tags: ['auto-generated', 'admin', 'management'],
+    tags: ['auto-generated', 'admin', 'management']
   },
   {
     id: 'admin-users',
@@ -1125,7 +1123,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'admin users functionality',
     category: 'admin',
     status: 'active',
-    tags: ['auto-generated', 'admin', 'management'],
+    tags: ['auto-generated', 'admin', 'management']
   },
   {
     id: 'admin-users--userid',
@@ -1135,7 +1133,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'admin :user id functionality',
     category: 'admin',
     status: 'active',
-    tags: ['auto-generated', 'admin', 'management'],
+    tags: ['auto-generated', 'admin', 'management']
   },
   {
     id: 'ai',
@@ -1145,7 +1143,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities ai functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'ai-upload-demo',
@@ -1155,7 +1153,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'ai ai upload demo functionality',
     category: 'ai',
     status: 'active',
-    tags: ['auto-generated', 'ai', 'intelligence'],
+    tags: ['auto-generated', 'ai', 'intelligence']
   },
   {
     id: 'ai-enhanced-mcp',
@@ -1165,7 +1163,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'ai enhanced mcp functionality',
     category: 'ai',
     status: 'active',
-    tags: ['auto-generated', 'ai', 'intelligence'],
+    tags: ['auto-generated', 'ai', 'intelligence']
   },
   {
     id: 'ai-modular',
@@ -1175,7 +1173,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'ai modular functionality',
     category: 'ai',
     status: 'active',
-    tags: ['auto-generated', 'ai', 'intelligence'],
+    tags: ['auto-generated', 'ai', 'intelligence']
   },
   {
     id: 'ai-orchestrator',
@@ -1185,7 +1183,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'ai orchestrator functionality',
     category: 'ai',
     status: 'active',
-    tags: ['auto-generated', 'ai', 'intelligence'],
+    tags: ['auto-generated', 'ai', 'intelligence']
   },
   {
     id: 'aiassistant',
@@ -1195,7 +1193,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities aiassistant functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'all-routes',
@@ -1205,7 +1203,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities all routes functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'auth',
@@ -1215,7 +1213,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities auth functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'auth-login',
@@ -1225,7 +1223,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'auth login functionality',
     category: 'auth',
     status: 'active',
-    tags: ['auto-generated', 'authentication', 'security'],
+    tags: ['auto-generated', 'authentication', 'security']
   },
   {
     id: 'auth-login-simple',
@@ -1235,7 +1233,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'auth simple functionality',
     category: 'auth',
     status: 'active',
-    tags: ['auto-generated', 'authentication', 'security'],
+    tags: ['auto-generated', 'authentication', 'security']
   },
   {
     id: 'auth-register',
@@ -1245,7 +1243,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'auth register functionality',
     category: 'auth',
     status: 'active',
-    tags: ['auto-generated', 'authentication', 'security'],
+    tags: ['auto-generated', 'authentication', 'security']
   },
   {
     id: 'auth-test',
@@ -1255,7 +1253,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'auth test functionality',
     category: 'auth',
     status: 'active',
-    tags: ['auto-generated', 'authentication', 'security'],
+    tags: ['auto-generated', 'authentication', 'security']
   },
   {
     id: 'authenticated-crud-test',
@@ -1265,7 +1263,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities authenticated crud test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'bits-uno-demo',
@@ -1275,7 +1273,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo bits uno demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'cache-redis-admin',
@@ -1285,7 +1283,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'system redis admin functionality',
     category: 'system',
     status: 'active',
-    tags: ['auto-generated', 'cache', 'performance'],
+    tags: ['auto-generated', 'cache', 'performance']
   },
   {
     id: 'canvas-demo',
@@ -1295,7 +1293,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo canvas demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'cases--caseid-rag',
@@ -1305,7 +1303,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal rag functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'cases--id',
@@ -1315,7 +1313,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal :id functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'cases--id-canvas',
@@ -1325,7 +1323,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal canvas functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'cases--id-enhanced',
@@ -1335,7 +1333,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal enhanced functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'cases-create',
@@ -1345,7 +1343,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal create functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'cases-new',
@@ -1355,7 +1353,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal new functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'chat-demo',
@@ -1365,7 +1363,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo chat demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'compiler-ai-demo',
@@ -1375,7 +1373,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo compiler ai demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'context7-demodisabled',
@@ -1385,7 +1383,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo context7 demo.disabled functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'copilot-autonomous',
@@ -1395,7 +1393,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities autonomous functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'crud-dashboard',
@@ -1405,7 +1403,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities crud dashboard functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'cuda-streaming',
@@ -1415,7 +1413,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities cuda streaming functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dashboard-cases',
@@ -1425,7 +1423,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'legal cases functionality',
     category: 'legal',
     status: 'active',
-    tags: ['auto-generated', 'legal', 'cases'],
+    tags: ['auto-generated', 'legal', 'cases']
   },
   {
     id: 'dashboard-search',
@@ -1435,7 +1433,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities search functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'demo-bits-ui',
@@ -1445,7 +1443,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo bits ui functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-chat-stream',
@@ -1455,7 +1453,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo chat stream functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-clean-architecture',
@@ -1465,7 +1463,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo clean architecture functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-complete-integration',
@@ -1475,7 +1473,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo complete integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-crud-integration',
@@ -1485,7 +1483,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo crud integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-cuda-minio-upload',
@@ -1495,7 +1493,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo cuda minio upload functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-cuda-rtx-integration',
@@ -1505,7 +1503,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo cuda rtx integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-cyber-elephant',
@@ -1515,7 +1513,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo cyber elephant functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-document-upload-gpu',
@@ -1525,7 +1523,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo document upload gpu functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-drag-drop',
@@ -1535,7 +1533,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo drag drop functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-editor-test',
@@ -1545,7 +1543,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo editor test functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-embedding-chat',
@@ -1555,7 +1553,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo embedding chat functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-enhanced-rag-demo',
@@ -1565,7 +1563,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo enhanced rag demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-full-stack-integration',
@@ -1575,7 +1573,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo full stack integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gaming-evolution-16bit',
@@ -1585,7 +1583,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo 16bit functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gaming-evolution-8bit',
@@ -1595,7 +1593,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo 8bit functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gaming-evolution-n64',
@@ -1605,7 +1603,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo n64 functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-glyph-generator',
@@ -1615,7 +1613,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo glyph generator functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gpu-acceleration',
@@ -1625,7 +1623,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo gpu acceleration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gpu-assistant',
@@ -1635,7 +1633,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo gpu assistant functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gpu-cache-integration',
@@ -1645,7 +1643,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo gpu cache integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gpu-chat',
@@ -1655,7 +1653,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo gpu chat functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gpu-inference',
@@ -1665,7 +1663,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo gpu inference functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-gpu-legal-ai-lawpdfs',
@@ -1675,7 +1673,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo lawpdfs functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-headless-ui-showcase',
@@ -1685,7 +1683,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo headless ui showcase functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-hybrid-cache-architecture',
@@ -1695,7 +1693,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo hybrid cache architecture functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-hybrid-legal-analysis',
@@ -1705,7 +1703,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo hybrid legal analysis functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-instant-search',
@@ -1715,7 +1713,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo instant search functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-integrated-system',
@@ -1725,7 +1723,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo integrated system functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-lazy-loading',
@@ -1735,7 +1733,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo lazy loading functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-legal-ai-platform',
@@ -1745,7 +1743,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo legal ai platform functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-legal-components',
@@ -1755,7 +1753,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo legal components functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-legal-search',
@@ -1765,7 +1763,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo legal search functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-nes-bits-ui',
@@ -1775,7 +1773,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo nes bits ui functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-nes-yorha-3d',
@@ -1785,7 +1783,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo nes yorha 3d functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-nes-yorha-hybrid',
@@ -1795,7 +1793,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo nes yorha hybrid functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-neural-sprite',
@@ -1805,7 +1803,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo neural sprite functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-observability',
@@ -1815,7 +1813,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo observability functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-ollama-integration',
@@ -1825,7 +1823,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo ollama integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-phase14',
@@ -1835,7 +1833,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo phase14 functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-productivity-ai-integration',
@@ -1845,7 +1843,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo productivity ai integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-progressive-gaming-ui',
@@ -1855,7 +1853,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo progressive gaming ui functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-ps1-effects-advanced',
@@ -1865,7 +1863,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo ps1 effects advanced functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-ps1-stories',
@@ -1875,7 +1873,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo ps1 stories functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-rag-integration',
@@ -1885,7 +1883,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo rag integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-real-time-search',
@@ -1895,7 +1893,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo real time search functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-recommendation-system',
@@ -1905,7 +1903,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo recommendation system functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-retro-gpu-metrics',
@@ -1915,7 +1913,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo retro gpu metrics functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-semantic-3d',
@@ -1925,7 +1923,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo semantic 3d functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-semantic-search',
@@ -1935,7 +1933,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo semantic search functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-shader-cache',
@@ -1945,7 +1943,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo shader cache functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-simd-glyphs',
@@ -1955,7 +1953,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo simd glyphs functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-streaming-workflow',
@@ -1965,7 +1963,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo streaming workflow functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-system-integration',
@@ -1975,7 +1973,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo system integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-ui-components',
@@ -1985,7 +1983,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo ui components functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-unified-integration',
@@ -1995,7 +1993,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo unified integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-unified-vector',
@@ -2005,7 +2003,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo unified vector functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-vector-pipeline',
@@ -2015,7 +2013,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo vector pipeline functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-wasm-parser',
@@ -2025,7 +2023,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo wasm parser functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-webasm-ai-complete',
@@ -2035,7 +2033,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo webasm ai complete functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-webgpu-graph',
@@ -2045,7 +2043,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo webgpu graph functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-webgpu-quantization',
@@ -2055,7 +2053,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo webgpu quantization functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-webgpu-webasm-integration',
@@ -2065,7 +2063,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo webgpu webasm integration functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demo-xstate-auth',
@@ -2075,7 +2073,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo xstate auth functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'demos',
@@ -2085,7 +2083,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities demos functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'demos-ingest-assistant',
@@ -2095,7 +2093,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities ingest assistant functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'demos-ingest-simple',
@@ -2105,7 +2103,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities ingest simple functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'demos-nes-auth',
@@ -2115,7 +2113,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities nes auth functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'detective-canvas',
@@ -2125,7 +2123,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities canvas functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-demo',
@@ -2135,7 +2133,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo dev demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'dev-ai-setup',
@@ -2145,7 +2143,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'ai ai setup functionality',
     category: 'ai',
     status: 'active',
-    tags: ['auto-generated', 'ai', 'intelligence'],
+    tags: ['auto-generated', 'ai', 'intelligence']
   },
   {
     id: 'dev-cache-demo',
@@ -2155,7 +2153,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo cache demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'dev-enhanced-processor',
@@ -2165,7 +2163,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities enhanced processor functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-gpu-tiling',
@@ -2175,7 +2173,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'system gpu tiling functionality',
     category: 'system',
     status: 'active',
-    tags: ['auto-generated', 'gpu', 'performance'],
+    tags: ['auto-generated', 'gpu', 'performance']
   },
   {
     id: 'dev-ingest-status',
@@ -2185,7 +2183,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities ingest status functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-ingestion-dashboard',
@@ -2195,7 +2193,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities ingestion dashboard functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-metrics',
@@ -2205,7 +2203,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities metrics functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-pgvector-test',
@@ -2215,7 +2213,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities pgvector test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-suggestions',
@@ -2225,7 +2223,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities suggestions functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'dev-tensor-demo',
@@ -2235,7 +2233,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo tensor demo functionality',
     category: 'dev',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'dev-vite-error-demo',
@@ -2245,7 +2243,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo vite error demo functionality',
     category: 'dev',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'dev-webgpu-diagnostics',
@@ -2255,7 +2253,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'system webgpu diagnostics functionality',
     category: 'system',
     status: 'active',
-    tags: ['auto-generated', 'gpu', 'performance'],
+    tags: ['auto-generated', 'gpu', 'performance']
   },
   {
     id: 'document-editor-demo',
@@ -2265,7 +2263,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo document editor demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'editor',
@@ -2275,7 +2273,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities editor functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'enhanced',
@@ -2285,7 +2283,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities enhanced functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'evidence-analyze',
@@ -2295,7 +2293,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities analyze functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'evidence-hash',
@@ -2305,7 +2303,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities hash functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'evidence-manage',
@@ -2315,7 +2313,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities manage functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'evidence-realtime',
@@ -2325,7 +2323,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities realtime functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'evidence-upload',
@@ -2335,7 +2333,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities upload functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'evidenceboard',
@@ -2345,7 +2343,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities evidenceboard functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'examples-svelte5',
@@ -2355,7 +2353,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities svelte5 functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'frameworks-demo',
@@ -2365,7 +2363,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo frameworks demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'golden-ratio-demo',
@@ -2375,7 +2373,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo golden ratio demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'interactive-canvas',
@@ -2385,7 +2383,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities interactive canvas functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'law',
@@ -2395,7 +2393,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities law functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'local-ai-demo',
@@ -2405,7 +2403,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo local ai demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'logout',
@@ -2415,7 +2413,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities logout functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'modern-demo',
@@ -2425,7 +2423,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo modern demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'neural-topology-demo',
@@ -2435,7 +2433,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo neural topology demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'nier-showcase',
@@ -2445,7 +2443,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities nier showcase functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'original-home',
@@ -2455,7 +2453,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities original home functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'persons',
@@ -2465,7 +2463,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities persons functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'phase13-demo',
@@ -2475,7 +2473,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo phase13 demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'pipeline-demo',
@@ -2485,7 +2483,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo pipeline demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'poi',
@@ -2495,7 +2493,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities poi functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'rag',
@@ -2505,7 +2503,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities rag functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'recommendations-demo',
@@ -2515,7 +2513,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo recommendations demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'shadersearch',
@@ -2525,7 +2523,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities shader_search functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'simple',
@@ -2535,7 +2533,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities simple functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'simple-test',
@@ -2545,7 +2543,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities simple test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'simple-upload-test',
@@ -2555,7 +2553,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities simple upload test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'state-persistence',
@@ -2565,7 +2563,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities persistence functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'state-transitions',
@@ -2575,7 +2573,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities transitions functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'test-ai-ask',
@@ -2585,7 +2583,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test ai ask functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-ai-assistant',
@@ -2595,7 +2593,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test ai assistant functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-button',
@@ -2605,7 +2603,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test button functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-buttons',
@@ -2615,7 +2613,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test buttons functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-case',
@@ -2625,7 +2623,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test case functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-components',
@@ -2635,7 +2633,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test components functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-crud',
@@ -2645,7 +2643,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test crud functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-embedding',
@@ -2655,7 +2653,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test embedding functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-enhanced-actions',
@@ -2665,7 +2663,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test enhanced actions functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-enhanced-upload',
@@ -2675,7 +2673,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test enhanced upload functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-forms',
@@ -2685,7 +2683,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test forms functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-gemma3',
@@ -2695,7 +2693,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test gemma3 functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-gpu-cache',
@@ -2705,7 +2703,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test gpu cache functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-gpu-metrics',
@@ -2715,7 +2713,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test gpu metrics functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-integration',
@@ -2725,7 +2723,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test integration functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-simple',
@@ -2735,7 +2733,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test simple functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-svelte5',
@@ -2745,7 +2743,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test svelte5 functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-upload',
@@ -2755,7 +2753,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test upload functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-xstate',
@@ -2765,7 +2763,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test xstate functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-gallery-api',
@@ -2775,7 +2773,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev gallery api functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-n64-button',
@@ -2785,7 +2783,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev n64 button functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-n64-legal-progress',
@@ -2795,7 +2793,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev n64 legal progress functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-status',
@@ -2805,7 +2803,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev status functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'test-webasm-langchain',
@@ -2815,7 +2813,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev webasm langchain functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'text-editor',
@@ -2825,7 +2823,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities text editor functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'ui-demo',
@@ -2835,7 +2833,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo ui demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'upload-test',
@@ -2845,7 +2843,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities upload test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'w1',
@@ -2855,7 +2853,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities w1 functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'wasm-gpu-demo',
@@ -2865,7 +2863,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo wasm gpu demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'windows-gguf-demo',
@@ -2875,7 +2873,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo windows gguf demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'yorha',
@@ -2885,7 +2883,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities yorha functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-command-center',
@@ -2895,7 +2893,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities yorha command center functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-demo',
@@ -2905,7 +2903,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'demo yorha demo functionality',
     category: 'demo',
     status: 'active',
-    tags: ['auto-generated', 'demo', 'showcase'],
+    tags: ['auto-generated', 'demo', 'showcase']
   },
   {
     id: 'yorha-home',
@@ -2915,7 +2913,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities yorha home functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-simple',
@@ -2925,7 +2923,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities yorha simple functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-test',
@@ -2935,7 +2933,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities yorha test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-api-test',
@@ -2945,7 +2943,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities api test functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-components',
@@ -2955,7 +2953,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities components functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-dashboard',
@@ -2965,7 +2963,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities dashboard functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   {
     id: 'yorha-detective-test',
@@ -2975,7 +2973,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'dev test functionality',
     category: 'dev',
     status: 'development',
-    tags: ['auto-generated', 'testing', 'development'],
+    tags: ['auto-generated', 'testing', 'development']
   },
   {
     id: 'yorha-terminal',
@@ -2985,7 +2983,7 @@ export const allRoutes: RouteDefinition[] = [
     description: 'utilities terminal functionality',
     category: 'utilities',
     status: 'active',
-    tags: ['auto-generated'],
+    tags: ['auto-generated']
   },
   // Auto-generated missing routes
 ];
@@ -3013,43 +3011,41 @@ export function getRoutesByTag(tag: string): RouteDefinition[] {
   return allRoutes.filter(route => route.tags.includes(tag));
 }
 // Route categories with metadata
-export const routeCategories = {
-  main: {
-    label: 'CORE OPERATIONS',
+export const routeCategories = { main: {, label: 'CORE OPERATIONS',
     icon: '⚡',
     description: 'Primary system operations and tools',
-    color: '#ffbf00',
+    color: '#ffbf00'
   },
   demo: {
     label: 'AI DEMONSTRATIONS',
     icon: '🎯',
     description: 'AI capabilities and technology showcases',
-    color: '#00ff41',
+    color: '#00ff41'
   },
   ai: {
     label: 'AI SYSTEMS',
     icon: '🤖',
     description: 'Artificial intelligence tools and interfaces',
-    color: '#ff6b6b',
+    color: '#ff6b6b'
   },
   legal: {
     label: 'LEGAL OPERATIONS',
     icon: '⚖️',
     description: 'Legal-specific tools and workflows',
-    color: '#4ecdc4',
+    color: '#4ecdc4'
   },
   dev: {
     label: 'DEVELOPMENT TOOLS',
     icon: '🔧',
     description: 'Development and debugging utilities',
-    color: '#a78bfa',
+    color: '#a78bfa'
   },
   admin: {
     label: 'ADMINISTRATION',
     icon: '⚙️',
     description: 'System administration and configuration',
-    color: '#fb7185',
-  },
+    color: '#fb7185'
+  }
 };
 // Statistics for dashboard
 export const routeStats = {
@@ -3064,7 +3060,7 @@ export const routeStats = {
       return acc;
     },
     {} as Record<string, number>
-  ),
+  )
 };
 // Additional interfaces and types for compatibility
 export interface DynamicRouteConfig {
@@ -3072,14 +3068,10 @@ export interface DynamicRouteConfig {
   component?: typeof SvelteComponent;
   metadata?: Record<string, unknown>;
 }
-export interface GeneratedRoute {
-  path: string;
-  handler: typeof SvelteComponent | undefined;
+export interface GeneratedRoute { path: string;, handler: typeof SvelteComponent | undefined;
   config: DynamicRouteConfig;
 }
-export interface NavigationGuard {
-  name: string;
-  condition: (route: RouteDefinition) => boolean;
+export interface NavigationGuard { name: string;, condition: (route: RouteDefinition) => boolean;
 }
 // Route registry for dynamic route management
 export const routeRegistry = new Map<string, RouteDefinition>();
@@ -3098,6 +3090,6 @@ export function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute
   return {
     path: config.path,
     handler: config.component,
-    config,
+    config
   };
 }

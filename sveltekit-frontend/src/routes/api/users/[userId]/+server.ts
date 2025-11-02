@@ -79,7 +79,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       }
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Only update provided fields
     if (data.email !== undefined) updateData.email = data.email.trim().toLowerCase();
@@ -107,7 +107,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       role: users.role,
       isActive: users.isActive,
       createdAt: users.createdAt,
-      updatedAt: users.updatedAt,
+      updatedAt: users.updatedAt
     });
     return json(updatedUser);
   } catch (error: any) {
@@ -144,7 +144,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const [deletedUser] = await db.delete(users).where(eq(users.id, userId)).returning({
       id: users.id,
       email: users.email,
-      name: users.name,
+      name: users.name
     });
     return json({ success: true, deletedUser });
   } catch (error: any) {
@@ -177,7 +177,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'User not found' }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Handle specific patch operations
     if (data.operation === 'activate' && currentUser.role === 'admin') {
@@ -223,7 +223,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       role: users.role,
       isActive: users.isActive,
       createdAt: users.createdAt,
-      updatedAt: users.updatedAt,
+      updatedAt: users.updatedAt
     });
     return json(updatedUser);
   } catch (error: any) {

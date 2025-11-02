@@ -18,23 +18,17 @@ declare global {
     request: Request;
     respondWith(response: Promise<Response> | Response): void;
   }
-  interface ExtendableMessageEvent extends ExtendableEvent {
-    data: any;
-    origin: string;
+  interface ExtendableMessageEvent extends ExtendableEvent { data: any;, origin: string;
     lastEventId: string;
     source: Client | ServiceWorker | MessagePort | null;
     ports: MessagePort[];
   }
-  interface SyncEvent extends ExtendableEvent {
-    tag: string;
-    lastChance: boolean;
+  interface SyncEvent extends ExtendableEvent { tag: string;, lastChance: boolean;
   }
   interface PushEvent extends ExtendableEvent {
     data: PushMessageData | null;
   }
-  interface NotificationEvent extends ExtendableEvent {
-    notification: Notification;
-    action: string;
+  interface NotificationEvent extends ExtendableEvent { notification: Notification;, action: string;
   }
   // Service Worker Registration
   interface ServiceWorkerRegistration {

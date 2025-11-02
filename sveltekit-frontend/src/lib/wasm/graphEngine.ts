@@ -8,26 +8,18 @@ import type { Document } from '$lib/types';
  */
 import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
 import { browser } from '$app/environment';
-export interface GraphNode {
-  id: string;
-  label: string;
+export interface GraphNode { id: string;, label: string;
   properties: { [key: string]: any };
   type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';
 }
-export interface GraphEdge {
-  id: string;
-  source: string;
+export interface GraphEdge { id: string;, source: string;
   target: string;
   label: string;
   properties: { [key: string]: any };
   weight?: number;
 }
-export interface GraphResult {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
-  metadata: {
-    queryTime: number;
-    resultCount: number;
+export interface GraphResult { nodes: GraphNode[];, edges: GraphEdge[];
+  metadata: { queryTime: number;, resultCount: number;
     source: 'wasm' | 'cache' | 'remote';
   };
 }
@@ -38,9 +30,7 @@ export interface WasmGraphEngine {
   getStats(): WasmEngineStats;
   hydrateFromCache(): Promise<number>;
 }
-export interface WasmEngineStats {
-  queriesCached: number;
-  memoryUsage: string;
+export interface WasmEngineStats { queriesCached: number;, memoryUsage: string;
   uptime: number;
   cacheHitRate: number;
   lastHydration: Date | null;
@@ -83,20 +73,20 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           nodes: nodeCount,
           edges: edgeCount,
-          executionTime: Math.floor(Math.random() * 10) + 1,
+          executionTime: Math.floor(Math.random() * 10) + 1
         };
       },
       recommend: (nodeId: string, nodeType: string) => {
         // Simulate recommendation algorithm
         return {
           recommendations: Math.floor(Math.random() * 5) + 1,
-          confidence: Math.random(),
+          confidence: Math.random()
         };
       },
       memory: () => ({
         used: Math.floor(Math.random() * 1000000) + 500000, // bytes
-        allocated: 2000000,
-      }),
+        allocated: 2000000
+      })
     };
   }
   async executeQuery(query: string): Promise<GraphResult> {
@@ -114,8 +104,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...cached.metadata,
             source: 'cache',
-            queryTime: Date.now() - startTime,
-          },
+            queryTime: Date.now() - startTime
+          }
         };
       }
       // Execute via WASM if available
@@ -130,8 +120,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...result.metadata,
             source: 'wasm',
-            queryTime: Date.now() - startTime,
-          },
+            queryTime: Date.now() - startTime
+          }
         };
       }
       // Fallback to remote query via service registry
@@ -142,8 +132,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         metadata: {
           ...remoteResult.metadata,
           source: 'remote',
-          queryTime: Date.now() - startTime,
-        },
+          queryTime: Date.now() - startTime
+        }
       };
     } catch (error) {
       console.error('❌ Graph query execution failed:', error);
@@ -162,8 +152,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
           created: new Date().toISOString(),
-          source: 'wasm',
-        },
+          source: `wasm` }
       });
     }
     // Generate mock edges
@@ -174,9 +163,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         target: nodes[i + 1].id,
         label: 'RELATED_TO',
         properties: {
-          weight: Math.random(),
-          created: new Date().toISOString(),
-        },
+         , weight: Math.random(),
+          created: new Date().toISOString()
+        }
       });
     }
     return {
@@ -185,8 +174,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: wasmResult.executionTime,
         resultCount: nodes.length + edges.length,
-        source: 'wasm',
-      },
+        source: 'wasm'
+      }
     };
   }
   private async executeRemoteQuery(query: string): Promise<GraphResult> {
@@ -199,15 +188,14 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           id: 'remote_1',
           label: 'Remote Case',
           type: 'Case',
-          properties: { title: 'Remote Case Example', status: 'active' },
+          properties: { title: 'Remote Case Example', status: 'active' }
         },
       ],
       edges: [],
       metadata: {
         queryTime: 75,
         resultCount: 1,
-        source: 'remote',
-      },
+        source: `remote` }
     };
   }
   async cacheQuery(query: string, result: GraphResult): Promise<void> {
@@ -229,10 +217,10 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           label: `Recommendation ${i + 1}`,
           type: nodeType as any,
           properties: {
-            confidence: wasmResult.confidence,
+           , confidence: wasmResult.confidence,
             source: 'wasm_recommendation',
-            basedOn: nodeId,
-          },
+            basedOn: nodeId
+          }
         });
       }
       return recommendations;
@@ -248,7 +236,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       memoryUsage: `${Math.round((memoryInfo.used / 1024 / 1024) * 100) / 100}MB`,
       uptime: Date.now() - this.startTime,
       cacheHitRate: this.cacheRequests > 0 ? (this.cacheHits / this.cacheRequests) * 100 : 0,
-      lastHydration: this.lastHydration,
+      lastHydration: this.lastHydration
     };
   }
   async hydrateFromCache(): Promise<number> {
@@ -288,8 +276,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: storedResult.queryTime || 0,
         resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
-        source: 'cache',
-      },
+        source: `cache` }
     };
   }
   private hashQuery(query: string): string {

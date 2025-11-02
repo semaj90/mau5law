@@ -28,7 +28,7 @@ const VectorSearchRequestSchema = z.object({
   topK: z.number().int().min(1).max(100).default(10).optional(),
   threshold: z.number().min(0).max(1).default(0.5).optional(),
   searchInTable: z.enum(['evidence', 'documents']).default('evidence').optional(),
-  filters: z.record(z.unknown()).optional(),
+  filters: z.record(z.unknown()).optional()
 });
 
 type VectorSearchRequest = z.infer<typeof VectorSearchRequestSchema>;
@@ -44,16 +44,12 @@ interface VectorSearchResult {
   confidentialityLevel?: string;
 }
 
-interface VectorSearchResponse {
-  results: VectorSearchResult[];
-  query: string;
+interface VectorSearchResponse { results: VectorSearchResult[];, query: string;
   topK: number;
   threshold: number;
   responseTime: number;
   timestamp: string;
-  metadata: {
-    table: string;
-    modelUsed: string;
+  metadata: { table: string;, modelUsed: string;
     indexType: string;
   };
 }
@@ -67,12 +63,12 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
         prompt: text,
-        stream: false,
-      }),
+        stream: false
+      })
     });
 
     if (!response.ok) {
@@ -89,8 +85,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     console.error('Embedding error:', err);
     throw error(503, {
       message: 'Failed to generate query embedding',
-      detail: err instanceof Error ? err.message : 'Unknown error',
-    });
+      detail: err instanceof Error ? err.message : `Unknown error` });
   }
 }
 
@@ -103,9 +98,7 @@ async function searchEvidenceWithDrizzle(
 ): Promise<VectorSearchResult[]> {
   try {
     // Use raw SQL with Drizzle for pgvector cosine distance
-    const results = await db.execute<{
-      id: string;
-      title: string;
+    const results = await db.execute<{ id: string;, title: string;
       description: string | null;
       similarity: number;
       evidenceType: string;
@@ -136,14 +129,13 @@ async function searchEvidenceWithDrizzle(
       similarity: row.similarity,
       evidenceType: row.evidenceType,
       confidentialityLevel: row.confidentialityLevel || undefined,
-      metadata: row.metadata ? JSON.parse(row.metadata) : undefined,
+      metadata: row.metadata ? JSON.parse(row.metadata) : undefined
     }));
   } catch (err) {
     console.error('Evidence search error:', err);
     throw error(500, {
       message: 'Evidence search failed',
-      detail: err instanceof Error ? err.message : 'Database error',
-    });
+      detail: err instanceof Error ? err.message : `Database error` });
   }
 }
 
@@ -153,9 +145,7 @@ async function searchDocumentsWithDrizzle(
   threshold: number
 ): Promise<VectorSearchResult[]> {
   try {
-    const results = await db.execute<{
-      id: string;
-      content: string | null;
+    const results = await db.execute<{ id: string;, content: string | null;
       similarity: number;
     }>(
       sql`
@@ -174,13 +164,13 @@ async function searchDocumentsWithDrizzle(
     return results.map((row) => ({
       id: row.id,
       content: row.content || undefined,
-      similarity: row.similarity,
+      similarity: row.similarity
     }));
   } catch (err) {
     console.error('Documents search error:', err);
     throw error(500, {
       message: 'Documents search failed',
-      detail: err instanceof Error ? err.message : 'Database error',
+      detail: err instanceof Error ? err.message : 'Database error'
     });
   }
 }
@@ -230,8 +220,8 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         table: searchTable,
         modelUsed: 'embeddinggemma:latest',
-        indexType: 'pgvector (cosine distance)',
-      },
+        indexType: 'pgvector (cosine distance)'
+      }
     };
 
     return json(response);
@@ -239,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (err instanceof z.ZodError) {
       return error(400, {
         message: 'Invalid request parameters',
-        errors: err.flatten().fieldErrors,
+        errors: err.flatten().fieldErrors
       });
     }
 
@@ -250,8 +240,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return error(500, {
       message: 'Search failed',
-      detail: err instanceof Error ? err.message : 'Unknown error',
-    });
+      detail: err instanceof Error ? err.message : `Unknown error` });
   }
 };
 
@@ -265,30 +254,29 @@ export const GET: RequestHandler = async () => {
     );
 
     if (!vectorTest || vectorTest.length === 0) {
-      return error(503, { message: 'pgvector not available' });
+      return error(503, { message: `pgvector not available` });
     }
 
     // Check Ollama
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
     const ollamaCheck = await fetch(`${ollamaUrl}/api/tags`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     }).catch(() => null);
 
     return json({
       status: 'healthy',
       services: {
         pgvector: 'available',
-        ollama: ollamaCheck?.ok ? 'available' : 'unreachable',
+        ollama: ollamaCheck?.ok ? 'available' : 'unreachable'
       },
       endpoints: {
-        search: 'POST /api/search-drizzle-pgvector',
-        health: 'GET /api/search-drizzle-pgvector',
-      },
+       , search: 'POST /api/search-drizzle-pgvector',
+        health: 'GET /api/search-drizzle-pgvector'
+      }
     });
   } catch (err) {
     return error(503, {
       message: 'Health check failed',
-      detail: err instanceof Error ? err.message : 'Unknown error',
-    });
+      detail: err instanceof Error ? err.message : `Unknown error` });
   }
 };

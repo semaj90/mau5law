@@ -27,7 +27,7 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
     return apiSuccess(
       {
         conversation: conversationData.conversation,
-        messages: chatMessages,
+        messages: chatMessages
       },
       'Conversation retrieved successfully',
       requestId

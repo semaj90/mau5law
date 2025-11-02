@@ -6,9 +6,7 @@ import { createMachine, assign, setup } from 'xstate';
 import type { EventObject, StateValue } from 'xstate';
 // ==================== DOCUMENT PROCESSING WORKFLOW ====================
 }
-export interface DocumentContext {
-  documentId: string;
-  fileName: string;
+export interface DocumentContext { documentId: string;, fileName: string;
   fileSize: number;
   mimeType: string;
   caseId?: string;
@@ -21,25 +19,21 @@ export interface DocumentContext {
   retryCount: number;
 }
 export type DocumentEvent =
-  | { type: 'UPLOAD_STARTED'; file: File; caseId?: string; uploadedBy: number }
-  | { type: 'UPLOAD_COMPLETED'; documentId: string; fileName: string }
-  | { type: 'UPLOAD_FAILED'; error: string }
-  | { type: 'TEXT_EXTRACTION_COMPLETED'; text: string; confidence?: number }
-  | { type: 'TEXT_EXTRACTION_FAILED'; error: string }
-  | { type: 'EMBEDDING_COMPLETED'; embeddings: number[] }
-  | { type: 'EMBEDDING_FAILED'; error: string }
+  | { type: 'UPLOAD_STARTED'; file: File; caseId?: string;, uploadedBy: number }
+  | { type: 'UPLOAD_COMPLETED'; documentId: string;, fileName: string }
+  | { type: 'UPLOAD_FAILED';, error: string }
+  | { type: 'TEXT_EXTRACTION_COMPLETED';, text: string; confidence?: number }
+  | { type: 'TEXT_EXTRACTION_FAILED';, error: string }
+  | { type: 'EMBEDDING_COMPLETED';, embeddings: number[] }
+  | { type: 'EMBEDDING_FAILED';, error: string }
   | { type: 'INDEXING_COMPLETED' }
-  | { type: 'INDEXING_FAILED'; error: string }
+  | { type: 'INDEXING_FAILED';, error: string }
   | { type: 'RETRY' }
   | { type: 'ABORT' }
-export const documentWorkflowMachine = setup({
-  types: {
-    context: { [key,: strin,g]: any } as DocumentContext,
+export const documentWorkflowMachine = setup({ types: {, context: { [key,: strin,g]: any } as DocumentContext,
     events: { [key,: strin,g]: any } as DocumentEvent
   },
-  actions: {
-    setDocumentInfo: assign({
-      documentId: ({ event }) => (event as any).documentId,
+  actions: {, setDocumentInfo: assign({, documentId: ({ event }) => (event as any).documentId,
       fileName: ({ event }) => (event as any).fileName
     }),
     setExtractedText: assign({
@@ -80,13 +74,9 @@ export const documentWorkflowMachine = setup({
     uploadedBy: 0,
     retryCount: 0
   },
-  states: {
-    idle: {
-      on: {
-        UPLOAD_STARTED: {
-          target: 'uploading',
+  states: { idle: {, on: { UPLOAD_STARTED: {, target: 'uploading',
           actions: assign({
-            fileName: ({ event }) => event.file.name,
+           , fileName: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
             mimeType: ({ event }) => event.file.type,
             caseId: ({ event }) => event.caseId,
@@ -95,9 +85,7 @@ export const documentWorkflowMachine = setup({
         }
       }
     },
-    uploading: {
-      on: {
-        UPLOAD_COMPLETED: {
+    uploading: { on: {, UPLOAD_COMPLETED: {
           target: 'extractingText',
           actions: 'setDocumentInfo'
         },
@@ -107,9 +95,7 @@ export const documentWorkflowMachine = setup({
         }
       }
     },
-    extractingText: {
-      on: {
-        TEXT_EXTRACTION_COMPLETED: {
+    extractingText: { on: {, TEXT_EXTRACTION_COMPLETED: {
           target: 'generatingEmbeddings',
           actions: 'setExtractedText'
         },
@@ -126,9 +112,7 @@ export const documentWorkflowMachine = setup({
         ]
       }
     },
-    generatingEmbeddings: {
-      on: {
-        EMBEDDING_COMPLETED: {
+    generatingEmbeddings: { on: {, EMBEDDING_COMPLETED: {
           target: 'indexing',
           actions: 'setEmbeddings'
         },
@@ -145,9 +129,7 @@ export const documentWorkflowMachine = setup({
         ]
       }
     },
-    indexing: {
-      on: {
-        INDEXING_COMPLETED: {
+    indexing: { on: {, INDEXING_COMPLETED: {
           target: 'completed',
           actions: 'resetRetries'
         },
@@ -164,18 +146,14 @@ export const documentWorkflowMachine = setup({
         ]
       }
     },
-    retrying: {
-      on: {
-        RETRY: 'extractingText',
+    retrying: { on: {, RETRY: 'extractingText',
         ABORT: 'failed'
       }
     },
     completed: {
       type: 'final'
     },
-    failed: {
-      on: {
-        RETRY: {
+    failed: { on: {, RETRY: {
           target: 'extractingText',
           guard: 'canRetry',
           actions: 'incrementRetry'
@@ -186,9 +164,7 @@ export const documentWorkflowMachine = setup({
 });
 // ==================== CASE WORKFLOW ====================
 }
-export interface CaseContext {
-  caseId: string;
-  title: string;
+export interface CaseContext { caseId: string;, title: string;
   status: 'draft' | 'active' | 'under_review' | 'closed' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   assignedTo?: number;
@@ -201,25 +177,21 @@ export interface CaseContext {
   requiredApprovals: number;
 }
 export type CaseEvent =
-  | { type: 'CREATE_CASE'; title: string; assignedTo?: number }
+  | { type: 'CREATE_CASE';, title: string; assignedTo?: number }
   | { type: 'ACTIVATE_CASE' }
-  | { type: 'ADD_DOCUMENT'; documentId: string }
-  | { type: 'ADD_EVIDENCE'; evidenceId: string }
-  | { type: 'SUBMIT_FOR_REVIEW'; reviewers: number[] }
-  | { type: 'APPROVE'; reviewerId: number }
-  | { type: 'REJECT'; reviewerId: number; reason: string }
-  | { type: 'REQUEST_CHANGES'; reviewerId: number; changes: string }
+  | { type: 'ADD_DOCUMENT';, documentId: string }
+  | { type: 'ADD_EVIDENCE';, evidenceId: string }
+  | { type: 'SUBMIT_FOR_REVIEW';, reviewers: number[] }
+  | { type: 'APPROVE';, reviewerId: number }
+  | { type: 'REJECT'; reviewerId: number;, reason: string }
+  | { type: 'REQUEST_CHANGES'; reviewerId: number;, changes: string }
   | { type: 'CLOSE_CASE'; reason?: string }
   | { type: 'ARCHIVE_CASE' }
-  | { type: 'REOPEN_CASE'; reason: string }
-export const caseWorkflowMachine = setup({
-  types: {
-    context: { [key,: strin,g]: any } as CaseContext,
+  | { type: 'REOPEN_CASE';, reason: string }
+export const caseWorkflowMachine = setup({ types: {, context: { [key,: strin,g]: any } as CaseContext,
     events: { [key,: strin,g]: any } as CaseEvent
   },
-  actions: {
-    createCase: assign({
-      caseId: () => `case_${Date.now()}`,
+  actions: {, createCase: assign({, caseId: () => `case_${Date.now()}`,
       title: ({ event }) => (event as any).title,
       assignedTo: ({ event }) => (event as any).assignedTo,
       status: 'draft' as const,
@@ -263,7 +235,7 @@ export const caseWorkflowMachine = setup({
   id: 'caseWorkflow',
   initial: 'idle',
   context: {
-    caseId: '',
+   , caseId: '',
     title: '',
     status: 'draft',
     priority: 'medium',
@@ -274,18 +246,12 @@ export const caseWorkflowMachine = setup({
     approvals: 0,
     requiredApprovals: 0
   },
-  states: {
-    idle: {
-      on: {
-        CREATE_CASE: {
-          target: 'draft',
+  states: { idle: {, on: { CREATE_CASE: {, target: 'draft',
           actions: 'createCase'
         }
       }
     },
-    draft: {
-      on: {
-        ADD_DOCUMENT: {
+    draft: { on: {, ADD_DOCUMENT: {
           actions: 'addDocument'
         },
         ADD_EVIDENCE: {
@@ -302,9 +268,7 @@ export const caseWorkflowMachine = setup({
         }
       }
     },
-    active: {
-      on: {
-        ADD_DOCUMENT: {
+    active: { on: {, ADD_DOCUMENT: {
           actions: 'addDocument'
         },
         ADD_EVIDENCE: {
@@ -320,9 +284,7 @@ export const caseWorkflowMachine = setup({
         }
       }
     },
-    under_review: {
-      on: {
-        APPROVE: [
+    under_review: { on: {, APPROVE: [
           {
             target: 'closed',
             guard: 'hasRequiredApprovals',
@@ -342,9 +304,7 @@ export const caseWorkflowMachine = setup({
         }
       }
     },
-    closed: {
-      on: {
-        ARCHIVE_CASE: {
+    closed: { on: {, ARCHIVE_CASE: {
           target: 'archived',
           actions: 'updateActivity'
         },
@@ -354,9 +314,7 @@ export const caseWorkflowMachine = setup({
         }
       }
     },
-    archived: {
-      on: {
-        REOPEN_CASE: {
+    archived: { on: {, REOPEN_CASE: {
           target: 'active',
           actions: 'updateActivity'
         }
@@ -366,9 +324,7 @@ export const caseWorkflowMachine = setup({
 });
 // ==================== RAG QUERY WORKFLOW ====================
 }
-export interface RAGContext {
-  queryId: string;
-  query: string;
+export interface RAGContext { queryId: string;, query: string;
   userId: number;
   caseId?: string;
   searchResults: any[];
@@ -377,28 +333,22 @@ export interface RAGContext {
   sources: string[];
   cached: boolean;
   processingTime: number;
-  tokens: {
-    input: number;
-    output: number;
+  tokens: { input: number;, output: number;
   }
 }
 export type RAGEvent =
-  | { type: 'START_QUERY'; query: string; userId: number; caseId?: string }
-  | { type: 'CACHE_HIT'; response: string; sources: string[] }
-  | { type: 'SEARCH_COMPLETED'; results: any[] }
-  | { type: 'SEARCH_FAILED'; error: string }
-  | { type: 'GENERATION_COMPLETED'; response: string; confidence: number; tokens: any }
-  | { type: 'GENERATION_FAILED'; error: string }
+  | { type: 'START_QUERY'; query: string;, userId: number; caseId?: string }
+  | { type: 'CACHE_HIT'; response: string;, sources: string[] }
+  | { type: 'SEARCH_COMPLETED';, results: any[] }
+  | { type: 'SEARCH_FAILED';, error: string }
+  | { type: 'GENERATION_COMPLETED'; response: string; confidence: number;, tokens: any }
+  | { type: 'GENERATION_FAILED';, error: string }
   | { type: 'CACHE_STORED' }
-  | { type: 'RETRY' }
-export const ragWorkflowMachine = setup({
-  types: {
-    context: { [key,: strin,g]: any } as RAGContext,
+  | { type: `RETRY` }
+export const ragWorkflowMachine = setup({ types: {, context: { [key,: strin,g]: any } as RAGContext,
     events: { [key,: strin,g]: any } as RAGEvent
   },
-  actions: {
-    initializeQuery: assign({
-      queryId: () => `rag_${Date.now()}`,
+  actions: {, initializeQuery: assign({, queryId: () => `rag_${Date.now()}`,
       query: ({ event }) => (event as any).query,
       userId: ({ event }) => (event as any).userId,
       caseId: ({ event }) => (event as any).caseId,
@@ -443,18 +393,12 @@ export const ragWorkflowMachine = setup({
     processingTime: 0,
     tokens: { input: 0, output: 0 }
   },
-  states: {
-    idle: {
-      on: {
-        START_QUERY: {
-          target: 'checkingCache',
+  states: { idle: {, on: { START_QUERY: {, target: 'checkingCache',
           actions: 'initializeQuery'
         }
       }
     },
-    checkingCache: {
-      on: {
-        CACHE_HIT: {
+    checkingCache: { on: {, CACHE_HIT: {
           target: 'completed',
           actions: 'setCachedResponse'
         },
@@ -467,27 +411,21 @@ export const ragWorkflowMachine = setup({
         100: 'searching' // Fallback if cache check takes too long
       }
     },
-    searching: {
-      on: {
-        SEARCH_COMPLETED: {
+    searching: { on: {, SEARCH_COMPLETED: {
           target: 'generating',
           actions: 'setSearchResults'
         },
         SEARCH_FAILED: 'failed'
       }
     },
-    generating: {
-      on: {
-        GENERATION_COMPLETED: {
+    generating: { on: {, GENERATION_COMPLETED: {
           target: 'caching',
           actions: 'setGeneratedResponse'
         },
         GENERATION_FAILED: 'failed'
       }
     },
-    caching: {
-      on: {
-        CACHE_STORED: 'completed'
+    caching: { on: {, CACHE_STORED: 'completed'
       },
       after: {
         1000: 'completed' // Complete even if caching fails
@@ -496,10 +434,7 @@ export const ragWorkflowMachine = setup({
     completed: {
       type: 'final'
     },
-    failed: {
-      on: {
-        RETRY: 'searching'
-      }
+    failed: {, on: {, RETRY: `searching` }
     }
   }
 });

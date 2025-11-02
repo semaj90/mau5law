@@ -6,6 +6,7 @@ Vector Intelligence Demo Component
 Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';

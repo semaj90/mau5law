@@ -41,13 +41,13 @@ const DOCKER_FRIENDLY_DEFAULTS = {
     process.env.REDIS_URL,
     process.env.DOCKER_REDIS_URL,
     // common docker-compose service name: 'redis://redis:6379',
-    'redis://localhost:6379',
+    'redis://localhost:6379'
   ].filter(Boolean) as string[],
   ollamaCandidates: [
     process.env.OLLAMA_API_BASE,
     process.env.DOCKER_OLLAMA_HOST,
     'http://ollama:11434',
-    'http://localhost:11434',
+    'http://localhost:11434'
   ].filter(Boolean) as string[],
   embeddingModel: process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
   l2TtlSeconds: process.env.REDIS_L2_TTL ? Number(process.env.REDIS_L2_TTL) : 1800,
@@ -58,24 +58,16 @@ const DOCKER_FRIENDLY_DEFAULTS = {
 
 // --- Type Definitions ---
 
-export interface RedisGPUCacheEntry {
-  key: string;
-  response: string;
+export interface RedisGPUCacheEntry { key: string;, response: string;
   // Data prepared on the server for the client's GPU
-  quantized: {
-    compressed: Uint8Array;
-    compressionRatio: number;
+  quantized: { compressed: Uint8Array;, compressionRatio: number;
     glyphMap: Record<string, string>;
   };
   embeddings: number[]; // JSON friendly
-  gpuTexturePayload: {
-    chrROMPattern: string;
-    visualGlyphs: Uint8Array;
+  gpuTexturePayload: { chrROMPattern: string;, visualGlyphs: Uint8Array;
     renderCache: string; // Pre-rendered HTML or data
   };
-  metadata: {
-    userId: string;
-    sessionId: string;
+  metadata: { userId: string;, sessionId: string;
     confidence: number;
     processingTime: number; // in milliseconds
     cacheLevel: 'L1' | 'L2';
@@ -89,21 +81,15 @@ export interface RedisGPUCacheEntry {
 type SerializableCacheEntry = Omit<
   RedisGPUCacheEntry,
   'quantized' | 'gpuTexturePayload' | 'embeddings' | 'metadata'
-> & {
-  quantized: {
-    compressed: number[]; // number[] is JSON serializable
+> & { quantized: {, compressed: number[]; // number[] is JSON serializable
     compressionRatio: number;
     glyphMap: Record<string, string>;
   };
   embeddings: number[];
-  gpuTexturePayload: {
-    chrROMPattern: string;
-    visualGlyphs: number[]; // number[] is JSON serializable
+  gpuTexturePayload: { chrROMPattern: string;, visualGlyphs: number[]; // number[] is JSON serializable
     renderCache: string;
   };
-  metadata: Omit<RedisGPUCacheEntry['metadata'], 'timestamp' | 'lastAccessed'> & {
-    timestamp: string;
-    lastAccessed: string;
+  metadata: Omit<RedisGPUCacheEntry['metadata'], 'timestamp' | 'lastAccessed'> & { timestamp: string;, lastAccessed: string;
   };
 };
 
@@ -126,7 +112,7 @@ class RedisGPUChatOptimizationService {
     embeddingModel: DOCKER_FRIENDLY_DEFAULTS.embeddingModel,
     l2TtlSeconds: DOCKER_FRIENDLY_DEFAULTS.l2TtlSeconds,
     autoConnectRedis: true,
-    redisMaxRetriesPerRequest: DOCKER_FRIENDLY_DEFAULTS.redisMaxRetriesPerRequest,
+    redisMaxRetriesPerRequest: DOCKER_FRIENDLY_DEFAULTS.redisMaxRetriesPerRequest
   };
 
   constructor(initialConfig?: ServiceConfig) {
@@ -153,7 +139,7 @@ class RedisGPUChatOptimizationService {
       // Cast to MinimalRedis to satisfy our local typing surface
       this.redis = new Redis({
         url: redisUrl,
-        maxRetriesPerRequest: this.config.redisMaxRetriesPerRequest,
+        maxRetriesPerRequest: this.config.redisMaxRetriesPerRequest
       }) as unknown as MinimalRedis;
 
       // Attach runtime event handlers if the instance exposes `on`
@@ -201,7 +187,7 @@ class RedisGPUChatOptimizationService {
       embeddingModel: partial.embeddingModel ?? this.config.embeddingModel,
       l2TtlSeconds: partial.l2TtlSeconds ?? this.config.l2TtlSeconds,
       autoConnectRedis: partial.autoConnectRedis ?? this.config.autoConnectRedis,
-      redisMaxRetriesPerRequest: partial.redisMaxRetriesPerRequest ?? this.config.redisMaxRetriesPerRequest,
+      redisMaxRetriesPerRequest: partial.redisMaxRetriesPerRequest ?? this.config.redisMaxRetriesPerRequest
     };
 
     // If Redis URL changed, recreate connection
@@ -269,7 +255,7 @@ class RedisGPUChatOptimizationService {
     response: string,
     userId: string,
     sessionId: string,
-    metadata: { confidence: number; processingTime: number }
+    metadata: {, confidence: number; processingTime: number }
   ): Promise<void> {
     const cacheKey = this.generateCacheKey(query, userId);
 
@@ -287,8 +273,8 @@ class RedisGPUChatOptimizationService {
         cacheLevel: 'L2',
         timestamp: new Date().toISOString(),
         hitCount: 1,
-        lastAccessed: new Date().toISOString(),
-      },
+        lastAccessed: new Date().toISOString()
+      }
     };
 
     // Always cache in L1 for immediate access
@@ -325,7 +311,7 @@ class RedisGPUChatOptimizationService {
       return {
         compressed: new TextEncoder().encode(response),
         compressionRatio: 1.0,
-        glyphMap: {},
+        glyphMap: {}
       };
     }
 
@@ -361,9 +347,9 @@ class RedisGPUChatOptimizationService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.embeddingModel,
-          prompt: text,
-        }),
+         , model: this.config.embeddingModel,
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -411,18 +397,18 @@ class RedisGPUChatOptimizationService {
       ...entry,
       quantized: {
         ...entry.quantized,
-        compressed: Array.from(entry.quantized.compressed),
+        compressed: Array.from(entry.quantized.compressed)
       },
       embeddings: entry.embeddings,
       gpuTexturePayload: {
         ...entry.gpuTexturePayload,
-        visualGlyphs: Array.from(entry.gpuTexturePayload.visualGlyphs),
+        visualGlyphs: Array.from(entry.gpuTexturePayload.visualGlyphs)
       },
       metadata: {
         ...entry.metadata,
         timestamp: entry.metadata.timestamp,
-        lastAccessed: entry.metadata.lastAccessed,
-      },
+        lastAccessed: entry.metadata.lastAccessed
+      }
     };
     return JSON.stringify(serializable);
   }
@@ -433,18 +419,18 @@ class RedisGPUChatOptimizationService {
       ...parsed,
       quantized: {
         ...parsed.quantized,
-        compressed: new Uint8Array(parsed.quantized.compressed),
+        compressed: new Uint8Array(parsed.quantized.compressed)
       },
       embeddings: parsed.embeddings,
       gpuTexturePayload: {
         ...parsed.gpuTexturePayload,
-        visualGlyphs: new Uint8Array(parsed.gpuTexturePayload.visualGlyphs),
+        visualGlyphs: new Uint8Array(parsed.gpuTexturePayload.visualGlyphs)
       },
       metadata: {
         ...parsed.metadata,
         timestamp: parsed.metadata.timestamp,
-        lastAccessed: parsed.metadata.lastAccessed,
-      },
+        lastAccessed: parsed.metadata.lastAccessed
+      }
     };
   }
 

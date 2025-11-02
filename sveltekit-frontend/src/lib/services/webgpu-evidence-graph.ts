@@ -1,6 +1,4 @@
-export interface GraphNode {
-  id: string;
-  x: number;
+export interface GraphNode { id: string;, x: number;
   y: number;
   z: number;
   type: 'evidence' | 'entity' | 'event' | 'correlation';
@@ -10,9 +8,7 @@ export interface GraphNode {
   connections: string[];
 }
 
-export interface GraphEdge {
-  source: string;
-  target: string;
+export interface GraphEdge { source: string;, target: string;
   weight: number;
   type: 'temporal' | 'causal' | 'semantic' | 'entity';
   color: [number, number, number, number];
@@ -125,7 +121,7 @@ export class WebGPUEvidenceGraph {
     this.context.configure({
       device: this.device,
       format: presentationFormat,
-      alphaMode: 'premultiplied',
+      alphaMode: 'premultiplied'
     });
     // Create render pipeline
     await this.createPipeline(presentationFormat);
@@ -135,10 +131,10 @@ export class WebGPUEvidenceGraph {
   private async createPipeline(format: GPUTextureFormat): Promise<void> {
     if (!this.device) return;
     const vertexModule = this.device.createShaderModule({
-      code: this.vertexShader,
+      code: this.vertexShader
     });
     const fragmentModule = this.device.createShaderModule({
-      code: this.fragmentShader,
+      code: this.fragmentShader
     });
 
     this.pipeline = this.device.createRenderPipeline({
@@ -148,28 +144,28 @@ export class WebGPUEvidenceGraph {
         entryPoint: 'main',
         buffers: [
           {
-            arrayStride: 32, // 3 floats position (12) + 4 floats color (16) + 1 float size (4) = 32
+           , arrayStride: 32, // 3 floats position (12) + 4 floats color (16) + 1 float size (4) = 32
             attributes: [
               { shaderLocation: 0, offset: 0, format: 'float32x3' },
               { shaderLocation: 1, offset: 12, format: 'float32x4' },
-              { shaderLocation: 2, offset: 28, format: 'float32' },
-            ],
+              { shaderLocation: 2, offset: 28, format: 'float32' }
+            ]
           },
-        ],
+        ]
       },
       fragment: {
         module: fragmentModule,
         entryPoint: 'main',
-        targets: [{ format }],
+        targets: [{ format }]
       },
       primitive: {
-        topology: 'point-list',
+        topology: 'point-list'
       },
       depthStencil: {
         format: 'depth24plus',
         depthWriteEnabled: true,
-        depthCompare: 'less',
-      },
+        depthCompare: 'less'
+      }
     });
   }
   private createBuffers(): void {
@@ -177,7 +173,7 @@ export class WebGPUEvidenceGraph {
     // Create uniform buffer for matrices and time
     this.uniformBuffer = this.device.createBuffer({
       size: 144, // 2 mat4x4 (2*64) + 1 float (4) aligned -> keep 144 bytes
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Create bind group
     this.bindGroup = this.device.createBindGroup({
@@ -186,10 +182,10 @@ export class WebGPUEvidenceGraph {
         {
           binding: 0,
           resource: {
-            buffer: this.uniformBuffer!,
-          },
+            buffer: this.uniformBuffer!
+          }
         },
-      ],
+      ]
     });
   }
   public updateGraph(nodes: GraphNode[], edges: GraphEdge[]): void {
@@ -215,7 +211,7 @@ export class WebGPUEvidenceGraph {
     this.nodeBuffer = this.device.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     new Float32Array(this.nodeBuffer.getMappedRange()).set(data);
     this.nodeBuffer.unmap();
@@ -256,7 +252,7 @@ export class WebGPUEvidenceGraph {
     this.edgeBuffer = this.device.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     new Float32Array(this.edgeBuffer.getMappedRange()).set(data);
     this.edgeBuffer.unmap();
@@ -287,10 +283,9 @@ export class WebGPUEvidenceGraph {
     // Create command encoder
     const commandEncoder = this.device.createCommandEncoder();
     // Create depth texture using explicit size object
-    const depthTexture = this.device.createTexture({
-      size: { width: this.canvas.width, height: this.canvas.height, depthOrArrayLayers: 1 },
+    const depthTexture = this.device.createTexture({ size: {, width: this.canvas.width, height: this.canvas.height, depthOrArrayLayers: 1 },
       format: 'depth24plus',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT
     });
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [
@@ -298,15 +293,14 @@ export class WebGPUEvidenceGraph {
           view: this.context.getCurrentTexture().createView(),
           clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: 'store',
+          storeOp: 'store'
         },
       ],
       depthStencilAttachment: {
         view: depthTexture.createView(),
         depthClearValue: 1.0,
         depthLoadOp: 'clear',
-        depthStoreOp: 'store',
-      },
+        depthStoreOp: `store` }
     };
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     passEncoder.setPipeline(this.pipeline);

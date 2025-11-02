@@ -4,6 +4,9 @@ Uses Gemma3 summarization service for converting 200-page legal documents into c
 Enhanced-bits UI integration with real-time progress and quality metrics
 -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Label } from '$lib/components/ui/label';
+  import { Button } from '$lib/components/ui/button';
 import type { Message } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported

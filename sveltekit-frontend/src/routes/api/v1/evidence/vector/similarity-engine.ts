@@ -3,16 +3,12 @@
  * Provides performSimilaritySearch used by unified evidence analysis route.
  * This is a mock / placeholder; replace with real vector DB + embedding logic.
  */
-export interface PerformSimilaritySearchArgs {
-  query: string;
-  evidenceIds: string[];
+export interface PerformSimilaritySearchArgs { query: string;, evidenceIds: string[];
   algorithms: string[];
   clustering?: boolean;
   threshold?: number; // 0..1
 }
-interface ClusterResult {
-  evidenceIds: string[];
-  coherenceScore: number; // 0..1
+interface ClusterResult { evidenceIds: string[];, coherenceScore: number; // 0..1
   themes: string[];
 }
 interface SimilaritySearchResult {
@@ -47,7 +43,7 @@ export class AdvancedSimilarityEngine {
         clusters.push({
           evidenceIds: slice,
           coherenceScore: coherence,
-          themes: deriveThemes(slice),
+          themes: deriveThemes(slice)
         });
       }
     }
@@ -55,7 +51,7 @@ export class AdvancedSimilarityEngine {
       clusters,
       algorithms,
       totalEvidence: evidenceIds.length,
-      timings: { totalMs: Date.now() - start },
+      timings: { totalMs: Date.now() - start }
     };
   }
 }

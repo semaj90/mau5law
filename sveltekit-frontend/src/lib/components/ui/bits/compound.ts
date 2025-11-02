@@ -11,5 +11,5 @@ export {
   CompoundButton as ButtonCompound,
   CompoundDialog as DialogCompound,
   CompoundCard as CardCompound,
-  CompoundSelect as SelectCompound,
+  CompoundSelect as SelectCompound
 };

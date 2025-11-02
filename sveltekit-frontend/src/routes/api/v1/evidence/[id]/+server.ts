@@ -8,7 +8,7 @@ import { json, error, type RequestHandler } from '@sveltejs/kit';
 import {
   EvidenceCRUDService,
   UpdateEvidenceSchema,
-  type UpdateEvidenceData,
+  type UpdateEvidenceData
 } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 // UUID validation schema
@@ -33,9 +33,9 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       success: true,
       data: evidenceData,
       meta: {
-        userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+       , userId: getUserId(locals),
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching evidence:', err);
@@ -64,7 +64,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const body = await request.json();
     const validatedData = UpdateEvidenceSchema.parse({
       id: evidenceId,
-      ...body,
+      ...body
     }) as UpdateEvidenceData;
     // Create service instance
     const evidenceService = new EvidenceCRUDService(getUserId(locals));
@@ -76,9 +76,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: updatedEvidence,
       meta: {
-        userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+       , userId: getUserId(locals),
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error updating evidence:', err);
@@ -114,10 +114,10 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       success: true,
       message: 'Evidence deleted successfully',
       meta: {
-        deletedEvidenceId: evidenceId,
+       , deletedEvidenceId: evidenceId,
         userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error deleting evidence:', err);

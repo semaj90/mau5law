@@ -978,7 +978,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         >
           {#each filteredEvidence as evidence (evidence.id)}
             <div
-              class="evidence-nier-bits-card" nes-container {selectedEvidence.includes(evidence.id)
+              class="evidence-nier-bits-card nes-container" {selectedEvidence.includes(evidence.id)
                 ? 'is-success'
                 : 'with-title'} relative"
               class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}

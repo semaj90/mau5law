@@ -26,9 +26,7 @@ export interface RefreshableCollection {
   search(query: string): Item[];
 }
 
-interface LokiStore {
-  evidence: Item[];
-  notes: Item[];
+interface LokiStore { evidence: Item[];, notes: Item[];
   canvasStates: Item[];
 }
 
@@ -36,7 +34,7 @@ interface LokiStore {
 export const lokiStore = writable<LokiStore>({
   evidence: [],
   notes: [],
-  canvasStates: [],
+  canvasStates: []
 });
 
 // --- Helper: create mock data for dev preview --- //
@@ -49,12 +47,12 @@ function createMockData(): LokiStore {
     ],
     notes: [
       { id: 'n1', title: 'Case summary', content: 'Important points...', tags: ['summary'] },
-      { id: 'n2', title: 'Todo list', content: 'Follow up with witness...', tags: ['task'] },
+      { id: 'n2', title: 'Todo list', content: 'Follow up with witness...', tags: ['task'] }
     ],
     canvasStates: [
       { id: 'c1', title: 'Scene Diagram', content: 'Canvas layout v1', tags: ['canvas'] },
-      { id: 'c2', title: 'Relationship Map', content: 'Linked suspects', tags: ['map'] },
-    ],
+      { id: 'c2', title: 'Relationship Map', content: 'Linked suspects', tags: ['map'] }
+    ]
   };
 }
 
@@ -91,7 +89,7 @@ function makeCollection(type: keyof LokiStore): RefreshableCollection {
           .toLowerCase()
           .includes(q)
       );
-    },
+    }
   };
 }
 
@@ -104,5 +102,5 @@ export const loki = {
   },
   evidence: makeCollection('evidence'),
   notes: makeCollection('notes'),
-  canvasStates: makeCollection('canvasStates'),
+  canvasStates: makeCollection('canvasStates')
 };

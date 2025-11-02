@@ -68,6 +68,18 @@ svelte-check-output.txt
 *-check-raw.txt
 *-output.txt
 
+# Large .txt files over 10MB (specific patterns)
+phase22-svelte-check-raw.txt
+svelte-check-errors.txt
+svelte-check-output.txt
+svelte-check-*.txt
+*-check-raw.txt
+*-full-errors.txt
+**/*[0-9][0-9]MB.txt
+**/*_large.txt
+**/logs/**/*.txt
+**/error-logs/**/*.txt
+
 # Any .txt file larger than 10MB
 *.txt
 # Allow small documentation .txt files
@@ -75,4 +87,6 @@ svelte-check-output.txt
 !CHANGELOG*.txt
 !LICENSE*.txt
 !TODO*.txt
+!todolist*.txt
 !**/docs/**/*.txt
+!IMPLEMENTATION_COMPLETE.txt

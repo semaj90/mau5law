@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '../../..');
+const ROOT = path.resolve(__dirname, '../..');
 const LOG_DIR = path.join(ROOT, 'agentic-error-resolution/logs');
 const ERROR_DIR = path.join(ROOT, 'agentic-error-resolution/errors');
 

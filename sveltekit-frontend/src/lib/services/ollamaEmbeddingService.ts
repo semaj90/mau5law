@@ -20,9 +20,9 @@ export class OllamaEmbeddingService implements EmbeddingService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'embeddinggemma:latest',
-          prompt: text,
-        }),
+         , model: 'embeddinggemma:latest',
+          prompt: text
+        })
       });
 
       if (!response.ok) {

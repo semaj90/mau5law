@@ -27,7 +27,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Check 1: PostgreSQL connection
     const db = getDb();
-    const dbTest = await db.select({ one: sql`1` });
+    const dbTest = await db.select({ one: sql`1' });
     checks.checks.postgresql = {
       status: 'ok',
       connected: true
@@ -36,8 +36,7 @@ export const GET: RequestHandler = async () => {
     checks.checks.postgresql = {
       status: 'error',
       connected: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
+      error: error instanceof Error ? error.message : `Unknown error` };
     checks.status = 'unhealthy';
   }
 
@@ -75,8 +74,7 @@ export const GET: RequestHandler = async () => {
     checks.checks.redis = {
       status: 'error',
       healthy: false,
-      error: error instanceof Error ? error.message : 'Redis check failed'
-    };
+      error: error instanceof Error ? error.message : `Redis check failed` };
     // Redis being down doesn't make service unhealthy (graceful degradation)
   }
 
@@ -84,7 +82,7 @@ export const GET: RequestHandler = async () => {
     // Check 4: Indexed documents count
     const db = getDb();
     const countResult = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })
       .from(legalDocumentsJsonb);
 
     const documentCount = countResult[0]?.count || 0;
@@ -98,8 +96,7 @@ export const GET: RequestHandler = async () => {
     checks.checks.documents = {
       status: 'error',
       indexed: 0,
-      error: error instanceof Error ? error.message : 'Count check failed'
-    };
+      error: error instanceof Error ? error.message : `Count check failed` };
   }
 
   // Overall status

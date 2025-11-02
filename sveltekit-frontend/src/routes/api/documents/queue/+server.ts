@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           error: 'Missing required fields',
-          required: ['s3Key', 'originalName', 'mimeType'],
+          required: ['s3Key', 'originalName', 'mimeType']
         },
         { status: 400 }
       );
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caseId: body.caseId,
         userId: body.userId,
         processingType: body.processingType || 'full_analysis',
-        priority: body.priority ?? 5,
+        priority: body.priority ?? 5
       }
     );
 
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       jobId,
       s3Key: body.s3Key,
       caseId: body.caseId,
-      processingType: newJob.processingType,
+      processingType: newJob.processingType
     });
 
     // Publish to RabbitMQ
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
             '3. XState machine tracks progress',
             '4. WebSocket broadcasts updates',
             '5. Frontend receives real-time notifications',
-          ],
+          ]
         },
         { status: 202 } // 202 Accepted
       );
@@ -102,8 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           error: 'Failed to queue document processing job.',
           details: 'RabbitMQ unavailable or connection error',
-          retry: 'Please try again in a few seconds',
-        },
+          retry: 'Please try again in a few seconds` },
         { status: 500 }
       );
     }
@@ -112,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'An unexpected error occurred.',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -142,7 +141,7 @@ export const GET: RequestHandler = async () => {
       healthy: health.healthy,
       queues: health.queues,
       connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('❌ [queue] Health check error:', error);
@@ -150,8 +149,7 @@ export const GET: RequestHandler = async () => {
       {
         healthy: false,
         error: error instanceof Error ? error.message : String(error),
-        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
-      },
+        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672` },
       { status: 503 } // 503 Service Unavailable
     );
   }

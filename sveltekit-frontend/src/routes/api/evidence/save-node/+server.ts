@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: 'Failed to save evidence',
-        details: getErrorMessage(err),
+        details: getErrorMessage(err)
       },
       { status: 500 }
     );
@@ -77,7 +77,7 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<Response
     // Validate input (narrow nodeData before parsing)
     const validatedNode = evidenceNodeSchema.parse({
       ...(typeof nodeData === 'object' && nodeData !== null ? (nodeData as Record<string, unknown>) : {}),
-      userId,
+      userId
     }) as EvidenceNode;
 
     // Create evidence data structure
@@ -94,13 +94,13 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<Response
       caseId: validatedNode.caseId,
       userId,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     return json({
       success: true,
       evidence: evidenceData,
-      message: 'Evidence saved successfully',
+      message: 'Evidence saved successfully'
     });
   } catch (err: any) {
     if (err instanceof z.ZodError) {
@@ -118,12 +118,12 @@ async function saveCanvasState(canvasData: CanvasPayload, userId: string): Promi
     canvasData,
     userId,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   };
   return json({
     success: true,
     canvasState: canvasStateData,
-    message: 'Canvas state saved successfully',
+    message: 'Canvas state saved successfully'
   });
 }
 
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       {
         error: 'Failed to load evidence',
-        details: getErrorMessage(err),
+        details: getErrorMessage(err)
       },
       { status: 500 }
     );

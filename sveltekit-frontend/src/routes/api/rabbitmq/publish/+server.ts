@@ -13,8 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!exchange || !routingKey || !message) {
       return json(
-        {
-          error: 'Missing required fields: exchange, routingKey, message',
+        { error: 'Missing required, fields: exchange, routingKey, message'
         },
         { status: 400 }
       );
@@ -29,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       status: 'published',
       messageSize: JSON.stringify(message).length,
-      headers: headers || {},
+      headers: headers || {}
     };
     // Log the message for debugging
     console.log('📤 RabbitMQ Message Published:', {
@@ -37,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
       exchange,
       routingKey,
       messageType: headers?.messageType,
-      messageSize: publishResult.messageSize,
+      messageSize: publishResult.messageSize
     });
     // Simulate different processing flows based on routing key
     switch (routingKey) {
@@ -51,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
         console.log('🧠 Embedding queued for Neo4j storage:', message.chunk_id);
         break;
       default:
-        console.log('📝 Generic message published to:', routingKey);
+        console.log('📝 Generic message published; to:', routingKey);
     }
     // In a real system, you might want to store this in a database
     // or forward it to an actual RabbitMQ instance
@@ -60,8 +59,8 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'X-Message-ID': messageId,
         'X-Exchange': exchange,
-        'X-Routing-Key': routingKey,
-      },
+        'X-Routing-Key': routingKey
+      }
     });
   } catch (error) {
     console.error('Failed to publish RabbitMQ message:', error);
@@ -69,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Failed to publish message',
         details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -86,9 +85,7 @@ export const GET: RequestHandler = async () => {
     ],
     requiredFields: ['exchange', 'routingKey', 'message'],
     optionalFields: ['headers'],
-    examples: {
-      document: {
-        exchange: 'legal.main',
+    examples: { document: {, exchange: 'legal.main',
         routingKey: 'document',
         message: {
           document_id: 'doc_123',
@@ -97,9 +94,8 @@ export const GET: RequestHandler = async () => {
           metadata: {
             title: 'Service Agreement',
             file_type: 'pdf',
-            upload_date: '2025-01-20T10:00:00Z',
-          },
-        },
+            upload_date: '2025-01-20T10:00:00Z` }
+        }
       },
       chunk: {
         exchange: 'legal.main',
@@ -113,11 +109,11 @@ export const GET: RequestHandler = async () => {
             start_position: 0,
             end_position: 500,
             chunk_size: 500,
-            overlap_size: 50,
-          },
-        },
-      },
-    },
+            overlap_size: 50
+          }
+        }
+      }
+    }
   };
   return json(stats);
 };

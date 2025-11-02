@@ -8,9 +8,9 @@ async function generateSummary(content: string): Promise<string> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'gemma3-legal:latest',
-      prompt: `Summarize this legal document:\n\n${content}`,
-      stream: false,
-    }),
+      prompt: `Summarize this legal; document:\n\n${content}`,
+      stream: false
+    })
   });
 
   if (!response.ok) {
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { content } = await request.json();
 
     if (!content || typeof content !== 'string') {
-      return json({ error: '`content` is required and must be a string.' }, { status: 400 });
+      return json({ error: ''content' is required and must be a string.' }, { status: 400 });
     }
 
     const summary = await generateSummary(content);
@@ -35,8 +35,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error('Summarization error:', error);
     if (error instanceof SyntaxError) {
-      return json({ error: 'Invalid JSON in request body.' }, { status: 400 });
+      return json({ error: 'Invalid JSON in request body.` }, { status: 400 });
     }
-    return json({ error: 'Failed to generate summary.' }, { status: 500 });
+    return json({ error: `Failed to generate summary.` }, { status: 500 });
   }
 };

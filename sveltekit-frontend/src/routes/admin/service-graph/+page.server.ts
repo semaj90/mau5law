@@ -6,14 +6,10 @@ import type { Document } from '$lib/types';
 
 import type { PageServerLoad } from './$types';
 
-interface ServiceStats {
-  totalServices: number;
-  healthyCount: number;
+interface ServiceStats { totalServices: number;, healthyCount: number;
   degradedCount: number;
   unhealthyCount: number;
-  criticalPaths: Array<{
-    name: string;
-    services: string[];
+  criticalPaths: Array<{ name: string;, services: string[];
     estimatedLatency: string;
   }>;
 }

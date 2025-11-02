@@ -42,7 +42,7 @@ interface QdrantSearchResultItem {
   payload?: {
     title?: string;
     summary?: string;
-    [key: string]: any; // Changed: 'any' to: 'unknown'
+    [key: string]: any; // Changed: 'any'; to: 'unknown'
   };
   score: number;
 }
@@ -60,19 +60,12 @@ interface RecommendationResult {
 const typeDefs = /* GraphQL */ `
   scalar JSON
 
-  type Recommendation {
-    id: ID!
-    content: String!
-    score: Float!
-    intent: String
-    timeOfDay: String;
+  type Recommendation { id: ID!, content: String!; score: Float!
+    intent: String; timeOfDay: String;
     position: String
   }
 
-  type LegalDoc {
-    id: ID!
-    title: String!
-    summary: String!
+  type LegalDoc { id: ID!, title: String!; summary: String!
     confidence: Float!
   }
 
@@ -83,16 +76,13 @@ const typeDefs = /* GraphQL */ `
   }
 `;
 
-const resolvers = {
-  Query: {
-    recommendations: async (
-      _parent: any, // Changed: 'any' to: 'unknown'
+const resolvers = { Query: {, recommendations: async (; _parent: any, // Changed: 'any'; to: 'unknown'
       {
         query,
         userContext,
         neo4jContext,
-        limit = 5,
-      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed: 'any' to: 'unknown' and added UserContext/Neo4jPathContext
+        limit = 5
+      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed: 'any'; to: 'unknown' and added UserContext/Neo4jPathContext
     ) => {
       const reranked = await enhancedSearchWithNeo4j(
         query,
@@ -105,7 +95,7 @@ const resolvers = {
       const docs: string[] = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as unknown as string[]; // Simplified type assertion
       return reranked
         .map((result: RecommendationResult) => {
-          let score = result.rerankScore || 0; // Changed: 'const' to: 'let'
+          let score = result.rerankScore || 0; // Changed: 'const'; to: 'let'
           // if (memory.some((m) => m.relatedId === result.id)) score += 1
           if (docs && result.intent && docs.includes(result.intent)) score += 1; // Uncommented and typed
           return {
@@ -114,14 +104,14 @@ const resolvers = {
             score,
             intent: result.intent,
             timeOfDay: result.timeOfDay,
-            position: result.position,
+            position: result.position
           };
         })
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
     },
-    searchLegalDocs: async (_parent: any, { query, topK }: { query: string; topK: number }) => {
-      // Changed: 'any' to: 'unknown'
+    searchLegalDocs: async (_parent: any, { query, topK }: { query: string;, topK: number }) => {
+      // Changed: 'any'; to: 'unknown'
       // Use a double assertion to ensure the type is correctly applied
       const embedding = await (langChainOllamaService as unknown as AugmentedLangChainOllamaService).generateEmbedding(
         query
@@ -160,7 +150,7 @@ const resolvers = {
             id: pgResult.id,
             title: 'Unknown Title',
             summary: 'Unknown Summary',
-            confidence: 0,
+            confidence: 0
           };
         }
         return {
@@ -172,11 +162,11 @@ const resolvers = {
       });
     },
     ragQuery: async (_parent: any, { question }: { question: string }) => {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       const res = await (langChainOllamaService as AugmentedLangChainOllamaService).ragQuery(question); // Added type assertion
       return res.answer;
-    },
-  },
+    }
+  }
 };
 
 const schema = createSchema({ typeDefs, resolvers });

@@ -1,20 +1,35 @@
-import type { Document } from '$lib/types';
-// @ts-nocheck - Advanced experimental service
-/**
- * Self-Organizing Map (SOM) Implementation for Legal Document Clustering
- * Unsupervised learning for document similarity and topic discovery
- */
 import {
   type SOMConfig,
   SelfOrganizingMap,
   type DocumentCluster,
-  type ClusterResult
-} from "$lib/api/enhanced-rest-architecture";
+  type ClusterResult,
+  type APIResponse, // Added APIResponse
+} from '$lib/api/enhanced-rest-architecture';
 import type Redis from 'ioredis';
-import { createIOIORedisInstance } from '$lib/server/redis.js';
+import createIOIORedisInstance from '$lib/server/redis.js'; // Changed to default import
+import type { LegalMetadata } from '$lib/services/simd-json-acceleration'; // Imported LegalMetadata
+
+// Define specific types for 'any' usages
+interface ClusterPositionResult { x: number;, y: number;
+  confidence: number;
+}
+
+interface SOMVisualizationData { width: number;, height: number;
+  neurons: number[];
+}
+
+interface LegalClusterAnalysis { position: { x: number;, y: number };
+  documents: string[];
+  legalTopics: string[];
+  coherence: number;
+}
+
+interface LegalClusterAnalysisResult {
+  clusters: LegalClusterAnalysis[];
+}
 
 export class LegalDocumentSOM extends SelfOrganizingMap {
-  private neurons: number[][][]; // [x][y][dimensions]
+  private neurons!: number[][][]; // [x][y][dimensions] - Added definite assignment assertion
   private redis: Redis;
   private trained: boolean = $state(false);
 
@@ -37,10 +52,11 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   /**
    * Train SOM with legal document embeddings
    */
-  async train(embeddings: number[][]): Promise<ClusterResult> {
+  async train(embeddings: number[][]): Promise<APIResponse<ClusterResult>> {
+    // Changed return type
     const iterations = this.config.iterations ?? this.config.maxIterations ?? 1000;
-    let learningRate = this.config.learningRate ?? 0.1;
-    let radius = this.config.radius ?? Math.max(this.config.width, this.config.height) / 2;
+    const learningRate = this.config.learningRate ?? 0.1; // Changed to const
+    const radius = this.config.radius ?? Math.max(this.config.width, this.config.height) / 2; // Changed to const
 
     console.log(`Training SOM with ${embeddings.length} document embeddings...`);
 
@@ -72,18 +88,22 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
     // Generate cluster results
     const clusters = await this.generateClusters(embeddings);
     return {
-      clusters: clusters,
-      clusterId: `som_${Date.now()}`,
-      silhouetteScore: 0.7, // Mock silhouette score for SOM
-      iterations,
-      converged: this.trained,
-    } as ClusterResult;
+      success: true, // Added success property
+      data: {
+        // Wrapped ClusterResult in data property
+        clusters: clusters,
+        clusterId: `som_${Date.now()}`,
+        silhouetteScore: 0.7, // Mock silhouette score for SOM
+        iterations,
+        converged: this.trained
+      }
+    };
   }
 
   /**
    * Find Best Matching Unit for an embedding
    */
-  private findBMU(embedding: number[]): { x: number; y: number; distance: number } {
+  private findBMU(embedding: number[]): { x: number; y: number;, distance: number } {
     let minDistance = Infinity;
     let bmu = { x: 0, y: 0, distance: Infinity };
     for (let x = 0; x < this.config.width; x++) {
@@ -103,7 +123,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
    */
   private async updateNeighborhood(
     embedding: number[],
-    bmu: { x: number; y: number },
+    bmu: {, x: number; y: number },
     learningRate: number,
     radius: number
   ): Promise<void> {
@@ -127,7 +147,8 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   /**
    * Cluster a new document embedding
    */
-  async cluster(embedding: number[]): Promise<any> {
+  async cluster(embedding: number[]): Promise<ClusterPositionResult> {
+    // Changed return type
     if (!this.trained) {
       throw new Error('SOM must be trained before clustering');
     }
@@ -138,7 +159,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
     return {
       x: bmu.x,
       y: bmu.y,
-      confidence: Math.max(0, Math.min(1, confidence)),
+      confidence: Math.max(0, Math.min(1, confidence))
     };
   }
 
@@ -161,11 +182,13 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   /**
    * Generate SOM visualization data
    */
-  async visualize(): Promise<any> {
-    const visualization = {
+  async visualize(): Promise<SOMVisualizationData> {
+    // Changed return type
+    const visualization: SOMVisualizationData = {
+      // Explicitly typed
       width: this.config.width,
       height: this.config.height,
-      neurons: [] as number[][],
+      neurons: [] as number[][]
     };
     for (let x = 0; x < this.config.width; x++) {
       for (let y = 0; y < this.config.height; y++) {
@@ -181,8 +204,11 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   /**
    * Analyze legal document clusters on the SOM
    */
-  async analyzeLegalClusters(documents: Array<{ id: string; embedding: number[]; metadata: any }>): Promise<any> {
-    const clusterMap = new Map<string, Array<{ id: string; metadata: any }>>();
+  async analyzeLegalClusters(
+    documents: Array<{ id: string; embedding: number[];, metadata: LegalMetadata }>
+  ): Promise<LegalClusterAnalysisResult> {
+    // Changed input and return types
+    const clusterMap = new Map<string, Array<{ id: string;, metadata: LegalMetadata }>>(); // Explicitly typed
     // Map documents to SOM positions
     for (const doc of documents) {
       const position = await this.cluster(doc.embedding);
@@ -193,7 +219,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
       clusterMap.get(key)!.push({ id: doc.id, metadata: doc.metadata });
     }
     // Analyze each cluster
-    const clusters: any[] = [];
+    const clusters: LegalClusterAnalysis[] = []; // Explicitly typed
     for (const [positionKey, clusterDocs] of clusterMap.entries()) {
       const [x, y] = positionKey.split(',').map(Number);
       // Extract legal topics from metadata
@@ -204,7 +230,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
         position: { x, y },
         documents: clusterDocs.map(d => d.id),
         legalTopics,
-        coherence,
+        coherence
       });
     }
     return { clusters };
@@ -213,10 +239,11 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   /**
    * Extract legal topics from document metadata
    */
-  private extractLegalTopics(metadataArray: any[]): string[] {
+  private extractLegalTopics(metadataArray: LegalMetadata[]): string[] {
+    // Changed input type
     const topicCounts = new Map<string, number>();
     for (const metadata of metadataArray) {
-      const topics: string[] = metadata?.legalTopics ?? metadata?.keywords ?? [];
+      const topics: string[] = metadata?.practiceAreas ?? metadata?.tags ?? []; // Adjusted to use LegalMetadata properties
       for (const topic of topics) {
         topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
       }
@@ -268,8 +295,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
         centroid,
         documents: documentIndices.map(i => `doc_${i}`),
         size: documentIndices.length,
-        label: `SOM Cluster ${clusterId + 1} (${x},${y})`,
-      } as DocumentCluster);
+        label: `SOM Cluster ${clusterId + 1} (${x},${y})' } as DocumentCluster);
       clusterId++;
     }
     return clusters;
@@ -301,7 +327,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   // PERSISTENCE METHODS
   // =============================================================================
   private async saveTrainingProgress(iteration: number, learningRate: number, radius: number): Promise<void> {
-    // @ts-ignore - IOIORedis API
+    // @ts-expect-error - IOIORedis API might not have full type definitions for hset overloads
     await this.redis.hset(
       'som:training:progress',
       'iteration',
@@ -320,7 +346,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
       config: this.config,
       neurons: this.neurons,
       trained: this.trained,
-      savedAt: new Date().toISOString(),
+      savedAt: new Date().toISOString()
     };
     await this.redis.set('som:model', JSON.stringify(serialized));
   }

@@ -22,20 +22,20 @@ const createPoiSchema = z.object({
       weight: z.string().optional(),
       hair: z.string().optional(),
       eyes: z.string().optional(),
-      distinguishingMarks: z.string().optional(),
+      distinguishingMarks: z.string().optional()
     })
     .optional(),
   profileData: z
     .object({
       modusOperandi: z.string().optional(),
       knownHabits: z.array(z.string()).optional().default([]),
-      associates: z.array(z.string()).optional().default([]),
+      associates: z.array(z.string()).optional().default([])
     })
     .optional(),
   lastKnownLocation: z.string().optional(),
   lastSeen: z.string().optional(),
   dangerLevel: z.number().min(0).max(10).default(0),
-  notes: z.string().optional(),
+  notes: z.string().optional()
 });
 
 const updatePoiSchema = createPoiSchema.partial();
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     const [pois, totalCount] = await Promise.all([
       query.orderBy(desc(personsOfInterest.createdAt)).limit(limit).offset(offset),
-      db.select({ count: sql`count(*)` }).from(personsOfInterest),
+      db.select({ count: sql`count(*)' }).from(personsOfInterest)
     ]);
 
     return json({
@@ -93,8 +93,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         page,
         limit,
         total: totalCount[0]?.count || 0,
-        pages: Math.ceil((totalCount[0]?.count || 0) / limit),
-      },
+        pages: Math.ceil((totalCount[0]?.count || 0) / limit)
+      }
     });
   } catch (error) {
     console.error('Error fetching POIs:', error);
@@ -119,14 +119,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ...validatedData,
         createdBy: session.user.id,
         dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
-        lastSeen: validatedData.lastSeen ? new Date(validatedData.lastSeen) : null,
+        lastSeen: validatedData.lastSeen ? new Date(validatedData.lastSeen) : null
       })
       .returning();
 
     return json(
       {
         success: true,
-        data: newPoi,
+        data: newPoi
       },
       { status: 201 }
     );
@@ -135,6 +135,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
     }
-    return json({ error: 'Failed to create POI' }, { status: 500 });
+    return json({ error: `Failed to create POI` }, { status: 500 });
   }
 };

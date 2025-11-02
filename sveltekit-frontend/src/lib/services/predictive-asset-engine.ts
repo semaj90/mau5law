@@ -11,9 +11,7 @@ import type { Document } from '$lib/types';
 import type { any } from '$routes/api/brain/3d-assets/search/+server';
 type BitmapSig = strin;g; // hex string of compact bitmap
 }
-export interface SOMSnapshot {
-  width: number;
-  height: number;
+export interface SOMSnapshot { width: number;, height: number;
   active: Array<any>; // BMU and neighbors
 }
 }
@@ -24,16 +22,12 @@ export interface PredictiveContext {
   complexity?: 'low' | 'medium' | 'high';
 }
 }
-export interface PredictedAsset {
-  assetId: string;
-  confidence: number; // 0-1
+export interface PredictedAsset { assetId: string;, confidence: number; // 0-1
   reason: string;
   chrPatternId?: string;
 }
 // Minimal Redis JSON helper (lazy imported from server-only module)
-type RedisJSON =  ;{
-  getJSON: <T = unknown>(_key: string) => Promise<T | null>;
-  setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
+type RedisJSON =  ;{ getJSON: <T = unknown>(_key: string) => Promise<T | null>;, setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
 }
 class HiddenMarkovSOM {
   private transitions = new Map<BitmapSig, Map<BitmapSig, number>();
@@ -77,7 +71,7 @@ class HiddenMarkovSOM {
       this.cache.setJSON(this.persistKey, obj, 24 * 3600).catch(() => {});
     }
   }
-  predictNext(state: BitmapSig): Array<{ state: BitmapSig; prob: number }> {
+  predictNext(state: BitmapSig): Array<{ state: BitmapSig;, prob: number }> {
     const m = this.transitions.get(state);
     if (!m || m.size === 0) return [];
     let total = 0;
@@ -187,32 +181,25 @@ class MockLegalDocumentSOM {
   }
 }
 class MockWebGPUSOMCache {
-  async getCachedResult(_key: string) { return null, }
+  async getCachedResult(_key: string) { return null }
   async storeResult(_key: string, value: any, options?: any) { return }
 }
-const mockReinforcementLearningCache = {
-  getLearningState: () => ({ hitRate: 0.7 })
+const mockReinforcementLearningCache = { getLearningState: () => ({, hitRate: 0.7 })
 }
 // HMM State Definitions
-interface HMMState {
-  id: string;
-  name: string;
+interface HMMState { id: string;, name: string;
   description: string;
-  som_position: { x: number; y: number }
+  som_position: { x: number;, y: number }
   typical_duration: number; // milliseconds,
   entry_probability: number;
   exit_probability: number;
-  metadata: {
-    document_types: string[];
-    user_actions: string[];
+  metadata: { document_types: string[];, user_actions: string[];
     complexity_level: 'basic' | 'intermediate' | 'advanced';
     legal_domains: string[];
   }
 }
 // HMM Transition Matrix
-interface HMMTransition {
-  from_state: string;
-  to_state: string;
+interface HMMTransition { from_state: string;, to_state: string;
   probability: number;
   learned_weight: number; // Weight from reinforcement learning
   trigger_conditions: string[];
@@ -227,32 +214,24 @@ interface UserStateBitmap {
   timestamp: number;
   user_id: string;
   session_id: string;
-  context: {
-    current_document: string;
-  current_task: string;
+  context: { current_document: string;, current_task: string;
   recent_actions: string[];
-  performance_metrics: {
-      cache_hit_rate: number;
-  response_time: number;
+  performance_metrics: { cache_hit_rate: number;, response_time: number;
   error_count: number;
     }
   }
 }
 // Predictive Asset Result
-interface AssetPrediction {
-  asset_id: string;
-  asset_type: 'chr_rom_pattern' | 'vector_texture' | 'webgpu_shader' | 'som_cluster';
+interface AssetPrediction { asset_id: string;, asset_type: 'chr_rom_pattern' | 'vector_texture' | 'webgpu_shader' | 'som_cluster';
   prediction_confidence: number; // 0-1,
   time_to_need: number;         // milliseconds
   priority: number;             // 1-10,
   generation_cost: number;      // Computational cost estimate
   cache_strategy: 'precompute' | 'lazy' | 'on_demand';
   hmm_state: string;
-  som_cluster: { x: number; y: number }
+  som_cluster: { x: number;, y: number }
   dependencies: string[];
-  metadata: {
-    user_pattern: string;
-    legal_context: string;
+  metadata: { user_pattern: string;, legal_context: string;
     trigger_probability: number;
     fallback_patterns: string[];
   }
@@ -591,8 +570,7 @@ export class PredictiveAssetEngine {
    * Update user state and generate bitmap representation
    */
   async updateUserState()
-    user_id: string
-    session_id: string
+    user_id: string; session_id: string
     action: string;
     context: any;
   ): Promise<UserStateBitmap>, {
@@ -665,7 +643,7 @@ export class PredictiveAssetEngine {
   private async mapContextToSOMClusters(context: any): Promise<number[]> {
     try {
       // Generate embedding for current context
-      const context_text = `${context.document_type || ''} ${context.task || ''} ${context.legal_domain || ''}`;
+      const context_text = `${context.document_type || ''} ${context.task || ''} ${context.legal_domain || '` }`;
       const embedding = await this.generateContextEmbedding(context_text);
       // Use SOM to find best matching clusters
       const som_result = await this.som_engine.cluster(embedding);
@@ -884,7 +862,7 @@ export class PredictiveAssetEngine {
         )});
         console.log(`⚡ Precomputed asset: ${prediction.asset_id} (confidence: ${(prediction.prediction_confidence * 100).toFixed(1)}%)`);
       } catch (error) {
-        console.error(`Failed to precompute asset ${prediction.asset_id}:`, error);
+        console.error(`Failed to precompute asset ${prediction.asset_id}: ', error);
       }
     }
   }
@@ -922,9 +900,7 @@ export class PredictiveAssetEngine {
   /**
    * Get current prediction statistics
    */
-  getPredictionStats(),: {
-    total_predictions: number;
-    success_rate: number;
+  getPredictionStats(),: { total_predictions: number;, success_rate: number;
     average_confidence: number;
     cache_improvements: number;
     active_predictions: number;

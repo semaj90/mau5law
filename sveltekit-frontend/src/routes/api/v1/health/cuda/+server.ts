@@ -1,19 +1,13 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-export interface CudaHealthCheck {
-  service: string;
-  timestamp: number;
+export interface CudaHealthCheck { service: string;, timestamp: number;
   status: 'healthy' | 'degraded' | 'unhealthy';
-  checks: {
-    database: boolean;
-    redis: boolean;
+  checks: { database: boolean;, redis: boolean;
     cuda_worker: boolean;
   };
 }
-export interface ServiceHealth {
-  name: string;
-  url: string;
+export interface ServiceHealth { name: string;, url: string;
   status: 'online' | 'offline' | 'degraded';
   responseTime?: number;
   lastCheck: number;
@@ -47,8 +41,8 @@ export const GET: RequestHandler = async ({ fetch }) => {
           redis: health.checks.redis,
           cuda_worker: health.checks.cuda_worker,
           gpu_available: health.checks.cuda_worker,
-          service_version: '1.0.0',
-        },
+          service_version: '1.0.0'
+        }
       });
     } else {
       healthChecks.push({
@@ -56,7 +50,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         url: 'http://localhost:8096',
         status: 'offline',
         lastCheck: Date.now(),
-        details: { error: `HTTP ${response.status}` },
+        details: { error: 'HTTP ${response.status}' }
       });
     }
   } catch (error: any) {
@@ -68,8 +62,8 @@ export const GET: RequestHandler = async ({ fetch }) => {
       details: {
         error: error instanceof Error ? error.message : 'Connection failed',
         service: 'cuda-service',
-        url: 'http://localhost:8096',
-      },
+        url: 'http://localhost:8096'
+      }
     });
   }
   // Check other services
@@ -88,7 +82,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
             serviceStatus = 'online';
             details = {
               models: data.models?.length ?? 0,
-              available: true,
+              available: true
             };
           } else {
             serviceStatus = 'degraded';
@@ -108,7 +102,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         default:
           // For redis and postgres, we'll assume they're checked by other services
           serviceStatus = 'online'; // Optimistic
-          details = { note: 'Status inferred from dependent services' };
+          details = { note: `Status inferred from dependent services` };
           break;
       }
       const responseTime = Date.now() - startTime;
@@ -118,7 +112,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         status: serviceStatus,
         responseTime,
         lastCheck: Date.now(),
-        details,
+        details
       });
     } catch (error: any) {
       healthChecks.push({
@@ -126,7 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         url: service.url,
         status: 'offline',
         lastCheck: Date.now(),
-        details: { error: error instanceof Error ? error.message : 'Connection failed' },
+        details: { error: error instanceof Error ? error.message : `Connection failed` }
       });
     }
   }
@@ -151,7 +145,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       service_available: cudaService?.status === 'online',
       worker_available: cudaWorkerAvailable,
       gpu_ready: cudaWorkerAvailable,
-      response_time: cudaService?.responseTime || null,
+      response_time: cudaService?.responseTime || null
     },
     services: healthChecks,
     summary: {
@@ -159,9 +153,9 @@ export const GET: RequestHandler = async ({ fetch }) => {
         .filter(s => ['cuda-service', 'enhanced-rag', 'postgres'].includes(s.name) && s.status !== 'online')
         .map(s => s.name),
       degraded_services: healthChecks.filter(s => s.status === 'degraded').map(s => s.name),
-      offline_services: healthChecks.filter(s => s.status === 'offline').map(s => s.name),
+      offline_services: healthChecks.filter(s => s.status === 'offline').map(s => s.name)
     },
-    recommendations: generateRecommendations(healthChecks),
+    recommendations: generateRecommendations(healthChecks)
   });
 };
 function generateRecommendations(services: ServiceHealth[]): string[] {

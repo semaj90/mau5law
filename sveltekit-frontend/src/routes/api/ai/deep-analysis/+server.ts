@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -93,7 +93,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       includeSentiment: true,
       includeComplexity: true,
       includeRecommendations: true,
-      ...options,
+      ...options
     };
 
     // 1) Try local LegalBERT (FastAPI ONNX)
@@ -101,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       const resp = await fetch(`${FASTAPI_LEGALBERT_URL}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, options: analysisOptions }),
+        body: JSON.stringify({ text, options: analysisOptions })
       });
       if (resp.ok) {
         const result = await resp.json();
@@ -109,11 +109,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           source: 'legalbert-onnx',
           ...result,
           metadata: {
-            processingTime: Date.now() - startTime,
+           , processingTime: Date.now() - startTime,
             engine: 'legalbert-onnx',
             role: userRole,
-            caseId,
-          },
+            caseId
+          }
         });
       }
     } catch (e) {
@@ -129,9 +129,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3:270m',
-          prompt: `Analyze the following legal text comprehensively:\n\n${text}`,
-          stream: false,
-        }),
+          prompt: `Analyze the following legal text; comprehensively:\n\n${text}`,
+          stream: false
+        })
       });
       if (ollamaResp.ok) {
         const ollamaData = await ollamaResp.json();
@@ -229,8 +229,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         role: userRole,
         caseId,
         analysisOptions,
-        confidence,
-      },
+        confidence
+      }
     };
 
     return json(result);
@@ -240,7 +240,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Analysis failed',
         message: error instanceof Error ? error.message : 'Unknown error',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );

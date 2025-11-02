@@ -1,9 +1,7 @@
 /**
  * AI Chat Types - Type definitions for the AI chat system
  */
-export interface ChatMessage {
-  id: string;
-  sessionId: string;
+export interface ChatMessage { id: string;, sessionId: string;
   session_id?: string; // Alternative naming
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -17,9 +15,7 @@ export interface ChatMessage {
     sources?: string[];
   };
 }
-export interface ChatSession {
-  id: string;
-  title: string;
+export interface ChatSession { id: string;, title: string;
   created: number;
   updated: number;
   messageCount: number;
@@ -29,9 +25,7 @@ export interface ChatSession {
   last_activity?: number;
   context?: RAGContext;
 }
-export interface MessageAnalysis {
-  intent: string;
-  entities: Entity[];
+export interface MessageAnalysis { intent: string;, entities: Entity[];
   sentiment: 'positive' | 'negative' | 'neutral';
   complexity: number;
   topics: string[];
@@ -46,17 +40,13 @@ export interface RAGContext {
   recommendations?: any[];
   did_you_mean?: string;
 }
-export interface Recommendation {
-  id: string;
-  type: 'query' | 'document' | 'action';
+export interface Recommendation { id: string;, type: 'query' | 'document' | 'action';
   title: string;
   description: string;
   confidence: number;
   metadata?: Record<string, unknown>;
 }
-export interface StreamingResponse {
-  messageId: string;
-  content: string;
+export interface StreamingResponse { messageId: string;, content: string;
   isComplete: boolean;
   timestamp: number;
   metadata?: {
@@ -64,18 +54,14 @@ export interface StreamingResponse {
     model?: string;
   };
 }
-export interface UserActivity {
-  userId: string;
-  sessionId: string;
+export interface UserActivity { userId: string;, sessionId: string;
   isTyping: boolean;
   lastSeen: number;
   status: 'online' | 'away' | 'offline';
   type?: string;
   timestamp?: number;
 }
-export interface AttentionData {
-  messageId: string;
-  attentionWeights: number[];
+export interface AttentionData { messageId: string;, attentionWeights: number[];
   focusPoints: FocusPoint[];
   focused?: boolean;
   lastActivity?: number;
@@ -83,9 +69,7 @@ export interface AttentionData {
   scrollPosition?: number;
 }
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
-export interface ChatStore {
-  messages: ChatMessage[];
-  currentSession: ChatSession | null;
+export interface ChatStore { messages: ChatMessage[];, currentSession: ChatSession | null;
   activeSessions: ChatSession[];
   connectionStatus: ConnectionStatus;
   isTyping: boolean;

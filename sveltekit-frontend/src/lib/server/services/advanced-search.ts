@@ -7,18 +7,14 @@ import { db, and, gte, like, lte, or } from '$lib/server/db/index';
 import type { SQL } from 'drizzle-orm/sql';
 import { cases, evidence } from '$lib/server/db/schema-postgres';
 // --- ADD: typed result shapes for selected columns (fixes missing names) ---
-type CaseRow = {
-  id: number | string;
-  title: string | null;
+type CaseRow = { id: number | string;, title: string | null;
   description: string | null;
   status: string | null;
   priority: string | null;
   createdAt: Date | string | null;
   tags: string[] | null;
 };
-type EvidenceRow = {
-  id: number | string;
-  fileName: string | null;
+type EvidenceRow = { id: number | string;, fileName: string | null;
   description: string | null;
   fileType: string | null;
   uploadedAt: Date | string | null;
@@ -28,9 +24,7 @@ export interface SearchFilters {
   query?: string;
   caseStatus?: string[];
   priority?: string[];
-  dateRange?: {
-    start: string;
-    end: string;
+  dateRange?: { start: string;, end: string;
   };
   tags?: string[];
   evidenceType?: string[];
@@ -39,14 +33,11 @@ export interface SearchFilters {
   limit?: number;
   offset?: number;
 }
-export interface SearchResponse {
-  results: SearchResult[];
-  total: number;
-  facets: {
-    caseStatus: { value: string; count: number }[];
-    priority: { value: string; count: number }[];
-    evidenceType: { value: string; count: number }[];
-    tags: { value: string; count: number }[];
+export interface SearchResponse { results: SearchResult[];, total: number;
+  facets: { caseStatus: { value: string;, count: number }[];
+    priority: { value: string;, count: number }[];
+    evidenceType: { value: string;, count: number }[];
+    tags: { value: string;, count: number }[];
   };
   suggestions?: string[];
   queryTime: number;
@@ -63,18 +54,14 @@ type EvidenceMetadata = {
   uploadedAt?: Date | string | null;
   caseId?: number | string | null;
 };
-export type SearchResultCase = {
-  type: 'case';
-  id: string;
+export type SearchResultCase = { type: 'case';, id: string;
   title: string;
   description?: string;
   relevanceScore?: number;
   metadata: CaseMetadata;
   highlights?: string[];
 };
-export type SearchResultEvidence = {
-  type: 'evidence';
-  id: string;
+export type SearchResultEvidence = { type: 'evidence';, id: string;
   title: string;
   description?: string;
   relevanceScore?: number;
@@ -110,11 +97,11 @@ class AdvancedSearch {
         total: allResults.length,
         facets,
         suggestions,
-        queryTime: Date.now() - startTime,
+        queryTime: Date.now() - startTime
       };
     } catch (error: any) {
       // Minimal error surface
-      console.error('Search failed:', error);
+      console.error('Search failed: `, error);
       throw error;
     }
   }
@@ -155,14 +142,14 @@ class AdvancedSearch {
         status: cases.status,
         priority: cases.priority,
         createdAt: cases.createdAt,
-        tags: cases.tags,
+        tags: cases.tags
       })
       .from(cases)
       .where(whereClause)
       .limit(1000);
     // Use typed mapping instead of `any[]`
     return (results as CaseRow[]).map(case_ => {
-      const text = `${case_.title || ''} ${case_.description || ''}`.trim();
+      const text = `${case_.title || ''} ${case_.description || '` }`.trim();
       return {
         type: 'case' as const,
         id: String(case_.id),
@@ -173,9 +160,9 @@ class AdvancedSearch {
           status: case_.status,
           priority: case_.priority,
           createdAt: case_.createdAt,
-          tags: case_.tags,
+          tags: case_.tags
         },
-        highlights: this.generateHighlights(text, filters.query),
+        highlights: this.generateHighlights(text, filters.query)
       } as SearchResultCase;
     });
   }
@@ -200,13 +187,13 @@ class AdvancedSearch {
         description: evidence.description,
         fileType: evidence.fileType,
         uploadedAt: evidence.uploadedAt,
-        caseId: evidence.caseId,
+        caseId: evidence.caseId
       })
       .from(evidence)
       .where(whereClause)
       .limit(500);
     return (results as EvidenceRow[]).map(evid => {
-      const text = `${evid.fileName || ''} ${evid.description || ''}`.trim();
+      const text = `${evid.fileName || ''} ${evid.description || '` }`.trim();
       return {
         type: 'evidence' as const,
         id: String(evid.id),
@@ -216,9 +203,9 @@ class AdvancedSearch {
         metadata: {
           fileType: evid.fileType,
           uploadedAt: evid.uploadedAt,
-          caseId: evid.caseId,
+          caseId: evid.caseId
         },
-        highlights: this.generateHighlights(text, filters.query),
+        highlights: this.generateHighlights(text, filters.query)
       } as SearchResultEvidence;
     });
   }
@@ -232,25 +219,25 @@ class AdvancedSearch {
         { value: 'open', count: 45 },
         { value: 'in_progress', count: 32 },
         { value: 'pending', count: 18 },
-        { value: 'closed', count: 89 },
+        { value: 'closed', count: 89 }
       ],
       priority: [
         { value: 'high', count: 23 },
         { value: 'medium', count: 67 },
-        { value: 'low', count: 34 },
+        { value: 'low', count: 34 }
       ],
       evidenceType: [
         { value: 'document', count: 156 },
         { value: 'image', count: 89 },
         { value: 'video', count: 34 },
-        { value: 'audio', count: 12 },
+        { value: 'audio', count: 12 }
       ],
       tags: [
         { value: 'urgent', count: 23 },
         { value: 'fraud', count: 45 },
         { value: 'assault', count: 34 },
-        { value: 'theft', count: 67 },
-      ],
+        { value: 'theft', count: 67 }
+      ]
     };
   }
   /**
@@ -313,7 +300,7 @@ class AdvancedSearch {
    * Sort search results
    */
   private sortResults(results: SearchResult[], filters: SearchFilters): SearchResult[] {
-    const { sortBy = 'relevance', sortOrder = 'desc' } = filters;
+    const { sortBy = 'relevance', sortOrder = 'desc` } = filters;
     const getDateFromResult = (r: SearchResult): number => {
       if (r.type === 'case') {
         return new Date(r.metadata.createdAt ?? 0).getTime();

@@ -35,7 +35,7 @@ type TauriLLMShim = {
   runInference?: (
     prompt: string,
     opts?: TauriInferenceOptions
-  ) => Promise<string | { output?: string }>; // Changed: 'any' to: 'string' for output
+  ) => Promise<string | { output?: string }>; // Changed: 'any'; to: 'string' for output
   getAvailableModels?: () => TauriModel[]; // Use TauriModel[]
   getCurrentModels?: () => TauriModel[]; // Use TauriModel[]
 };
@@ -66,9 +66,7 @@ function formatError(error: any): string {
 export type LLMProvider = "openai" | "ollama" | "tauri-local" | "auto";
 export type EmbeddingProvider = "openai" | "tauri-legal-bert" | "tauri-bert" | "auto";
 
-export interface AIServiceConfig {
-  preferLocal: boolean;
-  fallbackToCloud: boolean;
+export interface AIServiceConfig { preferLocal: boolean;, fallbackToCloud: boolean;
   legalDomain: boolean;
   maxRetries: number;
   timeoutMs: number;
@@ -89,27 +87,19 @@ export interface EmbeddingOptions {
 }
 
 // Define interface for Ollama generate payload
-interface OllamaGeneratePayload {
-  model: string;
-  prompt: string;
+interface OllamaGeneratePayload { model: string;, prompt: string;
   stream: boolean;
-  options: {
-    temperature: number;
-    max_tokens: number;
+  options: { temperature: number;, max_tokens: number;
   };
 }
 
 // Interface for OpenAI embedding data items
-interface OpenAIEmbeddingDataItem {
-  embedding: number[];
-  index: number;
+interface OpenAIEmbeddingDataItem { embedding: number[];, index: number;
   object: string;
 }
 
 // Interface for the result of a single document analysis in batch processing
-interface DocumentAnalysisResult {
-  id: string;
-  embedding: number[];
+interface DocumentAnalysisResult { id: string;, embedding: number[];
   classification?: string; // Optional as it might not be present on error
   summary?: string;       // Optional as it might not be present on error
   error?: string;         // Present if an error occurred for this document
@@ -170,7 +160,7 @@ class EnhancedAIService {
       return openaiEmb;
     } catch (error: any) {
       const errMsg = formatError(error);
-      console.error(`Embedding generation failed with ${provider}:`, errMsg);
+      console.error(`Embedding generation failed with ${provider}: ', errMsg);
       if (this.config.fallbackToCloud && provider.startsWith("tauri-")) {
         const fallback = await this.generateOpenAIEmbeddings(inputs);
         return fallback;
@@ -223,9 +213,7 @@ class EnhancedAIService {
   }
 
   // Analyze legal document using local LLM when available
-  async analyzeLegalDocument(text: string): Promise<{
-    classification: string;
-    keyEntities: string[];
+  async analyzeLegalDocument(text: string): Promise<{ classification: string;, keyEntities: string[];
     similarity: number;
     summary: string;
     riskAssessment: string;
@@ -268,7 +256,7 @@ class EnhancedAIService {
   }
 
   // Batch processing for documents
-  async batchAnalyzeDocuments(documents: Array<{ id: string; text: string }>): Promise<DocumentAnalysisResult[]> {
+  async batchAnalyzeDocuments(documents: Array<{, id: string; text: string }>): Promise<DocumentAnalysisResult[]> {
     await this.initialize();
     const results: DocumentAnalysisResult[] = [];
     for (const doc of documents) {
@@ -357,7 +345,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "text-embedding-ada-002",
+       , model: "text-embedding-ada-002",
         input: texts
       })
     });
@@ -377,7 +365,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
+        messages: [{, role: "user", content: prompt }],
         max_tokens: options.maxTokens || 512,
         temperature: options.temperature ?? 0.7
       })
@@ -390,8 +378,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
   // Ollama generate
   private async generateOllamaResponse(prompt: string, options: GenerationOptions): Promise<string> {
     const ollamaUrl = env.OLLAMA_URL || "http://localhost:11434";
-    const payload: OllamaGeneratePayload = { // Changed: 'any' to: 'OllamaGeneratePayload'
-      model: env.OLLAMA_MODEL || "gemma3-legal:latest",
+    const payload: OllamaGeneratePayload = { // Changed: 'any' to: 'OllamaGeneratePayload'; model: env.OLLAMA_MODEL || "gemma3-legal:latest",
       prompt,
       stream: false,
       options: {

@@ -6,16 +6,12 @@
 import { writable, derived, type Readable } from 'svelte/store';
 import { createActor, type Actor, type AnyStateMachine, type AnyEventObject } from 'xstate';
 // Simple state interfaces for UI consumption
-export interface MachineState<TContext = any> {
-  value: string;
-  context: TContext;
+export interface MachineState<TContext = any> { value: string;, context: TContext;
   matches: (_value: string) => boolean;
   can: (_event: string) => boolean;
   hasTag: (tag: string) => boolean;
 }
-export interface MachineService<TContext = any> {
-  state: Readable<MachineState<TContext>;
-  send: (_event: AnyEventObject | string) => void;
+export interface MachineService<TContext = any> { state: Readable<MachineState<TContext>;, send: (_event: AnyEventObject | string) => void;
   start: () => void;
   stop: () => void;
   isRunning: Readable<boolean>;
@@ -71,9 +67,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
   }
 }
 // Specific service adapters for different machine types
-export interface ChatMachineContext {
-  messages: Array<any>;
-  currentMessage: string;
+export interface ChatMachineContext { messages: Array<any>;, currentMessage: string;
   isTyping: boolean;
   isLoading: boolean;
   session: any;
@@ -81,23 +75,17 @@ export interface ChatMachineContext {
   confidence: number;
   model: string;
 }
-export interface SearchMachineContext {
-  query: string;
-  results: any[];
+export interface SearchMachineContext { query: string;, results: any[];
   loading: boolean;
   error: any;
   confidence: number;
   sources: any[];
 }
-export interface UploadMachineContext {
-  files: any[];
-  currentFile: any;
+export interface UploadMachineContext { files: any[];, currentFile: any;
   progress: number;
   error: any;
   results: any[];
-  services: {
-    postgresql: boolean;
-    minio: boolean;
+  services: { postgresql: boolean;, minio: boolean;
     qdrant: boolean;
     redis: boolean;
     rabbitmq: boolean;

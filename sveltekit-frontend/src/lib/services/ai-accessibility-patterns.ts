@@ -129,7 +129,7 @@ export class AIAccessibilityPatterns {
   createProgressiveDisclosure(
     container: HTMLElement,
     data: any;
-    options: { summary: string; levels: Array<{ label: string; content: any; level: number }> }
+    options: { summary: string; levels: Array<{ label: string; content: any;, level: number }> }
   ) {
     if (typeof document === 'undefined' || !this.options.progressiveDisclosure) {
       if (typeof document !== 'undefined') {
@@ -210,10 +210,10 @@ export class AIAccessibilityPatterns {
     card.className = 'ai-result-card ai-component';
     card.setAttribute('role', 'article');
     card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `AI analysis result: ${(result as any)?.title || 'Untitled'}`);
+    card.setAttribute('aria-label', `AI analysis result: ${(result as any)?.title || 'Untitled' }`);
     card.innerHTML = `
       <header class="ai-result-header">
-        <h3>${(result as any)?.title || 'AI Analysis Result'}</h3>
+        <h3>${(result as any)?.title || 'AI Analysis Result' }</h3>
         <div class="ai-result-meta" aria-label="Result metadata">
           <span class="confidence" aria-label="Confidence score">
             Confidence: ${Math.round(((result as any)?.confidence || 0) * 100)}%
@@ -265,10 +265,9 @@ export class AIAccessibilityPatterns {
     this.currentAIContext = operation;
     const messages = {
       started: `${operation} started. Please wait for completion.`,
-      progress: `${operation} in progress. ${details || ''}`,
-      completed: `${operation} completed successfully. ${details || 'Results are now available.'}`,
-      error: `${operation} failed. ${details || 'Please try again or contact support.'}`
-    }
+      progress: '${operation} in progress. ${details || '' }`,
+      completed: '${operation} completed successfully. ${details || 'Results are now available.' }`,
+      error: '${operation} failed. ${details || 'Please try again or contact support.`}' }
     accessibilityService.announceToScreenReader(messages[status]);
     // Update live region for continuous feedback
     const liveRegion = document.getElementById('ai-status-live') || this.createAIStatusLiveRegion();
@@ -350,7 +349,7 @@ export class AIAccessibilityPatterns {
   private showContextualHelp() {
     const helpText = `;
       Available voice commands:
-      - "Start analysis" or: "Analyze document" to begin AI analysis
+      - "Start analysis"; or: "Analyze document" to begin AI analysis
       - "Read summary" to hear the analysis summary
       - "Next result" or: "Previous result" to navigate between results
       - "Expand details" or: "Collapse details" to show or hide detailed information

@@ -16,8 +16,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Validate required fields
         if (!userId || !sessionId || !interactionId || !ratingType || score === undefined) {
           return json(
-            {
-              error: 'Missing required fields: userId, sessionId, interactionId, ratingType, score',
+            { error: 'Missing required, fields: userId, sessionId, interactionId, ratingType, score'
             },
             { status: 400 }
           );
@@ -26,7 +25,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (score < 1 || score > 5) {
           return json(
             {
-              error: 'Score must be between 1 and 5',
+              error: 'Score must be between 1 and 5'
             },
             { status: 400 }
           );
@@ -39,12 +38,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           score,
           feedback,
           context: context || {},
-          metadata: metadata || {},
+          metadata: metadata || {}
         });
         return json({
           success: true,
           ratingId,
-          message: 'Rating collected successfully',
+          message: 'Rating collected successfully'
         });
       }
       case 'batch_rate': {
@@ -52,7 +51,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!Array.isArray(ratings)) {
           return json(
             {
-              error: 'Ratings must be an array',
+              error: 'Ratings must be an array'
             },
             { status: 400 }
           );
@@ -67,7 +66,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             results.push({
               success: false,
               error: msg || 'Unknown error',
-              rating: rating.interactionId,
+              rating: rating.interactionId
             });
           }
         }
@@ -76,17 +75,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
           results,
           processed: results.length,
           successful: results.filter(item => item.success),
-          failed: results.filter(item => !item.success),
+          failed: results.filter(item => !item.success)
         });
       }
-      default: return json({ error: 'Invalid action. Supported actions: rate, batch_rate' }, { status: 400 });
+      default: return json({ error: 'Invalid action. Supported, actions: rate, batch_rate' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
-        error: message || 'Internal server error',
+        error: message || 'Internal server error'
       },
       { status: 500 }
     );
@@ -101,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
         if (!userId) {
           return json(
             {
-              error: 'userId parameter is required for recommendations',
+              error: 'userId parameter is required for recommendations'
             },
             { status: 400 }
           );
@@ -109,14 +108,14 @@ export const GET: RequestHandler = async ({ url }) => {
         const recommendations = await feedbackLoopService.getUserRecommendations(userId);
         return json({
           success: true,
-          data: recommendations,
+          data: recommendations
         });
       }
       case 'metrics': {
         const metrics = await feedbackLoopService.getFeedbackMetrics();
         return json({
           success: true,
-          data: metrics,
+          data: metrics
         });
       }
       case 'health': {
@@ -132,17 +131,17 @@ export const GET: RequestHandler = async ({ url }) => {
             'personalized_recommendations',
             'training_data_generation',
             'continuous_improvement',
-          ],
+          ]
         });
       }
-      default: return json({ error: 'Invalid action. Supported actions: recommendations, metrics, health' }, { status: 400 });
+      default: return json({ error: 'Invalid action. Supported, actions: recommendations, metrics, health' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
-        error: message || 'Internal server error',
+        error: message || 'Internal server error'
       },
       { status: 500 }
     );

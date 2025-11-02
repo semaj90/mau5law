@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
   let hasError = $state<boolean>(false);
   let errorMessage = $state<string>('');
   // Cache state
-  let cacheEntry: TextureCacheEntry | null = $state(null);
+  let cacheEntry: TextureCacheEntry | null = null;
   let cacheHitRate = $state<number>(0);
   let textureLoadTime = $state<number>(0);
   let currentFilteringType = $state<'bilinear' | 'trilinear' | 'anisotropic'>('bilinear');

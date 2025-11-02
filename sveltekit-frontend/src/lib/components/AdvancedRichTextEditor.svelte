@@ -101,7 +101,7 @@ import type { Document } from '$lib/types';
     isQuote: false,
   };
   // typed editor and elements
-  let editor: InstanceType<typeof TiptapEditor> | null = $state(null);
+  let editor: InstanceType<typeof TiptapEditor> | null = null;
   let editorElement: HTMLElement | null;
   let isFullscreen = $state<boolean>(false);
   let errorMessage = $state<string>('');

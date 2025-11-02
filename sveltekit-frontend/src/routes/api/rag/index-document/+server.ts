@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       return json(
         {
           success: false,
-          error: 'Authentication required',
+          error: 'Authentication required'
         },
         { status: 401 }
       );
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           success: false,
           documentId: docData.id || 'unknown',
           error: error?.message ?? String(error),
-          chunksCreated: 0,
+          chunksCreated: 0
         });
         failureCount++;
       }
@@ -141,15 +141,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       successCount,
       failureCount,
       totalChunksCreated: totalChunks,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
 
-    console.log(`📚 Document indexing completed:`, summary);
+    console.log(`📚 Document indexing completed: ', summary);
     return json({
       success: failureCount === 0,
       mode,
       summary,
-      results: mode === 'single' ? results[0] : results,
+      results: mode === 'single' ? results[0] : results
     });
   } catch (error: any) {
     console.error('Document Indexing API Error:', error);
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       {
         success: false,
         error: 'Failed to process document indexing request',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -178,7 +178,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
   const validTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation', 'case_law'];
   const docType = String(docData.documentType || '').toLowerCase();
   if (!validTypes.includes(docType)) {
-    throw new Error(`Invalid document type: ${docData.documentType}. Valid types: ${validTypes.join(', ')}`);
+    throw new Error(`Invalid document type: ${docData.documentType}. Valid, types: ${validTypes.join(', ')}`);
   }
 
   let documentId = docData.id;
@@ -223,7 +223,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       lexisId: docData.lexisId,
       caseId: docData.caseId,
       evidenceId: docData.evidenceId,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     await db
@@ -271,7 +271,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       isActive: true,
       isDirty: false,
       createdBy: userId,
-      embedding: null,
+      embedding: null
     };
 
     const insertedDocs = await db
@@ -297,7 +297,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       .update(schema.legalDocuments)
       .set({
         updatedAt: new Date().toISOString(),
-        ...(indexResult.embedding ? { embedding: indexResult.embedding } : {}),
+        ...(indexResult.embedding ? { embedding: indexResult.embedding } : {})
       })
       .where(sql`id = ${documentId}`);
   } catch (e) {
@@ -308,7 +308,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
   return {
     success: true,
     documentId,
-    chunksCreated: indexResult.chunksCreated || 0,
+    chunksCreated: indexResult.chunksCreated || 0
   };
 }
 // GET endpoint for indexing status and statistics
@@ -321,8 +321,7 @@ export const GET: RequestHandler = async ({ url }) => {
         .select({
           count: sql`COUNT(*)`,
           totalSize: sql`SUM(LENGTH(content))`,
-          avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)`,
-        })
+          avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)` })
         .from(schema.documentChunks)
         .where(sql`document_id = ${documentId}`);
 
@@ -336,7 +335,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: 'Document not found',
+            error: 'Document not found'
           },
           { status: 404 }
         );
@@ -355,29 +354,29 @@ export const GET: RequestHandler = async ({ url }) => {
           id: document[0].id,
           title: document[0].title,
           documentType: document[0].documentType,
-          jurisdiction: document[0].jurisdiction,
+          jurisdiction: document[0].jurisdiction
         },
         indexingStatus: {
-          isIndexed: chunkCount > 0,
+         , isIndexed: chunkCount > 0,
           chunkCount,
           totalContentSize,
           averageRelevance,
-          lastIndexed: document[0].updatedAt,
-        },
+          lastIndexed: document[0].updatedAt
+        }
       });
     } else {
       // Get overall indexing statistics
       const stats = await enhancedRAGPipeline.getSystemStats();
       return json({
         success: true,
-        systemStats: stats,
+        systemStats: stats
       });
     }
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error?.message ?? String(error),
+        error: error?.message ?? String(error)
       },
       { status: 500 }
     );
@@ -391,7 +390,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       return json(
         {
           success: false,
-          error: 'Authentication required',
+          error: 'Authentication required'
         },
         { status: 401 }
       );
@@ -402,8 +401,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       return json(
         {
           success: false,
-          error: 'Document ID is required',
-        },
+          error: 'Document ID is required` },
         { status: 400 }
       );
     }
@@ -424,13 +422,12 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       success: true,
       documentId,
       chunksRemoved: Array.isArray(deletedChunks) ? deletedChunks.length : 0,
-      message: 'Document removed from search index',
-    });
+      message: 'Document removed from search index` });
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error?.message ?? String(error),
+        error: error?.message ?? String(error)
       },
       { status: 500 }
     );

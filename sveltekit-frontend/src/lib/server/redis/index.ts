@@ -40,7 +40,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
     connectTimeout: 5000,
     retryDelayOnFailover: 100,
     maxRetriesPerRequest: 3,
-    lazyConnect: false,
+    lazyConnect: false
   };
   // Merge provided options, allowing them to override defaults.
   // Note: If REDIS_URL is used, host/port/password from options might be ignored by ioredis.
@@ -93,9 +93,9 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
       connectTimeout: 5000,
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
-      lazyConnect: false,
+      lazyConnect: false
     },
-    ...(options || {}),
+    ...(options || {})
   } as RedisConnectionOptions;
   // Use single-argument form when REDIS_URL exists
   const redisUrl2 = typeof REDIS_URL === 'string' && REDIS_URL.length > 0 ? REDIS_URL : undefined;

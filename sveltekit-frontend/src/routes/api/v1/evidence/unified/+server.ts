@@ -6,7 +6,7 @@ import { z } from 'zod';
 // Minimal, single-file unified evidence analysis route (clean replacement).
 // This file intentionally small to avoid cascading type/lint issues during edits.
 
-type EvidenceItem = { id: string; filename: string };
+type EvidenceItem = { id: string;, filename: string };
 
 const ReqSchema = z.object({
   evidenceIds: z.array(cuidSchema).min(1),
@@ -17,12 +17,12 @@ const ReqSchema = z.object({
   parameters: z
     .object({ similarityThreshold: z.number().min(0).max(1).optional().default(0.7) })
     .optional()
-    .default({}),
+    .default({})
 });
 
 const mockDB: EvidenceItem[] = [
   { id: '550e8400-e29b-41d4-a716-446655440001', filename: 'contract-breach-email.pdf' },
-  { id: '550e8400-e29b-41d4-a716-446655440002', filename: 'financial-records-Q4.xlsx' },
+  { id: '550e8400-e29b-41d4-a716-446655440002', filename: 'financial-records-Q4.xlsx' }
 ];
 
 function makeErrorBody(err: any) {
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       analysisId: `unified_${Date.now()}`,
       timestamp: new Date().toISOString(),
       evidenceCount: evidence.length,
-      unifiedInsights: { keyFindings: [] },
+      unifiedInsights: { keyFindings: [] }
     };
 
     // Vector similarity: dynamic import so build/typecheck won't fail if module missing
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
             mod.AdvancedSimilarityEngine.performSimilaritySearch({
               query: 'analysis',
               evidenceIds: req.evidenceIds,
-              threshold: req.parameters.similarityThreshold,
+              threshold: req.parameters.similarityThreshold
             }),
             20000
           );
@@ -87,5 +87,5 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 export const GET: RequestHandler = async () => {
-  return json({ capabilities: { vectorSimilarity: true }, status: { systemHealth: 'operational' } });
+  return json({ capabilities: {, vectorSimilarity: true }, status: {, systemHealth: 'operational' } });
 };

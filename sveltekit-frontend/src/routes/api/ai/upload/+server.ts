@@ -19,8 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error:
-          'Server misconfiguration: @aws-sdk/client-s3 is not installed. Run `npm install @aws-sdk/client-s3` on the server.',
+        error: 'Server; misconfiguration: @aws-sdk/client-s3 is not installed. Run 'npm install @aws-sdk/client-s3' on the server.'
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
@@ -31,17 +30,16 @@ export const POST: RequestHandler = async ({ request }) => {
     endpoint: CONFIG.MINIO_URL || process.env.MINIO_ENDPOINT || 'http://minio:9000',
     region: 'us-east-1',
     credentials: {
-      accessKeyId: CONFIG.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin',
-      secretAccessKey: CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin',
-    },
-    forcePathStyle: true,
+     , accessKeyId: CONFIG.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin',
+      secretAccessKey: CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin` },
+    forcePathStyle: true
   });
 
   try {
     const form = await request.formData();
     const file = form.get('file') as File | null;
     if (!file) {
-      return new Response(JSON.stringify({ success: false, error: 'No file provided' }), { status: 400 });
+      return new Response(JSON.stringify({ success: false, error: `No file provided` }), { status: 400 });
     }
 
     const fileId = crypto.randomUUID();
@@ -53,8 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         Bucket: CONFIG.MINIO_BUCKET || process.env.MINIO_BUCKET || 'legal-documents',
         Key: key,
         Body: buffer,
-        ContentType: file.type || 'application/octet-stream',
-      })
+        ContentType: file.type || 'application/octet-stream` })
     );
 
     // Persist metadata in Postgres via Drizzle (adjust column names to your schema)
@@ -64,17 +61,17 @@ export const POST: RequestHandler = async ({ request }) => {
       size: file.size,
       content_type: file.type || null,
       minio_path: key,
-      uploaded_at: new Date(),
+      uploaded_at: new Date()
     });
 
     // Cache minimal record for quick retrieval
     await redis.set(`doc:${fileId}`, JSON.stringify({ id: fileId, name: file.name, key }), { EX: 3600 });
 
     return new Response(JSON.stringify({ success: true, id: fileId, name: file.name }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` }
     });
   } catch (err) {
-    console.error('Upload failed:', err);
-    return new Response(JSON.stringify({ success: false, error: 'Upload failed' }), { status: 500 });
+    console.error('Upload failed: `, err);
+    return new Response(JSON.stringify({ success: false, error: `Upload failed` }), { status: 500 });
   }
 };

@@ -56,5 +56,5 @@ export function safeStop(actor: ActorLike | undefined): void {
 export default {
 	readActorSnapshot,
 	safeStart,
-	safeStop,
+	safeStop
 };

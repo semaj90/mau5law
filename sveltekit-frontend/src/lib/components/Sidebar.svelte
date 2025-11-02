@@ -110,7 +110,7 @@
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
-      transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
+      transitionslide={{ duration: 300, easing: quintOut, axis: 'x' }}
     >
       <div class="nes-legal-header yorha-3d-button">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>

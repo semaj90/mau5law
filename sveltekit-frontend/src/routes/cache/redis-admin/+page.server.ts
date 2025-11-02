@@ -24,14 +24,12 @@ export const load: PageServerLoad = async ({ locals }) => {
       recentKeys,
       connectionStatus,
       performanceMetrics,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
     // Return mock data for development/demo
-    return {
-      redisInfo: {
-        version: '7.2.3',
+    return { redisInfo: {, version: '7.2.3',
         mode: 'standalone',
         role: 'master',
         connected_clients: 24,
@@ -42,14 +40,14 @@ export const load: PageServerLoad = async ({ locals }) => {
         keyspace_hits: 98743,
         keyspace_misses: 12456,
         expired_keys: 2341,
-        uptime_in_seconds: 2847293,
+        uptime_in_seconds: 2847293
       },
       keyStats: {
         total_keys: 15679,
         expired_count: 2341,
         avg_ttl: 3600,
         memory_usage: '32.1MB',
-        fragmentation_ratio: 1.23,
+        fragmentation_ratio: 1.23
       },
       recentKeys: [
         ,
@@ -57,7 +55,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         { key: 'cases:active:list', type: 'list', ttl: 1800, size: '15.7KB' },
         { key: 'rag:embeddings:doc456', type: 'string', ttl: 7200, size: '45.2KB' },
         { key: 'session:legal_user_789', type: 'hash', ttl: 1440, size: '1.2KB' },
-        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' },
+        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' }
       ],
       connectionStatus: 'connected',
       performanceMetrics: {
@@ -65,9 +63,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         miss_rate: 11.2,
         ops_per_sec: 142,
         latency_avg: 0.85,
-        memory_efficiency: 76.3,
+        memory_efficiency: 76.3
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 };
@@ -97,7 +95,7 @@ export const actions: Actions = {
     try {
       await redisService.del(key);
       console.log(`Redis key deleted by admin: ${key}`);
-      return { success: true, message: `Key "${key}" deleted successfully` };
+      return { success: true, message: 'Key "${key}" deleted successfully' };
     } catch (err) {
       console.error('Failed to delete Redis key:', err);
       return fail(500, { error: 'Failed to delete key' });
@@ -112,7 +110,7 @@ export const actions: Actions = {
     const value = data.get('value') as string;
     const ttl = parseInt(data.get('ttl') as string) || null;
     if (!key || !value) {
-      return fail(400, { error: 'Key and value are required' });
+      return fail(400, { error: `Key and value are required` });
     }
     try {
       if (ttl && ttl > 0) {
@@ -121,12 +119,12 @@ export const actions: Actions = {
         await redisService.set(key, value);
       }
       console.log(`Redis key set by admin: ${key}`);
-      return { success: true, message: `Key "${key}" set successfully` };
+      return { success: true, message: 'Key "${key}" set successfully' };
     } catch (err) {
       console.error('Failed to set Redis key:', err);
       return fail(500, { error: 'Failed to set key' });
     }
-  },
+  }
 };
 async function getRedisInfo(): Promise<any> {
   try {
@@ -144,7 +142,7 @@ async function getKeyStatistics(): Promise<any> {
       expired_count: 0,
       avg_ttl: 3600,
       memory_usage: '0MB',
-      fragmentation_ratio: 1.0,
+      fragmentation_ratio: 1.0
     };
   } catch (error) {
     throw new Error('Failed to get key statistics');
@@ -159,8 +157,7 @@ async function getRecentKeys(): Promise<any> {
         key,
         type: 'string',
         ttl: -1,
-        size: '1KB',
-      })) || []
+        size: `1KB` })) || []
     );
   } catch (error) {
     return [];
@@ -182,7 +179,7 @@ async function getPerformanceMetrics(): Promise<any> {
       miss_rate: 15.0,
       ops_per_sec: 100,
       latency_avg: 1.0,
-      memory_efficiency: 80.0,
+      memory_efficiency: 80.0
     };
   } catch (error) {
     throw new Error('Failed to get performance metrics');

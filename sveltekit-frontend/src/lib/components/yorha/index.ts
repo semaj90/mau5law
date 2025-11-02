@@ -9,12 +9,10 @@ export {
   exportTableData,
   legalAITableConfigs,
   type TableState,
-  type TableNotification,
+  type TableNotification
 } from '$lib/stores/tables';
 // Table-related types for components
-export interface YoRHaTableColumn {
-  key: string;
-  title: string;
+export interface YoRHaTableColumn { key: string;, title: string;
   sortable?: boolean;
   width?: string;
   align?: 'left' | 'center' | 'right';
@@ -24,9 +22,7 @@ export interface YoRHaTableRow {
   id: string;
   [key: string]: any;
 }
-export interface YoRHaGridColumn {
-  key: string;
-  title: string;
+export interface YoRHaGridColumn { key: string;, title: string;
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -47,7 +43,7 @@ export const statusFormatters = {
   caseStatus: (status: string) => status?.toUpperCase() || 'UNKNOWN',
   priority: (p: string) => p?.toUpperCase() || 'NORMAL',
   evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
-  userRole: (r: string) => r?.toUpperCase() || 'USER',
+  userRole: (r: string) => r?.toUpperCase() || 'USER'
 };
 // Import stores used in convenience object
 import { tableManager as importedTableManager, createTableStats as importedCreateTableStats } from '$lib/stores/tables';
@@ -59,5 +55,5 @@ export const YoRHa = {
   createTableStats: importedCreateTableStats,
   yorhaTablePresets,
   yorhaGridPresets,
-  statusFormatters,
+  statusFormatters
 };

@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ text, model, tags }),
+          body: JSON.stringify({ text, model, tags })
         });
         if (resp.ok) {
           const data = (await resp.json()) as { embedding: number[] };
@@ -90,12 +90,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         operation: 'vectorize',
         documentId: key,
         data: [] as number[],
-        options: { timeout: 5000 },
+        options: { timeout: 5000 }
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(goReq),
+        body: JSON.stringify(goReq)
       });
       if (goResp.ok) {
         const goJson = await goResp.json();
@@ -110,11 +110,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     // If we reached here, no backend produced an embedding
     return json(
-      { error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)' },
+      { error: `Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)` },
       { status: 502 }
     );
   } catch (error: any) {
-    // Normalize unknown error into a safe string message without using `any`
+    // Normalize unknown error into a safe string message without using `any'
     let message = 'Tensor error';
     if (error instanceof Error) {
       message = error.message || message;
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     }
 
     // Optional: attempt Ollama embedding if configured (non-blocking; won't throw)
-    // TODO: wire up Ollama embedding model: "embeddinggemma:latest" endpoint and verify path/params.
+    // TODO: wire up Ollama embedding; model: "embeddinggemma:latest" endpoint and verify path/params.
     // TODO: plan Triton serving with TensorRT-LLM as a production high-performance path.
     const ollamaUrl = process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL;
     if (ollamaUrl) {
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         await fetch(`${ollamaUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ text: 'health-check', model: 'embeddinggemma:latest' }),
+          body: JSON.stringify({ text: 'health-check', model: `embeddinggemma:latest` })
         });
       } catch {
         // ignore Ollama probe failures

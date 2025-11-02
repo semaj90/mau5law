@@ -17,7 +17,7 @@ import type { Document } from '$lib/types';
   import { toast } from 'svelte-sonner';
   import { FileText, Upload, Search, Users, Scale, FileSearch, Sparkles, CheckCircle2, AlertTriangle } from 'lucide-svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
 
   // ============================================================================
   // Svelte 5 State Management

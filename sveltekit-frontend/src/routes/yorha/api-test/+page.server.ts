@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'yorha-api',
         description: 'Get real-time system health and metrics',
         headers: {} as Record<string, unknown>,
-        body: null,
+        body: null
       },
       {
         id: 'graph-data',
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'yorha-api',
         description: 'Retrieve system architecture graph data',
         headers: {} as Record<string, unknown>,
-        body: null,
+        body: null
       },
       {
         id: 'enhanced-rag',
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'standard',
         description: 'Test Enhanced RAG service functionality',
         headers: { 'Content-Type': 'application/json' },
-        body: { query: 'test legal document analysis', context: [] },
+        body: { query: 'test legal document analysis', context: [] }
       },
       {
         id: 'multicore-status',
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'context7',
         description: 'Get Context7 multicore service health',
         headers: {} as Record<string, unknown>,
-        body: null,
+        body: null
       },
       {
         id: 'process-text',
@@ -51,7 +51,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'context7',
         description: 'Test text processing with legal classification',
         headers: { 'Content-Type': 'application/json' },
-        body: { text: 'Sample legal document for analysis', type: 'legal_classification' },
+        body: { text: 'Sample legal document for analysis', type: 'legal_classification' }
       },
       {
         id: 'json-parse',
@@ -61,7 +61,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'context7',
         description: 'Test advanced JSON parsing capabilities',
         headers: { 'Content-Type': 'application/json' },
-        body: { jsonString: '{"legal": {"case": "test", "priority": "high"}}' },
+        body: { jsonString: '{"legal": {"case": "test", "priority": "high"}}' }
       },
       {
         id: 'component-metrics',
@@ -71,7 +71,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'yorha-api',
         description: 'Get 3D component performance metrics',
         headers: {} as Record<string, unknown>,
-        body: null,
+        body: null
       },
       {
         id: 'database-health',
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'standard',
         description: 'Test database connectivity and performance',
         headers: {} as Record<string, unknown>,
-        body: null,
+        body: null
       },
       {
         id: 'vector-search',
@@ -91,7 +91,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'standard',
         description: 'Test pgvector similarity search',
         headers: { 'Content-Type': 'application/json' },
-        body: { query: 'legal document similarity', limit: 10 },
+        body: { query: 'legal document similarity', limit: 10 }
       },
       {
         id: 'ai-inference',
@@ -101,7 +101,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'standard',
         description: 'Test Ollama AI model inference',
         headers: { 'Content-Type': 'application/json' },
-        body: { prompt: 'Analyze this legal contract', model: 'gemma3-legal' },
+        body: { prompt: 'Analyze this legal contract', model: 'gemma3-legal' }
       },
     ];
     // Define test suites
@@ -110,31 +110,31 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         id: 'yorha-complete',
         name: 'Complete YoRHa Suite',
         description: 'Test all YoRHa interface APIs',
-        endpoints: ['system-status', 'graph-data', 'component-metrics'],
+        endpoints: ['system-status', 'graph-data', 'component-metrics']
       },
       {
         id: 'context7-suite',
         name: 'Context7 Multicore Suite',
         description: 'Test Context7 multicore services',
-        endpoints: ['multicore-status', 'process-text', 'json-parse'],
+        endpoints: ['multicore-status', 'process-text', 'json-parse']
       },
       {
         id: 'ai-pipeline',
         name: 'AI Pipeline Suite',
         description: 'Test complete AI processing pipeline',
-        endpoints: ['enhanced-rag', 'vector-search', 'ai-inference'],
+        endpoints: ['enhanced-rag', 'vector-search', 'ai-inference']
       },
       {
         id: 'infrastructure',
         name: 'Infrastructure Suite',
         description: 'Test core infrastructure components',
-        endpoints: ['database-health', 'system-status'],
+        endpoints: ['database-health', 'system-status']
       },
       {
         id: 'smoke-test',
         name: 'Smoke Test',
         description: 'Quick health check of critical endpoints',
-        endpoints: ['system-status', 'multicore-status', 'database-health'],
+        endpoints: ['system-status', 'multicore-status', 'database-health']
       },
     ];
     // Generate test documentation
@@ -153,7 +153,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         ,
         { name: 'YoRHa API', description: 'Custom APIs for YoRHa 3D interface components' },
         { name: 'Context7', description: 'Multicore processing and AI analysis services' },
-        { name: 'Standard REST', description: 'Traditional HTTP REST API endpoints' },
+        { name: 'Standard REST', description: 'Traditional HTTP REST API endpoints' }
       ],
       metrics: [
         ,
@@ -162,14 +162,14 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         'Average response latency',
         'Success rate percentage',
         'Error categorization',
-      ],
+      ]
     };
     return {
       endpoints: apiEndpoints,
       testSuites,
       documentation: testDocumentation,
       initialLoad: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     console.error('Error loading API test data:', error);
@@ -179,7 +179,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
       documentation: { overview: '', features: [], protocols: [], metrics: [] },
       initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load API test configuration',
+      error: 'Failed to load API test configuration'
     };
   }
 };

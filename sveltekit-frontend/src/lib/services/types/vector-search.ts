@@ -3,9 +3,7 @@
  * For pgvector and Qdrant integration
  */
 
-export interface VectorSearchResult {
-  id: string;
-  content: string;
+export interface VectorSearchResult { id: string;, content: string;
   metadata: Record<string, any>;
   score: number;
   source: 'qdrant' | 'pgvector';
@@ -29,7 +27,7 @@ export interface VectorDatabase {
   search(
     embedding: Float32Array,
     limit: number,
-    threshold: number
+    threshold: number;
   ): Promise<VectorSearchResult[]>;
 
   store(

@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ request }) => {
     }
     return json({
       success: true,
-      message: 'Lucia adapter test completed - check console logs',
+      message: 'Lucia adapter test completed - check console logs'
     });
   } catch (error: any) {
     console.error('Lucia Adapter Test Error:', error);
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message,
-        stack: error.stack,
+        stack: error.stack
       },
       { status: 500 }
     );

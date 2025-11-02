@@ -1,7 +1,7 @@
 <!-- Production AI Assistant Component - bits-ui Implementation -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import { Button } from '$lib/components/ui/bitsButton.svelte';
   import { Loader2, Brain, Zap, AlertTriangle } from 'lucide-svelte';
   interface Props {
     query?: string;

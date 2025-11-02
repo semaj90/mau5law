@@ -8,18 +8,14 @@ import {
   type EvidencePhoto,
   type DocumentScan,
   type CaseVisualization,
-  type CourtroomDisplay,
+  type CourtroomDisplay
 } from '$lib/gpu/legal-texture-pipeline';
-export interface TextureStreamingConfig {
-  enableGPU: boolean;
-  maxChunkSize: number;
+export interface TextureStreamingConfig { enableGPU: boolean;, maxChunkSize: number;
   cacheSize: number;
   adaptiveQuality: boolean;
   compressionEnabled: boolean;
 }
-export interface StreamingStats {
-  chunksLoaded: number;
-  cacheHits: number;
+export interface StreamingStats { chunksLoaded: number;, cacheHits: number;
   renderTime: number;
   qualityLevel: number;
   hasWebGL: boolean;
@@ -56,7 +52,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
     renderTime: 0,
     qualityLevel: 1.0,
     hasWebGL: false,
-    hasWASM: false,
+    hasWASM: false
   });
   // Configuration state
   let activeConfig = $state<TextureStreamingConfig>({
@@ -65,7 +61,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
     cacheSize: 512,
     adaptiveQuality: true,
     compressionEnabled: true,
-    ...config,
+    ...config
   });
   /**
    * Initialize the texture streaming pipeline
@@ -213,7 +209,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
         renderTime: pipelineStats.renderTime,
         qualityLevel: pipelineStats.adaptiveQualityLevel,
         hasWebGL: pipelineStats.hasWebGL,
-        hasWASM: pipelineStats.hasWASM,
+        hasWASM: pipelineStats.hasWASM
       };
     }
   }
@@ -279,6 +275,6 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
     getCachedTexture,
     updateConfig,
     clearCache,
-    dispose,
+    dispose
   };
 }

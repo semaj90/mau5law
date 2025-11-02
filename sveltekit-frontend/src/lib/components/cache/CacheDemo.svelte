@@ -484,7 +484,7 @@ testResults.set([])}
           <div class="yorha-panel-content">
             <div class="space-y-2 max-h-80 overflow-y-auto">
               {#each Array.isArray($testResults) ? $testResults : [] as result}
-                <div class="flex" items-start gap-2 p-2 rounded border-l-4
+                <div class="flex items-start gap-2" p-2 rounded border-l-4
                            {(result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'success' ? 'border-green-500 bg-green-50' :
                             (result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'error' ? 'border-red-500 bg-red-50' :
                             (result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'warning' ? 'border-yellow-500 bg-yellow-50' :

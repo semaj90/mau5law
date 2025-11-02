@@ -8,17 +8,13 @@ import { createActor } from 'xstate';
 import { systemMonitorMachine } from '$lib/machines/system-monitor';
 
 // NES-style memory hierarchy mapping to modern GPU
-export interface NESGPUMemoryHierarchy {
-  prgRom: Float32Array;      // Global Memory (VRAM)
-  chrRom: Uint8ClampedArray; // L2 Cache (pattern tables)
+export interface NESGPUMemoryHierarchy { prgRom: Float32Array;      // Global Memory (VRAM), chrRom: Uint8ClampedArray; // L2 Cache (pattern tables)
   ram: Float32Array;         // Shared/working memory
   ppu: Int32Array;           // Registers / small control state
 }
 
 // Bit depth profiles for browser optimization
-export interface BitDepthProfile {
-  standard: number;
-  modern: number;
+export interface BitDepthProfile { standard: number;, modern: number;
   premium: number;
   target: number;
   compressed: number;
@@ -27,9 +23,7 @@ export interface BitDepthProfile {
 }
 
 // Cache optimization table (NES-style)
-export interface CacheTable {
-  alphabet: string;
-  numbers: string;
+export interface CacheTable { alphabet: string;, numbers: string;
   specialChars: string;
   legalTerms: string[];
   commonPhrases: string[];
@@ -37,9 +31,7 @@ export interface CacheTable {
   byteValues: number[];
 }
 
-export interface CachedTensor {
-  tensor: MultiDimArray;
-  timestamp: number;
+export interface CachedTensor { tensor: MultiDimArray;, timestamp: number;
   hitCount: number;
   memoryLevel: keyof NESGPUMemoryHierarchy;
 }
@@ -53,9 +45,7 @@ interface GPUMessage {
 }
 
 // Replace the BridgeStats definition so it matches actual fields used across the class
-export interface BridgeStats {
-  totalConversions: number;
-  cacheHitRate: number;
+export interface BridgeStats { totalConversions: number;, cacheHitRate: number;
   averageCompressionRatio: number;
   bitDepthOptimizations: number;
   gpuAccelerations: number;
@@ -96,13 +86,13 @@ export class NESStyleGPUBridge {
       averageCompressionRatio: 0,
       bitDepthOptimizations: 0,
       sharedBufferTransfers: 0,
-      avgConversionTime: 0,
+      avgConversionTime: 0
     };
     this.memoryHierarchy = {
       prgRom: new Float32Array(32768),
       chrRom: new Uint8ClampedArray(8192),
       ram: new Float32Array(2048),
-      ppu: new Int32Array(64),
+      ppu: new Int32Array(64)
     };
     // initialize shared buffer only if available and in browser
     this.initSharedBuffer();
@@ -116,7 +106,7 @@ export class NESStyleGPUBridge {
             const fallbackMode = !!snapshot.context?.fallbackMode;
             if (fallbackMode !== this.useFallback) {
               this.useFallback = fallbackMode;
-              console.log(`🧠 GPUBridge switched to ${fallbackMode ? 'CPU fallback' : 'GPU active'} mode`);
+              console.log(`🧠 GPUBridge switched to ${fallbackMode ? 'CPU fallback' : `GPU active` } mode`);
             }
           } catch (e) {
             if (this.verbose) console.warn('systemMonitor subscription error', e);
@@ -181,8 +171,7 @@ export class NESStyleGPUBridge {
     return new Promise((resolve, reject) => {
       try {
         const worker = new Worker(new URL('../workers/gpu-tensor-worker.ts', import.meta.url), {
-          type: 'module'
-        });
+          type: `module` });
 
         const onInitMsg = (e: MessageEvent<GPUMessage>) => {
           const msg = e.data;
@@ -282,7 +271,7 @@ export class NESStyleGPUBridge {
     const buffer = device.createBuffer({
       size: data.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     new Float32Array(buffer.getMappedRange()).set(data);
     buffer.unmap();
@@ -422,8 +411,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit`
-    };
+      layout: 'nes_quantized_${bitDepth}bit' };
   }
 
   // Calculate optimal tensor shape for GPU processing
@@ -626,8 +614,7 @@ export class NESStyleGPUBridge {
     return new Promise((resolve, reject) => {
       try {
         const worker = new Worker(new URL('../workers/gpu-tensor-worker.ts', import.meta.url), {
-          type: 'module'
-        });
+          type: `module` });
 
         const onInitMsg = (e: MessageEvent<GPUMessage>) => {
           const msg = e.data;
@@ -785,8 +772,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit`
-    };
+      layout: 'nes_quantized_${bitDepth}bit' };
   }
 
   // Calculate optimal tensor shape for GPU processing
@@ -989,8 +975,7 @@ export class NESStyleGPUBridge {
     return new Promise((resolve, reject) => {
       try {
         const worker = new Worker(new URL('../workers/gpu-tensor-worker.ts', import.meta.url), {
-          type: 'module'
-        });
+          type: `module` });
 
         const onInitMsg = (e: MessageEvent<GPUMessage>) => {
           const msg = e.data;
@@ -1148,8 +1133,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit`
-    };
+      layout: 'nes_quantized_${bitDepth}bit' };
   }
 
   // Calculate optimal tensor shape for GPU processing
@@ -1352,8 +1336,7 @@ export class NESStyleGPUBridge {
     return new Promise((resolve, reject) => {
       try {
         const worker = new Worker(new URL('../workers/gpu-tensor-worker.ts', import.meta.url), {
-          type: 'module'
-        });
+          type: `module` });
 
         const onInitMsg = (e: MessageEvent<GPUMessage>) => {
           const msg = e.data;
@@ -1511,8 +1494,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit`
-    };
+      layout: `nes_quantized_${bitDepth}bit` };
   }
 
   // Calculate optimal tensor shape for GPU processing

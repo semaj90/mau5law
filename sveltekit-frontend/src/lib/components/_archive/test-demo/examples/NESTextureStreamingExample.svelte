@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import NesCard from '$lib/components/ui/nes-Card.svelte';
   import { lodManager, type LODContext } from '$lib/services/N64LODManager.ts';
   // Demo state
   let selectedDocument = 'legal_contract_2024_001';

@@ -12,25 +12,25 @@ export const GET: RequestHandler = async ({ request }) => {
     const sessionSchema = sessions._.config;
     // Test simple queries
     const userCount = await db.select({ count: db.sql`count(*)` }).from(users);
-    const sessionCount = await db.select({ count: db.sql`count(*)` }).from(sessions);
+    const sessionCount = await db.select({ count: db.sql`count(*)' }).from(sessions);
     return json({
       success: true,
       message: 'Database connection and schema test successful',
       tests: {
         connection: 'OK',
         userSchema: {
-          tableName: userSchema.name,
-          columns: Object.keys(userSchema.columns),
+         , tableName: userSchema.name,
+          columns: Object.keys(userSchema.columns)
         },
         sessionSchema: {
           tableName: sessionSchema.name,
-          columns: Object.keys(sessionSchema.columns),
+          columns: Object.keys(sessionSchema.columns)
         },
         counts: {
           users: userCount[0]?.count || 0,
-          sessions: sessionCount[0]?.count || 0,
-        },
-      },
+          sessions: sessionCount[0]?.count || 0
+        }
+      }
     });
   } catch (error: any) {
     return json(
@@ -39,10 +39,9 @@ export const GET: RequestHandler = async ({ request }) => {
         error: error.message,
         stack: error.stack,
         details: {
-          name: error.name,
+         , name: error.name,
           code: error.code || 'NO_CODE',
-          cause: error.cause?.message || 'No cause',
-        },
+          cause: error.cause?.message || 'No cause` }
       },
       { status: 500 }
     );

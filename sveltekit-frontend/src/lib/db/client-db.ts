@@ -62,7 +62,7 @@ export interface SearchHistory {
   filters?: {
     evidenceType?: string[];
     priority?: string[];
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date;, end: Date };
     jurisdiction?: string[];
   };
 }
@@ -124,9 +124,7 @@ export interface UserAnnotation {
   chunkId?: string;
   text: string;
   note: string;
-  position?: {
-    start: number;
-    end: number;
+  position?: { start: number;, end: number;
     page?: number;
   };
   tags: string[];
@@ -162,12 +160,10 @@ export interface GraphVisualizationData {
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
   nodes: GraphNode[]; // was Array<any>
   edges: GraphEdge[]; // was Array<any>
-  layout: {
-    algorithm: string;
-    parameters: Record<string, unknown>; // was any
+  layout: { algorithm: string;, parameters: Record<string, unknown>; // was any
     dimensions: 2 | 3;
   };
-  cameraPosition?: { x: number; y: number; z: number };
+  cameraPosition?: { x: number; y: number;, z: number };
   createdAt: Date;
   lastAccessed: Date;
   computationTime: number;
@@ -187,24 +183,16 @@ export interface AIAnalysisCache {
 export interface UserPreferences {
   id?: number;
   userId?: string;
-  preferences: {
-    theme: 'light' | 'dark' | 'yorha';
-    layout: 'grid' | 'list' | 'graph';
+  preferences: { theme: 'light' | 'dark' | 'yorha';, layout: 'grid' | 'list' | 'graph';
     defaultSearchType: 'vector' | 'hybrid' | 'text';
-    cacheSettings: {
-      maxDocuments: number;
-      maxSearchResults: number;
+    cacheSettings: { maxDocuments: number;, maxSearchResults: number;
       cacheExpiry: number; // hours
     };
-    visualization: {
-      defaultGraphType: string;
-      showLabels: boolean;
+    visualization: { defaultGraphType: string;, showLabels: boolean;
       enablePhysics: boolean;
       colorScheme: string;
     };
-    ai: {
-      preferredModel: string;
-      temperature: number;
+    ai: { preferredModel: string;, temperature: number;
       includeAnalysis: boolean;
       autoSummarize: boolean;
     };
@@ -237,8 +225,7 @@ export class LegalAIClientDB extends Dexie {
       legalEntities: '++id, name, type, lastUpdated, confidence',
       graphVisualizationData: '++id, graphId, graphType, lastAccessed, createdAt',
       aiAnalysisCache: '++id, contentHash, analysisType, timestamp, expiresAt',
-      userPreferences: '++id, userId, lastUpdated',
-    });
+      userPreferences: '++id, userId, lastUpdated` });
     // Hooks for data management
     // Dexie passes (primaryKey, obj, transaction). We prefix unused args with: "_" to satisfy linting.
     this.chatHistory.hook('creating', (_primaryKey, obj: Partial<ChatMessage>, _trans) => {
@@ -296,19 +283,15 @@ export class LegalDBUtils {
   /**
    * Get database statistics
    */
-  static async getStorageStats(): Promise<{
-    totalRecords: number;
-    storageUsed: string;
-    tables: Array<{ name: string; count: number }>;
+  static async getStorageStats(): Promise<{ totalRecords: number;, storageUsed: string;
+    tables: Array<{ name: string;, count: number }>;
   }> {
-    const stats: {
-      totalRecords: number;
-      storageUsed: string;
-      tables: Array<{ name: string; count: number }>;
+    const stats: { totalRecords: number;, storageUsed: string;
+      tables: Array<{ name: string;, count: number }>;
     } = {
       totalRecords: 0,
       storageUsed: 'Unknown',
-      tables: [],
+      tables: []
     };
 
     // List of table property names on legalDB
@@ -418,8 +401,8 @@ export const annotationsCount = liveQuery(async () => {
 /**
  * Storage usage monitor
  */
-type StorageTableStat = { name: string; count: number };
-type StorageStats = { totalRecords: number; storageUsed: string; tables: StorageTableStat[] };
+type StorageTableStat = { name: string;, count: number };
+type StorageStats = { totalRecords: number; storageUsed: string;, tables: StorageTableStat[] };
 
 export const storageStats = writable<StorageStats>({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
 // Update storage stats periodically

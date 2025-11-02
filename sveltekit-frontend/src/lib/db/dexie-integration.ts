@@ -41,7 +41,7 @@ export interface GraphNode {
   id?: number;
   nodeId: string; // Neo4j node ID,
   label: string;
-  position: { x: number; y: number; z?: number } // Layout coordinates
+  position: { x: number;, y: number; z?: number } // Layout coordinates
   embedding: number[]; // 384d vector from nomic-embed,
   rankingMatrix: number[]; // 4x4 matrix flattened to 16 elements
   varianceMatrix: number[]; // 4x4 variance matrix,
@@ -89,9 +89,7 @@ export interface CacheEntry {
 }
 
 // New interface for exported data structure
-export interface ExportedData {
-  chatHistory: ChatMessage[];
-  legalDocuments: LegalDocument[];
+export interface ExportedData { chatHistory: ChatMessage[];, legalDocuments: LegalDocument[];
   graphNodes: GraphNode[];
   graphEdges: GraphEdge[];
   userSessions: UserSession[];
@@ -118,7 +116,7 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: '++id, nodeId, [metadata.documentType], [metadata.jurisdiction], [metadata.practiceArea]',
       graphEdges: '++id, fromNodeId, toNodeId, edgeType, weight',
       userSessions: '++id, sessionId, userId, startTime',
-      cache: '++id, key, createdAt, expiresAt, hitCount',
+      cache: '++id, key, createdAt, expiresAt, hitCount'
     });
     // Version 2: Add indexes for performance
     this.version(2).stores({
@@ -128,7 +126,7 @@ export class LegalAIDatabase extends Dexie {
         '++id, nodeId, [metadata.documentType], [metadata.jurisdiction], [metadata.practiceArea], [metadata.confidence]',
       graphEdges: '++id, fromNodeId, toNodeId, edgeType, weight',
       userSessions: '++id, sessionId, userId, startTime, endTime',
-      cache: '++id, key, createdAt, expiresAt, hitCount, size',
+      cache: '++id, key, createdAt, expiresAt, hitCount, size'
     });
     // Hooks for automatic cleanup and maintenance
     this.cache.hook('creating', (_primKey, obj, _trans) => {
@@ -153,7 +151,7 @@ export class LegalAIDatabase extends Dexie {
   async addChatMessage(message: Omit<ChatMessage, 'id' | 'timestamp'>): Promise<number> {
     return await this.chatHistory.add({
       ...message,
-      timestamp: new Date(),
+      timestamp: new Date()
     });
   }
   // Reactive query - automatically updates UI when data changes
@@ -183,9 +181,8 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
-      ..._document, // Changed: 'document' to: '_document'
-      created: new Date(),
-      modified: new Date(),
+      ..._document, // Changed: 'document' to: '_document'; created: new Date(),
+      modified: new Date()
     });
   }
   getLegalDocuments() {
@@ -215,8 +212,8 @@ export class LegalAIDatabase extends Dexie {
       ...node,
       metadata: {
         ...node.metadata,
-        lastUpdated: new Date(),
-      },
+        lastUpdated: new Date()
+      }
     });
   }
   async addGraphEdge(edge: Omit<GraphEdge, 'id'>): Promise<number> {
@@ -225,7 +222,7 @@ export class LegalAIDatabase extends Dexie {
   getGraphNodes() {
     return liveQuery(() => this.graphNodes.toArray()); // Added missing: ')'
   }
-  getGraphNodesByRegion(bounds: { x: number; y: number; width: number; height: number }) {
+  getGraphNodesByRegion(bounds: { x: number; y: number; width: number;, height: number }) {
     return liveQuery(() =>
       this.graphNodes
         .filter(
@@ -245,7 +242,7 @@ export class LegalAIDatabase extends Dexie {
       .filter((id, index, arr) => arr.indexOf(id) === index); // Remove duplicates
     return await this.graphNodes.where('nodeId').anyOf(connectedNodeIds).toArray();
   }
-  async updateGraphNodePosition(nodeId: string, position: { x: number; y: number; z?: number }): Promise<void> {
+  async updateGraphNodePosition(nodeId: string, position: {, x: number; y: number; z?: number }): Promise<void> {
     await this.graphNodes.where('nodeId').equals(nodeId).modify({ position });
   }
   // ========================================================================
@@ -262,7 +259,7 @@ export class LegalAIDatabase extends Dexie {
       createdAt: new Date(),
       expiresAt,
       size,
-      hitCount: 0,
+      hitCount: 0
     });
   }
   async getCache(key: string): Promise<unknown | null> {
@@ -291,28 +288,28 @@ export class LegalAIDatabase extends Dexie {
       sessionId,
       userId,
       startTime: new Date(),
-      activities: [],
+      activities: []
     });
   }
   async addSessionActivity(
     sessionId: string,
-    activity: { type: 'search' | 'chat' | 'document_view' | 'graph_explore'; data: Record<string, unknown> } // Updated data type
+    activity: {, type: 'search' | 'chat' | 'document_view' | 'graph_explore'; data: Record<string, unknown> } // Updated data type
   ): Promise<void> {
     const session = await this.userSessions.where('sessionId').equals(sessionId).first();
     if (session) {
       const newActivity = {
         ...activity,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
       session.activities.push(newActivity);
       await this.userSessions.where('sessionId').equals(sessionId).modify({
-        activities: session.activities,
+        activities: session.activities
       });
     }
   }
   async endSession(sessionId: string): Promise<void> {
     await this.userSessions.where('sessionId').equals(sessionId).modify({
-      endTime: new Date(),
+      endTime: new Date()
     });
   }
   getActiveSession(sessionId: string) {
@@ -341,7 +338,7 @@ export class LegalAIDatabase extends Dexie {
       userSessions: sessionsCount,
       cache: {
         entries: cacheCount,
-        totalSize: cacheSize,
+        totalSize: cacheSize
       },
       estimatedSize: cacheSize + chatCount * 1000 + documentsCount * 5000, // Rough estimate
     };
@@ -366,7 +363,7 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: await this.graphNodes.toArray(),
       graphEdges: await this.graphEdges.toArray(),
       userSessions: await this.userSessions.toArray(),
-      exportedAt: new Date().toISOString(),
+      exportedAt: new Date().toISOString()
     };
     return data;
   }

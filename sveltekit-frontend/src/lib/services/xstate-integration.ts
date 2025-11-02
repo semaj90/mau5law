@@ -24,29 +24,21 @@ import { rabbitmqXStateBridge } from './rabbitmq-xstate-bridge.js';
 */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Global state interface
-export interface GlobalAppState {
-  auth: AuthContext;
-  session: SessionContext;
+export interface GlobalAppState { auth: AuthContext;, session: SessionContext;
   aiAssistant: AIAssistantContext;
   agentShell: AgentShellContext;
-  ui: {
-    theme: 'light' | 'dark' | 'system';
-    sidebarOpen: boolean;
+  ui: { theme: 'light' | 'dark' | 'system';, sidebarOpen: boolean;
     currentRoute: string;
     notifications: Notification[];
     isLoading: boolean;
   };
-  legal: {
-    activeCases: any[]; // keep generic for now
-    currentCase: any | null;
+  legal: { activeCases: any[]; // keep generic for now, currentCase: any | null;
     documents: any[];
     evidence: any[];
   };
 }
 
-export type SystemHealth = {
-  auth: boolean;
-  ai: boolean;
+export type SystemHealth = { auth: boolean;, ai: boolean;
   services: boolean;
   overall: 'healthy' | 'degraded' | 'critical';
 };
@@ -96,9 +88,7 @@ export interface NotificationAction {
   [key: string]: any;
 }
 
-export interface Notification {
-  id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+export interface Notification { id: string;, type: 'info' | 'success' | 'warning' | 'error';
   title: string;
   message: string;
   timestamp: Date;
@@ -114,9 +104,7 @@ export interface UploadResponse {
 type ISODateString = string;
 
 // New: minimal registration payload type used by register()
-export interface RegistrationData {
-  email: string;
-  password: string;
+export interface RegistrationData { email: string;, password: string;
   firstName?: string;
   lastName?: string;
   role?: string;
@@ -223,7 +211,7 @@ export class XStateIntegrationService {
           queuedSubs.length = 0;
           return realActor;
         } catch (err) {
-          console.warn(`XState: failed to create actor for ${name} at start(), keeping fallback:`, err);
+          console.warn(`XState: failed to create actor for ${name} at start(), keeping fallback: ', err);
           realActor = null;
           return null;
         }
@@ -259,9 +247,9 @@ export class XStateIntegrationService {
             unsubscribe: () => {
               const i = queuedSubs.indexOf(listener);
               if (i >= 0) queuedSubs.splice(i, 1);
-            },
+            }
           };
-        },
+        }
       } as AnyActorRef;
     };
 
@@ -296,14 +284,14 @@ export class XStateIntegrationService {
         sidebarOpen: false,
         currentRoute: '/',
         notifications: [],
-        isLoading: false,
+        isLoading: false
       },
       legal: {
         activeCases: [],
         currentCase: null,
         documents: [],
-        evidence: [],
-      },
+        evidence: []
+      }
     } as GlobalAppState);
 
     // Create derived stores
@@ -322,7 +310,7 @@ export class XStateIntegrationService {
       ([$auth, $session, $aiAssistant]) => {
         const authHealthy = !!$auth.user && !$auth.error;
         const sessionHealthy = $session.sessionHealth?.isValid !== $state(false);
-        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== $state(false); // Fix: Removed extra: ')'
+        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== $state(false); // Fix: Removed; extra: ')'
 
         const healthyStates = [authHealthy, sessionHealthy, aiHealthy];
         const healthyCount = healthyStates.filter(item => item).length; // Corrected logic
@@ -340,7 +328,7 @@ export class XStateIntegrationService {
           auth: authHealthy,
           ai: aiHealthy,
           services: sessionHealthy,
-          overall,
+          overall
         };
       }
     );
@@ -361,7 +349,7 @@ export class XStateIntegrationService {
             this.authState.set(state.context);
             this.globalState.update(global => ({
               ...global,
-              auth: state.context,
+              auth: state.context
             }));
             if (state.value === 'authenticated') {
               this.onAuthenticationSuccess(state.context);
@@ -371,7 +359,7 @@ export class XStateIntegrationService {
               this.showNotification({
                 type: 'error',
                 title: 'Authentication Error',
-                message: (state.context as AuthContext).error || 'Authentication failed',
+                message: (state.context as AuthContext).error || 'Authentication failed'
               });
             }
           } catch (inner) {
@@ -392,7 +380,7 @@ export class XStateIntegrationService {
             this.sessionState.set(state.context as SessionContext);
             this.globalState.update(global => ({
               ...global,
-              session: state.context as SessionContext,
+              session: state.context as SessionContext
             }));
             if (state.value === 'expired') {
               try {
@@ -403,7 +391,7 @@ export class XStateIntegrationService {
               this.showNotification({
                 type: 'warning',
                 title: 'Session Expired',
-                message: 'Your session has expired. Please login again.',
+                message: 'Your session has expired. Please login again.'
               });
             }
           } catch (inner) {
@@ -424,7 +412,7 @@ export class XStateIntegrationService {
             this.aiAssistantState.set(state.context);
             this.globalState.update(global => ({
               ...global,
-              aiAssistant: state.context,
+              aiAssistant: state.context
             }));
             if (state.context.response && state.context.response !== '') {
               // Could trigger UI updates, notifications, etc.
@@ -448,7 +436,7 @@ export class XStateIntegrationService {
               this.agentShellState.set(state.context as AgentShellContext);
               this.globalState.update(global => ({
                 ...global,
-                agentShell: state.context as AgentShellContext,
+                agentShell: state.context as AgentShellContext
               }));
             }
           } catch (inner) {
@@ -484,23 +472,22 @@ export class XStateIntegrationService {
         user: {
           ...(authContext.user as User),
           createdAt: (authContext.user as User).createdAt || new Date(),
-          updatedAt: (authContext.user as User).updatedAt || new Date(),
+          updatedAt: (authContext.user as User).updatedAt || new Date()
         } as User,
-        sessionId: (authContext.session as { id?: string }).id || 'temp_session',
+        sessionId: (authContext.session as { id?: string }).id || 'temp_session'
       });
       // Initialize AI assistant with user context
       this.aiAssistantActor.send({
         type: 'SET_MODEL',
-        model: 'gemma3-legal:latest',
+        model: 'gemma3-legal:latest'
       });
       // Check service health
-      this.aiAssistantActor.send({ type: 'CHECK_SERVICE_HEALTH' });
+      this.aiAssistantActor.send({ type: `CHECK_SERVICE_HEALTH` });
       // Show success notification
       this.showNotification({
         type: 'success',
         title: 'Welcome!',
-        message: `Welcome back, ${authContext.user.firstName || authContext.user.email || 'User'}!`,
-      });
+        message: 'Welcome back, ${authContext.user.firstName || authContext.user.email || 'User` }!' });
       // Load user-specific data
       await this.loadUserData(authContext.user);
     }
@@ -513,21 +500,20 @@ export class XStateIntegrationService {
     this.globalState.update(global => ({
       ...global,
       legal: {
-        activeCases: [],
+       , activeCases: [],
         currentCase: null,
         documents: [],
-        evidence: [],
+        evidence: []
       },
       ui: {
         ...global.ui,
-        notifications: [],
-      },
+        notifications: []
+      }
     }));
     this.showNotification({
       type: 'info',
       title: 'Logged Out',
-      message: 'You have been successfully logged out.',
-    });
+      message: `You have been successfully logged out.` });
   }
   private async loadUserData(user: User): Promise<void> {
     try {
@@ -542,15 +528,15 @@ export class XStateIntegrationService {
       const casesResponse = {
         success: false,
         data: { cases: [] },
-        queriedForUserId: user?.id ?? null,
+        queriedForUserId: user?.id ?? null
       };
       if (casesResponse.success) {
         this.globalState.update(global => ({
           ...global,
           legal: {
             ...global.legal,
-            activeCases: casesResponse.data?.cases || [],
-          },
+            activeCases: casesResponse.data?.cases || []
+          }
         }));
       }
     } catch (error: any) {
@@ -575,21 +561,21 @@ export class XStateIntegrationService {
       language: navigator.language,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       screenResolution: `${screen.width}x${screen.height}`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
   private showNotification(notification: Omit<Notification, 'id' | 'timestamp'>): void {
     const fullNotification: Notification = {
       ...notification,
       id: `notification_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
     this.globalState.update(global => ({
       ...global,
       ui: {
         ...global.ui,
-        notifications: [...global.ui.notifications, fullNotification],
-      },
+        notifications: [...global.ui.notifications, fullNotification]
+      }
     }));
     // Auto-remove after 5 seconds for non-error notifications
     if (notification.type !== 'error') {
@@ -615,8 +601,8 @@ export class XStateIntegrationService {
         password,
         rememberMe: options.rememberMe,
         twoFactorCode: options.twoFactorCode,
-        deviceInfo: this.getDeviceInfo(),
-      },
+        deviceInfo: this.getDeviceInfo()
+      }
     });
   }
 
@@ -625,7 +611,7 @@ export class XStateIntegrationService {
     // Start by copying any provided fields to avoid duplicate keys in a single literal
     const payload = {
       ...(registrationData as RegistrationData),
-      deviceInfo: this.getDeviceInfo(),
+      deviceInfo: this.getDeviceInfo()
     } as RegistrationData;
 
     // Ensure safe defaults for commonly expected properties
@@ -635,26 +621,26 @@ export class XStateIntegrationService {
 
     this.authActor.send({
       type: 'START_REGISTRATION',
-      data: payload,
+      data: payload
     });
   }
 
   public logout(): void {
-    this.authActor.send({ type: 'LOGOUT' });
+    this.authActor.send({ type: `LOGOUT` });
   }
 
   public sendAIMessage(message: string, useContext7 = false): void {
     this.aiAssistantActor.send({
       type: 'SEND_MESSAGE',
       message,
-      useContext7,
+      useContext7
     });
   }
 
   public analyzeWithContext7(topic: string): void {
     this.aiAssistantActor.send({
       type: 'ANALYZE_WITH_CONTEXT7',
-      query: topic,
+      query: topic
     });
   }
 
@@ -663,8 +649,8 @@ export class XStateIntegrationService {
       ...global,
       ui: {
         ...global.ui,
-        theme,
-      },
+        theme
+      }
     }));
   }
 
@@ -673,8 +659,8 @@ export class XStateIntegrationService {
       ...global,
       ui: {
         ...global.ui,
-        sidebarOpen: open,
-      },
+        sidebarOpen: open
+      }
     }));
   }
 
@@ -683,8 +669,8 @@ export class XStateIntegrationService {
       ...global,
       ui: {
         ...global.ui,
-        notifications: global.ui.notifications.filter(n => n.id !== id),
-      },
+        notifications: global.ui.notifications.filter(n => n.id !== id)
+      }
     }));
   }
 
@@ -692,7 +678,7 @@ export class XStateIntegrationService {
     this.sessionActor.send({
       type: 'ACTIVITY',
       route,
-      action,
+      action
     });
   }
 
@@ -719,8 +705,7 @@ export class XStateIntegrationService {
         this.showNotification({
           type: 'success',
           title: 'Upload Complete',
-          message: `${file.name} has been uploaded successfully.`,
-        });
+          message: `${file.name} has been uploaded successfully.` });
         // Refresh documents
       }
       return response;
@@ -729,8 +714,7 @@ export class XStateIntegrationService {
       this.showNotification({
         type: 'error',
         title: 'Upload Failed',
-        message: error instanceof Error ? error.message : `Could not upload ${file.name}.`,
-      });
+        message: error instanceof Error ? error.message : `Could not upload ${file.name}.' });
       return { success: false, error };
     }
   }
@@ -751,9 +735,9 @@ export class XStateIntegrationService {
       this.webTransport = new WebTransportService({
         webtransportUrl: this.getWebTransportUrl(),
         websocketUrl: this.getWebSocketUrl(),
-        httpUrl: `http://${typeof window !== 'undefined' ? window.location.host : 'localhost:5173'}/api/realtime`,
+        httpUrl: 'http://${typeof window !== 'undefined' ? window.location.host : `localhost:5173` }/api/realtime`,
         maxReconnectAttempts: 3,
-        reconnectInterval: 1000,
+        reconnectInterval: 1000
       });
 
       // Start WebTransport connection (non-blocking)
@@ -775,28 +759,28 @@ export class XStateIntegrationService {
       const aiActor1 = this.aiAssistantActor as AnyActorRef;
       await rabbitmqXStateBridge.subscribe('ai.analysis', aiActor1, msg => ({
         type: 'ANALYZE',
-        payload: msg.data,
+        payload: msg.data
       }));
 
       // Subscribe Session actor to evidence processing queue
       const sessionActor1 = this.sessionActor as AnyActorRef;
       await rabbitmqXStateBridge.subscribe('evidence.process', sessionActor1, msg => ({
         type: 'PROCESS_EVIDENCE',
-        payload: msg.data,
+        payload: msg.data
       }));
 
       // Subscribe AI Assistant to embedding queue
       const aiActor2 = this.aiAssistantActor as AnyActorRef;
       await rabbitmqXStateBridge.subscribe('ai.embedding', aiActor2, msg => ({
         type: 'GENERATE_EMBEDDING',
-        payload: msg.data,
+        payload: msg.data
       }));
 
       // Subscribe Session to notifications
       const sessionActor2 = this.sessionActor as AnyActorRef;
       await rabbitmqXStateBridge.subscribe('notification.email', sessionActor2, msg => ({
         type: 'SEND_NOTIFICATION',
-        payload: msg.data,
+        payload: msg.data
       }));
 
       console.info('✅ Messaging services initialized successfully');
@@ -830,12 +814,12 @@ export class XStateIntegrationService {
   /**
    * Get transport status for diagnostics
    */
-  public getTransportStatus(): { connected: boolean; transport: string; messaging: object } {
+  public getTransportStatus(): { connected: boolean; transport: string;, messaging: object } {
     // Note: WebTransportService doesn't expose state publicly, so we provide a fallback
     return {
       connected: this.webTransport !== null,
       transport: this.webTransport !== null ? 'connected' : 'disconnected',
-      messaging: rabbitmqXStateBridge.getStatus(),
+      messaging: rabbitmqXStateBridge.getStatus()
     };
   }
 

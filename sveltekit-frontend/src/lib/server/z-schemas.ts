@@ -5,7 +5,7 @@
 import { z } from 'zod';
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const cuidRegex = /^c[^\s]{8,}$/i;
+const cuidRegex = /^c[^\s]{8}$/i;
 
 export const flexibleIdSchema = z
   .string()
@@ -21,5 +21,5 @@ export type CUID = z.infer<typeof cuidSchema>;
 export default {
   flexibleIdSchema,
   cuidSchema,
-  uuidSchema,
+  uuidSchema
 };

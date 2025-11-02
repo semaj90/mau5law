@@ -3,9 +3,7 @@
  * Implements gemma3:270m for lightweight, privacy-first inference
  */
 // Types for transformers.js integration
-export interface LocalModelConfig {
-  modelId: string;
-  quantized: boolean;
+export interface LocalModelConfig { modelId: string;, quantized: boolean;
   device: 'webgpu' | 'wasm' | 'cpu';
   maxTokens: number;
   temperature: number;
@@ -17,9 +15,7 @@ export interface LocalInferenceRequest {
   stopSequences?: string[];
   systemPrompt?: string;
 }
-export interface LocalInferenceResult {
-  text: string;
-  tokensGenerated: number;
+export interface LocalInferenceResult { text: string;, tokensGenerated: number;
   processingTime: number;
   device: string;
   confidence: number;
@@ -29,29 +25,21 @@ export interface EmbeddingRequest {
   texts: string[];
   model?: 'sentence-transformers' | 'all-MiniLM-L6-v2';
 }
-export interface EmbeddingResult {
-  embeddings: Float32Array[];
-  processingTime: number;
+export interface EmbeddingResult { embeddings: Float32Array[];, processingTime: number;
   device: string;
   dimensions: number;
 }
-export interface SemanticSearchRequest {
-  query: string;
-  documents: Array<{ id: string; text: string; metadata?: any }>;
+export interface SemanticSearchRequest { query: string;, documents: Array<{ id: string;, text: string; metadata?: any }>;
   topK?: number;
   threshold?: number;
 }
-export interface SemanticSearchResult {
-  id: string;
-  text: string;
+export interface SemanticSearchResult { id: string;, text: string;
   similarity: number;
   metadata?: any;
 }
 // Browser compatibility detection
 export class BrowserCapabilities {
-  static async detect(): Promise<{
-    webgpu: boolean;
-    wasm: boolean;
+  static async detect(): Promise<{ webgpu: boolean;, wasm: boolean;
     sharedArrayBuffer: boolean;
     webworkers: boolean;
     estimatedMemory: number;
@@ -77,7 +65,7 @@ export class BrowserCapabilities {
       wasm,
       sharedArrayBuffer,
       webworkers,
-      estimatedMemory,
+      estimatedMemory
     };
   }
   static canRunModel(
@@ -107,7 +95,7 @@ export class BrowserLocalAI {
     totalEmbeddings: 0,
     averageInferenceTime: 0,
     averageEmbeddingTime: 0,
-    cacheHits: 0,
+    cacheHits: 0
   };
   constructor(config: Partial<LocalModelConfig> = {}) {
     this.config = {
@@ -116,7 +104,7 @@ export class BrowserLocalAI {
       device: 'wasm', // Will be auto-detected
       maxTokens: 512,
       temperature: 0.3,
-      ...config,
+      ...config
     };
   }
   async initialize(): Promise<boolean> {
@@ -166,18 +154,17 @@ export class BrowserLocalAI {
       // Mock model interface
       generate: async (prompt: string, options: any) => {
         await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
-        return {
-          generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
-          num_tokens: Math.floor(Math.random() * 100) + 50,
+        return { generated_text: `[Local AI Response] Based on the legal, context: "${prompt}", here are the key considerations...`,
+          num_tokens: Math.floor(Math.random() * 100) + 50
         };
-      },
+      }
     };
     this.embeddingModel = {
       // Mock embedding model
       encode: async (texts: string[]) => {
         await new Promise(resolve => setTimeout(resolve, 50 * texts.length));
         return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5));
-      },
+      }
     };
     this.modelLoaded = true;
     console.log('✅ Local AI models loaded');
@@ -197,13 +184,13 @@ export class BrowserLocalAI {
     try {
       // Prepare prompt with system context
       const fullPrompt = request.systemPrompt
-        ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant:`
+        ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant: '
         : request.prompt;
       // Generate text using local model
       const result = await this.textModel.generate(fullPrompt, {
         max_tokens: request.maxTokens || this.config.maxTokens,
         temperature: request.temperature || this.config.temperature,
-        stop_sequences: request.stopSequences || ['</s>', '<|end|>'],
+        stop_sequences: request.stopSequences || ['</s>', '<|end|>']
       });
       const processingTime = performance.now() - startTime;
       const inferenceResult: LocalInferenceResult = {
@@ -212,7 +199,7 @@ export class BrowserLocalAI {
         processingTime,
         device: this.config.device,
         confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
-        fromCache: false,
+        fromCache: false
       };
       // Cache the result
       this.inferenceCache.set(cacheKey, inferenceResult);
@@ -264,7 +251,7 @@ export class BrowserLocalAI {
         embeddings,
         processingTime,
         device: this.config.device,
-        dimensions: embeddings[0]?.length || 384,
+        dimensions: embeddings[0]?.length || 384
       };
     } catch (error) {
       console.error('❌ Local embedding generation failed:', error);
@@ -279,7 +266,7 @@ export class BrowserLocalAI {
     const docTexts = request.documents.map(doc => doc.text);
     const docEmbeddings = await this.generateEmbeddings({ texts: docTexts });
     // Calculate similarities
-    const similarities: Array<{ index: number; similarity: number }> = [];
+    const similarities: Array<{ index: number;, similarity: number }> = [];
     for (let i = 0; i < docEmbeddings.embeddings.length; i++) {
       const docVector = docEmbeddings.embeddings[i];
       const similarity = this.cosineSimilarity(queryVector, docVector);
@@ -295,7 +282,7 @@ export class BrowserLocalAI {
       id: request.documents[index].id,
       text: request.documents[index].text,
       similarity,
-      metadata: request.documents[index].metadata,
+      metadata: request.documents[index].metadata
     }));
   }
   // Utility methods
@@ -348,9 +335,9 @@ export class BrowserLocalAI {
       ...this.metrics,
       cacheSize: {
         inference: this.inferenceCache.size,
-        embeddings: this.embeddingCache.size,
+        embeddings: this.embeddingCache.size
       },
-      config: this.config,
+      config: this.config
     };
   }
   clearCache(): void {
@@ -371,15 +358,13 @@ export const browserLocalAI = new BrowserLocalAI({
   modelId: 'gemma3-270m-q4',
   quantized: true,
   temperature: 0.2,
-  maxTokens: 512,
+  maxTokens: 512
 });
 // Legal-specific helper functions
 export class LegalLocalAI {
   constructor(private ai: BrowserLocalAI) {}
-  async suggestEvidenceLinks(evidenceNodes: Array<{ id: string; title: string; content: string }>): Promise<
-    Array<{
-      fromId: string;
-      toId: string;
+  async suggestEvidenceLinks(evidenceNodes: Array<{ id: string; title: string;, content: string }>): Promise<
+    Array<{ fromId: string;, toId: string;
       relationship: string;
       confidence: number;
     }>
@@ -397,17 +382,16 @@ export class LegalLocalAI {
           const relationshipPrompt = `Analyze the relationship between these two pieces of evidence:
 1. ${evidenceNodes[i].title}: ${evidenceNodes[i].content.substring(0, 200)}
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
-Describe their relationship in one concise phrase:`;
+Describe their relationship in one concise phrase: ';
           const result = await this.ai.generateText({
             prompt: relationshipPrompt,
             maxTokens: 50,
-            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
-          });
+            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.` });
           suggestions.push({
             fromId: evidenceNodes[i].id,
             toId: evidenceNodes[j].id,
             relationship: result.text.trim(),
-            confidence: similarity,
+            confidence: similarity
           });
         }
       }
@@ -417,12 +401,11 @@ Describe their relationship in one concise phrase:`;
   async generateNotesSuggestions(context: string, existingNotes: string): Promise<string[]> {
     const prompt = `Given this legal context: "${context}"
 And existing notes: "${existingNotes}"
-Suggest 3 additional bullet points that should be added to the notes:`;
+Suggest 3 additional bullet points that should be added to the notes: ';
     const result = await this.ai.generateText({
       prompt,
       maxTokens: 200,
-      systemPrompt: 'You are a legal AI assistant helping with case note preparation.',
-    });
+      systemPrompt: 'You are a legal AI assistant helping with case note preparation.` });
     // Parse suggestions from the response
     return result.text
       .split('\n')
@@ -433,13 +416,13 @@ Suggest 3 additional bullet points that should be added to the notes:`;
   }
   async performSemanticSearch(
     query: string,
-    documents: Array<{ id: string; content: string }>
+    documents: Array<{, id: string; content: string }>
   ): Promise<SemanticSearchResult[]> {
     return this.ai.semanticSearch({
       query,
-      documents: documents.map(doc => ({ id: doc.id, text: doc.content })),
+      documents: documents.map(doc => ({, id: doc.id, text: doc.content })),
       topK: 5,
-      threshold: 0.4,
+      threshold: 0.4
     });
   }
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {

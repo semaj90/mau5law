@@ -11,48 +11,36 @@ import { eq } from 'drizzle-orm/expressions';
 import { sql } from 'drizzle-orm/sql';
 import { getOllamaEndpoint } from '$lib/utils/ollama';
 
-export interface EvidenceMetadata {
-  aiTags: string[];
-  entities: ExtractedEntity[];
+export interface EvidenceMetadata { aiTags: string[];, entities: ExtractedEntity[];
   summary: string;
   confidence: number;
   relationships: DocumentRelationship[];
   autoTaggedAt: string;
 }
 
-export interface AutoTaggingResult {
-  tags: string[];
-  entities: ExtractedEntity[];
+export interface AutoTaggingResult { tags: string[];, entities: ExtractedEntity[];
   summary: string;
   confidence: number;
   embedding: number[];
   relationships: DocumentRelationship[];
 }
 
-export interface ExtractedEntity {
-  type: 'person' | 'organization' | 'location' | 'date' | 'legal_term' | 'case_number';
-  text: string;
+export interface ExtractedEntity { type: 'person' | 'organization' | 'location' | 'date' | 'legal_term' | 'case_number';, text: string;
   confidence: number;
-  position: { start: number; end: number };
+  position: { start: number;, end: number };
 }
-export interface DocumentRelationship {
-  type: 'references' | 'contradicts' | 'supports' | 'similar_to';
-  targetId: string;
+export interface DocumentRelationship { type: 'references' | 'contradicts' | 'supports' | 'similar_to';, targetId: string;
   confidence: number;
   description: string;
 }
 
 // ADDED: Interface for similar document rows
-interface SimilarDocumentRow {
-  id: string;
-  title: string;
+interface SimilarDocumentRow { id: string;, title: string;
   similarity: number;
 }
 
 // ADDED: Interface for semantic search result rows
-interface SemanticSearchResultRow {
-  id: string;
-  title: string;
+interface SemanticSearchResultRow { id: string;, title: string;
   description: string | null;
   tags: string[] | null;
   summary: string | null;
@@ -81,11 +69,9 @@ class AIAutoTaggingService {
   async autoTagDocument({
     documentId,
     content,
-    documentType,
-  }: {
-    documentId: string;
-    content: string;
-    documentType: string;
+    documentType
+  }: { documentId: string;, content: string;
+   , documentType: string;
   }): Promise<AutoTaggingResult> {
     try {
       // 1. Generate embedding with embeddinggemma:latest (GPU accelerated)
@@ -95,7 +81,7 @@ class AIAutoTaggingService {
       // 3. Find similar documents using pgvector
       const similarDocs = await this.findSimilarDocuments(embedding, documentId);
       // 4. Extract relationships
-      const relationships = await this.extractRelationships(similarDocs); // MODIFIED: Removed unused: 'content' parameter
+      const relationships = await this.extractRelationships(similarDocs); // MODIFIED: Removed; unused: 'content' parameter
       // 5. Update database with tags and embeddings
       await this.updateDocumentTags(documentId, {
         tags: analysis.tags,
@@ -103,7 +89,7 @@ class AIAutoTaggingService {
         summary: analysis.summary,
         confidence: analysis.confidence,
         embedding,
-        relationships,
+        relationships
       });
       return {
         tags: analysis.tags,
@@ -111,10 +97,10 @@ class AIAutoTaggingService {
         summary: analysis.summary,
         confidence: analysis.confidence,
         embedding,
-        relationships,
+        relationships
       };
     } catch (error: any) {
-      // MODIFIED: Changed: 'any' to: 'unknown'
+      // MODIFIED: Changed: 'any'; to: 'unknown'
       let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -134,8 +120,8 @@ class AIAutoTaggingService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
-          prompt: text.substring(0, 8192),
-        }),
+          prompt: text.substring(0, 8192)
+        })
       });
 
       if (!resp.ok) {
@@ -161,7 +147,7 @@ class AIAutoTaggingService {
           const resp = await fetch('/api/embeddings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text.substring(0, 8192) }),
+            body: JSON.stringify({, text: text.substring(0, 8192) })
           });
           if (!resp.ok) {
             throw new Error(`Server embedding failed: ${resp.status} ${resp.statusText}`);
@@ -193,7 +179,7 @@ class AIAutoTaggingService {
   private async analyzeContent(
     content: string,
     documentType: string
-  ): Promise<{ tags: string[]; entities: ExtractedEntity[]; summary: string; confidence: number }> {
+  ): Promise<{ tags: string[]; entities: ExtractedEntity[]; summary: string;, confidence: number }> {
     const prompt = `Analyze this ${documentType} legal document and provide:
 1. Relevant tags (max 10)
 2. Key entities with types and confidence
@@ -219,8 +205,8 @@ Return JSON format:
         model: 'gemma3-legal:latest',
         prompt,
         format: 'json',
-        stream: false,
-      }),
+        stream: false
+      })
     });
 
     if (!resp.ok) {
@@ -265,7 +251,7 @@ Return JSON format:
             type: (obj.type as ExtractedEntity['type']) ?? 'legal_term',
             text: String(obj.text ?? ''),
             confidence: typeof obj.confidence === 'number' ? obj.confidence : Number(obj.confidence ?? 0),
-            position: { start, end },
+            position: { start, end }
           } as ExtractedEntity;
         }) : [];
         const summary = typeof parsed.summary === 'string' ? parsed.summary : 'AI analysis completed with basic tagging.';
@@ -281,7 +267,7 @@ Return JSON format:
       tags: [documentType, 'auto-generated'],
       entities: [],
       summary: 'AI analysis completed with basic tagging.',
-      confidence: 0.5,
+      confidence: 0.5
     };
   }
   /**
@@ -309,7 +295,7 @@ Return JSON format:
         return {
           id: String(id),
           title: String(title),
-          similarity,
+          similarity
         } as SimilarDocumentRow;
       });
     } catch (error: any) {
@@ -321,7 +307,7 @@ Return JSON format:
    * Extract relationships between documents
    */
   private async extractRelationships(similarDocs: SimilarDocumentRow[]): Promise<DocumentRelationship[]> {
-    // MODIFIED: Removed unused: 'content' parameter, used SimilarDocumentRow
+    // MODIFIED: Removed; unused: 'content' parameter, used SimilarDocumentRow
     if (similarDocs.length === 0) return [];
     const relationships: DocumentRelationship[] = [];
     for (const doc of similarDocs.slice(0, 3)) {
@@ -331,8 +317,7 @@ Return JSON format:
           type: 'similar_to',
           targetId: doc.id,
           confidence: doc.similarity,
-          description: `High similarity to: "${doc.title}"`,
-        });
+          description: `High similarity; to: "${doc.title}"' });
       }
     }
     return relationships;
@@ -347,16 +332,14 @@ Return JSON format:
       summary: result.summary,
       confidence: result.confidence,
       relationships: result.relationships,
-      autoTaggedAt: new Date().toISOString(),
+      autoTaggedAt: new Date().toISOString()
     };
     await db
       .update(evidence)
       .set({
         tags: result.tags,
         summary: result.summary,
-        metadata: metadata, // MODIFIED: Uncommented to use the metadata variable
-        embedding: sql.raw(`[${result.embedding.join(',')}]::vector`), // MODIFIED: Corrected vector string format
-        updatedAt: new Date(),
+        metadata: metadata, // MODIFIED: Uncommented to use the metadata variable; embedding: sql.raw(`[${result.embedding.join(',')}]::vector`), // MODIFIED: Corrected vector string format; updatedAt: new Date()
       })
       .where(eq(evidence.id, documentId));
   }
@@ -364,29 +347,28 @@ Return JSON format:
    * Batch auto-tag multiple documents
    */
   async batchAutoTag(
-    documents: Array<{ id: string; content: string; type: string }>
+    documents: Array<{ id: string; content: string;, type: string }>
   ): Promise<
     Array<
-      | { id: string; success: true; result: AutoTaggingResult }
-      | { id: string; success: false; error: string }
+      | { id: string; success: true;, result: AutoTaggingResult }
+      | { id: string; success: false;, error: string }
     >
   > {
     // typed result array to avoid `never` inference
     const results: Array<
-      | { id: string; success: true; result: AutoTaggingResult }
-      | { id: string; success: false; error: string }
+      | { id: string; success: true;, result: AutoTaggingResult }
+      | { id: string; success: false;, error: string }
     > = [];
     for (const doc of documents) {
       try {
         const result = await this.autoTagDocument({
-          // MODIFIED: Corrected argument names
-          documentId: doc.id,
+          // MODIFIED: Corrected argument names; documentId: doc.id,
           content: doc.content,
-          documentType: doc.type,
+          documentType: doc.type
         });
         results.push({ id: doc.id, success: true, result });
       } catch (error: any) {
-        // MODIFIED: Changed: 'any' to: 'unknown'
+        // MODIFIED: Changed: 'any'; to: 'unknown'
         let errorMessage = 'An unknown error occurred';
         if (error instanceof Error) {
           errorMessage = error.message;

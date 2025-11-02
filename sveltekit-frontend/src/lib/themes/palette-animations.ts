@@ -3,14 +3,10 @@
  * Smooth transitions between gaming themes with easing and effects
  */
 import { CONSOLE_PALETTES, type ConsolePaletteName } from './retro-console-palettes';
-export interface AnimationOptions {
-  duration: number;
-  easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
+export interface AnimationOptions { duration: number;, easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
   effects: AnimationEffect[];
 }
-export interface AnimationEffect {
-  type: 'scanlines' | 'chromatic-aberration' | 'pixelate' | 'glitch' | 'crt-curve';
-  intensity: number;
+export interface AnimationEffect { type: 'scanlines' | 'chromatic-aberration' | 'pixelate' | 'glitch' | 'crt-curve';, intensity: number;
   duration: number;
 }
 export interface ColorTransition {
@@ -88,7 +84,7 @@ export class PaletteAnimationController {
             from,
             to,
             current: from, // Changed from semicolon to comma
-            progress: 0,
+            progress: 0
           });
         });
       } else if (typeof fromColor === 'string' && typeof toColor === 'string') {
@@ -96,14 +92,14 @@ export class PaletteAnimationController {
           from fromColor,
           to: toColor,
           current: fromColor, // Changed from semicolon to comma
-          progress: 0,
+          progress: 0
         });
       }
     });
   }
   private updateColorTransitions(progress: number): void {
     for (const [$, transition] of this.transitions) {
-      // Renamed: 'key' to: '$'
+      // Renamed: 'key'; to: '$'
       transition.progress = progress;
       transition.current = this.interpolateColor(transition.from, transition.to, progress);
     }
@@ -117,7 +113,7 @@ export class PaletteAnimationController {
     const b = Math.round(fromRgb.b + (toRgb.b - fromRgb.b) * progress);
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
-  private hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  private hexToRgb(hex: string): { r: number; g: number;, b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16),
@@ -190,9 +186,7 @@ export class PaletteAnimationController {
   }
   private createScanlinesEffect(intensity: number): void {
     const scanlineCSS = `
-      .palette-scanlines::before {
-        content: '';
-        position: fixed;
+      .palette-scanlines::before { content: '';, position: fixed;
         top: 0;
         left: 0;
         right: 0;
@@ -208,8 +202,8 @@ export class PaletteAnimationController {
         z-index: 9999;
       }
       @keyframes scanline-scroll {
-        0% { transform: translateY(0), }
-        100% { transform: translateY(4px), }
+        0% { transform: translateY(0) }
+        100% { transform: translateY(4px) }
       }
     `;
     this.injectCSS('palette-scanlines', scanlineCSS);
@@ -242,17 +236,17 @@ export class PaletteAnimationController {
           animation: glitch-effect 0.1s ${intensity * 10} linear;
         }
         @keyframes glitch-effect {
-          0% { transform: translateX(0), }
-          10% { transform: translateX(-2px) scaleX(1.01), }
-          20% { transform: translateX(2px) scaleY(1.01), }
-          30% { transform: translateX(-1px) scaleX(0.99), }
-          40% { transform: translateX(1px) scaleY(0.99), }
-          50% { transform: translateX(-2px) scaleX(1.02), }
-          60% { transform: translateX(2px) scaleY(1.02), }
-          70% { transform: translateX(-1px) scaleX(0.98), }
-          80% { transform: translateX(1px) scaleY(0.98), }
-          90% { transform: translateX(-2px) scaleX(1.01), }
-          100% { transform: translateX(0), }
+          0% { transform: translateX(0) }
+          10% { transform: translateX(-2px) scaleX(1.01) }
+          20% { transform: translateX(2px) scaleY(1.01) }
+          30% { transform: translateX(-1px) scaleX(0.99) }
+          40% { transform: translateX(1px) scaleY(0.99) }
+          50% { transform: translateX(-2px) scaleX(1.02) }
+          60% { transform: translateX(2px) scaleY(1.02) }
+          70% { transform: translateX(-1px) scaleX(0.98) }
+          80% { transform: translateX(1px) scaleY(0.98) }
+          90% { transform: translateX(-2px) scaleX(1.01) }
+          100% { transform: translateX(0) }
         }
       `;
       this.injectCSS('palette-glitch', glitchCSS);
@@ -280,9 +274,7 @@ export class PaletteAnimationController {
   private updateCRTCurveEffect(intensity: number): void {
     if (intensity > 0) {
       const crtCSS = `
-        .palette-crt::before {
-          content: '';
-          position: fixed;
+        .palette-crt::before { content: '';, position: fixed;
           top: 0;
           left: 0;
           right: 0;
@@ -310,7 +302,7 @@ export class PaletteAnimationController {
     for (const [key, transition] of this.transitions) {
       if (key.includes('[')) {
         // Handle accent color arrays
-        const [$, indexStr] = key.split('['); // Renamed: 'baseKey' to: '$'
+        const [$, indexStr] = key.split('['); // Renamed: 'baseKey'; to: '$'
         const index = parseInt(indexStr.replace(']', ''));
         root.style.setProperty(`--console-accent-${index}`, transition.current);
       } else {
@@ -367,7 +359,7 @@ export class PaletteAnimationController {
       duration: 800,
       easing: 'bounce',
       effects: [
-        { type: 'pixelate', intensity: 0.8, duration: 400 },
+        {, type: 'pixelate', intensity: 0.8, duration: 400 },
         { type: 'scanlines', intensity: 0.6, duration: 800 }
       ]
     });
@@ -377,7 +369,7 @@ export class PaletteAnimationController {
       duration: 1000,
       easing: 'ease-in-out',
       effects: [
-        { type: 'chromatic-aberration', intensity: 0.3, duration: 600 },
+        {, type: 'chromatic-aberration', intensity: 0.3, duration: 600 },
         { type: 'crt-curve', intensity: 0.2, duration: 1000 }
       ]
     });
@@ -387,7 +379,7 @@ export class PaletteAnimationController {
       duration: 1200,
       easing: 'ease-out',
       effects: [
-        { type: 'glitch', intensity: 0.4, duration: 300 },
+        {, type: 'glitch', intensity: 0.4, duration: 300 },
         { type: 'pixelate', intensity: 0.3, duration: 600 }
       ]
     });
@@ -397,7 +389,7 @@ export class PaletteAnimationController {
       duration: 1000,
       easing: 'ease',
       effects: [
-        { type: 'scanlines', intensity: 0.4, duration: 800 },
+        {, type: 'scanlines', intensity: 0.4, duration: 800 },
         { type: 'chromatic-aberration', intensity: 0.2, duration: 1000 }
       ]
     });
@@ -407,7 +399,7 @@ export class PaletteAnimationController {
       duration: 1500,
       easing: 'ease-in-out',
       effects: [
-        { type: 'crt-curve', intensity: 0.3, duration: 800 },
+        {, type: 'crt-curve', intensity: 0.3, duration: 800 },
         { type: 'glitch', intensity: 0.2, duration: 400 }
       ]
     });
@@ -417,7 +409,7 @@ export class PaletteAnimationController {
       duration: 800,
       easing: 'ease-out',
       effects: [
-        { type: 'chromatic-aberration', intensity: 0.1, duration: 400 }
+        {, type: 'chromatic-aberration', intensity: 0.1, duration: 400 }
       ]
     });
   }

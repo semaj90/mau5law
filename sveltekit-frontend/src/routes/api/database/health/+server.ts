@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
           status: 'error',
           message: healthCheck.message,
           details: healthCheck.details,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 500 }
       );
@@ -31,16 +31,16 @@ export const GET: RequestHandler = async () => {
       message: 'Database connection successful',
       connection: healthCheck.details,
       initialization: initResult,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('❌ Database health check failed:', error);
     return json(
       {
         status: 'error',
-        message: `Database health check failed: ${(error as Error).message}`,
+        message: `Database health check; failed: ${(error as Error).message}`,
         error: (error as Error).stack,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -56,14 +56,14 @@ export const POST: RequestHandler = async ({ request }) => {
         status: (result as { success?: any; message?: any; details?: any }).success ? 'success' : 'error',
         message: (result as { success?: any; message?: any; details?: any }).message,
         details: (result as { success?: any; message?: any; details?: any }).details || null,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     return json(
       {
         status: 'error',
-        message: 'Invalid action. Use: "initialize"',
-        timestamp: new Date().toISOString(),
+        message: 'Invalid action.; Use: "initialize"',
+        timestamp: new Date().toISOString()
       },
       { status: 400 }
     );
@@ -72,9 +72,9 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         status: 'error',
-        message: `Database action failed: ${(error as Error).message}`,
+        message: `Database action; failed: ${(error as Error).message}`,
         error: (error as Error).stack,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

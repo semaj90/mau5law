@@ -11,7 +11,7 @@ export class GenerativeWorkerClient {
   private ensureWorker() {
     if (!this.worker) {
       this.worker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
-        type: 'module',
+        type: 'module'
       });
       this.worker.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
         const cb = this.pending.get(e.data.taskId);
@@ -23,9 +23,9 @@ export class GenerativeWorkerClient {
         type: 'INIT_CONFIG',
         taskId: 'init-config', // A special task ID for initialization
         payload: {
-          ollamaUrl: getOllamaEndpoint(),
+         , ollamaUrl: getOllamaEndpoint(),
           // Add other relevant configurations if needed by the worker
-        },
+        }
       } satisfies WorkerMessage);
     }
   }
@@ -63,7 +63,7 @@ export class GenerativeWorkerClient {
       worker.postMessage({
         type: 'PROCESS_AI_TASK',
         taskId,
-        payload: task,
+        payload: task
       } satisfies WorkerMessage);
     });
   }

@@ -7,7 +7,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import pgClient, { poolShim } from '$lib/server/db-shim';
 import postgres from 'postgres'; // added: import to derive client type
 // Load environment-specific variables
-const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+const envFile = `.env.${process.env.NODE_ENV || 'development' }`;
 dotenv.config({ path: envFile });
 // Add a minimal typed shape for pools/shims we interact with
 type PoolLike = {
@@ -16,7 +16,7 @@ type PoolLike = {
   close?: () => Promise<void> | void;
   // Connection acquisition for code that expects to call connect()
   connect?: () => Promise<{
-    query?: (text: string | { text: string; values?: any[] }, params?: any[]) => Promise<{ rows?: any[] }>;
+    query?: (text: string | {, text: string; values?: any[] }, params?: any[]) => Promise<{ rows?: any[] }>;
     release?: () => void;
   }>;
   // Optional bookkeeping / diagnostics commonly present on pool shims
@@ -81,7 +81,7 @@ export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as unknown as 
       throw new Error('Database not initialized');
     }
     return Reflect.get(database, prop, receiver);
-  },
+  }
 });
 // Call Qdrant tag seeding on startup
 // --- NEW: safe stub for Qdrant seeding to avoid ReferenceError at module init ---
@@ -102,7 +102,7 @@ initializeQdrantCollection().catch(err => {
 });
 // Database metadata
 export const isPostgreSQL = true;
-export const isSQLite = $state(false);
+export const isSQLite = false;
 // Export a getter to provide the live pool value instead of a snapshot
 export function getPool() {
   // prefer the live _pool, fall back to the imported shim if present

@@ -8,6 +8,6 @@ export function buildEvidenceTypeDetails(evidence: any): any {
     kind: getEvidenceKind(evidence),
     size: evidence?.size || evidence?.content?.length || 0,
     hasEmbedding: Array.isArray(evidence?.embedding),
-    significance: evidence?.significance || evidence?.metadata?.significance || 'unknown',
+    significance: evidence?.significance || evidence?.metadata?.significance || 'unknown'
   };
 }

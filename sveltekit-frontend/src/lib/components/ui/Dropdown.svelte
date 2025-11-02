@@ -6,7 +6,7 @@
   const { align } = $props<{ align: 'left' | 'right' }>()
   const { closeOnSelect } = $props<{ closeOnSelect: boolean }>()
   const dispatch = createEventDispatcher();
-  let open: boolean = $state(false);
+  let open: boolean = false;
   let rootEl: HTMLElement | null = null;
   function toggle() {
     open = !open;
@@ -68,7 +68,7 @@
         if (e.key === 'Escape') close();
       }}
       style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}
-      transition:fly={{ y: -6, duration: 140 }}
+      transitionfly={{ y: -6, duration: 140 }}
     >
       <!-- default slot used for menu items -->
       <slot></slot>

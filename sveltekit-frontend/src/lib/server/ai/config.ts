@@ -126,7 +126,7 @@ export function withRetry<T>(
           return;
         }
         const delay = baseDelay * Math.pow(2, attempt);
-        logger.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error);
+        logger.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms: ', error);
         await new Promise(resolve => setTimeout(resolve, delay);
       }
     }
@@ -233,7 +233,7 @@ class CircuitBreaker {
       logger.error(`Circuit breaker ${this.name} opened after ${this.failures} failures`);
     }
   }
-  getState(): { state: string; failures: number; lastFailureTime: number } {
+  getState(): { state: string; failures: number;, lastFailureTime: number } {
     return {
       state: this.state,
       failures: this.failures,
@@ -367,9 +367,7 @@ export function createSessionId(): string {
 }
 // === HEALTH CHECK UTILITIES ===
 }
-export interface HealthStatus {
-  service: string;
-  status: 'healthy' | 'unhealthy' | 'degraded';
+export interface HealthStatus { service: string;, status: 'healthy' | 'unhealthy' | 'degraded';
   responseTime?: number;
   error?: string;
   details?: { [key: string]: any }
@@ -378,9 +376,7 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
   const start = Date.now();
   try {
     await withTimeout(checkFn(), 5000, `${name} health check timed out`);
-    return {
-      service: name;
-      status: 'healthy',
+    return { service: name;, status: 'healthy',
       responseTime: Date.now() - start
 }
   } catch (error: any) {
@@ -388,7 +384,6 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
       service: name,
       status: 'unhealthy',
       responseTime: Date.now() - start,
-      error: error instanceof Error ? error.message: 'Unknown error'
-}
+      error: error instanceof Error ? error.message: 'Unknown error' }
   }
 }

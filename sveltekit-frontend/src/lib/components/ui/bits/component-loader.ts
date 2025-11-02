@@ -34,7 +34,7 @@ export async function loadComponent(
     const component = await loadingPromise;
     return component || fallback;
   } catch (error) {
-    console.warn(`Failed to load component ${name}:`, error);
+    console.warn(`Failed to load component ${name}: ', error);
     return fallback;
   }
 }
@@ -122,7 +122,7 @@ export interface NesGPUBridge {
    * @param element - The canvas element to render on.
    * @param options - Rendering options.
    */
-  renderContainer(element: HTMLCanvasElement, options: { theme: 'dark' | 'light' }): Promise<void>;
+  renderContainer(element: HTMLCanvasElement, options: {, theme: 'dark' | 'light' }): Promise<void>;
 }
 // --- Server-Side Integration Helpers (Stubs) ---
 /**
@@ -163,14 +163,12 @@ export const redisCache: RedisCacheClient = {
   async exists(key: string): Promise<boolean> {
     console.log(`[Server Helper Stub] Checking if key exists in Redis: ${key}`);
     return false; // Mocked response
-  },
+  }
 };
 /**
  * Interface for a Qdrant point/document.
  */
-export interface QdrantPoint {
-  id: string | number;
-  vector: number[];
+export interface QdrantPoint { id: string | number;, vector: number[];
   payload: Record<string, unknown>;
 }
 /**
@@ -199,7 +197,7 @@ export async function persistJsonbData<T extends Record<string, unknown>>(
   _data: T
 ): Promise<void> {
   try {
-    console.log(`[Server Helper Stub] Persisting JSONB data to table: '${table}' for id: ${id}`);
+    console.log(`[Server Helper Stub] Persisting JSONB data to table: '${table}' for, id: ${id}`);
     // No actual persistence in stub.
   } catch (error) {
     console.error(`[Server Helper Stub] Error persisting JSONB data:`, error);

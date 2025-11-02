@@ -10,7 +10,7 @@ import { redis } from '$lib/server/redis-client';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -29,7 +29,7 @@ import { eq } from 'drizzle-orm';
 const analysisSchema = z.object({
   evidenceId: cuidSchema,
   content: z.string().min(1).max(10000).optional(),
-  forceReanalyze: z.boolean().optional(),
+  forceReanalyze: z.boolean().optional()
 });
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
@@ -42,7 +42,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     const { evidenceId, content, forceReanalyze = false } = analysisSchema.parse(body);
     // Get evidence from database
     const evidenceRecord = await db.query.evidence.findFirst({
-      where: eq(evidence.id, evidenceId),
+      where: eq(evidence.id, evidenceId)
     });
     if (!evidenceRecord) {
       return json({ error: 'Evidence not found' }, { status: 404 });
@@ -65,12 +65,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         data: {
           cached: true,
           analysis: {
-            summary: evidenceRecord.aiSummary,
+           , summary: evidenceRecord.aiSummary,
             tags: evidenceRecord.aiTags || [],
             confidence: 0.85, // Default confidence for cached results
-            recommendations: [],
-          },
-        },
+            recommendations: []
+          }
+        }
       });
     }
     // Perform AI analysis - robust adapter: prefer analyzeEvidence() if implemented, otherwise call generateResponse()
@@ -110,7 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         ].join('\n\n');
 
         const raw = await (svc['generateResponse'] as (...args: any[]) => Promise<string>)(prompt, {
-          format: 'json',
+          format: 'json'
         });
 
         // Try to parse JSON, but tolerate non-JSON strings
@@ -122,7 +122,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
             confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0,
             entities: Array.isArray(parsed.entities) ? parsed.entities : [],
             keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [],
-            recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : [],
+            recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : []
           };
         } catch {
           return {
@@ -131,7 +131,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
             confidence: 0,
             entities: [],
             keywords: [],
-            recommendations: [],
+            recommendations: []
           };
         }
       }
@@ -143,7 +143,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         confidence: 0,
         entities: [],
         keywords: [],
-        recommendations: [],
+        recommendations: []
       };
     };
 
@@ -156,13 +156,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         aiSummary: analysis.summary,
         aiTags: analysis.tags,
         aiAnalysis: {
-          confidence: analysis.confidence,
+         , confidence: analysis.confidence,
           entities: analysis.entities,
           keywords: analysis.keywords,
           recommendations: analysis.recommendations,
           analyzedAt: new Date().toISOString(),
-          model: 'gemma3-legal:latest',
-        },
+          model: 'gemma3-legal:latest'
+        }
       })
       .where(eq(evidence.id, evidenceId));
 
@@ -171,14 +171,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       data: {
         cached: false,
         analysis: {
-          summary: analysis.summary,
+         , summary: analysis.summary,
           tags: analysis.tags,
           confidence: analysis.confidence,
           entities: analysis.entities,
           keywords: analysis.keywords,
-          recommendations: analysis.recommendations,
-        },
-      },
+          recommendations: analysis.recommendations
+        }
+      }
     });
   } catch (error: any) {
     console.error('Evidence analysis API error:', error);
@@ -186,7 +186,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Validation failed', details: error.errors }, { status: 400 });
     }
     return json(
-      { error: 'Evidence analysis failed', message: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Evidence analysis failed', message: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

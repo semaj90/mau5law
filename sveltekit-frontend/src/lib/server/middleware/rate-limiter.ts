@@ -1,13 +1,9 @@
 // Production-ready rate limiter for chat API
 // Prevents abuse and ensures fair usage
-interface RateLimitConfig {
-  windowMs: number;
-  maxRequests: number;
+interface RateLimitConfig { windowMs: number;, maxRequests: number;
   keyGenerator?: (request: Request) => string;
 }
-interface RateLimitEntry {
-  count: number;
-  resetTime: number;
+interface RateLimitEntry { count: number;, resetTime: number;
 }
 class RateLimiter {
   private limits = new Map<string, RateLimitEntry>();
@@ -34,7 +30,7 @@ class RateLimiter {
     // Default: use IP address or user-agent as key
     const forwarded = request.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
-    return `${ip}:${request.headers.get('user-agent') || 'unknown'}`;
+    return `${ip}:${request.headers.get('user-agent') || 'unknown' }`;
   }
   check(request: Request): { allowed: boolean; resetTime?: number; remaining?: number } {
     const key = this.getKey(request);
@@ -110,9 +106,7 @@ export function withRateLimit(
       const result = rateLimiter.check(request);
       if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
         const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
-        return new Response(JSON.stringify({
-            success: false;
-            error: errorMessage,
+        return new Response(JSON.stringify({ success: false;, error: errorMessage,
             retryAfter,
             resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
           }),

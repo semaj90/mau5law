@@ -12,9 +12,7 @@ import {
   type ArrayConversionResult
 } from '$lib/utils/webgpu-array-utils';
 
-export interface EvidenceFile {
-  id: string;
-  name: string;
+export interface EvidenceFile { id: string;, name: string;
   type: string;
   size: number;
   minioKey: string;
@@ -29,11 +27,9 @@ export interface EvidenceFile {
     processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
     processingMethod: 'webgpu' | 'cuda' | 'cpu';
   };
-  position?: { x: number; y: number };
+  position?: { x: number;, y: number };
 }
-export interface ProcessingJob {
-  id: string;
-  fileId: string;
+export interface ProcessingJob { id: string;, fileId: string;
   type: 'upload' | 'extract' | 'embed' | 'analyze';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;

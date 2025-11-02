@@ -10,15 +10,11 @@ import type { Redis } from 'ioredis';
 import type { Pool } from 'pg';
 import { createHash } from 'crypto';
 
-interface CacheConfig {
-  enableRetrievalCache: boolean;
-  enableEmbeddingCache: boolean;
+interface CacheConfig { enableRetrievalCache: boolean;, enableEmbeddingCache: boolean;
   enableSemanticCache: boolean;
   preloadCriticalDocuments: boolean;
 }
-interface CacheMetrics {
-  totalQueries: number;
-  cacheHits: number;
+interface CacheMetrics { totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   averageResponseTime: number;
   costSavings: number;
@@ -35,14 +31,14 @@ export class CachedEnhancedRAGIntegration {
     RAG_ANALYZE: 'http://localhost:8094/api/analyze',
     OLLAMA_EMBEDDINGS: 'http://localhost:11434/api/embeddings',
     CONTEXT7_MULTICORE: 'http://localhost:40000/api/query',
-    QDRANT_SEARCH: 'http://localhost:6333/collections/legal_documents/points/search',
+    QDRANT_SEARCH: 'http://localhost:6333/collections/legal_documents/points/search'
   };
 
   private config: CacheConfig = {
     enableRetrievalCache: true,
     enableEmbeddingCache: true,
     enableSemanticCache: true,
-    preloadCriticalDocuments: true,
+    preloadCriticalDocuments: true
   };
 
   private metrics: CacheMetrics = {
@@ -50,7 +46,7 @@ export class CachedEnhancedRAGIntegration {
     cacheHits: 0,
     cacheMisses: 0,
     averageResponseTime: 0,
-    costSavings: 0,
+    costSavings: 0
   };
 
   constructor(redis: Redis, pgPool: Pool, memoryManager: NintendoMemoryManager, config?: Partial<CacheConfig>) {
@@ -61,17 +57,15 @@ export class CachedEnhancedRAGIntegration {
       this.config = { ...this.config, ...config };
     }
     // Initialize cache orchestrator
-    this.cacheOrchestrator = new UnifiedLegalCacheOrchestrator(redis, pgPool, memoryManager, {
-      retrieval: {
-        ttl: 3600, // 1 hour for legal queries
+    this.cacheOrchestrator = new UnifiedLegalCacheOrchestrator(redis, pgPool, memoryManager, { retrieval: {, ttl: 3600, // 1 hour for legal queries
         maxResults: 50,
-        keyPrefix: 'legal:enhanced-rag',
+        keyPrefix: 'legal:enhanced-rag'
       },
       embedding: {
-        ttl: 86400 * 7, // 7 days for embeddings
+       , ttl: 86400 * 7, // 7 days for embeddings
         keyPrefix: 'legal:enhanced-embedding',
-        dimensions: 768,
-      },
+        dimensions: 768
+      }
     });
 
     if (this.config.preloadCriticalDocuments) {
@@ -107,7 +101,7 @@ export class CachedEnhancedRAGIntegration {
             maxResults: 50,
             similarityThreshold: query.filters?.confidenceThreshold ?? 0.7,
             caseContext: options?.caseContext,
-            forceRefresh: false,
+            forceRefresh: false
           }
         );
 
@@ -169,11 +163,11 @@ export class CachedEnhancedRAGIntegration {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        query: query.query,
+       , query: query.query,
         context: query.context,
         filters: query.filters,
-        semantic: query.semantic,
-      }),
+        semantic: query.semantic
+      })
     });
 
     if (!response.ok) {
@@ -187,9 +181,9 @@ export class CachedEnhancedRAGIntegration {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: modelId,
-        input: text,
-      }),
+       , model: modelId,
+        input: text
+      })
     });
 
     if (!response.ok) {
@@ -206,12 +200,12 @@ export class CachedEnhancedRAGIntegration {
       const emb = await this.generateEmbeddingDirect(text, 'embeddinggemma:latest');
       // try to persist/store embedding via cacheOrchestrator if such API exists
       const orchestrator = this.cacheOrchestrator as unknown as {
-        storeEmbedding?: (payload: { id: string; vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
+        storeEmbedding?: (payload: {, id: string; vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
       };
       if (typeof orchestrator.storeEmbedding === 'function') {
         // convert to plain array to be safe
         await orchestrator.storeEmbedding(
-          { id: `manual:${createHash('sha256').update(text).digest('hex')}`, vector: Array.from(emb) },
+          { id: 'manual:${createHash('sha256').update(text).digest('hex')}`, vector: Array.from(emb) },
           { ttl: 86400 * 7 }
         );
       }
@@ -247,7 +241,7 @@ export class CachedEnhancedRAGIntegration {
     type MemorySetter = {
       store?: (k: string, v: any, priority?: Priority, ttl?: number) => void | Promise<void>;
       set?: (k: string, v: any, ttl?: number) => void | Promise<void>;
-      save?: (k: string, v: any, ttl?: number) => void | Promise<void>;
+      save?: (k: string; v: any, ttl?: number) => void | Promise<void>;
     };
 
     const m = this.memoryManager as unknown as MemorySetter;
@@ -288,7 +282,7 @@ export class CachedEnhancedRAGIntegration {
 
     return {
       ...response,
-      semanticExpansions: expansions,
+      semanticExpansions: expansions
     } as RAGResponse;
   }
 
@@ -299,7 +293,7 @@ export class CachedEnhancedRAGIntegration {
       const response = await fetch(this.ENDPOINTS.RAG_ANALYZE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, documentId }),
+        body: JSON.stringify({ content, documentId })
       });
       if (!response.ok) {
         throw new Error(`Semantic analysis failed: ${response.status} ${response.statusText}`);
@@ -376,7 +370,7 @@ export class CachedEnhancedRAGIntegration {
         'Shareholder rights and remedies',
         'Corporate governance requirements',
         'Mergers and acquisitions',
-      ],
+      ]
     };
     return queries[practiceArea] ?? queries['contract'];
   }
@@ -432,7 +426,7 @@ export class CachedEnhancedRAGIntegration {
       'The parties agree to the following terms and conditions:',
       'This agreement shall be governed by the laws of',
       'IN WITNESS WHEREOF, the parties have executed this agreement',
-      'Force Majeure: Neither party shall be liable for any failure',
+      'Force Majeure: Neither party shall be liable for any failure'
     ];
     for (const text of boilerplate) {
       await this.generateLegalEmbedding(text, { priority: Priority.MEDIUM });

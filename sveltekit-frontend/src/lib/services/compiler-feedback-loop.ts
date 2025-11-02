@@ -16,13 +16,11 @@ export interface EnhancedRAGEngine {
   search?: (query: string) => Promise<any[]>;
   index?: (_document: any) => Promise<void>;
   createEmbedding?: (text: string) => Promise<number[] | Float32Array>;
-  performRAGQuery?: (opts: { query: string; maxResults?: number; minConfidence?: number }) => Promise<any[]>;
+  performRAGQuery?: (opts: {, query: string; maxResults?: number; minConfidence?: number }) => Promise<any[]>;
 }
 
 // Core types for compiler feedback system
-export interface CompilerLog {
-  id: string;
-  timestamp: number;
+export interface CompilerLog { id: string;, timestamp: number;
   level: 'error' | 'warning' | 'info' | 'debug';
   message: string;
   file: string;
@@ -30,30 +28,22 @@ export interface CompilerLog {
   column?: number;
   code?: string;
   stackTrace?: string[];
-  metadata: {
-    component: string;
-    phase: 'parsing' | 'type-checking' | 'emission' | 'bundling';
+  metadata: { component: string;, phase: 'parsing' | 'type-checking' | 'emission' | 'bundling';
     category: 'syntax' | 'type' | 'import' | 'runtime' | 'performance';
   };
 }
 
-export interface CompilerEvent {
-  type: 'COMPILE_START' | 'IR_GENERATED' | 'ERROR_DETECTED' | 'PATCH_SUGGESTED' | 'COMPILE_COMPLETE';
-  logs: CompilerLog[];
+export interface CompilerEvent { type: 'COMPILE_START' | 'IR_GENERATED' | 'ERROR_DETECTED' | 'PATCH_SUGGESTED' | 'COMPILE_COMPLETE';, logs: CompilerLog[];
   vectors?: Float32Array;
   clusterId?: string;
   patch?: PatchCandidate;
-  performance: {
-    compilationTime: number;
-    memoryUsage: number;
+  performance: { compilationTime: number;, memoryUsage: number;
     errorCount: number;
     warningCount: number;
   };
 }
 
-export interface PatchCandidate {
-  id: string;
-  confidence: number;
+export interface PatchCandidate { id: string;, confidence: number;
   diff: string;
   description: string;
   affectedFiles: string[];
@@ -61,27 +51,19 @@ export interface PatchCandidate {
   category: 'fix' | 'optimization' | 'refactor' | 'enhancement';
   agentSource: 'autogen' | 'crewai' | 'local-llm' | 'hybrid';
   attentionWeights: AttentionMatrix;
-  testResults?: {
-    passed: boolean;
-    coverage: number;
+  testResults?: { passed: boolean;, coverage: number;
     executionTime: number;
     errors: string[];
   };
 }
 
-export interface AttentionMatrix {
-  weights: Float32Array;
-  dimensions: [number, number];
-  focusAreas: {
-    file: string;
-    lines: [number, number];
+export interface AttentionMatrix { weights: Float32Array;, dimensions: [number, number];
+  focusAreas: { file: string;, lines: [number, number];
     confidence: number;
   }[];
 }
 
-export interface SOMCluster {
-  id: string;
-  centroid: Float32Array;
+export interface SOMCluster { id: string;, centroid: Float32Array;
   members: string[];
   errorPattern: string;
   frequency: number;
@@ -122,7 +104,7 @@ class SelfOrganizingMap {
         errorPattern: 'unknown',
         frequency: 1,
         lastSeen: Date.now(),
-        successfulPatches: [],
+        successfulPatches: []
       };
       this.clusters.set(clusterId, newCluster);
       return clusterId;
@@ -177,7 +159,7 @@ export class CompilerFeedbackLoop {
     averageProcessingTime: 0,
     totalEvents: 0,
     successfulPatches: 0,
-    clusterCount: 0,
+    clusterCount: 0
   });
 
   constructor(ragEngine: EnhancedRAGEngine) {
@@ -260,7 +242,7 @@ export class CompilerFeedbackLoop {
           : processingTime,
         totalEvents: (perf.totalEvents || 0) + 1,
         successfulPatches: (perf.successfulPatches || 0) + (event.patch ? 1 : 0),
-        clusterCount: this.somClustering.getClusters().length,
+        clusterCount: this.somClustering.getClusters().length
       }));
     } catch (error: any) {
       console.error('❌ Error processing compiler event:', error);
@@ -323,15 +305,14 @@ export class CompilerFeedbackLoop {
         const results = await this.ragEngine.performRAGQuery({
           query,
           maxResults: 5,
-          minConfidence: 0.3,
+          minConfidence: 0.3
         });
         return results.map((result: any) => {
           const doc = result?.document ?? result;
           return {
             content: doc?.content ?? result?.content ?? '',
             relevance: result?.finalScore ?? result?.score ?? 0,
-            source: (doc?.metadata && doc.metadata.source) || 'unknown',
-          };
+            source: (doc?.metadata && doc.metadata.source) || 'unknown` };
         });
       }
       // Fallback: empty results
@@ -360,7 +341,7 @@ export class CompilerFeedbackLoop {
         useSemanticSearch: true,
         useMemory: true,
         useMultiAgent: true,
-        synthesizeOutputs: true,
+        synthesizeOutputs: true
       });
 
       const patchId = `patch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -378,8 +359,8 @@ export class CompilerFeedbackLoop {
           passed: Math.random() > 0.2,
           coverage: Math.random() * 40 + 60,
           executionTime: Math.random() * 100 + 50,
-          errors: [],
-        },
+          errors: []
+        }
       };
     } catch (error: any) {
       console.error('❌ Failed to generate patch:', error);
@@ -393,7 +374,7 @@ export class CompilerFeedbackLoop {
         estimatedImpact: 'low',
         category: 'fix',
         agentSource: 'local-llm',
-        attentionWeights: this.generateAttentionWeights(logs),
+        attentionWeights: this.generateAttentionWeights(logs)
       };
     }
   }
@@ -457,12 +438,12 @@ export class CompilerFeedbackLoop {
     const focusAreas = logs.map(log => ({
       file: log.file,
       lines: [log.line ?? 1, (log.line ?? 1) + 5] as [number, number],
-      confidence: log.level === 'error' ? 0.9 : log.level === 'warning' ? 0.6 : 0.3,
+      confidence: log.level === 'error' ? 0.9 : log.level === 'warning' ? 0.6 : 0.3
     }));
     return {
       weights,
       dimensions,
-      focusAreas,
+      focusAreas
     };
   }
 
@@ -497,23 +478,23 @@ export class CompilerFeedbackLoop {
             id: 'error_1',
             timestamp: Date.now(),
             level: 'error',
-            message: "Type 'string' is not assignable to type: 'number'",
+            message: "Type 'string' is not assignable to; type: 'number'",
             file: 'src/components/Chart.svelte',
             line: 42,
-            code: 'let value: number = "hello";',
+            code: 'let; value: number = "hello";',
             metadata: {
               component: 'TypeScript',
               phase: 'type-checking',
-              category: 'type',
-            },
+              category: 'type'
+            }
           },
         ],
         performance: {
           compilationTime: 1200,
           memoryUsage: 45.6,
           errorCount: 1,
-          warningCount: 0,
-        },
+          warningCount: 0
+        }
       },
       {
         type: 'ERROR_DETECTED',
@@ -522,23 +503,22 @@ export class CompilerFeedbackLoop {
             id: 'error_2',
             timestamp: Date.now(),
             level: 'error',
-            message: "Cannot find module: './missing-file'",
+            message: "Cannot find; module: './missing-file'",
             file: 'src/lib/utils.ts',
             line: 5,
             code: "import { helper } from './missing-file';",
             metadata: {
               component: 'Module Resolver',
               phase: 'bundling',
-              category: 'import',
-            },
+              category: 'import` }
           },
         ],
         performance: {
           compilationTime: 800,
           memoryUsage: 52.1,
           errorCount: 1,
-          warningCount: 2,
-        },
+          warningCount: 2
+        }
       },
     ];
 
@@ -552,7 +532,7 @@ export class CompilerFeedbackLoop {
       this.eventQueue.push({
         type: mockEvent.type!,
         logs: mockEvent.logs as CompilerLog[],
-        performance: mockEvent.performance as any,
+        performance: mockEvent.performance as any
       } as CompilerEvent);
       eventIndex++;
       // kick the queue processor if not already running
@@ -577,7 +557,7 @@ export class CompilerFeedbackLoop {
       isActive: this.isActive,
       queueLength: this.eventQueue.length,
       processing: this.processingQueue,
-      clusters: this.somClustering.getClusters().length,
+      clusters: this.somClustering.getClusters().length
     };
   }
 }

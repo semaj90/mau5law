@@ -23,9 +23,7 @@ import { writable, derived } from 'svelte/store';
 export type CitationType = 'statute' | 'case_law' | 'regulation' | 'rule' | 'executive_order' | 'treaty';
 export type PrecedentialValue = 'binding' | 'persuasive' | 'informative' | 'obsolete';
 
-export interface Citation {
-  id: string;
-  title: string;
+export interface Citation { id: string;, title: string;
   citationText: string;
   type: CitationType;
   jurisdiction: string;
@@ -41,9 +39,7 @@ export interface Citation {
   updatedAt: number;
 }
 
-export interface CitationCluster {
-  id: string;
-  citations: Citation[];
+export interface CitationCluster { id: string;, citations: Citation[];
   theme: string;
   relevance: number;
 }
@@ -157,8 +153,7 @@ function createCitationStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -187,9 +182,8 @@ function createCitationStore() {
         const response = await fetch(`/api/citations/${citationId}/similar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ threshold: threshold || 0.7 }),
-          credentials: 'include'
-        });
+          body: JSON.stringify({, threshold: threshold || 0.7 }),
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -313,9 +307,8 @@ function createCitationStore() {
         const response = await fetch('/api/citations/cluster', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ citations: this._getCurrentCitations() }),
-          credentials: 'include'
-        });
+          body: JSON.stringify({, citations: this._getCurrentCitations() }),
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -463,7 +456,7 @@ export const similarCitations = derived(
  *   import { citationStore, citations, filteredCitations } from '$lib/stores/unified'
  *
  * Usage patterns:
- *   Old: $citations, $legalCitations
+ *  ; Old: $citations, $legalCitations
  *   New: $citations or $filteredCitations from unified
  *
  *   Old: searchCitations(query)

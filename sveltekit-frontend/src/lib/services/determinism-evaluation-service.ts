@@ -4,9 +4,7 @@
  */
 export const determinismEvaluationService = {
   async getMetrics(agentType?: string, timeWindow: number = 24) {
-    return {
-      metrics: {
-        determinismScore: 0.85,
+    return { metrics: {, determinismScore: 0.85,
         consistency: 0.92,
         reliability: 0.88
       },
@@ -29,13 +27,13 @@ export const determinismEvaluationService = {
     }
   },
   async calculateMetrics() {
-    return { success: true, metrics: { [key,: strin,g]: any } },
+    return { success: true, metrics: { [key,: strin,g]: any } }
   },
   async getBenchmarkResults() {
     return { success: true, results: [] }
   },
   async getDeterministicConfig() {
-    return { success: true, config: { [key,: strin,g]: any } },
+    return { success: true, config: { [key,: strin,g]: any } }
   },
   async recordUserFeedback(data: any) {
     return { success: true, recorded: true }

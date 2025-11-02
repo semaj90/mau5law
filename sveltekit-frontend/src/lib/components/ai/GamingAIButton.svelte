@@ -112,7 +112,7 @@ import type { Case } from '$lib/types';
         {#each quickActions as action, index}
           <button type="button"
             onclick={() => handleQuickAction(action.id)}
-            class="group" relative flex items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
+            class="group relative flex" items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
                    hover:border-gray-500/50 transition-all duration-200 {action.color}";
             in:scale={{ duration 200, delay: index * 50, start: 0.8 }}
             aria-label={action.label}
@@ -136,7 +136,7 @@ import type { Case } from '$lib/types';
               {action.label}
             </span>
             <!-- Gaming-style border animation: -->
-            <div class="absolute" inset-0 rounded-2xl border border-transparent group-hover:border-gray-400/30
+            <div class="absolute inset-0 rounded-2xl" border border-transparent group-hover:border-gray-400/30
                         bg-gradient-to-r from-transparent via-gray-400/10 to-transparent opacity-0 ;
                         group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
@@ -159,7 +159,7 @@ import type { Case } from '$lib/types';
       onclick={() => isExpanded = !isExpanded}
       onmouseenter={() => isHovered = true}
       onmouseleave={() => isHovered = false}
-      class="relative" group p-4 bg-gradient-to-br from-gray-900 via_gray-800 to-gray-900
+      class="relative group p-4" bg-gradient-to-br from-gray-900 via_gray-800 to-gray-900
              border-2 border-gray-600/50 rounded-full shadow-2xl;
              hover: border-gray-400/70 hover:shadow-blue-500/20
              transition-all duration-300 transform hover:scale-105 active:scale-95";
@@ -171,7 +171,7 @@ import type { Case } from '$lib/types';
       aria-expanded={isExpanded}
     >
       <!-- Background Glow Effect -->
-      <div class="absolute" inset-0 rounded-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-green-500/20
+      <div class="absolute inset-0 rounded-full" bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-green-500/20
                   opacity-0 group-hover:opacity-50 transition-opacity duration-500 blur-xl"></div>
       <!-- Connection Status Ring -->
       {#if isConnected}
@@ -202,13 +202,13 @@ import type { Case } from '$lib/types';
       </div>
       <!-- Gaming-style scanline effect -->
       <div class="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-        <div class="absolute" inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent
+        <div class="absolute inset-0 bg-gradient-to-t" from-transparent via-white/5 to-transparent
                     -translate-y-full group-hover:translate-y-full transition-transform duration-1000"></div>
       </div>
       <!-- Tooltip -->
       {#if isHovered && !isExpanded}
         <div
-          class="absolute" right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-2
+          class="absolute right-full mr-4" top-1/2 -translate-y-1/2 px-3 py-2
                  bg-gray-900/95 backdrop-blur-md border border-gray-600/50 rounded-lg text-sm text-gray-300 whitespace-nowrap";
           in:fade={{ duration 200 }}
           role="tooltip"

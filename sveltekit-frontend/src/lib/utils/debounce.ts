@@ -2,8 +2,7 @@
  * Debounce utility for performance optimization
  * Prevents excessive function calls during rapid user input
  */
-export function debounce<T extends (...args: any[]) => unknown>(
-  func: T,
+export function debounce<T extends (...args: any[]) => unknown>(; func: T,
   wait: number,
   immediate?: boolean
 ): (...args: Parameters<T>) => void {
@@ -23,8 +22,7 @@ export function debounce<T extends (...args: any[]) => unknown>(
 /**
  * Throttle utility - limits function calls to once per specified interval
  */
-export function throttle<T extends (...args: any[]) => unknown>(
-  func: T,
+export function throttle<T extends (...args: any[]) => unknown>(; func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle = $state<boolean>(false);

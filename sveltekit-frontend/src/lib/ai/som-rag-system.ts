@@ -2,10 +2,8 @@ import type { Document } from '$lib/types';
 import type { Driver } from 'neo4j-driver-core';
 // Self-Organizing Map (SOM) Enhanced RAG System
 // Implements dimensionality reduction, k-means clustering, and boolean storage for legal AI
-export interface SOMNode {
-  id: string;
-  weights: number[];
-  position: { x: number; y: number };
+export interface SOMNode { id: string;, weights: number[];
+  position: { x: number;, y: number };
   cluster: number;
   activation: number;
   documents: string[];
@@ -16,30 +14,22 @@ export interface SOMNode {
     priority: number;
   };
 }
-export interface SOMConfig {
-  mapWidth: number;
-  mapHeight: number;
+export interface SOMConfig { mapWidth: number;, mapHeight: number;
   dimensions: number;
   learningRate: number;
   neighborhoodRadius: number;
   maxEpochs: number;
   clusterCount: number;
 }
-export interface BooleanCluster {
-  id: string;
-  centroid: number[];
+export interface BooleanCluster { id: string;, centroid: number[];
   documents: string[];
   boolean_pattern: boolean[][]; // 2x2 boolean matrix
-  metadata: {
-    cluster_size: number;
-    avg_confidence: number;
+  metadata: { cluster_size: number;, avg_confidence: number;
     dominant_legal_type: string;
     creation_timestamp: number;
   };
 }
-export interface DocumentEmbedding {
-  id: string;
-  content: string;
+export interface DocumentEmbedding { id: string;, content: string;
   embedding: number[];
   metadata: {
     case_id?: string;
@@ -77,8 +67,8 @@ export class SelfOrganizingMapRAG {
           documents: [],
           legalContext: {
             confidence: 0,
-            priority: 0,
-          },
+            priority: 0
+          }
         };
       }
     }
@@ -187,7 +177,7 @@ export class SelfOrganizingMapRAG {
       forensic: 4,
       testimony: 3,
       digital: 2,
-      physical: 1,
+      physical: 1
     };
     const docPriority = priorityMap[document.metadata.evidence_type as keyof typeof priorityMap] || 1;
     node.legalContext.priority = Math.max(node.legalContext.priority, docPriority);
@@ -280,11 +270,11 @@ export class SelfOrganizingMapRAG {
           [false, false],
         ], // Will be populated later;
         metadata: {
-          cluster_size: clusterNodes.length,
+         , cluster_size: clusterNodes.length,
           avg_confidence: avgConfidence,
           dominant_legal_type: dominantType,
-          creation_timestamp: Date.now(),
-        },
+          creation_timestamp: Date.now()
+        }
       });
     }
     console.log(`✅ K-means clustering completed: ${this.config.clusterCount} clusters`);
@@ -324,7 +314,7 @@ export class SelfOrganizingMapRAG {
   async semanticSearch(query: string, queryEmbedding: number[], limit: number = 10): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
     // Find best matching SOM nodes
-    const candidateNodes: Array<{ node: SOMNode; distance: number }> = [];
+    const candidateNodes: Array<{ node: SOMNode;, distance: number }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         const node = this.som[x][y];
@@ -341,7 +331,7 @@ export class SelfOrganizingMapRAG {
       node.documents.forEach(docId => candidateDocuments.add(docId));
     });
     // Score documents using boolean patterns and legal context
-    const scoredDocuments: Array<{ doc: DocumentEmbedding; score: number }> = [];
+    const scoredDocuments: Array<{ doc: DocumentEmbedding;, score: number }> = [];
     candidateDocuments.forEach(docId => {
       const doc = this.documentEmbeddings.get(docId);
       if (!doc) return;
@@ -397,7 +387,7 @@ export class SelfOrganizingMapRAG {
             avgConfidence: cluster.metadata.avg_confidence,
             dominantType: cluster.metadata.dominant_legal_type,
             clusterSize: cluster.metadata.cluster_size,
-            timestamp: cluster.metadata.creation_timestamp,
+            timestamp: cluster.metadata.creation_timestamp
           }
         );
         // Create document relationships
@@ -423,7 +413,7 @@ export class SelfOrganizingMapRAG {
   private euclideanDistance(a: number[], b: number[]): number {
     return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
   }
-  private manhattanDistance(a: { x: number; y: number }, b: { x: number; y: number }): number {
+  private manhattanDistance(a: { x: number;, y: number }, b: {, x: number; y: number }): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -471,7 +461,7 @@ export class SelfOrganizingMapRAG {
       forensic: 0.4,
       testimony: 0.3,
       digital: 0.2,
-      physical: 0.1,
+      physical: 0.1
     };
     boost += evidenceBoost[metadata.evidence_type as keyof typeof evidenceBoost] || 0;
     // Confidence boost
@@ -492,27 +482,23 @@ export class SelfOrganizingMapRAG {
       clusters: Array.from(this.clusters.values()),
       map_dimensions: {
         width: this.config.mapWidth,
-        height: this.config.mapHeight,
+        height: this.config.mapHeight
       },
       total_documents: this.documentEmbeddings.size,
-      export_timestamp: Date.now(),
+      export_timestamp: Date.now()
     };
     return JSON.stringify(exportData, null, 2);
   }
   /**
    * Get cluster visualization data for UI
    */
-  getVisualizationData(): Array<{
-    id: string;
-    position: { x: number; y: number };
+  getVisualizationData(): Array<{ id: string;, position: { x: number;, y: number };
     cluster: number;
     confidence: number;
     documents: number;
     evidenceType: string;
   }> {
-    const vizData: Array<{
-      id: string;
-      position: { x: number; y: number };
+    const vizData: Array<{ id: string;, position: { x: number;, y: number };
       cluster: number;
       confidence: number;
       documents: number;
@@ -527,8 +513,7 @@ export class SelfOrganizingMapRAG {
           cluster: node.cluster,
           confidence: node.legalContext.confidence,
           documents: node.documents.length,
-          evidenceType: node.legalContext.evidenceType || 'unknown',
-        });
+          evidenceType: node.legalContext.evidenceType || 'unknown` });
       }
     }
     return vizData;
@@ -547,8 +532,8 @@ export class SelfOrganizingMapRAG {
         evidence_type: document.metadata?.evidence_type,
         legal_category: document.metadata?.legal_category,
         confidence: 0.8,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
     // Store document embedding
     this.documentEmbeddings.set(document.id, docEmbedding);
@@ -665,7 +650,7 @@ export function createSOMRAGSystem(config: Partial<SOMConfig> = {}): SelfOrganiz
     learningRate: 0.1,
     neighborhoodRadius: 3,
     maxEpochs: 1000,
-    clusterCount: 8,
+    clusterCount: 8
   };
   const finalConfig = { ...defaultConfig, ...config };
   return new SelfOrganizingMapRAG(finalConfig);

@@ -8,7 +8,7 @@
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -30,7 +30,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ error: 'Invalid embedding provided' }, { status: 400 })
     }
     // Create cache key for this search
-    const cacheKey = `evidence_search:${JSON.stringify(embedding.slice(0, 10))}:${limit}:${caseId || 'all'}`
+    const cacheKey = `evidence_search:${JSON.stringify(embedding.slice(0, 10))}:${limit}:${caseId || 'all' }`
     // Check Redis cache first
     const cachedResults = await cache.get(cacheKey)
     if (cachedResults) {
@@ -49,8 +49,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         ai_summary: evidence.ai_summary,
         case_id: evidence.case_id,
         created_at: evidence.created_at,
-        similarity: sql<number>`1 - (${evidence.embedding_vector} <=> ${embeddingVector}::vector)`
-      })
+        similarity: sql<number>`1 - (${evidence.embedding_vector} <=> ${embeddingVector}::vector)' })
       .from(evidence)
       .where(
         and(
@@ -84,8 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     console.error('Evidence search error:', error)
     return json({
         error: 'Evidence search failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, )
+        details: error instanceof Error ? error.message: 'Unknown error' }, )
       { status: 500 }
     )
   }

@@ -20,13 +20,13 @@ async function tryExtractPdfText(file: File): Promise<string> {
   return '';
 }
 
-async function embed(text: string): Promise<{ vector: number[]; ms: number }> {
+async function embed(text: string): Promise<{ vector: number[];, ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
   const started = Date.now();
   const res = await fetch(`${baseUrl}/api/embeddings`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'embeddinggemma', prompt: text.slice(0, 8000) })
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify({, model: 'embeddinggemma', prompt: text.slice(0, 8000) })
   });
   const ms = Date.now() - started;
   if (!res.ok) throw new Error(`Embedding failed: ${res.status} ${res.statusText}`);
@@ -35,7 +35,7 @@ async function embed(text: string): Promise<{ vector: number[]; ms: number }> {
   return { vector: vec, ms };
 }
 
-async function analyzeLLM(text: string, similar: any[]): Promise<{ analysis: any; ms: number }> {
+async function analyzeLLM(text: string, similar: any[]): Promise<{ analysis: any;, ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
   const prompt = `Analyze the provided legal document and produce STRICT JSON only with fields:
 who, what, why, how, evidence, poi, verdict, sentencing, legalIssues, recommendations, confidence.
@@ -44,8 +44,8 @@ Document:\n"""${text.slice(0, 6000)}"""\nSimilar:\n${JSON.stringify(similar.slic
   const started = Date.now();
   const res = await fetch(`${baseUrl}/api/generate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gemma3-legal:latest', prompt, stream: false })
+    headers: { 'Content-Type': `application/json` },
+    body: JSON.stringify({, model: 'gemma3-legal:latest', prompt, stream: false })
   });
   const ms = Date.now() - started;
   if (!res.ok) throw new Error(`LLM analysis failed: ${res.status} ${res.statusText}`);
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (!file && !fileUrl && (!text || text.length < 10)) {
-      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least 10 characters of text.' }, { status: 400 });
+      return json({ success: false, error: `Provide a PDF file, a fileUrl, or at least 10 characters of text.` }, { status: 400 });
     }
 
     // 1) Extract
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
       score: Number(r?.score ?? r?.similarity ?? 0),
       tags: (r?.payload?.tags || r?.tags) as string[] | undefined,
       snippet: r?.snippet ?? r?.payload?.content?.slice?.(0, 200),
-      metadata: r?.payload ?? r?.metadata ?? undefined,
+      metadata: r?.payload ?? r?.metadata ?? undefined
     }));
     const searchMs = Date.now() - t2;
 
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        model: 'gemma3-legal:latest',
+       , model: 'gemma3-legal:latest',
         extractedText: extracted,
         embedding: vector,
         similar,

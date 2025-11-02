@@ -1,34 +1,22 @@
 import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-interface SearchRequest {
-  query: string
-  mode: 'semantic' | 'boolean' | 'phrase'
-  filters: {
+interface SearchRequest { query: string, mode: 'semantic' | 'boolean' | 'phrase'; filters: {
     jurisdiction?: string
     court?: string
     documentType?: string
     dateRange?: string
     precedentialValue?: string
   }
-  sort: string
-  page: number
+  sort: string; page: number
   limit: number
 }
-interface LegalDocument {
-  id: string
-  title: string
-  citation: string
-  fullCitation: string
-  court: string
-  jurisdiction: string
-  dateDecided: string
-  documentType: string
-  precedentialValue: string
-  summary: string
-  keyTopics: string[]
-  relevanceScore: number
-  citedBy: number
+interface LegalDocument { id: string, title: string; citation: string
+  fullCitation: string; court: string
+  jurisdiction: string; dateDecided: string
+  documentType: string; precedentialValue: string
+  summary: string; keyTopics: string[]
+  relevanceScore: number; citedBy: number
   url: string
   content?: string
   embedding?: number[]
@@ -46,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
         total: results.total,
         relatedTopics: results.relatedTopics,
         searchMode: mode,
-        processingTime: results.processingTime,
+        processingTime: results.processingTime
       })
     }
     // Boolean/phrase search
@@ -57,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       total: results.total,
       relatedTopics: results.relatedTopics,
       searchMode: mode,
-      processingTime: results.processingTime,
+      processingTime: results.processingTime
     })
   } catch (error) {
     console.error('Legal research search error:', error)
@@ -140,7 +128,7 @@ async function performSemanticSearch(
       documents: mockResults.documents,
       total: mockResults.total,
       relatedTopics,
-      processingTime,
+      processingTime
     };
   } catch (error) {
     console.error('Database query error:', error);
@@ -234,7 +222,7 @@ async function performKeywordSearch(
       documents: mockResults.documents,
       total: mockResults.total,
       relatedTopics,
-      processingTime,
+      processingTime
     };
   } catch (error) {
     console.error('Keyword search error:', error);
@@ -248,9 +236,9 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
-        prompt: query,
-      }),
+       , model: 'nomic-embed-text',
+        prompt: query
+      })
     });
     if (response.ok) {
       const data = await response.json();
@@ -278,8 +266,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Constitutional Law', 'Supreme Court'],
       relevanceScore: 0.95,
       citedBy: 156,
-      url: `/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}`,
-    },
+      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}' },
     {
       id: '2',
       title: `Federal Statute - ${query} Regulations`,
@@ -294,8 +281,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Federal Law', 'Regulations'],
       relevanceScore: 0.89,
       citedBy: 89,
-      url: `/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}`,
-    },
+      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}' },
     {
       id: '3',
       title: `Circuit Court Analysis of ${query}`,
@@ -310,8 +296,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Circuit Court', 'Appeals'],
       relevanceScore: 0.82,
       citedBy: 43,
-      url: `/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}`,
-    },
+      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}' },
   ];
   // Apply filters
   let filteredResults = allResults;
@@ -330,7 +315,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
   const paginatedResults = filteredResults.slice(startIndex, endIndex);
   return {
     documents: paginatedResults,
-    total: filteredResults.length,
+    total: filteredResults.length
   };
 }
 function generateMockKeywordResults(

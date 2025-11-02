@@ -2,7 +2,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
 
 // Define types for the health check results
-type PubSubCheckResult = { ok: boolean; error: string } | { ok: boolean; latencyMs: number };
+type PubSubCheckResult = { ok: boolean;, error: string } | { ok: boolean;, latencyMs: number };
 type HealthChecks = {
   redisPrimary?: { ok: boolean; error?: string };
   pubsub?: PubSubCheckResult;
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ _url }) => {
   } catch (e: any) {
     checks.redisPrimary = {
       ok: false,
-      error: e instanceof Error ? e.message : 'Unknown error during primary Redis check',
+      error: e instanceof Error ? e.message : 'Unknown error during primary Redis check'
     };
     overallOk = false;
   } finally {
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ _url }) => {
       const timeout = setTimeout(() => {
         if (!settled) {
           settled = true;
-          resolve({ ok: false, error: 'timeout' });
+          resolve({ ok: false, error: `timeout` });
         }
       }, 1500);
 
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ _url }) => {
               // Handle publish error if it happens before message is received
               settled = true;
               clearTimeout(timeout);
-              resolve({ ok: false, error: `publish error: ${e instanceof Error ? e.message : 'Unknown error'}` });
+              resolve({ ok: false, error: 'publish; error: ${e instanceof Error ? e.message : 'Unknown error`}' });
             }
           });
         })
@@ -78,14 +78,14 @@ export const GET: RequestHandler = async ({ _url }) => {
           if (!settled) {
             settled = true;
             clearTimeout(timeout);
-            resolve({ ok: false, error: `subscribe error: ${e instanceof Error ? e.message : 'Unknown error'}` });
+            resolve({ ok: false, error: 'subscribe; error: ${e instanceof Error ? e.message : 'Unknown error' }' });
           }
         });
     });
     checks.pubsub = result;
     if (!result.ok) overallOk = $state(false);
   } catch (e: any) {
-    checks.pubsub = { ok: false, error: e instanceof Error ? e.message : 'Unknown error during Redis Pub/Sub check' };
+    checks.pubsub = { ok: false, error: e instanceof Error ? e.message : `Unknown error during Redis Pub/Sub check` };
     overallOk = false;
   } finally {
     await Promise.all([
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ _url }) => {
       status: overallOk ? 'ok' : 'fail',
       checks,
       durationMs,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     },
     { status: overallOk ? 200 : 503 }
   );

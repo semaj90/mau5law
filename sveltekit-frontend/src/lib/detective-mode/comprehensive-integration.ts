@@ -7,20 +7,14 @@ import { caseScoringServiceGrpc } from '../server/services/CaseScoringServiceGrp
 import { evidenceStore } from '../stores/evidence-unified';
 import type { Case, Evidence } from '../types/api';
 import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring.js';
-interface DetectiveSystemStatus {
-  grpc: {
-    connected: boolean;
+interface DetectiveSystemStatus { grpc: {, connected: boolean;
     caseScoringAvailable: boolean;
     streamingActive: boolean;
   }
-  evidence: {
-    totalItems: number;
-    processingQueue: number;
+  evidence: { totalItems: number;, processingQueue: number;
     lastSync: Date | null;
   }
-  realTime: {
-    activeConnections: number;
-    lastHeartbeat: Date | null;
+  realTime: { activeConnections: number;, lastHeartbeat: Date | null;
   }
 }
 
@@ -33,9 +27,7 @@ type EvidenceState = {
   [k: string]: any;
 };
 
-type GrpcMetrics = {
-  grpcAvailable: boolean;
-  comparison: {
+type GrpcMetrics = { grpcAvailable: boolean;, comparison: {
     improvement: number;
     [k: string]: any;
   };
@@ -53,8 +45,7 @@ type CaseScoringUpdate = {
 type CaseScoringServiceGrpcShape = {
   getPerformanceMetrics?: () => GrpcMetrics;
   streamScoringUpdates?: (
-    ids: string[],
-    onUpdate: (update: CaseScoringUpdate) => void
+    ids: string[]; onUpdate: (update: CaseScoringUpdate) => void
   ) => Promise<() => void> | (() => void);
   scoreCase?: (req: CaseScoringRequest) => Promise<CaseScoringResult>;
   [k: string]: any;
@@ -62,21 +53,19 @@ type CaseScoringServiceGrpcShape = {
 
 export class ComprehensiveIntegration {
   private initialized = $state(false);
-  private systemStatus: DetectiveSystemStatus = {
-    grpc: {
-      connected: false,
+  private systemStatus: DetectiveSystemStatus = { grpc: {, connected: false,
       caseScoringAvailable: false,
-      streamingActive: false,
+      streamingActive: false
     },
     evidence: {
       totalItems: 0,
       processingQueue: 0,
-      lastSync: null,
+      lastSync: null
     },
     realTime: {
       activeConnections: 0,
-      lastHeartbeat: null,
-    },
+      lastHeartbeat: null
+    }
   };
   private streamingCleanup: (() => void)[] = [];
   /**
@@ -188,13 +177,11 @@ export class ComprehensiveIntegration {
    */
   private broadcastEvidenceUpdate(evidenceState: EvidenceState): void {
     // This would integrate with WebSocket/SSE in production
-    const event = new CustomEvent('detective-evidence-update', {
-      detail: {
-        timestamp: new Date(),
+    const event = new CustomEvent('detective-evidence-update', { detail: {, timestamp: new Date(),
         totalItems: evidenceState.evidence?.length || 0,
         isLoading: evidenceState.isLoading || false,
-        error: evidenceState.error,
-      },
+        error: evidenceState.error
+      }
     });
     if (typeof window !== 'undefined') {
       window.dispatchEvent(event);
@@ -204,13 +191,11 @@ export class ComprehensiveIntegration {
    * Broadcast case scoring updates
    */
   private broadcastScoringUpdate(update: CaseScoringUpdate): void {
-    const event = new CustomEvent('detective-scoring-update', {
-      detail: {
-        timestamp: new Date(),
+    const event = new CustomEvent('detective-scoring-update', { detail: {, timestamp: new Date(),
         caseId: update?.caseId,
         eventType: update?.eventType,
-        data: update?.data,
-      },
+        data: update?.data
+      }
     });
     if (typeof window !== 'undefined') {
       window.dispatchEvent(event);
@@ -243,7 +228,7 @@ export class ComprehensiveIntegration {
     console.log('📊 Detective Mode Status:', {
       grpc: this.systemStatus.grpc,
       evidence: this.systemStatus.evidence,
-      realTime: this.systemStatus.realTime,
+      realTime: this.systemStatus.realTime
     });
   }
   /**
@@ -268,8 +253,8 @@ export class ComprehensiveIntegration {
           legal_precedent: 0.5,
           public_interest: 0.4,
           case_complexity: 0.6,
-          resource_requirements: 0.5,
-        },
+          resource_requirements: 0.5
+        }
       };
 
       const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
@@ -281,8 +266,7 @@ export class ComprehensiveIntegration {
       console.log('✅ Case scored:', {
         caseId: caseData.id,
         score: (result as CaseScoringResult).score ?? null,
-        protocol: (result as CaseScoringResult).performanceMetrics?.protocol ?? 'JSON',
-      });
+        protocol: (result as CaseScoringResult).performanceMetrics?.protocol ?? 'JSON` });
       return result;
     } catch (error: any) {
       console.error('❌ Case scoring failed:', error);

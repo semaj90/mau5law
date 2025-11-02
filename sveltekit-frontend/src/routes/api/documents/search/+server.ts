@@ -8,7 +8,7 @@ import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration
 import { sql, eq, and, or, gte, lte } from 'drizzle-orm';
 import { generateEmbedding } from '$lib/server/services/embedding-service';
 // Ensure database is initialized
-const dbInitialized = $state(false);
+const dbInitialized = false;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('[Search] Processing document search request...');
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Database temporarily unavailable',
-          healthStatus: dbHealth,
+          healthStatus: dbHealth
         },
         { status: 503 }
       );
@@ -41,8 +41,8 @@ export const POST: RequestHandler = async ({ request }) => {
         query: query?.substring(0, 50) || 'embedding-search',
         workflowStep: 'search-execution',
         priority: 'medium' as const,
-        semanticTags: ['document-search', 'legal-ai', searchType],
-      },
+        semanticTags: ['document-search', 'legal-ai', searchType]
+      }
     };
     const cachedResult = await cognitiveCacheManager.get(cacheRequest);
     if (cachedResult && cachedResult.confidence > 0.75) {
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, 'Invalid search type');
     }
     // Log search session (simplified - could be extended to user activity table)
-    console.log(`[Search] Query: "${query || 'embedding-only'}", Type: ${searchType}, Results: ${results.length}`);
+    console.log(`[Search] Query: "${query || 'embedding-only` }", Type: ${searchType}, Results: ${results.length}`);
     const finalResult = {
       success: true,
       results,
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
       searchMethod,
       query,
       cached: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     // Cache search results with cognitive cache
     await cognitiveCacheManager.set(cacheRequest, finalResult, {
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: err.message || 'Search failed',
-        details: err.stack,
+        details: err.stack
       },
       { status: err.status || 500 }
     );
@@ -168,8 +168,7 @@ async function vectorSearch(
         createdAt: legal_documents.created_at,
         analysisResults: legal_documents.analysis_results,
         isConfidential: legal_documents.is_confidential,
-        similarity: sql<number>`1 - (${legal_documents.content_embedding} <=> ${JSON.stringify(embedding)}::vector)`,
-      })
+        similarity: sql<number>`1 - (${legal_documents.content_embedding} <=> ${JSON.stringify(embedding)}::vector)` })
       .from(legal_documents)
       .where(
         legal_documents.content_embedding.isNotNull() ? and(...conditions) : sql`false` // Skip if no embeddings
@@ -189,8 +188,7 @@ async function vectorSearch(
       createdAt: row.createdAt,
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
-      searchType: 'vector',
-    })); // Added closing parenthesis
+      searchType: `vector` })); // Added closing parenthesis
   } catch (err: any) {
     console.error('[Search] Vector search error:', err);
     return [];
@@ -228,8 +226,7 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
         createdAt: legal_documents.created_at,
         analysisResults: legal_documents.analysis_results,
         isConfidential: legal_documents.is_confidential,
-        rank: sql<number>`ts_rank(to_tsvector('english', ${legal_documents.content}), plainto_tsquery('english', ${query}))`,
-      })
+        rank: sql<number>`ts_rank(to_tsvector('english', ${legal_documents.content}), plainto_tsquery('english', ${query}))` })
       .from(legal_documents)
       .where(and(...conditions)) // Added closing parenthesis
       .orderBy(sql`rank DESC`)
@@ -247,7 +244,7 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
       createdAt: row.createdAt,
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
-      searchType: 'keyword',
+      searchType: 'keyword'
     })); // Added closing parenthesis
   } catch (err: any) {
     console.error('[Search] Keyword search error:', err);
@@ -279,7 +276,7 @@ async function hybridSearch(
         score:
           (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any })
             .similarity * 0.7, // Vector weight
-        sources: ['vector'],
+        sources: ['vector']
       }
     );
   });
@@ -305,7 +302,7 @@ async function hybridSearch(
           score:
             (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any })
               .similarity * 0.3,
-          sources: ['keyword'],
+          sources: ['keyword']
         }
       );
     }
@@ -322,7 +319,7 @@ async function hybridSearch(
       searchType: 'hybrid',
       matchedBy: (
         result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }
-      ).sources,
+      ).sources
     })); // Added closing parenthesis
 }
 // Enhanced semantic search with context
@@ -359,8 +356,7 @@ async function semanticSearch(
             0.6 +
           contextScore * 0.2 +
           legalRelevance * 0.2,
-        searchType: 'semantic',
-      };
+        searchType: `semantic` };
     })
     .sort((a, b) => b.enhancedSimilarity - a.enhancedSimilarity)
     .slice(0, limit);
@@ -429,7 +425,7 @@ export const GET: RequestHandler = async () => {
       const [docResult] = await db.select({ count: sql<number>`count(*)` }).from(legal_documents);
       documentCount = docResult?.count || 0;
       const [embResult] = await db
-        .select({ count: sql<number>`count(*)` })
+        .select({ count: sql<number>`count(*)' })
         .from(legal_documents)
         .where(legal_documents.content_embedding.isNotNull()); // Added closing parenthesis
       embeddingCount = embResult?.count || 0;
@@ -439,7 +435,7 @@ export const GET: RequestHandler = async () => {
     // Test cognitive cache
     let cacheStatus = $state<boolean>(false);
     try {
-      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: { action: 'health-test' } });
+      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: {, action: 'health-test' } });
       cacheStatus = true;
     } catch (err: any) {
       console.warn('[Search] Cognitive cache health check failed:', err);
@@ -455,30 +451,29 @@ export const GET: RequestHandler = async () => {
         cognitiveCaching: cacheStatus, // Added comma
         documentStorage: dbHealth.overall === 'healthy',
         pgvectorIntegration: dbHealth.postgres.connected,
-        qdrantIntegration: dbHealth.qdrant?.connected || false,
+        qdrantIntegration: dbHealth.qdrant?.connected || false
       },
       database: {
-        postgres: dbHealth.postgres,
+       , postgres: dbHealth.postgres,
         qdrant: dbHealth.qdrant,
         overall: dbHealth.overall,
         documents: documentCount, // Added comma
         embeddings: embeddingCount, // Added comma
-        embeddingCoverage: documentCount > 0 ? ((embeddingCount / documentCount) * 100).toFixed(1) + '%' : '0%',
+        embeddingCoverage: documentCount > 0 ? ((embeddingCount / documentCount) * 100).toFixed(1) + '%' : '0%'
       },
       cache: {
         cognitive: cacheStatus, // Added comma
-        type: 'ML-driven cognitive cache',
+        type: 'ML-driven cognitive cache'
       },
       timestamp: new Date().toISOString(),
-      version: '3.0.0',
-    });
+      version: `3.0.0` });
   } catch (err: any) {
     return json(
       // Corrected json call
       {
         status: 'unhealthy',
         error: err.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

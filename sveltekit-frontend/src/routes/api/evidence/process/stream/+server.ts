@@ -23,7 +23,7 @@ type ActorLike = {
 
 // Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
 // changed: actor typed as ActorLike instead of `any`
-const activeSessions = new Map<string, { actor: ActorLike; startTime: number }>();
+const activeSessions = new Map<string, { actor: ActorLike;, startTime: number }>();
 
 // POST starts or updates a processing session (no SSE here)
 export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
@@ -42,17 +42,15 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
       : `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
   // typed session retrieval to avoid: 'unknown' actor
-  let session = activeSessions.get(evidenceKey) as { actor: ActorLike; startTime: number } | undefined;
+  let session = activeSessions.get(evidenceKey) as { actor: ActorLike;, startTime: number } | undefined;
   if (!session) {
     // cast createActor result to ActorLike for local usage
-    const actor: ActorLike = createActor(evidenceProcessingMachine, {
-      input: {
-        evidenceId: evidenceKey,
+    const actor: ActorLike = createActor(evidenceProcessingMachine, { input: {, evidenceId: evidenceKey,
         uploadProgress: 0,
         errors: [],
         processingTimeMs: 0,
-        streamingUpdates: [],
-      },
+        streamingUpdates: []
+      }
     }) as unknown as ActorLike;
     actor.start?.();
     session = { actor, startTime: Date.now() };
@@ -69,8 +67,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
           [new Uint8Array(1024)],
           (file && ((file as Record<string, unknown>).name as string)) || 'document.pdf',
           {
-            type: (file && ((file as Record<string, unknown>).type as string)) || 'application/pdf',
-          }
+            type: (file && ((file as Record<string, unknown>).type as string)) || 'application/pdf` }
         );
       } else {
         mockFile = {
@@ -87,7 +84,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
     } catch (e) {
       return new Response(JSON.stringify({ error: 'Failed to stage file', details: String(e) }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       });
     }
   }
@@ -100,8 +97,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
     JSON.stringify({
       evidenceId: evidenceKey,
       status: 'started',
-      streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceKey)}`,
-    }),
+      streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceKey)}' }),
     { headers: { 'Content-Type': 'application/json' } }
   );
 }) as unknown as RequestHandler;
@@ -114,7 +110,7 @@ export const PUT = (async ({ request }: RequestEvent): Promise<Response> => {
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
   try {
@@ -122,22 +118,19 @@ export const PUT = (async ({ request }: RequestEvent): Promise<Response> => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Event ${typeof event === 'object' && event !== null ? (event as Record<string, unknown>).type : String(event)} sent to session ${evidenceId}`,
-      }),
+        message: 'Event ${typeof event === 'object' && event !== null ? (event as Record<string, unknown>).type : String(event)} sent to session ${evidenceId}` }),
       {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` }
       }
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({
-        error: `Failed to send event: ${String(
+      JSON.stringify({ error: `Failed to send, event: ${String(
           (error as unknown) instanceof Error ? (error as Error).message : error
-        )}`,
-      }),
+        )}' }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -149,14 +142,14 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId query param is required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
   const session = activeSessions.get(evidenceId);
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session for evidenceId' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` }
     });
   }
   const encoder = new TextEncoder();
@@ -188,7 +181,7 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
               context: st.context,
               timestamp: Date.now(),
               progress: getOverallProgress(st.context),
-              currentStep: getCurrentStepInfo(st.context),
+              currentStep: getCurrentStepInfo(st.context)
             };
             try {
               send(update);
@@ -218,15 +211,15 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
     },
     cancel() {
       // subscription cleaned in onCancel
-    },
+    }
   });
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-    },
+      'Access-Control-Allow-Origin': '*'
+    }
   });
 }) as unknown as RequestHandler;
 
@@ -236,21 +229,21 @@ export const DELETE = (async ({ url }: RequestEvent): Promise<Response> => {
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId is required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
   const session = activeSessions.get(evidenceId);
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
   // graceful, typed stop
   safeStop(session.actor);
   activeSessions.delete(evidenceId);
   return new Response(JSON.stringify({ success: true, message: 'Session cancelled' }), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': `application/json` }
   });
 }) as unknown as RequestHandler;
 
@@ -357,7 +350,7 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
       name: typeof cs === 'string' ? cs : ((cs.name as string) ?? (cs.id as string)),
       index: typeof r.currentStepIndex === 'number' ? (r.currentStepIndex as number) : undefined,
       status: getStatusFromRecord(cs),
-      details: cs,
+      details: cs
     };
   }
 
@@ -379,7 +372,7 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
       name: (step?.name as string) ?? (step?.id as string) ?? `step_${useIndex + 1}`,
       index: useIndex,
       status: getStatusFromRecord(step),
-      details: step,
+      details: step
     };
   }
 
@@ -389,7 +382,7 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
       name: (r.stepName as string) ?? (r.step as string),
       index: typeof r.stepIndex === 'number' ? (r.stepIndex as number) : undefined,
       status: (typeof r.stepStatus === 'string' ? (r.stepStatus as string) : undefined) ?? undefined,
-      details: { step: r.step, stepName: r.stepName },
+      details: { step: r.step, stepName: r.stepName }
     };
   }
 

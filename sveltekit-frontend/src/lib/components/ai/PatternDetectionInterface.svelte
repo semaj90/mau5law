@@ -3,10 +3,11 @@
   Visualizes detected patterns using Enhanced-Bits UI components
 -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   // Pattern detection state
   let patterns = $state<DetectedPattern[]>([]);
   let selectedPattern = $state<DetectedPattern | null>(null);

@@ -9,9 +9,7 @@ import type { LegalDocument, ProcessingResult, EntityExtraction } from '../types
 import { chrROMPrecomputation } from './chr-rom-precomputation.js';
 import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
 // Drizzle schema interfaces (based on your legal AI database structure)
-export interface DrizzleLegalDocument {
-  id: string;
-  title: string;
+export interface DrizzleLegalDocument { id: string;, title: string;
   content: string;
   document_type: 'contract' | 'nda' | 'agreement' | 'lease' | 'compliance';
   upload_date: Date;
@@ -23,9 +21,7 @@ export interface DrizzleLegalDocument {
   updated_at: Date;
 }
 
-export interface DrizzleDocumentAnalysis {
-  id: string;
-  document_id: string;
+export interface DrizzleDocumentAnalysis { id: string;, document_id: string;
   analysis_type: 'risk_assessment' | 'entity_extraction' | 'classification' | 'summary';
   result: any; // JSONB field
   confidence_score: number;
@@ -33,9 +29,7 @@ export interface DrizzleDocumentAnalysis {
   created_at: Date;
 }
 
-export interface DrizzleEntityExtraction {
-  id: string;
-  document_id: string;
+export interface DrizzleEntityExtraction { id: string;, document_id: string;
   entity_type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'contract_term';
   entity_value: string;
   confidence: number;
@@ -43,9 +37,7 @@ export interface DrizzleEntityExtraction {
   position_end: number;
   created_at: Date;
 }
-export interface DrizzleDocumentEmbedding {
-  id: string;
-  document_id: string;
+export interface DrizzleDocumentEmbedding { id: string;, document_id: string;
   embedding_type: 'document' | 'chunk' | 'summary';
   embedding_vector: number[]; // Vector field
   chunk_index?: number;
@@ -112,8 +104,7 @@ export class DrizzleCHRROMBridge {
         metadata: {
           parties: ['Startup Ventures Inc.', 'Innovation Labs'],
           confidentiality_period: 24,
-          jurisdiction: 'California'
-        },
+          jurisdiction: `California` },
         created_at: new Date('2024-01-16T09:15:00Z'),
         updated_at: new Date('2024-01-16T10:20:00Z')
       },
@@ -221,7 +212,7 @@ export class DrizzleCHRROMBridge {
         type: emb.embedding_type,
         vector: emb.embedding_vector,
         chunkIndex: emb.chunk_index
-      })),
+      }))
     }
     return enrichedData;
   }

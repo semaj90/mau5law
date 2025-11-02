@@ -11,13 +11,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({
         success: true,
         sessionId,
-        messages: messages.reverse(),
+        messages: messages.reverse()
       });
     }
     const sessions = await ChatHistoryService.getSessionsByUser(user.id);
     return json({
       success: true,
-      sessions,
+      sessions
     });
   } catch (error) {
     console.error('Chat history API error:', error);
@@ -33,15 +33,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
               id: 'mock-msg-001',
               content: 'Mock chat message - legal analysis request',
               role: 'user',
-              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
             },
             {
               id: 'mock-msg-002',
               content: 'Mock AI response - employment law analysis provided',
               role: 'assistant',
-              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000 + 30000).toISOString(),
+              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000 + 30000).toISOString()
             },
-          ],
+          ]
         }
       : {
           success: false,
@@ -51,9 +51,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
               id: 'mock-session-001',
               title: 'Employment Contract Analysis',
               lastMessage: 'Mock legal consultation',
-              timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+              timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
             },
-          ],
+          ]
         };
     return json(mockData, { status: 500 });
   }

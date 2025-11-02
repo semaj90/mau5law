@@ -13,9 +13,7 @@ export interface Context7MCPRequest {
   requirements?: string;
   library?: string;
   topic?: string;
-  optimization_context?: {
-    memory_usage: number;
-    cpu_usage: number;
+  optimization_context?: { memory_usage: number;, cpu_usage: number;
     cache_efficiency: number;
     docker_containers: number;
   };
@@ -25,15 +23,11 @@ export interface Context7MCPResponse {
   data?: any; // replaced `any` with `unknown`
   error?: string;
   optimization_recommendations?: OptimizationRecommendation[];
-  performance_impact?: {
-    expected_improvement: number;
-    memory_savings_mb: number;
+  performance_impact?: { expected_improvement: number;, memory_savings_mb: number;
     implementation_effort: 'low' | 'medium' | 'high';
   };
 }
-export interface OptimizationRecommendation {
-  category: 'memory' | 'performance' | 'cache' | 'docker' | 'json' | 'vscode';
-  title: string;
+export interface OptimizationRecommendation { category: 'memory' | 'performance' | 'cache' | 'docker' | 'json' | 'vscode';, title: string;
   description: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
   implementation: string[];
@@ -53,7 +47,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       memory_limit_gb: 8,
       enable_wasm: true,
       // use a string literal that matches the expected union
-      cache_strategy: 'balanced' as const,
+      cache_strategy: 'balanced' as const
     };
     this.optimizationSuite =
       suite ||
@@ -73,7 +67,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       this.performance_baseline = await this.collectCurrentMetrics();
       this.emit('integration_initialized', {
         suite_ready: true,
-        baseline_metrics: this.performance_baseline,
+        baseline_metrics: this.performance_baseline
       });
     } catch (error) {
       const errMsg = error instanceof Error ? error : new Error(String(error));
@@ -91,7 +85,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       tool: 'analyze-stack',
       component,
       context,
-      optimization_context,
+      optimization_context
     };
     const response = await this.executeContext7Request(request);
     if (response.success && response.data) {
@@ -110,7 +104,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     const request: Context7MCPRequest = {
       tool: 'generate-best-practices',
       area,
-      optimization_context,
+      optimization_context
     };
     const response = await this.executeContext7Request(request);
     if (response.success) {
@@ -128,7 +122,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       tool: 'suggest-integration',
       feature,
       requirements: requirements || 'optimized for legal-ai performance and memory',
-      optimization_context,
+      optimization_context
     };
     const response = await this.executeContext7Request(request);
     if (response.success) {
@@ -159,8 +153,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Use WebAssembly for memory-efficient JSON processing',
         ],
         expected_benefit: 'Reduce memory usage by 20-30%',
-        code_example: `// Enable memory optimization\nimport { optimizeForLegalAIProduction } from '$lib/optimization';\nconst suite = await optimizeForLegalAIProduction();\nawait suite.docker.optimizeMemoryUsage();`,
-      });
+        code_example: '// Enable memory optimization\nimport { optimizeForLegalAIProduction } from '$lib/optimization';\nconst suite = await optimizeForLegalAIProduction();\nawait suite.docker.optimizeMemoryUsage();' });
     }
     if (context.cache_efficiency < 70) {
       recommendations.push({
@@ -177,7 +170,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         expected_benefit: 'Improve response times by 40-60%',
         // avoid backtick template literals in code examples in this region
         code_example:
-          '// Optimize cache strategy\nconst cache = createRedisSOMapCache({\n  max_memory: 512 * 1024 * 1024, // 512MB\n  compression_enabled: true\n});',
+          '// Optimize cache strategy\nconst cache = createRedisSOMapCache({\n  max_memory: 512 * 1024 * 1024, // 512MB\n  compression_enabled: true\n});'
       });
     }
     if (context.docker_containers > 4) {
@@ -193,7 +186,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         ],
         expected_benefit: 'Reduce Docker memory overhead by 15-25%',
         code_example:
-          '// Apply Docker optimization\nconst optimizer = optimizeFor70GBDev();\noptimizer.applyDevelopmentPreset();',
+          '// Apply Docker optimization\nconst optimizer = optimizeFor70GBDev();\noptimizer.applyDevelopmentPreset();'
       });
     }
     return recommendations;
@@ -217,8 +210,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
               'Use memory-mapped files for large datasets',
             ],
             expected_benefit: 'Improve performance by 30-50% while reducing memory usage',
-            code_example: `// Enable high-performance JSON processing\nconst jsonOptimizer = createHighPerformanceJSONProcessor();\njsonOptimizer.setOptimizationLevel('high');`,
-          });
+            code_example: '// Enable high-performance JSON processing\nconst jsonOptimizer = createHighPerformanceJSONProcessor();\njsonOptimizer.setOptimizationLevel('high');` });
         }
         break;
       case 'memory':
@@ -233,8 +225,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
             'Enable JSON compression with LZ4',
           ],
           expected_benefit: 'Reduce memory footprint by 40-60%',
-          code_example: `// Comprehensive memory optimization\nconst suite = await optimizeForLegalAIProduction();\nawait suite.cache.analyzeAccessPatterns();\nawait suite.docker.optimizeMemoryUsage();`,
-        });
+          code_example: `// Comprehensive memory optimization\nconst suite = await optimizeForLegalAIProduction();\nawait suite.cache.analyzeAccessPatterns();\nawait suite.docker.optimizeMemoryUsage();` });
         break;
       case 'docker':
         recommendations.push({
@@ -248,8 +239,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
             'Use optimized Docker Compose configuration',
           ],
           expected_benefit: 'Reduce Docker resource usage by 25-40%',
-          code_example: `// Generate optimized Docker Compose\nconst optimizer = optimizeFor70GBDev();\nconst dockerCompose = optimizer.generateOptimizedDockerCompose();`,
-        });
+          code_example: `// Generate optimized Docker Compose\nconst optimizer = optimizeFor70GBDev();\nconst dockerCompose = optimizer.generateOptimizedDockerCompose();` });
         break;
       default: break;
     }
@@ -271,8 +261,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Consider WebAssembly acceleration if applicable',
         ],
         expected_benefit: 'Optimized integration with minimal performance impact',
-        code_example: `// Optimized feature integration\nimport { createEnhancedOptimizationSuite } from '$lib/optimization';\nconst suite = createEnhancedOptimizationSuite();\n// Integrate ${feature} with optimization awareness`,
-      },
+        code_example: '// Optimized feature integration\nimport { createEnhancedOptimizationSuite } from '$lib/optimization';\nconst suite = createEnhancedOptimizationSuite();\n// Integrate ${feature} with optimization awareness' },
     ];
   }
   private async generateLibraryOptimizationTips(
@@ -281,9 +270,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     _context: NonNullable<Context7MCPRequest['optimization_context']>
   ): Promise<OptimizationRecommendation[]> {
     // simplified, well-typed mapping to avoid parser issues from complex inline literals
-    const libraryOptimizations: Record<string, OptimizationRecommendation> = {
-      sveltekit: {
-        category: 'performance',
+    const libraryOptimizations: Record<string, OptimizationRecommendation> = { sveltekit: {, category: 'performance',
         title: 'SvelteKit Performance Optimization',
         description: 'Optimize SvelteKit for legal AI development',
         priority: 'high',
@@ -293,13 +280,12 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Enable prefetching for critical routes',
         ],
         expected_benefit: 'Improve page load times by 40-70%',
-        code_example: `// SvelteKit optimization
+        code_example: '// SvelteKit optimization
 import { preloadData } from '$app/navigation';
 export const load = (async ({ depends }): Promise<any> => {
   depends('app:data');
   return await loadOptimizedData();
-})`,
-      },
+})` },
       drizzle: {
         category: 'performance',
         title: 'Drizzle ORM Optimization',
@@ -311,13 +297,11 @@ export const load = (async ({ depends }): Promise<any> => {
           'Use prepared statements for frequent queries',
         ],
         expected_benefit: 'Reduce database query times by 50-80%',
-        code_example: `// Drizzle optimization
+        code_example: '// Drizzle optimization
 const db = drizzle(pool, {
   logger: true,
-  casing: 'snake_case'
-});
-// Use with optimization suite caching`,
-      },
+  casing: `snake_case` });
+// Use with optimization suite caching' },
       'bits-ui': {
         category: 'performance',
         title: 'Bits UI Performance',
@@ -328,8 +312,7 @@ const db = drizzle(pool, {
           'Implement lazy loading for complex dialogs',
           'Cache rendered components',
         ],
-        expected_benefit: 'Improve UI responsiveness by 30-50%',
-      },
+        expected_benefit: `Improve UI responsiveness by 30-50%` }
     };
     const recommendation =
       libraryOptimizations[library] ||
@@ -343,7 +326,7 @@ const db = drizzle(pool, {
           'Implement caching where applicable',
           'Monitor resource usage',
         ],
-        expected_benefit: 'Optimized library usage',
+        expected_benefit: 'Optimized library usage'
       } as OptimizationRecommendation);
     return [recommendation];
   }
@@ -351,38 +334,33 @@ const db = drizzle(pool, {
     area: string,
     context: NonNullable<Context7MCPRequest['optimization_context']>
   ): Promise<NonNullable<Context7MCPResponse['performance_impact']>> {
-    const impactEstimates: Record<string, NonNullable<Context7MCPResponse['performance_impact']>> = {
-      performance: {
-        expected_improvement: 0.4,
+    const impactEstimates: Record<string, NonNullable<Context7MCPResponse['performance_impact']>> = { performance: {, expected_improvement: 0.4,
         memory_savings_mb: Math.round(context.memory_usage * 0.2),
-        implementation_effort: 'medium',
+        implementation_effort: 'medium'
       },
       memory: {
         expected_improvement: 0.6,
         memory_savings_mb: Math.round(context.memory_usage * 0.4),
-        implementation_effort: 'high',
+        implementation_effort: 'high'
       },
       docker: {
         expected_improvement: 0.3,
         memory_savings_mb: Math.round(context.memory_usage * 0.25),
-        implementation_effort: 'medium',
-      },
+        implementation_effort: 'medium'
+      }
     };
     return (
       impactEstimates[area] || {
         expected_improvement: 0.2,
         memory_savings_mb: Math.round(context.memory_usage * 0.1),
-        implementation_effort: 'low',
-      }
+        implementation_effort: `low` }
     );
   }
   // Utility
   private generateCacheKey(request: Context7MCPRequest): string {
-    return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || ''}`;
+    return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || '` }`;
   }
-  async runComprehensiveOptimizationAnalysis(): Promise<{
-    current_metrics: EnhancedPerformanceMetrics;
-    recommendations: OptimizationRecommendation[];
+  async runComprehensiveOptimizationAnalysis(): Promise<{ current_metrics: EnhancedPerformanceMetrics;, recommendations: OptimizationRecommendation[];
     estimated_improvements: Record<string, number>;
     implementation_plan: string[];
   }> {
@@ -399,7 +377,7 @@ const db = drizzle(pool, {
     const estimated_improvements = {
       memory_reduction_mb: all_recommendations.filter(r => r.category === 'memory').length * 500,
       performance_improvement_percent: all_recommendations.filter(r => r.category === 'performance').length * 15,
-      cache_efficiency_improvement: all_recommendations.filter(r => r.category === 'cache').length * 20,
+      cache_efficiency_improvement: all_recommendations.filter(r => r.category === 'cache').length * 20
     };
     const implementation_plan = [
       '1. Apply memory optimizations (highest impact)',
@@ -445,7 +423,7 @@ const db = drizzle(pool, {
       memory_usage,
       cpu_usage,
       cache_efficiency,
-      docker_containers,
+      docker_containers
     };
   }
   // --- New / fixed private helpers ---
@@ -476,7 +454,7 @@ const db = drizzle(pool, {
       memoryUsageMB: Number(memoryUsageMB),
       cpuUsagePercent: Number(cpuUsagePercent),
       cacheHitRate: Number(cacheHitRate),
-      dockerContainers: dockerContainers,
+      dockerContainers: dockerContainers
     } as unknown as EnhancedPerformanceMetrics;
   }
   // Execute request to Context7 MCP endpoint with caching and safe error handling
@@ -488,8 +466,8 @@ const db = drizzle(pool, {
     try {
       const res = await fetch(this.context7_endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(request)
       });
       if (!res.ok) {
         const text = await res.text().catch(() => '');
@@ -512,9 +490,7 @@ export function createContext7MCPIntegration(suite?: EnhancedOptimizationSuite):
 // Add a safe QuickAction type (avoid `any`)
 type QuickAction = (...args: any[]) => void | Promise<unknown> | undefined;
 type QuickActionsMap = Record<string, QuickAction>;
-export async function createOptimizedDevelopmentEnvironment(): Promise<{
-  integrator: Context7MCPOptimizationIntegrator;
-  recommendations: OptimizationRecommendation[];
+export async function createOptimizedDevelopmentEnvironment(): Promise<{ integrator: Context7MCPOptimizationIntegrator;, recommendations: OptimizationRecommendation[];
   quickActions: QuickActionsMap;
 }> {
   const integrator = createContext7MCPIntegration();
@@ -528,12 +504,12 @@ export async function createOptimizedDevelopmentEnvironment(): Promise<{
       return Promise.resolve();
     },
     applyDockerOptimizations: () => integrator.getOptimizationSuite().docker?.applyDevelopmentPreset?.(),
-    enableHighPerformanceJSON: () => integrator.getOptimizationSuite().json?.setOptimizationLevel?.('high'),
+    enableHighPerformanceJSON: () => integrator.getOptimizationSuite().json?.setOptimizationLevel?.('high')
   };
   return {
     integrator,
     recommendations: analysis.recommendations,
-    quickActions,
+    quickActions
   };
 }
 // Default instance

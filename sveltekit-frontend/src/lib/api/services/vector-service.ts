@@ -1,9 +1,7 @@
 import type { Document } from '$lib/types';
 // Vector Service - Production Implementation for Legal AI Platform
 import { getAuthHeaders } from './auth-service.js';
-export interface VectorDocument {
-  id: string;
-  content: string;
+export interface VectorDocument { id: string;, content: string;
   metadata: {
     title?: string;
     type: 'case' | 'evidence' | 'contract' | 'brief' | 'statute' | 'regulation';
@@ -36,9 +34,7 @@ export interface VectorSearchFilters {
   caseId?: string[];
   practiceArea?: string[];
   jurisdiction?: string[];
-  dateRange?: {
-    start: string;
-    end: string;
+  dateRange?: { start: string;, end: string;
   };
   confidence?: {
     min?: number;
@@ -48,16 +44,12 @@ export interface VectorSearchFilters {
   customFilters?: { [key: string]: any };
 }
 
-export interface VectorSearchResult {
-  document: VectorDocument;
-  score: number;
+export interface VectorSearchResult { document: VectorDocument;, score: number;
   explanation?: string;
   highlights?: string[];
 }
 
-export interface VectorSearchResponse {
-  results: VectorSearchResult[];
-  total: number;
+export interface VectorSearchResponse { results: VectorSearchResult[];, total: number;
   query: string;
   processingTime: number;
   searchType: 'semantic' | 'hybrid' | 'keyword';
@@ -70,9 +62,7 @@ export interface VectorUpsertRequest {
   generateEmbeddings?: boolean;
 }
 
-export interface VectorUpsertResponse {
-  inserted: number;
-  updated: number;
+export interface VectorUpsertResponse { inserted: number;, updated: number;
   failed: Array<any>;
   processingTime: number;
 }
@@ -82,9 +72,7 @@ export interface VectorDeleteRequest {
   filters?: VectorSearchFilters;
   deleteAll?: boolean;
 }
-export interface VectorStatsResponse {
-  totalDocuments: number;
-  totalVectors: number;
+export interface VectorStatsResponse { totalDocuments: number;, totalVectors: number;
   indexSize: string;
   dimensions: number;
   lastUpdated: string;
@@ -131,7 +119,7 @@ export async function vectorSemanticSearch(
   return searchVectors({
     ...options,
     query,
-    hybridSearch: false,
+    hybridSearch: false
   });
 }
 export async function hybridSearch(
@@ -141,7 +129,7 @@ export async function hybridSearch(
   return searchVectors({
     ...options,
     query,
-    hybridSearch: true,
+    hybridSearch: true
   });
 }
 // Vector Document Management
@@ -244,13 +232,13 @@ export async function findSimilarCases(
   return searchVectors({
     query: caseDescription,
     filters: {
-      type: ['case'],
+     , type: ['case'],
       practiceArea: practiceArea ? [practiceArea] : undefined,
-      jurisdiction: jurisdiction ? [jurisdiction] : undefined,
+      jurisdiction: jurisdiction ? [jurisdiction] : undefined
     },
     limit,
     threshold: 0.75, // Higher threshold for case similarity
-    hybridSearch: true,
+    hybridSearch: true
   });
 }
 export async function searchLegalPrecedents(
@@ -266,7 +254,7 @@ export async function searchLegalPrecedents(
       type: ['statute', 'regulation', 'case'],
       jurisdiction: jurisdiction ? [jurisdiction] : undefined
     },
-    hybridSearch: true,
+    hybridSearch: true
   });
 }
 export async function searchContractClauses(
@@ -282,7 +270,7 @@ export async function searchContractClauses(
       type: ['contract'],
       customFilters: contractType ? { contractType } : undefined
     },
-    hybridSearch: true,
+    hybridSearch: true
   });
 }
 // Vector Analytics and Management
@@ -322,7 +310,7 @@ export async function reindexVectors(
         filters,
         batchSize: options.batchSize || 100,
         skipEmbeddings: options.skipEmbeddings || false
-      }),
+      })
     });
     if (!response.ok) {
       const error = await response.json();
@@ -371,7 +359,7 @@ export async function explainVectorSearch(
         'Content-Type': 'application/json',
         ...getAuthHeaders()
       },
-      body: JSON.stringify({ query, resultId }),
+      body: JSON.stringify({ query, resultId })
     });
     if (!response.ok) {
       const error = await response.json();
@@ -406,7 +394,7 @@ export async function processBatchDocuments(
         chunkSize: options.chunkSize || 1000, // Default chunk size for legal documents
         generateEmbeddings: options.generateEmbeddings !== false,
         extractMetadata: options.extractMetadata !== false
-      }),
+      })
     });
     if (!response.ok) {
       const error = await response.json();

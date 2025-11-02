@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
       priority = 1,
       metadata = {},
       evidenceCanvasId,
-      analysisType = 'legal',
+      analysisType = 'legal'
     } = body;
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 });
@@ -31,30 +31,28 @@ export const POST: RequestHandler = async ({ request }) => {
       priority,
       metadata,
       evidenceCanvasId,
-      analysisType,
+      analysisType
     });
     // Convert status stores to serializable format
     const jobStatuses: { [key: string]: any } = {};
     for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any })
       .statusStores) {
       jobStatuses[jobId] = {
-        subscriptionEndpoint: `/api/legal/status/${jobId}`,
-      };
+        subscriptionEndpoint: `/api/legal/status/${jobId}` };
     }
     return json({
       success: true,
       jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
       jobStatuses,
-      aggregateStatusEndpoint: `/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
-      processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics,
+      aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
+      processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics
     });
   } catch (error) {
     console.error('Legal processing error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

@@ -42,22 +42,16 @@ export interface UserPreferences {
 }
 
 // Vector Search Response Types
-export interface CUDAVectorResponse {
-  status: 'success' | 'error';
-  processing_time_ms: number;
+export interface CUDAVectorResponse { status: 'success' | 'error';, processing_time_ms: number;
   results: VectorSearchResult[];
   gpu_metrics: GPUMetrics;
   cache_hit: boolean;
   legal_insights?: LegalInsights;
 }
 
-export interface VectorSearchResult {
-  query_index: number;
-  similarities: number[];
+export interface VectorSearchResult { query_index: number;, similarities: number[];
   indices: number[];
-  legal_context?: {
-    best_match_index: number;
-    confidence: number;
+  legal_context?: { best_match_index: number;, confidence: number;
     relevance_score: number;
     risk_level: string;
     document_type: string;
@@ -67,9 +61,7 @@ export interface VectorSearchResult {
   neural_sprite_data?: NeuralSpriteVisualization;
 }
 
-export interface GPUMetrics {
-  cuda_version: string;
-  device_name: string;
+export interface GPUMetrics { cuda_version: string;, device_name: string;
   sm_count: number;
   memory_used_mb: number;
   total_memory_mb: number;
@@ -77,40 +69,30 @@ export interface GPUMetrics {
   memory_bandwidth_gbps: number;
 }
 
-export interface LegalInsights {
-  document_relationships: DocumentRelationship[];
-  citation_network: CitationNode[];
+export interface LegalInsights { document_relationships: DocumentRelationship[];, citation_network: CitationNode[];
   risk_assessment: RiskAssessment;
   precedent_strength: number;
   jurisdictional_coverage: string[];
 }
 
-export interface DocumentRelationship {
-  source_id: string;
-  target_id: string;
+export interface DocumentRelationship { source_id: string;, target_id: string;
   relationship_type: 'cites' | 'overrules' | 'distinguishes' | 'follows';
   strength: number;
   legal_significance: number;
 }
 
-export interface CitationNode {
-  document_id: string;
-  citation_count: number;
+export interface CitationNode { document_id: string;, citation_count: number;
   authority_score: number;
   recency_weight: number;
   jurisdictional_weight: number;
 }
 
-export interface RiskAssessment {
-  overall_risk: 'low' | 'medium' | 'high' | 'critical';
-  factors: RiskFactor[];
+export interface RiskAssessment { overall_risk: 'low' | 'medium' | 'high' | 'critical';, factors: RiskFactor[];
   mitigation_suggestions: string[];
   confidence_interval: [number, number];
 }
 
-export interface RiskFactor {
-  factor: string;
-  impact: number;
+export interface RiskFactor { factor: string;, impact: number;
   probability: number;
   description: string;
 }
@@ -121,14 +103,10 @@ export interface NeuralSpriteVisualization {
   color: [number, number, number, number];
   size: number;
   sprite_id: string;
-  animation_data: {
-    rotation_speed: number;
-    pulse_frequency: number;
+  animation_data: { rotation_speed: number;, pulse_frequency: number;
     gravity_effects: boolean;
   };
-  metadata: {
-    document_type: string;
-    importance_score: number;
+  metadata: { document_type: string;, importance_score: number;
     citation_connections: number;
   };
 }
@@ -158,7 +136,7 @@ export class CUDAVectorService {
     try {
       const response = await fetch(`${this.serviceUrl}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (response.ok) {
         const data = await response.json();
@@ -181,7 +159,7 @@ export class CUDAVectorService {
     try {
       const response = await fetch(`${this.serviceUrl}/api/gpu/gpu-status`, {
         method: 'GET',
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT)
       });
       if (response.ok) {
         const data = await response.json();
@@ -211,13 +189,13 @@ export class CUDAVectorService {
       threshold: 0.5,
       top_k: 10,
       batch_size: request.query_vectors?.length ?? 1,
-      ...request,
+      ...request
     };
 
     const metricTypeMap: Record<string, number> = { cosine: 0, euclidean: 1, manhattan: 2 };
     const cudaPayload = {
       ...cudaRequest,
-      metric_type: metricTypeMap[cudaRequest.metric_type ?? 'cosine'],
+      metric_type: metricTypeMap[cudaRequest.metric_type ?? 'cosine']
     };
 
     let attempt = 0;
@@ -225,7 +203,7 @@ export class CUDAVectorService {
 
     while (attempt < MAX_RETRY_ATTEMPTS) {
       try {
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        const headers: Record<string, string> = { 'Content-Type': `application/json` };
         const userAgent = event?.request?.headers?.get('user-agent');
         if (userAgent) headers['User-Agent'] = userAgent;
 
@@ -233,7 +211,7 @@ export class CUDAVectorService {
           method: 'POST',
           headers,
           body: JSON.stringify(cudaPayload),
-          signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+          signal: AbortSignal.timeout(REQUEST_TIMEOUT)
         });
 
         if (response.ok) {
@@ -248,14 +226,14 @@ export class CUDAVectorService {
           // Add neural sprite visualization data
           result.results = result.results.map(r => ({
             ...r,
-            neural_sprite_data: this.generateNeuralSprite(r),
+            neural_sprite_data: this.generateNeuralSprite(r)
           }));
           // Log performance metrics for monitoring
           this.logPerformanceMetrics(result);
           return result;
         }
 
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        const errorData = await response.json().catch(() => ({ error: `Unknown error` }));
         throw new Error(`CUDA service error: ${errorData.error || response.statusText}`);
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
@@ -263,7 +241,7 @@ export class CUDAVectorService {
         if (attempt < MAX_RETRY_ATTEMPTS) {
           const delay = Math.pow(2, attempt) * 1000;
           await new Promise(resolve => setTimeout(resolve, delay));
-          console.warn(`CUDA vector search attempt ${attempt} failed, retrying in ${delay}ms`);
+          console.warn(`CUDA vector search attempt ${attempt} failed, retrying in ${delay}ms');
         }
       }
     }
@@ -280,9 +258,9 @@ export class CUDAVectorService {
     try {
       const response = await fetch(`${this.serviceUrl}/api/gpu/normalize-embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ embeddings }),
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT)
       });
       if (response.ok) {
         const result = await response.json();
@@ -311,7 +289,7 @@ export class CUDAVectorService {
       citation_network: citationNetwork,
       risk_assessment: riskAssessment,
       precedent_strength: precedentStrength,
-      jurisdictional_coverage: jurisdictionalCoverage,
+      jurisdictional_coverage: jurisdictionalCoverage
     };
   }
 
@@ -327,7 +305,7 @@ export class CUDAVectorService {
       low: [0.2, 0.8, 0.2, 0.8],
       medium: [1.0, 0.8, 0.2, 0.8],
       high: [1.0, 0.4, 0.2, 0.8],
-      critical: [0.8, 0.2, 0.8, 0.9],
+      critical: [0.8, 0.2, 0.8, 0.9]
     };
     const riskLevel = result.legal_context?.risk_level ?? 'medium';
     const color = riskColors[riskLevel] ?? riskColors.medium;
@@ -339,13 +317,13 @@ export class CUDAVectorService {
       animation_data: {
         rotation_speed: importance * 0.5,
         pulse_frequency: maxSim * 2,
-        gravity_effects: true,
+        gravity_effects: true
       },
       metadata: {
         document_type: result.legal_context?.document_type ?? 'unknown',
         importance_score: importance,
-        citation_connections: result.indices.length,
-      },
+        citation_connections: result.indices.length
+      }
     };
   }
 
@@ -361,7 +339,7 @@ export class CUDAVectorService {
             target_id: `doc_${docIdx}`,
             relationship_type: 'cites',
             strength: sim,
-            legal_significance: result.legal_context?.relevance_score ?? sim,
+            legal_significance: result.legal_context?.relevance_score ?? sim
           });
         }
       });
@@ -385,7 +363,7 @@ export class CUDAVectorService {
             citation_count: 1,
             authority_score: sim,
             recency_weight: 1.0,
-            jurisdictional_weight: 1.0,
+            jurisdictional_weight: 1.0
           });
         }
       });
@@ -404,15 +382,14 @@ export class CUDAVectorService {
         factor: 'Low similarity matches',
         impact: 0.8,
         probability: 0.9,
-        description: 'Search results have low semantic similarity to query',
-      });
+        description: `Search results have low semantic similarity to query` });
       overallRisk = 'high';
     }
     return {
       overall_risk: overallRisk,
       factors: riskFactors,
       mitigation_suggestions: ['Consider broadening search terms', 'Review document context'],
-      confidence_interval: [Math.max(0, avgConfidence - 0.1), Math.min(1, avgConfidence + 0.1)],
+      confidence_interval: [Math.max(0, avgConfidence - 0.1), Math.min(1, avgConfidence + 0.1)]
     };
   }
 
@@ -444,7 +421,7 @@ export class CUDAVectorService {
         gpu_utilization: metrics ? metrics.memory_used_mb / metrics.total_memory_mb : undefined,
         throughput_gflops: metrics?.throughput_gflops,
         cache_hit: response.cache_hit,
-        result_count: response.results?.length ?? 0,
+        result_count: response.results?.length ?? 0
       });
     }
     // TODO: Send metrics to monitoring system
@@ -455,18 +432,14 @@ export class CUDAVectorService {
 export const cudaVectorService = new CUDAVectorService();
 
 // Utility functions for legal AI integration
-export interface FormattedMatch {
-  document_id: number;
-  similarity: number;
+export interface FormattedMatch { document_id: number;, similarity: number;
   confidence: number;
   risk_level: string;
   document_type: string;
   neural_sprite?: NeuralSpriteVisualization | null;
 }
 
-export interface FormattedSearchResult {
-  query_index: number;
-  matches: FormattedMatch[];
+export interface FormattedSearchResult { query_index: number;, matches: FormattedMatch[];
 }
 
 export function formatLegalSearchResults(response: CUDAVectorResponse): FormattedSearchResult[] {
@@ -481,11 +454,11 @@ export function formatLegalSearchResults(response: CUDAVectorResponse): Formatte
           confidence: result.legal_context?.confidence ?? similarity,
           risk_level: result.legal_context?.risk_level ?? 'medium',
           document_type: result.legal_context?.document_type ?? 'unknown',
-          neural_sprite: result.neural_sprite_data ?? null,
+          neural_sprite: result.neural_sprite_data ?? null
         };
         return match;
       })
-      .filter(match => match.similarity > 0.1),
+      .filter(match => match.similarity > 0.1)
   }));
 }
 
@@ -502,8 +475,8 @@ export function createLegalSearchContext(
     user_preferences: {
       search_depth: 'medium',
       confidence_threshold: 0.5,
-      ...userPrefs,
-    },
+      ...userPrefs
+    }
   };
 }
 

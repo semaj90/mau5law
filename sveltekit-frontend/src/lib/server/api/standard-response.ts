@@ -12,9 +12,7 @@ export interface ApiResponse<T = unknown> {
   requestId?: string;
   timestamp: string;
 }
-export interface ApiError {
-  code: string;
-  message: string;
+export interface ApiError { code: string;, message: string;
   details?: any;
 }
 /**
@@ -24,7 +22,7 @@ export function apiSuccess<T>(data: T, message?: string, requestId?: string) {
   const response: ApiResponse<T> = {
     success: true,
     data,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   if (message) response.message = message;
   if (requestId) response.requestId = requestId;
@@ -37,7 +35,7 @@ export function apiError(message: string, status: number = 400, code?: string, d
   const response: ApiResponse = {
     success: false,
     error: message,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   if (requestId) response.requestId = requestId;
   if (code || details) {
@@ -75,12 +73,10 @@ export function getCacheHeaders(maxAge: number = 0) {
     return {
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Pragma': 'no-cache',
-      'Expires': '0',
-    };
+      'Expires': '0` };
   }
   return {
-    'Cache-Control': `public, max-age=${maxAge}`,
-  };
+    'Cache-Control': `public, max-age=${maxAge}` };
 }
 /**
  * Standardized API handler wrapper with error catching
@@ -91,7 +87,7 @@ export function withErrorHandling<T extends RequestEvent>(handler: (_event: T) =
     try {
       return await handler(_event);
     } catch (error: any) {
-      // Changed: 'any' to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       // Safely extract: 'code' if it exists and is a string
       const errorCode =

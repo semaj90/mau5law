@@ -3,15 +3,12 @@
  * Handles client-side WASM optimization with server-side CUDA fallback
  */
 import type { VectorSimilarityRequest } from '../types/vector-types';
-interface WasmModule {
-  memory: WebAssembly.Memory;
-  cosineSimJS: (aPtr: number, bPtr: number, length: number) => number;
+interface WasmModule { memory: WebAssembly.Memory;, cosineSimJS: (aPtr: number, bPtr: number, length: number) => number;
   dotProductJS: (aPtr: number, bPtr: number, length: number) => number;
   cosineSimilaritySIMD: (aPtr: number, bPtr: number, length: number) => number;
   hybridCosineSimilarity: (aPtr: number, bPtr: number, length: number, useServer: number) => number;
   shouldUseServer: (operationType: number, dataSize: number, complexityScore: number) => number;
-  batchVectorChunking: (
-    vectorsPtr: number,
+  batchVectorChunking: (; vectorsPtr: number,
     numVectors: number,
     vectorLength: number,
     chunkSize: number,
@@ -52,7 +49,7 @@ class VectorWasmClient {
     vectorB: Float32Array,
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',
     forceServer = false
-  ): Promise<{ result: number; usedServer: boolean; processingTime: number }> {
+  ): Promise<{ result: number; usedServer: boolean;, processingTime: number }> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
     }
@@ -88,9 +85,7 @@ class VectorWasmClient {
     vectors: Float32Array[],
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',
     chunkSize = 50
-  ): Promise<{
-    results: number[];
-    usedServer: boolean;
+  ): Promise<{ results: number[];, usedServer: boolean;
     processingTime: number;
     chunksProcessed: number;
   }> {
@@ -111,12 +106,12 @@ class VectorWasmClient {
         vectors: vectors.map(v => Array.from(v)),
         algorithm: this.algorithmToNumber(algorithm),
         useCUDA: true,
-        parallel: true,
+        parallel: true
       };
       const response = await fetch('/api/v1/vector/similarity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request),
+        body: JSON.stringify(request)
       });
       if (!response.ok) {
         throw new Error(`Server batch processing failed: ${response.statusText}`);
@@ -140,7 +135,7 @@ class VectorWasmClient {
       results,
       usedServer: shouldUseServer,
       processingTime,
-      chunksProcessed,
+      chunksProcessed
     };
   }
   /**
@@ -153,9 +148,7 @@ class VectorWasmClient {
       chunkSize?: number;
       normalize?: boolean;
     } = {}
-  ): Promise<{
-    embeddings: number[][];
-    processingTime: number;
+  ): Promise<{ embeddings: number[][];, processingTime: number;
     tokensProcessed: number;
   }> {
     const startTime = performance.now();
@@ -167,8 +160,8 @@ class VectorWasmClient {
         model: options.model || 'embeddinggemma:latest',
         chunkSize: options.chunkSize || 512,
         normalize: options.normalize !== false,
-        useCUDA: true,
-      }),
+        useCUDA: true
+      })
     });
     if (!response.ok) {
       throw new Error(`Embedding generation failed: ${response.statusText}`);
@@ -178,7 +171,7 @@ class VectorWasmClient {
     return {
       embeddings: data.embeddings,
       processingTime,
-      tokensProcessed: data.performance?.tokensProcessed || 0,
+      tokensProcessed: data.performance?.tokensProcessed || 0
     };
   }
   /**
@@ -189,9 +182,7 @@ class VectorWasmClient {
     matrixA: number[][],
     matrixB?: number[][],
     options: { useCUDA?: boolean; parallel?: boolean } = {}
-  ): Promise<{
-    result: number[][];
-    processingTime: number;
+  ): Promise<{ result: number[][];, processingTime: number;
     flops: number;
   }> {
     const response = await fetch('/api/v1/vector/matrix', {
@@ -202,10 +193,10 @@ class VectorWasmClient {
         matrixA,
         matrixB,
         options: {
-          useCUDA: options.useCUDA !== false,
-          parallel: options.parallel !== false,
-        },
-      }),
+         , useCUDA: options.useCUDA !== false,
+          parallel: options.parallel !== false
+        }
+      })
     });
     if (!response.ok) {
       throw new Error(`Matrix operation failed: ${response.statusText}`);
@@ -214,7 +205,7 @@ class VectorWasmClient {
     return {
       result: data.result,
       processingTime: data.metadata.processingTime,
-      flops: data.metadata.flops || 0,
+      flops: data.metadata.flops || 0
     };
   }
   /**
@@ -228,9 +219,7 @@ class VectorWasmClient {
       filters?: any;
       useCUDA?: boolean;
     } = {}
-  ): Promise<{
-    results: Array<{
-      id: string;
+  ): Promise<{ results: Array<{, id: string;
       content: string;
       similarity: number;
       metadata?: any;
@@ -248,8 +237,8 @@ class VectorWasmClient {
         includeMetadata: true,
         filters: options.filters || {},
         useCUDA: options.useCUDA !== false,
-        rerank: true,
-      }),
+        rerank: true
+      })
     });
     if (!response.ok) {
       throw new Error(`Semantic search failed: ${response.statusText}`);
@@ -258,7 +247,7 @@ class VectorWasmClient {
     return {
       results: data.results ?? [],
       totalCount: data.totalCount ?? 0,
-      processingTime: data.performance?.searchTime ?? 0,
+      processingTime: data.performance?.searchTime ?? 0
     };
   }
   private computeLocalSimilarity(
@@ -307,12 +296,12 @@ class VectorWasmClient {
       vectorA: Array.from(vectorA),
       vectorB: Array.from(vectorB),
       useCUDA: true,
-      parallel: true,
+      parallel: true
     };
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     });
     if (!response.ok) {
       throw new Error(`Server similarity computation failed: ${response.statusText}`);
@@ -352,9 +341,7 @@ class VectorWasmClient {
     if (!this.wasmModule) return 0;
     return this.wasmModule.getMemoryStats();
   }
-  async benchmark(iterations = 100): Promise<{
-    localPerformance: number;
-    memoryUsage: number;
+  async benchmark(iterations = 100): Promise<{ localPerformance: number;, memoryUsage: number;
     recommendations: string[];
   }> {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
@@ -371,7 +358,7 @@ class VectorWasmClient {
     return {
       localPerformance: benchmarkTime,
       memoryUsage,
-      recommendations,
+      recommendations
     };
   }
 }

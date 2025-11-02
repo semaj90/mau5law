@@ -15,7 +15,7 @@ import {
   jsonb,
   numeric,
   real,
-  index,
+  index
 } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 import { relations, type Relations } from 'drizzle-orm';
@@ -37,11 +37,11 @@ export const users = pgTable(
     role: text('role').default('user'),
     isActive: boolean('is_active').default(true),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   table => ({
     emailIndex: index('users_email_idx').on(table.email),
-    usernameIndex: index('users_username_idx').on(table.username),
+    usernameIndex: index('users_username_idx').on(table.username)
   })
 );
 // Cases table
@@ -61,12 +61,12 @@ export const cases = pgTable(
     priority: text('priority').default('medium'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default('{}'),
+    metadata: jsonb('metadata').default('{}')
   },
   table => ({
     userIdIndex: index('cases_user_id_idx').on(table.user_id),
     statusIndex: index('cases_status_idx').on(table.status),
-    caseNumberIndex: index('cases_case_number_idx').on(table.caseNumber),
+    caseNumberIndex: index('cases_case_number_idx').on(table.caseNumber)
   })
 );
 // Documents table
@@ -76,7 +76,7 @@ export const documents = pgTable(
     id: text('id')
       .primaryKey()
       .default('doc_' + new Date().getTime()),
-    case_id: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
+    case_id: uuid('case_id').references(() => cases.id, { onDelete: `cascade` }),
     user_id: integer('user_id')
       .references(() => users.id)
       .notNull(),
@@ -90,13 +90,13 @@ export const documents = pgTable(
     tags: text('tags').array(),
     created_at: timestamp('created_at').defaultNow().notNull(),
     updated_at: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default('{}'),
+    metadata: jsonb('metadata').default('{}')
   },
   table => ({
     caseIdIndex: index('documents_case_id_idx').on(table.case_id),
     userIdIndex: index('documents_user_id_idx').on(table.user_id),
     fileTypeIndex: index('documents_file_type_idx').on(table.file_type),
-    embeddingIndex: index('documents_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
+    embeddingIndex: index('documents_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 })
   })
 );
   // TODO: Verify that `documents.case_id` and `evidence.case_id` maintain referential
@@ -124,13 +124,13 @@ export const evidence = pgTable(
     embedding: vector('embedding', { dimensions: 384 }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    metadata: jsonb('metadata').default('{}'),
+    metadata: jsonb('metadata').default('{}')
   },
   table => ({
     caseIdIndex: index('evidence_case_id_idx').on(table.case_id),
     userIdIndex: index('evidence_user_id_idx').on(table.user_id),
     evidenceTypeIndex: index('evidence_type_idx').on(table.evidenceType),
-    embeddingIndex: index('evidence_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
+    embeddingIndex: index('evidence_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 })
   })
 );
 // Legal Documents with vector embeddings from gemma3-legal:latest
@@ -141,8 +141,7 @@ export const legalDocuments = pgTable(
     title: text('title').notNull(),
     content: text('content').notNull(),
     documentType: text('document_type').notNull(), // 'contract', 'brief', 'evidence', 'correspondence'
-    // Vector embeddings from gemma3-legal:latest (512 dimensions)
-    embedding: vector('embedding', { dimensions: 512 }).notNull(),
+    // Vector embeddings from gemma3-legal:latest (512 dimensions); embedding: vector('embedding', { dimensions: 512 }).notNull(),
     // Legal metadata
     practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment'
     jurisdiction: text('jurisdiction'),
@@ -162,7 +161,7 @@ export const legalDocuments = pgTable(
     // Timestamps
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
-    lastAccessedAt: timestamp('last_accessed_at'),
+    lastAccessedAt: timestamp('last_accessed_at')
   },
   table => ({
     // Indexes for performance
@@ -172,7 +171,7 @@ export const legalDocuments = pgTable(
     caseIdIndex: index('case_id_idx').on(table.caseId),
     clientIdIndex: index('client_id_idx').on(table.clientId),
     createdAtIndex: index('created_at_idx').on(table.createdAt),
-    documentHashIndex: index('document_hash_idx').on(table.documentHash),
+    documentHashIndex: index('document_hash_idx').on(table.documentHash)
   })
 );
 // Vector similarity queries for analytics
@@ -196,13 +195,13 @@ export const vectorSimilarityQueries = pgTable(
     // Analytics
     queryIntent: text('query_intent'), // 'research', 'analysis', 'template', 'precedent'
     userSatisfaction: real('user_satisfaction'), // 1-5 rating;
-    timestamp: timestamp('timestamp').defaultNow(),
+    timestamp: timestamp('timestamp').defaultNow()
   },
   table => ({
     userIdIndex: index('user_id_idx').on(table.userId),
     sessionIdIndex: index('session_id_idx').on(table.sessionId),
     timestampIndex: index('timestamp_idx').on(table.timestamp),
-    queryIntentIndex: index('query_intent_idx').on(table.queryIntent),
+    queryIntentIndex: index('query_intent_idx').on(table.queryIntent)
   })
 );
 // Legal analysis results cache
@@ -227,13 +226,13 @@ export const legalAnalysisCache = pgTable(
     accessCount: real('access_count').default(1),
     lastAccessedAt: timestamp('last_accessed_at').defaultNow(),
     expiresAt: timestamp('expires_at'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   table => ({
     inputHashIndex: index('input_hash_idx').on(table.inputHash),
     analysisTypeIndex: index('analysis_type_idx').on(table.analysisType),
     lastAccessedIndex: index('last_accessed_idx').on(table.lastAccessedAt),
-    expiresAtIndex: index('expires_at_idx').on(table.expiresAt),
+    expiresAtIndex: index('expires_at_idx').on(table.expiresAt)
   })
 );
 // Document chunks for RAG (chunked documents with embeddings)
@@ -246,7 +245,7 @@ export const document_chunks = pgTable('document_chunks', {
   embedding: vector('embedding', { dimensions: 384 }).notNull(), // nomic-embed-text
   token_count: integer('token_count'),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  metadata: jsonb('metadata').default('{}'),
+  metadata: jsonb('metadata').default('{}')
 });
 // Citations table (fixed schema with proper foreign keys)
 export const citations = pgTable('citations', {
@@ -262,7 +261,7 @@ export const citations = pgTable('citations', {
   verified: boolean('verified').default(false),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
-  metadata: jsonb('metadata').default('{}'),
+  metadata: jsonb('metadata').default('{}')
 });
 // Sessions table for authentication
 export const sessions = pgTable('sessions', {
@@ -300,7 +299,7 @@ export const aiHistory = pgTable('ai_history', {
   model_used: text('model_used'),
   tokens_used: integer('tokens_used'),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  metadata: jsonb('metadata').default('{}'),
+  metadata: jsonb('metadata').default('{}')
 });
 // Relations for better query experience
 export const usersRelations = relations(users, ({ many }: Relations) => ({
@@ -308,83 +307,83 @@ export const usersRelations = relations(users, ({ many }: Relations) => ({
   cases: many(cases),
   evidence: many(evidence),
   sessions: many(sessions),
-  aiHistory: many(aiHistory),
+  aiHistory: many(aiHistory)
 }));
 export const documentsRelations = relations(documents, ({ one, many }: Relations) => ({
   case one(cases, {
     fields: [documents.case_id],
-    references: [cases.id],
+    references: [cases.id]
   }),
   user: one(users, {
     fields: [documents.user_id],
-    references: [users.id],
+    references: [users.id]
   }),
   chunks: many(document_chunks),
-  citations: many(citations),
+  citations: many(citations)
 }));
 export const casesRelations = relations(cases, ({ one, many }: Relations) => ({
   user: one(users, {
     fields: [cases.user_id],
-    references: [users.id],
+    references: [users.id]
   }),
   evidence: many(evidence),
-  citations: many(citations),
+  citations: many(citations)
 }));
 export const evidenceRelations = relations(evidence, ({ one, many }: Relations) => ({
   case one(cases, {
     fields: [evidence.case_id],
-    references: [cases.id],
+    references: [cases.id]
   }),
   user: one(users, {
     fields: [evidence.user_id],
-    references: [users.id],
+    references: [users.id]
   }),
-  chunks: many(document_chunks),
+  chunks: many(document_chunks)
 }));
 export const documentChunksRelations = relations(document_chunks, ({ one }: Relations) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
-    references: [documents.id],
+    references: [documents.id]
   }),
   evidence: one(evidence, {
     fields: [document_chunks.evidence_id],
-    references: [evidence.id],
-  }),
+    references: [evidence.id]
+  })
 }));
 export const citationsRelations = relations(citations, ({ one }: Relations) => ({
   case one(cases, {
     fields: [citations.case_id],
-    references: [cases.id],
+    references: [cases.id]
   }),
   document: one(documents, {
     fields: [citations.document_id],
-    references: [documents.id],
-  }),
+    references: [documents.id]
+  })
 }));
 export const sessionsRelations = relations(sessions, ({ one }: Relations) => ({
   user: one(users, {
     fields: [sessions.user_id],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 export const aiHistoryRelations = relations(aiHistory, ({ one }: Relations) => ({
   user: one(users, {
     fields: [aiHistory.user_id],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 // Profile table for user profiles
 export const profileTable = pgTable('profile', {
   id: uuid('id').primaryKey(),
   firstName: text('first_name').notNull(),
-  lastName: text('last_name').notNull(),
+  lastName: text('last_name').notNull()
 });
 // Profile relations
 export const profileRelations = relations(profileTable, ({ one }: Relations) => ({
   user: one(users, {
     fields: [profileTable.id],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 }));
 // Profile types
 export type Profile = typeof profileTable.$inferSelect;
@@ -427,11 +426,11 @@ export const ragDocuments = pgTable(
     metadata: jsonb('metadata').default('{}'),
     embedding: vector('embedding', { dimensions: 768 }), // Gemma embeddings
     processedAt: timestamp('processed_at').defaultNow(),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   table => ({
     embeddingIndex: index('rag_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
-    contentHashIndex: index('rag_content_hash_idx').on(table.contentHash),
+    contentHashIndex: index('rag_content_hash_idx').on(table.contentHash)
   })
 );
 // Knowledge Base table (unified semantic chunks from various sources)
@@ -445,12 +444,12 @@ export const knowledgeBase = pgTable(
     metadata: jsonb('metadata').default('{}'),
     chunkType: text('chunk_type').notNull(), // 'rag_document', 'component_overview', 'api_endpoint', etc.
     sourceFile: text('source_file'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   table => ({
     embeddingIndex: index('kb_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
     chunkTypeIndex: index('kb_chunk_type_idx').on(table.chunkType),
-    sourceFileIndex: index('kb_source_file_idx').on(table.sourceFile),
+    sourceFileIndex: index('kb_source_file_idx').on(table.sourceFile)
   })
 );
 // Code Embeddings table for agentic programming
@@ -465,23 +464,23 @@ export const codeEmbeddings = pgTable(
     errorPatterns: text('error_patterns').array(),
     repairSuggestions: text('repair_suggestions').array(),
     confidenceScore: real('confidence_score'),
-    lastUpdated: timestamp('last_updated').defaultNow(),
+    lastUpdated: timestamp('last_updated').defaultNow()
   },
   table => ({
     embeddingIndex: index('code_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
     pathIndex: index('code_path_idx').on(table.path),
-    contentHashIndex: index('code_content_hash_idx').on(table.contentHash),
+    contentHashIndex: index('code_content_hash_idx').on(table.contentHash)
   })
 );
 // RAG document relations
 export const ragDocumentsRelations = relations(ragDocuments, ({ many }: Relations) => ({
-  knowledgeChunks: many(knowledgeBase),
+  knowledgeChunks: many(knowledgeBase)
 }));
 export const knowledgeBaseRelations = relations(knowledgeBase, ({ one }: Relations) => ({
   ragDocument: one(ragDocuments, {
     fields: [knowledgeBase.sourceFile],
-    references: [ragDocuments.filename],
-  }),
+    references: [ragDocuments.filename]
+  })
 }));
 // Type exports for RAG tables
 export type RagDocument = typeof ragDocuments.$inferSelect;
@@ -500,7 +499,7 @@ export const documentProcessingTasks = pgTable('document_processing_tasks', {
   id: uuid('id').defaultRandom().primaryKey(),
   documentId: uuid('document_id')
     .notNull()
-    .references(() => legalDocuments.id, { onDelete: 'cascade' }), // Foreign key to legalDocuments
+    .references(() => legalDocuments.id, { onDelete: `cascade` }), // Foreign key to legalDocuments
   taskType: text('task_type').notNull(), // e.g., 'summary', 'entity_extraction', 'risk_assessment', 'vector_comparison'
   status: text('status').notNull().default('pending'), // 'pending', 'in_progress', 'completed', 'failed'
   requestedAt: timestamp('requested_at', { withTimezone: true }).defaultNow().notNull(),
@@ -514,13 +513,13 @@ export const documentProcessingTasks = pgTable('document_processing_tasks', {
   confidenceScore: real('confidence_score'), // 0.0 to 1.0
   requestedOptions: jsonb('requested_options'), // Store the options that triggered this task (e.g., AIProcessingOptions)
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
 });
 export const documentProcessingTasksRelations = relations(documentProcessingTasks, (args: Relations) => ({
   document: args.one(legalDocuments, {
     fields: [documentProcessingTasks.documentId],
-    references: [legalDocuments.id],
-  }),
+    references: [legalDocuments.id]
+  })
 }));
 // Schema for caching generated embeddings to avoid re-computation (single definition)
 export const embeddingCache = pgTable('embedding_cache', {
@@ -528,5 +527,5 @@ export const embeddingCache = pgTable('embedding_cache', {
   embedding: vector('embedding', { dimensions: 1536 }).notNull(), // The generated embedding vector
   model: text('model').notNull(), // The model used to generate the embedding
   dimensions: integer('dimensions').notNull(), // Number of dimensions in the embedding
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });

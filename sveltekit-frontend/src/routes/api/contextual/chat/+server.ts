@@ -13,14 +13,14 @@ import { agenticGemma3 } from '$lib/server/ai/gemma3-agentic-functions';
 import { transcribeBuffer } from '$lib/server/ai/voice/recognizer';
 import type { RequestHandler } from '@sveltejs/kit'; // Corrected import path
 
-export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed: 'cookies' to: '_cookies'
+export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed: 'cookies'; to: '_cookies'
   try {
     const body = await request.json();
   const { message, sessionId, userId, enableFunctions = true, audioBase64 } = body;
 
     if (!message || !sessionId || !userId) {
       return json(
-        { error: 'Missing required fields: message, sessionId, userId' },
+        { error: 'Missing required, fields: message, sessionId, userId' },
         { status: 400 }
       );
     }
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { 
         response: response.text,
         functionCalls: response.functionCalls,
         metadata: {
-          model: response.model,
+         , model: response.model,
           confidence: response.confidence,
           duration: response.duration
         }
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { 
       {
         success: false,
         error: {
-          code: 'CHAT_ERROR',
+         , code: 'CHAT_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error'
         }
       },

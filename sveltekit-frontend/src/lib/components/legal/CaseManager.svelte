@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { writable } from 'svelte/store';
   // import named UI components (avoid namespace import)
-  import { Dialog } from '$lib/components/ui/dialog.svelte';
+  import { Dialog } from '$lib/components/ui/Dialog.svelte';
   import { Button, Input, Textarea, Label, Separator } from '$lib/components/ui/enhanced-bits.svelte';
 
   import * as legalPlatformClient from '$lib/services/legal-platform-client';

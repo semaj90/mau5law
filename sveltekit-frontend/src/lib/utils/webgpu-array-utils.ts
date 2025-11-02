@@ -77,7 +77,7 @@ export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
     originalSize: input.length * 4, // 32-bit floats
     compressedSize: fp16Data.length * 2, // 16-bit values
     compressionRatio: 2.0,
-    quantizationConfig: { precision: 'fp16' },
+    quantizationConfig: { precision: 'fp16' }
   };
 }
 /**
@@ -107,8 +107,8 @@ export function quantizeToINT8(input: Float32Array, config?: Partial<Quantizatio
       scale,
       zeroPoint,
       minValue: minVal,
-      maxValue: maxVal,
-    },
+      maxValue: maxVal
+    }
   };
 }
 /**
@@ -176,7 +176,7 @@ export function createWebGPUBuffer(
             // use byteLength (available on ArrayBufferView) instead of .length on a generic view
             compressedSize: (processedData as ArrayBufferView).byteLength,
             compressionRatio: 4.0,
-            quantizationConfig: quantization,
+            quantizationConfig: quantization
           };
         }
         break;
@@ -190,7 +190,7 @@ export function createWebGPUBuffer(
   const buffer = device.createBuffer({
     size: (processedData as ArrayBuffer | ArrayBufferView).byteLength,
     usage,
-    mappedAtCreation: true,
+    mappedAtCreation: true
   });
 
   // Guard and obtain mapped range safely
@@ -233,7 +233,7 @@ export function createWebGPUBuffer(
  */
 export function batchProcessArrays(
   device: GPUDevice,
-  arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
+  arrays: { name: string; data: SupportedArrayTypes;, usage: GPUBufferUsageFlags }[],
   quantization?: QuantizationConfig
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
   const results = new Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }>();
@@ -284,14 +284,12 @@ function halfToFloat(_value: number): number {
 export function analyzeMemoryUsage(
   original: SupportedArrayTypes,
   quantizations: QuantizationConfig[] = [
-    { precision: 'fp32' },
+    {, precision: 'fp32' },
     { precision: 'fp16' },
     { precision: 'int8' },
-    { precision: 'uint8' },
+    { precision: `uint8` }
   ]
-): Array<{
-  precision: 'fp32' | 'fp16' | 'int8' | 'uint8';
-  sizeBytes: number;
+): Array<{ precision: 'fp32' | 'fp16' | 'int8' | 'uint8';, sizeBytes: number;
   compressionRatio: number;
   estimatedAccuracyLoss: number;
 }> {
@@ -299,7 +297,7 @@ export function analyzeMemoryUsage(
   const originalSize = float32Data.length * 4;
   return quantizations.map(config => {
     let sizeBytes: number;
-    let estimatedAccuracyLoss: number;
+    let, estimatedAccuracyLoss: number;
     switch (config.precision) {
       case 'fp32':
         sizeBytes = originalSize;
@@ -325,7 +323,7 @@ export function analyzeMemoryUsage(
       precision: config.precision,
       sizeBytes,
       compressionRatio: originalSize / sizeBytes,
-      estimatedAccuracyLoss,
+      estimatedAccuracyLoss
     };
   });
 }

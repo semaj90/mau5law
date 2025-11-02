@@ -9,15 +9,15 @@
   import { LastWorkedModal } from './LastWorkedModal.svelte';
   import { AIRecommendationAssistant } from './AIRecommendationAssistant.svelte';
   // Button replaced by native <button> where click handlers are needed
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   // Dashboard state (use standard reactive variables)
-  let isOpen: boolean = $state(false);
+  let isOpen: boolean = false;
   let activeTab: 'overview' | 'search' | 'work' | 'ai' = 'overview';
   // Modal states
-  let showSearchModal: boolean = $state(false);
-  let showWorkModal: boolean = $state(false);
-  let showAIModal: boolean = $state(false);
+  let showSearchModal: boolean = false;
+  let showWorkModal: boolean = false;
+  let showAIModal: boolean = false;
   // Quick stats
   let stats: {
     recentCases: number;

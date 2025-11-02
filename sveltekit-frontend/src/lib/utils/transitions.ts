@@ -36,10 +36,10 @@ export function flyAndScale(
       const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
       return styleToString({
         transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-        opacity: t,
+        opacity: t
       });
     },
-    easing: cubicOut,
+    easing: cubicOut
   };
 }
 export function slideInFromBottom(node: Element, params: { duration?: number; delay?: number } = {}): TransitionConfig {
@@ -53,7 +53,7 @@ export function slideInFromBottom(node: Element, params: { duration?: number; de
         transform: translateY(${(1 - eased) * 20}px);
         opacity: ${eased}
       `;
-    },
+    }
   };
 }
 export function scaleIn(node: Element, params: { duration?: number; start?: number } = {}): TransitionConfig {
@@ -67,6 +67,6 @@ export function scaleIn(node: Element, params: { duration?: number; start?: numb
         transform: scale(${scale});
         opacity: ${eased}
       `;
-    },
+    }
   };
 }

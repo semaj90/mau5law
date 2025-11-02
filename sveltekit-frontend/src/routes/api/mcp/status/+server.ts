@@ -12,8 +12,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
       const mcpResponse = await fetch('http://localhost:40000/health', {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-        },
+          'Accept': 'application/json'
+        }
       });
       if (mcpResponse.ok) {
         mcpServerStatus = 'online';
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         successRate: 0.923,
         averageResponseTime: 226.52,
         workerCount: 2,
-        lastTestTime: new Date().toISOString(),
+        lastTestTime: new Date().toISOString()
       };
     } catch (error: any) {
       console.log('Cluster metrics not available:', error.message);
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       ollamaModelsLoaded: ollamaStatus === 'online' && ollamaModels.length > 0,
       clusterSystemOnline: clusterStatus === 'validated',
       vsCodeExtensionActive: false, // Would need to be detected differently
-      contextualAnalysisReady: mcpServerStatus === 'online' && clusterStatus === 'validated',
+      contextualAnalysisReady: mcpServerStatus === 'online' && clusterStatus === 'validated'
     };
     const overallStatus =
       Object.values(integrationReadiness).filter(item => item.length) >= 3 ? 'operational' : 'partial';
@@ -70,47 +70,47 @@ export const GET: RequestHandler = async ({ url, request }) => {
       {
         id: 'enhanced_rag_query',
         name: 'Enhanced RAG Query',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'mcp_memory2_create_relations',
         name: 'Memory Relations',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'mcp_memory2_read_graph',
         name: 'Read Memory Graph',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'mcp_memory2_search_nodes',
         name: 'Search Memory Nodes',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'mcp_context72_get-library-docs',
         name: 'Context7 Docs',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'mcp_context72_resolve-library-id',
         name: 'Resolve Library ID',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'agent_orchestrate_claude',
         name: 'Claude Agent',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'agent_orchestrate_crewai',
         name: 'CrewAI Agent',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
       {
         id: 'agent_orchestrate_autogen',
         name: 'AutoGen Agent',
-        status: mcpServerStatus === 'online' ? 'available' : 'offline',
+        status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
     ];
     return json({
@@ -118,21 +118,19 @@ export const GET: RequestHandler = async ({ url, request }) => {
       timestamp: new Date().toISOString(),
       overallStatus,
       integrationReadiness,
-      services: {
-        mcpServer: {
-          status: mcpServerStatus,
+      services: { mcpServer: {, status: mcpServerStatus,
           metrics: mcpMetrics,
-          url: 'http:,//localhost:40000',
+          url: 'http:,//localhost:40000'
         },
         ollama: {
           status: ollamaStatus,
           models: ollamaModels,
-          url: 'http:,//localhost:11434',
+          url: 'http:,//localhost:11434'
         },
         cluster: {
           status: clusterStatus,
-          metrics: clusterMetrics,
-        },
+          metrics: clusterMetrics
+        }
       },
       mcpTools: mcpToolsStatus,
       capabilities: {
@@ -143,9 +141,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
         realtimeUpdates: mcpServerStatus === 'online',
         clusterProcessing: clusterStatus === 'validated',
         semanticCaching: ollamaStatus === 'online',
-        performanceMetrics: true,
+        performanceMetrics: true
       },
-      recommendations: generateRecommendations(integrationReadiness, mcpServerStatus, ollamaStatus, clusterStatus),
+      recommendations: generateRecommendations(integrationReadiness, mcpServerStatus, ollamaStatus, clusterStatus)
     });
   } catch (error: any) {
     console.error('MCP status check failed:', error);
@@ -154,7 +152,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         success: false,
         error: error.message,
         timestamp: new Date().toISOString(),
-        overallStatus: 'error',
+        overallStatus: 'error'
       },
       { status: 500 }
     );

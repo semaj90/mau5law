@@ -38,37 +38,33 @@ export interface AuthContext {
 }
 // Authentication events
 type AuthEvent =
-  | { type: 'START_LOGIN'; data: LoginData }
-  | { type: 'START_REGISTRATION'; data: RegistrationData }
-  | { type: 'LOGIN_SUCCESS'; data: { user: any; session: any } }
-  | { type: 'LOGIN_FAILURE'; data: { error: string } }
-  | { type: 'REGISTRATION_SUCCESS'; data: { user: any } }
-  | { type: 'REGISTRATION_FAILURE'; data: { error: string } }
+  | { type: 'START_LOGIN';, data: LoginData }
+  | { type: 'START_REGISTRATION';, data: RegistrationData }
+  | { type: 'LOGIN_SUCCESS'; data: { user: any;, session: any } }
+  | { type: 'LOGIN_FAILURE';, data: {, error: string } }
+  | { type: 'REGISTRATION_SUCCESS';, data: {, user: any } }
+  | { type: 'REGISTRATION_FAILURE';, data: {, error: string } }
   | { type: 'LOGOUT' }
   | { type: 'SESSION_EXPIRED' }
   | { type: 'REQUIRE_TWO_FACTOR' }
-  | { type: 'TWO_FACTOR_SUCCESS'; data: { session: any } }
-  | { type: 'TWO_FACTOR_FAILURE'; data: { error: string } }
+  | { type: 'TWO_FACTOR_SUCCESS';, data: {, session: any } }
+  | { type: 'TWO_FACTOR_FAILURE';, data: {, error: string } }
   | { type: 'VERIFY_EMAIL' }
   | { type: 'EMAIL_VERIFIED' }
-  | { type: 'RESET_PASSWORD'; data: { email: string } }
+  | { type: 'RESET_PASSWORD';, data: {, email: string } }
   | { type: 'PASSWORD_RESET_SENT' }
   | { type: 'ACCOUNT_LOCKED' }
   | { type: 'UNLOCK_ACCOUNT' }
-  | { type: 'UPDATE_PROFILE'; data: any }
+  | { type: 'UPDATE_PROFILE';, data: any }
   | { type: 'PROFILE_UPDATED' }
   | { type: 'RETRY' }
 }
-export interface LoginData {
-  email: string;
-  password: string;
+export interface LoginData { email: string;, password: string;
   rememberMe?: boolean;
   twoFactorCode?: string;
   deviceInfo?: any;
 }
-export interface RegistrationData {
-  email: string;
-  firstName: string;
+export interface RegistrationData { email: string;, firstName: string;
   lastName: string;
   password: string;
   role: string;
@@ -89,16 +85,12 @@ const initialContext: AuthContext = {
   lastLoginAttempt: undefined,
   lockoutUntil: undefined,
   twoFactorRequired: false,
-  registrationData: undefined,
+  registrationData: undefined
 }
 export const authMachine = setup({
-  types: { [key,: strin,g]: any } as {
-    context: AuthContext;
-    events: AuthEvent;
+  types: { [key,: strin,g]: any } as { context: AuthContext;, events: AuthEvent;
   },
-  actions: {
-    setLoading: assign({
-      isLoading: () => true,
+  actions: {, setLoading: assign({, isLoading: () => true,
       error: () => undefined
     }),
     clearLoading: assign({
@@ -162,9 +154,7 @@ export const authMachine = setup({
       const authService = new AuthService();
       try {
         const result = await authService.login(input.email, input.password);
-        return {
-          user: {
-            id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
+        return { user: {, id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
             email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
             firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName || 'User',
             lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName || '',
@@ -193,9 +183,7 @@ export const authMachine = setup({
           displayName: `${input.firstName} ${input.lastName}`,
           // Removed legalSpecialties: not part of AuthService.register signature
         });
-        return {
-          user: {
-            id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
+        return { user: {, id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
             email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
             firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName,
             lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName,
@@ -220,7 +208,7 @@ export const authMachine = setup({
         return { success: true }
       }
     }),
-    resetPassword: fromPromise(async ({ input }: { input: { email: string } }) => {
+    resetPassword: fromPromise(async ({ input }: { input: {, email: string } }) => {
       // Real password reset with local Windows native services
       const authService = new AuthService();
       try {
@@ -235,11 +223,7 @@ export const authMachine = setup({
   id: 'auth',
   initial: 'idle',
   context: initialContext,
-  states: {
-    idle: {
-      on: {
-        START_LOGIN: {
-          target: 'authenticating',
+  states: { idle: {, on: {, START_LOGIN: {, target: 'authenticating',
           guard: ({ context }) => !context.lockoutUntil || new Date() >= context.lockoutUntil
         },
         START_REGISTRATION: 'registering',
@@ -275,9 +259,7 @@ export const authMachine = setup({
         ]
       }
     },
-    requiresTwoFactor: {
-      on: {
-        TWO_FACTOR_SUCCESS: {
+    requiresTwoFactor: { on: {, TWO_FACTOR_SUCCESS: {
           target: 'authenticated',
           actions: ['setUser', 'clearTwoFactor', 'resetLoginAttempts']
         },
@@ -324,9 +306,7 @@ export const authMachine = setup({
         }
       }
     },
-    registrationSuccess: {
-      on: {
-        EMAIL_VERIFIED: 'authenticated',
+    registrationSuccess: { on: {, EMAIL_VERIFIED: 'authenticated',
         VERIFY_EMAIL: 'verifyingEmail'
       },
       after: {
@@ -364,9 +344,7 @@ export const authMachine = setup({
     },
     locked: {
       entry: 'setLockout',
-      on: {
-        UNLOCK_ACCOUNT: {
-          target: 'idle',
+      on: { UNLOCK_ACCOUNT: {, target: 'idle',
           actions: ['clearLockout', 'resetLoginAttempts']
         }
       },
@@ -382,8 +360,7 @@ export const authMachine = setup({
       after: {
         1500: {
           target: 'authenticated',
-          actions: 'clearLoading'
-        }
+          actions: `clearLoading` }
       }
     }
   }

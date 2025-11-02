@@ -51,7 +51,7 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
     const errorResponse = {
       error: statusCode ? bodyMessage || 'Agentic API request failed' : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
@@ -59,8 +59,7 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true',
-      },
+        'X-Error': 'true` }
     });
   }
 }) as RequestHandler;
@@ -114,10 +113,10 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
       {
         error: statusCode ? bodyMessage || 'Agentic request failed' : 'Internal server error',
         message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined,
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
-        status: statusCode || 500,
+        status: statusCode || 500
       }
     );
   }
@@ -171,8 +170,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
     try {
       redis = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis',
-      });
+        password: process.env.REDIS_PASSWORD || 'redis` });
     } catch (e) {
       console.warn('Failed to create Redis client:', e);
       redis = null;
@@ -242,18 +240,17 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
         watcherStatus: 'unknown', // Would need process check
       },
       activity: {
-        recentASTProcessing: recentActivity,
+       , recentASTProcessing: recentActivity,
         pendingErrors: errorCount,
-        lastActivity: new Date().toISOString(),
+        lastActivity: new Date().toISOString()
       },
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     },
     {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-      },
+        'X-Processing-Time': `${Math.round(processingTime)}ms' }
     }
   );
 }
@@ -261,8 +258,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 async function getRecentErrors(startTime: number): Promise<Response> {
   const { Pool } = await import('pg');
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-  });
+    connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });
 
   try {
     const result = await pool.query(`
@@ -278,10 +274,8 @@ async function getRecentErrors(startTime: number): Promise<Response> {
       LIMIT 20
     `);
 
-    // ---- changed code: add a typed row and cast result.rows to avoid implicit: 'any' ----
-    type ErrorRow = {
-      id: number;
-      error_text: string;
+    // ---- changed code: add a typed row and cast result.rows to avoid; implicit: 'any' ----
+    type ErrorRow = { id: number;, error_text: string;
       screenshot_path: string | null;
       confidence: number | null;
       resolved: boolean;
@@ -292,17 +286,15 @@ async function getRecentErrors(startTime: number): Promise<Response> {
 
     const processingTime = performance.now() - startTime;
 
-    return json({
-      errors: rows.map(row => ({
-        id: row.id,
+    return json({ errors: rows.map(row => ({, id: row.id,
         text: row.error_text.substring(0, 200), // Truncated for display
         screenshotPath: row.screenshot_path,
         confidence: row.confidence,
         resolved: row.resolved,
-        createdAt: row.created_at,
+        createdAt: row.created_at
       })),
       total: rows.length,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     });
     // ---- end changed code ----
   } finally {
@@ -317,7 +309,7 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
 
     return new Promise((resolve, reject) => {
       const process = spawn('node', [controllerPath, 'query', query], {
-        stdio: ['inherit', 'pipe', 'pipe'],
+        stdio: ['inherit', 'pipe', 'pipe']
       });
 
       let output = '';
@@ -343,7 +335,7 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
               json({
                 query: query,
                 suggestions: suggestions,
-                processingTime: Math.round(processingTime),
+                processingTime: Math.round(processingTime)
               })
             );
           } catch (parseError) {
@@ -399,7 +391,7 @@ async function processScreenshot(
     // Mark detached and call unref() so the parent can exit independently.
     const analysisProcess = spawn('node', [controllerPath, 'analyze', filepath], {
       stdio: 'inherit',
-      detached: true,
+      detached: true
     });
 
     // Use the process variable to avoid: "assigned but never used" errors and to log failures.
@@ -426,14 +418,13 @@ async function processScreenshot(
         message: 'Screenshot uploaded and analysis started',
         filename: filename,
         filepath: filepath,
-        processingTime: Math.round(processingTime),
+        processingTime: Math.round(processingTime)
       },
       {
         status: 202, // Accepted - processing asynchronously
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        },
+          'X-Processing-Time': `${Math.round(processingTime)}ms` }
       }
     );
   } catch (err: any) {
@@ -452,7 +443,7 @@ async function analyzeErrorText(errorText: string, startTime: number): Promise<R
       message: 'Error text analysis started',
       errorText: errorText.substring(0, 100),
       status: 'processing',
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     });
   } catch (err: any) {
     const msg = getErrorMessage(err);
@@ -464,8 +455,7 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-    });
+      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });
 
     const result = await pool.query(
       `
@@ -489,7 +479,7 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
     return json({
       errorId: errorId,
       fixes: result.rows,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     });
   } catch (err: any) {
     const msg = getErrorMessage(err);
@@ -501,8 +491,7 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-    });
+      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });
 
     await pool.query(
       `
@@ -526,7 +515,7 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
       message: 'Fix status updated',
       fixId: fixId,
       success: success,
-      processingTime: Math.round(processingTime),
+      processingTime: Math.round(processingTime)
     });
   } catch (err: any) {
     const msg = getErrorMessage(err);

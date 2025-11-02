@@ -3,9 +3,7 @@ import type { Document } from '$lib/types';
 import { createMachine, assign, createActor } from 'xstate';
 import { z } from 'zod';
 // Enhanced Types for Legal AI Integration
-export interface UploadContext {
-  files: File[];
-  uploadProgress: number;
+export interface UploadContext { files: File[];, uploadProgress: number;
   uploadResults: UploadResult[];
   errors: string[];
   userAnalytics: UserAnalytics;
@@ -30,9 +28,7 @@ export interface LegalContext {
   clientId?: string;
   matterNumber?: string;
 }
-export interface AIAnalysisResult {
-  fileId: string;
-  fileName: string;
+export interface AIAnalysisResult { fileId: string;, fileName: string;
   confidence: number;
   summary: string;
   keyEntities: EntityExtraction[];
@@ -44,78 +40,54 @@ export interface AIAnalysisResult {
   suggestedTags: string[];
   riskFactors: string[];
 }
-export interface EntityExtraction {
-  type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'legal_term';
-  value: string;
+export interface EntityExtraction { type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'legal_term';, value: string;
   confidence: number;
   startPos: number;
   endPos: number;
 }
-export interface Citation {
-  type: 'case' | 'statute' | 'regulation';
-  citation: string;
+export interface Citation { type: 'case' | 'statute' | 'regulation';, citation: string;
   relevance: number;
   jurisdiction: string;
 }
-export interface EvidenceMetadata {
-  fileId: string;
-  chain_of_custody: ChainOfCustodyEntry[];
+export interface EvidenceMetadata { fileId: string;, chain_of_custody: ChainOfCustodyEntry[];
   hash: string;
   source: string;
   acquisition_date: string;
   authenticity_verified: boolean;
 }
-export interface ChainOfCustodyEntry {
-  timestamp: string;
-  actor: string;
+export interface ChainOfCustodyEntry { timestamp: string;, actor: string;
   action: string;
   details: string;
 }
-export interface RiskAssessment {
-  level: 'low' | 'medium' | 'high' | 'critical';
-  factors: string[];
+export interface RiskAssessment { level: 'low' | 'medium' | 'high' | 'critical';, factors: string[];
   privilegedMaterialDetected: boolean;
   redactionRequired: boolean;
   ethicalConcerns: string[];
 }
-export interface AuthSession {
-  userId: string;
-  role: 'paralegal' | 'associate' | 'senior' | 'partner' | 'admin';
+export interface AuthSession { userId: string;, role: 'paralegal' | 'associate' | 'senior' | 'partner' | 'admin';
   permissions: string[];
   barNumber?: string;
   firmId: string;
 }
-export interface DatabaseConnection {
-  connected: boolean;
-  lastSync: string;
+export interface DatabaseConnection { connected: boolean;, lastSync: string;
   pendingOperations: number;
 }
-export interface OllamaConfig {
-  endpoint: string;
-  model: string;
+export interface OllamaConfig { endpoint: string;, model: string;
   connected: boolean;
   capabilities: string[];
 }
-export interface UserAnalytics {
-  userId: string;
-  sessionId: string;
+export interface UserAnalytics { userId: string;, sessionId: string;
   behaviorPattern: 'novice' | 'intermediate' | 'expert' | 'power_user';
-  uploadHistory: {
-    totalUploads: number;
-    successRate: number;
+  uploadHistory: { totalUploads: number;, successRate: number;
     averageFileSize: number;
     preferredFormats: string[];
     commonUploadTimes: string[];
   };
-  interactionMetrics: {
-    typingSpeed: number;
-    clickPatterns: ClickPattern[];
-    scrollBehavior: { depth: number; speed: number };
+  interactionMetrics: { typingSpeed: number;, clickPatterns: ClickPattern[];
+    scrollBehavior: { depth: number;, speed: number };
     focusTime: number;
   };
-  contextualPreferences: {
-    preferredAIPromptStyle: 'concise' | 'detailed' | 'technical';
-    helpLevel: 'minimal' | 'moderate' | 'extensive';
+  contextualPreferences: { preferredAIPromptStyle: 'concise' | 'detailed' | 'technical';, helpLevel: 'minimal' | 'moderate' | 'extensive';
     autoSuggestions: boolean;
     proactiveInsights: boolean;
   };
@@ -126,16 +98,12 @@ export interface UserAnalytics {
     expertise: 'paralegal' | 'associate' | 'senior' | 'partner';
   };
 }
-export interface ClickPattern {
-  x: number;
-  y: number;
+export interface ClickPattern { x: number;, y: number;
   timestamp: number;
   element: string;
   legalContext?: string;
 }
-export interface ContextualPrompt {
-  id: string;
-  content: string;
+export interface ContextualPrompt { id: string;, content: string;
   category: 'optimization' | 'guidance' | 'insight' | 'warning' | 'recommendation';
   timing: 'before-upload' | 'during-upload' | 'after-upload';
   confidence: number;
@@ -143,9 +111,7 @@ export interface ContextualPrompt {
   actionable: boolean;
   legalSpecific: boolean;
 }
-export interface UploadResult {
-  fileName: string;
-  success: boolean;
+export interface UploadResult { fileName: string;, success: boolean;
   documentId?: string;
   error?: string;
   aiInsights?: {
@@ -158,8 +124,7 @@ export interface UploadResult {
   };
   metadata?: EvidenceMetadata;
 }
-export interface PipelineStatus {
-  fileValidation: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
+export interface PipelineStatus { fileValidation: {, status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
   fileUpload: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
   aiAnalysis: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
   indexing: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
@@ -171,7 +136,7 @@ export const FileSchema = z.object({
   name: z.string(),
   size: z.number().positive(),
   type: z.string(),
-  lastModified: z.number(),
+  lastModified: z.number()
 });
 export const LegalContextSchema = z.object({
   practiceArea: z.string().optional(),
@@ -179,14 +144,12 @@ export const LegalContextSchema = z.object({
   urgency: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   jurisdiction: z.string().optional(),
   clientId: z.string().optional(),
-  matterNumber: z.string().optional(),
+  matterNumber: z.string().optional()
 });
 // --- small response types to avoid `any` ---
-type AnalyzeBehaviorResponse = { analytics: UserAnalytics; insights: any; score: number };
+type AnalyzeBehaviorResponse = { analytics: UserAnalytics; insights: any;, score: number };
 type GeneratePromptsResponse = { prompts: ContextualPrompt[] };
-type AnalyzeDocResult = {
-  documentId: string;
-  summary: string;
+type AnalyzeDocResult = { documentId: string;, summary: string;
   entities?: EntityExtraction[];
   tags?: string[];
   confidence?: number;
@@ -196,20 +159,19 @@ type AnalyzeDocResult = {
 };
 // Enhanced Production Services (replaced fromPromise with plain async functions)
 export async function analyzeUserBehaviorService({
-  input,
-}: {
-  input: { userAnalytics: UserAnalytics; context: UploadContext };
-}): Promise<{ updatedAnalytics: UserAnalytics; insights: any; behaviorScore: number }> {
+  input
+}: { input: {, userAnalytics: UserAnalytics; context: UploadContext };
+}): Promise<{ updatedAnalytics: UserAnalytics; insights: any;, behaviorScore: number }> {
   try {
     // Production API call to user behavior analysis service
     const response = await fetch('/api/ai/ollama/analyze-behavior', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        userAnalytics: input.userAnalytics,
+       , userAnalytics: input.userAnalytics,
         context: input.context,
-        legalContext: input.context.legalContext,
-      }),
+        legalContext: input.context.legalContext
+      })
     });
     if (!response.ok) {
       throw new Error(`Behavior analysis failed: ${response.statusText}`);
@@ -218,7 +180,7 @@ export async function analyzeUserBehaviorService({
     return {
       updatedAnalytics: result.analytics,
       insights: result.insights,
-      behaviorScore: result.score,
+      behaviorScore: result.score
     };
   } catch (error) {
     console.warn('Production behavior analysis unavailable, using fallback');
@@ -227,38 +189,37 @@ export async function analyzeUserBehaviorService({
       novice: ['needs_guidance', 'prefers_detailed_explanations'],
       intermediate: ['moderate_guidance', 'context_aware'],
       expert: ['minimal_guidance', 'efficiency_focused'],
-      power_user: ['advanced_features', 'shortcuts_preferred'],
+      power_user: ['advanced_features', 'shortcuts_preferred']
     };
     return {
       updatedAnalytics: {
         ...input.userAnalytics,
-        behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate',
+        behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate'
       },
       insights: {
         patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate,
         legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
-        urgencyAwareness: input.context.legalContext?.urgency || 'medium',
+        urgencyAwareness: input.context.legalContext?.urgency || 'medium'
       },
-      behaviorScore: 0.75,
+      behaviorScore: 0.75
     };
   }
 }
 export async function generateContextualPromptsService({
-  input,
-}: {
-  input: { context: UploadContext; timing: string };
+  input
+}: { input: {, context: UploadContext; timing: string };
 }): Promise<ContextualPrompt[]> {
   try {
     // Production Ollama service call
     const response = await fetch('/api/ai/ollama/generate-prompts', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        context: input.context,
+       , context: input.context,
         timing: input.timing,
         model: input.context.ollamaConfig?.model || 'gemma3:270m',
-        legalContext: input.context.legalContext,
-      }),
+        legalContext: input.context.legalContext
+      })
     });
     if (!response.ok) {
       throw new Error(`Prompt generation failed: ${response.statusText}`);
@@ -280,7 +241,7 @@ export async function generateContextualPromptsService({
           confidence: 0.95,
           relevance: 0.9,
           actionable: true,
-          legalSpecific: true,
+          legalSpecific: true
         });
       }
       if (input.context.files.some(f => f.name.toLowerCase().includes('privileged'))) {
@@ -292,7 +253,7 @@ export async function generateContextualPromptsService({
           confidence: 0.8,
           relevance: 0.85,
           actionable: true,
-          legalSpecific: true,
+          legalSpecific: true
         });
       }
     }
@@ -305,16 +266,15 @@ export async function generateContextualPromptsService({
         confidence: 0.7,
         relevance: 0.6,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
     return legalPrompts;
   }
 }
 export async function performAIAnalysisService({
-  input,
-}: {
-  input: { files: File[]; context: UploadContext };
+  input
+}: { input: {, files: File[]; context: UploadContext };
 }): Promise<UploadResult[]> {
   try {
     // Production legal AI analysis service
@@ -327,7 +287,7 @@ export async function performAIAnalysisService({
       formData.append('analysisType', 'comprehensive_legal');
       const response = await fetch('/api/ai/ollama/analyze-legal-document', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       if (!response.ok) {
         throw new Error(`Analysis failed for ${file.name}: ${response.statusText}`);
@@ -343,7 +303,7 @@ export async function performAIAnalysisService({
           suggestedTags: result.tags,
           confidenceScore: result.confidence,
           privileged: result.privileged,
-          evidenceType: result.evidenceType,
+          evidenceType: result.evidenceType
         },
         metadata: {
           fileId: result.documentId,
@@ -356,10 +316,9 @@ export async function performAIAnalysisService({
               timestamp: new Date().toISOString(),
               actor: input.context.authSession?.userId || 'system',
               action: 'uploaded',
-              details: `Uploaded via legal AI system with ${result.confidence ?? 'unknown'}% confidence`,
-            },
-          ],
-        },
+              details: 'Uploaded via legal AI system with ${result.confidence ?? 'unknown` }% confidence` },
+          ]
+        }
       } as UploadResult;
     });
     return await Promise.all(analysisPromises);
@@ -374,13 +333,12 @@ export async function performAIAnalysisService({
         summary: `Legal document analysis for ${file.name}. Document contains relevant legal content.`,
         keyEntities: [
           { type: 'person', value: 'Unknown Party', confidence: 0.6, startPos: 0, endPos: 0 },
-          { type: 'date', value: new Date().toDateString(), confidence: 0.8, startPos: 0, endPos: 0 },
+          { type: 'date', value: new Date().toDateString(), confidence: 0.8, startPos: 0, endPos: 0 }
         ],
         suggestedTags: ['legal_document', 'evidence', input.context.legalContext?.practiceArea || 'general'],
         confidenceScore: 0.7,
         privileged: file.name.toLowerCase().includes('privileged'),
-        evidenceType: file.type.includes('pdf') ? 'document' : 'media',
-      },
+        evidenceType: file.type.includes('pdf') ? 'document' : `media` },
       metadata: {
         fileId: `doc-${Date.now()}-${index}`,
         hash: `hash-${Date.now()}-${index}`,
@@ -392,17 +350,16 @@ export async function performAIAnalysisService({
             timestamp: new Date().toISOString(),
             actor: input.context.authSession?.userId || 'anonymous',
             action: 'uploaded',
-            details: 'Uploaded via fallback system',
+            details: 'Uploaded via fallback system'
           },
-        ],
-      },
+        ]
+      }
     }));
   }
 }
 export async function saveToDatabaseService({
-  input,
-}: {
-  input: { results: UploadResult[]; context: UploadContext };
+  input
+}: { input: {, results: UploadResult[]; context: UploadContext };
 }): Promise<void> {
   try {
     // Production Drizzle ORM integration
@@ -415,11 +372,10 @@ export async function saveToDatabaseService({
         userId: input.context.authSession?.userId,
         legalContext: input.context.legalContext,
         metadata: {
-          uploadSession: input.context.userAnalytics.sessionId,
+         , uploadSession: input.context.userAnalytics.sessionId,
           timestamp: new Date().toISOString(),
-          source: 'legal_ai_upload',
-        },
-      }),
+          source: `legal_ai_upload` }
+      })
     });
     if (!response.ok) {
       throw new Error(`Database save failed: ${response.statusText}`);
@@ -434,11 +390,11 @@ export async function saveToDatabaseService({
         JSON.stringify({
           results: input.results,
           context: {
-            caseId: input.context.caseId,
+           , caseId: input.context.caseId,
             userId: input.context.authSession?.userId,
-            legalContext: input.context.legalContext,
+            legalContext: input.context.legalContext
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })
       );
     } catch {
@@ -462,9 +418,7 @@ export function calculateUserEngagementScore(context: UploadContext): number {
   return Math.min(score, 1.0);
 }
 // tighten generateUserInsights return type
-export interface LegalInsights {
-  behaviorPattern: UploadContext['userAnalytics']['behaviorPattern'];
-  engagementLevel: 'high' | 'medium' | 'low';
+export interface LegalInsights { behaviorPattern: UploadContext['userAnalytics']['behaviorPattern'];, engagementLevel: 'high' | 'medium' | 'low';
   uploadEfficiency: number;
   legalExpertise: string;
   workflowOptimization: string;
@@ -479,7 +433,7 @@ export function generateUserInsights(context: UploadContext): LegalInsights {
     uploadEfficiency: analytics.uploadHistory.successRate,
     legalExpertise: analytics.caseContext.expertise,
     workflowOptimization: engagementScore > 0.8 ? 'excellent' : 'room_for_improvement',
-    recommendations: [],
+    recommendations: []
   };
   // Generate legal-specific recommendations
   if (analytics.uploadHistory.successRate < 0.7) {
@@ -498,25 +452,25 @@ export function generateUserInsights(context: UploadContext): LegalInsights {
 }
 // Add a concrete UploadEvent union to replace `any` usage
 type UploadEvent =
-  | { type: 'SELECT_FILES'; files: File[]; caseId?: string }
-  | { type: 'AUTH_SESSION_UPDATED'; session: AuthSession }
-  | { type: 'UPDATE_LEGAL_CONTEXT'; context: LegalContext }
-  | { type: 'USER_TYPING'; speed: number }
-  | { type: 'USER_CLICK'; x: number; y: number; element: string; legalContext?: string }
-  | { type: 'TRACK_USER_ACTION'; data: { caseId?: string } }
+  | { type: 'SELECT_FILES';, files: File[]; caseId?: string }
+  | { type: 'AUTH_SESSION_UPDATED';, session: AuthSession }
+  | { type: 'UPDATE_LEGAL_CONTEXT';, context: LegalContext }
+  | { type: 'USER_TYPING';, speed: number }
+  | { type: 'USER_CLICK'; x: number; y: number;, element: string; legalContext?: string }
+  | { type: 'TRACK_USER_ACTION';, data: { caseId?: string } }
   | { type: 'START_UPLOAD' }
-  | { type: 'USER_REACTED_TO_PROMPT'; promptId: string; reaction: string }
+  | { type: 'USER_REACTED_TO_PROMPT'; promptId: string;, reaction: string }
   | { type: 'REQUEST_AI_SUGGESTIONS' }
   | { type: 'CANCEL_UPLOAD' }
   | { type: 'RESET' }
-  | { type: 'RETRY_UPLOAD' };
+  | { type: `RETRY_UPLOAD` };
 // Enhanced XState Machine with Production Integration
 export const comprehensiveUploadAnalyticsMachine = createMachine(
   {
     // use loose placeholders to avoid strict token errors; tighten later as desired
     types: {
       context: {} as UploadContext,
-      events: {} as UploadEvent,
+      events: {} as UploadEvent
     },
     id: 'enhancedLegalUploadAnalytics',
     initial: 'idle',
@@ -526,7 +480,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
       uploadResults: [] as UploadResult[],
       errors: [] as string[],
       userAnalytics: {
-        userId: '',
+       , userId: '',
         sessionId: `legal-session-${Date.now()}`,
         behaviorPattern: 'intermediate',
         uploadHistory: {
@@ -534,35 +488,34 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
           successRate: 0.0,
           averageFileSize: 0,
           preferredFormats: [],
-          commonUploadTimes: [],
+          commonUploadTimes: []
         },
         interactionMetrics: {
           typingSpeed: 0,
           clickPatterns: [],
           scrollBehavior: { depth: 0, speed: 0 },
-          focusTime: 0,
+          focusTime: 0
         },
         contextualPreferences: {
           preferredAIPromptStyle: 'detailed',
           helpLevel: 'moderate',
           autoSuggestions: true,
-          proactiveInsights: true,
+          proactiveInsights: true
         },
         caseContext: {
           activeCases: [],
           currentCaseId: undefined,
           workflowStage: 'discovery',
-          expertise: 'associate',
-        },
+          expertise: 'associate'
+        }
       },
       contextualPrompts: [] as ContextualPrompt[],
-      pipeline: {
-        fileValidation: { status: 'pending' },
+      pipeline: { fileValidation: {, status: 'pending' },
         fileUpload: { status: 'pending' },
         aiAnalysis: { status: 'pending' },
         indexing: { status: 'pending' },
         vectorEmbedding: { status: 'pending' },
-        dbStorage: { status: 'pending' },
+        dbStorage: { status: 'pending' }
       } as PipelineStatus,
       aiAnalysisResults: [] as AIAnalysisResult[],
       evidenceMetadata: [] as EvidenceMetadata[],
@@ -572,64 +525,50 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
       ollamaConfig: undefined as OllamaConfig | undefined,
       caseId: undefined as string | undefined,
       legalContext: undefined as LegalContext | undefined,
-      riskAssessment: undefined as RiskAssessment | undefined,
+      riskAssessment: undefined as RiskAssessment | undefined
     },
-    states: {
-      idle: {
-        on: {
-          SELECT_FILES: {
-            target: 'analyzingUser',
+    states: { idle: {, on: { SELECT_FILES: {, target: 'analyzingUser',
             actions: assign({
               // annotate event param types instead of casting to any
               files: (_ctx, event: Extract<UploadEvent, { type: 'SELECT_FILES' }>) => event.files,
               caseId: (_ctx, event: Extract<UploadEvent, { type: 'SELECT_FILES' }>) => event.caseId,
-              errors: () => [],
-            }),
+              errors: () => []
+            })
           },
-          AUTH_SESSION_UPDATED: {
-            actions: assign({
-              authSession: (_ctx, event: Extract<UploadEvent, { type: 'AUTH_SESSION_UPDATED' }>) => event.session,
-            }),
+          AUTH_SESSION_UPDATED: { actions: assign({, authSession: (_ctx, event: Extract<UploadEvent, { type: 'AUTH_SESSION_UPDATED' }>) => event.session
+            })
           },
-          UPDATE_LEGAL_CONTEXT: {
-            actions: assign({
-              legalContext: (_ctx, event: Extract<UploadEvent, { type: 'UPDATE_LEGAL_CONTEXT' }>) => event.context,
-            }),
-          },
-        },
+          UPDATE_LEGAL_CONTEXT: { actions: assign({, legalContext: (_ctx, event: Extract<UploadEvent, { type: `UPDATE_LEGAL_CONTEXT` }>) => event.context
+            })
+          }
+        }
       },
-      analyzingUser: {
-        invoke: {
-          src: 'analyzeUserBehavior',
+      analyzingUser: { invoke: {, src: 'analyzeUserBehavior',
           input: ({ context }) => ({ userAnalytics: context.userAnalytics, context }),
           onDone: {
             target: 'generatingPrompts',
             actions: assign({
-              userAnalytics: ({ event }) => event.output.updatedAnalytics,
-            }),
+              userAnalytics: ({ event }) => event.output.updatedAnalytics
+            })
           },
           onError: {
             target: 'generatingPrompts',
             actions: assign({
-              errors: ({ context, event }) => [...context.errors, `User analysis failed: ${event.error}`],
-            }),
-          },
+              errors: ({ context, event }) => [...context.errors, `User analysis failed: ${event.error}`]
+            })
+          }
         },
-        on: {
-          USER_TYPING: {
-            actions: assign({
+        on: { USER_TYPING: {, actions: assign({
               userAnalytics: (context, event: Extract<UploadEvent, { type: 'USER_TYPING' }>) => ({
                 ...context.userAnalytics,
                 interactionMetrics: {
                   ...context.userAnalytics.interactionMetrics,
-                  typingSpeed: event.speed,
-                },
-              }),
-            }),
+                  typingSpeed: event.speed
+                }
+              })
+            })
           },
-          USER_CLICK: {
-            actions: assign({
-              userAnalytics: (context, event: Extract<UploadEvent, { type: 'USER_CLICK' }>) => ({
+          USER_CLICK: { actions: assign({, userAnalytics: (context, event: Extract<UploadEvent, { type: 'USER_CLICK' }>) => ({
                 ...context.userAnalytics,
                 interactionMetrics: {
                   ...context.userAnalytics.interactionMetrics,
@@ -640,16 +579,14 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                       y: event.y,
                       timestamp: Date.now(),
                       element: event.element,
-                      legalContext: event.legalContext,
+                      legalContext: event.legalContext
                     },
-                  ],
-                },
-              }),
-            }),
+                  ]
+                }
+              })
+            })
           },
-          TRACK_USER_ACTION: {
-            actions: assign({
-              userAnalytics: (context, event: Extract<UploadEvent, { type: 'TRACK_USER_ACTION' }>) => ({
+          TRACK_USER_ACTION: { actions: assign({, userAnalytics: (context, event: Extract<UploadEvent, { type: 'TRACK_USER_ACTION' }>) => ({
                 ...context.userAnalytics,
                 // Enhanced tracking for legal workflows
                 caseContext: {
@@ -657,80 +594,68 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   activeCases:
                     event.data.caseId && !context.userAnalytics.caseContext.activeCases.includes(event.data.caseId)
                       ? [...context.userAnalytics.caseContext.activeCases, event.data.caseId]
-                      : context.userAnalytics.caseContext.activeCases,
-                },
-              }),
-            }),
-          },
-        },
+                      : context.userAnalytics.caseContext.activeCases
+                }
+              })
+            })
+          }
+        }
       },
-      generatingPrompts: {
-        invoke: {
-          src: 'generateContextualPrompts',
-          input: ({ context }) => ({ context, timing: 'before-upload' }),
+      generatingPrompts: { invoke: {, src: 'generateContextualPrompts',
+          input: ({ context }) => ({ context, timing: `before-upload` }),
           onDone: {
             target: 'waitingForUpload',
             actions: assign({
-              contextualPrompts: ({ event }) => event.output,
-            }),
+              contextualPrompts: ({ event }) => event.output
+            })
           },
           onError: {
             target: 'waitingForUpload',
             actions: assign({
-              errors: ({ context, event }) => [...context.errors, `Prompt generation failed: ${event.error}`],
-            }),
-          },
-        },
+              errors: ({ context, event }) => [...context.errors, `Prompt generation failed: ${event.error}`]
+            })
+          }
+        }
       },
-      waitingForUpload: {
-        on: {
-          START_UPLOAD: 'uploadPipeline',
-          USER_REACTED_TO_PROMPT: {
-            actions: assign({
-              contextualPrompts: (context, event: Extract<UploadEvent, { type: 'USER_REACTED_TO_PROMPT' }>) =>
+      waitingForUpload: { on: {, START_UPLOAD: 'uploadPipeline',
+          USER_REACTED_TO_PROMPT: { actions: assign({, contextualPrompts: (context, event: Extract<UploadEvent, { type: 'USER_REACTED_TO_PROMPT' }>) =>
                 context.contextualPrompts.map(prompt =>
                   prompt.id === event.promptId ? { ...prompt, reaction: event.reaction } : prompt
-                ),
-            }),
+                )
+            })
           },
           REQUEST_AI_SUGGESTIONS: {
-            target: 'generatingAdditionalPrompts',
-          },
-        },
+            target: `generatingAdditionalPrompts` }
+        }
       },
-      generatingAdditionalPrompts: {
-        invoke: {
-          src: 'generateContextualPrompts',
+      generatingAdditionalPrompts: { invoke: {, src: 'generateContextualPrompts',
           input: ({ context }) => ({ context, timing: new Date().toISOString() }),
           onDone: {
             target: 'waitingForUpload',
             actions: assign({
-              contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output],
-            }),
+              contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output]
+            })
           },
           onError: {
             target: 'waitingForUpload',
             actions: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
-                `Additional prompt generation failed: ${event.error}`,
-              ],
-            }),
-          },
-        },
+                `Additional prompt generation failed: ${event.error}`
+              ]
+            })
+          }
+        }
       },
       uploadPipeline: {
         initial: 'validatingFiles',
         on: {
-          CANCEL_UPLOAD: 'cancelled',
-        },
-        states: {
-          validatingFiles: {
-            entry: assign({
+          CANCEL_UPLOAD: `cancelled` },
+        states: { validatingFiles: {, entry: assign({
               pipeline: ({ context }) => ({
                 ...context.pipeline,
-                fileValidation: { status: 'processing', progress: 0 },
-              }),
+                fileValidation: {, status: 'processing', progress: 0 }
+              })
             }),
             after: {
               500: {
@@ -738,18 +663,16 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                 actions: assign({
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    fileValidation: { status: 'completed', progress: 100 },
-                  }),
-                }),
-              },
-            },
+                    fileValidation: {, status: 'completed', progress: 100 }
+                  })
+                })
+              }
+            }
           },
-          uploadingFiles: {
-            entry: assign({
-              pipeline: ({ context }) => ({
+          uploadingFiles: { entry: assign({, pipeline: ({ context }) => ({
                 ...context.pipeline,
-                fileUpload: { status: 'processing', progress: 0 },
-              }),
+                fileUpload: {, status: 'processing', progress: 0 }
+              })
             }),
             after: {
               1000: {
@@ -758,18 +681,16 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   uploadProgress: 30,
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    fileUpload: { status: 'completed', progress: 100 },
-                  }),
-                }),
-              },
-            },
+                    fileUpload: {, status: 'completed', progress: 100 }
+                  })
+                })
+              }
+            }
           },
-          performingAIAnalysis: {
-            entry: assign({
-              pipeline: ({ context }) => ({
+          performingAIAnalysis: { entry: assign({, pipeline: ({ context }) => ({
                 ...context.pipeline,
-                aiAnalysis: { status: 'processing', progress: 0 },
-              }),
+                aiAnalysis: {, status: 'processing', progress: 0 }
+              })
             }),
             invoke: {
               src: 'performAIAnalysis',
@@ -781,9 +702,9 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   uploadProgress: 60,
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    aiAnalysis: { status: 'completed', progress: 100 },
-                  }),
-                }),
+                    aiAnalysis: {, status: 'completed', progress: 100 }
+                  })
+                })
               },
               onError: {
                 target: '../error',
@@ -791,18 +712,16 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   errors: ({ context, event }) => [...context.errors, `AI analysis failed: ${event.error}`],
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    aiAnalysis: { status: 'failed', progress: 0 },
-                  }),
-                }),
-              },
-            },
+                    aiAnalysis: {, status: 'failed', progress: 0 }
+                  })
+                })
+              }
+            }
           },
-          indexingDocuments: {
-            entry: assign({
-              pipeline: ({ context }) => ({
+          indexingDocuments: { entry: assign({, pipeline: ({ context }) => ({
                 ...context.pipeline,
-                indexing: { status: 'processing', progress: 0 },
-              }),
+                indexing: {, status: 'processing', progress: 0 }
+              })
             }),
             after: {
               800: {
@@ -811,18 +730,16 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   uploadProgress: 75,
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    indexing: { status: 'completed', progress: 100 },
-                  }),
-                }),
-              },
-            },
+                    indexing: {, status: 'completed', progress: 100 }
+                  })
+                })
+              }
+            }
           },
-          generatingEmbeddings: {
-            entry: assign({
-              pipeline: ({ context }) => ({
+          generatingEmbeddings: { entry: assign({, pipeline: ({ context }) => ({
                 ...context.pipeline,
-                vectorEmbedding: { status: 'processing', progress: 0 },
-              }),
+                vectorEmbedding: {, status: 'processing', progress: 0 }
+              })
             }),
             after: {
               1200: {
@@ -831,18 +748,16 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   uploadProgress: 90,
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    vectorEmbedding: { status: 'completed', progress: 100 },
-                  }),
-                }),
-              },
-            },
+                    vectorEmbedding: {, status: 'completed', progress: 100 }
+                  })
+                })
+              }
+            }
           },
-          savingToDatabase: {
-            entry: assign({
-              pipeline: ({ context }) => ({
+          savingToDatabase: { entry: assign({, pipeline: ({ context }) => ({
                 ...context.pipeline,
-                dbStorage: { status: 'processing', progress: 0 },
-              }),
+                dbStorage: {, status: 'processing', progress: 0 }
+              })
             }),
             invoke: {
               src: 'saveToDatabase',
@@ -853,9 +768,9 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   uploadProgress: 100,
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    dbStorage: { status: 'completed', progress: 100 },
-                  }),
-                }),
+                    dbStorage: {, status: 'completed', progress: 100 }
+                  })
+                })
               },
               onError: {
                 target: '../error',
@@ -863,13 +778,13 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                   errors: ({ context, event }) => [...context.errors, `Database save failed: ${event.error}`],
                   pipeline: ({ context }) => ({
                     ...context.pipeline,
-                    dbStorage: { status: 'failed', progress: 0 },
-                  }),
-                }),
-              },
-            },
-          },
-        },
+                    dbStorage: {, status: 'failed', progress: 0 }
+                  })
+                })
+              }
+            }
+          }
+        }
       },
       completed: {
         entry: [
@@ -882,66 +797,57 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
                 successRate:
                   (context.userAnalytics.uploadHistory.successRate * context.userAnalytics.uploadHistory.totalUploads +
                     1) /
-                  (context.userAnalytics.uploadHistory.totalUploads + 1),
-              },
-            }),
+                  (context.userAnalytics.uploadHistory.totalUploads + 1)
+              }
+            })
           }),
         ],
         invoke: {
           src: 'generateContextualPrompts',
           input: ({ context }) => ({ context, timing: 'after-upload' }),
-          onDone: {
-            actions: assign({
-              contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output],
-            }),
-          },
+          onDone: { actions: assign({, contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output]
+            })
+          }
         },
         on: {
           RESET: 'idle',
-          REQUEST_AI_SUGGESTIONS: 'generatingAdditionalPrompts',
-        },
+          REQUEST_AI_SUGGESTIONS: 'generatingAdditionalPrompts'
+        }
       },
-      cancelled: {
-        on: {
-          RESET: 'idle',
-          RETRY_UPLOAD: 'uploadPipeline',
-        },
+      cancelled: { on: {, RESET: 'idle',
+          RETRY_UPLOAD: 'uploadPipeline'
+        }
       },
-      error: {
-        on: {
-          RETRY_UPLOAD: 'uploadPipeline',
-          RESET: 'idle',
-        },
-      },
-    },
+      error: { on: {, RETRY_UPLOAD: 'uploadPipeline',
+          RESET: `idle` }
+      }
+    }
   },
   {
     // wire named services to the existing helper functions by forwarding the machine context
     services: {
       analyzeUserBehavior: (context: UploadContext) =>
-        analyzeUserBehaviorService({ input: { userAnalytics: context.userAnalytics, context } }),
+        analyzeUserBehaviorService({ input: {, userAnalytics: context.userAnalytics, context } }),
       // avoid `any` by typing the optional invocation event and use a safe fallback for timing
       generateContextualPrompts: (context: UploadContext, invocationEvent?: { timing?: string }) =>
         generateContextualPromptsService({
-          input: { context, timing: invocationEvent?.timing ?? 'before-upload' },
+          input: { context, timing: invocationEvent?.timing ?? 'before-upload` }
         }),
       performAIAnalysis: (context: UploadContext) =>
-        performAIAnalysisService({ input: { files: context.files, context } }),
+        performAIAnalysisService({ input: {, files: context.files, context } }),
       saveToDatabase: (context: UploadContext) =>
-        saveToDatabaseService({ input: { results: context.uploadResults, context } }),
-    },
+        saveToDatabaseService({ input: {, results: context.uploadResults, context } })
+    }
   }
 );
 // Factory function for creating enhanced upload analytics actor
 export function createUploadAnalyticsActor(initialContext: Partial<UploadContext> = {}) {
-  return createActor(comprehensiveUploadAnalyticsMachine, {
-    input: {
-      files: [],
+  return createActor(comprehensiveUploadAnalyticsMachine, { input: {, files: [],
       uploadProgress: 0,
       uploadResults: [],
       errors: [],
       userAnalytics: {
-        userId: '',
+       , userId: '',
         sessionId: `legal-session-${Date.now()}`,
         behaviorPattern: 'intermediate',
         uploadHistory: {
@@ -949,29 +855,28 @@ export function createUploadAnalyticsActor(initialContext: Partial<UploadContext
           successRate: 0.0,
           averageFileSize: 0,
           preferredFormats: [],
-          commonUploadTimes: [],
+          commonUploadTimes: []
         },
         interactionMetrics: { typingSpeed: 0, clickPatterns: [], scrollBehavior: { depth: 0, speed: 0 }, focusTime: 0 },
         contextualPreferences: {
           preferredAIPromptStyle: 'detailed',
           helpLevel: 'moderate',
           autoSuggestions: true,
-          proactiveInsights: true,
+          proactiveInsights: true
         },
-        caseContext: { activeCases: [], workflowStage: 'discovery', expertise: 'associate' },
+        caseContext: { activeCases: [], workflowStage: 'discovery', expertise: 'associate' }
       },
       contextualPrompts: [],
-      pipeline: {
-        fileValidation: { status: 'pending' },
+      pipeline: { fileValidation: {, status: 'pending' },
         fileUpload: { status: 'pending' },
         aiAnalysis: { status: 'pending' },
         indexing: { status: 'pending' },
         vectorEmbedding: { status: 'pending' },
-        dbStorage: { status: 'pending' },
+        dbStorage: { status: `pending` }
       },
       aiAnalysisResults: [],
       evidenceMetadata: [],
-      ...initialContext,
-    },
+      ...initialContext
+    }
   });
 }

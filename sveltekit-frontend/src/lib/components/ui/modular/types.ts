@@ -58,10 +58,10 @@ export interface InputProps extends Omit<HTMLInputAttributes, 'size'>, BaseProps
   errorMessage?: string;
   icon?: string;
   suffix?: string;
-  oninput?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
-  onchange?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
-  onfocus?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
-  onblur?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+  oninput?: (_event: Event & {, currentTarget: HTMLInputElement }) => void;
+  onchange?: (_event: Event & {, currentTarget: HTMLInputElement }) => void;
+  onfocus?: (_event: FocusEvent & {, currentTarget: HTMLInputElement }) => void;
+  onblur?: (_event: FocusEvent & {, currentTarget: HTMLInputElement }) => void;
 }
 // Form component props
 export interface FormProps extends HTMLAttributes<HTMLFormElement>, BaseProps {
@@ -107,9 +107,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement>, BaseProps {
   onremove?: () => void;
 }
 // File upload types
-export interface UploadFile {
-  id: string;
-  file: File;
+export interface UploadFile { id: string;, file: File;
   name: string;
   size: number;
   type: string;

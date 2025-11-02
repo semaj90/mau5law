@@ -1,7 +1,7 @@
 export const ERR = {
   INVALID_INPUT: 'INVALID_INPUT',
   NOT_FOUND: 'NOT_FOUND',
-  INTERNAL: 'INTERNAL',
+  INTERNAL: 'INTERNAL'
 } as const;
 
 export class ServiceError extends Error {

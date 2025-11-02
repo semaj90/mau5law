@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { serverRerank } from '$lib/server/ai/reranker';
 
 export const POST: RequestHandler = async ({ request, headers }) => {
-  const input = (await request.json()) as { query?: string; candidates?: { id: string; text: string }[] };
+  const input = (await request.json()) as { query?: string; candidates?: { id: string;, text: string }[] };
 
   if (!input?.query || !Array.isArray(input.candidates)) {
     return new Response(JSON.stringify({ error: 'Invalid input' }), { status: 400 });

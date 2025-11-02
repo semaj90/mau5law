@@ -8,9 +8,7 @@ import { vectorService } from '$lib/server/vector/EnhancedVectorService';
 import { LokiEvidenceService } from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
 
-export interface SearchPipelineResult {
-  id: string;
-  content: string;
+export interface SearchPipelineResult { id: string;, content: string;
   embedding: number[];
   score: number;
   // replace `any` with a safer record type
@@ -37,9 +35,7 @@ export type HybridSearchOptions = {
   [key: string]: any;
 };
 
-export type EvidenceRecord = {
-  id: string;
-  title: string;
+export type EvidenceRecord = { id: string;, title: string;
   description: string;
   type: string;
   tags: any[];
@@ -58,7 +54,7 @@ export class EndToEndPipeline {
     this.fuseIndex = new Fuse([], {
       keys: ['content', 'metadata.title', 'metadata.description'],
       threshold: 0.3,
-      includeScore: true,
+      includeScore: true
     });
   }
 
@@ -136,7 +132,7 @@ export class EndToEndPipeline {
             score,
             metadata,
             source: 'vector' as const,
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           };
         });
 
@@ -184,8 +180,8 @@ export class EndToEndPipeline {
             ...result.metadata,
             embedding: result.embedding,
             score: result.score,
-            source: result.source,
-          } as Record<string, unknown>,
+            source: result.source
+          } as Record<string, unknown>
         } as EvidenceRecord);
 
         // B) Fuse.js - Add to fuzzy search index
@@ -195,7 +191,7 @@ export class EndToEndPipeline {
         // C) Service Worker routing (simulated)
         await this.serviceWorkerRoute(result);
       } catch (error: any) {
-        console.error(`❌ Error processing result ${result?.id ?? '(unknown)'}:`, String(error));
+        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }:`, String(error));
       }
     }
 
@@ -212,7 +208,7 @@ export class EndToEndPipeline {
     const limited = Array.isArray(rawResults) ? rawResults.slice(0, limit) : [];
     return limited.map(sr => ({
       ...sr.item,
-      score: typeof sr.score === 'number' ? 1 - sr.score : sr.item.score,
+      score: typeof sr.score === 'number' ? 1 - sr.score : sr.item.score
     }));
   }
 
@@ -233,7 +229,7 @@ export class EndToEndPipeline {
       // All results → PostgreSQL metadata
       await this.routeToPostgreSQL(result);
     } catch (error) {
-      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)'}:`, error);
+      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);
     }
   }
 
@@ -245,11 +241,11 @@ export class EndToEndPipeline {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: result.id,
+       , id: result.id,
         content: result.content,
         metadata: result.metadata,
-        bucket: 'legal-documents',
-      }),
+        bucket: 'legal-documents'
+      })
     });
   }
 
@@ -258,26 +254,26 @@ export class EndToEndPipeline {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: result.id,
+       , id: result.id,
         embedding: result.embedding,
         content: result.content,
-        metadata: result.metadata,
-      }),
+        metadata: result.metadata
+      })
     });
   }
 
   private async routeToPostgreSQL(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v1/unified', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        id: result.id,
+       , id: result.id,
         title: result.metadata?.title,
         content: result.content.substring(0, 500),
         score: result.score,
         source: result.source,
-        metadata: result.metadata,
-      }),
+        metadata: result.metadata
+      })
     });
   }
 
@@ -285,9 +281,7 @@ export class EndToEndPipeline {
    * 🚀 Complete End-to-End Pipeline Execution
    * Demonstrates full flow from queries to storage
    */
-  async executeFullPipeline(queries: string[]): Promise<{
-    totalResults: number;
-    cacheHits: number;
+  async executeFullPipeline(queries: string[]): Promise<{ totalResults: number;, cacheHits: number;
     processingTime: number;
     fuzzySearchResults: SearchPipelineResult[];
   }> {
@@ -314,7 +308,7 @@ export class EndToEndPipeline {
       totalResults: searchResults.length,
       cacheHits: 0, // TODO: Track cache hits
       processingTime,
-      fuzzySearchResults: fuzzyResults,
+      fuzzySearchResults: fuzzyResults
     };
   }
 }

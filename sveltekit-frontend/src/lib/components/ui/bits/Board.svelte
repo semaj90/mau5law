@@ -46,7 +46,7 @@ import type { Document } from '$lib/types';
   let boardElement: HTMLDivElement;
   let isFullscreen = $state<boolean>(false);
   let isDragging = $state<boolean>(false);
-  let draggedItem: BoardItem | null = $state(null);
+  let draggedItem: BoardItem | null = null;
   let dragOffset = $state({ x: 0, y: 0 });
   let connections = $state<any[]>([]) => []);
   // Board styling based on background theme

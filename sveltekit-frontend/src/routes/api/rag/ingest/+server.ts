@@ -28,11 +28,11 @@ const BatchIngestRequestSchema = z.object({
   documents: z
     .array(
       z.object({
-        id: cuidSchema.optional(),
+       , id: cuidSchema.optional(),
         filename: z.string(),
         content: z.string().min(10, 'Content too short'),
         metadata: z.record(z.unknown()).optional(),
-        tags: z.array(z.string()).optional(),
+        tags: z.array(z.string()).optional()
       })
     )
     .min(1, 'At least 1 document required')
@@ -40,14 +40,12 @@ const BatchIngestRequestSchema = z.object({
   caseId: cuidSchema.optional(),
   uploadedBy: cuidSchema.default('00000000-0000-0000-0000-000000000000'),
   chunkSize: z.number().int().min(100).max(5000).default(1000),
-  chunkOverlap: z.number().int().min(0).max(500).default(200),
+  chunkOverlap: z.number().int().min(0).max(500).default(200)
 });
 
 type BatchIngestRequest = z.infer<typeof BatchIngestRequestSchema>;
 
-interface IngestResult {
-  documentId: string;
-  filename: string;
+interface IngestResult { documentId: string;, filename: string;
   chunksCount: number;
   embeddingsGenerated: number;
   stored: boolean;
@@ -64,8 +62,8 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const res = await fetch(`${endpoint}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text.slice(0, 2000) }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text.slice(0, 2000) })
     });
     if (!res.ok) throw new Error(`Ollama responded ${res.status}`);
     const payload = await res.json();
@@ -150,9 +148,9 @@ async function storeDocument(
           tags,
           source: 'batch-ingest',
           originalFilename: filename,
-          uploadTimestamp: new Date().toISOString(),
+          uploadTimestamp: new Date().toISOString()
         },
-        processedAt: new Date(),
+        processedAt: new Date()
       })
       .returning({ id: documents.id });
 
@@ -177,8 +175,8 @@ async function storeDocument(
       metadata: {
         source: filename,
         chunkIndex: idx,
-        totalChunks: chunks.length,
-      },
+        totalChunks: chunks.length
+      }
     }));
 
     await db.insert(documentChunks).values(chunkInserts);
@@ -188,17 +186,17 @@ async function storeDocument(
       filename,
       chunksCount: chunks.length,
       embeddingsGenerated: embeddings.length,
-      stored: true,
+      stored: true
     };
   } catch (err) {
-    console.error(`Failed to store document ${filename}:`, err);
+    console.error(`Failed to store document ${filename}: ', err);
     return {
       documentId: 'error',
       filename,
       chunksCount: 0,
       embeddingsGenerated: 0,
       stored: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : 'Unknown error'
     };
   }
 }
@@ -227,28 +225,28 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       summary: {
-        documentsProcessed: params.documents.length,
+       , documentsProcessed: params.documents.length,
         documentsStored: successCount,
         documentsFailed: failureCount,
         totalChunksCreated: totalChunks,
         totalEmbeddingsGenerated: totalEmbeddings,
         responseTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       results,
       metadata: {
         chunkSize: params.chunkSize,
         chunkOverlap: params.chunkOverlap,
         embeddingModel: 'embeddinggemma:latest',
-        indexType: 'pgvector (HNSW)',
-      },
+        indexType: 'pgvector (HNSW)'
+      }
     });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return json(
         {
           message: 'Invalid request format',
-          errors: err.flatten().fieldErrors,
+          errors: err.flatten().fieldErrors
         },
         { status: 400 }
       );
@@ -257,8 +255,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         message: 'Batch ingestion failed',
-        detail: err instanceof Error ? err.message : 'Unknown error',
-      },
+        detail: err instanceof Error ? err.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -284,22 +281,21 @@ export const GET: RequestHandler = async () => {
       ingestEndpoint: 'POST /api/rag/ingest',
       statistics: {
         documentsInDatabase: docCount,
-        chunksInDatabase: chunkCount,
+        chunksInDatabase: chunkCount
       },
       capabilities: {
-        batchProcessing: true,
+       , batchProcessing: true,
         maxDocumentsPerBatch: 100,
         semanticChunking: true,
         embeddingGeneration: 'embeddinggemma:latest',
-        vectorStorage: 'pgvector (HNSW)',
-      },
+        vectorStorage: 'pgvector (HNSW)'
+      }
     });
   } catch (err) {
     return json(
       {
         message: 'Ingest service unavailable',
-        detail: err instanceof Error ? err.message : 'Unknown error',
-      },
+        detail: err instanceof Error ? err.message : `Unknown error` },
       { status: 503 }
     );
   }

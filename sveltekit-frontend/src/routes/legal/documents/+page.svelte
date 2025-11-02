@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
@@ -17,8 +19,8 @@ import type { Document } from '$lib/types';
     Input
   } from '$lib/components/ui/enhanced-bits.svelte';
   import Label from '$lib/components/ui/label/Label.svelte';
-  import * as Card from '$lib/components/ui/card.svelte';
-  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Card from '$lib/components/ui/Card.svelte';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
   import * as Select from '$lib/components/ui/select.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
@@ -535,7 +537,7 @@ import type { Document } from '$lib/types';
       <div class="grid gap-2">
         <Label>Document File *</Label>
         <div
-          class="border-2" border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
+          class="border-2 border-dashed rounded-lg" p-8 text-center cursor-pointer transition-colors
                  {dragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50'}
                  {uploadFile ? 'border-green-500 bg-green-50' : ''}"
           ondragover={handleDragOver}
@@ -622,7 +624,7 @@ import type { Document } from '$lib/types';
     </div>
     <!-- Upload dialog footer: fixed closing tags and onclick handlers -->
     <Dialog.Footer>
-      <Button.Root class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = $state(false); resetUploadForm(); }}>
+      <Button.Root class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
       </Button.Root>
       <Button.Root class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>

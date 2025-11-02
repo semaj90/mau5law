@@ -33,5 +33,5 @@ const handler: RequestHandler = async ({ request }) => {
 export const POST = withValidationAndRate(handler, schemaFor(SearchPayload), {
   capacity: 30,
   refillPerSecond: 1,
-  keyPrefix: 'rl:vector-search:',
+  keyPrefix: 'rl:vector-search:'
 });

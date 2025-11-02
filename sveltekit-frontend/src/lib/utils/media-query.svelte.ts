@@ -88,7 +88,7 @@ export function createMediaQuery(query: string) {
   return {
     get matches() {
       return matches;
-    },
+    }
   };
 }
 
@@ -108,8 +108,7 @@ export const breakpoints = {
 	landscape: '(orientation: landscape)',
 	portrait: '(orientation: portrait)',
 	prefersColorSchemeDark: '(prefers-color-scheme: dark)',
-	prefersReducedMotion: '(prefers-reduced-motion: reduce)',
-} as const;
+	prefersReducedMotion: '(prefers-reduced-motion: reduce)` } as const;
 
 /**
  * Predefined media query hooks

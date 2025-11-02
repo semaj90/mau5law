@@ -16,7 +16,7 @@ const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
   accessKey: process.env.MINIO_ACCESS_KEY || 'minio',
   secretKey: process.env.MINIO_SECRET_KEY || 'minio123',
-  useSSL: process.env.MINIO_USE_SSL === 'true',
+  useSSL: process.env.MINIO_USE_SSL === 'true'
 });
 
 const AVATAR_BUCKET = 'user-avatars';
@@ -32,10 +32,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Not authenticated',
+           , message: 'Not authenticated',
             code: 'NO_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -47,10 +47,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid session',
+           , message: 'Invalid session',
             code: 'INVALID_SESSION',
-            status: 401,
-          },
+            status: 401
+          }
         },
         { status: 401 }
       );
@@ -65,10 +65,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'No file provided',
+           , message: 'No file provided',
             code: 'NO_FILE',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -80,10 +80,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'Invalid file type. Only JPEG and PNG allowed.',
+           , message: 'Invalid file type. Only JPEG and PNG allowed.',
             code: 'INVALID_TYPE',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -95,10 +95,10 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'File too large. Maximum 2MB allowed.',
+           , message: 'File too large. Maximum 2MB allowed.',
             code: 'FILE_TOO_LARGE',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async (event) => {
     await db
       .update(users)
       .set({
-        avatarUrl: avatarUrl,
+        avatarUrl: avatarUrl
       })
       .where(eq(users.id, user.id));
 
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async (event) => {
       success: true,
       message: 'Avatar uploaded successfully',
       avatarUrl,
-      filename,
+      filename
     });
   } catch (error) {
     console.error('Error uploading avatar:', error);
@@ -148,10 +148,10 @@ export const POST: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-          message: 'Failed to upload avatar',
+         , message: 'Failed to upload avatar',
           code: 'UPLOAD_ERROR',
-          status: 500,
-        },
+          status: 500
+        }
       },
       { status: 500 }
     );
@@ -170,10 +170,10 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-            message: 'User ID required',
+           , message: 'User ID required',
             code: 'NO_USER_ID',
-            status: 400,
-          },
+            status: 400
+          }
         },
         { status: 400 }
       );
@@ -202,8 +202,7 @@ export const GET: RequestHandler = async (event) => {
     return new Response(dataStream as any, {
       headers: {
         'Content-Type': latestAvatar.etag ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=31536000',
-      },
+        'Cache-Control': 'public, max-age=31536000` }
     });
   } catch (error) {
     console.error('Error retrieving avatar:', error);

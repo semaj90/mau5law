@@ -15,17 +15,17 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         message: 'Redis connection established',
         config: {
-          host: config.host,
+         , host: config.host,
           port: config.port,
-          keyPrefix: config.keyPrefix,
-        },
+          keyPrefix: config.keyPrefix
+        }
       });
     } else {
       return json(
         {
           success: false,
           message: 'Redis connection failed',
-          error: 'Redis not available',
+          error: 'Redis not available'
         },
         { status: 503 }
       );
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error.message,
+        error: error.message
       },
       { status: 500 }
     );

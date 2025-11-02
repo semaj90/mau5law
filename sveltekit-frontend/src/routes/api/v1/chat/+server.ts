@@ -26,9 +26,7 @@ type RedisGPUResult = {
   stats?: Record<string, unknown>;
 } | null;
 
-type RAGRetrievalResult = {
-  docs: Array<{
-    id: string;
+type RAGRetrievalResult = { docs: Array<{;, id: string;
     score?: number;
     snippet?: string;
     source?: string;
@@ -115,7 +113,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       temperature = 0.7,
       context_needed = true,
       stream = false,
-      options = {},
+      options = {}
     } = body;
 
     // Enhanced validation
@@ -124,9 +122,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         {
           success: false,
           error: {
-            code: 'EMPTY_MESSAGE',
-            message: 'Message content is required',
-          },
+           , code: 'EMPTY_MESSAGE',
+            message: 'Message content is required'
+          }
         },
         { status: 400 }
       );
@@ -137,9 +135,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         {
           success: false,
           error: {
-            code: 'MISSING_USERID',
-            message: 'user_id is required for contextual chat',
-          },
+           , code: 'MISSING_USERID',
+            message: 'user_id is required for contextual chat'
+          }
         },
         { status: 400 }
       );
@@ -157,7 +155,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           temperature,
           options,
           clientIP,
-          startTime,
+          startTime
         });
       default:
         // Handle other actions with existing logic
@@ -173,18 +171,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         context_needed,
         stream,
         case_id,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       context: {
         user_id,
         session_id,
         case_id,
-        priority: 'normal' as const,
+        priority: 'normal' as const
       },
       performance_requirements: {
         max_latency_ms: 3000,
-        prefer_cache: true,
-      },
+        prefer_cache: true
+      }
     };
 
     // Process through orchestrator
@@ -204,10 +202,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         message_length: (message || '').length,
         context_needed,
         execution_path: response._metadata?.execution_path,
-        client_ip: clientIP,
+        client_ip: clientIP
       },
       response_time_ms: Date.now() - startTime,
-      cache_hit: response._metadata?.cached || false,
+      cache_hit: response._metadata?.cached || false
     });
 
     // Store chat context for future use
@@ -217,7 +215,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         session_id,
         message: response.content || response.message,
         embedding: Array.isArray(response.embedding) ? response.embedding : [],
-        context_type: 'new',
+        context_type: 'new'
       });
     }
 
@@ -227,12 +225,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         content: response.content || response.message,
         session_id,
         metadata: {
-          execution_path: response._metadata?.execution_path,
+         , execution_path: response._metadata?.execution_path,
           latency_ms: response._metadata?.latency_ms,
           cached: response._metadata?.cached,
-          timestamp: new Date().toISOString(),
-        },
-      },
+          timestamp: new Date().toISOString()
+        }
+      }
     });
   } catch (error: any) {
     console.error('Chat API error:', getErrorMessage(error));
@@ -242,7 +240,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         'chat_error',
         {
           error_message: getErrorMessage(error),
-          client_ip: clientIP,
+          client_ip: clientIP
         },
         { responseTimeMs: Date.now() - startTime }
       );
@@ -254,7 +252,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         error: 'Chat processing failed',
         details: getErrorMessage(error),
-        status: 'error',
+        status: 'error'
       },
       { status: 500 }
     );
@@ -265,7 +263,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 export const GET: RequestHandler = async ({ url }) => {
   const session_id = url.searchParams.get('session_id');
   if (!session_id) {
-    return json({ error: 'session_id required' }, { status: 400 });
+    return json({ error: `session_id required` }, { status: 400 });
   }
   // Server-Sent Events for streaming
   const stream = new ReadableStream({
@@ -275,7 +273,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const payload = {
         type: 'connected',
         session_id,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
       controller.enqueue(encoder.encode(`data: ${fastStringify(payload)}\n\n`));
 
@@ -288,14 +286,14 @@ export const GET: RequestHandler = async ({ url }) => {
       setTimeout(() => {
         controller.close();
       }, 300000); // 5 minute timeout
-    },
+    }
   });
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-    },
+      Connection: 'keep-alive'
+    }
   });
 };
 
@@ -309,17 +307,15 @@ async function handleParallelChatExecution({
   temperature,
   options,
   clientIP,
-  startTime,
-}: {
-  message: string;
-  userId: string;
+  startTime
+}: { message: string;, userId: string;
   sessionId: string;
   caseId?: string;
   model: string;
   temperature: number;
   options: ParallelOptions;
   clientIP: string;
-  startTime: number;
+ , startTime: number;
 }): Promise<any> {
   try {
     // Create parallel request for ALL services to execute concurrently
@@ -332,7 +328,7 @@ async function handleParallelChatExecution({
         message,
         model,
         temperature,
-        options,
+        options
       },
       userContext: {
         userId,
@@ -340,23 +336,22 @@ async function handleParallelChatExecution({
         caseId,
         jurisdiction: options.jurisdiction,
         practiceArea: options.practiceArea,
-        priority: options.priority || 'normal',
-      },
+        priority: options.priority || 'normal` },
       parallelExecution: {
         enableQuantizedLLM: true,
         enableGRPMOThinking: true,
         enableMultiEmbedding: true,
         enableRedisGPU: true,
         enableRAGRetrieval: !!caseId,
-        enableServiceWorker: true,
+        enableServiceWorker: true
       },
       concurrencyLimits: {
         maxParallelTasks: 10,
         maxEmbeddingConcurrency: 3,
         maxCacheOperations: 5,
-        maxRAGQueries: 2,
+        maxRAGQueries: 2
       },
-      timeout: options.timeout || 30000,
+      timeout: options.timeout || 30000
     };
 
     const parallelRequest: ParallelRequest = rawParallelRequest as unknown as ParallelRequest;
@@ -385,16 +380,15 @@ async function handleParallelChatExecution({
             index: 0,
             message: {
               role: 'assistant',
-              content: responseText || 'No response generated',
+              content: responseText || 'No response generated'
             },
-            finish_reason: 'stop',
-          },
+            finish_reason: `stop` },
         ],
         usage: {
           prompt_tokens: estimateTokens(message),
           completion_tokens: estimateTokens(responseText),
-          total_tokens: estimateTokens(message) + estimateTokens(responseText),
-        },
+          total_tokens: estimateTokens(message) + estimateTokens(responseText)
+        }
       },
       parallel: {
         executionMetrics,
@@ -404,15 +398,15 @@ async function handleParallelChatExecution({
           multiEmbedding: serviceResults.multiEmbedding,
           redisGPU: serviceResults.redisGPU,
           ragRetrieval: serviceResults.ragRetrieval,
-          serviceWorker: serviceResults.serviceWorker,
+          serviceWorker: serviceResults.serviceWorker
         },
         performance: {
           totalLatency: executionMetrics.totalLatency,
           parallelEfficiency: executionMetrics.parallelEfficiency,
           cacheHitRate: executionMetrics.cacheHitRate,
           servicesExecuted: Object.keys(serviceResults || {}).length,
-          concurrentTasks: executionMetrics.tasksExecuted,
-        },
+          concurrentTasks: executionMetrics.tasksExecuted
+        }
       },
       metadata: {
         requestId: parallelRequest.id,
@@ -422,15 +416,15 @@ async function handleParallelChatExecution({
         temperature: temperature,
         clientIP: (clientIP || 'unknown').split(':').pop() || 'unknown',
         parallelExecution: true,
-        servicesUsed: Object.keys(serviceResults || {}),
-      },
+        servicesUsed: Object.keys(serviceResults || {})
+      }
     };
 
     // Track analytics for parallel execution
     await natsQuicSearchService.publishAnalytics({
       event_type: 'parallel_chat_request',
       event_data: {
-        user_id: userId,
+       , user_id: userId,
         session_id: sessionId,
         case_id: caseId,
         message_length: message.length,
@@ -439,20 +433,19 @@ async function handleParallelChatExecution({
         total_latency: executionMetrics.totalLatency,
         cache_hit_rate: executionMetrics.cacheHitRate,
         client_ip: clientIP,
-        parallel_execution: true,
+        parallel_execution: true
       },
-      response_time_ms: performance.now() - startTime,
+      response_time_ms: performance.now() - startTime
     });
 
     // Log performance in development
     if (dev) {
-      console.log('🚀 Parallel Chat Execution Complete:', {
+      console.log('🚀 Parallel Chat Execution Complete: `, {
         totalLatency: executionMetrics.totalLatency,
         parallelEfficiency: executionMetrics.parallelEfficiency,
         servicesExecuted: Object.keys(serviceResults || {}).length,
         cacheHits: executionMetrics.cacheHitRate,
-        tasksCompleted: `${executionMetrics.tasksSucceeded || 0}/${executionMetrics.tasksExecuted || 0}`,
-      });
+        tasksCompleted: `${executionMetrics.tasksSucceeded || 0}/${executionMetrics.tasksExecuted || 0}` });
     }
 
     return json(response);
@@ -468,7 +461,7 @@ async function handleParallelChatExecution({
       return json({
         success: true,
         data: {
-          id: `chatcmpl-fallback-${crypto.randomUUID()}`,
+         , id: `chatcmpl-fallback-${crypto.randomUUID()}`,
           object: 'chat.completion',
           created: Math.floor(Date.now() / 1000),
           model: model,
@@ -477,22 +470,20 @@ async function handleParallelChatExecution({
               index: 0,
               message: {
                 role: 'assistant',
-                content,
+                content
               },
-              finish_reason: 'stop',
-            },
-          ],
+              finish_reason: `stop` },
+          ]
         },
-        parallel: {
-          executionMetrics: { totalLatency: performance.now() - startTime, parallelEfficiency: 0 },
+        parallel: { executionMetrics: {, totalLatency: performance.now() - startTime, parallelEfficiency: 0 },
           fallback: true,
-          error: getErrorMessage(error),
+          error: getErrorMessage(error)
         },
         metadata: {
           timestamp: new Date().toISOString(),
           processingTimeMs: performance.now() - startTime,
-          fallback: true,
-        },
+          fallback: true
+        }
       });
     } catch (fallbackError: any) {
       console.error('Fallback also failed:', getErrorMessage(fallbackError));

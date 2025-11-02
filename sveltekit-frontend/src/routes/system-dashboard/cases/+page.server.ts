@@ -4,9 +4,7 @@ import { getUserId } from '$lib/server/auth/utils';
 import pool from '$lib/server/db/client';
 import { sql } from 'drizzle-orm';
 
-export type CaseSummary = {
-  id: string;
-  title: string;
+export type CaseSummary = { id: string;, title: string;
   status: string;
   progress: number;
   evidenceCount: number;
@@ -37,9 +35,7 @@ export const load: ServerLoad = async ({ locals }) => {
     `;
     const result = await pool.execute(query);
 
-    type CaseRow = {
-        id: string;
-        title: string;
+    type CaseRow = { id: string;, title: string;
         status: string;
         progress: number | null;
         updated_at: string | Date | null;
@@ -52,7 +48,7 @@ export const load: ServerLoad = async ({ locals }) => {
       status: row.status,
       progress: row.progress ?? 0,
       evidenceCount: Number(row.evidence_count),
-      lastUpdate: row.updated_at ? new Date(row.updated_at) : new Date(),
+      lastUpdate: row.updated_at ? new Date(row.updated_at) : new Date()
     }));
 
   } catch (err) {
@@ -61,16 +57,16 @@ export const load: ServerLoad = async ({ locals }) => {
     cases = [
         {
           id: 'err-001',
-          title: 'Database Error: Could not load cases.',
+          title: 'Database; Error: Could not load cases.',
           status: 'error',
           progress: 0,
           evidenceCount: 0,
-          lastUpdate: new Date(),
+          lastUpdate: new Date()
         }
     ];
   }
 
   return {
-    cases,
+    cases
   };
 };

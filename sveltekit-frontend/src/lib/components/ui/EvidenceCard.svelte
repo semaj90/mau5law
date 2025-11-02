@@ -34,7 +34,7 @@
 </script>
 <!-- Evidence Card (matching Evidence Board style) -->
 <div
-  class="evidence-card" nes-container is-rounded cursor-pointer transition-all duration-300 {statusConfig?.bgClass ||
+  class="evidence-card nes-container is-rounded" cursor-pointer transition-all duration-300 {statusConfig?.bgClass ||
     'bg-gray-50'} {statusConfig?.borderClass || 'border-gray-400'}"
   class:selected={isSelected}
   class:hovered={isHovered}

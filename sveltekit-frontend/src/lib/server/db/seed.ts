@@ -4,10 +4,9 @@ import { users, cases, evidence } from './schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 // Sample embeddings (normally produced by an AI model)
-const sampleEmbeddings = {
-  financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1),
+const sampleEmbeddings = { financial: Array.from({, length: 768 }, () => Math.random() * 0.1 + 0.1),
   legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
-  criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3),
+  criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3)
 };
 async function seed(): Promise<any> {
   console.log('[seed] Starting database seed...');
@@ -23,7 +22,7 @@ async function seed(): Promise<any> {
         lastName: 'User',
         role: 'admin',
         hashedPassword: demoPasswordHash,
-        isActive: true,
+        isActive: true
       },
       {
         email: 'prosecutor@legal.ai',
@@ -32,7 +31,7 @@ async function seed(): Promise<any> {
         lastName: 'Prosecutor',
         role: 'prosecutor',
         hashedPassword: passwordHash,
-        isActive: true,
+        isActive: true
       },
       {
         email: 'detective@legal.ai',
@@ -41,7 +40,7 @@ async function seed(): Promise<any> {
         lastName: 'Detective',
         role: 'detective',
         hashedPassword: passwordHash,
-        isActive: true,
+        isActive: true
       },
       {
         email: 'admin@legal.ai',
@@ -50,7 +49,7 @@ async function seed(): Promise<any> {
         lastName: 'User',
         role: 'admin',
         hashedPassword: passwordHash,
-        isActive: true,
+        isActive: true
       },
     ];
     const insertedUsers: typeof seedUsers = [];
@@ -71,7 +70,7 @@ async function seed(): Promise<any> {
               name: user.name ?? existing[0].name,
               role: user.role ?? existing[0].role,
               isActive: user.isActive ?? existing[0].isActive,
-              updatedAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
             })
             .where(eq(users.id, existing[0].id))
             .returning();
@@ -86,7 +85,7 @@ async function seed(): Promise<any> {
     console.log('\n[seed] Database seed completed successfully.');
     console.log(
       [
-        'Summary:',
+        'Summary: `,
         `  users: ${insertedUsers.length}`,
         '',
         'Login Credentials:',
@@ -116,7 +115,7 @@ async function seed(): Promise<any> {
           createdBy: insertedUsers[0].id,
           aiSummary:
             'High-priority financial fraud case with strong evidence of laundering via shell companies.',
-          aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value'],
+          aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value']
         },
       ])
       .returning();
@@ -130,8 +129,8 @@ async function seed(): Promise<any> {
         tags: ['transactions', 'banking', 'offshore'],
         uploadedBy: insertedUsers[0].id,
         aiSummary: 'Strong indicators of layering and placement activity.',
-        aiAnalysis: { confidence: 0.92, patterns: ['structuring', 'threshold_avoidance'] },
-        embedding: sampleEmbeddings.financial,
+        aiAnalysis: {, confidence: 0.92, patterns: ['structuring', 'threshold_avoidance'] },
+        embedding: sampleEmbeddings.financial
       },
     ]);
   } catch (error) {

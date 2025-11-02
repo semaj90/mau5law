@@ -43,7 +43,7 @@ export interface KeyboardNavigationParams {
 export function accessibleClick(
   element: HTMLElement,
   params: AccessibleClickParams
-): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
+): { update: (params: AccessibleClickParams) => void;, destroy: () => void } {
   let currentParams = params;
   function handleInteraction(event: Event) {
     if (currentParams.disabled) return;
@@ -96,7 +96,7 @@ export function accessibleClick(
     destroy() {
       element.removeEventListener('click', handleInteraction);
       element.removeEventListener('keydown', handleKeyboard);
-    },
+    }
   };
 }
 /**
@@ -106,7 +106,7 @@ export function accessibleClick(
 export function focusManagement(
   element: HTMLElement,
   params: FocusManagementParams = {}
-): { update: (params: FocusManagementParams) => void; destroy: () => void } {
+): { update: (params: FocusManagementParams) => void;, destroy: () => void } {
   let currentParams = params;
   let previouslyFocused: HTMLElement | null = null;
   let focusableElements: HTMLElement[] = [];
@@ -215,7 +215,7 @@ export function focusManagement(
       if (currentParams.restoreFocus && previouslyFocused) {
         previouslyFocused.focus();
       }
-    },
+    }
   };
 }
 /**
@@ -225,7 +225,7 @@ export function focusManagement(
 export function ariaState(
   element: HTMLElement,
   params: ARIAStateParams
-): { update: (params: ARIAStateParams) => void; destroy: () => void } {
+): { update: (params: ARIAStateParams) => void;, destroy: () => void } {
   let currentParams = params;
   function updateARIA() {
     // Role
@@ -272,7 +272,7 @@ export function ariaState(
     destroy() {
       // Clean up ARIA attributes if needed
       // (Usually not necessary as component will be destroyed)
-    },
+    }
   };
 }
 /**
@@ -282,7 +282,7 @@ export function ariaState(
 export function keyboardNavigation(
   element: HTMLElement,
   params: KeyboardNavigationParams
-): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
+): { update: (params: KeyboardNavigationParams) => void;, destroy: () => void } {
   let currentParams = params;
   function handleKeydown(event: KeyboardEvent) {
     const handler = currentParams.keys[event.key];
@@ -305,7 +305,7 @@ export function keyboardNavigation(
     },
     destroy() {
       element.removeEventListener('keydown', handleKeydown, Boolean(currentParams.capture));
-    },
+    }
   };
 }
 /**
@@ -319,7 +319,7 @@ export function keyboardNavigation(
 export function liveRegion(
   element: HTMLElement,
   params: LiveRegionParams = {}
-): { update: (params: LiveRegionParams) => void; announce: (message: string) => void; destroy: () => void } {
+): { update: (params: LiveRegionParams) => void; announce: (message: string) => void;, destroy: () => void } {
   let currentParams = { politeness: 'polite', atomic: false, relevant: 'additions', ...params };
   function setupLiveRegion() {
     element.setAttribute('aria-live', currentParams.politeness || 'polite');
@@ -357,7 +357,7 @@ export function liveRegion(
     announce,
     destroy() {
       // Clean up if needed
-    },
+    }
   };
 }
 /**
@@ -426,17 +426,16 @@ export function liveRegion(
       targetElement.setAttribute('aria-describedby', descId);
     }
     return descId;
-  },
+  }
 };
 /**
  * Composite Actions
  * Pre-configured combinations of actions for common patterns
  */ export const compositeActions = {
   // Modal dialog with full accessibility
-  modal: (
-    element: HTMLElement,
+  modal: (; element: HTMLElement,
     options: {
-      onClose: () => void;
+     , onClose: () => void;
       title?: string;
       description?: string;
     }
@@ -447,34 +446,30 @@ export function liveRegion(
     const focusAction = focusManagement(element, {
       trapFocus: true,
       restoreFocus: true,
-      initialFocus: '[role="button"], button, [tabindex="0"]',
-    });
+      initialFocus: '[role="button"], button, [tabindex="0"]` });
     const ariaAction = ariaState(element, {
       role: 'dialog',
       hidden: false,
       label: options.title,
-      describedBy: options.description ? descId : undefined,
+      describedBy: options.description ? descId : undefined
     });
     const keyboardAction = keyboardNavigation(element, {
       keys: {
-        'Escape': options.onClose,
+        'Escape': options.onClose
       },
-      preventDefault: true,
+      preventDefault: true
     });
     return {
       destroy: () => {
         focusAction.destroy();
         ariaAction.destroy();
         keyboardAction.destroy();
-      },
+      }
     };
   },
   // Accessible dropdown/combobox
-  dropdown: (
-    element: HTMLElement,
-    options: {
-      isOpen: boolean;
-      onToggle: () => void;
+  dropdown: (; element: HTMLElement,
+    options: {, isOpen: boolean;, onToggle: () => void;
       onSelect: (_value: any) => void;
     }
   ) => {
@@ -482,11 +477,11 @@ export function liveRegion(
     const ariaAction = ariaState(element, {
       role: 'combobox',
       expanded: options.isOpen,
-      controls: listboxId,
+      controls: listboxId
     });
     const keyboardAction = keyboardNavigation(element, {
       keys: {
-        // handlers don't use the event object — keep them parameterless to avoid unused-param lint errors: 'Enter': () => {
+        'Enter': () => {
           options.onToggle();
         },
         ' ': () => {
@@ -500,10 +495,10 @@ export function liveRegion(
           e.preventDefault();
           // Focus previous option logic here
         },
-        // Escape also doesn't use the event object: 'Escape': () => {
+        'Escape': () => {
           if (options.isOpen) options.onToggle();
-        },
-      },
+        }
+      }
     });
     return {
       update: (newOptions: typeof options) => {
@@ -513,7 +508,7 @@ export function liveRegion(
       destroy: () => {
         ariaAction.destroy();
         keyboardAction.destroy();
-      },
+      }
     };
-  },
+  }
 };

@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 // Simple validation schemas
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(1, 'Password is required')
 });
 const registerSchema = z
   .object({
@@ -19,19 +19,19 @@ const registerSchema = z
     jurisdiction: z.string().min(2, 'Jurisdiction is required'),
     badgeNumber: z.string().optional(),
     agreeToTerms: z.string().transform(val => val === 'true'),
-    agreeToPrivacy: z.string().transform(val => val === 'true'),
+    agreeToPrivacy: z.string().transform(val => val === 'true')
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirmPassword']
   })
   .refine(data => data.agreeToTerms === true, {
     message: 'You must agree to the terms',
-    path: ['agreeToTerms'],
+    path: ['agreeToTerms']
   })
   .refine(data => data.agreeToPrivacy === true, {
     message: 'You must agree to privacy policy',
-    path: ['agreeToPrivacy'],
+    path: ['agreeToPrivacy']
   });
 export const load: PageServerLoad = async () => {
   return {};
@@ -59,14 +59,14 @@ export const actions: Actions = {
           jurisdiction: formData.get('jurisdiction') as string,
           badgeNumber: (formData.get('badgeNumber') as string) || '',
           agreeToTerms: formData.get('agreeToTerms') as string,
-          agreeToPrivacy: formData.get('agreeToPrivacy') as string,
+          agreeToPrivacy: formData.get('agreeToPrivacy') as string
         };
         // Validate registration data
         const validation = registerSchema.safeParse(registerData);
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Registration validation failed',
+            error: errors[0]?.message || 'Registration validation failed'
           });
         }
         // For demo purposes - just set session and redirect
@@ -78,7 +78,7 @@ export const actions: Actions = {
           maxAge: 60 * 60 * 24 * 7, // 1 week,
           httpOnly: true,
           secure: false,
-          sameSite: 'lax',
+          sameSite: 'lax'
         });
         throw redirect(302, '/dashboard');
       } else {
@@ -89,8 +89,7 @@ export const actions: Actions = {
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Login validation failed',
-          });
+            error: errors[0]?.message || 'Login validation failed` });
         }
         // For demo purposes - accept any valid email/password
         console.log('Demo Login:', { email });
@@ -100,7 +99,7 @@ export const actions: Actions = {
           maxAge: 60 * 60 * 24 * 7, // 1 week,
           httpOnly: true,
           secure: false,
-          sameSite: 'lax',
+          sameSite: 'lax'
         });
         throw redirect(302, '/dashboard');
       }
@@ -111,8 +110,7 @@ export const actions: Actions = {
       }
       console.error('Auth error:', error);
       return fail(500, {
-        error: 'An error occurred during authentication. Please try again.',
-      });
+        error: 'An error occurred during authentication. Please try again.` });
     }
-  },
+  }
 };

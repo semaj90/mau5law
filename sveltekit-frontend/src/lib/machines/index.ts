@@ -30,9 +30,7 @@ export type AITaskPayload = AnalysisData | ProcessingData | SearchData;
 // Union type for the AI task types
 export type AITaskType = 'analysis' | 'processing' | 'search';
 // Generic AITask interface
-export interface AITask<T extends AITaskPayload = AITaskPayload> {
-  id: string;
-  type: AITaskType;
+export interface AITask<T extends AITaskPayload = AITaskPayload> { id: string;, type: AITaskType;
   data: T;
   timestamp: number;
 }
@@ -40,12 +38,12 @@ export const createAITask = <T extends AITaskPayload>(type: AITaskType, data: T)
   id: `${type}_${Date.now()}`,
   type,
   data,
-  timestamp: Date.now(),
+  timestamp: Date.now()
 });
 export const aiTaskCreators = {
   analysis: (data: AnalysisData) => createAITask('analysis', data),
   processing: (data: ProcessingData) => createAITask('processing', data),
-  search: (data: SearchData) => createAITask('search', data),
+  search: (data: SearchData) => createAITask('search', data)
 };
 // Export types
 export type { DocumentUploadContext } from './document-upload-machine';

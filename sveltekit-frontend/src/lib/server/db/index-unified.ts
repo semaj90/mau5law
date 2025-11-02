@@ -142,12 +142,11 @@ export async function getSystemHealth(): Promise<any> {
       status: dbHealth.status,
       config: dbHealth.config,
       connection: connectionTest,
-      pools: dbHealth.pools,
+      pools: dbHealth.pools
     },
     application: appHealth,
     timestamp: new Date().toISOString(),
-    version: '2.0.0-unified'
-  }
+    version: '2.0.0-unified' }
 }
 // Vector store with centralized connection (updated for embeddinggemma)
 export function getVectorStore() {

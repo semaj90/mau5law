@@ -26,21 +26,21 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const result = await productionServiceClient.execute('xstate.event', {
       event: eventData,
-      source: 'sveltekit-frontend',
+      source: 'sveltekit-frontend'
     });
     return json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         service: 'xstate-manager',
         operation: 'event',
-        event_type: eventData.type,
-      },
+        event_type: eventData.type
+      }
     });
   } catch (err: any) {
     console.error('XState API Error:', err);
-    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 export const GET: RequestHandler = async ({ url }) => {
@@ -50,14 +50,14 @@ export const GET: RequestHandler = async ({ url }) => {
     if (machineId) {
       // Get machine state
       const result = await productionServiceClient.execute('xstate.machine.status', {
-        machineId,
+        machineId
       });
       return json({ success: true, data: result });
     }
     if (actorId) {
       // Get actor state
       const result = await productionServiceClient.execute('xstate.actor.status', {
-        actorId,
+        actorId
       });
       return json({ success: true, data: result });
     }
@@ -67,14 +67,14 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'xstate',
       status: 'operational',
       endpoints: {
-        event: '/api/v1/xstate (POST)',
+       , event: '/api/v1/xstate (POST)',
         machine_status: '/api/v1/xstate?machineId={id}',
         actor_status: '/api/v1/xstate?actorId={id}',
         machines: '/api/v1/xstate/machines',
-        actors: '/api/v1/xstate/actors',
+        actors: '/api/v1/xstate/actors'
       },
       health: {
-        'xstate-manager': health['xstate-manager'] || false,
+        'xstate-manager': health['xstate-manager'] || false
       },
       capabilities: [
         'Event Processing',
@@ -95,10 +95,10 @@ export const GET: RequestHandler = async ({ url }) => {
         'ERROR',
         'RESET',
       ],
-      version: '1.0.0',
+      version: '1.0.0'
     });
   } catch (err: any) {
     console.error('XState GET Error:', err);
-    return error(503, ensureError({ message: 'XState service health check failed' }));
+    return error(503, ensureError({ message: `XState service health check failed` }));
   }
 };

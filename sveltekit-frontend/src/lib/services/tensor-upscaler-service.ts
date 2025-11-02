@@ -3,7 +3,7 @@ export interface TensorCompressionOptions {
 }
 export async function compressTensorToPNG(
   tensor: Float32Array | number[];
-  opts: TensorCompressionOptions = {}
+ , opts: TensorCompressionOptions = {}
 ): Promise<string> {
   const ratio = opts.ratio ?? 1;
   const arr = new Uint8ClampedArray(tensor.length);
@@ -52,7 +52,7 @@ export class TensorUpscalerService {
   }
   async upscale(
     input: Blob | ArrayBuffer | Uint8Array;
-    options: UpscaleOptions = {}
+   , options: UpscaleOptions = {}
   ): Promise<Blob> {
     // Normalize input to a Blob so callers always receive a Blob result.
     let blob: Blob;

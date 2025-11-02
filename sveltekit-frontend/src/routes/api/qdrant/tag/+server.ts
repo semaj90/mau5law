@@ -58,13 +58,13 @@ function getErrorMessage(err: any): string {
 
 // Mock Qdrant client for development - return typed shapes
 class MockQdrantClient {
-  private collections = new Map<string, { name: string; config: any; points: Point[] }>();
+  private collections = new Map<string, { name: string; config: any;, points: Point[] }>();
   async createCollection(name: string, config: any) {
     this.collections.set(name, { name, config, points: [] });
     return { status: 'ok' } as const;
   }
   async getCollections(): Promise<GetCollectionsResponse> {
-    return { collections: Array.from(this.collections.values()).map(c => ({ name: c.name, config: c.config, points: c.points })) };
+    return { collections: Array.from(this.collections.values()).map(c => ({, name: c.name, config: c.config, points: c.points })) };
   }
   async upsert(collection: string, data: UpsertRequest): Promise<UpsertResponse> {
     const coll = this.collections.get(collection);
@@ -87,7 +87,7 @@ class MockQdrantClient {
     return coll.points.slice(0, query.limit || 10).map((point: Point, index: number) => ({
       id: point.id,
       payload: point.payload,
-      score: 0.9 - index * 0.1,
+      score: 0.9 - index * 0.1
     })) as SearchResult;
   }
   async delete(collection: string, opts: DeleteOpts) {
@@ -119,7 +119,7 @@ class MockQdrantClient {
     return {
       points_count: coll?.points?.length || 0,
       config: coll?.config || {},
-      status: 'green',
+      status: 'green'
     };
   }
   async createPayloadIndex(_collection: string, _config?: any) {
@@ -134,16 +134,16 @@ const qdrantClient = new MockQdrantClient();
 const COLLECTIONS = {
   EVIDENCE: 'legal_evidence',
   TAGS: 'evidence_tags',
-  EMBEDDINGS: 'document_embeddings',
+  EMBEDDINGS: 'document_embeddings'
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const session = locals.session;
     if (!session) {
-      return json({ error: 'Authentication required' }, { status: 401 });
+      return json({ error: `Authentication required` }, { status: 401 });
     }
-    // safer typed session id extraction (avoid `any`)
+    // safer typed session id extraction (avoid `any')
     const sessionId = typeof session === 'string' ? session : (session as { id?: string } | null | undefined)?.id;
     const body = await request.json();
     const { action = 'tag', ...data } = body as Record<string, unknown>;
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: 'Qdrant operation failed',
-        details: getErrorMessage(error),
+        details: getErrorMessage(error)
       },
       { status: 500 }
     );
@@ -184,24 +184,21 @@ async function initializeCollections(): Promise<void> {
     const collections = await qdrantClient.getCollections();
     const existingCollections = (collections.collections || []).map((c) => c.name) || [];
     if (!existingCollections.includes(COLLECTIONS.EVIDENCE)) {
-      await qdrantClient.createCollection(COLLECTIONS.EVIDENCE, {
-        vectors: { size: 1536, distance: 'Cosine' },
-        optimizers_config: { default_segment_number: 2 },
-        replication_factor: 1,
+      await qdrantClient.createCollection(COLLECTIONS.EVIDENCE, { vectors: {, size: 1536, distance: 'Cosine' },
+        optimizers_config: {, default_segment_number: 2 },
+        replication_factor: 1
       });
     }
     if (!existingCollections.includes(COLLECTIONS.TAGS)) {
-      await qdrantClient.createCollection(COLLECTIONS.TAGS, {
-        vectors: { size: 384, distance: 'Cosine' },
-        optimizers_config: { default_segment_number: 1 },
-        replication_factor: 1,
+      await qdrantClient.createCollection(COLLECTIONS.TAGS, { vectors: {, size: 384, distance: 'Cosine' },
+        optimizers_config: {, default_segment_number: 1 },
+        replication_factor: 1
       });
     }
     if (!existingCollections.includes(COLLECTIONS.EMBEDDINGS)) {
-      await qdrantClient.createCollection(COLLECTIONS.EMBEDDINGS, {
-        vectors: { size: 1536, distance: 'Cosine' },
-        optimizers_config: { default_segment_number: 4, memmap_threshold: 20000 },
-        replication_factor: 1,
+      await qdrantClient.createCollection(COLLECTIONS.EMBEDDINGS, { vectors: {, size: 1536, distance: 'Cosine' },
+        optimizers_config: {, default_segment_number: 4, memmap_threshold: 20000 },
+        replication_factor: 1
       });
     }
     await createSearchIndices();
@@ -218,7 +215,7 @@ async function createSearchIndices(): Promise<void> {
         try {
           await qdrantClient.createPayloadIndex(String(collection), {
             field_name: field,
-            field_schema: field === 'tags' ? 'keyword' : 'keyword',
+            field_schema: field === 'tags' ? 'keyword' : 'keyword'
           });
         } catch {
           // Index might already exist
@@ -235,7 +232,7 @@ function extractVectorSize(cfg: any): number {
   try {
     if (!cfg || typeof cfg !== 'object') return 0;
     const c = cfg as Record<string, unknown>;
-    // Typical shapes: { params: { vectors: { size: number } } } or { vectors: { size: number } }
+    // Typical shapes: { params: {, vectors: {, size: number } } } or { vectors: {, size: number } }
     const params = c['params'] as Record<string, unknown> | undefined;
     const paramsVectors = params?.['vectors'] as Record<string, unknown> | undefined;
     const v1 = (paramsVectors?.['size'] ?? undefined) as unknown;
@@ -265,7 +262,7 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
     const vector = Array.isArray(data.vector) ? (data.vector as number[]) : undefined;
     const payload = data.payload as Payload | undefined;
     if (!id || !vector || !payload) {
-      return json({ error: 'Missing required fields: id, vector, payload' }, { status: 400 });
+      return json({ error: 'Missing required, fields: id, vector, payload' }, { status: 400 });
     }
     const documentPayload = { ...payload, userId, timestamp: new Date().toISOString() } as Payload;
     const response = (await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
@@ -274,9 +271,9 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
         {
           id,
           vector,
-          payload: documentPayload,
+          payload: documentPayload
         },
-      ],
+      ]
     })) as UpsertResponse;
     if (Array.isArray(payload.tags) && (payload.tags as unknown[]).length > 0) {
       await createTagEmbeddings((payload.tags as unknown[]).map(String), id, userId);
@@ -285,7 +282,7 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
       success: true,
       operation_id: response.operation_id,
       status: response.status,
-      message: 'Document tagged successfully',
+      message: 'Document tagged successfully'
     });
   } catch (error: any) {
     console.error('tagDocument error:', getErrorMessage(error));
@@ -301,8 +298,8 @@ async function createTagEmbeddings(tags: string[], documentId: string, userId: s
         try {
           const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'nomic-embed-text', prompt: tag }),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({, model: 'nomic-embed-text', prompt: tag })
           });
           if (embeddingResponse.ok) {
             const embeddingData = await embeddingResponse.json();
@@ -310,9 +307,9 @@ async function createTagEmbeddings(tags: string[], documentId: string, userId: s
               ? (embeddingData.embedding as number[]).slice(0, 384)
               : [];
             return {
-              id: `${documentId}_tag_${tag.replace(/\s+/g, '_').toLowerCase()}`,
+              id: '${documentId}_tag_${tag.replace(/\s+/g, '_').toLowerCase()}`,
               vector,
-              payload: { tag, documentId, userId, timestamp: new Date().toISOString() },
+              payload: { tag, documentId, userId, timestamp: new Date().toISOString() }
             } as Point;
           }
         } catch (error: any) {
@@ -349,28 +346,28 @@ async function searchDocuments(data: Record<string, unknown>, userId: string): P
 
     const mustConditions: any[] = [{ key: 'userId', match: { value: userId } }];
     if (Array.isArray(filters.evidenceType))
-      mustConditions.push({ key: 'evidenceType', match: { value: filters.evidenceType } });
+      mustConditions.push({ key: 'evidenceType', match: {, value: filters.evidenceType } });
     if (Array.isArray(filters.legalRelevance))
-      mustConditions.push({ key: 'legalRelevance', match: { value: filters.legalRelevance } });
-    if (filters.caseId) mustConditions.push({ key: 'caseId', match: { value: filters.caseId } });
-    if (Array.isArray(filters.tags)) mustConditions.push({ key: 'tags', match: { value: filters.tags } });
+      mustConditions.push({ key: 'legalRelevance', match: {, value: filters.legalRelevance } });
+    if (filters.caseId) mustConditions.push({ key: 'caseId', match: {, value: filters.caseId } });
+    if (Array.isArray(filters.tags)) mustConditions.push({ key: 'tags', match: {, value: filters.tags } });
 
     const searchResult = (await qdrantClient.search(COLLECTIONS.EVIDENCE, {
       vector: queryVector,
-      filter: (mustConditions.length > 0 ? { must: mustConditions } : undefined) as unknown,
+      filter: (mustConditions.length > 0 ? {, must: mustConditions } : undefined) as unknown,
       limit,
       score_threshold: threshold,
       with_payload: true,
-      with_vector: false,
+      with_vector: false
     })) as SearchResult;
 
     const tagSearchResults = (await qdrantClient.search(COLLECTIONS.TAGS, {
       vector: Array.isArray(queryVector) ? queryVector.slice(0, 384) : (queryVector as Vector),
-      filter: { must: [{ key: 'userId', match: { value: userId } }] } as unknown,
+      filter: { must: [{, key: 'userId', match: { value: userId } }] } as unknown,
       limit: 10,
       score_threshold: 0.6,
       with_payload: true,
-      with_vector: false,
+      with_vector: false
     })) as SearchResult;
 
     return json({
@@ -378,18 +375,18 @@ async function searchDocuments(data: Record<string, unknown>, userId: string): P
       results: searchResult.map((result) => ({
         id: result.id,
         score: result.score,
-        payload: result.payload,
+        payload: result.payload
       })),
       relatedTags: tagSearchResults.map((result) => ({
         tag: result.payload?.tag,
         score: result.score,
-        documentId: result.payload?.documentId,
+        documentId: result.payload?.documentId
       })),
       searchStats: {
         totalResults: searchResult.length,
         maxScore: searchResult[0]?.score ?? 0,
-        threshold,
-      },
+        threshold
+      }
     });
   } catch (error: any) {
     console.error('searchDocuments error:', getErrorMessage(error));
@@ -417,7 +414,7 @@ async function batchTagDocuments(data: Record<string, unknown>, userId: string):
             return {
               id: String(d.id),
               vector: Array.isArray(d.vector) ? (d.vector as number[]) : undefined,
-              payload: { ...payload, userId, timestamp: new Date().toISOString() },
+              payload: { ...payload, userId, timestamp: new Date().toISOString() }
             } as Point;
           })
           .filter(Boolean);
@@ -426,12 +423,12 @@ async function batchTagDocuments(data: Record<string, unknown>, userId: string):
           batchIndex: Math.floor(i / batchSize),
           count: batch.length,
           operation_id: response.operation_id,
-          status: response.status,
+          status: response.status
         });
       } catch (error: any) {
         errors.push({
           batchIndex: Math.floor(i / batchSize),
-          error: getErrorMessage(error),
+          error: getErrorMessage(error)
         });
       }
     }
@@ -441,7 +438,7 @@ async function batchTagDocuments(data: Record<string, unknown>, userId: string):
       successful: results.length,
       failed: errors.length,
       results,
-      errors,
+      errors
     });
   } catch (error: any) {
     console.error('batchTagDocuments error:', getErrorMessage(error));
@@ -464,17 +461,17 @@ async function updateDocumentTags(data: Record<string, unknown>, userId: string)
       ...existingPayload,
       tags: tags ?? existingPayload.tags,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
       wait: true,
       points: [
         {
-          id: documentId,
+         , id: documentId,
           vector: vector ?? existing[0].vector,
-          payload: updatedPayload,
+          payload: updatedPayload
         },
-      ],
+      ]
     });
     if (tags) {
       await qdrantClient.delete(COLLECTIONS.TAGS, {
@@ -482,9 +479,9 @@ async function updateDocumentTags(data: Record<string, unknown>, userId: string)
         filter: {
           must: [
             { key: 'documentId', match: { value: documentId } },
-            { key: 'userId', match: { value: userId } },
-          ],
-        },
+            { key: 'userId', match: {, value: userId } }
+          ]
+        }
       });
       await createTagEmbeddings(tags, documentId, userId);
     }
@@ -502,17 +499,17 @@ async function deleteDocument(data: Record<string, unknown>, userId: string): Pr
     if (!documentId) return json({ error: 'Document ID required' }, { status: 400 });
     await qdrantClient.delete(COLLECTIONS.EVIDENCE, {
       wait: true,
-      filter: { must: [{ key: 'userId', match: { value: userId } }] },
-      points: [documentId],
+      filter: { must: [{, key: 'userId', match: {, value: userId } }] },
+      points: [documentId]
     });
     await qdrantClient.delete(COLLECTIONS.TAGS, {
       wait: true,
       filter: {
         must: [
           { key: 'documentId', match: { value: documentId } },
-          { key: 'userId', match: { value: userId } },
-        ],
-      },
+          { key: 'userId', match: {, value: userId } }
+        ]
+      }
     });
     return json({ success: true, message: 'Document deleted successfully' });
   } catch (error: any) {
@@ -530,25 +527,24 @@ async function getSimilarDocuments(data: Record<string, unknown>, userId: string
     const sourceDoc = (await qdrantClient.retrieve(COLLECTIONS.EVIDENCE, {
       ids: [documentId],
       with_vector: true,
-      with_payload: true,
+      with_payload: true
     })) as (Point & { vector?: Vector })[];
     if (sourceDoc.length === 0) return json({ error: 'Source document not found' }, { status: 404 });
     const similarDocs = (await qdrantClient.search(COLLECTIONS.EVIDENCE, {
       vector: sourceDoc[0].vector,
-      filter: {
-        must: [{ key: 'userId', match: { value: userId } }],
-        must_not: [{ key: 'evidenceId', match: { value: documentId } }],
+      filter: { must: [{, key: 'userId', match: { value: userId } }],
+        must_not: [{ key: 'evidenceId', match: {, value: documentId } }]
       },
       limit,
       score_threshold: 0.5,
       with_payload: true,
-      with_vector: false,
+      with_vector: false
     })) as SearchResult;
 
     return json({
       success: true,
-      sourceDocument: { id: sourceDoc[0].id, payload: sourceDoc[0].payload },
-      similarDocuments: similarDocs.map((doc) => ({ id: doc.id, score: doc.score, payload: doc.payload })),
+      sourceDocument: {, id: sourceDoc[0].id, payload: sourceDoc[0].payload },
+      similarDocuments: similarDocs.map((doc) => ({ id: doc.id, score: doc.score, payload: doc.payload }))
     });
   } catch (error: any) {
     console.error('getSimilarDocuments error:', getErrorMessage(error));
@@ -563,15 +559,14 @@ async function getCollectionStats(userId: string): Promise<Response> {
     for (const [collectionKey, collectionName] of Object.entries(COLLECTIONS)) {
       try {
         const info = await qdrantClient.getCollection(collectionName);
-        const userDocCount = await qdrantClient.count(collectionName, {
-          filter: { must: [{ key: 'userId', match: { value: userId } }] },
+        const userDocCount = await qdrantClient.count(collectionName, { filter: {, must: [{, key: 'userId', match: {, value: userId } }] }
         });
         const cfg = info.config as unknown;
         stats[collectionKey] = {
           totalDocuments: info.points_count || 0,
           userDocuments: (userDocCount && typeof userDocCount.count === 'number' ? userDocCount.count : 0),
           vectorSize: extractVectorSize(cfg),
-          status: info.status || 'unknown',
+          status: info.status || 'unknown'
         };
       } catch (error: any) {
         stats[collectionKey] = { error: 'Failed to get stats' };
@@ -590,7 +585,7 @@ async function generateTextEmbedding(text: string): Promise<number[]> {
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'nomic-embed-text', prompt: text }),
+      body: JSON.stringify({, model: 'nomic-embed-text', prompt: text })
     });
     if (!response.ok) throw new Error('Embedding generation failed');
     const data = await response.json();
@@ -638,35 +633,34 @@ async function getDocument(documentId: string, userId: string): Promise<Response
 	const document = await qdrantClient.retrieve(COLLECTIONS.EVIDENCE, {
 		ids: [documentId],
 		with_payload: true,
-		with_vector: false,
+		with_vector: false
 	});
 	if (document.length === 0 || String(document[0].payload?.userId ?? '') !== userId) {
-		return json({ error: 'Document not found' }, { status: 404 });
+		return json({ error: `Document not found` }, { status: 404 });
 	}
-	return json({ success: true, document: { id: document[0].id, payload: document[0].payload } });
+	return json({ success: true, document: {, id: document[0].id, payload: document[0].payload } });
 }
 
 async function listDocuments(userId: string, options: { caseId?: string; limit: number }): Promise<Response> {
-	const filter: { must: any[] } = { must: [{ key: 'userId', match: { value: userId } }] };
-	if (options.caseId) filter.must.push({ key: 'caseId', match: { value: options.caseId } });
+	const filter: { must: any[] } = { must: [{, key: 'userId', match: { value: userId } }] };
+	if (options.caseId) filter.must.push({ key: 'caseId', match: {, value: options.caseId } });
 	const documents = await qdrantClient.scroll(COLLECTIONS.EVIDENCE, {
 		filter,
 		limit: options.limit,
 		with_payload: true,
-		with_vector: false,
+		with_vector: false
 	});
 	return json({
 		success: true,
-		documents: documents.points?.map((doc: Point) => ({ id: doc.id, payload: doc.payload })) || [],
+		documents: documents.points?.map((doc: Point) => ({ id: doc.id, payload: doc.payload })) || []
 	});
 }
 
 async function getUserTags(userId: string): Promise<Response> {
-	const tags = await qdrantClient.scroll(COLLECTIONS.TAGS, {
-		filter: { must: [{ key: 'userId', match: { value: userId } }] },
+	const tags = await qdrantClient.scroll(COLLECTIONS.TAGS, { filter: {, must: [{, key: 'userId', match: {, value: userId } }] },
 		limit: 1000,
 		with_payload: true,
-		with_vector: false,
+		with_vector: false
 	});
 	const tagCounts = new Map<string, number>();
 	tags.points?.forEach((point: Point) => {
@@ -686,14 +680,14 @@ async function getHealthStatus(): Promise<Response> {
 			success: true,
 			status: 'healthy',
 			collections: health.collections?.length || 0,
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 	} catch (error: any) {
 		return json({
 			success: false,
 			status: 'unhealthy',
 			error: getErrorMessage(error),
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 	}
 }

@@ -11,9 +11,7 @@ interface LokiCollectionLike {
 }
 
 // Define SearchableItem interface
-export interface SearchableItem {
-  id: string;
-  title: string;
+export interface SearchableItem { id: string;, title: string;
   content?: string;
   description?: string;
   metadata?: Record<string, unknown> & { case_id?: string; source?: string; priority?: string };
@@ -39,7 +37,7 @@ export interface SearchOptions {
   sortBy?: 'relevance' | 'date' | 'importance';
   filters?: {
     type?: Array<SearchableItem['type']>;
-    dateRange?: { start: string; end: string };
+    dateRange?: { start: string;, end: string };
     tags?: string[];
     caseId?: string;
   };
@@ -65,9 +63,7 @@ export interface ExportedIndex {
 }
 
 // Define SearchStats interface
-export interface SearchStats {
-  indices_count: number;
-  total_searchable_items: number;
+export interface SearchStats { indices_count: number;, total_searchable_items: number;
   recent_searches: string[];
   last_index_updates: Record<string, number | undefined>;
 }
@@ -90,7 +86,7 @@ export class FuseSearchEngine {
       { name: 'title', weight: 0.4 },
       { name: 'content', weight: 0.3 },
       { name: 'description', weight: 0.2 },
-      { name: 'tags', weight: 0.1 },
+      { name: 'tags', weight: 0.1 }
     ],
     // Search parameters
     threshold: 0.3, // 0.0 = perfect match, 1.0 = match anything;
@@ -102,7 +98,7 @@ export class FuseSearchEngine {
     // Advanced options
     ignoreLocation: true,
     findAllMatches: true,
-    useExtendedSearch: true,
+    useExtendedSearch: true
   };
   constructor(opts: FuseSearchEngineOptions = {}) {
     this.collections = opts.collections ?? ['cases', 'documents', 'evidence', 'chat_messages'];
@@ -141,7 +137,7 @@ export class FuseSearchEngine {
       await this.buildSearchIndex(collection);
       this.logger('info', `Refreshed search index for ${collection}`);
     } catch (err) {
-      this.logger('warn', `Failed to refresh index ${collection}:`, err);
+      this.logger('warn', `Failed to refresh index ${collection}: ', err);
     }
   }
 
@@ -221,7 +217,7 @@ export class FuseSearchEngine {
     const lokiCollection = await this.safeGetCollection(collection); // Await the async call
     // guard
     if (!lokiCollection) {
-      this.logger('warn', `Loki collection: "${collection}" not found or does not have a: 'find' method.`);
+      this.logger('warn', `Loki collection: "${collection}" not found or does not have, a: 'find' method.`);
       return [];
     }
     // call find (Loki wrappers may return array)
@@ -239,7 +235,7 @@ export class FuseSearchEngine {
         type: this.inferItemType(collection, rec),
         tags: Array.isArray(rec['tags']) ? (rec['tags'] as unknown[]).map(String) : this.extractTags(rec),
         created_at: (rec['created_at'] ?? rec['_created']) as string | undefined,
-        updated_at: (rec['updated_at'] ?? rec['_updated']) as string | undefined,
+        updated_at: (rec['updated_at'] ?? rec['_updated']) as string | undefined
       } as SearchableItem;
     });
   }
@@ -251,7 +247,7 @@ export class FuseSearchEngine {
       limit = 20,
       threshold = 0.3,
       sortBy = 'relevance',
-      filters,
+      filters
     } = options;
 
     if (!query || query.trim().length === 0) return [];
@@ -292,7 +288,7 @@ export class FuseSearchEngine {
           highlights,
           _fuseIndex: typeof refIndex === 'number' ? refIndex : undefined,
           _collection: collection,
-          _source: 'fuzzy' as const,
+          _source: 'fuzzy' as const
         } as SearchResult;
       });
       allResults.push(...limited);
@@ -311,7 +307,7 @@ export class FuseSearchEngine {
     const parsed = this.parseAdvancedQuery(query);
     const mergedOptions: SearchOptions = {
       ...options,
-      filters: { ...(options.filters ?? {}), ...(parsed.filters ?? {}) },
+      filters: { ...(options.filters ?? {}), ...(parsed.filters ?? {}) }
     };
     // Perform search with parsed query
     return this.search(parsed.query, mergedOptions);
@@ -335,8 +331,8 @@ export class FuseSearchEngine {
             // and resolve the Ollama endpoint via a utility like `getOllamaEndpoint()`
             // (from `src/lib/utils/ollama-endpoints.ts`) which respects
             // `process.env.OLLAMA_URL` for Docker-aware production deployments.
-            ollamaModels: ['embeddinggemma:latest', 'gemma3-legal:latest'],
-          },
+            ollamaModels: ['embeddinggemma:latest', 'gemma3-legal:latest']
+          }
         });
         vectorResults = ((resp as Record<string, unknown>)?.['results'] as VectorResult[]) ?? []; // Changed to VectorResult[]
       }
@@ -369,7 +365,7 @@ export class FuseSearchEngine {
     const terms = new Set<string>();
     // Extract terms from search results
     for (const res of searchResults) {
-      const text = `${res.item.title} ${res.item.content ?? ''}`;
+      const text = `${res.item.title} ${res.item.content ?? '' }`;
       const extracted = this.extractTermsFromContent(text);
       for (const t of extracted) {
         if (t.toLowerCase() !== query.toLowerCase() && t.length > 3) terms.add(t);
@@ -390,7 +386,7 @@ export class FuseSearchEngine {
       return {
         collection,
         data: this.searchableData.get(collection) ?? [],
-        lastUpdate: this.lastIndexUpdate.get(collection) ?? null,
+        lastUpdate: this.lastIndexUpdate.get(collection) ?? null
       };
     }
     const exports: Record<string, ExportedIndex> = {};
@@ -406,7 +402,7 @@ export class FuseSearchEngine {
       indices_count: this.fuseInstances.size,
       total_searchable_items: totalItems,
       recent_searches: this.searchHistory.slice(-10),
-      last_index_updates: Object.fromEntries(this.lastIndexUpdate) as Record<string, number | undefined>,
+      last_index_updates: Object.fromEntries(this.lastIndexUpdate) as Record<string, number | undefined>
     };
   }
   // Helper methods
@@ -568,9 +564,7 @@ export class FuseSearchEngine {
       const id = String(res.id ?? '');
       if (!id) continue;
       const score = typeof res.score === 'number' ? 1 - Number(res.score) : 1; // VectorResult has score
-      combined.set(id, {
-        item: { // Construct SearchableItem from VectorResult
-          id: res.id,
+      combined.set(id, { item: { // Construct SearchableItem from VectorResult, id: res.id,
           title: res.title ?? '',
           content: res.content,
           metadata: res.metadata,
@@ -619,7 +613,7 @@ export class FuseSearchEngine {
         // Check tags
         if (item.tags?.some((tag: string) => tag.toLowerCase().includes(lowerInput))) { // Explicitly type: 'tag'
           item.tags
-            .filter((tag: string) => tag.toLowerCase().includes(lowerInput)) // Explicitly type: 'tag'
+            .filter((tag: string) => tag.toLowerCase().includes(lowerInput)) // Explicitly; type: 'tag'
             .forEach((tag: string) => { // Explicitly type: 'tag'
               suggestions.add(tag);
               if (suggestions.size >= limit) return Array.from(suggestions);

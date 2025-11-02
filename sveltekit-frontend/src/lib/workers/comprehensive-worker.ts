@@ -2,29 +2,33 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import pgClient from '$lib/server/db-shim';
 import { document_chunks } from '$lib/db/schema';
-import { cache } from '$lib/server/cache/redis';
+import { CacheService } from '$lib/server/cache/redis'; // Changed import to CacheService
 import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 import { consumeFromQueue } from '$lib/server/rabbitmq';
-import { ingestionService } from '$lib/server/workflows/ingestion-service';
+
+// For typing postgres-js client
+import type { Sql } from 'postgres';
+// For typing drizzle client
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+// For typing Redis client
+import type { Redis } from 'ioredis';
+
 // Use postgres-js client from db-shim (drizzle adapter expects postgres-js client)
-const db = drizzle(pgClient as any);
+const db: PostgresJsDatabase = drizzle(pgClient as Sql);
+const cacheService = new CacheService(); // Instantiate CacheService
 let shuttingDown = $state<boolean>(false);
 const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-interface ChunkJob {
-  jobId: string;
-  documentId: string;
+interface ChunkJob { jobId: string;, documentId: string;
   chunkIndex: number;
   chunkText: string;
   text?: string; // Redis compatibility
-  metadata: {
-    totalChunks: number;
-    priority: string;
+  metadata: { totalChunks: number;, priority: string;
     userId?: string;
     timestamp: string;
   };
 }
 // Helper: safely format unknown errors to strings
-function formatError(err: any): string {
+function formatError(err: unknown): string {
   // Prefer Error.message for Error instances
   if (err instanceof Error) return err.message;
   // Strings are fine
@@ -36,7 +40,10 @@ function formatError(err: any): string {
     return String(err);
   }
 }
-async function processChunkJob(job: ChunkJob): Promise<any> {
+
+async function processChunkJob(
+  job: ChunkJob
+): Promise<{ success: boolean; processingTime: number;, chunkIndex: number }> {
   console.log(`📥 Processing chunk job: ${job.jobId}:${job.chunkIndex}`);
   const startTime = Date.now();
   const text = job.chunkText || job.text;
@@ -46,7 +53,7 @@ async function processChunkJob(job: ChunkJob): Promise<any> {
   try {
     // Generate embedding
     const result = (await getEmbeddingViaGate(fetch, text, {
-      model: job.metadata.priority === 'high' ? 'embeddinggemma:latest' : undefined,
+      model: job.metadata.priority === 'high' ? 'embeddinggemma:latest' : undefined
     })) as { embedding?: number[] | Float32Array; backend?: string; model?: string };
 
     // Ensure we have an embedding and normalize to number[]
@@ -61,7 +68,7 @@ async function processChunkJob(job: ChunkJob): Promise<any> {
     }
 
     // Log embedding backend and model
-    console.log(`📍 Embedding created via ${result.backend} using model ${result.model || 'unknown'}`);
+    console.log(`📍 Embedding created via ${result.backend} using model ${result.model || 'unknown' }`);
 
     // Prepare typed metadata (avoid `any`)
     const metadata: Record<string, unknown> = {
@@ -71,7 +78,7 @@ async function processChunkJob(job: ChunkJob): Promise<any> {
       priority: job.metadata.priority,
       workerId,
       processingTime: Date.now() - startTime,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     // Insert into DB with proper types (embedding: number[], metadata: Record<string, unknown>)
@@ -79,7 +86,7 @@ async function processChunkJob(job: ChunkJob): Promise<any> {
       chunk_text: text,
       chunk_index: job.chunkIndex,
       embedding,
-      metadata,
+      metadata
     });
     console.log(`✅ Stored embedding for ${job.jobId}:${job.chunkIndex}`);
     // Report progress to ingestion service
@@ -87,7 +94,7 @@ async function processChunkJob(job: ChunkJob): Promise<any> {
     return {
       success: true,
       processingTime: Date.now() - startTime,
-      chunkIndex: job.chunkIndex,
+      chunkIndex: job.chunkIndex
     };
   } catch (error) {
     console.error(`❌ Error processing chunk ${job.jobId}:${job.chunkIndex}:`, error);
@@ -96,19 +103,20 @@ async function processChunkJob(job: ChunkJob): Promise<any> {
     throw error;
   }
 }
-async function reportProgress(jobId: string, chunkIndex: number, totalChunks: number): Promise<any> {
+
+async function reportProgress(jobId: string, chunkIndex: number, totalChunks: number): Promise<void> {
   try {
     // Calculate progress
     const progress = Math.round(((chunkIndex + 1) / totalChunks) * 100);
     // Cache progress update
-    await cache.set(
+    await cacheService.set(
       `job:${jobId}:progress`,
       {
         chunkIndex,
         totalChunks,
         progress,
         lastUpdate: new Date().toISOString(),
-        workerId,
+        workerId
       },
       300
     ); // 5 minute TTL
@@ -120,71 +128,87 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
     console.error(`❌ Error reporting progress for ${jobId}:`, error);
   }
 }
-async function reportError(jobId: string, chunkIndex: number, error: any): Promise<any> {
+
+async function reportError(jobId: string, chunkIndex: number, error: unknown): Promise<void> {
   try {
-    await cache.set(
+    await cacheService.set(
       `job:${jobId}:error`,
       {
         chunkIndex,
         error: error instanceof Error ? error.message : formatError(error),
         timestamp: new Date().toISOString(),
-        workerId,
+        workerId
       },
       3600
     ); // 1 hour TTL for error debugging
   } catch (cacheError) {
-    console.error(`❌ Error reporting error for ${jobId}:`, formatError(cacheError));
+    console.error(`❌ Error reporting error for ${jobId}: ', formatError(cacheError));
   }
 }
-async function runRabbitConsumer(): Promise<any> {
+
+async function runRabbitConsumer(): Promise<boolean> {
   try {
-    // Initialize ingestion service
-    await ingestionService.initialize();
-    console.log('✅ Ingestion service initialized');
+    // Initialize ingestion service - REMOVED: Property 'initialize' does not exist on type 'IngestionService'.
+    // await ingestionService.initialize(); // Removed unused line
+    console.log('✅ Ingestion service ready');
+
+    // Get the Redis client from the cache service for heartbeat
+    const redisClient: Redis | undefined = cacheService.client; // Access client property
+
     // Register this worker
-    await cache.set(
+    await cacheService.set(
       `worker:${workerId}`,
       {
         id: workerId,
         startedAt: new Date().toISOString(),
         status: 'active',
         queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],
-        pid: process.pid,
+        pid: process.pid
       },
       300
     ); // 5 minute TTL, renewed by heartbeat
+
     // Start heartbeat
     const heartbeatInterval = setInterval(async () => {
       if (!shuttingDown) {
         try {
-          await cache.set(`worker:${workerId}:heartbeat`, new Date().toISOString(), 30);
-        } catch (e) {
+          if (redisClient) {
+            // Add null check for redisClient
+            await redisClient.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString()); // Changed to setex
+          } else {
+            console.warn('❌ Redis client not available for heartbeat in RabbitMQ consumer.');
+          }
+        } catch (e: unknown) {
           console.warn('❌ Heartbeat failed:', e);
         }
       }
     }, 15000); // Every 15 seconds
+
     // Consume from priority queue
     const priorityConsumer = consumeFromQueue('evidence.embedding.priority', async (payload, ack, nack) => {
       try {
         await processChunkJob(payload as ChunkJob);
         ack();
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('❌ Error processing priority job:', formatError(err));
         nack(); // Don't requeue to avoid hot loops
       }
     });
+
     // Consume from regular queue
     const regularConsumer = consumeFromQueue('evidence.embedding.queue', async (payload, ack, nack) => {
       try {
         await processChunkJob(payload as ChunkJob);
         ack();
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('❌ Error processing regular job:', formatError(err));
         nack(); // Don't requeue to avoid hot loops
       }
     });
+
     // Wait for both consumers to start
     await Promise.all([priorityConsumer, regularConsumer]);
+
     // Cleanup on shutdown
     process.on('SIGINT', () => {
       clearInterval(heartbeatInterval);
@@ -193,53 +217,71 @@ async function runRabbitConsumer(): Promise<any> {
       clearInterval(heartbeatInterval);
     });
     return true;
-  } catch (e) {
+  } catch (e: unknown) {
     console.warn(
       'RabbitMQ not available or failed to start consumer, falling back to Redis:',
-      (e as Error).message || e
+      e instanceof Error ? e.message : String(e)
     );
     return false;
   }
 }
-async function runRedisLoop(): Promise<any> {
+
+async function runRedisLoop(): Promise<void> {
   try {
-    // Initialize ingestion service
-    await ingestionService.initialize();
-    console.log('✅ Ingestion service initialized');
+    // Initialize ingestion service - REMOVED: Property 'initialize' does not exist on type 'IngestionService'.
+    // await ingestionService.initialize(); // Removed unused line
+    console.log('✅ Ingestion service ready');
+
+    // Get the Redis client from the cache service for blpop and heartbeat
+    const redisClient: Redis | undefined = cacheService.client; // Access client property
+
     // Register this worker
-    await cache.set(
+    await cacheService.set(
       `worker:${workerId}`,
       {
         id: workerId,
         startedAt: new Date().toISOString(),
         status: 'active',
         queues: ['embedding:jobs'],
-        pid: process.pid,
+        pid: process.pid
       },
       300
     );
     console.log('🚀 Redis BLPOP loop started on embedding:jobs');
+
     const heartbeatInterval = setInterval(async () => {
       if (!shuttingDown) {
         try {
-          await cache.set(`worker:${workerId}:heartbeat`, new Date().toISOString(), 30);
-        } catch (e) {
+          if (redisClient) {
+            // Add null check for redisClient
+            await redisClient.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString()); // Changed to setex
+          } else {
+            console.warn('❌ Redis client not available for heartbeat in Redis loop.');
+          }
+        } catch (e: unknown) {
           console.warn('❌ Heartbeat failed:', e);
         }
       }
     }, 15000);
+
     while (!shuttingDown) {
       try {
-        const popped = await cache.blpop('embedding:jobs', 0);
+        // Use the raw Redis client for blpop
+        if (!redisClient) {
+          // Add null check for redisClient before blpop
+          console.error('❌ Redis client not available for BLPOP. Exiting Redis loop.');
+          break;
+        }
+        const popped = await redisClient.blpop('embedding:jobs', 0);
         if (!popped) continue;
         const [, raw] = popped;
         const job = JSON.parse(raw) as ChunkJob;
         try {
           await processChunkJob(job);
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('❌ Error processing redis job:', formatError(err));
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error('❌ Worker error (redis loop):', formatError(e));
         await new Promise(r => setTimeout(r, 500));
       }
@@ -249,7 +291,8 @@ async function runRedisLoop(): Promise<any> {
     console.error('❌ Error in Redis loop:', error);
   }
 }
-async function runComprehensiveWorker(): Promise<any> {
+
+async function runComprehensiveWorker(): Promise<void> {
   console.log(`🚀 Comprehensive embedding worker starting (ID: ${workerId})`);
   try {
     const rabbitOk = await runRabbitConsumer();
@@ -262,21 +305,22 @@ async function runComprehensiveWorker(): Promise<any> {
     process.exit(1);
   }
 }
+
 // Graceful shutdown
-async function shutdown(): Promise<any> {
+async function shutdown(): Promise<void> {
   console.log('🛑 Comprehensive worker shutting down...');
   shuttingDown = true;
   try {
     // Unregister worker
-    await cache.del(`worker:${workerId}`);
-    await cache.del(`worker:${workerId}:heartbeat`);
+    await cacheService.del(`worker:${workerId}`);
+    await cacheService.del(`worker:${workerId}:heartbeat`);
     // Close database connection (postgres-js exposes an optional .end())
     try {
-      if (typeof (pgClient as any).end === 'function') {
-        await (pgClient as any).end();
+      if (typeof (pgClient as Sql).end === 'function') {
+        await (pgClient as Sql).end();
       }
       console.log('✅ Database connections closed');
-    } catch (e) {
+    } catch (e: unknown) {
       console.warn('⚠️ Error closing database connection gracefully:', e);
     }
   } catch (error) {
@@ -284,11 +328,14 @@ async function shutdown(): Promise<any> {
   }
   process.exit(0);
 }
+
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+
 // Handle unhandled rejections
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-  shutdown();
+  void shutdown();
 });
+
 void runComprehensiveWorker();

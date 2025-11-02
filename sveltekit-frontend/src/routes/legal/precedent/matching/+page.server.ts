@@ -29,7 +29,7 @@ export const load: PageServerLoad = async () => {
       // Only expose non-sensitive configuration to the client if absolutely necessary.
       // For example, if the client needs to know which vector DB is active.
       // ollamaUrl: ollamaUrl,
-      // qdrantUrl: qdrantUrl,
+      // qdrantUrl: qdrantUrl
     }
   };
 };

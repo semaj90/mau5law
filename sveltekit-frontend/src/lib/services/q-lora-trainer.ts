@@ -5,11 +5,9 @@
  * - Orchestrates periodic Q-LoRA fine-tunes via external CLI/API (e.g., Ollama, vLLM, or custom)
  * Note: Actual model training will be executed outside the browser/SSR process.
  */
-type Feedback =  ;{
-  userId: string;
-  prompt: string;
+type Feedback =  ;{ userId: string;, prompt: string;
   response: string;
-  rating: number;, // -1..+1
+  rating: number; // -1..+1
   context?: { [key,: strin,g]: any },
   ts: number;
 }
@@ -27,10 +25,10 @@ export class QLoRATrainerService {
       input: f.context?.input || '',
       output: f.response,
       rating: f.rating,
-      meta: { userId: f.userId, ts: f.ts, ...f.context }
+      meta: {, userId: f.userId, ts: f.ts, ...f.context }
     });
   }
-  async triggerTrainingRun(opts: { model: string); adapterOutDir: string }) {
+  async triggerTrainingRun(opts: {, model: string); adapterOutDir: string }) {
     // Placeholder: integrate with your training orchestration (Python/Go)
     // Emit an event or call a local endpoint to start Q-LoRA run.
     console.log('🔧 Trigger Q-LoRA training', opts, ' dataset size=', this.buffer.length);

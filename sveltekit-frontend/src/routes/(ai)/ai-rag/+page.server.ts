@@ -11,8 +11,8 @@ export const load: PageServerLoad = async ({ locals }) => {
       stats: {
         totalDocuments: 0,
         totalQueries: 0,
-        avgResponseTime: 0,
-      },
+        avgResponseTime: 0
+      }
     };
   }
 
@@ -25,8 +25,8 @@ export const load: PageServerLoad = async ({ locals }) => {
       stats: {
         totalDocuments: 0,
         totalQueries: 0,
-        avgResponseTime: 0,
-      },
+        avgResponseTime: 0
+      }
     };
   } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -38,8 +38,8 @@ export const load: PageServerLoad = async ({ locals }) => {
       stats: {
         totalDocuments: 0,
         totalQueries: 0,
-        avgResponseTime: 0,
-      },
+        avgResponseTime: 0
+      }
     };
   }
 };

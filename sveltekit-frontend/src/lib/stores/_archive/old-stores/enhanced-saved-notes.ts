@@ -9,9 +9,7 @@ import { derived, writable } from "svelte/store";
 import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
 import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
 // Enhanced Legal Note Interface
-export interface LegalNote {
-  id: string;
-  title: string;
+export interface LegalNote { id: string;, title: string;
   content: string;
   markdown: string;
   html: string;
@@ -32,10 +30,8 @@ export interface LegalNote {
     // OCR Integration
     ocrExtracted?: boolean;
     ocrConfidence?: number;
-    ocrBoundingBoxes?: Array<{
-      text: string;
-      confidence: number;
-      bbox: { x: number; y: number; width: number; height: number }
+    ocrBoundingBoxes?: Array<{ text: string;, confidence: number;
+      bbox: { x: number; y: number; width: number;, height: number }
     }>;
     // Embeddings & Semantic Search
     embeddings?: number[][];
@@ -43,9 +39,7 @@ export interface LegalNote {
     semanticSimilarity?: number;
     // Legal Context
     relatedCases?: string[];
-    legalCitations?: Array<{
-      type: 'case_law' | 'statute' | 'regulation' | 'precedent';
-      citation: string;
+    legalCitations?: Array<{ type: 'case_law' | 'statute' | 'regulation' | 'precedent';, citation: string;
       relevance: number;
       snippet?: string;
     }>;
@@ -54,16 +48,12 @@ export interface LegalNote {
     jurisdiction?: string;
     // Neo4j Integration
     neo4jNodeId?: string;
-    graphRelationships?: Array<{
-      type: string;
-      targetId: string;
+    graphRelationships?: Array<{ type: string;, targetId: string;
       properties: any;
     }>;
     // RAG Integration
     ragDocumentId?: string;
-    ragChunks?: Array<{
-      id: string;
-      content: string;
+    ragChunks?: Array<{ id: string;, content: string;
       embedding: number[];
       relevance: number;
     }>;
@@ -75,18 +65,14 @@ export interface LegalNote {
     priority?: 'low' | 'medium' | 'high' | 'urgent';
     archived?: boolean;
     // File Attachments
-    attachments?: Array<{
-      id: string;
-      filename: string;
+    attachments?: Array<{ id: string;, filename: string;
       contentType: string;
       size: number;
       minioPath?: string;
     }>;
   }
 }
-export interface NoteFilters {
-  search: string;
-  noteType: string;
+export interface NoteFilters { search: string;, noteType: string;
   tags: string[];
   caseId?: string;
   riskLevel?: string;
@@ -95,9 +81,7 @@ export interface NoteFilters {
   starred?: boolean;
   dateRange?: [Date, Date];
 }
-export interface NoteStats {
-  total: number;
-  byType: Record<string, number>;
+export interface NoteStats { total: number;, byType: Record<string, number>;
   byRiskLevel: Record<string, number>;
   aiGenerated: number;
   ocrExtracted: number;
@@ -232,12 +216,12 @@ class EnhancedNotesManager {
   private simdCache = createSIMDJSONCache({
     defaultTTL: 3600,
     compressionEnabled: true,
-    enableMetrics: true,
+    enableMetrics: true
   });
   private workerPool = createWorkerPool({
     maxWorkers: 4,
     enableSIMD: true,
-    redisCache: true,
+    redisCache: true
   });
   static getInstance(): EnhancedNotesManager {
     if (!EnhancedNotesManager.instance) {
@@ -374,13 +358,13 @@ class EnhancedNotesManager {
     try {
       const response = await fetch('/api/rag/index/notes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           documentId: note.id,
           content: note.content,
           embeddings: note.metadata.embeddings,
           metadata: {
-            noteType: note.noteType,
+           , noteType: note.noteType,
             caseId: note.caseId,
             tags: note.tags,
             riskLevel: note.metadata.riskLevel,
@@ -418,21 +402,19 @@ class EnhancedNotesManager {
       title: `OCR Extract - ${new Date().toLocaleDateString()}`,
       content: ocrResult.text,
       markdown: ocrResult.text,
-      html: `<p>${ocrResult.text.replace(/\n/g, '<br>')}</p>`,
+      html: '<p>${ocrResult.text.replace(/\n/g, '<br>')}</p>`,
       contentJson: ocrResult,
       noteType: 'ocr_extracted',
       tags: ['ocr', 'extracted'],
       caseId,
-      userId: 'current-user', // TODO: Get from auth
-      savedAt: new Date(),
+      userId: 'current-user', // TODO: Get from auth; savedAt: new Date(),
       metadata: {
         ocrExtracted: true,
         ocrConfidence: ocrResult.confidence,
         ocrBoundingBoxes: ocrResult.boundingBoxes,
         sourceDocument: ocrResult.sourceDocument,
         processingJobId: ocrResult.jobId,
-        processingStatus: 'completed'
-      }
+        processingStatus: `completed` }
     }
     await this.saveNote(note);
     return note;
@@ -520,7 +502,7 @@ class EnhancedNotesManager {
     try {
       await fetch('/api/notes/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(note)
       });
     } catch (error) {
@@ -565,7 +547,7 @@ class EnhancedNotesManager {
     }
     // Remove from server
     try {
-      await fetch(`/api/notes/${noteId}`, { method: 'DELETE' });
+      await fetch(`/api/notes/${noteId}`, { method: `DELETE` });
     } catch (error) {
       console.warn('Failed to remove note from server:', error);
     }

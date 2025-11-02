@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No file provided',
+          error: 'No file provided'
         },
         { status: 400 }
       );
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'File size exceeds 50MB limit',
+          error: 'File size exceeds 50MB limit'
         },
         { status: 400 }
       );
@@ -58,8 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Unsupported file type. Supported formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF',
-        },
+          error: 'Unsupported file type. Supported; formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
         { status: 400 }
       );
     }
@@ -71,12 +70,12 @@ export const POST: RequestHandler = async ({ request }) => {
       documentType,
       title,
       metadata: {
-        uploadedVia: 'enhanced-api',
+       , uploadedVia: 'enhanced-api',
         userAgent: request.headers.get('user-agent'),
         uploadedAt: new Date().toISOString(),
         apiVersion: '2.0',
-        enhancedProcessing: true,
-      },
+        enhancedProcessing: true
+      }
     });
 
     // Cast once to a well-defined type and reuse
@@ -84,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (resultTyped.success) {
       console.log(
-        `✅ Document processed successfully: ${resultTyped.documentId ?? 'unknown'} (${resultTyped.chunks ?? 0} chunks)`
+        `✅ Document processed successfully: ${resultTyped.documentId ?? 'unknown` } (${resultTyped.chunks ?? 0} chunks)`
       );
       return json({
         success: true,
@@ -93,19 +92,19 @@ export const POST: RequestHandler = async ({ request }) => {
         processingDetails: resultTyped.processingDetails ?? null,
         message: `Document uploaded and indexed successfully with ${resultTyped.chunks ?? 0} semantic chunks`,
         features: {
-          textExtraction: true,
+         , textExtraction: true,
           semanticIndexing: true,
           legalClassification: true,
-          enhancedSearch: true,
-        },
+          enhancedSearch: true
+        }
       });
     } else {
-      console.error(`❌ Document processing failed: ${resultTyped.error ?? 'unknown error'}`);
+      console.error(`❌ Document processing failed: ${resultTyped.error ?? 'unknown error` }`);
       return json(
         {
           success: false,
           error: resultTyped.error || 'Upload processing failed',
-          processingDetails: resultTyped.processingDetails ?? null,
+          processingDetails: resultTyped.processingDetails ?? null
         },
         { status: 500 }
       );
@@ -118,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: errorMessage,
-        details: 'An error occurred during document processing',
+        details: 'An error occurred during document processing'
       },
       { status: 500 }
     );
@@ -131,18 +130,18 @@ export const GET: RequestHandler = async () => {
   return json({
     maxFileSize: '50MB',
     supportedFormats: [
-      { extension: 'pdf', mimeType: 'application/pdf', description: 'PDF Document', aiProcessing: true },
+      {, extension: 'pdf', mimeType: 'application/pdf', description: 'PDF Document', aiProcessing: true },
       { extension: 'doc', mimeType: 'application/msword', description: 'Microsoft Word Document', aiProcessing: true },
       {
         extension: 'docx',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         description: 'Microsoft Word Document (Modern)',
-        aiProcessing: true,
+        aiProcessing: true
       },
       { extension: 'txt', mimeType: 'text/plain', description: 'Plain Text', aiProcessing: true },
       { extension: 'md', mimeType: 'text/markdown', description: 'Markdown Document', aiProcessing: true },
       { extension: 'html', mimeType: 'text/html', description: 'HTML Document', aiProcessing: true },
-      { extension: 'rtf', mimeType: 'application/rtf', description: 'Rich Text Format', aiProcessing: true },
+      { extension: 'rtf', mimeType: 'application/rtf', description: 'Rich Text Format', aiProcessing: true }
     ],
     enhancedFeatures: [
       'Automatic text extraction from multiple formats',
@@ -159,9 +158,8 @@ export const GET: RequestHandler = async () => {
       documentClassification: 'Legal-specific ML classification',
       semanticIndexing: 'Vector-based semantic chunking',
       searchIntegration: 'Real-time enhanced search integration',
-      confidenceScoring: 'AI-powered quality assessment',
+      confidenceScoring: 'AI-powered quality assessment'
     },
     apiVersion: '2.0',
-    processingEngine: 'LangChain RAG + Enhanced Semantic Search',
-  });
+    processingEngine: 'LangChain RAG + Enhanced Semantic Search` });
 };

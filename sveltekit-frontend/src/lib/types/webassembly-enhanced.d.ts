@@ -20,13 +20,11 @@ export const webAssemblyGPUUtils = {
   },
   // Create WebAssembly import object with GPU support
   createImportsWithGPU: (device: GPUDevice, additionalImports: any = {}): WebAssembly.Imports => {
-    return {
-      env: {
-        memory: new WebAssembly.Memory({ initial: 10, maximum: 100 }),
+    return { env: {, memory: new WebAssembly.Memory({ initial: 10, maximum: 100 }),
         getGPUDevice: () => device,
-        ...additionalImports,
+        ...additionalImports
       },
-      ...additionalImports,
+      ...additionalImports
     };
   },
   // Type assertion helper for GPU device conversion
@@ -45,7 +43,7 @@ export const webAssemblyGPUUtils = {
         confidence: (analysis as any).confidence || 0,
         processingTime: (analysis as any).processingTime || 0,
         method: (analysis as any).method || 'unknown',
-        ...analysis,
+        ...analysis
       };
     }
     return {
@@ -56,9 +54,9 @@ export const webAssemblyGPUUtils = {
       recommendations: [],
       confidence: 0,
       processingTime: 0,
-      method: 'error',
+      method: 'error'
     };
-  },
+  }
 };
 // Module declaration for WebAssembly enhancements
 declare module 'webassembly' {

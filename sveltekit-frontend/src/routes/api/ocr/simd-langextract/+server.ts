@@ -37,15 +37,11 @@ interface SIMDLangExtractResponse {
     compressed_tiles: CompressedTile[];
     gpu_buffer_data: number[];
     vertex_buffer_cache: string; // Base64 encoded ArrayBuffer
-    ui_components: {
-      instant_render: boolean;
-      component_data: string; // Base64 encoded,
+    ui_components: { instant_render: boolean;, component_data: string; // Base64 encoded,
       rendering_instructions: string;
       css_optimized: string;
     };
-    processing_stats: {
-      compression_time: number;
-      total_compression_ratio: number;
+    processing_stats: { compression_time: number;, total_compression_ratio: number;
       gpu_utilization: number;
       cache_hits: number;
       semantic_preservation_score: number;
@@ -119,7 +115,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         ...cachedResult,
         cached: true,
         vertex_buffer_key: vertexKey,
-        redis_keys: redisKeys,
+        redis_keys: redisKeys
       });
     }
     const startTime = Date.now();
@@ -134,16 +130,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       semanticClustering: true,
       vectorDimensions: standardEmbedding.length || 384,
       preserveSemantics: true,
-      ...simd_config,
+      ...simd_config
     };
     // Pass simdConfig into the engine options so the computed config is actually used
     // narrow and default the incoming: 'type' to the exact union the engine expects
-    const engineType: 'ocr' | 'legal' | 'ui' | 'general' = (type ?? 'ocr') as: 'ocr' | 'legal' | 'ui' | 'general';
+    const engineType: 'ocr' | 'legal' | 'ui' | 'general' = (type ?? 'ocr'); as: 'ocr' | 'legal' | 'ui' | 'general';
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: engineType,
       context: `${model} embedding`,
       uiTarget: ui_target,
-      ...simdConfig,
+      ...simdConfig
     });
     // Phase 3: Create enhanced response with SIMD data
     const response: SIMDLangExtractResponse = {
@@ -155,9 +151,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       tags,
       type,
       // Enhanced SIMD fields
-      simd_results: {
-        compressed_tiles: simdResult.compressedTiles.map(tile => ({
-          id: tile.id,
+      simd_results: { compressed_tiles: simdResult.compressedTiles.map(tile => ({, id: tile.id,
           compressed_data: Array.from(tile.compressedData), // Convert Uint8Array to number[]
           semantic_hash: tile.semanticHash,
           compression_ratio: tile.compressionRatio,
@@ -165,8 +159,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             token_count: tile.tileMetadata.tokenCount,
             semantic_density: tile.tileMetadata.semanticDensity,
             pattern_id: tile.tileMetadata.patternId,
-            categories: tile.tileMetadata.categories,
-          },
+            categories: tile.tileMetadata.categories
+          }
         })),
         gpu_buffer_data: Array.from(simdResult.gpuBufferData),
         vertex_buffer_cache: btoa(String.fromCharCode(...new Uint8Array(simdResult.vertexBufferCache))),
@@ -174,18 +168,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           instant_render: simdResult.uiComponents.instantRender,
           component_data: btoa(String.fromCharCode(...new Uint8Array(simdResult.uiComponents.componentData))),
           rendering_instructions: simdResult.uiComponents.renderingInstructions,
-          css_optimized: simdResult.uiComponents.cssOptimized,
+          css_optimized: simdResult.uiComponents.cssOptimized
         },
         processing_stats: {
           compression_time: simdResult.processingStats.compressionTime,
           total_compression_ratio: simdResult.processingStats.totalCompressionRatio,
           gpu_utilization: simdResult.processingStats.gpuUtilization,
           cache_hits: simdResult.processingStats.cacheHits,
-          semantic_preservation_score: simdResult.processingStats.semanticPreservationScore,
-        },
+          semantic_preservation_score: simdResult.processingStats.semanticPreservationScore
+        }
       },
       vertex_buffer_key: vertexKey,
-      redis_keys: redisKeys,
+      redis_keys: redisKeys
     };
     // Phase 4: Cache results with optimized expiration
     const cacheExpiration = 24 * 60 * 60 * 1000; // 24 hours
@@ -196,7 +190,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         total_compression_ratio: 0,
         gpu_utilization: 0,
         cache_hits: 0,
-        semantic_preservation_score: 0,
+        semantic_preservation_score: 0
       };
 
       // Cache vertex buffer separately for reuse (use empty string fallback)
@@ -212,14 +206,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         [
           {
             id: textKey,
-            score: stats.semantic_preservation_score ?? 0,
+            score: stats.semantic_preservation_score ?? 0
           },
         ],
         {
           model,
           tags,
           compression_ratio: stats.total_compression_ratio ?? 0,
-          gpu_utilization: stats.gpu_utilization ?? 0,
+          gpu_utilization: stats.gpu_utilization ?? 0
         }
       );
     }
@@ -233,7 +227,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json(
       {
         error: 'SIMD LangExtract processing failed',
-        details: message,
+        details: message
       },
       { status: 500 }
     );
@@ -254,20 +248,20 @@ export const GET: RequestHandler = async () => {
         vertex_buffer_caching: true,
         instant_ui_generation: true,
         semantic_preservation: Boolean(stats?.config?.preserveSemantics),
-        supported_compression_ratios: [10, 25, 50, 109, 200],
+        supported_compression_ratios: [10, 25, 50, 109, 200]
       },
       system_stats: {
         tile_cache_size: stats?.cacheSize ?? 0,
         semantic_patterns: stats?.semanticPatterns ?? [],
         gpu_buffer_pool: stats?.gpuBufferPoolSize ?? 0,
-        default_config: stats?.config ?? {},
+        default_config: stats?.config ?? {}
       },
       endpoints: {
         process: 'POST - Process text with SIMD tiling and vertex caching',
-        benchmark: 'POST with benchmark: true - Performance testing',
-        batch: 'POST with texts: [] - Batch processing',
+        benchmark: 'POST with; benchmark: true - Performance testing',
+        batch: 'POST with; texts: [] - Batch processing'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     return json(payload);
@@ -275,7 +269,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Failed to get SIMD LangExtract status',
+        error: 'Failed to get SIMD LangExtract status'
       },
       { status: 500 }
     );
@@ -306,14 +300,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'SIMD configuration updated',
       config,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json(
       {
         success: false,
-        error: 'Failed to update SIMD configuration',
-      },
+        error: `Failed to update SIMD configuration` },
       { status: 500 }
     );
   }
@@ -329,7 +322,7 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
       const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text, model }),
+        body: JSON.stringify({ text, model })
       });
       if (resp.ok) {
         const data = (await resp.json()) as FastApiEmbeddingResp;
@@ -343,13 +336,13 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
     type GoTensorResp = { data?: { result?: { embeddings?: number[] } } };
     const goResp = await fetch('/api/tensor', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': `application/json` },
       body: JSON.stringify({
-        operation: 'vectorize',
+       , operation: 'vectorize',
         documentId: `temp-${Date.now()}`,
         data: [],
-        options: { timeout: 5000 },
-      }),
+        options: { timeout: 5000 }
+      })
     });
     if (goResp.ok) {
       const goJson = (await goResp.json()) as GoTensorResp;
@@ -367,9 +360,7 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
 }
 
 // New concrete result type for batch processing
-type BatchProcessingResult = {
-  totalCompressionRatio: number;
-  gpuUtilization: number;
+type BatchProcessingResult = { totalCompressionRatio: number;, gpuUtilization: number;
   compressionTime: number;
   semanticPreservationScore: number;
   index: number;
@@ -394,7 +385,7 @@ async function handleBatchProcessing(
       totalCompressionRatio: 0,
       gpuUtilization: 0,
       compressionTime: 0,
-      semanticPreservationScore: 0,
+      semanticPreservationScore: 0
     };
     return {
       totalCompressionRatio: stats.totalCompressionRatio,
@@ -403,15 +394,13 @@ async function handleBatchProcessing(
       semanticPreservationScore: stats.semanticPreservationScore,
       index,
       originalText: result.originalText ?? '',
-      compressedTilesCount: compressedCount,
+      compressedTilesCount: compressedCount
     };
   });
 }
 
 // New/changed types for benchmark output
-type ProcessingStats = {
-  totalCompressionRatio: number;
-  gpuUtilization: number;
+type ProcessingStats = { totalCompressionRatio: number;, gpuUtilization: number;
   compressionTime: number;
   semanticPreservationScore: number;
 };
@@ -444,25 +433,18 @@ type SimdProcessResult = {
   processingStats: ProcessingStats;
 };
 
-type CompressionSummary = {
-  target_ratio: number;
-  achieved_ratio: number;
+type CompressionSummary = { target_ratio: number;, achieved_ratio: number;
   gpu_utilization: number;
   avg_processing_time: number;
   semantic_preservation: number;
 };
 
-type PerformanceStats = {
-  total_processing_time: number;
-  avg_compression_ratio: number;
+type PerformanceStats = { total_processing_time: number;, avg_compression_ratio: number;
   best_compression_ratio: number;
   avg_gpu_utilization: number;
 };
 
-type BenchmarkResults = {
-  benchmark_config: {
-    iterations: number;
-    compression_targets: number[];
+type BenchmarkResults = { benchmark_config: {; iterations: number;, compression_targets: number[];
     sample_texts: number;
   };
   compression_results: Record<string, CompressionSummary>;
@@ -488,7 +470,7 @@ async function handleBenchmarkTesting(
     benchmark_config: {
       iterations,
       compression_targets: compressionTargets,
-      sample_texts: sampleTexts.length,
+      sample_texts: sampleTexts.length
     },
     // runtime value; typed map of compression summaries
     compression_results: {} as Record<string, CompressionSummary>,
@@ -496,8 +478,8 @@ async function handleBenchmarkTesting(
       total_processing_time: 0,
       avg_compression_ratio: 0,
       best_compression_ratio: 0,
-      avg_gpu_utilization: 0,
-    },
+      avg_gpu_utilization: 0
+    }
   };
   const allResults: SimdProcessResult[] = [];
   const startTime = Date.now();
@@ -509,8 +491,7 @@ async function handleBenchmarkTesting(
       // First cast to unknown then to our SimdProcessResult type to avoid unsafe direct conversions
       const result = (await simdTextTilingEngine.processText(text, {
         type: 'legal',
-        context: `benchmark-${target}:1`,
-      })) as unknown as SimdProcessResult;
+        context: `benchmark-${target}:1` })) as unknown as SimdProcessResult;
       compressionResults.push(result);
       allResults.push(result);
     }
@@ -528,7 +509,7 @@ async function handleBenchmarkTesting(
       avg_processing_time: avgProcessingTime,
       semantic_preservation:
         compressionResults.reduce((sum, r) => sum + r.processingStats.semanticPreservationScore, 0) /
-        compressionResults.length,
+        compressionResults.length
     };
   }
   results.performance_stats = {
@@ -536,7 +517,7 @@ async function handleBenchmarkTesting(
     avg_compression_ratio:
       allResults.reduce((sum, r) => sum + r.processingStats.totalCompressionRatio, 0) / allResults.length,
     best_compression_ratio: Math.max(...allResults.map(r => r.processingStats.totalCompressionRatio)),
-    avg_gpu_utilization: allResults.reduce((sum, r) => sum + r.processingStats.gpuUtilization, 0) / allResults.length,
+    avg_gpu_utilization: allResults.reduce((sum, r) => sum + r.processingStats.gpuUtilization, 0) / allResults.length
   };
   console.log(
     `✅ Benchmark complete: ${results.performance_stats.total_processing_time}ms total, ${results.performance_stats.avg_compression_ratio.toFixed(1)}:1 avg compression`

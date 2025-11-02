@@ -7,16 +7,12 @@ import { chatVectorStorage, storeChatWithVector, getPredictiveAssistance, search
 import type { ChatMessage, IntentPrediction, SemanticSearchResult } from '../services/chat-vector-storage.js';
 import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
 }
-export interface ContextualTestResult {
-  testName: string;
-  success: boolean;
+export interface ContextualTestResult { testName: string;, success: boolean;
   executionTime: number;
   details: any;
   errors?: string[];
 }
-export interface ContextualEngineMetrics {
-  totalQueries: number;
-  successfulPredictions: number;
+export interface ContextualEngineMetrics { totalQueries: number;, successfulPredictions: number;
   averageConfidence: number;
   temporalPatternsDetected: number;
   contextMaintenance: number;
@@ -29,36 +25,26 @@ export interface ContextualEngineMetrics {
   predictionAccuracy: number;
   contextualRelevance: number;
 }
-export interface ConversationContext {
-  sessionId: string;
-  userId: string;
+export interface ConversationContext { sessionId: string;, userId: string;
   conversationFlow: ChatMessage[];
   currentIntent: string;
   intentHistory: string[];
-  temporalPatterns: {
-    preferredTimeSlots: number[];
-    commonDaysOfWeek: number[];
+  temporalPatterns: { preferredTimeSlots: number[];, commonDaysOfWeek: number[];
     seasonalTrends: string[];
     timeBasedIntents: Map<string, number[]>; // Intent -> time slots when most active
     workflowPatterns: string[]; // Common task sequences
   }
-  contextualMemory: {
-    topicsDiscussed: string[];
-    documentsReferenced: string[];
+  contextualMemory: { topicsDiscussed: string[];, documentsReferenced: string[];
     decisionsTracked: string[];
     followUpItems: string[];
     keyEntities: Array<any>;
     conceptGraph: Map<string, string[]>; // Concept -> related concepts
-    emotionalState: {
-      sentiment: number; // -1 to 1
-      stress_level: number; // 0 to 1,
+    emotionalState: { sentiment: number; // -1 to 1, stress_level: number; // 0 to 1,
       confidence: number; // 0 to 1
       engagement: number; // 0 to 1
     }
   }
-  learningProfile: {
-    expertise_level: 'novice' | 'intermediate' | 'expert';
-    preferred_explanation_style: 'detailed' | 'concise' | 'examples';
+  learningProfile: { expertise_level: 'novice' | 'intermediate' | 'expert';, preferred_explanation_style: 'detailed' | 'concise' | 'examples';
     common_mistakes: string[];
     learning_velocity: number;
     knowledge_gaps: string[];
@@ -370,7 +356,7 @@ export class ContextualEngineeringMachine {
     try {
       console.log('💡 Testing: "did you mean" suggestions...');
       const testInputs = [
-        "I need help with a contrct review", // Typo: contrct -> contract: "Can you analayze this agreement?", // Typo: analayze -> analyze: "Help me drraft a legal document", // Typo: drraft -> draft: "I want to reserch case law" // Typo: reserch -> research
+        "I need help with a contrct review", // Typo: contrct ->; contract: "Can you analayze this agreement?", // Typo: analayze ->; analyze: "Help me drraft a legal document", // Typo: drraft -> draft: "I want to reserch case law" //; Typo: reserch -> research
       ];
       let suggestionsGenerated = 0;
       for (const input of testInputs) {
@@ -440,7 +426,7 @@ export class ContextualEngineeringMachine {
           sessionId
         );
         console.log(`💬 Message ${i + 1}: "${conversationFlow[i]}"`);
-        console.log(`🤖 Context maintained: ${prediction.confidence > 0.5 ? 'Yes' : 'No'}`);
+        console.log(`🤖 Context maintained: ${prediction.confidence > 0.5 ? 'Yes' : `No' }`);
         console.log(`📋 Suggestions: ${prediction.suggestedQuestions.length}`);
         if (prediction.confidence > 0.5 && prediction.suggestedQuestions.length > 0) {
           contextMaintained++;
@@ -592,7 +578,7 @@ export class ContextualEngineeringMachine {
         success: false,
         executionTime: performance.now() - startTime,
         details: { [key,: strin,g]: any },
-        errors: [`Query optimization error: ${error.message}`]
+        errors: [`Query optimization; error: ${error.message}`]
       });
     }
   }
@@ -633,7 +619,7 @@ export class ContextualEngineeringMachine {
         success: false,
         executionTime: performance.now() - startTime,
         details: { [key,: strin,g]: any },
-        errors: [`Context maintenance error: ${error.message}`]
+        errors: [`Context maintenance; error: ${error.message}`]
       });
     }
   }
@@ -652,7 +638,7 @@ export class ContextualEngineeringMachine {
           seasonalTrends: []
         },
         contextualMemory: {
-          topicsDiscussed: [],
+         , topicsDiscussed: [],
           documentsReferenced: [],
           decisionsTracked: [],
           followUpItems: []
@@ -867,13 +853,13 @@ export class ContextualEngineeringMachine {
       // Analyze entity relationships
       const entities = context.contextualMemory.keyEntities;
       const conceptGraph = context.contextualMemory.conceptGraph;
-      console.log('🏢 Organizations identified:');
+      console.log('🏢 Organizations identified: `);
       entities.filter(item => item.forEach)(entity => {
         console.log(`   ${entity.entity} (mentioned ${entity.frequency} times)`);
       });
-      console.log('📜 Legal concepts mapped:');
+      console.log('📜 Legal concepts mapped: `);
       entities.filter(item => item.forEach)(entity => {
-        console.log(`   ${entity.entity} -> ${conceptGraph.get(entity.entity)?.join(', ') || 'No relations'}`);
+        console.log(`   ${entity.entity} -> ${conceptGraph.get(entity.entity)?.join(', ') || 'No relations' }`);
       });
       // Test relationship query
       const relationshipQuery = "What is the relationship between Apple and Samsung in this context?";
@@ -985,7 +971,7 @@ export class ContextualEngineeringMachine {
         currentIntent: '',
         intentHistory: [],
         temporalPatterns: {
-          preferredTimeSlots: [],
+         , preferredTimeSlots: [],
           commonDaysOfWeek: [],
           seasonalTrends: [],
           timeBasedIntents: new Map(),

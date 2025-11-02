@@ -20,11 +20,11 @@ export const GET: RequestHandler = async event => {
       database: 'healthy' as const, // Check actual database connection
       storage: Math.floor(Math.random() * 60) + 15, // Simulated - replace with actual disk usage
       uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     return json({
       success: true,
-      data: healthData,
+      data: healthData
     });
   } catch (error: any) {
     console.error('Health API error:', error);
@@ -33,13 +33,13 @@ export const GET: RequestHandler = async event => {
         success: false,
         error: 'Failed to fetch health data',
         data: {
-          cpu: 0,
+         , cpu: 0,
           memory: 0,
           database: 'error' as const,
           storage: 0,
           uptime: 0,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );

@@ -5,16 +5,11 @@ interface QueryRequest {
   query: string;
   context?: any[];
 }
-interface HealthResponse {
-  overall_status: 'healthy' | 'degraded' | 'critical';
-  services: Array<any>;
-  existing_infrastructure: {
-    redis: boolean;
-    postgres: boolean;
+interface HealthResponse { overall_status: 'healthy' | 'degraded' | 'critical';, services: Array<any>;
+  existing_infrastructure: { redis: boolean;, postgres: boolean;
     ollama: boolean;
   };
-  nintendo_memory_banks: {
-    L1_EXISTING: { status: string };
+  nintendo_memory_banks: { L1_EXISTING: {, status: string };
     L2_SYSTEM: { status: string };
     L3_REDIS: { status: string };
   };
@@ -28,37 +23,37 @@ async function checkExistingServices(): Promise<any> {
     services.push({
       service: 'Existing Redis Cache',
       status: 'healthy' as const,
-      details: 'Port 6379 - Nintendo L3 Memory Bank',
+      details: 'Port 6379 - Nintendo L3 Memory Bank'
     });
   } catch {
     services.push({
       service: 'Existing Redis Cache',
       status: 'down' as const,
-      details: 'Connection failed',
+      details: 'Connection failed'
     });
   }
   // Check existing PostgreSQL (port 5433)
   services.push({
     service: 'Existing PostgreSQL + pgvector',
     status: 'healthy' as const,
-    details: 'Port 5433 - Legal document storage',
+    details: 'Port 5433 - Legal document storage'
   });
   // Check for Ollama
   try {
     const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(2000)
     });
     services.push({
       service: 'Existing Ollama Service',
-      status: response.ok ? ('healthy' as const) : ('down' as const),
-      details: response.ok ? 'Port 11434 - AI model service' : 'Service unavailable',
+      status: response.ok ? ('healthy' as const ) : ('down' as const ),
+      details: response.ok ? 'Port 11434 - AI model service' : 'Service unavailable'
     });
   } catch {
     services.push({
       service: 'Existing Ollama Service',
       status: 'down' as const,
-      details: 'Port 11434 - Not responding',
+      details: 'Port 11434 - Not responding'
     });
   }
   return services;
@@ -72,13 +67,12 @@ export const GET: RequestHandler = async ({ url }) => {
     existing_infrastructure: {
       redis: true, // Confirmed running from docker ps
       postgres: true, // Confirmed running from docker ps
-      ollama: services.find(s => s.service.includes('Ollama'))?.status === 'healthy' || false,
+      ollama: services.find(s => s.service.includes('Ollama'))?.status === 'healthy' || false
     },
-    nintendo_memory_banks: {
-      L1_EXISTING: { status: 'Using existing Ollama/GPU resources' },
+    nintendo_memory_banks: { L1_EXISTING: {, status: 'Using existing Ollama/GPU resources' },
       L2_SYSTEM: { status: 'System RAM available' },
-      L3_REDIS: { status: 'Existing Redis cache operational' },
-    },
+      L3_REDIS: { status: 'Existing Redis cache operational' }
+    }
   };
   return json(response);
 };
@@ -103,20 +97,20 @@ export const POST: RequestHandler = async ({ request }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'embeddinggemma:latest',
-            prompt: query,
-          }),
+           , model: 'embeddinggemma:latest',
+            prompt: query
+          })
         });
         if (response.ok) {
           const data = await response.json();
-          answer = `Generated ${data.embedding?.length || 'N/A'}-dimensional embedding vector using embeddinggemma:latest\n\nQuery: "${query}"\n\nEmbedding created successfully for semantic analysis and document similarity matching.\n\n🎮 Nintendo Memory: Using L1_EMBEDDINGGEMMA bank`;
+          answer = `Generated ${data.embedding?.length || 'N/A` }-dimensional embedding vector using embeddinggemma:latest\n\nQuery: "${query}"\n\nEmbedding created successfully for semantic analysis and document similarity matching.\n\n🎮 Nintendo Memory: Using L1_EMBEDDINGGEMMA bank`;
           modelUsed = 'embeddinggemma:latest';
           memoryBank = 'L1_EMBEDDINGGEMMA';
         } else {
           throw new Error('Embedding API failed');
         }
       } catch (error) {
-        answer = `Embedding generation attempted for: "${query}"\n\nFallback: Using nomic-embed-text as alternative embedding model.\nSemantic vector would be created for document similarity operations.\n\n🎮 Nintendo Memory: Fallback to L2 cache`;
+        answer = `Embedding generation attempted for: "${query}"\n\nFallback: Using nomic-embed-text as alternative embedding model.\nSemantic vector would be created for document similarity operations.\n\n🎮 Nintendo; Memory: Fallback to L2 cache`;
         modelUsed = 'nomic-embed-text:latest (fallback)';
         memoryBank = 'L2_SYSTEM_FALLBACK';
       }
@@ -129,12 +123,12 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         const response = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             model,
             prompt,
-            stream: false,
-          }),
+            stream: false
+          })
         });
         if (response.ok) {
           const data = await response.json();
@@ -151,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
 **Query:** ${query}
 **Analysis:**
 This legal matter requires consideration of several key factors:
-1. **Jurisdictional Considerations:** The applicable law will depend on the specific jurisdiction and legal framework involved.
+1. **Jurisdictional; Considerations:** The applicable law will depend on the specific jurisdiction and legal framework involved.
 2. **Precedential Authority:** Relevant case law and statutory provisions should be consulted for authoritative guidance.
 3. **Risk Assessment:** Potential legal implications and liability exposure should be carefully evaluated.
 **Important Notice:** This is a fallback response. For comprehensive analysis, ensure gemma3-legal:latest is accessible.
@@ -173,23 +167,21 @@ This legal matter requires consideration of several key factors:
       classification: {
         type: isEmbedding ? 'embedding' : isLegal ? 'complex_legal' : 'simple',
         confidence: 0.9,
-        reasoning: `Using your existing Ollama models: ${modelUsed}`,
-      },
+        reasoning: `Using your existing Ollama; models: ${modelUsed}' },
       nintendo_diagnostics: {
         bank_switches: 1,
         memory_pressure: 'low',
         cache_efficiency: 95.2,
         ollama_models_used: true,
-        available_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'nomic-embed-text:latest'],
-      },
+        available_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'nomic-embed-text:latest']
+      }
     };
     return json(response);
   } catch (error) {
     return json(
       {
         error: 'Query processing failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

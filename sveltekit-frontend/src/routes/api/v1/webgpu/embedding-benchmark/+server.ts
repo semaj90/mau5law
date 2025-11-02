@@ -7,9 +7,7 @@ import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
  * Legal AI Embedding Benchmark with WebGPU Optimization
  * Real-world performance testing with legal document processing
  */
-interface EmbeddingBenchmarkRequest {
-  mode: 'single' | 'batch' | 'stress' | 'comparison';
-  config: {
+interface EmbeddingBenchmarkRequest { mode: 'single' | 'batch' | 'stress' | 'comparison';, config: {
     documentCount?: number;
     batchSize?: number;
     iterations?: number;
@@ -20,22 +18,16 @@ interface EmbeddingBenchmarkRequest {
 }
 type BenchmarkConfig = EmbeddingBenchmarkRequest['config'];
 type DocumentType = 'contract' | 'case' | 'statute' | 'brief';
-interface BenchmarkResult {
-  mode: string;
-  totalDocuments: number;
+interface BenchmarkResult { mode: string;, totalDocuments: number;
   processingTime: number;
   avgTimePerDocument: number;
   throughput: number;
   cacheHitRatio: number;
   webgpuUtilization: number;
   compressionRatio: number;
-  memoryUsage: {
-    peak: number;
-    average: number;
+  memoryUsage: { peak: number;, average: number;
   };
-  qualityMetrics?: {
-    avgSimilarity: number;
-    coherenceScore: number;
+  qualityMetrics?: { avgSimilarity: number;, coherenceScore: number;
   };
   // include errors count so stress test uses the variable
   errors?: number;
@@ -56,7 +48,7 @@ const SAMPLE_LEGAL_DOCUMENTS = {
     'Section 1983 Civil Rights Act provides cause of action against state actors who deprive citizens of constitutional rights under color of state law. Plaintiff must demonstrate defendant acted under color of state law and violated clearly established constitutional right.',
     'Securities Exchange Act Rule 10b-5 prohibits material misstatements or omissions in connection with purchase or sale of securities. Plaintiff must prove scienter, materiality, reliance, and damages to establish private right of action for securities fraud.',
     'Americans with Disabilities Act Title III requires places of public accommodation to provide reasonable modifications to policies and procedures. Covered entities must ensure equal access unless modifications would fundamentally alter nature of goods or services.',
-  ],
+  ]
 };
 // GET - System status and available benchmarks
 export const GET: RequestHandler = async () => {
@@ -70,11 +62,11 @@ export const GET: RequestHandler = async () => {
         embeddingCache: cacheStats,
         webgpuOptimizer: optimizerStats,
         sampleDocuments: {
-          contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
+         , contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
           cases: SAMPLE_LEGAL_DOCUMENTS.cases.length,
           statutes: SAMPLE_LEGAL_DOCUMENTS.statutes.length,
-          total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length,
-        },
+          total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length
+        }
       },
       availableBenchmarks: [
         'single - Individual document embedding with detailed metrics',
@@ -82,14 +74,14 @@ export const GET: RequestHandler = async () => {
         'stress - High-load concurrent processing test',
         'comparison - WebGPU vs standard cache comparison',
       ],
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json(
       {
         success: false,
         error: 'Failed to get benchmark system status',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -101,7 +93,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const benchmarkRequest: EmbeddingBenchmarkRequest = await request.json();
     const { mode, config } = benchmarkRequest;
     const clientAddr = safeGetClientAddress(getClientAddress, request);
-    console.log(`🧪 Legal Embedding Benchmark: ${mode} - Client: ${clientAddr}`);
+    console.log(`🧪 Legal Embedding Benchmark: ${mode} -, Client: ${clientAddr}`);
     let result: BenchmarkResult;
     switch (mode) {
       case 'single':
@@ -120,7 +112,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           {
             success: false,
             error: 'Invalid benchmark mode',
-            validModes: ['single', 'batch', 'stress', 'comparison'],
+            validModes: ['single', 'batch', 'stress', 'comparison']
           },
           { status: 400 }
         );
@@ -130,14 +122,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       mode,
       result,
       metadata: {
-        timestamp: Date.now(),
+       , timestamp: Date.now(),
         clientAddress: clientAddr,
         systemConfig: {
           webgpuEnabled: config.useWebGPU !== false,
           batchSize: config.batchSize || 128,
-          practiceAreas: config.practiceAreas || ['general'],
-        },
-      },
+          practiceAreas: config.practiceAreas || ['general']
+        }
+      }
     });
   } catch (error) {
     console.error('Legal embedding benchmark error:', error);
@@ -145,7 +137,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         success: false,
         error: 'Benchmark execution failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -187,7 +179,7 @@ async function runSingleDocumentBenchmark(config: BenchmarkConfig): Promise<Benc
     const legalQuery = {
       text: doc.text,
       documentType: doc.type,
-      practiceArea: config.practiceAreas?.[0] || 'general',
+      practiceArea: config.practiceAreas?.[0] || 'general'
     };
     const embeddingResult = await getLegalEmbedding(legalQuery);
     const docProcessTime = Date.now() - docStartTime;
@@ -195,7 +187,7 @@ async function runSingleDocumentBenchmark(config: BenchmarkConfig): Promise<Benc
       text: doc.text.substring(0, 100) + '...',
       processingTime: docProcessTime,
       embeddingDimensions: embeddingResult.embedding.length,
-      wasCached: embeddingResult.metadata.cacheHit,
+      wasCached: embeddingResult.metadata.cacheHit
     });
     if (embeddingResult.metadata.cacheHit) cacheHits++;
   }
@@ -223,12 +215,12 @@ async function runSingleDocumentBenchmark(config: BenchmarkConfig): Promise<Benc
     compressionRatio: 4.2,
     memoryUsage: {
       peak: memoryPeak,
-      average: (memoryStart + memoryPeak) / 2,
+      average: (memoryStart + memoryPeak) / 2
     },
     qualityMetrics: {
       avgSimilarity: totalSimilarity / Math.max(1, results.length - 1),
       coherenceScore: 0.85, // Simulated coherence score
-    },
+    }
   };
 }
 /**
@@ -246,7 +238,7 @@ async function runBatchProcessingBenchmark(config: BenchmarkConfig): Promise<Ben
     const batch = documents.slice(0, batchSize).map(doc => ({
       text: doc.text,
       documentType: doc.type,
-      practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general',
+      practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general'
     }));
     try {
       // Use WebGPU-optimized batch processing
@@ -275,8 +267,8 @@ async function runBatchProcessingBenchmark(config: BenchmarkConfig): Promise<Ben
     compressionRatio: 4.5,
     memoryUsage: {
       peak: memoryPeak,
-      average: (memoryStart + memoryPeak) / 2,
-    },
+      average: (memoryStart + memoryPeak) / 2
+    }
   };
 }
 /**
@@ -299,15 +291,14 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
           const legalQuery = {
             text: doc.text,
             documentType: doc.type,
-            practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general',
-          };
+            practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general` };
           await getLegalEmbedding(legalQuery);
           completedDocs++;
           // Small random delay to prevent overwhelming
           await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
         } catch (error) {
           errors++;
-          console.warn(`Worker ${workerId} error:`, error);
+          console.warn(`Worker ${workerId} error: ', error);
         }
       }
     })();
@@ -326,10 +317,10 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
     compressionRatio: 4.0,
     memoryUsage: {
       peak: process.memoryUsage().heapUsed,
-      average: process.memoryUsage().heapUsed * 0.8,
+      average: process.memoryUsage().heapUsed * 0.8
     },
     // return the error count so it's considered used
-    errors,
+    errors
   };
 }
 /**
@@ -343,8 +334,7 @@ async function runComparisonBenchmark(config: BenchmarkConfig): Promise<Benchmar
     const legalQuery = {
       text: doc.text,
       documentType: doc.type,
-      practiceArea: 'comparison-webgpu',
-    };
+      practiceArea: 'comparison-webgpu` };
     await getLegalEmbedding(legalQuery);
   }
   const webgpuTime = Date.now() - webgpuStartTime;
@@ -363,19 +353,19 @@ async function runComparisonBenchmark(config: BenchmarkConfig): Promise<Benchmar
     compressionRatio: 4.3,
     memoryUsage: {
       peak: process.memoryUsage().heapUsed,
-      average: process.memoryUsage().heapUsed * 0.7,
+      average: process.memoryUsage().heapUsed * 0.7
     },
     qualityMetrics: {
       avgSimilarity: 0.82,
-      coherenceScore: 0.88,
-    },
+      coherenceScore: 0.88
+    }
   };
 }
 /**
  * Get all sample documents with metadata
  */
 function getAllSampleDocuments() {
-  const allDocs: Array<{ text: string; type: DocumentType }> = [];
+  const allDocs: Array<{ text: string;, type: DocumentType }> = [];
   function mapCategoryToType(category: string): DocumentType {
     switch (category) {
       case 'contracts':
@@ -411,14 +401,14 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Legal embedding benchmark cache cleared',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json(
       {
         success: false,
         error: 'Failed to clear benchmark cache',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

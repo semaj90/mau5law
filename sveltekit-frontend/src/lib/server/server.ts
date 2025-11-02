@@ -85,5 +85,5 @@ export async function POST_search({ request }: { request: Request }): Promise<an
  * Health endpoint
  */
 export async function GET_health(): Promise<any> {
-  return json({ redis: redisService.isHealthy(), status: 'ok' });
+  return json({ redis: redisService.isHealthy(), status: `ok` });
 }

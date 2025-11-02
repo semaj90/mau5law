@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
         updated_at: documents.updated_at,
         created_by: documents.created_by,
         is_indexed: documents.is_indexed,
-        case_title: cases.title,
+        case_title: cases.title
       })
       .from(documents)
       .leftJoin(cases, eq(documents.case_id, cases.id))
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const results = await query.execute();
 
     const totalQuery = db
-      .select({ count: sql`count(*)` })
+      .select({ count: sql`count(*)' })
       .from(documents)
       .where(conditions.length > 0 ? and(...conditions) : undefined); // no any casts
 
@@ -124,8 +124,8 @@ export const GET: RequestHandler = async ({ url }) => {
         total,
         pages: Math.max(1, Math.ceil(total / limit)),
         hasNext: page * limit < total,
-        hasPrev: page > 1,
-      },
+        hasPrev: page > 1
+      }
     };
 
     // node-redis v4: use set with EX option
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     if (!data.title || !data.content) {
-      return json({ error: 'Title and content are required' }, { status: 400 });
+      return json({ error: `Title and content are required` }, { status: 400 });
     }
 
     let embedding: number[] | undefined;
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
       embedding_model: data.embedding_model || 'nomic-embed-text',
       created_by: data.created_by,
       is_public: data.is_public || false,
-      is_indexed: data.is_indexed || false,
+      is_indexed: data.is_indexed || false
     };
 
     const [newDocument] = await db.insert(documents).values(documentData).returning().execute();
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         document: newDocument,
         embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
-        message: 'Document created successfully',
+        message: 'Document created successfully'
       },
       { status: 201 }
     );
@@ -242,7 +242,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const existingDocument = await db.select().from(documents).where(eq(documents.id, documentId)).limit(1).execute();
 
     if (existingDocument.length === 0) {
-      return json({ error: 'Document not found' }, { status: 404 });
+      return json({ error: `Document not found` }, { status: 404 });
     }
 
     let embedding: number[] | undefined;
@@ -263,7 +263,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
 
     const updateData: Partial<Document> = {
       ...data,
-      updated_at: new Date(),
+      updated_at: new Date()
     };
 
     if (embedding) {
@@ -272,7 +272,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       updateData.processed_at = new Date();
     }
     if (titleEmbedding) updateData.title_embedding = sql`${JSON.stringify(titleEmbedding)}::vector`;
-    if (summaryEmbedding) updateData.summary_embedding = sql`${JSON.stringify(summaryEmbedding)}::vector`;
+    if (summaryEmbedding) updateData.summary_embedding = sql`${JSON.stringify(summaryEmbedding)}::vector';
 
     const updateDataRecord = updateData as Record<string, unknown>;
     delete updateDataRecord.auto_embed;
@@ -292,7 +292,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully',
+      message: 'Document updated successfully'
     });
   } catch (error) {
     console.error('Error updating document:', error);
@@ -314,14 +314,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
       .update(documents)
       .set({
         is_active: false,
-        updated_at: new Date(),
+        updated_at: new Date()
       })
       .where(eq(documents.id, documentId))
       .returning()
       .execute();
 
     if (!deletedDocument) {
-      return json({ error: 'Document not found' }, { status: 404 });
+      return json({ error: `Document not found` }, { status: 404 });
     }
 
     {
@@ -331,7 +331,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     return json({
       message: 'Document deleted successfully',
-      document_id: documentId,
+      document_id: documentId
     });
   } catch (error) {
     console.error('Error deleting document:', error);

@@ -1,5 +1,6 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   import { onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';

@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     { name: 'QUIC Service', port: 5178, path: '/' },
     { name: 'Redis', port: 6379, path: '/ping' },
     { name: 'PostgreSQL', port: 5432, path: null }, // No HTTP endpoint
-    { name: 'Ollama', port: 11434, path: '/api/tags' },
+    { name: 'Ollama', port: 11434, path: '/api/tags' }
   ];
 
   // Test which services are actually responding (unchanged)
@@ -28,21 +28,21 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
       const startTime = Date.now();
       try {
         const response = await fetch(`http://localhost:${service.port}${service.path}`, {
-          signal: AbortSignal.timeout(2000),
+          signal: AbortSignal.timeout(2000)
         });
         const responseTime = Date.now() - startTime;
         return {
           ...service,
           status: response.ok ? 'healthy' : 'degraded',
           responseTime,
-          httpStatus: response.status,
+          httpStatus: response.status
         };
       } catch (error) {
         return {
           ...service,
           status: 'down',
           responseTime: Date.now() - startTime,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : 'Unknown error'
         };
       }
     })
@@ -72,7 +72,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     { path: '/api/search/advanced', icon: '🔍', description: 'Advanced Search API' },
     { path: '/api/canvas', icon: '🎨', description: 'Canvas API' },
     { path: '/api/modules', icon: '🧩', description: 'Modules API' },
-    { path: '/api/updates', icon: '🔄', description: 'Updates API' },
+    { path: '/api/updates', icon: '🔄', description: `Updates API` }
   ];
 
   // Simplified route layout recommendation (removed file system scanning)
@@ -86,12 +86,12 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
       total: realRoutes.length,
       api: realRoutes.filter(r => r.path.startsWith('/api')).length,
       ui: realRoutes.filter(r => !r.path.startsWith('/api')).length,
-      groups: {},
+      groups: {}
     },
     suggestions: [
       'Use nested dashboards for user-specific flows, e.g. /dashboard/activities, /dashboard/settings.',
       'Group feature pages under top-level namespaces (ai, yorha, admin) to keep routes organized.',
-    ].filter(Boolean),
+    ].filter(Boolean)
   };
 
   // Service health summary
@@ -109,15 +109,13 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
         api: realRoutes.filter(r => r.path.startsWith('/api')).length,
         configMissingFiles: 0,
         filesMissingConfig: 0,
-        consolidatable: 0,
-      },
+        consolidatable: 0
+      }
     },
-    serviceHealth: {
-      system_overview: {
-        healthy_services: healthyServices,
+    serviceHealth: { system_overview: {, healthy_services: healthyServices,
         total_services: services.length,
         uptime_hours: Math.floor(process.uptime() / 3600),
-        last_updated: new Date().toISOString(),
+        last_updated: new Date().toISOString()
       },
       services: serviceStatus.map(result =>
         result.status === 'fulfilled' ? result.value : { name: 'Unknown', status: 'error', error: result.reason }
@@ -126,8 +124,8 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
         cpu_usage: Math.round(process.cpuUsage().user / 1000000),
         memory_usage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100),
         disk_usage: 45, // Mock value
-      },
+      }
     },
-    recommendedRouteLayout,
+    recommendedRouteLayout
   };
 };

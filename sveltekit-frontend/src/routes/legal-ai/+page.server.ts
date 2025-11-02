@@ -9,25 +9,17 @@ import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq } from 'drizzle-orm';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 // Types for page data
-export interface LegalAIPageData {
-  initialState: {
-    langchainService: {
-      isAvailable: boolean;
-      models: string[];
+export interface LegalAIPageData { initialState: {, langchainService: { isAvailable: boolean;, models: string[];
       error: string | null;
     };
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
-    serviceStatus: {
-      postgresql: boolean;
-      ollama: boolean;
+    serviceStatus: { postgresql: boolean;, ollama: boolean;
       redis: boolean;
       lastChecked: string;
     };
   };
-  meta: {
-    totalDocuments: number;
-    totalSessions: number;
+  meta: { totalDocuments: number;, totalSessions: number;
     serverRenderTime: number;
   };
 }
@@ -48,7 +40,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         sessionName: ragSessions.sessionName,
         messageCount: ragSessions.messageCount,
         lastActivity: ragSessions.updatedAt,
-        createdAt: ragSessions.createdAt,
+        createdAt: ragSessions.createdAt
       })
       .from(ragSessions)
       .where(eq(ragSessions.isActive, true))
@@ -62,7 +54,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         summary: legalDocuments.summary,
         documentType: legalDocuments.documentType,
         createdAt: legalDocuments.createdAt,
-        keyTerms: legalDocuments.keyTerms,
+        keyTerms: legalDocuments.keyTerms
       })
       .from(legalDocuments)
       .orderBy(desc(legalDocuments.createdAt))
@@ -82,14 +74,14 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           messageCount: session.messageCount || 0,
           lastActivity:
             session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
-          documentsProcessed: parseInt(count as string) || 0,
+          documentsProcessed: parseInt(count as string) || 0
         };
       })
     );
     // Get total counts for metadata
     const [totalDocumentsResult, totalSessionsResult] = await Promise.all([
       db.select({ count: legalDocuments.id }).from(legalDocuments),
-      db.select({ count: ragSessions.id }).from(ragSessions),
+      db.select({ count: ragSessions.id }).from(ragSessions)
     ]);
     const totalDocuments = totalDocumentsResult.length;
     const totalSessions = totalSessionsResult.length;
@@ -112,12 +104,10 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       redisAvailable = false;
     }
     const serverRenderTime = Date.now() - startTime;
-    const pageData: LegalAIPageData = {
-      initialState: {
-        langchainService: {
+    const pageData: LegalAIPageData = { initialState: {, langchainService: {
           isAvailable: isOllamaAvailable,
           models: availableModels,
-          error: isOllamaAvailable ? null : 'Ollama service not available',
+          error: isOllamaAvailable ? null : 'Ollama service not available'
         },
         recentSessions: sessionsWithCounts,
         recentDocuments: recentDocuments.map(doc => ({
@@ -126,46 +116,43 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           summary: doc.summary || 'No summary available',
           documentType: doc.documentType || 'unknown',
           createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
-          keyTerms: doc.keyTerms || [],
+          keyTerms: doc.keyTerms || []
         })),
         serviceStatus: {
           postgresql: postgresqlAvailable,
           ollama: isOllamaAvailable,
           redis: redisAvailable,
-          lastChecked: new Date().toISOString(),
-        },
+          lastChecked: new Date().toISOString()
+        }
       },
       meta: {
         totalDocuments,
         totalSessions,
-        serverRenderTime,
-      },
+        serverRenderTime
+      }
     };
     return pageData;
   } catch (error) {
     console.error('Failed to load legal AI page data:', error);
     // Return fallback data if loading fails
-    return {
-      initialState: {
-        langchainService: {
+    return { initialState: {, langchainService: {
           isAvailable: false,
           models: [],
-          error: 'Failed to load service data',
-        },
+          error: 'Failed to load service data` },
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {
           postgresql: false,
           ollama: false,
           redis: false,
-          lastChecked: new Date().toISOString(),
-        },
+          lastChecked: new Date().toISOString()
+        }
       },
       meta: {
         totalDocuments: 0,
         totalSessions: 0,
-        serverRenderTime: Date.now() - startTime,
-      },
+        serverRenderTime: Date.now() - startTime
+      }
     };
   }
 };

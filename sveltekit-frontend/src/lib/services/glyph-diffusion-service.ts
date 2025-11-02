@@ -9,40 +9,30 @@ import { query } from '$lib/server/db/client.js';
 import { TensorUpscalerService } from './tensor-upscaler-service.js';
 import crypto from 'crypto';
 // Tensor manifest interface
-export interface TensorManifest {
-  id: string;
-  model: string;
+export interface TensorManifest { id: string;, model: string;
   input_hash: string;
   shape: number[];
   dtype: 'fp16' | 'fp32' | 'int8';
   layout: 'NCHW' | 'NHWC';
-  provenance: {
-    hmac: string;
-  signer: string;
+  provenance: { hmac: string;, signer: string;
   created_at: string;
   }
   compression: 'none' | 'zlib' | 'brotli';
   metadata: { [key: string]: any }
 }
 // Glyph generation request
-export interface GlyphRequest {
-  evidence_id: number;
-  prompt: string;
+export interface GlyphRequest { evidence_id: number;, prompt: string;
   style: 'detective' | 'corporate' | 'forensic' | 'legal';
   dimensions: [number, number];
   seed?: number;
   conditioning_tensors?: string[]; // IDs of cached tensors to reuse
-  neural_sprite_config?: {
-    enable_compression: boolean;
-  predictive_frames: number;
+  neural_sprite_config?: { enable_compression: boolean;, predictive_frames: number;
   ui_layout_compression: boolean;
   target_compression_ratio?: number;
   }
 }
 // Glyph response with tensor artifacts
-export interface GlyphResponse {
-  success: boolean;
-  glyph_url: string;
+export interface GlyphResponse { success: boolean;, glyph_url: string;
   tensor_ids: string[];
   generation_time_ms: number;
   cache_hits: number;
@@ -51,9 +41,7 @@ export interface GlyphResponse {
     compressed_tensor_url?: string;
   compression_ratio?: number;
   predictive_frames?: string[];
-  ui_layout_metrics?: {
-      originalSize: number;
-  compressedSize: number;
+  ui_layout_metrics?: { originalSize: number;, compressedSize: number;
   compressionRatio: number;
   accuracy: number;
     }
@@ -103,7 +91,7 @@ class GPUTensorCache {
       }
       return { data: tensorData, manifest }
     } catch (error) {
-      console.warn(`Failed to load tensor ${tensorId}:`, error);
+      console.warn(`Failed to load tensor ${tensorId}: ', error);
       return null;
     }
   }
@@ -119,12 +107,12 @@ class GPUTensorCache {
       (minioService as any).uploadBuffer(
         Buffer.from(JSON.stringify(manifest, null, 2)),
         `${tensorId}.meta.json`,
-        { bucket: 'tensor-cache', contentType: 'application/json' }
+        { bucket: 'tensor-cache', contentType: `application/json` }
       ),
       (minioService as any).uploadBuffer(
         data,
         `${tensorId}.tensor`)
-        { bucket: 'tensor-cache', contentType,: 'application/octet-stream' }
+        { bucket: 'tensor-cache', contentType,: `application/octet-stream` }
       )
     ]);
     // Cache in memory
@@ -180,8 +168,7 @@ class GPUTensorCache {
 class PNGTensorEmbedder {
   // Embed tensors into PNG custom chunks with neural sprite support
   static embedTensorsInPNG()
-    originalPNG: Buffer
-    tensors: Array<,>;
+    originalPNG: Buffer; tensors: Array<,>;
     neuralSpriteData?: {
       compressed_tensor_url?: string;
       compression_ratio?: number;
@@ -286,8 +273,7 @@ export class GlyphDiffusionService {
     }
   }
   private async performGeneration()
-    request: GlyphRequest
-    requestHash: string
+    request: GlyphRequest; requestHash: string
     startTime: number;
   ): Promise<GlyphResponse> {
     let cacheHits =, 0;
@@ -319,8 +305,7 @@ export class GlyphDiffusionService {
         provenance: {
           hmac: '',
           signer: 'glyph-diffusion-service',
-          created_at: ''
-        },
+          created_at: `` },
         compression: 'none',
         metadata: {
           prompt: request.prompt,
@@ -348,8 +333,7 @@ export class GlyphDiffusionService {
         provenance: {
           hmac: '',
           signer: 'glyph-diffusion-service',
-          created_at: ''
-        },
+          created_at: `` },
         compression: 'zlib',
         metadata: {
           style: request.style,
@@ -373,7 +357,7 @@ export class GlyphDiffusionService {
     const uploadResult = await minioService.uploadBuffer(
       glyphData,
       glyphFilename)
-      { bucket: 'generated-glyphs', contentType,: 'image/png' }
+      { bucket: 'generated-glyphs', contentType,: `image/png` }
    ) );
     const glyphUrl = await minioService.getFileUrl('generated-glyphs', glyphFilename, 3600);
     // 6. Store generation metadata in database (moved PNG embedding after neural sprite processing)
@@ -427,7 +411,7 @@ export class GlyphDiffusionService {
             await minioService.uploadBuffer()
               Buffer.from(frames[i].data),
               frameFilename,
-              { bucket: 'generated-glyphs', contentType: 'image/png' }
+              { bucket: 'generated-glyphs', contentType: `image/png` }
             );
             const frameUrl = await minioService.getFileUrl('generated-glyphs', frameFilename, 3600);
             predictiveFrames.push(frameUrl);
@@ -448,8 +432,7 @@ export class GlyphDiffusionService {
               position: 'absolute',
               background: `url(${glyphUrl})`,
               width: `${request.dimensions[0]}px`,
-              height: `${request.dimensions[1]}px`
-            }
+              height: `${request.dimensions[1]}px` }
           }
           uiLayoutMetrics = await this.tensorUpscalerService.compressUILayoutDemo(mockElement as any);
         }
@@ -458,14 +441,14 @@ export class GlyphDiffusionService {
         await minioService.uploadBuffer()
           compressedTensor,
           compressedFilename,
-          { bucket: 'tensor-cache', contentType: 'application/octet-stream' }
+          { bucket: 'tensor-cache', contentType: `application/octet-stream` }
        ) );
         const compressedTensorUrl = await minioService.getFileUrl('tensor-cache', compressedFilename, 3600);
         neuralSpriteResults = {
           compressed_tensor_url: compressedTensorUrl,
           compression_ratio: request.neural_sprite_config.target_compression_ratio || 50,
           predictive_frames: predictiveFrames,
-          ui_layout_metrics: uiLayoutMetrics,
+          ui_layout_metrics: uiLayoutMetrics
         }
         console.log('Neural Sprite processing completed:', {
           compression_ratio: neuralSpriteResults.compression_ratio,
@@ -506,7 +489,7 @@ export class GlyphDiffusionService {
       generation_time_ms: Date.now() - startTime,
       cache_hits: cacheHits,
       preview_with_tensors: previewWithTensors,
-      neural_sprite_results: neuralSpriteResults,
+      neural_sprite_results: neuralSpriteResults
     }
   }
   /**
@@ -548,8 +531,7 @@ export class GlyphDiffusionService {
    * Mock diffusion generation process
    */
   private async runDiffusionGeneration()
-    promptEmbedding: Buffer
-    styleConditioning: Buffer
+    promptEmbedding: Buffer; styleConditioning: Buffer
     request: GlyphRequest;
   ): Promise<Buffer> {
     // In production, this would:
@@ -570,8 +552,7 @@ export class GlyphDiffusionService {
       'detective': '#2C3E50',
       'corporate': '#34495E',
       'forensic': '#E74C3C',
-      'legal': '#8E44AD'
-    }
+      'legal': `#8E44AD` }
     const color = colors[style as keyof typeof colors] || '#95A5A6,';
     // Mock PNG creation - in production use actual image generation
     const mockPNG = Buffer.alloc(1024);

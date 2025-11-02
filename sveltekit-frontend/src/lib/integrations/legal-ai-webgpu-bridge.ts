@@ -16,11 +16,7 @@ export interface LegalDocumentProcessingOptions {
   enableCaching?: boolean;
   debugMode?: boolean;
 }
-export interface LegalAIProcessingResult {
-  buffer: GPUBuffer;
-  compressionStats: {
-    originalSize: number;
-    compressedSize: number;
+export interface LegalAIProcessingResult { buffer: GPUBuffer;, compressionStats: { originalSize: number;, compressedSize: number;
     compressionRatio: number;
     spaceSavings: string;
   }
@@ -98,11 +94,10 @@ export class LegalAIWebGPUBridge {
         originalSize: uploadResult.uploadStats.originalSize,
         compressedSize: uploadResult.uploadStats.uploadedSize,
         compressionRatio: uploadResult.uploadStats.compressionRatio,
-        spaceSavings: `${(((uploadResult.uploadStats.originalSize - uploadResult.uploadStats.uploadedSize) / uploadResult.uploadStats.originalSize) * 100).toFixed(1)}%`
-      },
+        spaceSavings: `${(((uploadResult.uploadStats.originalSize - uploadResult.uploadStats.uploadedSize) / uploadResult.uploadStats.originalSize) * 100).toFixed(1)}%` },
       processingTime,
       profile,
-      cacheHit: false // TODO: Implement cache hit detection
+      cacheHit: false //; TODO: Implement cache hit detection
     }
   }
   /**
@@ -138,8 +133,7 @@ export class LegalAIWebGPUBridge {
         documentCount: documents.length,
         totalTime: `${totalTime.toFixed(2)}ms`,
         averageTime: `${(totalTime / documents.length).toFixed(2)}ms/doc`,
-        totalCompressionRatio: `${(results.reduce((sum, r) => sum + r.compressionStats.compressionRatio, 0) / results.length).toFixed(2)}x`
-      });
+        totalCompressionRatio: '${(results.reduce((sum, r) => sum + r.compressionStats.compressionRatio, 0) / results.length).toFixed(2)}x' });
     }
     return results;
   }
@@ -162,8 +156,7 @@ export class LegalAIWebGPUBridge {
     const queryResult = await this.processLegalDocumentEmbeddings(queryEmbedding, {
       ...options,
       profile: 'legal_critical', // High precision for queries
-      documentType: 'brief'
-    });
+      documentType: `brief` });
     // Process corpus with compression for efficiency
     const corpusResults = await this.batchProcessLegalDocuments(documentCorpus.map(embedding => ({
         embeddings: embedding,
@@ -189,7 +182,7 @@ export class LegalAIWebGPUBridge {
       }
     }
     if (options.debugMode) {
-      console.log(`🔍 Legal similarity search setup complete:`, processingStats);
+      console.log(`🔍 Legal similarity search setup complete: ', processingStats);
     }
     return {
       queryBuffer: queryResult.buffer,
@@ -207,8 +200,7 @@ export class LegalAIWebGPUBridge {
     return {
       cacheStats: this.uploader.getCacheStats(),
       isWebGPUAvailable: this.isInitialized,
-      bridgeStatus: this.isInitialized ? 'ready' : 'offline'
-    }
+      bridgeStatus: this.isInitialized ? 'ready' : `offline` }
   }
   /**
    * Clear all cached buffers and reset performance counters

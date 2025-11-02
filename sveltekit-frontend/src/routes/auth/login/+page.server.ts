@@ -75,5 +75,5 @@ export const actions: Actions = {
       console.error('Login error:', error);
       return fail(500, { error: 'An error occurred during login. Please try again.' });
     }
-  },
+  }
 };

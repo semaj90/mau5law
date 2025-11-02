@@ -22,9 +22,7 @@ export interface HybridEmbeddingOptions extends EmbeddingOptions {
   privacyMode?: boolean; // Force browser-only
   timeoutMs?: number; // Server timeout before fallback
 }
-export interface EmbeddingResult {
-  embedding: number[];
-  strategy: 'ollama' | 'browser';
+export interface EmbeddingResult { embedding: number[];, strategy: 'ollama' | 'browser';
   duration: number;
   model: string;
 }
@@ -137,7 +135,7 @@ export class HybridEmbeddings {
     try {
       const response = await fetch(this.ollamaBaseUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ text }),
         signal: controller.signal
       });
@@ -194,10 +192,10 @@ export class HybridEmbeddings {
    */
   async findSimilar(
     query: string,
-    documents: Array<{ text: string; metadata?: any }>,
+    documents: Array<{, text: string; metadata?: any }>,
     topK: number = 5,
     options: HybridEmbeddingOptions = {}
-  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
+  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
     const queryEmbedding = await this.embed(query, options) as number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts, options) as number[][];
@@ -229,9 +227,7 @@ export class HybridEmbeddings {
   /**
    * Get current strategy status
    */
-  async getStatus(): Promise<{
-    ollama: boolean;
-    browser: boolean;
+  async getStatus(): Promise<{ ollama: boolean;, browser: boolean;
     recommended: EmbeddingStrategy;
   }> {
     const ollamaAvailable = await this.checkOllamaAvailability();
@@ -239,8 +235,7 @@ export class HybridEmbeddings {
     return {
       ollama: ollamaAvailable,
       browser: browserAvailable,
-      recommended: ollamaAvailable ? 'ollama' : 'browser'
-    };
+      recommended: ollamaAvailable ? 'ollama' : `browser` };
   }
   /**
    * Cleanup resources

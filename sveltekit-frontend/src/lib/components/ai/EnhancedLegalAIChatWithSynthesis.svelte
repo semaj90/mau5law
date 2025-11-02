@@ -6,6 +6,7 @@ Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
 -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { Message } from '$lib/types';
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
@@ -1167,7 +1168,7 @@ if (browser) {
         <div class="flex items-start gap-3">
           <!-- Message Icon -->
           <div
-            class="flex-shrink-0" w-8 h-8 rounded-full flex items-center justify-center {message.role ===
+            class="flex-shrink-0 w-8 h-8" rounded-full flex items-center justify-center {message.role ===
             'user'
               ? 'bg-blue-500'
               : message.role === 'assistant'
@@ -1198,7 +1199,7 @@ if (browser) {
             </div>
             <!-- Main Content -->
             <div
-              class="prose" prose-sm max-w-none {message.role === 'user'
+              class="prose prose-sm max-w-none" {message.role === 'user'
                 ? 'bg-blue-50 dark:bg-blue-900/20'
                 : 'bg-white dark:bg-gray-800'} p-3 rounded-lg">
               {#if streamingMessageId === message.id && isStreaming && settings.enableTypewriterEffect}

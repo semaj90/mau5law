@@ -4,9 +4,7 @@ import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { Client as MinIOClient } from 'minio';
 import type { RequestHandler } from './$types';
-interface MinIOObject {
-  name: string;
-  etag: string;
+interface MinIOObject { name: string;, etag: string;
   size: number;
   lastModified: Date;
   prefix?: string;
@@ -30,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
     // Check if bucket exists
     const bucketExists = await minioClient.bucketExists(bucketName);
@@ -52,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
         etag: obj.etag,
         size: obj.size,
         lastModified: obj.lastModified,
-        prefix: obj.prefix,
+        prefix: obj.prefix
       });
     }
     // For each object, try to get metadata (optional, can be expensive)
@@ -64,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
           const stat = await minioClient.statObject(bucketName, obj.name);
           obj.metadata = stat.metaData;
         } catch (err) {
-          console.warn(`Could not get metadata for ${obj.name}:`, err);
+          console.warn(`Could not get metadata for ${obj.name}: ', err);
         }
       }
     }
@@ -91,15 +89,14 @@ export const GET: RequestHandler = async ({ url }) => {
       totalObjects: objectsList.length,
       maxKeys,
       truncated: objectsList.length >= maxKeys,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('MinIO list error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'List operation failed',
-      },
+        error: error instanceof Error ? error.message : 'List operation failed` },
       { status: 500 }
     );
   }

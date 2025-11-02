@@ -11,7 +11,7 @@ export interface SystemMonitorContext {
 
 export type SystemMonitorEvent =
   | { type: 'USER_ACTIVITY' }
-  | { type: 'NETWORK_PING'; latency: number }
+  | { type: 'NETWORK_PING';, latency: number }
   | { type: 'NETWORK_TIMEOUT' }
   | { type: 'CHECK_IDLE' }
   | { type: 'FORCE_OFFLINE' }
@@ -37,53 +37,48 @@ export const systemMonitorMachine = createMachine(
     context: {
       lastActivity: null,
       latency: null,
-      fallbackMode: false,
+      fallbackMode: false
     },
-    states: {
-      active: {
-        entry: ['logResumeGPU'],
-        on: {
-          USER_ACTIVITY: { actions: ['updateActivity'] },
+    states: { active: {, entry: ['logResumeGPU'],
+        on: { USER_ACTIVITY: {, actions: ['updateActivity'] },
           NETWORK_PING: [
             { cond: 'highLatency', target: 'degraded', actions: ['updateLatency', 'enableFallback'] },
-            { actions: ['updateLatency'] },
+            { actions: ['updateLatency'] }
           ],
           CHECK_IDLE: { cond: 'isIdle', target: 'idle' },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
-        },
+          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
+        }
       },
       idle: {
         entry: ['pauseGPU', 'markIdle'],
-        on: {
-          USER_ACTIVITY: { target: 'active', actions: ['updateActivity', 'logResumeGPU'] },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
-        },
+        on: { USER_ACTIVITY: {, target: 'active', actions: ['updateActivity', 'logResumeGPU'] },
+          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
+        }
       },
       degraded: {
         entry: ['enableFallback', 'notifyLatencyHigh'],
         on: {
           NETWORK_PING: [
             { cond: 'lowLatency', target: 'active', actions: ['updateLatency', 'resumeGPU'] },
-            { actions: ['updateLatency'] },
+            { actions: ['updateLatency'] }
           ],
           NETWORK_TIMEOUT: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
-        },
+          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
+        }
       },
       offline: {
         entry: ['enableFallback', 'notifyOffline'],
-        on: {
-          FORCE_ONLINE: { target: 'active', actions: ['logResumeGPU', 'resumeGPU'] },
-          NETWORK_PING: { target: 'active', actions: ['updateLatency', 'resumeGPU'] },
-        },
-      },
-    },
+        on: { FORCE_ONLINE: {, target: 'active', actions: ['logResumeGPU', 'resumeGPU'] },
+          NETWORK_PING: { target: 'active', actions: ['updateLatency', 'resumeGPU'] }
+        }
+      }
+    }
   },
   {
     actions: {
       // typed assigns using XState v5 args shape
-      updateActivity: assign(() => ({
-        lastActivity: Date.now(),
+     , updateActivity: assign(() => ({
+        lastActivity: Date.now()
       })),
 
       // use the typed args object and discriminate on event.type
@@ -118,7 +113,7 @@ export const systemMonitorMachine = createMachine(
       },
       notifyOffline: () => {
         console.error('system-monitor: network/offline detected');
-      },
+      }
     },
     guards: {
       // guards accept a single args object; extract ctx/event safely
@@ -134,8 +129,8 @@ export const systemMonitorMachine = createMachine(
       lowLatency: (args: XStateArgs) => {
         const ev = args.event;
         return ev && ev.type === 'NETWORK_PING' && ev.latency < LOW_LATENCY_MS;
-      },
-    },
+      }
+    }
   }
 );
 
@@ -183,7 +178,7 @@ export function startSystemMonitorService(opts?: {
           service.send({ type: 'NETWORK_TIMEOUT' });
         }
       } catch (err) {
-        service.send({ type: 'NETWORK_TIMEOUT' });
+        service.send({ type: `NETWORK_TIMEOUT` });
       }
     };
     doPing();
@@ -229,9 +224,9 @@ export function startSystemMonitorService(opts?: {
     };
 
     // return a lightly typed service object; using ReturnType<typeof interpret> keeps types simple
-    return { service, stop } as { service: ReturnType<typeof interpret>; stop: () => void };
+    return { service, stop } as { service: ReturnType<typeof interpret>;, stop: () => void };
   }
 
   // non-browser fallback: started interpreter with noop stop
-  return { service, stop: () => service.stop() } as { service: ReturnType<typeof interpret>; stop: () => void };
+  return { service, stop: () => service.stop() } as { service: ReturnType<typeof interpret>;, stop: () => void };
 }

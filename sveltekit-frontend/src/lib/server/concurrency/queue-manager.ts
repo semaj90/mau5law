@@ -54,8 +54,8 @@ export class QueueManager {
   private processors = new Map<QueueJob['type'], JobProcessor>();
   private pendingJobs = new Map<string, QueueJob>();
   private processingJobs = new Map<string, QueueJob>();
-  private completedJobs = new Map<string, { job: QueueJob; result: any; completedAt: Date }>();
-  private failedJobs = new Map<string, { job: QueueJob; error: Error; failedAt: Date }>();
+  private completedJobs = new Map<string, { job: QueueJob; result: any;, completedAt: Date }>();
+  private failedJobs = new Map<string, { job: QueueJob; error: Error;, failedAt: Date }>();
   private isRunning = $state(false);
   private processingInterval: NodeJS.Timeout | null = null;
   private maxConcurrentJobs = 5;
@@ -267,7 +267,7 @@ export class QueueManager {
       evidenceId,
       custodyEvent,
       integrityVerified: true,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     }
   }
   /**
@@ -282,8 +282,7 @@ export class QueueManager {
       indexName,
       vectorCount,
       rebuildTime: Date.now(),
-      performance: 'optimized'
-    }
+      performance: 'optimized' }
   }
   /**
    * Get queue statistics (Zod validated)

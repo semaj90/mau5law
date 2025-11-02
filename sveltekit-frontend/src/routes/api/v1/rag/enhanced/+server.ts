@@ -15,14 +15,14 @@ export const POST: RequestHandler = async ({ request }) => {
   const upstream = await safeFetchJson<RagResponse>(`${RAG_BASE}/rag/enhanced`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(parsed.data),
+    body: JSON.stringify(parsed.data)
   });
   if (!upstream.ok) {
     return json({ error: 'Upstream error', detail: upstream.error }, { status: upstream.status || 502 });
   }
   const validated = ragResponseSchema.safeParse(upstream.data);
   if (!validated.success) {
-    return json({ error: 'Invalid upstream response' }, { status: 502 });
+    return json({ error: `Invalid upstream response` }, { status: 502 });
   }
   return json(validated.data);
 };

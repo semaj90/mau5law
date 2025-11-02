@@ -4,11 +4,9 @@
  */
 import { writable, derived } from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
-type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
+type VectorSearchResult = { id: string; content: string;, score: number; [k: string]: any };
 
-export type SearchHistoryItem = {
-  query: string;
-  timestamp: number;
+export type SearchHistoryItem = { query: string;, timestamp: number;
   resultCount: number;
   latency: number;
 };
@@ -50,7 +48,7 @@ const initialState: VectorSearchState = {
   ragLatency: 0,
   vectorDbConnected: false,
   searchHistory: [],
-  error: null,
+  error: null
 };
 // Core store
 export const vectorSearchStore = writable<VectorSearchState>(initialState);
@@ -76,7 +74,7 @@ export const vectorSearchActions = {
       ...state,
       query,
       isSearching: true,
-      error: null,
+      error: null
     })); // Fixed closing parenthesis and semicolon
     const startTime = Date.now();
     try {
@@ -89,8 +87,8 @@ export const vectorSearchActions = {
           userId,
           caseId,
           limit: initialState.searchLimit,
-          threshold: initialState.searchThreshold,
-        }),
+          threshold: initialState.searchThreshold
+        })
       });
       if (!response.ok) {
         // Simplified type assertion
@@ -111,16 +109,16 @@ export const vectorSearchActions = {
             query,
             timestamp: Date.now(),
             resultCount: data.results?.length || 0,
-            latency,
+            latency
           },
-        ],
+        ]
       })); // Fixed closing parenthesis and semicolon
     } catch (error: any) {
       console.error('Vector search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false, // Added comma
-        error: error instanceof Error ? error.message : 'Search failed',
+        error: error instanceof Error ? error.message : 'Search failed'
       })); // Fixed closing parenthesis and semicolon
     }
   },
@@ -133,7 +131,7 @@ export const vectorSearchActions = {
       ...state,
       isGeneratingResponse: true,
       ragResponse: null,
-      error: null,
+      error: null
     })); // Fixed closing parenthesis and semicolon
     const startTime = Date.now();
     try {
@@ -148,8 +146,7 @@ export const vectorSearchActions = {
           userId,
           caseId,
           useContext: true, // Fixed semicolon to comma
-          model: 'gemma3-legal',
-        }),
+          model: `gemma3-legal` })
       });
       if (!response.ok) {
         // Simplified type assertion
@@ -170,16 +167,16 @@ export const vectorSearchActions = {
             query,
             timestamp: Date.now(),
             resultCount: 1, // RAG response count as 1
-            latency,
+            latency
           },
-        ],
+        ]
       })); // Added missing closing curly brace and parenthesis
     } catch (error: any) {
       console.error('RAG query failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false, // Added comma
-        error: error instanceof Error ? error.message : 'RAG query failed',
+        error: error instanceof Error ? error.message : 'RAG query failed'
       })); // Fixed closing parenthesis and semicolon
     }
   },
@@ -190,13 +187,13 @@ export const vectorSearchActions = {
     vectorSearchStore.update(state => ({
       ...state,
       isSearching: true, // Added comma
-      error: null,
+      error: null
     })); // Fixed closing parenthesis and semicolon
     try {
       const response = await fetch('/api/v1/vector/similar-cases', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId, userId, limit }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ caseId, userId, limit })
       });
       if (!response.ok) {
         // Simplified type assertion
@@ -206,14 +203,14 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         results: data.results || [],
-        isSearching: false,
+        isSearching: false
       })); // Fixed closing parenthesis and semicolon
     } catch (error: any) {
       console.error('Similar cases search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false, // Added comma
-        error: error instanceof Error ? error.message : 'Similar cases search failed',
+        error: error instanceof Error ? error.message : 'Similar cases search failed'
       })); // Fixed closing parenthesis and semicolon
     }
   },
@@ -224,7 +221,7 @@ export const vectorSearchActions = {
     // Fixed Partial type
     vectorSearchStore.update(state => ({
       ...state,
-      ...config,
+      ...config
     })); // Fixed closing parenthesis and semicolon
   },
   /**
@@ -237,7 +234,7 @@ export const vectorSearchActions = {
       results: [],
       ragContext: [],
       ragResponse: null, // Added comma
-      error: null,
+      error: null
     })); // Fixed closing parenthesis and semicolon
   },
   /**
@@ -249,15 +246,14 @@ export const vectorSearchActions = {
       const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: response.ok && data.status === 'healthy',
-      })); // Fixed closing parenthesis and semicolon
+        vectorDbConnected: response.ok && data.status === 'healthy` })); // Fixed closing parenthesis and semicolon
     } catch (error: any) {
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: false,
+        vectorDbConnected: false
       })); // Fixed closing parenthesis and semicolon
     }
-  },
+  }
 };
 // Initialize connection check
 if (typeof window !== 'undefined') {

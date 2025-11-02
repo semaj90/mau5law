@@ -13,15 +13,11 @@ import type {
   AIResponse
 } from "$lib/types/ai-worker.js";
 
-export interface CrewAIAgent {
-  id: string;
-  role: string;
+export interface CrewAIAgent { id: string;, role: string;
   goal: string;
   backstory: string;
   tools: string[];
-  llmConfig: {
-    model: string;
-    temperature: number;
+  llmConfig: { model: string;, temperature: number;
     maxTokens: number;
     apiBase?: string;
   };
@@ -31,9 +27,7 @@ export interface CrewAIAgent {
   allowDelegation: boolean;
 }
 
-export interface CrewAITask {
-  id: string;
-  description: string;
+export interface CrewAITask { id: string;, description: string;
   expectedOutput: string;
   agent?: string;
   tools?: string[];
@@ -41,9 +35,7 @@ export interface CrewAITask {
   dependencies?: string[];
 }
 
-export interface CrewAICrew {
-  id: string;
-  name: string;
+export interface CrewAICrew { id: string;, name: string;
   description: string;
   agents: CrewAIAgent[];
   tasks: CrewAITask[];
@@ -53,25 +45,19 @@ export interface CrewAICrew {
   memoryEnabled: boolean;
 }
 
-export interface CrewExecution {
-  id: string;
-  crewId: string;
+export interface CrewExecution { id: string;, crewId: string;
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
   startTime: number;
   endTime?: number;
   results: CrewTaskResult[];
   finalOutput?: string;
-  metrics: {
-    totalTime: number;
-    tasksCompleted: number;
+  metrics: { totalTime: number;, tasksCompleted: number;
     agentInteractions: number;
     tokensUsed: number;
   };
 }
 
-export interface CrewTaskResult {
-  taskId: string;
-  agentId: string;
+export interface CrewTaskResult { taskId: string;, agentId: string;
   output: string;
   executionTime: number;
   status: "completed" | "failed" | "delegated";
@@ -115,13 +101,13 @@ export class CrewAIService {
         maxExecution: 5,
         memory: true,
         verbose: true,
-        allowDelegation: true,
+        allowDelegation: true
       },
       {
         id: "legal-analyst",
         role: "Senior Legal Analyst",
         goal: "Provide legal analysis, precedent research, and case strategy recommendations",
-        backstory: `You are a senior legal analyst with expertise in criminal and civil law.
+        backstory: 'You are a senior legal analyst with expertise in criminal and civil law.
         You have worked with major law firms and prosecutor's offices for over 12 years.
         Your specialties include case law research, legal precedent analysis, and litigation strategy.`,
         tools: [
@@ -139,7 +125,7 @@ export class CrewAIService {
         maxExecution: 4,
         memory: true,
         verbose: true,
-        allowDelegation: false,
+        allowDelegation: false
       },
       {
         id: "evidence-specialist",
@@ -163,7 +149,7 @@ export class CrewAIService {
         maxExecution: 3,
         memory: true,
         verbose: true,
-        allowDelegation: false,
+        allowDelegation: false
       },
       {
         id: "report-writer",
@@ -187,7 +173,7 @@ export class CrewAIService {
         maxExecution: 2,
         memory: true,
         verbose: true,
-        allowDelegation: false,
+        allowDelegation: false
       }
     ];
     const tasks: CrewAITask[] = [
@@ -195,7 +181,7 @@ export class CrewAIService {
         id: "initial-investigation",
         description:
           "Conduct initial case investigation and evidence inventory",
-        expectedOutput: `Comprehensive investigation report including:
+        expectedOutput: `Comprehensive investigation report; including:
         - Case summary and key facts
         - Evidence inventory with classification
         - Timeline of events
@@ -208,7 +194,7 @@ export class CrewAIService {
         id: "legal-research",
         description:
           "Research applicable laws, precedents, and legal strategies",
-        expectedOutput: `Legal analysis report containing:
+        expectedOutput: `Legal analysis report; containing:
         - Applicable statutes and regulations
         - Relevant case precedents with citations
         - Legal theories and potential charges
@@ -222,7 +208,7 @@ export class CrewAIService {
         id: "evidence-analysis",
         description:
           "Perform detailed analysis of all digital and physical evidence",
-        expectedOutput: `Evidence analysis report with:
+        expectedOutput: `Evidence analysis report; with:
         - Detailed evidence examination results
         - Authenticity verification status
         - Chain of custody validation
@@ -239,7 +225,7 @@ export class CrewAIService {
       {
         id: "final-report",
         description: "Compile comprehensive final report with recommendations",
-        expectedOutput: `Final investigation report including:
+        expectedOutput: `Final investigation report; including:
         - Executive summary
         - Detailed findings from all team members
         - Evidence analysis conclusions
@@ -260,7 +246,7 @@ export class CrewAIService {
       tasks,
       process: "sequential",
       verbose: true,
-      memoryEnabled: true,
+      memoryEnabled: true
     };
   }
 
@@ -291,7 +277,7 @@ export class CrewAIService {
         maxExecution: 4,
         memory: true,
         verbose: true,
-        allowDelegation: true,
+        allowDelegation: true
       },
       {
         id: "compliance-officer",
@@ -315,7 +301,7 @@ export class CrewAIService {
         maxExecution: 3,
         memory: true,
         verbose: true,
-        allowDelegation: false,
+        allowDelegation: false
       },
       {
         id: "negotiation-advisor",
@@ -339,14 +325,14 @@ export class CrewAIService {
         maxExecution: 3,
         memory: true,
         verbose: true,
-        allowDelegation: false,
+        allowDelegation: false
       }
     ];
     const tasks: CrewAITask[] = [
       {
         id: "contract-review",
         description: "Perform comprehensive contract review and risk analysis",
-        expectedOutput: `Contract review report with:
+        expectedOutput: `Contract review report; with:
         - Key terms summary
         - Risk assessment with severity ratings
         - Problematic clauses identification
@@ -359,7 +345,7 @@ export class CrewAIService {
         id: "compliance-check",
         description:
           "Verify contract compliance with all applicable regulations",
-        expectedOutput: `Compliance analysis including:
+        expectedOutput: `Compliance analysis; including:
         - Regulatory requirements assessment
         - Industry standards verification
         - Corporate governance compliance
@@ -376,7 +362,7 @@ export class CrewAIService {
       {
         id: "negotiation-strategy",
         description: "Develop negotiation strategy and alternative terms",
-        expectedOutput: `Negotiation strategy report with:
+        expectedOutput: `Negotiation strategy report; with:
         - Key negotiation points
         - Alternative term proposals
         - Leverage analysis
@@ -400,7 +386,7 @@ export class CrewAIService {
       tasks,
       process: "sequential",
       verbose: true,
-      memoryEnabled: true,
+      memoryEnabled: true
     };
   }
 
@@ -426,19 +412,19 @@ export class CrewAIService {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
         },
         body: JSON.stringify({
           executionId,
           crew,
           inputs,
           options: {
-            timeout: timeoutMs,
+           , timeout: timeoutMs,
             priority: options.priority ?? "medium",
-            streamResults: options.streamResults ?? false,
-          },
+            streamResults: options.streamResults ?? false
+          }
         }),
-        signal: controller.signal,
+        signal: controller.signal
       });
 
       if (!res.ok) {
@@ -462,8 +448,8 @@ export class CrewAIService {
       const res = await fetch(`${this.baseUrl}/api/execution/${executionId}`, {
         method: "GET",
         headers: {
-          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
-        },
+          ...(this.apiKey ? {, Authorization: `Bearer ${this.apiKey}` } : {})
+        }
       });
       if (!res.ok) {
         throw new Error(`Failed to get execution: ${res.status}`);
@@ -483,8 +469,8 @@ export class CrewAIService {
       await fetch(`${this.baseUrl}/api/execution/${executionId}/cancel`, {
         method: "POST",
         headers: {
-          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
-        },
+          ...(this.apiKey ? {, Authorization: `Bearer ${this.apiKey}` } : {})
+        }
       });
     } catch (err) {
       console.error("Failed to cancel execution:", err);
@@ -498,7 +484,7 @@ export class CrewAIService {
   async healthCheck(): Promise<boolean> {
     try {
       const res = await fetch(`${this.baseUrl}/health`, {
-        method: "GET",
+        method: "GET"
       });
       return res.ok;
     } catch {
@@ -514,8 +500,8 @@ export class CrewAIService {
       const res = await fetch(`${this.baseUrl}/api/tools`, {
         method: "GET",
         headers: {
-          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
-        },
+          ...(this.apiKey ? {, Authorization: 'Bearer ${this.apiKey}` } : {})
+        }
       });
       if (!res.ok) throw new Error("Failed to get tools");
       const data = await res.json();
@@ -594,7 +580,7 @@ export class CrewAIService {
       tasks,
       process,
       verbose: true,
-      memoryEnabled: true,
+      memoryEnabled: true
     };
   }
 }
@@ -613,13 +599,13 @@ export async function analyzeLegalCaseWithCrew(
     caseDescription,
     evidenceFiles,
     jurisdiction,
-    analysisType: "comprehensive",
+    analysisType: "comprehensive"
   };
 
   try {
     const execution = await crewAIService.executeCrew(crew, inputs, {
       timeout: 120000, // 2 minutes
-      priority: "high",
+      priority: "high"
     });
 
     // Poll for completion with limited attempts
@@ -649,8 +635,8 @@ export async function analyzeLegalCaseWithCrew(
         executionId: execution.id,
         tasksCompleted: finalExecution.metrics.tasksCompleted,
         agentInteractions: finalExecution.metrics.agentInteractions,
-        crewType: "legal-investigation",
-      },
+        crewType: "legal-investigation"
+      }
     } as AIResponse;
   } catch (err) {
     console.error("Legal case analysis with crew failed:", err);
@@ -668,13 +654,13 @@ export async function analyzeContractWithCrew(
     contractText,
     contractType,
     industryContext,
-    analysisDepth: "comprehensive",
+    analysisDepth: "comprehensive"
   };
 
   try {
     const execution = await crewAIService.executeCrew(crew, inputs, {
       timeout: 90000, // 1.5 minutes
-      priority: "high",
+      priority: "high"
     });
 
     // Poll for completion with limited attempts
@@ -704,8 +690,8 @@ export async function analyzeContractWithCrew(
         executionId: execution.id,
         tasksCompleted: finalExecution.metrics.tasksCompleted,
         agentInteractions: finalExecution.metrics.agentInteractions,
-        crewType: "contract-analysis",
-      },
+        crewType: "contract-analysis"
+      }
     } as AIResponse;
   } catch (err) {
     console.error("Contract analysis with crew failed:", err);

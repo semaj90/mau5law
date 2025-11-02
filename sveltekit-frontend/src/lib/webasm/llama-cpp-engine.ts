@@ -6,26 +6,20 @@
 // Remove triple-slash reference and use an import-style include for local type file
 import type {} from '../types/webgpu'; // keeps any local ambient webgpu declarations included
 
-export interface LlamaCppConfig {
-  modelPath: string;
-  contextSize: number;
+export interface LlamaCppConfig { modelPath: string;, contextSize: number;
   gpuLayers: number; // RTX 3060 Ti can handle 32-40 layers,
   threadCount: number;
   batchSize: number;
   useGPU: boolean;
   quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
 }
-export interface InferenceRequest {
-  prompt: string;
-  maxTokens: number;
+export interface InferenceRequest { prompt: string;, maxTokens: number;
   temperature: number;
   topP: number;
   stopTokens?: string[];
   stream?: boolean;
 }
-export interface InferenceResult {
-  text: string;
-  tokens: number;
+export interface InferenceResult { text: string;, tokens: number;
   processingTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
@@ -36,9 +30,7 @@ export interface InferenceResult {
 type WasmPtr = number;
 type TokenArray = Int32Array | Uint32Array | number[];
 
-interface LlamaInitOptions {
-  model_ptr: WasmPtr;
-  model_size: number;
+interface LlamaInitOptions { model_ptr: WasmPtr;, model_size: number;
   context_size?: number;
   gpu_layers?: number;
   thread_count?: number;
@@ -119,7 +111,7 @@ export class WebASMLlamaCppEngine {
       threadCount: config.threadCount || navigator.hardwareConcurrency || 8,
       batchSize: config.batchSize || 512,
       useGPU: config.useGPU ?? true,
-      quantization: config.quantization || 'q4_0',
+      quantization: config.quantization || 'q4_0'
     };
   }
   /**
@@ -158,7 +150,7 @@ export class WebASMLlamaCppEngine {
     const memory = new WebAssembly.Memory({
       initial: 256,
       maximum: 2048,
-      shared: true,
+      shared: true
     });
 
     const instance = await WebAssembly.instantiate(wasmModule, {
@@ -169,8 +161,8 @@ export class WebASMLlamaCppEngine {
         gpu_memcpy: this.gpuMemcpy.bind(this),
         __pthread_create: this.pthreadCreate.bind(this),
         __pthread_join: this.pthreadJoin.bind(this),
-        get_time_ms: () => performance.now(),
-      },
+        get_time_ms: () => performance.now()
+      }
     });
 
     // Cast exports to the typed interface so callable members and memory.buffer are known
@@ -193,10 +185,10 @@ export class WebASMLlamaCppEngine {
     this.gpuDevice = await adapter.requestDevice({
       requiredFeatures: ['shader-f16'] as GPUFeatureName[],
       requiredLimits: {
-        maxComputeWorkgroupSizeX: 1024,
+       , maxComputeWorkgroupSizeX: 1024,
         maxComputeInvocationsPerWorkgroup: 1024,
         maxBufferSize: 2 * 1024 * 1024 * 1024, // 2GB for large models
-      },
+      }
     });
     console.log('🎮 WebGPU initialized for tensor acceleration');
   }
@@ -228,7 +220,7 @@ export class WebASMLlamaCppEngine {
       gpu_layers: this.config.gpuLayers,
       thread_count: this.config.threadCount,
       batch_size: this.config.batchSize,
-      use_gpu: this.config.useGPU ? 1 : 0,
+      use_gpu: this.config.useGPU ? 1 : 0
     });
 
     if (!success) {
@@ -251,7 +243,7 @@ export class WebASMLlamaCppEngine {
     const response = await fetch(modelPath, {
       headers: {
         'Range': 'bytes=0-', // Support resume
-      },
+      }
     });
     if (!response.ok) {
       throw new Error(`Failed to download model: ${response.status}`);
@@ -299,7 +291,7 @@ export class WebASMLlamaCppEngine {
         processingTime,
         tokensPerSecond,
         memoryUsage: this.getMemoryUsage(),
-        gpuUtilization: await this.getGPUUtilization(),
+        gpuUtilization: await this.getGPUUtilization()
       };
     } catch (error) {
       console.error('Inference failed:', error);
@@ -314,7 +306,7 @@ export class WebASMLlamaCppEngine {
     wasm.llama_set_params({
       temperature: request.temperature,
       top_p: request.topP,
-      max_tokens: request.maxTokens,
+      max_tokens: request.maxTokens
     });
 
     wasm.llama_eval(inputTokens);
@@ -336,7 +328,7 @@ export class WebASMLlamaCppEngine {
       max_tokens: request.maxTokens,
       temperature: request.temperature,
       top_p: request.topP,
-      batch_size: this.config.batchSize,
+      batch_size: this.config.batchSize
     });
   }
   /**
@@ -381,7 +373,7 @@ export class WebASMLlamaCppEngine {
         GPUBufferUsage.COPY_SRC |
         GPUBufferUsage.COPY_DST |
         GPUBufferUsage.MAP_READ |
-        GPUBufferUsage.MAP_WRITE,
+        GPUBufferUsage.MAP_WRITE
     });
 
     // Register buffer and return a stable numeric: "pointer" to the WASM side
@@ -484,7 +476,7 @@ export class WebASMLlamaCppEngine {
       request.onsuccess = () => resolve(request.result);
       request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result; // Correctly get db from event
-        db.createObjectStore('models', { keyPath: 'path' });
+        db.createObjectStore('models', { keyPath: `path` });
       };
     });
   }
@@ -497,9 +489,7 @@ export class WebASMLlamaCppEngine {
   /**
    * Get performance statistics
    */
-  getStats(): {
-    totalInferences: number;
-    totalTokens: number;
+  getStats(): { totalInferences: number;, totalTokens: number;
     averageLatency: number;
     tokensPerSecond: number;
     memoryUsage: number;
@@ -509,7 +499,7 @@ export class WebASMLlamaCppEngine {
       totalTokens: this.totalTokens,
       averageLatency: this.averageLatency,
       tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency : 0,
-      memoryUsage: this.getMemoryUsage(),
+      memoryUsage: this.getMemoryUsage()
     };
   }
   /**
@@ -562,7 +552,7 @@ export class WebASMLlamaCppEngine {
 export const llamaCppEngine = new WebASMLlamaCppEngine({
   modelPath: '/models/gemma-3-270m-q4_0.gguf', // Changed from gemma-2b-q4_0.gguf
   contextSize: 2048,
-  gpuLayers: 35,
+  gpuLayers: 35
 });
 // Convenience function for quick inference
 export async function runQuickInference(
@@ -578,6 +568,6 @@ export async function runQuickInference(
     temperature: options.temperature || 0.1,
     topP: options.topP || 0.9,
     stream: options.stream || false,
-    stopTokens: options.stopTokens || ['</s>', '\n\n'],
+    stopTokens: options.stopTokens || ['</s>', '\n\n']
   });
 }

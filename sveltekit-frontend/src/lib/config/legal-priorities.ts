@@ -3,9 +3,7 @@
  * 8-bit priority scoring (0-255) for legal document classification
  */
 
-export interface LegalDocument {
-  id: string;
-  type: DocumentType;
+export interface LegalDocument { id: string;, type: DocumentType;
   category: LegalCategory;
   urgency: UrgencyLevel;
   complexity: ComplexityLevel;

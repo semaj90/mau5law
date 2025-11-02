@@ -34,9 +34,7 @@ export type EvidenceType =
 
 export type AnalysisStatus = 'pending' | 'processing' | 'complete' | 'error';
 
-export interface EvidenceFile {
-  id: string;
-  name: string;
+export interface EvidenceFile { id: string;, name: string;
   type: EvidenceType;
   mimeType: string;
   size: number;
@@ -49,9 +47,7 @@ export interface EvidenceFile {
   metadata?: Record<string, unknown>;
 }
 
-export interface ChainOfCustodyEntry {
-  id: string;
-  evidenceId: string;
+export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   handledBy: string;
   receivedAt: number;
   releasedAt?: number;
@@ -60,9 +56,7 @@ export interface ChainOfCustodyEntry {
   notes?: string;
 }
 
-export interface AnalysisResult {
-  id: string;
-  evidenceId: string;
+export interface AnalysisResult { id: string;, evidenceId: string;
   analysisType: string;
   status: AnalysisStatus;
   result?: any;
@@ -99,7 +93,7 @@ interface EvidenceStoreState {
 
   // Filtering
   typeFilter: EvidenceType[];
-  dateRange?: { start: number; end: number };
+  dateRange?: { start: number;, end: number };
   searchQuery: string;
 
   // Metadata
@@ -148,8 +142,7 @@ function createEvidenceStore() {
       update(s => ({ ...s, activeCaseId: caseId, isLoading: true, error: null }));
       try {
         const response = await fetch(`/api/cases/${caseId}/evidence`, {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -179,7 +172,7 @@ function createEvidenceStore() {
      */
     async uploadEvidence(
       file: File,
-      metadata: { caseId: string; type: EvidenceType; tags?: string[]; description?: string }
+      metadata: {, caseId: string; type: EvidenceType; tags?: string[]; description?: string }
     ) {
       const fileId = `ev-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -201,8 +194,7 @@ function createEvidenceStore() {
         const response = await fetch('/api/evidence/upload', {
           method: 'POST',
           body: formData,
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -268,9 +260,8 @@ function createEvidenceStore() {
         const response = await fetch(`/api/evidence/${evidenceId}/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: analysisType }),
-          credentials: 'include'
-        });
+          body: JSON.stringify({, type: analysisType }),
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -369,8 +360,7 @@ function createEvidenceStore() {
     async getChainOfCustody(evidenceId: string): Promise<ChainOfCustodyEntry[]> {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -402,8 +392,7 @@ function createEvidenceStore() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(entry),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -435,8 +424,7 @@ function createEvidenceStore() {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}`, {
           method: 'DELETE',
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           update(s => ({

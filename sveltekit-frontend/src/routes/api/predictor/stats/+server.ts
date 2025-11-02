@@ -4,9 +4,7 @@ import { json } from '@sveltejs/kit'
 import { predictor } from '$lib/server/chrrom/predictor.js'
 import type { RequestHandler } from './$types';
 
-interface PredictorStats {
-  lastSync: number;
-  totalTransitions: number;
+interface PredictorStats { lastSync: number;, totalTransitions: number;
   uniqueActions: number;
   pendingUpdates?: number;
   cacheEnabled?: boolean;
@@ -37,7 +35,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         success: true,
         message: 'Hard reset completed - all data cleared',
         resetType: 'hard',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     } else {
       // Soft reset: just sync to Redis or return current stats
@@ -47,11 +45,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
         message: 'Soft reset completed - data synced to Redis',
         resetType: 'soft',
         stats: {
-          totalTransitions: stats.totalTransitions,
+         , totalTransitions: stats.totalTransitions,
           uniqueActions: stats.uniqueActions,
-          redisConnected: stats.redisConnected,
+          redisConnected: stats.redisConnected
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
   } catch (error) {
@@ -72,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
       try {
         const cudaResponse = await fetch('http://localhost:8097/api/v1/simd/capabilities', {
-          signal: controller.signal,
+          signal: controller.signal
         });
         if (cudaResponse.ok) {
           cudaAvailable = true;
@@ -98,16 +96,14 @@ export const GET: RequestHandler = async ({ url }) => {
       totalEstimated: ((stats.uniqueActions || 0) * 150) / 1024, // KB
     };
 
-    const detailedStats: Record<string, unknown> = {
-      predictor: {
-        totalTransitions: stats.totalTransitions || 0,
+    const detailedStats: Record<string, unknown> = { predictor: {, totalTransitions: stats.totalTransitions || 0,
         uniqueActions: stats.uniqueActions || 0,
         pendingUpdates: stats.pendingUpdates || 0,
         performance: {
           transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100,
           uptimeMs: uptime,
-          memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated),
-        },
+          memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated)
+        }
       },
       cache: {
         enabled: !!stats.cacheEnabled,
@@ -115,19 +111,19 @@ export const GET: RequestHandler = async ({ url }) => {
         lastSync: stats.lastSync || 0,
         syncAge: Date.now() - (stats.lastSync || Date.now()),
         password: 'redis', // From env (placeholder)
-        url: 'localhost:6379',
+        url: 'localhost:6379'
       },
       acceleration: {
         cudaAvailable,
         simdCapabilities: cudaStats?.simd_capabilities ?? null,
         gpuCapabilities: cudaStats?.gpu_capabilities ?? null,
-        estimatedOpsPerSecond: (cudaStats?.performance_metrics?.estimated_ops_per_second as number) || 0,
+        estimatedOpsPerSecond: (cudaStats?.performance_metrics?.estimated_ops_per_second as number) || 0
       },
       health: {
         status: determineHealthStatus(stats, cudaAvailable),
         redisLatency: stats.redisConnected ? 'low' : 'n/a',
         predictionAccuracy: 'high',
-        cacheHitRate: stats.redisConnected ? 'high' : 'n/a',
+        cacheHitRate: stats.redisConnected ? 'high' : 'n/a'
       },
       integration: {
         postgresqlReady: true,
@@ -135,9 +131,9 @@ export const GET: RequestHandler = async ({ url }) => {
         embeddinggemmaReady: cudaAvailable,
         simdAcceleration: !!(
           cudaStats?.simd_capabilities && (cudaStats.simd_capabilities as Record<string, unknown>)['avx2_enabled']
-        ),
+        )
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     const includeDebug = url.searchParams.get('debug') === 'true';
@@ -145,7 +141,7 @@ export const GET: RequestHandler = async ({ url }) => {
       detailedStats.debug = {
         memoryBreakdown: estimatedMemoryUsage,
         cudaFullStats: cudaStats,
-        rawPredictorStats: stats,
+        rawPredictorStats: stats
       };
     }
 
@@ -158,8 +154,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now(),
         fallback: {
           status: 'error',
-          message: error instanceof Error ? error.message : 'Unknown error',
-        },
+          message: error instanceof Error ? error.message : `Unknown error` }
       },
       { status: 500 }
     );

@@ -8,7 +8,7 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -29,7 +29,7 @@ const InferenceRequestSchema = z.object({
   maxTokens: z.number().min(1).max(2048).default(512),
   temperature: z.number().min(0).max(2).default(0.1),
   system_prompt: z.string().optional(),
-  stream: z.boolean().default(false),
+  stream: z.boolean().default(false)
 });
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
@@ -41,14 +41,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       maxTokens: body.maxTokens || body.max_tokens,
       temperature: body.temperature,
       system_prompt: body.system_prompt,
-      stream: body.stream,
+      stream: body.stream
     });
     if (!validatedData.success) {
       return json(
         {
           success: false,
           error: 'Invalid request data',
-          details: validatedData.error.flatten(),
+          details: validatedData.error.flatten()
         },
         { status: 400 }
       );
@@ -60,7 +60,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       max_tokens: validatedData.data.maxTokens,
       temperature: validatedData.data.temperature,
       system_prompt: validatedData.data.system_prompt,
-      stream: validatedData.data.stream,
+      stream: validatedData.data.stream
     };
     // Generate inference with TensorRT-LLM + Ollama fallback
     const result = await tensorrtLLMService.generateInference(inferenceRequest);
@@ -74,13 +74,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       latencyMs: result.processing_time,
       cached: result.cached,
       qualityScore: result.tokens ? Math.min(1, 0.6 + result.tokens / 500) : 0.75,
-      error: result.error,
+      error: result.error
     });
   } catch (error) {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Inference failed',
+        error: error instanceof Error ? error.message : 'Inference failed'
       },
       { status: 500 }
     );
@@ -95,24 +95,24 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthStatus = await tensorrtLLMService.getHealthStatus();
         return json({
           success: true,
-          data: healthStatus,
+          data: healthStatus
         });
       case 'models':
         const models = await tensorrtLLMService.getAvailableModels();
         return json({
           success: true,
-          data: models,
+          data: models
         });
       case 'warmup':
         await tensorrtLLMService.warmupModels();
         return json({
           success: true,
-          data: { message: 'Models warmed up successfully' },
+          data: {, message: 'Models warmed up successfully' }
         });
       default: return json(
           {
             success: false,
-            error: 'Unknown action',
+            error: 'Unknown action'
           },
           { status: 400 }
         );
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Health check failed',
+        error: error instanceof Error ? error.message : 'Health check failed'
       },
       { status: 500 }
     );

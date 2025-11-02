@@ -31,8 +31,8 @@
     close: void; // No payload for the close event
   }
   const dispatch = createEventDispatcher<DiamondModalEvents>();
-  let modalElement: HTMLDivElement | null = $state(null);
-  let canvasElement: HTMLCanvasElement | null = $state(null);
+  let modalElement: HTMLDivElement | null = null;
+  let canvasElement: HTMLCanvasElement | null = null;
   let animationFrame: number;
   const sizeClasses = {
     small: 'max-w-md',

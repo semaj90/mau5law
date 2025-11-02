@@ -14,9 +14,9 @@ export const caseFormSchema = z.object({
     .min(10, 'Description must be at least 10 characters')
     .max(1000, 'Description too long')
     .optional(),
-  priority: z.enum(['low', 'medium', 'high'], { errorMap: () => ({ message: 'Please select a priority level' }) }),
+  priority: z.enum(['low', 'medium', 'high'], { errorMap: () => ({, message: 'Please select a priority level' }) }),
   status: z
-    .enum(['draft', 'active', 'pending', 'closed'], { errorMap: () => ({ message: 'Please select a status' }) })
+    .enum(['draft', 'active', 'pending', 'closed'], { errorMap: () => ({, message: 'Please select a status' }) })
     .default('draft'),
   assignedTo: z.string().uuid('Please select a valid user').optional(),
   dueDate: z
@@ -32,14 +32,13 @@ export const caseFormSchema = z.object({
     ),
   tags: z.array(z.string().min(1).max(30)).max(10, 'Maximum 10 tags allowed').optional(),
   isConfidential: z.boolean().default(false),
-  notifyAssignee: z.boolean().default(true),
+  notifyAssignee: z.boolean().default(true)
 });
 // Evidence upload form schema
 export const evidenceFormSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title too long'),
   description: z.string().max(500, 'Description too long').optional(),
-  evidenceType: z.enum(['document', 'image', 'video', 'audio', 'digital'], {
-    errorMap: () => ({ message: 'Please select evidence type' }),
+  evidenceType: z.enum(['document', 'image', 'video', 'audio', 'digital'], { errorMap: () => ({, message: 'Please select evidence type' })
   }),
   tags: z.array(z.string().min(1).max(30)).max(15, 'Maximum 15 tags allowed').optional(),
   isChainOfCustodyRequired: z.boolean().default(false),
@@ -54,7 +53,7 @@ export const evidenceFormSchema = z.object({
     },
     { message: 'Collection date cannot be in the future' }
   ),
-  location: z.string().min(1, 'Collection location is required').max(200, 'Location too long'),
+  location: z.string().min(1, 'Collection location is required').max(200, 'Location too long')
 });
 // User authentication schema
 export const authFormSchema = z.object({
@@ -64,7 +63,7 @@ export const authFormSchema = z.object({
     .min(8, 'Password must be at least 8 characters')
     .max(128, 'Password too long')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean().default(false)
 });
 // Registration schema
 export const registerFormSchema = z
@@ -90,11 +89,11 @@ export const registerFormSchema = z
       ),
     confirmPassword: z.string(),
     role: z.enum(['prosecutor', 'investigator', 'legal_assistant', 'admin']),
-    agreeToTerms: z.boolean(),
+    agreeToTerms: z.boolean()
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirmPassword']
   });
 // Search form schema
 export const searchFormSchema = z.object({
@@ -105,7 +104,7 @@ export const searchFormSchema = z.object({
   priority: z.array(z.enum(['low', 'medium', 'high'])).optional(),
   tags: z.array(z.string()).optional(),
   sortBy: z.enum(['relevance', 'date', 'priority', 'status']).default('relevance'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc')
 });
 export type CaseForm = z.infer<typeof caseFormSchema>;
 export type EvidenceForm = z.infer<typeof evidenceFormSchema>;

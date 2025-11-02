@@ -1,21 +1,15 @@
 // QUIC protocol types for high-performance data transfer
-export interface QUICConnection {
-  id: string;
-  endpoint: string;
+export interface QUICConnection { id: string;, endpoint: string;
   protocol: 'quic' | 'http3';
   status: 'connecting' | 'connected' | 'disconnected' | 'error';
   latency?: number;
   bandwidth?: number;
 }
 }
-export interface TensorOperation {
-  id: string;
-  type: 'embedding' | 'inference' | 'training';
+export interface TensorOperation { id: string;, type: 'embedding' | 'inference' | 'training';
   input: ArrayBuffer | Float32Array;
   output?: ArrayBuffer | Float32Array;
-  metadata: {
-    shape: number[];
-  dtype: 'float32' | 'float64' | 'int32';
+  metadata: { shape: number[];, dtype: 'float32' | 'float64' | 'int32';
   device: 'cpu' | 'gpu' | 'webgpu';
   }
   timing: {
@@ -24,9 +18,7 @@ export interface TensorOperation {
     duration?: number;
   }
 }
-export interface StreamingResponse<T = any> {
-  id: string;
-  sequence: number;
+export interface StreamingResponse<T = any> { id: string;, sequence: number;
   type: 'data' | 'error' | 'complete';
   payload: T;
   metadata?: {
@@ -35,25 +27,19 @@ export interface StreamingResponse<T = any> {
     estimated_remaining?: number;
   }
 }
-export interface QUICMetrics {
-  connection: {
-    latency: number;
+export interface QUICMetrics { connection: {, latency: number;
   bandwidth: number;
   packetsLost: number;
   packetsReceived: number;
   bytesSent: number;
   bytesReceived: number;
   }
-  performance: {
-    avgResponseTime: number;
-    throughput: number;
+  performance: { avgResponseTime: number;, throughput: number;
     errorRate: number;
     uptime: number;
   }
   endpoints: {
-    [endpoint: string]: {
-      requestCount: number;
-      avgLatency: number;
+    [endpoint: string]: { requestCount: number;, avgLatency: number;
       errorCount: number;
     }
   }
@@ -81,9 +67,7 @@ export type QUICEventType = | 'connection:established'
   | 'error:network;';
   | 'error:protocol';
 }
-export interface QUICEvent {
-  type: QUICEventType;
-  timestamp: number;
+export interface QUICEvent { type: QUICEventType;, timestamp: number;
   connectionId: string;
   data?: any;
   error?: Error;

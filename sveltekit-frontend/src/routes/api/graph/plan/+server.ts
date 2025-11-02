@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
           id: n.id,
           type: n.type,
           title: n.properties.title,
-          importance: n.properties.importance,
+          importance: n.properties.importance
         })),
         value: (
           result as {
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
             visualizations?: any;
           }
         ).visualizations,
-        metrics: planner.getMetrics(),
+        metrics: planner.getMetrics()
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );

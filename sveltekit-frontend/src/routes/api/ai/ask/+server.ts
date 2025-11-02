@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -21,17 +21,13 @@ import { json } from '@sveltejs/kit';
 import { ollamaService } from '$lib/services/ollama-service';
 import type { RequestHandler } from './$types.js';
 
-interface SearchResultItem {
-  id: string;
-  title: string;
+interface SearchResultItem { id: string;, title: string;
   content: string;
   score: number;
   type: string;
 }
 
-export interface Source {
-  id: string;
-  title: string;
+export interface Source { id: string;, title: string;
   content: string; // Truncated
   score: number;
   type: string;
@@ -51,9 +47,7 @@ type AIServiceType = {
   generateResponse: (query: string, opts?: Record<string, unknown>) => Promise<string>;
 };
 
-type CacheClient = {
-  get: (key: string) => Promise<unknown>;
-  set: (key: string, value: any, opts?: { ex?: number }) => Promise<void>;
+type CacheClient = { get: (key: string) => Promise<unknown>;, set: (key: string; value: any, opts?: { ex?: number }) => Promise<void>;
 };
 
 type TauriLLMType = {
@@ -117,7 +111,7 @@ try {
     vectorSearch = async () => ({ results: [] });
   }
 } catch (error: any) {
-  console.warn('Vector search not available:', error);
+  console.warn('Vector search not available: `, error);
   vectorSearch = async () => ({ results: [] });
 }
 
@@ -140,29 +134,29 @@ try {
   if (typeof aiServiceModuleRaw === 'function') {
     aiService = {
       generateResponse: async (q: string, opts?: Record<string, unknown>) =>
-        String(await (aiServiceModuleRaw as AnyFunction)(q, opts)),
+        String(await (aiServiceModuleRaw as AnyFunction)(q, opts))
     };
   } else {
     // Try named export first
     const named = getBoundFn(mod, 'generateResponse');
     if (named) {
       aiService = {
-        generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await named(q, opts)),
+        generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await named(q, opts))
       };
     } else {
-      // Try default export shape: { default: { generateResponse: fn } } or default is function
+      // Try default export shape: { default: {, generateResponse: fn } } or default is function
       if (mod && typeof mod === 'object' && (mod as Record<string, unknown>)['default']) {
         const def = (mod as Record<string, unknown>)['default'];
         if (typeof def === 'function') {
           aiService = {
             generateResponse: async (q: string, opts?: Record<string, unknown>) =>
-              String(await (def as AnyFunction)(q, opts)),
+              String(await (def as AnyFunction)(q, opts))
           };
         } else {
           const defBound = getBoundFn(def, 'generateResponse');
           if (defBound) {
             aiService = {
-              generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await defBound(q, opts)),
+              generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await defBound(q, opts))
             };
           }
         }
@@ -174,14 +168,13 @@ try {
   if (!aiService) {
     console.warn('AI service module shape unexpected, using stub');
     aiService = {
-      generateResponse: async () => 'AI service not available',
+      generateResponse: async () => 'AI service not available'
     };
   }
 } catch (error: any) {
   console.warn('AI service not available:', error);
   aiService = {
-    generateResponse: async () => 'AI service not available',
-  };
+    generateResponse: async () => 'AI service not available` };
 }
 
 try {
@@ -213,7 +206,7 @@ try {
         get: async (k: string) => await getFn(k),
         set: async (k: string, v: any, opts?: { ex?: number }) => {
           await setFn(k, v, opts);
-        },
+        }
       } as CacheClient;
     }
     // fall through to other checks if inner not suitable
@@ -228,7 +221,7 @@ try {
         get: async (k: string) => await getFn(k),
         set: async (k: string, v: any, opts?: { ex?: number }) => {
           await setFn(k, v, opts);
-        },
+        }
       };
     }
   }
@@ -243,7 +236,7 @@ try {
         get: async (k: string) => await getFn(k),
         set: async (k: string, v: any, opts?: { ex?: number }) => {
           await setFn(k, v, opts);
-        },
+        }
       } as CacheClient;
     }
   }
@@ -252,14 +245,14 @@ try {
   if (!cache) {
     cache = {
       get: async () => null,
-      set: async () => {},
+      set: async () => {}
     };
   }
 } catch (error: any) {
   console.warn('Cache not available:', error);
   cache = {
     get: async () => null,
-    set: async () => {},
+    set: async () => {}
   };
 }
 
@@ -368,7 +361,7 @@ try {
       isAvailable,
       initialize,
       runInference,
-      getCurrentModels,
+      getCurrentModels
     };
   };
 
@@ -376,14 +369,12 @@ try {
 } catch (error: any) {
   console.warn('Tauri LLM not available:', error);
   tauriLLM = {
-    isAvailable: () => false,
+    isAvailable: () => false
   };
 }
 
 // Enhanced AI response interface with Gemma3 support
-export interface AIResponse {
-  answer: string;
-  sources: Source[];
+export interface AIResponse { answer: string;, sources: Source[];
   query: string;
   executionTime: number;
   fromCache: boolean;
@@ -400,14 +391,13 @@ export const POST: RequestHandler = async ({ request }) => {
       includeHistory = true,
       maxSources = 5,
       searchThreshold = 0.7,
-      useCache = true,
+      useCache = true
     } = await request.json();
     if (!query || query.trim().length === 0) {
       return json(
         {
           success: false,
-          error: 'Query is required',
-        },
+          error: 'Query is required` },
         { status: 400 }
       );
     }
@@ -421,8 +411,8 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             ...cached,
             fromCache: true,
-            executionTime: Date.now() - startTime,
-          },
+            executionTime: Date.now() - startTime
+          }
         });
       }
     }
@@ -435,8 +425,7 @@ export const POST: RequestHandler = async ({ request }) => {
           threshold: searchThreshold,
           useCache: true,
           fallbackToQdrant: true,
-          searchType: 'hybrid',
-        });
+          searchType: 'hybrid` });
       } else {
         // Fallback: create mock results for testing Gemma3
         searchResults = {
@@ -444,11 +433,10 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               id: 'mock-result-1',
               title: 'Mock Legal Document',
-              content: `Mock legal document content related to: ${query}. This is a placeholder result for testing Gemma3 integration.`,
+              content: `Mock legal document content related; to: ${query}. This is a placeholder result for testing Gemma3 integration.`,
               score: 0.85,
-              type: 'document',
-            },
-          ],
+              type: 'document` },
+          ]
         };
       }
     } catch (searchError) {
@@ -459,13 +447,13 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         data: {
-          answer:
+         , answer:
             "I couldn't find any relevant information to answer your question. Please try rephrasing your query or check if the relevant documents have been uploaded.",
           sources: [],
           query,
           executionTime: Date.now() - startTime,
-          fromCache: false,
-        },
+          fromCache: false
+        }
       });
     }
     // Prepare context for LLM
@@ -493,7 +481,7 @@ Instructions:
       const response = await ollamaService.generate(query, {
         system: systemPrompt,
         temperature: 0.7,
-        maxTokens: 512,
+        maxTokens: 512
       });
       aiAnswer = response;
       provider = 'local';
@@ -526,7 +514,7 @@ Instructions:
           aiAnswer = await tauriLLM.runInference(query, {
             temperature: 0.7,
             maxTokens: 512,
-            systemPrompt: systemPrompt,
+            systemPrompt: systemPrompt
           });
           provider = 'local';
           // Safely read current models if available
@@ -550,7 +538,7 @@ Instructions:
                 legalContext: true,
                 context: relevantSources.map((s: SearchResultItem) => s.content),
                 temperature: 0.7,
-                maxTokens: 512,
+                maxTokens: 512
               });
               provider = 'cloud';
               model = 'embeddinggemma:latest';
@@ -578,7 +566,7 @@ Instructions:
               legalContext: true,
               context: relevantSources.map((s: SearchResultItem) => s.content),
               temperature: 0.7,
-              maxTokens: 512,
+              maxTokens: 512
             });
             provider = 'cloud';
             model = 'embeddinggemma:latest';
@@ -605,14 +593,14 @@ Instructions:
         title: source.title,
         content: source.content.substring(0, 200) + '...', // Truncate for UI
         score: source.score,
-        type: source.type,
+        type: source.type
       })),
       query,
       executionTime: Date.now() - startTime,
       fromCache: false,
       provider,
       model,
-      confidence,
+      confidence
     };
     // Cache the response
     if (useCache) {
@@ -620,15 +608,14 @@ Instructions:
     }
     return json({
       success: true,
-      data: response,
+      data: response
     });
   } catch (error: any) {
     console.error('Error processing request:', error);
     return json(
       {
         success: false,
-        error: 'Internal server error',
-      },
+        error: 'Internal server error` },
       { status: 500 }
     );
   }

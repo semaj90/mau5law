@@ -35,15 +35,11 @@ export interface Integratedany extends any {
     content?: string;
     metadata?: { [key: string]: any }
   }
-  summaryOptions?: {
-    includeSummary: boolean;
-    includeKeyPoints: boolean;
+  summaryOptions?: { includeSummary: boolean;, includeKeyPoints: boolean;
     includeLegalAnalysis: boolean;
     includeEmbeddings: boolean;
   }
-  advancedOptions?: {
-    useGPU: boolean;
-    enableStreaming: boolean;
+  advancedOptions?: { useGPU: boolean;, enableStreaming: boolean;
     enableCaching: boolean;
     fallbackModel?: string;
   }
@@ -53,9 +49,7 @@ export interface Integratedany extends any {
   response?: string;
   streaming?: boolean;
   summary?: ComprehensiveSummaryResponse;
-  integration?: {
-    servicesUsed: string[];
-    processingPath: string;
+  integration?: { servicesUsed: string[];, processingPath: string;
     performance: {
       totalTime: number;
       summaryTime?: number;
@@ -63,13 +57,12 @@ export interface Integratedany extends any {
     }
   }
 }
-export interface OllamaServiceStatus {
-  comprehensive: { status: string; health: number }
-  langchain: { status: string; connected: boolean }
-  cuda: { status: string; available: boolean }
+export interface OllamaServiceStatus { comprehensive: { status: string;, health: number }
+  langchain: { status: string;, connected: boolean }
+  cuda: { status: string;, available: boolean }
   gemma3: { status: string; model?: string }
-  cluster: { status: string; nodes: number }
-  streaming: { status: string; active: number }
+  cluster: { status: string;, nodes: number }
+  streaming: { status: string;, active: number }
 }
 // ============================================================================
 // INTEGRATION LAYER SERVICE
@@ -83,13 +76,12 @@ class OllamaIntegrationLayer {
   private _initialized = $state(false);
   private _requestCounter = 0;
   constructor() {
-    this.serviceStatus = writable({
-      comprehensive: { status: 'initializing', health: 0 },
+    this.serviceStatus = writable({ comprehensive: {, status: 'initializing', health: 0 },
       langchain: { status: 'initializing', connected: false },
       cuda: { status: 'initializing', available: false },
       gemma3: { status: 'initializing' },
       cluster: { status: 'initializing', nodes: 0 },
-      streaming: { status: 'initializing', active: 0 }
+      streaming: {, status: 'initializing', active: 0 }
     });
     this.isInitialized = writable(false);
     this.stats = writable(null);
@@ -126,9 +118,7 @@ class OllamaIntegrationLayer {
         comprehensiveOllamaSummarizer.getStats()
       ]);
       const langchainConnected = await langChainOllamaService.testConnection();
-      this.serviceStatus.set({
-        comprehensive: {
-          status: summarizerHealth.status,
+      this.serviceStatus.set({ comprehensive: {, status: summarizerHealth.status,
           health: summarizerHealth.services.length * 20
         },
         langchain: {
@@ -140,8 +130,8 @@ class OllamaIntegrationLayer {
           available: summarizerStats.services.cuda.status === 'healthy'
         },
         gemma3: {
-          status: summarizerStats.services.gemma3.status,
-          model: summarizerStats.models.loaded.find(m => m.includes('gemma3'),
+         , status: summarizerStats.services.gemma3.status,
+          model: summarizerStats.models.loaded.find(m => m.includes('gemma3')
         },
         cluster: {
           status: summarizerStats.services.cluster.status,
@@ -259,9 +249,7 @@ class OllamaIntegrationLayer {
       // Query with RAG
       const ragResult = await langChainOllamaService.queryDocuments(
         request.message);
-        {
-          documentTypes: request.documentContext?.type ? [request.documentContext.type] : undefined
-          maxResults: 5,
+        { documentTypes: request.documentContext?.type ? [request.documentContext.type] : undefined, maxResults: 5,
           relevanceThreshold,: 0.7
         }
      ) );
@@ -289,9 +277,7 @@ class OllamaIntegrationLayer {
     // For streaming, we'll return a standard response but indicate streaming capability
     // removed unused response assignment
     // Add streaming metadata
-    response,.streaming = {
-      supported: true;
-      endpoint: '/api/ollama/comprehensive-summary?stream=true'
+    response,.streaming = { supported: true;, endpoint: '/api/ollama/comprehensive-summary?stream=true'
     }
     return respons,e;
   }
@@ -302,7 +288,7 @@ class OllamaIntegrationLayer {
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     });
     if (!response,.o,k) {
       throw new Error(`Chat API failed: ${response.status}`);

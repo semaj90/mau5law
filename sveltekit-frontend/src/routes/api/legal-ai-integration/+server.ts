@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: status,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'health': {
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: health,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       case 'autosolve': {
@@ -29,21 +29,21 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: autosolveResult,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
       default: return json({
           success: true,
           data: {
-            message: 'QUIC-Enhanced Legal AI System',
+           , message: 'QUIC-Enhanced Legal AI System',
             version: '1.0.0',
             endpoints: {
               'GET ?action=status': 'Get system status',
               'GET ?action=health': 'Get system health',
               'GET ?action=autosolve': 'Run autosolve cycle',
-              'POST': 'Process legal document',
-            },
-          },
+              'POST': 'Process legal document'
+            }
+          }
         });
     }
   } catch (error: any) {
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Content is required and must be a string',
+          error: 'Content is required and must be a string'
         },
         { status: 400 }
       );
@@ -77,19 +77,19 @@ export const POST: RequestHandler = async ({ request }) => {
       useQuic: options.useQuic !== false,
       enableAutosolve: options.enableAutosolve === true,
       generateSuggestions: options.generateSuggestions !== false,
-      ...options,
+      ...options
     });
     return json({
       success: true,
       data: {
         ...result,
         metadata: {
-          contentLength: content.length,
+         , contentLength: content.length,
           quicEnabled: options.useQuic !== false,
-          processingMode: 'ultra_fast_quic',
-        },
+          processingMode: 'ultra_fast_quic'
+        }
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Document processing error:', error);
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Document processing failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -114,11 +114,11 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        message: 'Configuration update received',
+       , message: 'Configuration update received',
         current: currentStatus.config,
-        requested: config,
+        requested: config
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Config update error:', error);
@@ -126,7 +126,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Config update failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

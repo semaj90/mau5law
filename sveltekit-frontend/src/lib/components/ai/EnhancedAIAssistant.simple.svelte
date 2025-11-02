@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   import { Brain, Loader2, Quote, Search, Settings, Trash2, Mic, MicOff } from 'lucide-svelte';
   import * as Dialog from 'bits-ui/components/Dialog'; // Import Bits UI Dialog components
@@ -30,8 +31,8 @@
     if (enableVoiceInput && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       recognition = new SpeechRecognition();
-      recognition.continuous = $state(false);
-      recognition.interimResults = $state(false);
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = 'en-US';
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;

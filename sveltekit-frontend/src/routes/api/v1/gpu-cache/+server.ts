@@ -72,11 +72,11 @@ export const POST: RequestHandler = async ({ request }) => {
       workflowType = null,
       enableBinaryEncoding = true,
       enableNESCache = true,
-      enableWebGPU = true,
+      enableWebGPU = true
     } = body;
 
     if (!key || !data) {
-      return json({ error: 'Missing required fields: key, data' }, { status: 400 });
+      return json({ error: `Missing required, fields: key, data` }, { status: 400 });
     }
 
     // Process vertex buffers if provided (guarding for already-typed Float32Array)
@@ -139,8 +139,8 @@ export const POST: RequestHandler = async ({ request }) => {
             cacheKey: key,
             workflowType,
             originalData: typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : data,
-            timestamp: Date.now(),
-          },
+            timestamp: Date.now()
+          }
         };
 
         const candidates: Array<{ obj?: ShaderCacheAPI; name: keyof ShaderCacheAPI }> = [
@@ -149,8 +149,8 @@ export const POST: RequestHandler = async ({ request }) => {
           { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'saveShader' },
           { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'putShader' },
           { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: 'storeShader' },
-          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: 'putShader' },
-          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: 'store' },
+          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: 'putShader` },
+          { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: `store` }
         ];
 
         let invoked = $state<boolean>(false);
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
               invoked = true;
               break;
             } catch (innerErr) {
-              console.warn(`shader cache candidate ${String(c.name)} failed:`, innerErr);
+              console.warn(`shader cache candidate ${String(c.name)} failed: ', innerErr);
             }
           }
         }
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
             cacheKey: key,
             encodingFormat: 'binary-fallback',
             compressionRatio: 1.0,
-            metadata: payload.metadata,
+            metadata: payload.metadata
           };
         }
 
@@ -219,12 +219,12 @@ export const POST: RequestHandler = async ({ request }) => {
           binaryOptimization = {
             format: shaderCacheResult?.encodingFormat,
             compressionRatio: shaderCacheResult?.compressionRatio,
-            workflowOptimization: workflowOpt,
+            workflowOptimization: workflowOpt
           };
         }
       } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
-        console.warn('Binary shader cache failed:', message);
+        console.warn('Binary shader cache failed: `, message);
       }
     }
     // NES cache orchestrator integration
@@ -250,7 +250,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 await Promise.resolve((fn as (p: any) => Promise<void> | void).call(obj, payload));
                 return true;
               } catch (innerErr: any) {
-                console.warn(`NES cache candidate ${String(methodName)} failed:`, innerErr);
+                console.warn(`NES cache candidate ${String(methodName)} failed: ', innerErr);
               }
             }
           }
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
             props: dwp && typeof dwp === 'object' && dwp.props ? dwp.props : {},
             styles: dwp && typeof dwp === 'object' && dwp.styles ? dwp.styles : {},
             animations: dwp && typeof dwp === 'object' && Array.isArray(dwp.animations) ? dwp.animations : [],
-            webgpuShaders: shaderData ? [shaderData.sourceCode] : [],
+            webgpuShaders: shaderData ? [shaderData.sourceCode] : []
           };
 
           const candidateMethodNames: Array<keyof NESCacheOrchestratorLike> = [
@@ -288,7 +288,7 @@ export const POST: RequestHandler = async ({ request }) => {
             shaderCode: shaderData.sourceCode,
             uniforms: (shaderData.uniforms as Record<string, unknown>) || {},
             duration: options.duration || 1000,
-            legalContext: workflowType,
+            legalContext: workflowType
           };
 
           const invokedAnim = await safeInvoke(orchestrator, ['cacheGPUAnimation'], animPayload);
@@ -299,12 +299,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
         nesIntegration = {
           cached: true,
-          memoryStats: orchestrator.getMemoryStats ? orchestrator.getMemoryStats() : undefined,
+          memoryStats: orchestrator.getMemoryStats ? orchestrator.getMemoryStats() : undefined
         };
       } catch (error: any) {
         nesIntegration = {
           cached: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : String(error)
         };
       }
     }
@@ -312,19 +312,19 @@ export const POST: RequestHandler = async ({ request }) => {
     if (enableWebGPU) {
       try {
         const webgpuResult = await webgpuRAGService.processQuery(`cache-store:${key}`, [
-          { data, options, metadata: result },
+          { data, options, metadata: result }
         ]);
         webgpuIntegration = {
           processed: webgpuResult.processed,
           performance: webgpuResult.performance,
-          results: webgpuResult.results?.length || 0,
+          results: webgpuResult.results?.length || 0
         };
       } catch (error: any) {
         // Normalize unknown error into a message string (consistent with other handlers)
         const message = error instanceof Error ? error.message : String(error);
         webgpuIntegration = {
           processed: false,
-          error: message || 'WebGPU failed',
+          error: message || 'WebGPU failed'
         };
       }
     }
@@ -341,11 +341,11 @@ export const POST: RequestHandler = async ({ request }) => {
               id: shaderCacheResult.id,
               cacheKey: shaderCacheResult.cacheKey,
               encodingFormat: shaderCacheResult.encodingFormat,
-              compressionRatio: shaderCacheResult.compressionRatio,
+              compressionRatio: shaderCacheResult.compressionRatio
             }
-          : null,
+          : null
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     // Encode response if client requests binary format
     const acceptHeader = request.headers.get('accept') || '';
@@ -353,13 +353,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const { encoded } = await binaryEncoder.encode(response, 'cbor');
       return new Response(encoded, {
         status: 200,
-        headers: { 'content-type': 'application/cbor' },
+        headers: { 'content-type': 'application/cbor' }
       });
     } else if (acceptHeader.includes('application/msgpack')) {
       const { encoded } = await binaryEncoder.encode(response, 'msgpack');
       return new Response(encoded, {
         status: 200,
-        headers: { 'content-type': 'application/msgpack' },
+        headers: { 'content-type': 'application/msgpack' }
       });
     }
     return json(response);
@@ -369,7 +369,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to store in enhanced GPU cache',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -390,11 +390,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const options = {
       userId,
       enhanceWithPageRank,
-      applyReinforcementLearning,
+      applyReinforcementLearning
     };
     const result = await gpuCacheOrchestrator.retrieve(key, options);
     if (!result) {
-      return json({ error: 'Cache entry not found' }, { status: 404 });
+      return json({ error: 'Cache entry not found` }, { status: 404 });
     }
     // Convert Float32Arrays for JSON response using serializer
     const response = serializeCacheEntry(result);
@@ -402,7 +402,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       entry: response,
       cacheHit: true,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -410,7 +410,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to retrieve from GPU cache',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -423,7 +423,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { imageData, analysisOptions = {} } = body;
     if (!imageData) {
-      return json({ error: 'Missing imageData' }, { status: 400 });
+      return json({ error: `Missing imageData` }, { status: 400 });
     }
     // Convert array back to ArrayBuffer
     const imageBuffer = new Uint8Array(imageData).buffer;
@@ -433,7 +433,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       analysis: response,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -441,7 +441,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to analyze image with GPU cache',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -454,19 +454,16 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     await gpuCacheOrchestrator.initialize();
     const body = await request.json();
     const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } = body;
-    console.log('🔄 Starting database synchronization:', databases);
+    console.log('🔄 Starting database synchronization: `, databases);
     // Typed sync result to avoid `any` usage for dynamic database keys
-    type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] };
-    const syncResults: Record<string, SyncResult> & {
-      postgresql: SyncResult;
-      qdrant: SyncResult;
+    type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number;, errors: string[] };
+    const syncResults: Record<string, SyncResult> & { postgresql: SyncResult;, qdrant: SyncResult;
       neo4j: SyncResult;
       indexeddb: SyncResult;
-    } = {
-      postgresql: { status: 'pending', entries: 0, errors: [] },
+    } = { postgresql: {, status: 'pending', entries: 0, errors: [] },
       qdrant: { status: 'pending', entries: 0, errors: [] },
       neo4j: { status: 'pending', entries: 0, errors: [] },
-      indexeddb: { status: 'pending', entries: 0, errors: [] },
+      indexeddb: { status: 'pending', entries: 0, errors: [] }
     };
     // Simulate database synchronization
     for (const db of databases) {
@@ -495,7 +492,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
         }
       } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error(`Database sync error for ${db}:`, message);
+        console.error(`Database sync error for ${db}: ', message);
         // Map known database names to syncResults properties explicitly
         if (db === 'postgresql') {
           syncResults.postgresql = { status: 'failed', entries: 0, errors: [message] };
@@ -514,7 +511,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       synchronization: syncResults,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -522,7 +519,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to synchronize databases',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -553,22 +550,22 @@ export const DELETE: RequestHandler = async ({ request }) => {
         // Pass shaderKey (string) to match orchestrator signature (defensive handling)
         const shaderRaw = await gpuShaderCacheOrchestrator.getShader(shaderKey);
         const shader = (shaderRaw as ShaderEntry) ?? null;
-        if (!shader) return json({ error: 'Shader not found' }, { status: 404 });
+        if (!shader) return json({ error: 'Shader not found` }, { status: 404 });
         return json({
           success: true,
           shader: {
-            key: shader.key,
+           , key: shader.key,
             sourceCode: shader.sourceCode,
             compiledBinary: shader.compiledBinary ? toNumberArray(shader.compiledBinary) : undefined,
             metadata: {
               ...shader.metadata,
-              embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined,
+              embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined
             },
             dependencies: shader.dependencies,
-            minioPath: shader.minioPath,
+            minioPath: shader.minioPath
           },
           fromCache: true,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'search': {
@@ -583,12 +580,12 @@ export const DELETE: RequestHandler = async ({ request }) => {
               sourceCode: shader.sourceCode,
               metadata: {
                 ...shader.metadata,
-                embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined,
-              },
+                embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined
+              }
             };
           }),
           count: results.length,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
       case 'preload': {
@@ -597,20 +594,20 @@ export const DELETE: RequestHandler = async ({ request }) => {
           return json({
             success: true,
             message: 'Predictive preloading triggered',
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
-        return json({ error: 'Context required for preloading' }, { status: 400 });
+        return json({ error: `Context required for preloading` }, { status: 400 });
       }
       case 'clear': {
         await gpuShaderCacheOrchestrator.clearCache(shaderKey);
         return json({
           success: true,
           message: shaderKey ? `Cleared shader ${shaderKey}` : 'Cleared all shaders',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
-      default: return json({ error: 'Invalid action. Use: get, search, preload, clear' }, { status: 400 });
+      default: return json({ error: `Invalid action., Use: get, search, preload, clear` }, { status: 400 });
     }
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -618,7 +615,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Shader cache operation failed',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -633,9 +630,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     const includePerformance = url.searchParams.get('performance') === 'true';
 
     // Define concrete types to avoid `any`
-    type Metrics = {
-      cacheSize: number;
-      cacheHitRatio: number;
+    type Metrics = { cacheSize: number;, cacheHitRatio: number;
       cacheHits: number;
       cacheMisses: number;
       gpuMemoryUsage: number;
@@ -645,40 +640,27 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       userHistorySize: number;
       averageRetrievalMs: number;
     };
-    type ShaderMetrics = {
-      cacheHits: number;
-      cacheMisses: number;
+    type ShaderMetrics = { cacheHits: number;, cacheMisses: number;
       preloadSuccesses: number;
       preloadFailures: number;
       compilationCount: number;
       averageRetrievalMs: number;
       gpuMemoryUsage: number;
     };
-    type UserAnalytics = {
-      totalUsers: number;
-      averageSessionDuration: number;
+    type UserAnalytics = { totalUsers: number;, averageSessionDuration: number;
       topQueries: string[];
     };
-    type PerformanceMetrics = {
-      averageRetrievalMs: number;
-      cacheEfficiency: number;
+    type PerformanceMetrics = { averageRetrievalMs: number;, cacheEfficiency: number;
       gpuUtilization: number;
     };
-    type MetricsResponse = {
-      cache: {
-        size: number;
-        hitRatio: number;
+    type MetricsResponse = { cache: {; size: number;, hitRatio: number;
         hits: number;
         misses: number;
       };
-      gpu: {
-        memoryUsageMB: number;
-        operationsCount: number;
+      gpu: { memoryUsageMB: number;, operationsCount: number;
         compressionSavings: number;
       };
-      shaderCache: {
-        hits: number;
-        misses: number;
+      shaderCache: { hits: number;, misses: number;
         hitRatio: number;
         preloadSuccesses: number;
         preloadFailures: number;
@@ -686,9 +668,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         averageRetrievalMs: number;
         gpuMemoryUsageMB: number;
       };
-      reinforcement: {
-        enabled: boolean;
-        cacheAccuracy: number;
+      reinforcement: { enabled: boolean;, cacheAccuracy: number;
       };
       userAnalytics?: UserAnalytics;
       performance?: PerformanceMetrics;
@@ -698,17 +678,15 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     const metrics = gpuCacheOrchestrator.getMetrics() as unknown as Metrics;
     const shaderMetrics = gpuShaderCacheOrchestrator.getMetrics() as unknown as ShaderMetrics;
 
-    const response: MetricsResponse = {
-      cache: {
-        size: metrics.cacheSize,
+    const response: MetricsResponse = { cache: {, size: metrics.cacheSize,
         hitRatio: metrics.cacheHitRatio,
         hits: metrics.cacheHits,
-        misses: metrics.cacheMisses,
+        misses: metrics.cacheMisses
       },
       gpu: {
         memoryUsageMB: Math.round(metrics.gpuMemoryUsage / (1024 * 1024)),
         operationsCount: metrics.gpuOperations,
-        compressionSavings: metrics.compressionSavings,
+        compressionSavings: metrics.compressionSavings
       },
       shaderCache: {
         hits: shaderMetrics.cacheHits,
@@ -718,33 +696,33 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         preloadFailures: shaderMetrics.preloadFailures,
         compilationCount: shaderMetrics.compilationCount,
         averageRetrievalMs: shaderMetrics.averageRetrievalMs,
-        gpuMemoryUsageMB: Math.round(shaderMetrics.gpuMemoryUsage / (1024 * 1024)),
+        gpuMemoryUsageMB: Math.round(shaderMetrics.gpuMemoryUsage / (1024 * 1024))
       },
       reinforcement: {
         enabled: true,
-        cacheAccuracy: metrics.reinforcementAccuracy,
-      },
+        cacheAccuracy: metrics.reinforcementAccuracy
+      }
     };
 
     if (includeUserAnalytics) {
       response.userAnalytics = {
         totalUsers: metrics.userHistorySize,
         averageSessionDuration: 45.2,
-        topQueries: ['legal documents', 'case analysis', 'evidence review'],
+        topQueries: ['legal documents', 'case analysis', 'evidence review']
       };
     }
     if (includePerformance) {
       response.performance = {
         averageRetrievalMs: metrics.averageRetrievalMs,
         cacheEfficiency: metrics.cacheHitRatio * 100,
-        gpuUtilization: 0.75,
+        gpuUtilization: 0.75
       };
     }
 
     return json({
       success: true,
       metrics: response,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -752,7 +730,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get GPU cache metrics',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -764,7 +742,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
   try {
     const userId = url.searchParams.get('userId');
     if (!userId) {
-      return json({ error: 'Missing userId' }, { status: 400 });
+      return json({ error: 'Missing userId` }, { status: 400 });
     }
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const includeAnalytics = url.searchParams.get('analytics') === 'true';
@@ -775,7 +753,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
       userId,
       history,
       count: history.length,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -783,7 +761,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get user history',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -796,7 +774,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { operation, entries } = body;
     if (!operation || !entries || !Array.isArray(entries)) {
-      return json({ error: 'Missing required fields: operation, entries' }, { status: 400 });
+      return json({ error: `Missing required, fields: operation, entries` }, { status: 400 });
     }
     // Provide concrete typed defaults and avoid `any`
     const emptyStore: BulkStoreResult = { stored: [], failed: [] };
@@ -810,13 +788,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       case 'retrieve':
         results = await handleBulkRetrieve(entries as string[]);
         break;
-      default: return json({ error: 'Invalid operation. Use: "store" or: "retrieve"' }, { status: 400 });
+      default: return json({ error: `Invalid operation.;, Use: "store", or: "retrieve"` }, { status: 400 });
     }
     return json({
       success: true,
       operation,
       results,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
@@ -824,7 +802,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to perform bulk operation',
-        details: dev ? message : undefined,
+        details: dev ? message : undefined
       },
       { status: 500 }
     );
@@ -848,21 +826,15 @@ async function simulateIndexedDBSync(): Promise<void> {
   await new Promise(resolve => setTimeout(resolve, 200));
 }
 // Add concrete types for user history to avoid `any`
-type UserPerformance = {
-  cacheHitRatio: number;
-  retrievalLatencyMs: number;
+type UserPerformance = { cacheHitRatio: number;, retrievalLatencyMs: number;
   gpuUtilization: number;
 };
 
-type UserAnalytics = {
-  similarityScores: number[];
-  pageRankScores: number[];
+type UserAnalytics = { similarityScores: number[];, pageRankScores: number[];
   reinforcementReward: number;
 };
 
-type UserHistoryEntry = {
-  id: string;
-  userId: string;
+type UserHistoryEntry = { id: string;, userId: string;
   query: string;
   timestamp: number;
   results: string[];
@@ -888,15 +860,15 @@ async function simulateGetUserHistory(
       performance: {
         cacheHitRatio: 0.85 + Math.random() * 0.1,
         retrievalLatencyMs: 10 + Math.random() * 20,
-        gpuUtilization: 0.7 + Math.random() * 0.2,
+        gpuUtilization: 0.7 + Math.random() * 0.2
       },
       analytics: includeAnalytics
         ? {
             similarityScores: [0.8 + Math.random() * 0.15],
             pageRankScores: [0.6 + Math.random() * 0.2],
-            reinforcementReward: 0.75 + Math.random() * 0.2,
+            reinforcementReward: 0.75 + Math.random() * 0.2
           }
-        : undefined,
+        : undefined
     };
     history.push(entry);
   }
@@ -954,14 +926,12 @@ type CacheEntryLike = {
   options?: Record<string, unknown> | undefined;
 };
 
-type BulkStoreResult = {
-  stored: Array<{ key: string; result: any }>;
+type BulkStoreResult = { stored: Array<{ key: string;, result: any }>;
   failed: Array<{ key?: string; error: string }>;
 };
 
-type BulkRetrieveResult = {
-  retrieved: Array<{ key: string; entry: any | null }>;
-  failed: Array<{ key: string; error: string }>;
+type BulkRetrieveResult = { retrieved: Array<{ key: string;, entry: any | null }>;
+  failed: Array<{ key: string;, error: string }>;
 };
 
 /**
@@ -969,13 +939,13 @@ type BulkRetrieveResult = {
  * Returns lists of successes and failures in a typed shape.
  */
 async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStoreResult> {
-  const stored: Array<{ key: string; result: any }> = [];
+  const stored: Array<{ key: string;, result: any }> = [];
   const failed: Array<{ key?: string; error: string }> = [];
 
   for (const e of entries) {
     try {
       if (!e || !e.key || e.data === undefined) {
-        failed.push({ key: e?.key, error: 'Missing key or data' });
+        failed.push({ key: e?.key, error: 'Missing key or data` });
         continue;
       }
       // Use the orchestrator's store method (assumed available)
@@ -995,13 +965,13 @@ async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStor
  * Returns retrieved entries and failures.
  */
 async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
-  const retrieved: Array<{ key: string; entry: any | null }> = [];
-  const failed: Array<{ key: string; error: string }> = [];
+  const retrieved: Array<{ key: string;, entry: any | null }> = [];
+  const failed: Array<{ key: string;, error: string }> = [];
 
   for (const key of keys) {
     try {
       if (!key) {
-        failed.push({ key: '', error: 'Empty key provided' });
+        failed.push({ key: '', error: `Empty key provided` });
         continue;
       }
       const entry = await gpuCacheOrchestrator.retrieve(key);
@@ -1016,9 +986,7 @@ async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
 }
 
 // Shader entry type returned by the shader cache orchestrator
-type ShaderEntry = {
-  key: string;
-  sourceCode: string;
+type ShaderEntry = { key: string;, sourceCode: string;
   compiledBinary?: ArrayBuffer | ArrayBufferView | number[] | null;
   metadata?: {
     [k: string]: any;
@@ -1071,21 +1039,21 @@ type DataWithProps = {
 // This avoids assuming a specific API shape at compile time and lets us probe safely.
 type NESCacheOrchestratorLike = {
   cacheYoRHaComponent?: (payload: {
-    name: string;
+   , name: string;
     props?: Record<string, unknown>;
     styles?: Record<string, unknown>;
     animations?: any[];
     webgpuShaders?: Array<string | undefined>;
   }) => Promise<void> | void;
   cacheComponent?: (payload: {
-    name: string;
+   , name: string;
     props?: Record<string, unknown>;
     styles?: Record<string, unknown>;
     animations?: any[];
     webgpuShaders?: Array<string | undefined>;
   }) => Promise<void> | void;
   cacheGPUAnimation?: (payload: {
-    id: string;
+   , id: string;
     type?: string;
     shaderCode?: string;
     uniforms?: Record<string, unknown>;

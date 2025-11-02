@@ -152,20 +152,20 @@
     if (!fabricCanvas) return;
     switch (tool) {
       case 'select':
-        fabricCanvas.isDrawingMode = $state(false);
+        fabricCanvas.isDrawingMode = false;
         fabricCanvas.selection = true;
         break;
       case 'draw':
         fabricCanvas.isDrawingMode = true;
-        fabricCanvas.selection = $state(false);
+        fabricCanvas.selection = false;
         break;
       case 'text':
-        fabricCanvas.isDrawingMode = $state(false);
+        fabricCanvas.isDrawingMode = false;
         fabricCanvas.selection = true;
         addTextBox();
         break;
       default:
-        fabricCanvas.isDrawingMode = $state(false);
+        fabricCanvas.isDrawingMode = false;
         fabricCanvas.selection = true;
     }
   }

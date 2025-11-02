@@ -1,13 +1,11 @@
 // Lightweight embedding utilities with safe fallbacks and strict typing
 import { createHash } from 'crypto';
-export interface CacheInterface {
-  getCachedEmbedding: (_key: string) => Promise<number[] | null>;
-  cacheEmbedding: (_key: string, embedding: number[], ttl?: number) => Promise<void>;
+export interface CacheInterface { getCachedEmbedding: (_key: string) => Promise<number[] | null>;, cacheEmbedding: (_key: string, embedding: number[], ttl?: number) => Promise<void>;
 }
 // Minimal in-memory/cache shim; apps should replace with Redis-backed implementation
 const cache: CacheInterface = {
   getCachedEmbedding: async (_key: string) => null,
-  cacheEmbedding: async (_key: string, _embedding: number[], _ttl?: number) => {},
+  cacheEmbedding: async (_key: string, _embedding: number[], _ttl?: number) => {}
 };
 const getCachedEmbedding = cache.getCachedEmbedding;
 const cacheEmbedding = cache.cacheEmbedding;
@@ -47,7 +45,7 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
         return null;
       });
     }
-    // For: 'local' model or as a fallback for: 'openai'
+    // For: 'local' model or as a fallback; for: 'openai'
     if (!embedding) {
       // Try Ollama models first: embeddinggemma -> nomic
       embedding = await generateOllamaEmbedding(truncated, 'embeddinggemma:latest').catch(e => {
@@ -84,8 +82,8 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   const body = { input: text, model: 'text-embedding-3-small' };
   const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: {, Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const errBody = await res.text().catch(() => '');
@@ -103,7 +101,7 @@ async function generateOllamaEmbedding(text: string, model: string): Promise<num
   const res = await fetch(`${url}/api/embeddings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: model, prompt: text }),
+    body: JSON.stringify({, model: model, prompt: text })
   });
   if (!res.ok) {
     const body = await res.text().catch(() => '');
@@ -149,6 +147,6 @@ export async function generateBatchEmbeddings(
 }
 export const embeddings = {
   generate: generateEmbedding,
-  generateBatch: generateBatchEmbeddings,
+  generateBatch: generateBatchEmbeddings
 };
 export default embeddings;

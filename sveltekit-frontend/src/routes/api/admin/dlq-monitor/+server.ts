@@ -15,14 +15,14 @@ export const GET: RequestHandler = async () => {
     return json({
       monitor: stats,
       queues: queueStats,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Failed to get DLQ stats:', error);
     return json(
       {
         error: 'Failed to retrieve DLQ statistics',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'DLQ monitor started',
-          stats: dlqMonitor.getStats(),
+          stats: dlqMonitor.getStats()
         });
 
       case 'stop':
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'DLQ monitor stopped',
-          stats: dlqMonitor.getStats(),
+          stats: dlqMonitor.getStats()
         });
 
       case 'reset':
@@ -59,24 +59,24 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'DLQ statistics reset',
-          stats: dlqMonitor.getStats(),
+          stats: dlqMonitor.getStats()
         });
 
       case 'purge':
         const purgeSuccess = await rabbitMQService.purgeQueue('deadLetter');
         return json({
           success: purgeSuccess,
-          message: purgeSuccess ? 'Dead letter queue purged' : 'Failed to purge queue',
+          message: purgeSuccess ? 'Dead letter queue purged' : 'Failed to purge queue'
         });
 
-      default: return json({ error: 'Invalid action. Use: start, stop, reset, purge' }, { status: 400 });
+      default: return json({ error: 'Invalid action., Use: start, stop, reset, purge' }, { status: 400 });
     }
   } catch (error) {
     console.error('DLQ monitor action failed:', error);
     return json(
       {
         error: 'Failed to perform action',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

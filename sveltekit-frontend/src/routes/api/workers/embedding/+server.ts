@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get worker information',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Worker operation failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -68,18 +68,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
 async function getWorkerStatus(): Promise<Response> {
   const stats = rabbitmqEmbeddingWorker.getStats();
   const rabbitHealth = await rabbitMQService.healthCheck();
-  return json({
-    worker: {
-      running: stats.isRunning,
+  return json({ worker: {, running: stats.isRunning,
       uptime: stats.uptime,
-      start_time: stats.startTime,
+      start_time: stats.startTime
     },
     jobs: {
-      processed: stats.processedJobs,
+     , processed: stats.processedJobs,
       failed: stats.failedJobs,
-      success_rate: stats.successRate,
+      success_rate: stats.successRate
     },
-    rabbitmq: rabbitHealth,
+    rabbitmq: rabbitHealth
   });
 }
 // Get worker health check
@@ -95,7 +93,7 @@ async function getWorkerStats(): Promise<Response> {
   return json({
     ...stats,
     rabbitmq_health: rabbitHealth,
-    uptime_formatted: stats.uptime ? formatUptime(stats.uptime) : null,
+    uptime_formatted: stats.uptime ? formatUptime(stats.uptime) : null
   });
 }
 // Get queue information
@@ -104,25 +102,25 @@ async function getQueueInfo(): Promise<Response> {
     const queueNames = [QUEUES.DOCUMENT_EMBEDDING, QUEUES.CASE_EMBEDDING];
 
     // Define a concrete type for queue entries to avoid `any`
-    type QueueInfo = { name: string; status: string };
+    type QueueInfo = { name: string;, status: string };
 
     const queueInfo: Record<string, QueueInfo> = {};
 
     for (const queueName of queueNames) {
       queueInfo[queueName] = {
         name: queueName,
-        status: 'unknown',
+        status: 'unknown'
       };
     }
     return json({
       queues: queueInfo,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
       {
         error: 'Failed to get queue information',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -134,7 +132,7 @@ async function startWorker(): Promise<Response> {
     await rabbitmqEmbeddingWorker.start();
     return json({
       message: 'Worker started successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
@@ -149,7 +147,7 @@ async function stopWorker(): Promise<Response> {
     await rabbitmqEmbeddingWorker.stop();
     return json({
       message: 'Worker stopped successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
@@ -166,7 +164,7 @@ async function restartWorker(): Promise<Response> {
     await rabbitmqEmbeddingWorker.start();
     return json({
       message: 'Worker restarted successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json(
@@ -180,7 +178,7 @@ async function resetWorkerStats(): Promise<Response> {
   rabbitmqEmbeddingWorker.resetStats();
   return json({
     message: 'Worker statistics reset',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 // Queue single embedding job
@@ -196,7 +194,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
       return json({ error: 'entity_type and entity_id are required' }, { status: 400 });
     }
     // Determine job type based on entity type and embedding type
-    const jobType = `generate_${payload.entity_type}_${payload.embedding_type || 'content'}_embedding`;
+    const jobType = 'generate_${payload.entity_type}_${payload.embedding_type || 'content` }_embedding`;
     // Queue job
     const ok = await rabbitMQService.publish(
       'embeddings', // exchange name
@@ -205,10 +203,10 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
         type: jobType,
         payload,
         meta: {
-          priority: payload.priority || 5,
+         , priority: payload.priority || 5,
           correlationId: payload.correlationId,
-          maxRetries: payload.maxRetries || 3,
-        },
+          maxRetries: payload.maxRetries || 3
+        }
       }
     );
     return json(
@@ -217,7 +215,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
         job_type: jobType,
         queue: payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING,
         message: 'Embedding job queued successfully',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -225,7 +223,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
     return json(
       {
         error: 'Failed to queue embedding job',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -257,10 +255,10 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
         type: jobType,
         payload,
         meta: {
-          priority: payload.priority || 7,
+         , priority: payload.priority || 7,
           correlationId: payload.correlationId,
-          maxRetries: payload.maxRetries || 2,
-        },
+          maxRetries: payload.maxRetries || 2
+        }
       }
     );
     return json(
@@ -271,7 +269,7 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
         entity_count: payload.entities.length,
         batch_size: payload.batch_size || 10,
         message: 'Bulk embedding job queued successfully',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -279,7 +277,7 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
     return json(
       {
         error: 'Failed to queue bulk embedding job',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -297,14 +295,14 @@ async function testWorker(request: Request): Promise<Response> {
           entity_id: 'test-doc-' + Date.now(),
           text_content:
             'This is a test document for embedding generation. It contains legal content about contracts and agreements.',
-          embedding_type: 'content',
+          embedding_type: 'content'
         };
         break;
       case 'case':
         testPayload = {
           entity_type: 'case',
           entity_id: 'test-case-' + Date.now(),
-          text_content: 'Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.',
+          text_content: 'Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.'
         };
         break;
       default:
@@ -312,8 +310,7 @@ async function testWorker(request: Request): Promise<Response> {
           entity_type: 'document',
           entity_id: 'test-basic-' + Date.now(),
           text_content: 'Basic test text for embedding generation.',
-          embedding_type: 'content',
-        };
+          embedding_type: `content` };
     }
     // Queue test job
     const ok = await rabbitMQService.publish(
@@ -322,7 +319,7 @@ async function testWorker(request: Request): Promise<Response> {
       {
         type: `test_${testPayload.entity_type}_embedding`,
         payload: testPayload,
-        meta: { priority: 8, correlationId: `test-${Date.now()}`, maxRetries: 1 },
+        meta: {, priority: 8, correlationId: `test-${Date.now()}`, maxRetries: 1 }
       }
     );
     return json(
@@ -332,7 +329,7 @@ async function testWorker(request: Request): Promise<Response> {
         test_payload: testPayload,
         message: 'Test embedding job queued successfully',
         note: 'This test job uses fake entity IDs and will not update database records',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -340,7 +337,7 @@ async function testWorker(request: Request): Promise<Response> {
     return json(
       {
         error: 'Failed to queue test job',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

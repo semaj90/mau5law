@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       analysisType = 'comprehensive',
       userId,
       sessionId,
-      cacheEnabled = true,
+      cacheEnabled = true
     } = await request.json();
     if (!text?.trim()) {
       return json({ error: 'Text is required for analysis' }, { status: 400 });
@@ -37,10 +37,10 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           analysis: cachedResult.analysisContent,
           similarDocuments: [],
           performance: {
-            cached: true,
+           , cached: true,
             totalResponseTimeMs: performance.now() - startTime,
-            modelVersion: cachedResult.modelVersion,
-          },
+            modelVersion: cachedResult.modelVersion
+          }
         });
       }
     }
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     const embeddingResponse = await tensorrtClient.generateEmbedding({
       text,
       model: 'gemma3-legal:latest',
-      dimensions: 512,
+      dimensions: 512
     });
     const embeddingTime = performance.now() - embeddingStartTime;
     console.log(`🧠 Generated embedding in ${embeddingTime.toFixed(1)}ms`);
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       threshold: 0.75,
       limit: 5,
       documentType,
-      practiceArea,
+      practiceArea
     });
     const searchTime = performance.now() - searchStartTime;
     console.log(`🔍 Vector search completed in ${searchTime.toFixed(1)}ms`);
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       prompt: text,
       context: contextText,
       model: 'gemma3-legal:latest',
-      analysisType,
+      analysisType
     });
     const analysisTime = performance.now() - analysisStartTime;
     console.log(`⚖️ Legal analysis completed in ${analysisTime.toFixed(1)}ms`);
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           analysisEmbedding: embeddingResponse.embedding,
           processingTimeMs: totalTime,
           tokenCount: legalAnalysis.token_count || 0,
-          expiresInHours: 24,
+          expiresInHours: 24
         });
         console.log(`💾 Analysis cached for 24 hours`);
       } catch (cacheError) {
@@ -107,12 +107,12 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         resultsCount: similarDocuments.length,
         similarityThreshold: 0.75,
         topResults: similarDocuments.map(doc => ({
-          id: doc.id,
+         , id: doc.id,
           title: doc.title,
           similarity: doc.similarity,
-          documentType: doc.documentType,
+          documentType: doc.documentType
         })),
-        queryIntent: analysisType,
+        queryIntent: analysisType
       });
     } catch (logError) {
       console.warn('Failed to log query:', logError);
@@ -121,13 +121,13 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     return json({
       analysis: legalAnalysis.content,
       similarDocuments: similarDocuments.map(doc => ({
-        id: doc.id,
+       , id: doc.id,
         title: doc.title,
         documentType: doc.documentType,
         practiceArea: doc.practiceArea,
         jurisdiction: doc.jurisdiction,
         similarity: doc.similarity,
-        content: doc.content.substring(0, 300) + '...',
+        content: doc.content.substring(0, 300) + '...'
       })),
       performance: {
         embeddingTimeMs: embeddingTime,
@@ -136,15 +136,15 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         totalResponseTimeMs: totalTime,
         modelVersion: 'gemma3-legal:latest',
         cached: false,
-        documentsFound: similarDocuments.length,
+        documentsFound: similarDocuments.length
       },
       metadata: {
         analysisType,
         documentType,
         practiceArea,
         timestamp: new Date().toISOString(),
-        cacheKey: cacheEnabled ? cacheKey : null,
-      },
+        cacheKey: cacheEnabled ? cacheKey : null
+      }
     });
   } catch (error) {
     console.error('Legal analysis error:', error);
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       {
         error: 'Legal analysis failed',
         details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -165,32 +165,29 @@ export const GET: RequestHandler = async () => {
     const dbStats = await legalVectorService.getDocumentStatistics();
     return json({
       status: 'healthy',
-      services: {
-        tensorrt: {
-          available: !!tensorrtHealth,
+      services: { tensorrt: {, available: !!tensorrtHealth,
           url: process.env.TENSORRT_URL || 'http://localhost:8100',
-          health: tensorrtHealth,
+          health: tensorrtHealth
         },
         database: {
           available: true,
-          statistics: dbStats,
-        },
+          statistics: dbStats
+        }
       },
       capabilities: ['legal-analysis', 'document-similarity', 'vector-search', 'analysis-caching'],
       models: {
-        primary: 'gemma3-legal:latest',
+       , primary: 'gemma3-legal:latest',
         embedding_dimensions: 512,
         supported_types: ['contract', 'brief', 'evidence', 'correspondence'],
-        practice_areas: ['corporate', 'litigation', 'ip', 'employment'],
-      },
+        practice_areas: ['corporate', 'litigation', 'ip', 'employment']
+      }
     });
   } catch (error) {
     console.error('Health check error:', error);
     return json(
       {
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
+        error: error instanceof Error ? error.message : 'Unknown error` },
       { status: 500 }
     );
   }

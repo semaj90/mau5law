@@ -4,9 +4,7 @@
  */
 export interface ProductionConfig {
   // Performance Settings
-  performance: {
-    maxConcurrentUploads: number;
-    maxFileSize: number; // bytes
+  performance: { maxConcurrentUploads: number;, maxFileSize: number; // bytes
     maxBatchSize: number;
     cacheTimeout: number; // milliseconds
     requestTimeout: number; // milliseconds
@@ -14,33 +12,23 @@ export interface ProductionConfig {
     retryDelay: number; // milliseconds
   };
   // Database Settings
-  database: {
-    connectionPoolSize: number;
-    queryTimeout: number; // milliseconds
+  database: { connectionPoolSize: number;, queryTimeout: number; // milliseconds
     enableQueryLogging: boolean;
     enableSlowQueryLogging: boolean;
     slowQueryThreshold: number; // milliseconds
   };
   // Cache Settings
-  cache: {
-    redis: {
-      maxMemory: string;
+  cache: { redis: {, maxMemory: string;
       ttl: number; // seconds
       keyPrefix: string;
       enableCompression: boolean;
     };
-    gpu: {
-      bufferSize: number; // bytes
-      maxBuffers: number;
+    gpu: { bufferSize: number; // bytes, maxBuffers: number;
       enablePrefetch: boolean;
     };
   };
   // Security Settings
-  security: {
-    enableRateLimit: boolean;
-    rateLimit: {
-      windowMs: number;
-      maxRequests: number;
+  security: { enableRateLimit: boolean;, rateLimit: { windowMs: number;, maxRequests: number;
     };
     enableCors: boolean;
     corsOrigins: string[];
@@ -48,18 +36,14 @@ export interface ProductionConfig {
     maxRequestSize: number; // bytes
   };
   // Monitoring Settings
-  monitoring: {
-    enableMetrics: boolean;
-    metricsInterval: number; // milliseconds
+  monitoring: { enableMetrics: boolean;, metricsInterval: number; // milliseconds
     enableHealthChecks: boolean;
     healthCheckInterval: number; // milliseconds
     enableErrorTracking: boolean;
     logLevel: 'error' | 'warn' | 'info' | 'debug';
   };
   // AI Settings
-  ai: {
-    defaultModel: string;
-    fallbackModel: string;
+  ai: { defaultModel: string;, fallbackModel: string;
     // Optional deployment-specific ollama endpoint override
     ollamaEndpoint?: string;
     maxTokens: number;
@@ -69,9 +53,7 @@ export interface ProductionConfig {
     maxBatchSize: number;
   };
   // MinIO Settings
-  minio: {
-    maxFileSize: number;
-    allowedMimeTypes: string[];
+  minio: { maxFileSize: number;, allowedMimeTypes: string[];
     bucketRetention: number; // days
     enableEncryption: boolean;
     enableVersioning: boolean;
@@ -79,9 +61,7 @@ export interface ProductionConfig {
   };
 }
 // Production Configuration
-export const PRODUCTION_CONFIG: ProductionConfig = {
-  performance: {
-    maxConcurrentUploads: 10,
+export const PRODUCTION_CONFIG: ProductionConfig = { performance: {, maxConcurrentUploads: 10,
     maxFileSize: 100 * 1024 * 1024, // 100MB
     maxBatchSize: 50,
     cacheTimeout: 30000, // 30 seconds
@@ -96,18 +76,16 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     enableSlowQueryLogging: true,
     slowQueryThreshold: 1000, // 1 second
   },
-  cache: {
-    redis: {
-      maxMemory: '1gb',
+  cache: { redis: {, maxMemory: '1gb',
       ttl: 3600, // 1 hour
       keyPrefix: 'legal_ai:',
-      enableCompression: true,
+      enableCompression: true
     },
     gpu: {
       bufferSize: 64 * 1024 * 1024, // 64MB
       maxBuffers: 10,
-      enablePrefetch: true,
-    },
+      enablePrefetch: true
+    }
   },
   security: {
     enableRateLimit: true,
@@ -137,7 +115,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     temperature: 0.7,
     enableCaching: true,
     batchProcessing: true,
-    maxBatchSize: 10,
+    maxBatchSize: 10
   },
   minio: {
     maxFileSize: 100 * 1024 * 1024, // 100MB
@@ -154,8 +132,8 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     bucketRetention: 2555, // 7 years for legal compliance
     enableEncryption: true,
     enableVersioning: true,
-    enableNotifications: true,
-  },
+    enableNotifications: true
+  }
 };
 // Development Configuration (less restrictive)
 export const DEVELOPMENT_CONFIG: ProductionConfig = {
@@ -182,7 +160,7 @@ export const DEVELOPMENT_CONFIG: ProductionConfig = {
     ...PRODUCTION_CONFIG.monitoring,
     logLevel: 'debug', // Full logging in development
     metricsInterval: 30000, // 30 seconds
-  },
+  }
 };
 // Environment-based configuration
 export function getConfig(): ProductionConfig {
@@ -233,7 +211,7 @@ if (validationErrors.length > 0) {
     throw new Error(`Invalid production configuration: ${validationErrors.join(', ')}`);
   }
 }
-console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development'} configuration`);
+console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development' } configuration`);
 console.log(
   `📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`
 );

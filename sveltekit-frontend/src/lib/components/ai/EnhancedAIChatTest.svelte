@@ -366,7 +366,7 @@ import type { Document } from '$lib/types';
                   <Bot class="h-4 w-4 nes-text is-primary" /> <!-- Adjusted color -->
                 {/if}
               <div
-                class="max-w-[80%]" p-3 {message.role === 'user'
+                class="max-w-[80%] p-3" {message.role === 'user'
                   ? 'nes-container is-primary' // Changed to nes-container primary
                   : message.error
                     ? 'nes-container is-error' // Changed to nes-container error

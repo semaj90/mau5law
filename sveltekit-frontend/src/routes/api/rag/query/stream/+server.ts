@@ -18,9 +18,9 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({
-                type: 'status',
+               , type: 'status',
                 message: 'Initializing RAG query processing...',
-                progress: 10,
+                progress: 10
               })}\n\n`
             )
           );
@@ -29,9 +29,9 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({
-                type: 'status',
+               , type: 'status',
                 message: 'Performing vector similarity search...',
-                progress: 30,
+                progress: 30
               })}\n\n`
             )
           );
@@ -40,9 +40,9 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({
-                type: 'status',
+               , type: 'status',
                 message: 'Retrieving relevant documents...',
-                progress: 50,
+                progress: 50
               })}\n\n`
             )
           );
@@ -51,9 +51,9 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({
-                type: 'status',
+               , type: 'status',
                 message: 'Augmenting context with retrieved documents...',
-                progress: 70,
+                progress: 70
               })}\n\n`
             )
           );
@@ -62,9 +62,9 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({
-                type: 'status',
+               , type: 'status',
                 message: 'Generating AI response...',
-                progress: 90,
+                progress: 90
               })}\n\n`
             )
           );
@@ -78,10 +78,10 @@ export const POST: RequestHandler = async ({ request }) => {
             controller.enqueue(
               new TextEncoder().encode(
                 `data: ${JSON.stringify({
-                  type: 'response',
+                 , type: 'response',
                   content: words[i] + ' ',
                   isComplete: i === words.length - 1,
-                  progress: 90 + (i / words.length) * 10,
+                  progress: 90 + (i / words.length) * 10
                 })}\n\n`
               )
             );
@@ -97,10 +97,10 @@ export const POST: RequestHandler = async ({ request }) => {
                 message: 'RAG query processing completed successfully',
                 progress: 100,
                 metadata: {
-                  documentsAnalyzed: Math.floor(Math.random() * 50) + 10,
+                 , documentsAnalyzed: Math.floor(Math.random() * 50) + 10,
                   processingTime: Math.floor(Math.random() * 3000) + 1000,
-                  confidence: Math.floor(Math.random() * 20) + 80,
-                },
+                  confidence: Math.floor(Math.random() * 20) + 80
+                }
               })}\n\n`
             )
           );
@@ -111,14 +111,14 @@ export const POST: RequestHandler = async ({ request }) => {
             new TextEncoder().encode(
               `data: ${JSON.stringify({
                 type: 'error',
-                message: `RAG processing error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                error: true,
+                message: 'RAG processing; error: ${error instanceof Error ? error.message : `Unknown error` }`,
+                error: true
               })}\n\n`
             )
           );
           controller.close();
         }
-      },
+      }
     });
 
     return new Response(stream, {
@@ -127,15 +127,15 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+        'Access-Control-Allow-Headers': 'Content-Type'
+      }
     });
   } catch (error) {
     console.error('RAG stream error:', error);
     return json(
       {
         error: 'Failed to process RAG query stream',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -148,7 +148,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+      'Access-Control-Allow-Headers': `Content-Type` }
   });
 };

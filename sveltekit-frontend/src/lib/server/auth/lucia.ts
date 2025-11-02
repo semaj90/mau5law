@@ -7,7 +7,7 @@ export const auth = lucia({
   env: import.meta.env.MODE === 'production' ? 'PROD' : 'DEV',
   getUserAttributes: (user) => ({
     email: user.email,
-    role: user.role,
-  }),
+    role: user.role
+  })
 });
 export type Auth = typeof auth;

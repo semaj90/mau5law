@@ -11,9 +11,7 @@ import { createServer } from "node:http";
 let handler: any;
 import { writable, type Writable } from 'svelte/store';
 // Cluster configuration interfaces
-export interface ClusterConfig {
-  workers: number;
-  port: number;
+export interface ClusterConfig { workers: number;, port: number;
   host: string;
   gracefulShutdownTimeout: number;
   healthCheckInterval: number;
@@ -24,9 +22,7 @@ export interface ClusterConfig {
   redisUrl?: string; // For session storage
 }
 }
-export interface WorkerMetrics {
-  workerId: number;
-  pid: number;
+export interface WorkerMetrics { workerId: number;, pid: number;
   status: 'online' | 'disconnected' | 'dead' | 'starting';
   connections: number;
   requestsHandled: number;
@@ -37,23 +33,15 @@ export interface WorkerMetrics {
   uptime: number;
 }
 }
-export interface ClusterHealth {
-  totalWorkers: number;
-  healthyWorkers: number;
+export interface ClusterHealth { totalWorkers: number;, healthyWorkers: number;
   totalRequests: number;
   averageResponseTime: number;
-  memoryUsage: {
-    total: number;
-  average: number;
+  memoryUsage: { total: number;, average: number;
   peak: number;
   }
-  cpuUsage: {
-    total: number;
-    average: number;
+  cpuUsage: { total: number;, average: number;
   }
-  errors: {
-    total: number;
-    rate: number; // errors per minute
+  errors: { total: number;, rate: number; // errors per minute
   }
 }
 /**
@@ -275,7 +263,7 @@ export class SvelteKitClusterManager extends EventEmitter {
     worker.send({
       type: 'http-request',
       req: {
-        url: req.url,
+       , url: req.url,
         method: req.method,
         headers: req.headers
       }
@@ -328,7 +316,7 @@ export class SvelteKitClusterManager extends EventEmitter {
           type: 'health-response',
           workerId: import.meta.env.CLUSTER_WORKER_ID,
           metrics: {
-            memoryUsage: process.memoryUsage(),
+           , memoryUsage: process.memoryUsage(),
             cpuUsage: process.cpuUsage(),
             uptime: process.uptime(),
             timestamp: Date.now()
@@ -404,7 +392,7 @@ export class SvelteKitClusterManager extends EventEmitter {
       memoryUsage: {
         total: totalMemory,
         average: averageMemory,
-        peak: Math.max(...healthyWorkers.map((w: any) => w.memoryUsage.heapUsed),
+        peak: Math.max(...healthyWorkers.map((w: any) => w.memoryUsage.heapUsed)
       },
       cpuUsage: {
         total: healthyWorkers.reduce((sum, w) => sum + w.cpuUsage.user + w.cpuUsage.system, 0),

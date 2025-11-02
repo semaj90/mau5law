@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { integrationChecker, type IntegrationStatus } from '$lib/integration-status';

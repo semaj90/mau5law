@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         updated_at: true, // database field
         is_active: true, // database field
         email_verified: true, // database field
-      },
+      }
     });
     if (!user) {
       return json({ error: 'User not found' }, { status: 404 });
@@ -53,8 +53,8 @@ export const GET: RequestHandler = async ({ locals }) => {
       success: true,
       user: {
         ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png',
-      },
+        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png'
+      }
     });
   } catch (error: any) {
     // normalize error logging without using `any`
@@ -87,7 +87,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         email,
         first_name: firstName || '',
         last_name: lastName || '',
-        updated_at: new Date(),
+        updated_at: new Date()
       })
       .where(eq(usersTable.id, authUser.id));
 
@@ -105,8 +105,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         created_at: true,
         updated_at: true,
         is_active: true,
-        email_verified: true,
-      },
+        email_verified: true
+      }
     });
 
     if (!updatedUser) {
@@ -119,9 +119,9 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       success: true,
       user: {
         ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg',
+        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg'
       },
-      message: 'Profile updated successfully',
+      message: 'Profile updated successfully'
     });
   } catch (error: any) {
     if (error instanceof Error) {
@@ -129,6 +129,6 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     } else {
       console.error('Profile update error:', error);
     }
-    return json({ error: 'Failed to update profile' }, { status: 500 });
+    return json({ error: `Failed to update profile` }, { status: 500 });
   }
 };

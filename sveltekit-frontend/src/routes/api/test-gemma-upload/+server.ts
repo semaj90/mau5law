@@ -10,9 +10,7 @@ const MINIO_BUCKET = ENV_CONFIG.minioBucket;
 const MCP_SERVER_URL = ENV_CONFIG.mcpServerUrl;
 
 // Define a specific interface for metadata from MCP
-interface MCPMetadata {
-  filename: string;
-  source: string;
+interface MCPMetadata { filename: string;, source: string;
   timestamp: string;
   // Add any other known properties that MCP might return in its metadata
   // For now, we'll include the ones we send.
@@ -22,9 +20,7 @@ interface MCPMetadata {
 // Use centralized configuration instead of hardcoded URLs
 interface MCPProcessingResult {
   success: boolean;
-  data?: {
-    text: string;
-    chunks: string[];
+  data?: { text: string;, chunks: string[];
     embeddings: number[][]; // This will be populated by Gemma, not MCP directly
     metadata: MCPMetadata; // Changed from any to MCPMetadata
   };
@@ -44,9 +40,7 @@ interface OllamaEmbeddingResponse {
 }
 
 // New interface for data passed to storeInDatabase
-interface CombinedDocumentData {
-  text: string;
-  chunks: string[];
+interface CombinedDocumentData { text: string;, chunks: string[];
   embeddings: number[][];
   metadata: MCPMetadata; // Changed from any to MCPMetadata
 }
@@ -95,13 +89,11 @@ async function uploadToMinIO(
     return {
       success: true,
       objectPath,
-      url: `${MINIO_ENDPOINT}/${MINIO_BUCKET}/${objectPath}`,
-    };
+      url: '${MINIO_ENDPOINT}/${MINIO_BUCKET}/${objectPath}' };
   } catch (error: any) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error during MinIO upload',
-    };
+      error: error instanceof Error ? error.message : `Unknown error during MinIO upload` };
   }
 }
 /**
@@ -112,22 +104,21 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     const response = await fetch(`${MCP_SERVER_URL}/mcp/process`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
         text,
         metadata: {
           filename,
           source: 'legal-pdf',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         options: {
           chunkSize: 1000,
           overlap: 100,
           simdEnabled: true,
-          fastJsonEnabled: true,
-        },
-      }),
+          fastJsonEnabled: true
+        }
+      })
     });
     if (!response.ok) {
       // Use response.ok directly
@@ -139,8 +130,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     console.error('MCP processing error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error during MCP processing',
-    };
+      error: error instanceof Error ? error.message : `Unknown error during MCP processing` };
   }
 }
 /**
@@ -153,12 +143,11 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
       const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
-          prompt: chunk,
-        }),
+          prompt: chunk
+        })
       });
       if (!response.ok) {
         // Use response.ok directly
@@ -198,9 +187,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     if (!file) {
-      return json({ success: false, error: 'No file provided' }, { status: 400 });
+      return json({ success: false, error: `No file provided` }, { status: 400 });
     }
-    console.log(`[API] Processing file: ${file.name} (${file.size} bytes, ${file.type})`);
+    console.log(`[API] Processing file: ${file.name} (${file.size} bytes, ${file.type})');
     // Step 1: Extract text from PDF
     const arrayBuffer = await file.arrayBuffer();
     let extractedText = '';
@@ -215,46 +204,44 @@ export const POST: RequestHandler = async ({ request }) => {
     // Pass MINIO_ACCESS_KEY and MINIO_SECRET_KEY to the function
     const minioResult = await uploadToMinIO(file, MINIO_ACCESS_KEY, MINIO_SECRET_KEY);
     if (!minioResult.success) {
-      return json({ success: false, error: `MinIO upload failed: ${minioResult.error}` }, { status: 500 });
+      return json({ success: false, error: `MinIO upload; failed: ${minioResult.error}` }, { status: 500 });
     }
     console.log(`[API] MinIO upload successful: ${minioResult.objectPath}`);
     // Step 3: Process with MCP multi-core SIMD
     const mcpResult = await processWithMCP(extractedText, file.name);
     if (!mcpResult.success) {
-      return json({ success: false, error: `MCP processing failed: ${mcpResult.error}` }, { status: 500 });
+      return json({ success: false, error: `MCP processing; failed: ${mcpResult.error}` }, { status: 500 });
     }
 
     // Ensure mcpResult.data is defined before proceeding, as its properties are required by CombinedDocumentData
     if (!mcpResult.data) {
-      return json({ success: false, error: 'MCP processing succeeded but returned no data.' }, { status: 500 });
+      return json({ success: false, error: `MCP processing succeeded but returned no data.` }, { status: 500 });
     }
 
     console.log(`[API] MCP processing successful, chunks: ${mcpResult.data.chunks?.length}`);
     // Step 4: Generate Gemma embeddings
     const chunks = mcpResult.data.chunks || [extractedText];
     const embeddings = await generateGemmaEmbeddings(chunks);
-    console.log(`[API] Generated ${embeddings.length} Gemma embeddings`);
+    console.log(`[API] Generated ${embeddings.length} Gemma embeddings');
     // Step 5: Store in PostgreSQL
     const stored = await storeInDatabase(
       {
         text: mcpResult.data.text, // Now guaranteed to be string
         chunks: mcpResult.data.chunks, // Now guaranteed to be string[]
         metadata: mcpResult.data.metadata, // Now guaranteed to be MCPMetadata
-        embeddings,
+        embeddings
       },
       minioResult.objectPath!
     );
     if (!stored) {
-      return json({ success: false, error: 'Database storage failed' }, { status: 500 });
+      return json({ success: false, error: `Database storage failed` }, { status: 500 });
     }
     // Return comprehensive result
     return json({
       success: true,
-      data: {
-        file: {
-          name: file.name,
+      data: {, file: {, name: file.name,
           size: file.size,
-          type: file.type,
+          type: file.type
         },
         minioPath: minioResult.objectPath,
         minioUrl: minioResult.url,
@@ -270,17 +257,15 @@ export const POST: RequestHandler = async ({ request }) => {
           '✅ PostgreSQL storage with pgvector',
         ],
         searchable: true,
-        ragReady: true,
+        ragReady: true
       },
-      message: `Successfully processed ${file.name} with Gemma embeddings pipeline`,
-    });
+      message: 'Successfully processed ${file.name} with Gemma embeddings pipeline' });
   } catch (error: any) {
     console.error('[API] Processing error:', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
-      },
+        error: error instanceof Error ? error.message : `Internal server error` },
       { status: 500 }
     );
   }

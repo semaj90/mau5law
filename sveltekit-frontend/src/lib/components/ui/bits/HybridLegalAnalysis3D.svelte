@@ -4,6 +4,7 @@ https://svelte.dev/e/expected_token -->
 <!-- Hybrid Legal Document Analysis Component -->
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>

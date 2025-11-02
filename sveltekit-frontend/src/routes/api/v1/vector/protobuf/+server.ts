@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!Number.isNaN(len) && len > MAX_BYTES) {
         return new Response(JSON.stringify({ error: 'Payload too large' }), {
           status: 413,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         });
       }
     }
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
             return new Response(JSON.stringify({ error: 'Payload too large' }), {
               status: 413,
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json' }
             });
           }
           chunks.push(new Uint8Array(value));
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (ab.byteLength > MAX_BYTES) {
         return new Response(JSON.stringify({ error: 'Payload too large' }), {
           status: 413,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' }
         });
       }
       buffer = new Uint8Array(ab);
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
       limit: searchRequest.params?.limit || 10,
       min_similarity: searchRequest.params?.min_similarity || 0.7,
       algorithm: searchRequest.params?.algorithm || 'COSINE_SIMILARITY',
-      include_embeddings: searchRequest.params?.include_embeddings || false,
+      include_embeddings: searchRequest.params?.include_embeddings || false
     };
 
     // Validate limits
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query: searchRequest.query || searchRequest.text,
       params,
       filters: searchRequest.filters,
-      metadata: searchRequest.metadata,
+      metadata: searchRequest.metadata
     });
 
     const processingTime = performance.now() - startTime;
@@ -129,17 +129,17 @@ export const POST: RequestHandler = async ({ request }) => {
           query_clarity: calculateQueryClarity(searchRequest.query),
           result_diversity: calculateResultDiversity(searchResults.results),
           exact_matches: searchResults.exactMatches || 0,
-          semantic_matches: searchResults.semanticMatches || 0,
-        },
+          semantic_matches: searchResults.semanticMatches || 0
+        }
       },
       analytics: {
         query_id: generateQueryId(),
         query_hash: hashQuery(searchRequest.query),
         expansion_terms: searchResults.expansionTerms || [],
         clusters: searchResults.semanticClusters || [],
-        complexity: assessQueryComplexity(searchRequest.query),
+        complexity: assessQueryComplexity(searchRequest.query)
       },
-      recommendations: generateRecommendations(searchResults.results),
+      recommendations: generateRecommendations(searchResults.results)
     };
 
     // Serialize to protocol buffer binary format
@@ -154,8 +154,8 @@ export const POST: RequestHandler = async ({ request }) => {
         'Content-Length': String(responseBuffer.byteLength),
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'X-Total-Results': String(searchResults.total),
-        'X-Data-Source': searchResults.dataSource || 'postgresql',
-      },
+        'X-Data-Source': searchResults.dataSource || 'postgresql'
+      }
     });
   } catch (err) {
     console.error('Vector search protobuf error:', err);
@@ -165,14 +165,13 @@ export const POST: RequestHandler = async ({ request }) => {
       code: 'SEARCH_ERROR',
       // err may be unknown; guard access to message
       message: err instanceof Error ? err.message : String(err),
-      details: process.env.NODE_ENV === 'development' && err instanceof Error ? err.stack : undefined,
+      details: process.env.NODE_ENV === 'development' && err instanceof Error ? err.stack : undefined
     });
 
     return new Response(errorResponse, {
       status: 500,
       headers: {
-        'Content-Type': 'application/x-protobuf',
-      },
+        'Content-Type': `application/x-protobuf` }
     });
   }
 };
@@ -314,7 +313,7 @@ async function parseVectorSearchRequest(buffer: Uint8Array): Promise<SearchReque
       text: typeof proto.text === 'string' ? proto.text : null,
       params: proto.params ?? undefined,
       filters: proto.filters ?? undefined,
-      metadata: proto.metadata ?? undefined,
+      metadata: proto.metadata ?? undefined
     };
   } catch {
     // fallback typed object if decode fails
@@ -324,13 +323,12 @@ async function parseVectorSearchRequest(buffer: Uint8Array): Promise<SearchReque
       params: {
         limit: 10,
         min_similarity: 0.7,
-        algorithm: 'COSINE_SIMILARITY',
-      },
+        algorithm: `COSINE_SIMILARITY` },
       filters: {},
       metadata: {
         user_id: 'anonymous',
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
   }
 }
@@ -375,7 +373,7 @@ async function serializeVectorSearchResponse(response: any): Promise<ArrayBuffer
                     : '0',
               case_id: typeof doc?.case_id === 'string' ? doc!.case_id : '',
               jurisdiction: typeof doc?.jurisdiction === 'string' ? doc!.jurisdiction : '',
-              legal_categories: Array.isArray(doc?.legal_categories) ? (doc!.legal_categories as string[]) : [],
+              legal_categories: Array.isArray(doc?.legal_categories) ? (doc!.legal_categories as string[]) : []
             },
             similarity_score: typeof rr.similarity_score === 'number' ? rr.similarity_score : 0.0,
             snippets: Array.isArray(rr.snippets)
@@ -384,10 +382,10 @@ async function serializeVectorSearchResponse(response: any): Promise<ArrayBuffer
                   return {
                     text: typeof ss.text === 'string' ? ss.text : '',
                     page_number: typeof ss.page_number === 'number' ? ss.page_number : 0,
-                    relevance_score: typeof ss.relevance_score === 'number' ? ss.relevance_score : 0.0,
+                    relevance_score: typeof ss.relevance_score === 'number' ? ss.relevance_score : 0.0
                   };
                 })
-              : [],
+              : []
           };
         })
       : [],
@@ -421,7 +419,7 @@ async function serializeVectorSearchResponse(response: any): Promise<ArrayBuffer
         }
       }
       return 0.0;
-    })(),
+    })()
   };
 
   const err = SearchResponseType.verify(protoResp);
@@ -448,14 +446,13 @@ async function serializeErrorResponse(error: any): Promise<ArrayBuffer> {
         ? maybe!.details
         : typeof maybe?.details === 'object'
           ? JSON.stringify(maybe!.details)
-          : undefined,
+          : undefined
   };
 
   const err = ErrorResponseType.verify(payload);
   if (err) {
     // fallback to JSON binary if protobuf verification fails
-    const errorJson = JSON.stringify({
-      error: { code: payload.code, message: payload.message, details: payload.details },
+    const errorJson = JSON.stringify({ error: {, code: payload.code, message: payload.message, details: payload.details }
     });
     return new TextEncoder().encode(errorJson).buffer;
   }
@@ -480,23 +477,23 @@ async function executeVectorSearch(searchParams: SearchRequest & { params?: { li
         created_at: Date.now() - 86400000,
         case_id: 'case_001',
         jurisdiction: 'Federal',
-        legal_categories: ['Contract Law', 'Commercial Law'],
+        legal_categories: ['Contract Law', 'Commercial Law']
       },
       similarity_score: 0.92,
       snippets: [
         {
           text: 'The parties agree to the following terms and conditions...',
-          highlights: [{ start: 12, end: 27, match_type: 'semantic' }],
+          highlights: [{ start: 12, end: 27, match_type: `semantic` }],
           relevance_score: 0.89,
-          page_number: 1,
+          page_number: 1
         },
       ],
       legal_context: {
         precedents: ['Smith v. Jones (2020)', 'ABC Corp v. XYZ LLC (2019)'],
         key_terms: ['contract', 'agreement', 'terms', 'obligations'],
         practice_area: 'Contract Law',
-        legal_weight: 0.85,
-      },
+        legal_weight: 0.85
+      }
     },
   ];
 
@@ -529,9 +526,9 @@ async function executeVectorSearch(searchParams: SearchRequest & { params?: { li
         cluster_id: 'cluster_001',
         theme: 'Contract Terms',
         weight: 0.75,
-        representative_terms: ['contract', 'agreement', 'terms'],
+        representative_terms: ['contract', 'agreement', 'terms']
       },
-    ],
+    ]
   };
 }
 
@@ -569,9 +566,7 @@ function hashQuery(query: any): string {
   return Math.abs(hash).toString(16);
 }
 
-function assessQueryComplexity(query: any): {
-  complexity_score: number;
-  complexity_level: string;
+function assessQueryComplexity(query: any): { complexity_score: number;, complexity_level: string;
   complexity_factors: string[];
 } {
   const queryString = typeof query === 'string' ? query : JSON.stringify(query);
@@ -609,7 +604,7 @@ function assessQueryComplexity(query: any): {
   return {
     complexity_score: complexityScore,
     complexity_level: level,
-    complexity_factors: factors,
+    complexity_factors: factors
   };
 }
 
@@ -623,7 +618,7 @@ function generateRecommendations(results: any[]): any[] {
       description: 'Find cases with similar legal issues',
       action_url: '/cases/search?similar=true',
       confidence: 0.82,
-      tags: ['cases', 'precedents', 'similar'],
+      tags: ['cases', 'precedents', 'similar']
     },
     {
       type: 'legal_research',
@@ -631,7 +626,7 @@ function generateRecommendations(results: any[]): any[] {
       description: 'Search broader legal databases',
       action_url: '/legal/research/expand',
       confidence: 0.75,
-      tags: ['research', 'databases', 'comprehensive'],
+      tags: ['research', 'databases', 'comprehensive']
     },
   ];
 }

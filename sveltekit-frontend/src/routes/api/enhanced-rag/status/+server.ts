@@ -23,27 +23,25 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       systemVersion: '2.0.0-enhanced-rag',
       overallStatus: 'operational',
-      services: {
-        redis: {
-          status: statusChecks[0].status === 'fulfilled' ? 'connected' : 'disconnected',
-          details: statusChecks[0].status === 'fulfilled' ? statusChecks[0].value : 'Connection failed',
+      services: { redis: {, status: statusChecks[0].status === 'fulfilled' ? 'connected' : 'disconnected',
+          details: statusChecks[0].status === 'fulfilled' ? statusChecks[0].value : 'Connection failed'
         },
         postgresql: {
           status: statusChecks[1].status === 'fulfilled' ? 'connected' : 'disconnected',
-          details: statusChecks[1].status === 'fulfilled' ? statusChecks[1].value : 'Connection failed',
+          details: statusChecks[1].status === 'fulfilled' ? statusChecks[1].value : 'Connection failed'
         },
         qdrant: {
           status: statusChecks[2].status === 'fulfilled' ? 'connected' : 'disconnected',
-          details: statusChecks[2].status === 'fulfilled' ? statusChecks[2].value : 'Connection failed',
+          details: statusChecks[2].status === 'fulfilled' ? statusChecks[2].value : 'Connection failed'
         },
         ollama: {
           status: statusChecks[3].status === 'fulfilled' ? 'connected' : 'disconnected',
-          details: statusChecks[3].status === 'fulfilled' ? statusChecks[3].value : 'Connection failed',
+          details: statusChecks[3].status === 'fulfilled' ? statusChecks[3].value : 'Connection failed'
         },
         neo4j: {
           status: statusChecks[4].status === 'fulfilled' ? 'connected' : 'disconnected',
-          details: statusChecks[4].status === 'fulfilled' ? statusChecks[4].value : 'Connection failed',
-        },
+          details: statusChecks[4].status === 'fulfilled' ? statusChecks[4].value : 'Connection failed'
+        }
       },
       capabilities: {
         mlClassification: true,
@@ -51,14 +49,14 @@ export const GET: RequestHandler = async () => {
         knowledgeGraph: statusChecks[4].status === 'fulfilled',
         realTimeStreaming: true,
         gpuAcceleration: true,
-        contextRanking: true,
+        contextRanking: true
       },
       performance: {
         averageQueryTime: '~1.2s',
         cacheHitRate: '78%',
         confidence: '87% avg',
-        uptime: '99.9%',
-      },
+        uptime: '99.9%'
+      }
     };
     // Determine overall status
     const failedServicesCount = Object.values(systemHealth.services).filter(
@@ -77,7 +75,7 @@ export const GET: RequestHandler = async () => {
     }
     return json({
       success: true,
-      health: systemHealth,
+      health: systemHealth
     });
   } catch (error: any) {
     console.error('❌ Enhanced RAG Status Check Error:', error);
@@ -90,8 +88,8 @@ export const GET: RequestHandler = async () => {
           overallStatus: 'system_error',
           services: {},
           capabilities: {},
-          performance: {},
-        },
+          performance: {}
+        }
       },
       { status: 500 }
     );

@@ -7,9 +7,7 @@
 import { query } from '$lib/server/db/client.js';
 import { minioService } from '$lib/server/storage/minio-service.js';
 import { embeddingService } from '$lib/services/embedding-service.js';
-interface EvidenceFile {
-  id: number;
-  title: string;
+interface EvidenceFile { id: number;, title: string;
   description?: string;
   storage_bucket: string;
   object_name: string;
@@ -17,9 +15,7 @@ interface EvidenceFile {
   file_type: string;
   case_id?: string;
 }
-interface BackfillResult {
-  processed: number;
-  success: number;
+interface BackfillResult { processed: number;, success: number;
   failed: number;
   errors: Array<any>
 export class EmbeddingBackfillWorker {
@@ -107,7 +103,7 @@ export class EmbeddingBackfillWorker {
         embeddingResult = await this.generateEmbedding(textContent);
         break;
       } catch (error) {
-        console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}:`, error);
+        console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}: ', error);
         if (attempt === this.retryCount) throw error;
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt); // Exponential backoff
       }
@@ -144,7 +140,7 @@ export class EmbeddingBackfillWorker {
           const fileText = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).text();
           textContent += '\n\n' + fileText;
         } catch (error) {
-          console.warn(`Failed to extract text from ${file.object_name}:`, error);
+          console.warn(`Failed to extract text from ${file.object_name}: ', error);
         }
         break;
       case 'application/json':
@@ -173,7 +169,7 @@ export class EmbeddingBackfillWorker {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
         text: text.substring(0, 50000), // Limit text length
-        model: 'mock', // Use mock for testing - change to: 'openai' or: 'nomic' when ready;
+        model: 'mock', // Use mock for testing - change to: 'openai'; or: 'nomic' when ready;
         dimensions: 768
       })
     });

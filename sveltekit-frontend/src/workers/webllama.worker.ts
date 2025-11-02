@@ -59,9 +59,8 @@ self.onmessage = async (e: MessageEvent) => {
 async function performInference(prompt: string): Promise<any> {
   // Simulated processing delay
   await new Promise(r => setTimeout(r, 5));
-  return {
-    text: `Generated response for: ${prompt.slice(0, 60)}...`,
+  return { text: `Generated response, for: ${prompt.slice(0, 60)}...`,
     tokensGenerated: Math.max(10, Math.floor(prompt.length / 6)),
-    processingTime: 10,
+    processingTime: 10
   };
 }

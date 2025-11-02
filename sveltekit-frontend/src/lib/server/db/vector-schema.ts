@@ -15,11 +15,10 @@ export const documentEmbeddings = pgTable(
     chunkIndex: integer('chunk_index').notNull().default(0),
     chunkText: text('chunk_text').notNull(),
     embedding: vector('embedding', { dimensions: 384 }),
-    // removed .$type<Record<string, unknown>>() to avoid: "Untyped function calls may not accept type arguments"
-    metadata: jsonb('metadata').default({}),
+    // removed .$type<Record<string, unknown>>() to avoid: "Untyped function calls may not accept type arguments"; metadata: jsonb('metadata').default({}),
     modelUsed: text('model_used').default('nomic-embed-text'),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   // typed callback parameter to avoid implicit any
   (table: Record<string, AnyPgColumn>) => ({
@@ -27,7 +26,7 @@ export const documentEmbeddings = pgTable(
     embeddingIdx: index('idx_embedding_ivfflat').on(table.embedding),
     // Regular indexes
     documentIdx: index('idx_document_lookup').on(table.documentId, table.documentType),
-    createdAtIdx: index('idx_created_at').on(table.createdAt),
+    createdAtIdx: index('idx_created_at').on(table.createdAt)
   })
 );
 // Search queries and their embeddings for caching
@@ -42,12 +41,12 @@ export const searchQueries = pgTable(
     resultsCount: integer('results_count').default(0),
     // removed .$type<...>() usage; keep default value
     results: jsonb('results').default({ items: [], totalFound: 0, searchTime: 0 }),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   (table: Record<string, AnyPgColumn>) => ({
     userIdx: index('idx_search_user').on(table.userId),
     queryEmbeddingIdx: index('idx_query_embedding').on(table.queryEmbedding),
-    createdAtIdx: index('idx_search_created').on(table.createdAt),
+    createdAtIdx: index('idx_search_created').on(table.createdAt)
   })
 );
 // AI model configurations
@@ -64,11 +63,11 @@ export const aiModels = pgTable(
     config: jsonb('config').default({}),
     isActive: integer('is_active').notNull().default(1),
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table: Record<string, AnyPgColumn>) => ({
     nameIdx: index('idx_model_name').on(table.name),
-    providerTypeIdx: index('idx_provider_type').on(table.provider, table.modelType),
+    providerTypeIdx: index('idx_provider_type').on(table.provider, table.modelType)
   })
 );
 // relations callback doesn't need to destructure unused helpers; use empty callback to avoid unused var warnings

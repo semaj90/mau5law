@@ -37,9 +37,7 @@ interface SearchableValue {
 }
 
 // Define the structure for items stored in the search index
-interface SearchIndexEntry {
-  id: string;
-  type: CacheEntry['metadata']['type'];
+interface SearchIndexEntry { id: string;, type: CacheEntry['metadata']['type'];
   userId?: string;
   content: string;
   title?: string;
@@ -48,13 +46,9 @@ interface SearchIndexEntry {
   tags?: string[];
 }
 
-export interface CacheEntry {
-  id: string;
-  key: string;
+export interface CacheEntry { id: string;, key: string;
   value: CacheValue; // Use the defined CacheValue type
-  metadata: {
-    type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';
-    createdAt: Date;
+  metadata: { type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';, createdAt: Date;
     lastAccessed: Date;
     accessCount: number;
     ttl: number; // Time to live in seconds
@@ -63,16 +57,13 @@ export interface CacheEntry {
     tags?: string[];
   };
 }
-export interface CacheStats {
-  totalEntries: number;
-  totalSize: number;
+export interface CacheStats { totalEntries: number;, totalSize: number;
   hitRate: number;
   evictionCount: number;
   avgAccessTime: number;
-  layerStats: {
-    memory: { entries: number; size: number; hitRate: number };
-    persistent: { entries: number; size: number; hitRate: number };
-    search: { entries: number; queries: number };
+  layerStats: { memory: { entries: number; size: number;, hitRate: number };
+    persistent: { entries: number; size: number;, hitRate: number };
+    search: { entries: number;, queries: number };
   };
 }
 export interface FuseSearchOptions {
@@ -109,7 +100,7 @@ export class MultiLayerCache {
     misses: 0,
     evictions: 0,
     totalAccessTime: 0,
-    accessCount: 0,
+    accessCount: 0
   };
   // Configuration
   private readonly maxMemorySize = 50 * 1024 * 1024; // 50MB
@@ -118,8 +109,7 @@ export class MultiLayerCache {
   constructor() {
     // Initialize in-memory database
     this.memoryDb = new Loki('multiLayerCache.db', {
-      env: browser ? 'BROWSER' : 'NODEJS',
-    });
+      env: browser ? 'BROWSER' : `NODEJS` });
     // Create collections (cast Loki's return to the local Collection<T> type to avoid cross-type conflicts)
     this.cacheCollection = this.memoryDb.addCollection('cache', {
       indices: ['key'],
@@ -127,7 +117,7 @@ export class MultiLayerCache {
       ttlInterval: 60000, // Check every minute
     }) as unknown as Collection<CacheEntry>;
     this.searchCollection = this.memoryDb.addCollection('searchIndex', {
-      indices: ['type', 'userId'],
+      indices: ['type', 'userId']
     }) as unknown as Collection<SearchIndexEntry>;
     // Initialize persistent storage if in browser
     if (browser) {
@@ -149,7 +139,7 @@ export class MultiLayerCache {
       });
 
       // Wait for Loki to finish loading the database. Avoid: 'any' by defining a minimal typed shape.
-      type LokiWithLoad = { loadDatabase(opts: any, callback: () => void): void };
+      type LokiWithLoad = { loadDatabase(opts: any; callback: () => void): void };
       await new Promise<void>(resolve => {
         (this.persistentDb as unknown as LokiWithLoad).loadDatabase({}, () => resolve());
       });
@@ -164,7 +154,7 @@ export class MultiLayerCache {
     key: string,
     value: CacheValue,
     options: {
-      type: CacheEntry['metadata']['type'];
+     , type: CacheEntry['metadata']['type'];
       ttl?: number;
       userId?: string;
       tags?: string[];
@@ -186,8 +176,8 @@ export class MultiLayerCache {
           ttl: options.ttl || this.defaultTTL,
           size,
           userId: options.userId,
-          tags: options.tags,
-        },
+          tags: options.tags
+        }
       };
       // Check memory size and evict if necessary
       await this.evictIfNecessary(size);
@@ -219,7 +209,7 @@ export class MultiLayerCache {
       // Check memory cache first
       let entry = this.cacheCollection.findOne({
         key,
-        ...(options?.userId && { 'metadata.userId': options.userId }),
+        ...(options?.userId && { 'metadata.userId': options.userId })
       });
       if (entry) {
         this.stats.hits++;
@@ -240,7 +230,7 @@ export class MultiLayerCache {
           // findOne returns T | undefined per the Collection type, so guard result
           entry = collection.findOne({
             key,
-            ...(options?.userId && { 'metadata.userId': options.userId }),
+            ...(options?.userId && { 'metadata.userId': options.userId })
           });
           if (entry) {
             this.stats.hits++;
@@ -285,7 +275,7 @@ export class MultiLayerCache {
         findAllMatches: false,
         location: 0,
         distance: 100,
-        useExtendedSearch: true,
+        useExtendedSearch: true
       });
       this.fuseInstances.set(fuseKey, fuse);
     }
@@ -294,7 +284,7 @@ export class MultiLayerCache {
     return results.map(result => ({
       // Use IFuseResult
       item: result.item as T,
-      score: result.score ?? undefined,
+      score: result.score ?? undefined
     }));
   }
   /**
@@ -306,7 +296,7 @@ export class MultiLayerCache {
       type?: string;
       userId?: string;
       tags?: string[];
-      dateRange?: { start: Date; end: Date };
+      dateRange?: { start: Date;, end: Date };
     }
   ): Promise<SearchResult[]> {
     // Build Loki query
@@ -315,14 +305,14 @@ export class MultiLayerCache {
       'metadata.createdAt'?: LokiCondition<Date>;
     };
 
-    const lokiQuery: LokiQueryForSearchIndexEntry = { type: 'document' };
+    const lokiQuery: LokiQueryForSearchIndexEntry = { type: `document` };
     if (filters?.userId) {
       lokiQuery['userId'] = filters.userId;
     }
     if (filters?.dateRange) {
       lokiQuery['metadata.createdAt'] = {
         $gte: filters.dateRange.start,
-        $lte: filters.dateRange.end,
+        $lte: filters.dateRange.end
       };
     }
     // Get documents from search collection
@@ -332,7 +322,7 @@ export class MultiLayerCache {
       keys: ['content', 'title', 'summary'],
       threshold: 0.4,
       includeScore: true,
-      minMatchCharLength: 3,
+      minMatchCharLength: 3
     });
     // Narrow the type of search results so subsequent callbacks accept item as SearchIndexEntry
     const searchResults = fuse.search(query) as unknown as IFuseResult<SearchIndexEntry>[];
@@ -349,7 +339,7 @@ export class MultiLayerCache {
       id: result.item.id,
       content: result.item.content,
       score: 1 - (result.score || 0), // Convert Fuse score to similarity
-      metadata: result.item.metadata,
+      metadata: result.item.metadata
     }));
   }
   /**
@@ -408,22 +398,20 @@ export class MultiLayerCache {
       hitRate,
       evictionCount: this.stats.evictions,
       avgAccessTime,
-      layerStats: {
-        memory: {
-          entries: memoryEntries,
+      layerStats: { memory: {, entries: memoryEntries,
           size: memorySize,
-          hitRate,
+          hitRate
         },
         persistent: {
           entries: 0, // Would need to count from persistent DB
           size: 0,
-          hitRate: 0,
+          hitRate: 0
         },
         search: {
           entries: searchEntries,
-          queries: this.fuseInstances.size,
-        },
-      },
+          queries: this.fuseInstances.size
+        }
+      }
     };
   }
   /**
@@ -464,7 +452,7 @@ export class MultiLayerCache {
       misses: 0,
       evictions: 0,
       totalAccessTime: 0,
-      accessCount: 0,
+      accessCount: 0
     };
   }
   /**
@@ -530,7 +518,7 @@ export class MultiLayerCache {
         title: searchableValue.title,
         summary: searchableValue.summary,
         metadata: entry.metadata,
-        tags: entry.metadata.tags,
+        tags: entry.metadata.tags
       });
       // Clear Fuse instances to force rebuild
       this.fuseInstances.clear();
@@ -631,7 +619,7 @@ class LokiIndexedAdapter {
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('database')) {
-          db.createObjectStore('database', { keyPath: 'id' });
+          db.createObjectStore('database', { keyPath: `id` });
         }
       };
     });

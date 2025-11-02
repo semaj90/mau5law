@@ -4,24 +4,18 @@ import type { Document } from '$lib/types';
 import { Builder } from 'flatbuffers';
 // Mock FlatBuffer types until we can generate from schemas
 // In production, these would be auto-generated from legal_data.fbs
-interface DocumentContent {
-  id: string;
-  title: string;
+interface DocumentContent { id: string;, title: string;
   content: Uint8Array;
   contentType: string;
   compressed: boolean;
   checksum: number;
 }
-interface VectorEmbedding {
-  documentId: string;
-  embedding: Float32Array;
+interface VectorEmbedding { documentId: string;, embedding: Float32Array;
   model: string;
   dimension: number;
   confidence: number;
 }
-interface LegalEntity {
-  text: string;
-  type: string;
+interface LegalEntity { text: string;, type: string;
   confidence: number;
   startPos?: number;
   endPos?: number;
@@ -30,9 +24,7 @@ interface LegalEntity {
   metadata?: Record<string, unknown>;
 }
 // Replaced empty extraction type with a concrete shape that references LegalEntity
-interface LegalEntityExtraction {
-  documentId: string;
-  entities: LegalEntity[];
+interface LegalEntityExtraction { documentId: string;, entities: LegalEntity[];
   // Optional provenance or score info from the extractor
   provenance?: {
     source: string;
@@ -41,11 +33,9 @@ interface LegalEntityExtraction {
   } | null;
 }
 
-interface SearchResultItem {
-  documentId: string;
-  score: number;
+interface SearchResultItem { documentId: string;, score: number;
   excerpt: string;
-  metadata: { type: string; jurisdiction: string };
+  metadata: { type: string;, jurisdiction: string };
 }
 
 /**
@@ -68,7 +58,7 @@ export class FlatBufferLegalProcessor {
     id: string;
     title: string;
     content: string | Uint8Array;
-    contentType: string;
+   , contentType: string;
     compress?: boolean;
   }): Promise<Uint8Array> {
     this.builder.clear();
@@ -84,7 +74,7 @@ export class FlatBufferLegalProcessor {
       content: processedContent,
       contentType: document.contentType,
       compressed: !!document.compress,
-      checksum: this.calculateChecksum(processedContent),
+      checksum: this.calculateChecksum(processedContent)
     });
     return fbDocument;
   }
@@ -92,10 +82,8 @@ export class FlatBufferLegalProcessor {
    * Process vector embeddings with FlatBuffer for GPU acceleration
    * Optimized for your CUDA/SIMD Go microservices
    */
-  async storeVectorEmbeddings(embeddings: {
-    documentId: string;
-    vectors: Float32Array;
-    model: string;
+  async storeVectorEmbeddings(embeddings: { documentId: string;, vectors: Float32Array;
+   , model: string;
     batchSize?: number;
   }): Promise<Uint8Array> {
     this.builder.clear();
@@ -125,7 +113,7 @@ export class FlatBufferLegalProcessor {
           'Content-Type': 'application/x-flatbuffer',
           'X-Processing-Mode': 'simd', // Use SIMD optimizations: 'X-GPU-Acceleration': 'cuda', // Use CUDA if available
         },
-        body: content,
+        body: content
       });
       if (!response.ok) {
         // Simplified type assertion
@@ -146,10 +134,10 @@ export class FlatBufferLegalProcessor {
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
-    filters?: { [key: string]: any }; // Changed: 'any' to: 'unknown'
+    filters?: { [key: string]: any }; // Changed: 'any'; to: 'unknown'
     limit?: number;
   }): Promise<Array<SearchResultItem>> {
-    // Changed: 'any' to: 'SearchResultItem'
+    // Changed: 'any'; to: 'SearchResultItem'
     // Corrected return type
     try {
       // Prepare search request as FlatBuffer
@@ -161,7 +149,7 @@ export class FlatBufferLegalProcessor {
           'X-Search-Engine': 'gpu-accelerated',
           'X-Vector-Quantization': 'int8', // Use quantized vectors for speed
         },
-        body: searchRequest,
+        body: searchRequest
       });
       if (!response.ok) {
         // Simplified type assertion
@@ -202,8 +190,8 @@ export class FlatBufferLegalProcessor {
               'Accept': 'application/x-flatbuffer-stream',
               'X-Quality-Level': qualityLevel.toString(),
               'X-Chunk-Size': chunkSize.toString(),
-              'X-Target-FPS': targetFPS.toString(),
-            },
+              'X-Target-FPS': targetFPS.toString()
+            }
           });
           if (!response.body) {
             throw new Error('No response body for texture stream');
@@ -226,7 +214,7 @@ export class FlatBufferLegalProcessor {
         } catch (error) {
           controller.error(error);
         }
-      },
+      }
     });
   }
   // Private helper methods
@@ -350,9 +338,9 @@ export class FlatBufferLegalProcessor {
           type: 'ORGANIZATION',
           confidence: 0.95,
           startPos: 0,
-          endPos: 13,
+          endPos: 13
         },
-      ],
+      ]
     };
   }
   private parseSearchResultsFromFlatBuffer(_buffer: Uint8Array): Array<SearchResultItem> {
@@ -363,7 +351,7 @@ export class FlatBufferLegalProcessor {
         documentId: 'result-doc-1',
         score: 0.89,
         excerpt: 'Sample search result excerpt...',
-        metadata: { type: 'contract', jurisdiction: 'federal' },
+        metadata: { type: 'contract', jurisdiction: 'federal' }
       },
     ];
   }
@@ -372,7 +360,7 @@ export class FlatBufferLegalProcessor {
     // Fallback local entity extraction
     return {
       documentId,
-      entities: [],
+      entities: []
     };
   }
 }
@@ -396,14 +384,14 @@ export class FlatBufferPerformanceMonitor {
     const times = this.metrics.get(operation) || [];
     return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
   }
-  getPerformanceReport(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const report: Record<string, { avg: number; min: number; max: number; count: number }> = {}; // Refined type
+  getPerformanceReport(): Record<string, { avg: number; min: number; max: number;, count: number }> {
+    const report: Record<string, { avg: number; min: number; max: number;, count: number }> = {}; // Refined type
     for (const [operation, times] of this.metrics.entries()) {
       report[operation] = {
         avg: this.getAverageTime(operation),
         min: Math.min(...times),
         max: Math.max(...times),
-        count: times.length,
+        count: times.length
       };
     }
     return report;

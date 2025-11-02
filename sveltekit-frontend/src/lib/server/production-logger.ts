@@ -34,28 +34,20 @@ export interface LogContext {
   contentLength?: number;
   messageCount?: number;
 }
-export interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
+export interface LogEntry { timestamp: string;, level: LogLevel;
   message: string;
   context?: LogContext;
-  error?: {
-    name: string;
-    message: string;
+  error?: { name: string;, message: string;
     stack?: string;
     code?: string | number;
   };
   metadata?: Metadata;
   tags?: string[];
-  performance?: {
-    memoryUsage: NodeJS.MemoryUsage;
-    timing: number;
+  performance?: { memoryUsage: NodeJS.MemoryUsage;, timing: number;
     cpuUsage?: NodeJS.CpuUsage;
   };
 }
-export interface LogMetrics {
-  totalLogs: number;
-  logsByLevel: Record<LogLevel, number>;
+export interface LogMetrics { totalLogs: number;, logsByLevel: Record<LogLevel, number>;
   errorRate: number;
   averageResponseTime: number;
   memoryTrend: number[];
@@ -76,27 +68,19 @@ interface WindowsGPUInfo {
 }
 
 // typed Windows process metrics
-interface WindowsProcessMetrics {
-  pid: number;
-  uptime: number;
-  memoryUsage: {
-    rss: number;
-    heapUsed: number;
+interface WindowsProcessMetrics { pid: number;, uptime: number;
+  memoryUsage: { rss: number;, heapUsed: number;
     heapTotal: number;
     external: number;
   };
-  cpuUsage: {
-    user: number;
-    system: number;
+  cpuUsage: { user: number;, system: number;
   };
 }
 
 interface WindowsMetrics {
   gpu?: WindowsGPUInfo | null;
   process?: WindowsProcessMetrics | null;
-  platform?: {
-    osVersion: string;
-    totalMemory: number;
+  platform?: { osVersion: string;, totalMemory: number;
     freeMemory: number;
   };
   error?: string;
@@ -117,8 +101,8 @@ class WindowsPerformanceMonitor {
         platform: {
           osVersion: os.release(),
           totalMemory: Math.round(os.totalmem() / 1024 / 1024),
-          freeMemory: Math.round(os.freemem() / 1024 / 1024),
-        },
+          freeMemory: Math.round(os.freemem() / 1024 / 1024)
+        }
       };
     } catch (_error: any) {
       return { error: 'Failed to collect Windows metrics' };
@@ -154,7 +138,7 @@ class WindowsPerformanceMonitor {
               memoryTotal: Number.isFinite(memTotal) ? memTotal : null,
               memoryUsed: Number.isFinite(memUsed) ? memUsed : null,
               temperature: Number.isFinite(temp) ? temp : null,
-              utilization: Number.isFinite(util) ? util : null,
+              utilization: Number.isFinite(util) ? util : null
             });
           } else {
             resolve(null);
@@ -180,12 +164,12 @@ class WindowsPerformanceMonitor {
           rss: Math.round(memUsage.rss / 1024 / 1024),
           heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
           heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
-          external: Math.round(externalBytes / 1024 / 1024),
+          external: Math.round(externalBytes / 1024 / 1024)
         },
         cpuUsage: {
           user: cpuUsage.user,
-          system: cpuUsage.system,
-        },
+          system: cpuUsage.system
+        }
       };
     } catch (_err: any) {
       return null;
@@ -201,7 +185,7 @@ export class ProductionLogger {
     logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
     errorRate: 0,
     averageResponseTime: 0,
-    memoryTrend: [],
+    memoryTrend: []
   };
   private windowsMonitor: WindowsPerformanceMonitor;
   private flushInterval: NodeJS.Timeout | null = null;
@@ -251,7 +235,7 @@ export class ProductionLogger {
             name: error.name,
             message: error.message,
             stack: this.config.includeStack ? error.stack : undefined,
-            code: (error as unknown as { code?: string | number }).code,
+            code: (error as unknown as { code?: string | number }).code
           }
         : undefined;
       this.log('error', message, context, metadata, errorInfo);
@@ -275,7 +259,7 @@ export class ProductionLogger {
         method,
         endpoint,
         statusCode,
-        duration,
+        duration
       },
       { responseTime: duration, httpStatus: statusCode }
     );
@@ -333,9 +317,9 @@ export class ProductionLogger {
         ? {
             memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as NodeJS.MemoryUsage),
             timing: Date.now(),
-            cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined,
+            cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined
           }
-        : undefined,
+        : undefined
     };
     this.updateMetrics(logEntry);
     this.outputLog(logEntry);
@@ -521,13 +505,11 @@ export class ProductionLogger {
           this.metrics.windowsSpecific = windowsMetrics as Record<string, unknown>;
         }
       }
-      this.debug('Logger metrics collected', undefined, {
-        metrics: {
-          totalLogs: this.metrics.totalLogs,
+      this.debug('Logger metrics collected', undefined, { metrics: {, totalLogs: this.metrics.totalLogs,
           errorRate: Math.round(this.metrics.errorRate * 100) / 100,
           averageResponseTime: Math.round(this.metrics.averageResponseTime),
-          memoryTrendSize: this.metrics.memoryTrend.length,
-        },
+          memoryTrendSize: this.metrics.memoryTrend.length
+        }
       });
     } catch (_error: any) {
       this.error('Failed to collect logger metrics', _error instanceof Error ? _error : undefined);
@@ -539,16 +521,14 @@ export class ProductionLogger {
     return { ...this.metrics };
   }
 
-  public async getHealthStatus(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    details: Record<string, unknown>;
+  public async getHealthStatus(): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, details: Record<string, unknown>;
   }> {
     const details: Record<string, unknown> = {
       totalLogs: this.metrics.totalLogs,
       errorRate: this.metrics.errorRate,
       bufferSize: this.logBuffer.length,
       outputs: this.config.outputs,
-      level: this.config.level,
+      level: this.config.level
     };
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (this.metrics.errorRate > 0.1) status = 'degraded';
@@ -564,7 +544,7 @@ export class ProductionLogger {
       logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
       errorRate: 0,
       averageResponseTime: 0,
-      memoryTrend: [],
+      memoryTrend: []
     };
   }
 

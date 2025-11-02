@@ -1,9 +1,7 @@
 // Canonical unified LegalDocument type
 // Consolidates many scattered interface variants across the codebase.
 // Future refactors: replace other duplicate declarations with imports from this file.
-export interface LegalDocumentUnified {
-  id: string;
-  title: string;
+export interface LegalDocumentUnified { id: string;, title: string;
   content?: string;
   type?: string; // e.g. 'legal', 'contract', etc.
   summary?: string;

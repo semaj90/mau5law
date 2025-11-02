@@ -1,18 +1,12 @@
-export interface ReportSettings {
-  layout: "single" | "dual" | "masonry";
-  autoSave: boolean;
+export interface ReportSettings { layout: "single" | "dual" | "masonry";, autoSave: boolean;
   // Add other settings as needed
 }
 
-export interface ReportMetadata {
-  status: string;
-  updatedAt: Date;
+export interface ReportMetadata { status: string;, updatedAt: Date;
   // Add other metadata as needed
 }
 
-export interface Evidence {
-  id: string;
-  title: string;
+export interface Evidence { id: string;, title: string;
   url?: string;
   file?: File;
   // Add description and tags properties
@@ -21,9 +15,7 @@ export interface Evidence {
   // Add other evidence properties as needed based on usage in EvidenceCard
 }
 
-export interface ReportStoreState {
-  id: string; // Assuming a report has an ID
-  title: string;
+export interface ReportStoreState { id: string; // Assuming a report has an ID, title: string;
   content: string; // Assuming report content
   settings: ReportSettings;
   metadata: ReportMetadata;
@@ -31,9 +23,7 @@ export interface ReportStoreState {
   // Add other report properties as needed
 }
 
-export interface ReportUIState {
-  sidebarOpen: boolean;
-  sidebarWidth: number;
+export interface ReportUIState { sidebarOpen: boolean;, sidebarWidth: number;
   fullscreen: boolean;
 }
 

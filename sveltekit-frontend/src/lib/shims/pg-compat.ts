@@ -62,7 +62,7 @@ export class Pool {
       try {
         fn(...args);
       } catch (e) {
-        console.warn(`Error in event listener for ${event}:`, e);
+        console.warn(`Error in event listener for ${event}: ', e);
       }
     });
   }
@@ -98,7 +98,7 @@ export class Pool {
           return { rows: res };
         }
         if (res && typeof res === 'object' && 'rows' in res && Array.isArray((res as { rows: any }).rows)) {
-          return { rows: (res as { rows: any[] }).rows };
+          return { rows: (res as {, rows: any[] }).rows };
         }
 
         return { rows: [] };
@@ -106,7 +106,7 @@ export class Pool {
       release: () => {
         // no-op for postgres-js since we maintain a single client
         return;
-      },
+      }
     };
   }
 

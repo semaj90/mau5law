@@ -36,10 +36,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           .object({
             id: z.string(),
             title: z.string().optional(),
-            description: z.any().optional(),
+            description: z.any().optional()
           })
           .passthrough(),
-        meta: z.record(z.any()).optional(),
+        meta: z.record(z.any()).optional()
       })
       .passthrough();
     const payload = {
@@ -47,8 +47,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       data: caseData,
       meta: {
         userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     const validated = CaseResponse.safeParse(payload);
     if (!validated.success) {
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         500,
         makeHttpErrorPayload({
           message: 'Invalid response shape',
-          code: 'RESPONSE_VALIDATION_FAILED',
+          code: 'RESPONSE_VALIDATION_FAILED'
         })
       );
     }
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid case ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch case',
         code: 'FETCH_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -103,7 +103,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const body = await request.json();
     const validatedData = UpdateCaseSchema.parse({
       id: caseId,
-      ...body,
+      ...body
     }) as UpdateCaseData;
     // Create service instance
     const casesService = new CasesCRUDService(getUserId(locals));
@@ -115,9 +115,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: updatedCase,
       meta: {
-        userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+       , userId: getUserId(locals),
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error updating case:', err);
@@ -127,7 +127,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid case data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -139,7 +139,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to update case',
         code: 'UPDATE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -164,10 +164,10 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       success: true,
       message: 'Case deleted successfully',
       meta: {
-        deletedCaseId: caseId,
+       , deletedCaseId: caseId,
         userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error deleting case:', err);
@@ -177,7 +177,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid case ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -189,7 +189,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to delete case',
         code: 'DELETE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

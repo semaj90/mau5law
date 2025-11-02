@@ -17,7 +17,7 @@ export type {
   FormProps,
   ProgressProps,
   BadgeProps,
-  FileUploadProps,
+  FileUploadProps
 } from './types.js';
 // Component variants and types for external use
 export type ButtonVariant =

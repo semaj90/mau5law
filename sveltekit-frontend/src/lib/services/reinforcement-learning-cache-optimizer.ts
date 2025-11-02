@@ -34,9 +34,7 @@ class LocalEventEmitter {
 }
 
 // === RL Configuration ===
-export interface RLConfig {
-  algorithm: 'q-learning' | 'dqn' | 'a3c';
-  learningRate: number;
+export interface RLConfig { algorithm: 'q-learning' | 'dqn' | 'a3c';, learningRate: number;
   discountFactor: number;
   explorationRate: number;
   explorationDecay: number;
@@ -71,9 +69,7 @@ export interface CacheState {
   tagDensity: number;
 }
 
-export interface CacheAction {
-  type: 'prefetch' | 'evict' | 'compress' | 'promote' | 'demote' | 'replicate';
-  target: string; // Cache key or pattern
+export interface CacheAction { type: 'prefetch' | 'evict' | 'compress' | 'promote' | 'demote' | 'replicate';, target: string; // Cache key or pattern
   priority: number; // 0-1,
   parameters: {
     compressionLevel?: number;
@@ -82,9 +78,7 @@ export interface CacheAction {
     [key: string]: any;
   };
 }
-export interface Experience {
-  state: CacheState;
-  action: CacheAction;
+export interface Experience { state: CacheState;, action: CacheAction;
   reward: number;
   nextState: CacheState;
   done: boolean;
@@ -104,9 +98,7 @@ export interface CacheMetrics {
 }
 
 // === Neural Network Architecture (Simplified) ===
-export interface NeuralNetwork {
-  layers: {
-    inputSize: number;
+export interface NeuralNetwork { layers: {, inputSize: number;
     hiddenSizes: number[];
     outputSize: number;
   };
@@ -135,8 +127,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     predictiveAccuracy: 0
   };
   // State normalization parameters
-  private stateNormalization = {
-    cacheUtilization: { min: 0, max: 1 },
+  private stateNormalization = { cacheUtilization: {, min: 0, max: 1 },
     hitRatio: { min: 0, max: 1 },
     averageRetrievalTime: { min: 0, max: 1000 }, // ms
     gpuMemoryUsage: { min: 0, max: 8192 }, // MB (RTX 3060 Ti)
@@ -323,7 +314,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
    */
   predictOptimalActions(state: CacheState, topK: number = 3): CacheAction[] {
     const stateVector = this.stateToVector(state);
-    const actions: { action: CacheAction; score: number }[] = [];
+    const actions: { action: CacheAction;, score: number }[] = [];
     // Generate possible actions and score them
     const possibleActions = this.generatePossibleActions(state);
     for (const action of possibleActions) {
@@ -371,7 +362,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
           recommendations.push(`Prefetch data pattern: "${action.target}" to improve hit ratio by ${(improvement * 100).toFixed(1)}%`);
           break;
         case 'evict':
-          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru'} strategy`);
+          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru` } strategy`);
           break;
         case 'compress':
           recommendations.push(`Apply compression level ${action.parameters.compressionLevel ?? 1} to save GPU memory`);
@@ -578,8 +569,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
         new Float32Array(32),
         new Float32Array(outputSize)
       ],
-      activationFunction: 'relu'
-    };
+      activationFunction: `relu` };
     // shallow copy for target network
     this.targetNetwork = JSON.parse(JSON.stringify(this.neuralNetwork)) as NeuralNetwork;
     console.log('🧠 Neural network initialized with architecture:', this.neuralNetwork.layers);
@@ -663,16 +653,16 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     const actions: CacheAction[] = [];
     // Generate context-aware actions based on state
     if (state.cacheUtilization > 0.9) {
-      actions.push({ type: 'evict', target: 'lru_candidates', priority: 0.9, parameters: { evictionStrategy: 'lru' } });
-      actions.push({ type: 'compress', target: 'large_entries', priority: 0.8, parameters: { compressionLevel: 7 } });
+      actions.push({ type: 'evict', target: 'lru_candidates', priority: 0.9, parameters: {, evictionStrategy: 'lru' } });
+      actions.push({ type: 'compress', target: 'large_entries', priority: 0.8, parameters: {, compressionLevel: 7 } });
     }
     if (state.hitRatio < 0.7) {
       actions.push({ type: 'prefetch', target: 'predicted_access', priority: 0.9, parameters: {} });
       actions.push({ type: 'promote', target: 'frequent_entries', priority: 0.7, parameters: {} });
     }
     if (state.gpuMemoryUsage > 0.8) {
-      actions.push({ type: 'compress', target: 'memory_intensive', priority: 0.9, parameters: { compressionLevel: 8 } });
-      actions.push({ type: 'evict', target: 'memory_heavy', priority: 0.8, parameters: { evictionStrategy: 'lfu' } });
+      actions.push({ type: 'compress', target: 'memory_intensive', priority: 0.9, parameters: {, compressionLevel: 8 } });
+      actions.push({ type: 'evict', target: 'memory_heavy', priority: 0.8, parameters: {, evictionStrategy: `lfu` } });
     }
     return actions;
   }
@@ -727,9 +717,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     // Confidence based on how much better this action is compared to others
     return maxQ === minQ ? 0.5 : (actionQ - minQ) / (maxQ - minQ);
   }
-  private heuristicPrediction(state: CacheState, _action: CacheAction): {
-    expectedHitRatio: number;
-    expectedLatency: number;
+  private heuristicPrediction(state: CacheState, _action: CacheAction): { expectedHitRatio: number;, expectedLatency: number;
     expectedGpuUtilization: number;
     confidence: number;
   } {
@@ -796,9 +784,7 @@ export interface CacheActionResult {
   info?: any;
 }
 
-export interface TrainingEpisodeResult {
-  totalReward: number;
-  actionsExecuted: number;
+export interface TrainingEpisodeResult { totalReward: number;, actionsExecuted: number;
   averageReward: number;
 }
 

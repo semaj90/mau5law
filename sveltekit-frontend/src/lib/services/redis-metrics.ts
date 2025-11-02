@@ -29,7 +29,7 @@ async function ensureClient(): Promise<any> {
     }
   }
 }
-function timeout(ms: number){ return new Promise((_r,_j)=> setTimeout(()=>_j(new Error('timeout')), ms), }
+function timeout(ms: number){ return new Promise((_r,_j)=> setTimeout(()=>_j(new Error('timeout')), ms) }
 export async function pollRedisHealth(timeoutMs = 500): Promise<RedisHealthMetrics> {
   await ensureClient();
   if (!redis) return state;

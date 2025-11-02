@@ -79,9 +79,7 @@ export interface BitDepthProfile {
   totalBits: number; // Total bit depth calculation
 }
 // Cache optimization table (NES-style)
-export interface CacheTable {
-  alphabet: string;
-  numbers: string;
+export interface CacheTable { alphabet: string;, numbers: string;
   specialChars: string;
   legalTerms: string[];
   commonPhrases: string[];
@@ -161,7 +159,7 @@ export class NESStyleGPUBridge {
       bitDepthOptimizations: 0,
       gpuAccelerations: 0,
       nesStyleCacheHits: 0,
-      quantizationSavings: 0,
+      quantizationSavings: 0
     };
   }
   private initializeMemoryHierarchy(): NESGPUMemoryHierarchy {
@@ -193,7 +191,7 @@ export class NESStyleGPUBridge {
         layout: 'nes_optimized',
         cacheKey: this.generateCacheKey(state.id, tensorShape),
         lodLevel: this.determineLODLevel(objects.length),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
       // Update statistics
       this.stats.totalConversions++;
@@ -262,7 +260,7 @@ export class NESStyleGPUBridge {
         bitDepth: optimalBitDepth,
         compressionRatio: this.calculateCompressionRatio(tensor, quantizedTensor),
         processingTime,
-        memoryLevel,
+        memoryLevel
       } as CanvasMetadata, // Cast to CanvasMetadata to allow new properties
     };
   }
@@ -325,8 +323,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit`,
-    };
+      layout: `nes_quantized_${bitDepth}bit' };
   }
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: FabricObject[]): number[] {
@@ -472,7 +469,7 @@ export class NESStyleGPUBridge {
       tensor,
       timestamp: Date.now(),
       hitCount: 1,
-      memoryLevel: this.selectMemoryLevel(tensor.data.length),
+      memoryLevel: this.selectMemoryLevel(tensor.data.length)
     };
     this.tensorCache.set(cacheKey, cached);
     // LRU eviction (NES memory constraints simulation)
@@ -491,7 +488,7 @@ export class NESStyleGPUBridge {
       const timeout = setTimeout(() => {
         reject(new Error('GPU processing timeout'));
       }, 30000); // 30 second timeout
-      const messageHandler = (e: MessageEvent<{ type: string; id: string; data?: MultiDimArray; error?: string }>) => {
+      const messageHandler = (e: MessageEvent<{, type: string; id: string; data?: MultiDimArray; error?: string }>) => {
         const { type, id, data, error } = e.data;
         if (id === requestId) {
           clearTimeout(timeout);
@@ -510,7 +507,7 @@ export class NESStyleGPUBridge {
       this.gpuWorker.postMessage({
         type: 'PROCESS_TENSOR',
         id: requestId,
-        data: tensor,
+        data: tensor
       });
     });
   }
@@ -594,12 +591,12 @@ export class NESStyleGPUBridge {
   getStats(): BridgeStats {
     return { ...this.stats };
   }
-  getCacheStats(): { size: number; hitRate: number } {
+  getCacheStats(): { size: number;, hitRate: number } {
     const totalHits = this.stats.nesStyleCacheHits;
     const totalRequests = this.stats.totalConversions;
     return {
       size: this.tensorCache.size,
-      hitRate: totalRequests > 0 ? (totalHits / totalRequests) * 100 : 0,
+      hitRate: totalRequests > 0 ? (totalHits / totalRequests) * 100 : 0
     };
   }
   getMemoryUsage(): NESGPUMemoryHierarchy {
@@ -637,15 +634,11 @@ class BitDepthDetector {
     };
   }
 }
-export interface CachedTensor {
-  tensor: MultiDimArray;
-  timestamp: number;
+export interface CachedTensor { tensor: MultiDimArray;, timestamp: number;
   hitCount: number;
   memoryLevel: keyof NESGPUMemoryHierarchy;
 }
-export interface BridgeStats {
-  totalConversions: number;
-  cacheHitRate: number;
+export interface BridgeStats { totalConversions: number;, cacheHitRate: number;
   averageCompressionRatio: number;
   bitDepthOptimizations: number;
   gpuAccelerations: number;

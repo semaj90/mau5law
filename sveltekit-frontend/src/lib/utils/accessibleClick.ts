@@ -1,6 +1,6 @@
 // Utility: accessibleClick
 // Adds keyboard activation (Enter/Space) to non-button interactive elements.
-// Usage: <div use:accessibleClick={handler} tabindex="0" role="button">...
+// Usage: <div; use:accessibleClick={handler} tabindex="0" role="button">...
 // If you can, prefer just using <button>. This is for unavoidable structural cases.
 }
 export interface AccessibleClickOptions {

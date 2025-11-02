@@ -29,8 +29,8 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: { 'content-type': `application/json` },
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
@@ -42,7 +42,7 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
 
-    // { data: [{ embedding: [...] }] }
+    // { data: [{, embedding: [...] }] }
     if (Array.isArray(obj.data)) {
       const first = obj.data[0] as unknown;
       if (typeof first === 'object' && first !== null) {
@@ -79,13 +79,13 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': `application/json` },
     body: JSON.stringify({
       model,
       prompt,
       stream: false,
-      options: { temperature: 0.3, num_predict: 150 },
-    }),
+      options: {, temperature: 0.3, num_predict: 150 }
+    })
   });
 
   if (!res.ok) {
@@ -104,7 +104,7 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
     // { response: '...' }
     if (typeof obj.response === 'string') return obj.response.trim();
 
-    // { output: [{ content: '...' }] }
+    // { output: [{, content: '...' }] }
     if (Array.isArray(obj.output)) {
       const out0 = obj.output[0] as unknown;
       if (typeof out0 === 'object' && out0 !== null) {
@@ -113,7 +113,7 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
       }
     }
 
-    // { choices: [{ text: '...' }] }
+    // { choices: [{, text: `...` }] }
     if (Array.isArray(obj.choices)) {
       const c0 = obj.choices[0] as unknown;
       if (typeof c0 === 'object' && c0 !== null) {
@@ -157,5 +157,5 @@ export const ollamaClient = {
       console.warn('ollamaClient.summarize error', err);
       return text.substring(0, 300) + (text.length > 300 ? '...' : '');
     }
-  },
+  }
 };

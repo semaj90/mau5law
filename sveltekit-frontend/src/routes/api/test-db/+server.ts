@@ -9,23 +9,17 @@ import { sql } from 'drizzle-orm';
 import { users } from '$lib/server/db/schema-unified.js'; // Import users schema for connection test
 
 // Define types for better type safety
-type TestResultDetail = {
-  success: boolean;
-  message: string;
+type TestResultDetail = { success: boolean;, message: string;
   tableCount?: number;
   count?: number;
   stack?: string;
 };
 
-interface OverallResult {
-  success: boolean;
-  message: string;
+interface OverallResult { success: boolean;, message: string;
   readyForCRUD: boolean;
 }
 
-interface TestResults {
-  timestamp: string;
-  tests: {
+interface TestResults { timestamp: string;, tests: {
     postgresql?: TestResultDetail;
     simpleQuery?: TestResultDetail;
     casesTable?: TestResultDetail;
@@ -38,10 +32,9 @@ interface TestResults {
 }
 
 export const GET: RequestHandler = async () => {
-  // Changed: 'url' to: '_url' was incorrect, now destructuring nothing as it's unused.
+  // Changed: 'url'; to: '_url' was incorrect, now destructuring nothing as it's unused.
   const results: TestResults = {
-    // Changed type from 'any' to: 'TestResults'
-    timestamp: new Date().toISOString(),
+    // Changed type from 'any' to: 'TestResults'; timestamp: new Date().toISOString(),
     tests: {}, // Corrected initialization
   };
   try {
@@ -52,13 +45,12 @@ export const GET: RequestHandler = async () => {
       await db.select().from(users).limit(1); // Assuming: 'users' table exists and is accessible
       results.tests.postgresql = {
         success: true,
-        message: 'PostgreSQL connection successful',
+        message: 'PostgreSQL connection successful'
       };
     } catch (error) {
       results.tests.postgresql = {
         success: false,
-        message: `PostgreSQL connection failed: ${(error as Error).message}`,
-      };
+        message: `PostgreSQL connection; failed: ${(error as Error).message}` };
     }
     // Test 2: Simple Query Test
     console.log('Testing simple query...');
@@ -69,13 +61,12 @@ export const GET: RequestHandler = async () => {
       results.tests.simpleQuery = {
         success: true,
         message: 'Simple query executed successfully',
-        tableCount: queryResult[0]?.table_count,
+        tableCount: queryResult[0]?.table_count
       };
     } catch (error) {
       results.tests.simpleQuery = {
         success: false,
-        message: `Query failed: ${(error as Error).message}`,
-      };
+        message: `Query; failed: ${(error as Error).message}` };
     }
     // Test 3: Cases Table Test
     console.log('Testing cases table access...');
@@ -84,13 +75,12 @@ export const GET: RequestHandler = async () => {
       results.tests.casesTable = {
         success: true,
         message: 'Cases table accessible',
-        count: casesResult[0]?.count || 0,
+        count: casesResult[0]?.count || 0
       };
     } catch (error) {
       results.tests.casesTable = {
         success: false,
-        message: `Cases table error: ${(error as Error).message}`,
-      };
+        message: `Cases table; error: ${(error as Error).message}` };
     }
     // Test 4: Evidence Table Test
     console.log('Testing evidence table access...');
@@ -99,13 +89,12 @@ export const GET: RequestHandler = async () => {
       results.tests.evidenceTable = {
         success: true,
         message: 'Evidence table accessible',
-        count: evidenceResult[0]?.count || 0,
+        count: evidenceResult[0]?.count || 0
       };
     } catch (error) {
       results.tests.evidenceTable = {
         success: false,
-        message: `Evidence table error: ${(error as Error).message}`,
-      };
+        message: `Evidence table; error: ${(error as Error).message}` };
     }
     // Test 5: Legal Documents Table Test
     console.log('Testing legal_documents table access...');
@@ -114,13 +103,12 @@ export const GET: RequestHandler = async () => {
       results.tests.legalDocuments = {
         success: true,
         message: 'Legal documents table accessible',
-        count: docsResult[0]?.count || 0,
+        count: docsResult[0]?.count || 0
       };
     } catch (error) {
       results.tests.legalDocuments = {
         success: false,
-        message: `Legal documents error: ${(error as Error).message}`,
-      };
+        message: `Legal documents; error: ${(error as Error).message}` };
     }
     // Test 6: Vector Extension Test
     console.log('Testing pgvector extension...');
@@ -128,13 +116,11 @@ export const GET: RequestHandler = async () => {
       const vectorResult = await db.execute(sql`SELECT extname FROM pg_extension WHERE extname = 'vector'`);
       results.tests.pgvector = {
         success: vectorResult.length > 0,
-        message: vectorResult.length > 0 ? 'pgvector extension available' : 'pgvector extension not found',
-      };
+        message: vectorResult.length > 0 ? 'pgvector extension available' : 'pgvector extension not found` };
     } catch (error) {
       results.tests.pgvector = {
         success: false,
-        message: `Vector test error: ${(error as Error).message}`,
-      };
+        message: `Vector test; error: ${(error as Error).message}` };
     }
     // Overall Status
     const allTests = Object.values(results.tests);
@@ -151,13 +137,13 @@ export const GET: RequestHandler = async () => {
     console.error('Database test error:', error);
     results.tests.connectionError = {
       success: false,
-      message: `Connection error: ${(error as Error).message}`,
-      stack: (error as Error).stack,
+      message: `Connection; error: ${(error as Error).message}`,
+      stack: (error as Error).stack
     };
     results.overall = {
       success: false,
       message: 'Database connection failed',
-      readyForCRUD: false,
+      readyForCRUD: false
     };
     return json(results, { status: 500 });
   }

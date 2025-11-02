@@ -4,4 +4,5 @@
   const { disabled } = $props<{ disabled: boolean }>()
   const { label } = $props<{ label: string }>()
 </script>
+
 <Button {onclick} {disabled}>{label}</Button>

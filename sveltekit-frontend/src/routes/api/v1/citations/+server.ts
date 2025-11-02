@@ -28,7 +28,7 @@ const CitationsQuerySchema = z.object({
   verified: z.coerce.boolean().optional(),
   minRelevance: z.coerce.number().min(1).max(10).default(1),
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(20),
+  limit: z.coerce.number().min(1).max(100).default(20)
 });
 const CreateCitationSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -58,7 +58,7 @@ const CreateCitationSchema = z.object({
   publicationDate: z.string().datetime().optional(),
   jurisdiction: z.string().optional(),
   court: z.string().optional(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([])
 });
 /**
  * Citations Service
@@ -86,7 +86,7 @@ class CitationsService {
         contextNotes: 'Establishes Miranda rights precedent',
         tags: ['constitutional', 'criminal procedure'],
         createdBy: this.userId,
-        dateCreated: new Date().toISOString(),
+        dateCreated: new Date().toISOString()
       },
       {
         id: crypto.randomUUID(),
@@ -103,7 +103,7 @@ class CitationsService {
         contextNotes: 'Defines relevant evidence',
         tags: ['evidence', 'relevancy'],
         createdBy: this.userId,
-        dateCreated: new Date().toISOString(),
+        dateCreated: new Date().toISOString()
       },
     ];
     // Apply filters
@@ -130,8 +130,8 @@ class CitationsService {
         total: filteredCitations.length,
         totalPages: Math.max(1, Math.ceil(filteredCitations.length / query.limit)),
         hasNext: query.page < Math.ceil(filteredCitations.length / query.limit),
-        hasPrev: query.page > 1,
-      },
+        hasPrev: query.page > 1
+      }
     };
   }
   async createCitation(data: z.infer<typeof CreateCitationSchema>) {
@@ -142,7 +142,7 @@ class CitationsService {
       verified: false,
       createdBy: this.userId,
       dateCreated: new Date().toISOString(),
-      dateModified: new Date().toISOString(),
+      dateModified: new Date().toISOString()
     };
     return newCitation;
   }
@@ -153,7 +153,7 @@ class CitationsService {
       id: citationId,
       verified: true,
       verifiedDate: new Date().toISOString(),
-      verificationNotes: 'Citation verified against legal database',
+      verificationNotes: 'Citation verified against legal database'
     };
   }
 }
@@ -209,7 +209,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         contextNotes: z.string().optional(),
         tags: z.array(z.string()).optional(),
         createdBy: z.string().optional(),
-        dateCreated: z.string().optional(),
+        dateCreated: z.string().optional()
       })
       .passthrough();
     const CitationsListResponse = z
@@ -222,9 +222,9 @@ export const GET: RequestHandler = async ({ locals, url }) => {
           total: z.number(),
           totalPages: z.number(),
           hasNext: z.boolean(),
-          hasPrev: z.boolean(),
+          hasPrev: z.boolean()
         }),
-        meta: z.record(z.any()).optional(),
+        meta: z.record(z.any()).optional()
       })
       .passthrough();
     const payload = {
@@ -234,8 +234,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       meta: {
         caseId: validatedQuery.caseId,
         userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     const validated = CitationsListResponse.safeParse(payload);
     if (!validated.success) {
@@ -271,14 +271,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .object({
         id: z.string(),
         caseId: cuidSchema,
-        citationType: z.string(),
+        citationType: z.string()
       })
       .passthrough();
     const CreateCitationResponse = z
       .object({
         success: z.literal(true),
         data: CitationItem,
-        meta: z.record(z.any()).optional(),
+        meta: z.record(z.any()).optional()
       })
       .passthrough();
     const payload = {
@@ -286,13 +286,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       data: newCitation,
       meta: {
         userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
     const validated = CreateCitationResponse.safeParse(payload);
     if (!validated.success) {
       console.error('Create citation response validation failed', validated.error);
-      return error(500, { message: 'Invalid response shape' });
+      return error(500, { message: `Invalid response shape` });
     }
     return json(payload, { status: 201 });
   } catch (err: any) {

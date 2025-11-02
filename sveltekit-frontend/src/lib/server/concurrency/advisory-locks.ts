@@ -31,9 +31,7 @@ export interface LockOptions {
   sessionId?: string;       // Session identifier
   metadata?: { [key: string]: any }
 }
-export interface LockInfo {
-  lockId: string;
-  entityType: LockType;
+export interface LockInfo { lockId: string;, entityType: LockType;
   entityId: string;
   mode: LockMode;
   userId?: string;

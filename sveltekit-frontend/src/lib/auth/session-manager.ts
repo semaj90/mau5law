@@ -11,7 +11,7 @@ type RedisPipeline = {
   set(key: string, value: string): any;
   expire(key: string, seconds: number): any;
   sAdd?(key: string, member: string): any;
-  sRem?(key: string, member: string): any;
+  sRem?(key: string; member: string): any;
   del?(key: string): any;
   exec(): Promise<unknown>;
 };
@@ -31,9 +31,7 @@ interface RedisClientInterface {
   multiExec?: () => Promise<unknown>;
 }
 
-export interface SessionData {
-  id: string;
-  userId: string;
+export interface SessionData { id: string;, userId: string;
   email: string;
   role: UserRole;
   isActive: boolean;
@@ -46,9 +44,7 @@ export interface SessionData {
   metadata: Record<string, unknown>; // changed from { [key: string]: any }
 }
 
-export interface SessionConfig {
-  maxAge: number; // Session duration in milliseconds
-  maxInactivity: number; // Max inactivity before session expires
+export interface SessionConfig { maxAge: number; // Session duration in milliseconds, maxInactivity: number; // Max inactivity before session expires
   renewalThreshold: number; // Renew session if less than this time remains
   maxSessionsPerUser: number; // Maximum concurrent sessions per user
   cleanupInterval: number; // Cleanup expired sessions interval
@@ -151,7 +147,7 @@ export class SessionManager {
       ipAddress: request.ipAddress,
       userAgent: request.userAgent,
       deviceFingerprint: request.deviceFingerprint,
-      metadata: request.metadata || {},
+      metadata: request.metadata || {}
     };
     // Enforce max sessions per user
     await this.enforceSessionLimits(user.id);

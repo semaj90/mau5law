@@ -136,7 +136,7 @@
   const option = () => ({});
   const label = {};
   const selectedLabel = 'Select Model';
-  const open = $state(false);
+  const open = false;
   const selected = null;
   const isSelected = () => false;
   // Provider Icons
@@ -246,7 +246,7 @@
   <!-- Trigger Button -->
   <button
     onclick={() => (isOpen = !isOpen)}
-    class="flex" h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
+    class="flex h-12 w-full" items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
            bg-white dark:bg-gray-800 px-3 py-2 text-sm,
            hover:bg-gray-50 dark:hover:bg-gray-700,
            focus: outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
@@ -263,7 +263,7 @@
   <SvelteComponent />
           <span class="font-medium">{selectedModel.displayName}</span>
           <div class="flex items-center gap-1">
-            <div class="h-3" w-3 {getStatusColor(selectedModel.status)} {selectedModel.status === 'loading'
+            <div class="h-3 w-3" {getStatusColor(selectedModel.status)} {selectedModel.status === 'loading'
                 ? 'animate-spin'
                 : ''}">
   <SvelteComponent _1
@@ -283,7 +283,7 @@
   <!-- Dropdown Menu -->
   {#if isOpen}
     <div
-      class="z-50" mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700
+      class="z-50 mt-1 w-full" rounded-lg border border-gray-200 dark:border-gray-700
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
              max-h-96 overflow-auto"
       ;
@@ -296,7 +296,7 @@
           {@const SvelteComponent_3 = getStatusIcon(model.status)}
           <button
             onclick={() => selectModel(model)}
-            class="flex" w-full items-center justify-between px-4 py-3 text-sm;
+            class="flex w-full items-center" justify-between px-4 py-3 text-sm;
                    hover: bg-gray-100 dark:hover:bg-gray-700;
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
                    {selectedModel?.id === model.id
@@ -316,7 +316,7 @@
                 <div class="flex items-center gap-2">
                   <span class="font-medium truncate">{model.displayName}</span>
                   <span
-                    class="inline-flex" items-center px-2 py-0.5 rounded text-xs font-medium
+                    class="inline-flex items-center px-2" py-0.5 rounded text-xs font-medium
                               bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                   >
                     {model.specialization}
@@ -333,7 +333,7 @@
                 <div class="flex flex-wrap gap-1 mt-2">
                   {#each Array.isArray(model.capabilities.slice(0, 3)) ? model.capabilities.slice(0, 3) : [] as capability}
                     <span
-                      class="inline-flex" items-center px-1.5 py-0.5 rounded text-xs
+                      class="inline-flex items-center px-1".5 py-0.5 rounded text-xs
                                 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
                     >
                       {capability}
@@ -360,7 +360,7 @@
                       e.stopPropagation();
                       loadModel(model);
                     }}
-                    class="px-2" py-1 text-xs bg-blue-600 text-white rounded hover: bg-blue-700 ;
+                    class="px-2 py-1 text-xs" bg-blue-600 text-white rounded hover: bg-blue-700 ;
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
                            transition-colors duration-200"
                   >
@@ -386,7 +386,7 @@
         <div class="flex items-center justify-between">
           <button
             onclick={refreshModelStatuses}
-            class="text-xs" text-blue-600 dark: text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
+            class="text-xs text-blue-600 dark": text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
                    focus:outline-none focus:underline"
           >
             Refresh Status

@@ -196,7 +196,7 @@ import type { Document } from '$lib/types';
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-3">
       <div
-        class="w-3" h-3 rounded-full {$systemHealth === 'healthy'
+        class="w-3 h-3 rounded-full" {$systemHealth === 'healthy'
           ? 'bg-green-500'
           : $systemHealth === 'degraded'
             ? 'bg-yellow-500'
@@ -204,7 +204,7 @@ import type { Document } from '$lib/types';
       ></div>
       <h1 class="text-2xl font-bold">AI-Powered Document Ingest</h1>
       <span
-        class="px-2" py-1 rounded text-xs font-medium {$systemHealth === 'healthy'
+        class="px-2 py-1 rounded" text-xs font-medium {$systemHealth === 'healthy'
           ? 'bg-green-200 text-green-800'
           : 'bg-yellow-200 text-yellow-800'}"
       >
@@ -277,7 +277,7 @@ import type { Document } from '$lib/types';
           <div class="grid grid-cols-2 gap-2">
             {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
               <button
-                class="nes-btn" bits-btn justify-start is-small {selectedDocumentType === type.value
+                class="nes-btn bits-btn justify-start is-small" {selectedDocumentType === type.value
                   ? 'is-primary'
                   : ''}"
                 onclick={() => (selectedDocumentType = type.value)}
@@ -547,7 +547,7 @@ import type { Document } from '$lib/types';
           {#each Array.isArray($currentConversation.slice(-2)) ? $currentConversation.slice(-2) : [] as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
               <div
-                class="max-w-[80%]" p-3 rounded-lg {message.role === 'user'
+                class="max-w-[80%] p-3 rounded-lg" {message.role === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted'}"
               >

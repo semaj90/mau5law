@@ -12,9 +12,7 @@ import type {
   ConversationTurn,
   NextStepPrediction
 } from '$lib/types/sharedTypes';
-interface HMMStateTransition {
-  fromState: number;
-  toState: number;
+interface HMMStateTransition { fromState: number;, toState: number;
   probability: number;
   observedPattern: number[];
 }
@@ -100,13 +98,11 @@ export class HMMStateMachine {
   /**
    * Predict next state using Viterbi algorithm
    */
-  predictNextState(currentState: number, conversationHistory: ConversationTurn[]): {
-    nextState: number;
-    probability: number;
+  predictNextState(currentState: number, conversationHistory: ConversationTurn[]): { nextState: number;, probability: number;
     predictions: NextStepPrediction[];
   } {
     // Get possible transitions from current state
-    const possibleTransitions: Array<{ state: number; prob: number }> = [];
+    const possibleTransitions: Array<{ state: number;, prob: number }> = [];
     for (const [key, transition] of this.transitions.entries()) {
       if (transition.fromState === currentState) {
         possibleTransitions.push({
@@ -138,9 +134,7 @@ export class HMMStateMachine {
     confidence: number,
     history: ConversationTurn[]
   ): NextStepPrediction {
-    const stateActions: Record<number, {
-      action: string;
-      reasoning: string;
+    const stateActions: Record<number, { action: string;, reasoning: string;
       requiredContext: string[];
       estimatedDuration: number;
     }> = {
@@ -276,16 +270,13 @@ export class HMMStateMachine {
       [LegalConversationState.RISK_ASSESSMENT]: 'Risk Assessment',
       [LegalConversationState.RECOMMENDATION]: 'Recommendation',
       [LegalConversationState.FOLLOW_UP]: 'Follow-up',
-      [LegalConversationState.CONCLUSION]: 'Conclusion'
-    };
+      [LegalConversationState.CONCLUSION]: 'Conclusion' };
     return names[state] || 'Unknown';
   }
   /**
    * Detect patterns in state history using frequency analysis
    */
-  detectPatterns(stateHistory: number[]): {
-    commonPatterns: number[][];
-    frequency: number;
+  detectPatterns(stateHistory: number[]): { commonPatterns: number[][];, frequency: number;
   }[] {
     if (stateHistory.length < 3) {
       return [];

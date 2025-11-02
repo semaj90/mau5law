@@ -5,9 +5,7 @@ import type { User } from '$lib/types';
 import { browser } from '$app/environment';
 import { dev } from '$app/environment';
 }
-export interface EmbeddingConfig {
-  model: 'embeddinggemma:latest' | 'embeddinggemma' | 'gemma3:legal-latest' | 'gemma-embedding-fast' | 'gemma-embedding-large' | 'legal-bert' | 'nomic-embed-text' | 'custom-legal';
-  dimensions: number;
+export interface EmbeddingConfig { model: 'embeddinggemma:latest' | 'embeddinggemma' | 'gemma3:legal-latest' | 'gemma-embedding-fast' | 'gemma-embedding-large' | 'legal-bert' | 'nomic-embed-text' | 'custom-legal';, dimensions: number;
   contextWindow: number;
   specialized: boolean;
   costPerToken: number;
@@ -15,18 +13,14 @@ export interface EmbeddingConfig {
   accuracy: number;
 }
 }
-export interface MetadataSchema {
-  schemaType: 'legal-case' | 'chat-message' | 'document' | 'evidence' | 'citation' | 'user-query' | 'contextual';
-  required_fields: string[];
+export interface MetadataSchema { schemaType: 'legal-case' | 'chat-message' | 'document' | 'evidence' | 'citation' | 'user-query' | 'contextual';, required_fields: string[];
   optional_fields: string[];
   vector_fields: string[];
   search_boost_fields: string[];
   temporal_fields: string[];
 }
 }
-export interface EmbeddingEntry {
-  id: string;
-  content: string;
+export interface EmbeddingEntry { id: string;, content: string;
   embedding_model: string;
   embedding_vector: number[];
   metadata_schema: string;
@@ -40,30 +34,22 @@ export interface EmbeddingEntry {
   created_at: Date;
   updated_at: Date;
   usage_count: number;
-  relevance_scores: {
-    semantic: number;
-    legal: number;
+  relevance_scores: { semantic: number;, legal: number;
     contextual: number;
     temporal: number;
   }
 }
-export interface SearchQuery {
-  query: string;
-  embedding_models: string[];
+export interface SearchQuery { query: string;, embedding_models: string[];
   metadata_filters: { [key: string]: any }
   schema_types: string[];
-  hybrid_weights: {
-    semantic: number;
-  legal: number;
+  hybrid_weights: { semantic: number;, legal: number;
   contextual: number;
   temporal: number;
   }
   similarity_threshold: number;
   max_results: number;
   boost_recent: boolean;
-  user_context?: {
-    userId: string;
-    sessionId: string;
+  user_context?: { userId: string;, sessionId: string;
     caseId?: string;
     practiceArea?: string;
     jurisdiction?: string;
@@ -72,9 +58,9 @@ export interface SearchQuery {
 class MultiEmbeddingVectorService {
   private embeddingConfigs: Map<string, EmbeddingConfig> = new Map();
   private metadataSchemas: Map<string, MetadataSchema> = new Map();
-  private embeddingCache: Map<string, { vector: number[]; timestamp: Date }> = new Map();
+  private embeddingCache: Map<string, { vector: number[];, timestamp: Date }> = new Map();
   private modelEndpoints: Map<string, string> = new Map();
-  private performanceMetrics: Map<string, { avgLatency: number; accuracy: number; usage: number }> = new Map();
+  private performanceMetrics: Map<string, { avgLatency: number; accuracy: number;, usage: number }> = new Map();
   constructor() {
     this.initializeEmbeddingConfigs();
     this.initializeMetadataSchemas();
@@ -244,8 +230,7 @@ class MultiEmbeddingVectorService {
   }
   // Generate embeddings with optimal model selection
   async generateEmbeddings()
-    content: string
-    schemaType: string;
+    content: string; schemaType: string;
     options: {
       preferredModels?: string[];
       generateHybrid?: boolean;
@@ -275,29 +260,24 @@ class MultiEmbeddingVectorService {
     const processingTime = performance.now() - startTime;
     // Update performance metrics
     this.updatePerformanceMetrics(primaryModel, processingTime);
-    return {
-      primary: {
-        model: primaryModel,
+    return { primary: {, model: primaryModel,
         vector: primaryEmbedding,
-        confidence: this.calculateConfidence(primaryModel, content.length),
+        confidence: this.calculateConfidence(primaryModel, content.length)
       },
       hybrid: hybridEmbeddings;
       metadata: {
         processing_time: processingTime,
         total_cost: totalCost,
-        models_used: modelsUsed,
+        models_used: modelsUsed
       }
     }
   }
   // Generate hybrid embeddings for multi-dimensional understanding
   private async generateHybridEmbeddings()
-    content: string
-    schemaType: string
+    content: string; schemaType: string
     userContext?: any;
   ): Promise<any>, {
-    const embeddings = {
-      semantic: {
-        model: 'gemma-embedding-fast', // Fast, general semantic understanding
+    const embeddings = { semantic: {, model: 'gemma-embedding-fast', // Fast, general semantic understanding
         vector: await this.generateSingleEmbedding(content, 'gemma-embedding-fast)')
       },
       legal_domain: {
@@ -327,9 +307,7 @@ class MultiEmbeddingVectorService {
   async searchSimilar(query,: SearchQuery): Promise<;>,
       explanation,: string;
     }>;
-    search_metadata: {
-      total_results: number;
-      search_time: number;
+    search_metadata: { total_results: number;, search_time: number;
       models_used: string[];
       hybrid_weights_applied: Record<string, number>;
     }
@@ -363,8 +341,7 @@ class MultiEmbeddingVectorService {
   }
   // Store embeddings with appropriate metadata schema
   async storeEmbedding()
-    content: string
-    schemaType: string
+    content: string; schemaType: string
     metadata: { [key,: string,]: any },
     options: {
       generateHybrid?: boolean;
@@ -385,8 +362,7 @@ class MultiEmbeddingVectorService {
       {
         generateHybrid: options.generateHybrid,
         userContext,: options.userContext,
-        optimizeFor,: 'balanced'
-      }
+        optimizeFor,: 'balanced' }
    ) );
     // Create embedding entry
     const entry: EmbeddingEntry = {
@@ -475,8 +451,8 @@ class MultiEmbeddingVectorService {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({,
             text: content;
-            metadata: { model: model },
-          )}),
+            metadata: {, model: model },
+          )})
         });
         if (!response.ok) {
           throw new Error(`Embedding API error: ${response.status}`);
@@ -484,12 +460,10 @@ class MultiEmbeddingVectorService {
         const data = await response.json();
         const embedding = data.embedding;
         if (!embedding || !data.success) {
-          throw new Error(`Invalid embedding response for model: ${model} - ${data.error || 'Unknown error'}`);
+          throw new Error(`Invalid embedding response for model: ${model} - ${data.error || 'Unknown error' }`);
         }
         // Cache the result
-        this.embeddingCache.set(cacheKey, {
-          vector: embedding;
-          timestamp: new Date()
+        this.embeddingCache.set(cacheKey, { vector: embedding;, timestamp: new Date()
         });
         return embedding;
       } else {
@@ -501,9 +475,9 @@ class MultiEmbeddingVectorService {
             model: model,
             prompt: content,
             options: {
-              temperature: 0, // Deterministic embeddings
+             , temperature: 0, // Deterministic embeddings
             }
-          )}),
+          )})
         });
         if (!response.ok) {
           throw new Error(`Embedding API error: ${response.status}`);
@@ -514,14 +488,12 @@ class MultiEmbeddingVectorService {
           throw new Error(`Invalid embedding response for model: ${model}`);
         }
         // Cache the result
-        this.embeddingCache.set(cacheKey, {
-          vector: embedding;
-          timestamp: new Date()
+        this.embeddingCache.set(cacheKey, { vector: embedding;, timestamp: new Date()
         });
         return embedding;
       }
     } catch (error) {
-      console.error(`Failed to generate embedding with ${model}:`, error);
+      console.error(`Failed to generate embedding with ${model}: ', error);
       // Fallback to a working model
       if (model !== 'gemma-embedding-fast') {
         console.warn(`Falling back to gemma-embedding-fast for: ${content.slice(0, 50)}`);
@@ -624,7 +596,7 @@ class MultiEmbeddingVectorService {
         size: this.embeddingCache.size,
         hitRate: 0.85 // Would calculate actual hit rate
       },
-      schemas: Array.from(this.metadataSchemas.keys(),
+      schemas: Array.from(this.metadataSchemas.keys()
     }
   }
   async clearCache(),: Promise<void> {

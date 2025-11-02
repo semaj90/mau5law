@@ -19,9 +19,7 @@ export interface RTXSystemStatus {
   pipelineStatus: 'active' | 'idle' | 'error';
 }
 }
-export interface PipelineMetrics {
-  svelteKitRequests: number;
-  goMicroserviceProcessing: number;
+export interface PipelineMetrics { svelteKitRequests: number;, goMicroserviceProcessing: number;
   cudaWorkerOperations: number;
   postgresqlStorage: number;
   webGPURendering: number;
@@ -89,7 +87,7 @@ export class RTXSystemMonitor {
       memoryBandwidth: benchmarks.memoryBandwidth,
       flashAttention2Active: true,
       neuralSpriteProcessing: true,
-      pipelineStatus: 'active',
+      pipelineStatus: 'active'
     }
   }
   private startMonitoring(): void {
@@ -240,11 +238,11 @@ export class RTXSystemMonitor {
       this.currentStatus.averageOperationTime *= 1.18; // Revert improvement
       this.currentStatus.tensorCorePerformance *= 0.91; // Revert boost
     }
-    console.log(`⚡ FlashAttention2 ${this.currentStatus.flashAttention2Active ? 'enabled' : 'disabled'}`);
+    console.log(`⚡ FlashAttention2 ${this.currentStatus.flashAttention2Active ? 'enabled' : 'disabled' }`);
   }
   toggleNeuralSpriteProcessing(),: void {
     this.currentStatus.neuralSpriteProcessing = !this.currentStatus.neuralSpriteProcessin,g;
-    console,.log(`🎨 Neural Sprite Processing ${this.currentStatus.neuralSpriteProcessing ? 'enabled' : 'disabled'}`);
+    console,.log(`🎨 Neural Sprite Processing ${this.currentStatus.neuralSpriteProcessing ? 'enabled' : 'disabled' }`);
   }
   resetMetrics(),: void {
     this.currentMetrics = {

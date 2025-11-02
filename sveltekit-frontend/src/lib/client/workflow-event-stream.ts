@@ -44,7 +44,7 @@ export interface WorkflowEvent {
   evidenceId?: string;
   sessionId?: string;
   timestamp: string;
-  // Use: 'unknown' instead of: 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
+  // Use: 'unknown' instead; of: 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
   result?: any;
   error?: string;
 }
@@ -85,7 +85,7 @@ export class WorkflowEventStream {
           type: 'SSE_ERROR',
           sessionId: this.sessionId,
           timestamp: new Date().toISOString(),
-          error: String(error),
+          error: String(error)
         });
       }
     };
@@ -98,7 +98,7 @@ export class WorkflowEventStream {
         type: 'SSE_CONNECTED',
         sessionId: this.sessionId,
         timestamp: new Date().toISOString(),
-        result: { url },
+        result: { url }
       });
     };
     // Handle errors
@@ -109,7 +109,7 @@ export class WorkflowEventStream {
         type: 'SSE_ERROR',
         sessionId: this.sessionId,
         timestamp: new Date().toISOString(),
-        error: typeof error === 'string' ? error : ((error as any)?.message ?? 'Unknown EventSource error'),
+        error: typeof error === 'string' ? error : ((error as any)?.message ?? 'Unknown EventSource error')
       });
       // Attempt reconnection
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -128,8 +128,7 @@ export class WorkflowEventStream {
           type: 'SSE_ERROR',
           sessionId: this.sessionId,
           timestamp: new Date().toISOString(),
-          error: 'Max reconnection attempts reached',
-        });
+          error: 'Max reconnection attempts reached` });
         this.disconnect();
       }
     };
@@ -176,7 +175,7 @@ export class WorkflowEventStream {
         try {
           callback(event);
         } catch (error) {
-          console.error(`[WorkflowEventStream] Error in ${eventType} callback:`, error);
+          console.error(`[WorkflowEventStream] Error in ${eventType} callback: ', error);
         }
       });
     }
@@ -204,15 +203,11 @@ export class WorkflowEventStream {
  * Svelte store-based wrapper for reactive workflow events
  */
 import { writable, type Writable } from 'svelte/store';
-export interface WorkflowState {
-  connected: boolean;
-  events: WorkflowEvent[];
+export interface WorkflowState { connected: boolean;, events: WorkflowEvent[];
   lastEvent: WorkflowEvent | null;
   errors: string[];
 }
-export function createWorkflowStore(sessionId: string): {
-  subscribe: Writable<WorkflowState>['subscribe'];
-  connect: () => void;
+export function createWorkflowStore(sessionId: string): { subscribe: Writable<WorkflowState>['subscribe'];, connect: () => void;
   disconnect: () => void;
   clear: () => void;
 } {
@@ -220,7 +215,7 @@ export function createWorkflowStore(sessionId: string): {
     connected: false,
     events: [],
     lastEvent: null,
-    errors: [],
+    errors: []
   };
   const { subscribe, set, update } = writable<WorkflowState>(initialState);
   const stream = new WorkflowEventStream(sessionId);
@@ -229,7 +224,7 @@ export function createWorkflowStore(sessionId: string): {
     update(state => ({
       ...state,
       connected: true,
-      lastEvent: event,
+      lastEvent: event
     }));
   });
   stream.on('SSE_ERROR', event => {
@@ -237,7 +232,7 @@ export function createWorkflowStore(sessionId: string): {
       ...state,
       connected: false,
       errors: [...state.errors, event.error || 'Unknown error'],
-      lastEvent: event,
+      lastEvent: event
     }));
   });
   // Register workflow event listeners
@@ -258,7 +253,7 @@ export function createWorkflowStore(sessionId: string): {
       update(state => ({
         ...state,
         events: [...state.events, event],
-        lastEvent: event,
+        lastEvent: event
       }));
     });
   });
@@ -266,6 +261,6 @@ export function createWorkflowStore(sessionId: string): {
     subscribe,
     connect: () => stream.connect(),
     disconnect: () => stream.disconnect(),
-    clear: () => set(initialState),
+    clear: () => set(initialState)
   };
 }

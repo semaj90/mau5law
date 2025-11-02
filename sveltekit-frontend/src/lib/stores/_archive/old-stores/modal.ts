@@ -14,13 +14,11 @@ export interface ModalConfig {
   onConfirm?: (...args: any[]) => void;
   size?: 'sm' | 'md' | 'lg' | string; // added optional size
 }
-export interface ModalState {
-  modals: ModalConfig[];
-  activeModal: string | null;
+export interface ModalState { modals: ModalConfig[];, activeModal: string | null;
 }
 const initialState: ModalState = {
   modals: [],
-  activeModal: null,
+  activeModal: null
 };
 function createModalStore() {
   const { subscribe, update } = writable<ModalState>(initialState);
@@ -37,11 +35,11 @@ function createModalStore() {
         closable: true,
         persistent: false,
         ...config,
-        id,
+        id
       };
       update(state => ({
         modals: [...state.modals, modalConfig],
-        activeModal: id,
+        activeModal: id
       }));
       return id;
     },
@@ -58,7 +56,7 @@ function createModalStore() {
         const newActiveModal = remainingModals.length > 0 ? remainingModals[remainingModals.length - 1].id : null;
         return {
           modals: remainingModals,
-          activeModal: newActiveModal,
+          activeModal: newActiveModal
         };
       });
     },
@@ -80,13 +78,11 @@ function createModalStore() {
         ...state,
         modals: state.modals.map(modal =>
           modal.id === id ? { ...modal, props: { ...modal.props, ...props } } : modal
-        ),
+        )
       }));
     },
     // Convenience methods for common modal types
-    confirm: (_options: {
-      title: string;
-      message: string;
+    confirm: (_options: {, title: string;, message: string;
       confirmText?: string;
       cancelText?: string;
       onConfirm?: () => void;
@@ -96,30 +92,28 @@ function createModalStore() {
         title: _options.title,
         component: 'ConfirmModal', // This would be a built-in component
         props: {
-          message: _options.message,
+         , message: _options.message,
           confirmText: _options.confirmText || 'Confirm',
-          cancelText: _options.cancelText || 'Cancel',
+          cancelText: _options.cancelText || 'Cancel'
         },
         size: 'sm',
         onConfirm: _options.onConfirm,
-        onClose: _options.onCancel,
+        onClose: _options.onCancel
       });
     },
-    alert: (_options: { title: string; message: string; buttonText?: string; onClose?: () => void }) => {
+    alert: (_options: {, title: string; message: string; buttonText?: string; onClose?: () => void }) => {
       return store.open({
         title: _options.title,
         component: 'AlertModal', // This would be a built-in component
         props: {
-          message: _options.message,
-          buttonText: _options.buttonText || 'OK',
+         , message: _options.message,
+          buttonText: _options.buttonText || 'OK'
         },
         size: 'sm',
-        onClose: _options.onClose,
+        onClose: _options.onClose
       });
     },
-    prompt: (_options: {
-      title: string;
-      message: string;
+    prompt: (_options: {, title: string;, message: string;
       placeholder?: string;
       defaultValue?: string;
       confirmText?: string;
@@ -131,17 +125,16 @@ function createModalStore() {
         title: _options.title,
         component: 'PromptModal', // This would be a built-in component
         props: {
-          message: _options.message,
+         , message: _options.message,
           placeholder: _options.placeholder,
           defaultValue: _options.defaultValue,
           confirmText: _options.confirmText || 'OK',
-          cancelText: _options.cancelText || 'Cancel',
-        },
+          cancelText: _options.cancelText || 'Cancel` },
         size: 'sm',
         onConfirm: _options.onConfirm,
-        onClose: _options.onCancel,
+        onClose: _options.onCancel
       });
-    },
+    }
   };
   return store;
 }

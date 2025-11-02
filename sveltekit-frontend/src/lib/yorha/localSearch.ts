@@ -1,9 +1,7 @@
 import type { Document } from '$lib/types';
 import Fuse from 'fuse.js';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-export interface LocalLegalDoc {
-  id: string;
-  title: string;
+export interface LocalLegalDoc { id: string;, title: string;
   content?: string;
   type?: string;
   status?: string;
@@ -18,13 +16,13 @@ const options: any = {
     { name: 'title', weight: 0.4 },
     { name: 'content', weight: 0.3 },
     { name: 'metadata.summary', weight: 0.2 },
-    { name: 'type', weight: 0.1 },
+    { name: 'type', weight: 0.1 }
   ],
   includeScore: true,
   threshold: 0.38,
   ignoreLocation: true,
   minMatchCharLength: 3,
-  useExtendedSearch: true,
+  useExtendedSearch: true
 };
 export function isLocalIndexReady() {
   return !!fuse;
@@ -54,7 +52,7 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d,
+        metadata: d
       }));
       fuse = new Fuse(documents, options);
       // Persist
@@ -102,9 +100,7 @@ export function wasLoadedFromCache() {
   return loadedFromCache;
 }
 // Merge helper: combine local + remote results with weighting & dedupe
-export interface HybridResult extends LocalLegalDoc {
-  relevance: number;
-  source: 'local' | 'remote' | 'hybrid';
+export interface HybridResult extends LocalLegalDoc { relevance: number;, source: 'local' | 'remote' | 'hybrid';
 }
 export function mergeResults(local: any[], remote: any[], localWeight = 0.6, remoteWeight = 0.4): HybridResult[] {
   const byId = new Map<string | number, HybridResult>();
@@ -119,7 +115,7 @@ export function mergeResults(local: any[], remote: any[], localWeight = 0.6, rem
       const combined = Math.round(existing.relevance * localWeight + remoteRel * remoteWeight);
       byId.set(r.id, { ...existing, ...r, relevance: combined, source: 'hybrid' });
     } else {
-      byId.set(r.id, { ...r, relevance: remoteRel, source: 'remote' });
+      byId.set(r.id, { ...r, relevance: remoteRel, source: `remote` });
     }
   }
   return Array.from(byId.values()).sort((a, b) => b.relevance - a.relevance);

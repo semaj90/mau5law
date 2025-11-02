@@ -5,9 +5,7 @@ import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 // Add typed payload for incoming updates/patches
-type CriminalPayload = Partial<{
-  firstName: string;
-  lastName: string;
+type CriminalPayload = Partial<{ firstName: string;, lastName: string;
   middleName: string | null;
   aliases: string[];
   dateOfBirth: string | null;
@@ -77,7 +75,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'Criminal record not found' }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Map frontend fields to schema fields - only update provided fields (type-guarded)
     if (typeof data.firstName === 'string') updateData.firstName = data.firstName.trim();
@@ -177,7 +175,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'Criminal record not found' }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     // Handle specific patch operations with guards
     if (data.operation === 'updateThreatLevel') {

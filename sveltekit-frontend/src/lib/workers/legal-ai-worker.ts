@@ -28,7 +28,7 @@ async function processIncomingJob(jobData: LegalAIJobData): Promise<GoServerResp
   await ensureRedisReady();
   await redis.hset(`job:${jobData.documentId}`, {
     status: 'processing',
-    startedAt: new Date().toISOString(),
+    startedAt: new Date().toISOString()
   });
 
   // Example placeholder AI call
@@ -37,7 +37,7 @@ async function processIncomingJob(jobData: LegalAIJobData): Promise<GoServerResp
   await updateEvidenceWithResults(jobData.documentId, results);
   await redis.hset(`job:${jobData.documentId}`, {
     status: 'completed',
-    finishedAt: new Date().toISOString(),
+    finishedAt: new Date().toISOString()
   });
 
   return results;
@@ -86,7 +86,7 @@ export async function createLegalAIWorker(): Promise<any> {
       ch.ack(msg);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
-      console.error(`❌ Job failed: ${jobId}:`, errMsg);
+      console.error(`❌ Job failed: ${jobId}: ', errMsg);
 
       const attempts = Number(msg?.properties?.headers?.attempts ?? 0);
       const max = Number(msg?.properties?.headers?.maxAttempts ?? 3);
@@ -95,7 +95,7 @@ export async function createLegalAIWorker(): Promise<any> {
         const newHeaders = { ...(msg?.properties?.headers ?? {}), attempts: attempts + 1 };
         ch.sendToQueue(QUEUE_NAME, Buffer.from(raw), {
           persistent: true,
-          headers: newHeaders,
+          headers: newHeaders
         });
       }
       ch.ack(msg);
@@ -109,7 +109,7 @@ export async function createLegalAIWorker(): Promise<any> {
       await ch.close();
       await conn.close();
       console.log('🔌 Legal AI Worker closed');
-    },
+    }
   };
 }
 
@@ -128,21 +128,21 @@ export async function addLegalAIJob(
   const payload = { ...jobData, jobId };
 
   // typed headers object
-  const headers: { attempts: number; maxAttempts: number } = {
+  const headers: { attempts: number;, maxAttempts: number } = {
     attempts: 0,
-    maxAttempts: options?.attempts ?? 3,
+    maxAttempts: options?.attempts ?? 3
   };
 
   // explicit typed publish properties to avoid: 'any' casts
   const properties: {
     persistent: boolean;
     priority?: number;
-    headers: { attempts: number; maxAttempts: number } | Record<string, unknown>;
+    headers: { attempts: number;, maxAttempts: number } | Record<string, unknown>;
     expiration?: string;
   } = {
     persistent: true,
     priority: options?.priority,
-    headers,
+    headers
   };
 
   if (options?.delay && options.delay > 0) {
@@ -184,8 +184,8 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
       assess_risk: jobData.options?.assessRisk ?? true,
       generate_embedding: jobData.options?.generateEmbedding ?? true,
       store_in_database: jobData.options?.storeInDatabase ?? true,
-      use_gemma3_legal: jobData.options?.useGemma3Legal ?? true,
-    },
+      use_gemma3_legal: jobData.options?.useGemma3Legal ?? true
+    }
   };
 
   console.log(`🔄 Sending ${jobData.documentId} to Go server for processing...`);
@@ -193,7 +193,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(300_000),
+    signal: AbortSignal.timeout(300_000)
   });
 
   if (!response.ok) {
@@ -215,7 +215,7 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
     processing_time: results.processing_time,
     processed_at: new Date().toISOString(),
     go_server_metadata: results.metadata,
-    success: results.success,
+    success: results.success
   });
 
   // Use a parameterized raw SQL update to avoid depending on eq import or Drizzle predicate helpers
@@ -239,7 +239,7 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
     ]);
     console.log(`✅ Evidence record ${documentId} updated.`);
   } catch (e) {
-    console.error(`❌ Failed updating evidence ${documentId}:`, e);
+    console.error(`❌ Failed updating evidence ${documentId}: ', e);
     throw e;
   }
 }
@@ -264,9 +264,7 @@ export interface LegalAIJobData {
   };
 }
 
-export interface GoServerResponse {
-  success: boolean;
-  document_id: string;
+export interface GoServerResponse { success: boolean;, document_id: string;
   summary?: string;
   entities?: LegalEntity[];
   risk_assessment?: RiskAssessment;
@@ -276,17 +274,13 @@ export interface GoServerResponse {
   error?: string;
 }
 
-export interface LegalEntity {
-  type: string;
-  value: string;
+export interface LegalEntity { type: string;, value: string;
   confidence: number;
   start_pos: number;
   end_pos: number;
 }
 
-export interface RiskAssessment {
-  overall_risk: string;
-  risk_score: number;
+export interface RiskAssessment { overall_risk: string;, risk_score: number;
   risk_factors: string[];
   recommendations: string[];
   confidence: number;

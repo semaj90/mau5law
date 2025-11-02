@@ -1,14 +1,10 @@
 // Lightweight in-memory advanced result cache for Legal AI
 // Provides a stable API used by vector recommendations routes
 type CacheKeyInput = Record<string, unknown>;
-interface CacheEntry<T = unknown> {
-  value: T;
-  createdAt: number;
+interface CacheEntry<T = unknown> { value: T;, createdAt: number;
   sizeBytes: number;
 }
-interface CacheStats {
-  overall: {
-    hitRate: number;
+interface CacheStats { overall: {, hitRate: number;
     operations: number;
     averageRetrievalMs: number;
     utilizationPercentage: number;

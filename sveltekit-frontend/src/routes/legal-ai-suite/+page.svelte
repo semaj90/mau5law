@@ -172,10 +172,10 @@ import type { Document } from '$lib/types';
             addLog('⚠️ GPU acceleration not available - using CPU fallback');
           }
         } else {
-          systemMetrics.gpuAcceleration = $state(false);
+          systemMetrics.gpuAcceleration = false;
         }
       } catch (gpuError) {
-        systemMetrics.gpuAcceleration = $state(false);
+        systemMetrics.gpuAcceleration = false;
         addLog('⚠️ GPU service not responding - using CPU processing');
       }
       addLog(

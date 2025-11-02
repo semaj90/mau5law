@@ -71,20 +71,18 @@ export class QdrantVectorStore {
       const collections = await this.client.getCollections();
       const exists = collections.collections.some(c => c.name === collectionName);
       if (!exists) {
-        await this.client.createCollection(collectionName, {
-          vectors: {
-            size: vectorSize,
+        await this.client.createCollection(collectionName, { vectors: {, size: vectorSize,
             distance: 'Cosine'
           },
           optimizers_config: {
-            default_segment_number: 2
+           , default_segment_number: 2
           },
           replication_factor: 1
         });
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
       }
     } catch (error) {
-      console.error(`❌ Error creating collection ${collectionName}:`, error);
+      console.error(`❌ Error creating collection ${collectionName}: ', error);
       throw error;
     }
   }
@@ -97,11 +95,9 @@ export class QdrantVectorStore {
     userMessage: string,
     agentResponse: string,
     embedding: number[],
-    metadata: {
-      intent: string;
-      hmmState: number;
+    metadata: { intent: string;, hmmState: number;
       confidence: number;
-      entities: LegalEntity[];
+     , entities: LegalEntity[];
     }
   ): Promise<string> {
     await this.ensureInitialized();
@@ -115,7 +111,7 @@ export class QdrantVectorStore {
       wait: true,
       points: [
         {
-          id: pointId,
+         , id: pointId,
           vector: embedding,
           payload: {
             sessionId,
@@ -152,7 +148,7 @@ export class QdrantVectorStore {
       wait: true,
       points: [
         {
-          id: pointId,
+         , id: pointId,
           vector: embedding,
           payload: {
             sessionId,
@@ -174,10 +170,8 @@ export class QdrantVectorStore {
     sessionId: string,
     summary: string,
     embedding: number[],
-    metadata: {
-      turnCount: number;
-      currentState: number;
-      confidence: number;
+    metadata: { turnCount: number;, currentState: number;
+     , confidence: number;
     }
   ): Promise<string> {
     await this.ensureInitialized();
@@ -189,7 +183,7 @@ export class QdrantVectorStore {
       wait: true,
       points: [
         {
-          id: pointId,
+         , id: pointId,
           vector: embedding,
           payload: {
             sessionId,
@@ -215,9 +209,7 @@ export class QdrantVectorStore {
       intent?: string;
       minConfidence?: number;
     }
-  ): Promise<Array<{
-    score: number;
-    sessionId: string;
+  ): Promise<Array<{ score: number;, sessionId: string;
     turnIndex: number;
     userMessage: string;
     agentResponse: string;
@@ -232,19 +224,19 @@ export class QdrantVectorStore {
       if (filter.sessionId) {
         must.push({
           key: 'sessionId',
-          match: { value: filter.sessionId }
+          match: {, value: filter.sessionId }
         });
       }
       if (filter.intent) {
         must.push({
           key: 'intent',
-          match: { value: filter.intent }
+          match: {, value: filter.intent }
         });
       }
       if (filter.minConfidence !== undefined) {
         must.push({
           key: 'confidence',
-          range: { gte: filter.minConfidence }
+          range: {, gte: filter.minConfidence }
         });
       }
       if (must.length > 0) {
@@ -275,9 +267,7 @@ export class QdrantVectorStore {
     queryEmbedding: number[],
     entityType?: string,
     limit: number = 10
-  ): Promise<Array<{
-    score: number;
-    sessionId: string;
+  ): Promise<Array<{ score: number;, sessionId: string;
     entityType: string;
     entityValue: string;
     confidence: number;
@@ -288,12 +278,10 @@ export class QdrantVectorStore {
       limit,
       with_payload: true,
       ...(entityType
-        ? {
-            filter: {
-              must: [
+        ? { filter: {, must: [
                 {
                   key: 'entityType',
-                  match: { value: entityType }
+                  match: {, value: entityType }
                 }
               ]
             }
@@ -315,9 +303,7 @@ export class QdrantVectorStore {
   async findSimilarSummaries(
     queryEmbedding: number[],
     limit: number = 5
-  ): Promise<Array<{
-    score: number;
-    sessionId: string;
+  ): Promise<Array<{ score: number;, sessionId: string;
     summary: string;
     turnCount: number;
     currentState: number;
@@ -342,22 +328,16 @@ export class QdrantVectorStore {
   async getEntityClusters(
     entityType: string,
     minClusterSize: number = 3
-  ): Promise<Array<{
-    centroid: string;
-    members: Array<{
-      entityValue: string;
-      confidence: number;
+  ): Promise<Array<{ centroid: string;, members: Array<{ entityValue: string;, confidence: number;
     }>;
     size: number;
   }>> {
     await this.ensureInitialized();
     // Scroll through all entities of this type
-    const scrollResult = await this.client.scroll(COLLECTIONS.ENTITIES, {
-      filter: {
-        must: [
+    const scrollResult = await this.client.scroll(COLLECTIONS.ENTITIES, { filter: {, must: [
           {
             key: 'entityType',
-            match: { value: entityType }
+            match: {, value: entityType }
           }
         ]
       },
@@ -366,9 +346,7 @@ export class QdrantVectorStore {
       with_vector: true
     });
     // Simple clustering: group by similarity threshold
-    const clusters: Array<{
-      centroid: string;
-      members: Array<{ entityValue: string; confidence: number }>;
+    const clusters: Array<{ centroid: string;, members: Array<{ entityValue: string;, confidence: number }>;
       size: number;
     }> = [];
     const processed = new Set<string>();
@@ -404,7 +382,7 @@ export class QdrantVectorStore {
           must: [
             {
               key: 'entityType',
-              match: { value: entityType }
+              match: {, value: entityType }
             }
           ]
         },
@@ -439,7 +417,7 @@ export class QdrantVectorStore {
           must: [
             {
               key: 'sessionId',
-              match: { value: sessionId }
+              match: {, value: sessionId }
             }
           ]
         }
@@ -450,7 +428,7 @@ export class QdrantVectorStore {
           must: [
             {
               key: 'sessionId',
-              match: { value: sessionId }
+              match: {, value: sessionId }
             }
           ]
         }
@@ -461,7 +439,7 @@ export class QdrantVectorStore {
           must: [
             {
               key: 'sessionId',
-              match: { value: sessionId }
+              match: {, value: sessionId }
             }
           ]
         }
@@ -471,8 +449,7 @@ export class QdrantVectorStore {
   /**
    * Get collection statistics
    */
-  async getStatistics(): Promise<{
-    conversations: { count: number };
+  async getStatistics(): Promise<{ conversations: {, count: number };
     entities: { count: number };
     summaries: { count: number };
   }> {
@@ -482,8 +459,7 @@ export class QdrantVectorStore {
       this.client.getCollection(COLLECTIONS.ENTITIES),
       this.client.getCollection(COLLECTIONS.SUMMARIES)
     ]);
-    return {
-      conversations: { count: conversations.points_count || 0 },
+    return { conversations: {, count: conversations.points_count || 0 },
       entities: { count: entities.points_count || 0 },
       summaries: { count: summaries.points_count || 0 }
     };

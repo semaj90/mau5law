@@ -2,16 +2,12 @@
 // Machine learning feedback loop for continuous improvement of AI synthesis
 import { logger } from './logger.js';
 
-export interface FeedbackData {
-  requestId: string;
-  userId: string;
+export interface FeedbackData { requestId: string;, userId: string;
   rating: number; // 1-5 stars
   feedback?: string;
   improvedResponse?: string;
 }
-export interface InteractionData {
-  requestId: string;
-  query: string;
+export interface InteractionData { requestId: string;, query: string;
   result: any;
   userId: string;
   timestamp: Date;
@@ -23,9 +19,7 @@ export interface LearningMetrics {
   userSatisfaction: Map<string, number>;
 }
 
-interface UserPatterns {
-  commonTopics: string[];
-  preferredStrategies: string[];
+interface UserPatterns { commonTopics: string[];, preferredStrategies: string[];
   averageComplexity: number;
   peakUsageTimes: number[];
 }
@@ -275,7 +269,7 @@ class FeedbackLoop {
   }
   private async reinforcePositivePatterns(
     interaction: InteractionData;
-    feedback: FeedbackData;
+   , feedback: FeedbackData;
   ): Promise<void> {
     // Increase weights for strategies that led to high satisfaction
     if (interaction.result?.metadata?.strategies) {
@@ -295,7 +289,7 @@ class FeedbackLoop {
   }
   private async adjustNegativePatterns(
     interaction: InteractionData;
-    feedback: FeedbackData;
+   , feedback: FeedbackData;
   ): Promise<void> {
     // Decrease weights for strategies that led to low satisfaction
     if (interaction.result?.metadata?.strategies) {
@@ -335,8 +329,7 @@ class FeedbackLoop {
     // }).catch(err => logger.warn('[FeedbackLoop] Failed to save improvement:', err)
     logger.info('[FeedbackLoop] Improvement recorded (stub)', {
       requestId: interaction.requestId,
-      improvedResponse: improvedResponse.substring(0, 100) + '...'
-    });
+      improvedResponse: improvedResponse.substring(0, 100) + '...' });
   }
   private async persistInteraction(interaction: InteractionData): Promise<void> {
     try {
@@ -407,7 +400,7 @@ class FeedbackLoop {
       // await db.insert(feedbackModel).values({}).onConflictDoUpdate({})
       logger.info('[FeedbackLoop] Model weights saved (stub)');
       // Previous upsert logic:
-      // where: { id: 'current' },
+      //; where: { id: 'current' },
       // update: { weights: weightsObject, updatedAt: new Date() },
       // create: { id: 'current', weights: weightsObject, active: true }
     } catch (error: any) {
@@ -420,7 +413,7 @@ class FeedbackLoop {
       isResearch: false,
       isProcedural: false,
       hasCase: false,
-      hasStatute: false,
+      hasStatute: false
     }
     const queryLower = query.toLowerCase();
     // Check for complexity indicators

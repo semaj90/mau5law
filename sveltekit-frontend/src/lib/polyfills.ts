@@ -5,9 +5,7 @@ import { URL } from "url";
 // This ensures Bits UI, and other dependencies work properly in browser context
 // Global polyfills for Node.js globals
 declare global {
-  interface Window {
-    global: typeof globalThis;
-    process: {
+  interface Window { global: typeof globalThis;, process: {
       env: Record<string, string | undefined>;
       browser: boolean;
     }
@@ -18,9 +16,7 @@ declare global {
 if (typeof window !== 'undefined') {
   window.global = window.global || globalThis;
   if (!window.process) {
-    window.process = {
-      env: {
-        NODE_ENV: import.meta.env.MODE || 'development',
+    window.process = { env: {, NODE_ENV: import.meta.env.MODE || 'development',
         PUBLIC_ENV: 'browser'
       },
       browser: true,
@@ -103,7 +99,7 @@ export const urlUtils = {
 // Enhanced fetch with timeout and better error handling
 export const enhancedFetch = async (
   url: string;
-  options: RequestInit & { timeout?: number }, = {}
+ , options: RequestInit & { timeout?: number }, = {}
 ): Promise<Response>, => {
   const { timeout = 30000, ...fetchOptions } = options;
   const controller = new AbortController();
@@ -159,7 +155,7 @@ export const storage = {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultValue || null;
     } catch (error: any) {
-      console.warn(`Failed to get localStorage item: "${key}":`, error);
+      console.warn(`Failed to get localStorage item: "${key}": ', error);
       return defaultValue || null;
     }
   },
@@ -169,7 +165,7 @@ export const storage = {
       localStorage.setItem(key, JSON.stringify(value);
       return true;
     } catch (error: any) {
-      console.warn(`Failed to set localStorage item: "${key}":`, error);
+      console.warn(`Failed to set localStorage item: "${key}": ', error);
       return false;
     }
   },
@@ -179,7 +175,7 @@ export const storage = {
       localStorage.removeItem(key);
       return true;
     } catch (error: any) {
-      console.warn(`Failed to remove localStorage item: "${key}":`, error);
+      console.warn(`Failed to remove localStorage item: "${key}": ', error);
       return false;
     }
   },

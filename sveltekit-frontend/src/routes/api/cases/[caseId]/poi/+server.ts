@@ -12,7 +12,7 @@ const createCasePoiRelationSchema = z.object({
   relationshipType: z.enum(['suspect', 'witness', 'victim', 'informant', 'other']),
   role: z.string().optional(),
   involvementLevel: z.enum(['primary', 'secondary', 'peripheral', 'unknown']).default('unknown'),
-  notes: z.string().optional(),
+  notes: z.string().optional()
 });
 
 const updateCasePoiRelationSchema = createCasePoiRelationSchema.partial();
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const casePois = await db
       .select({
         relation: casePoiRelations,
-        poi: personsOfInterest,
+        poi: personsOfInterest
       })
       .from(casePoiRelations)
       .innerJoin(personsOfInterest, eq(casePoiRelations.poiId, personsOfInterest.id))
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     return json({
       success: true,
-      data: casePois,
+      data: casePois
     });
   } catch (error) {
     console.error('Error fetching case POIs:', error);
@@ -112,14 +112,14 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         role: validatedData.role,
         involvementLevel: validatedData.involvementLevel,
         notes: validatedData.notes,
-        createdBy: session.user.id,
+        createdBy: session.user.id
       })
       .returning();
 
     return json(
       {
         success: true,
-        data: newRelation,
+        data: newRelation
       },
       { status: 201 }
     );

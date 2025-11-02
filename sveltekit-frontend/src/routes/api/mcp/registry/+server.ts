@@ -4,14 +4,12 @@ import { listMcpServers } from '$lib/services/mcp-registry'
 
 export const GET: RequestHandler = async () => {
   const servers = await listMcpServers()
-  return json({
-    servers: servers.map((server) => ({
-      name: server.name,
+  return json({ servers: servers.map((server) => ({, name: server.name,
       region: server.region,
       lastUpdated: server.lastUpdated,
       cores: server.cores.length,
       capabilities: server.capabilities,
-      endpoints: server.endpoints,
-    })),
+      endpoints: server.endpoints
+    }))
   })
 }

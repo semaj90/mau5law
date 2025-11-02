@@ -75,8 +75,8 @@ export function normalizeInPlace(v: Float32Array) {
   return v;
 }
 // Top-K search over an array of embeddings (Embeddings stored as Float32Array concatenated or as array)
-export function topKSimilar(embeddings: Float32Array[] | Float32Array, query: Float32Array, k = 5): Array<{ index: number; score: number }> {
-  const results: Array<{ index: number; score: number }> = [];
+export function topKSimilar(embeddings: Float32Array[] | Float32Array, query: Float32Array, k = 5): Array<{ index: number;, score: number }> {
+  const results: Array<{ index: number;, score: number }> = [];
   if (Array.isArray(embeddings)) {
     for (let i = 0; i < embeddings.length; i++) {
       const score = computeCosineSimilarity(query, embeddings[i]);

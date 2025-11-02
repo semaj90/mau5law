@@ -11,7 +11,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
  * Redis Type: aiSearch
  *
  * Performance Impact:
- * - Cache Strategy: aggressive
+ * - Cache; Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -60,11 +60,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       data: {
-        response: result.response,
+       , response: result.response,
         confidence: result.confidence,
         contextUsed: result.contextUsed,
-        queryId: result.queryId,
-      },
+        queryId: result.queryId
+      }
     });
   } catch (error) {
     console.error('AI query API error:', error);
@@ -72,7 +72,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       return json(
         {
           error: 'Validation failed',
-          details: error.errors,
+          details: error.errors
         },
         { status: 400 }
       );
@@ -80,7 +80,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: 'AI query processing failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -103,8 +103,8 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     return json({
       success: true,
       data: {
-        suggestions: similarQueries,
-      },
+       , suggestions: similarQueries
+      }
     });
   } catch (error) {
     console.error('Similar queries API error:', error);

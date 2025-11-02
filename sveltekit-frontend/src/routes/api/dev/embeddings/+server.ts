@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const sample = (rows as RowShape[]).map(r => ({
       id: r.id,
       embeddingLength: (r.embedding || []).length,
-      metadata: r.metadata || null,
+      metadata: r.metadata || null
     }));
 
     // If Qdrant configured, run a health ping

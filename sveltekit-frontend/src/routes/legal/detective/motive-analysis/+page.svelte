@@ -3,18 +3,18 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { Badge } from '$lib/components/ui/badge.svelte';
   import { Separator } from '$lib/components/ui/separator.svelte';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
   import { Progress } from '$lib/components/ui/progress.svelte';
   import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes
   let activeTab: string = $state('profile');
-  let analysisInProgress: boolean = $state(false);
+  let analysisInProgress: boolean = false;
   let analysisProgress: number = $state(0);
   let caseId: string = $state('');
 
@@ -105,12 +105,12 @@
     gpuUtilization: 0
   });
 
-  let suspectProfile: SuspectProfile | null = $state(null);
+  let suspectProfile: SuspectProfile | null = null;
   let motiveMatrix: MotiveAnalysis[] = $state([]);
   let timelineEvents: TimelineEvent[] = $state([]);
   let relationshipMap = $state<any[]>([]);
-  let psychologicalProfile: PsychologicalProfile | null = $state(null);
-  let riskAssessment: RiskAssessment | null = $state(null);
+  let psychologicalProfile: PsychologicalProfile | null = null;
+  let riskAssessment: RiskAssessment | null = null;
   let evidenceCorrelation: EvidenceItem[] = $state([]);
   let behaviorPatterns: BehaviorPattern[] = $state([]);
   let motiveTriggers = $state<any[]>([]);

@@ -13,4 +13,4 @@ export const POST: RequestHandler = async ({ request }) => {
   return json({ success: true, summary, format, originalLength: text.length });
 };
 export const GET: RequestHandler = async () => json({ success: true, status: 'ok' });
-export const prerender = $state(false);
+export const prerender = false;

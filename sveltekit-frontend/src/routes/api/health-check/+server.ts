@@ -4,15 +4,15 @@ export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
     services: {},
-    overall: 'unknown',
+    overall: 'unknown'
   };
   const checks = [
     // Redis Health Check
     {
       name: 'redis',
       check: async () => {
-        try {
-          const { createClient } = await import('redis');
+        try {];
+  const { createClient } = await import('redis');
           const client = redis;
           await client.connect();
           await client.ping();
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
-      },
+      }
     },
     // Qdrant Health Check
     {
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async () => {
         try {
           const start = Date.now();
           const response = await fetch('http://localhost:6333', {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -38,13 +38,12 @@ export const GET: RequestHandler = async () => {
           } else {
             return {
               status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`,
-            };
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
-      },
+      }
     },
     // Ollama Health Check
     {
@@ -53,7 +52,7 @@ export const GET: RequestHandler = async () => {
         try {
           const start = Date.now();
           const response = await fetch('http://localhost:11434/api/tags', {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -61,18 +60,17 @@ export const GET: RequestHandler = async () => {
             return {
               status: 'healthy',
               responseTime,
-              models: (data as { models?: any }).models?.length || 0,
+              models: (data as { models?: any }).models?.length || 0
             };
           } else {
             return {
               status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`,
-            };
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
-      },
+      }
     },
     // SvelteKit App Health Check
     {
@@ -82,7 +80,7 @@ export const GET: RequestHandler = async () => {
           const start = Date.now();
           // Test a simple API endpoint
           const response = await fetch('http://localhost:5173/api/test-crud', {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const responseTime = Date.now() - start;
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -90,13 +88,12 @@ export const GET: RequestHandler = async () => {
           } else {
             return {
               status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`,
-            };
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
-      },
+      }
     },
     // Cache Layer Health Check
     {
@@ -114,12 +111,12 @@ export const GET: RequestHandler = async () => {
             status: 'healthy',
             layers: enabledLayers,
             avgHitRate: Math.round(avgHitRate * 100),
-            stats,
+            stats
           };
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
-      },
+      }
     },
   ];
   // Run all health checks in parallel
@@ -144,8 +141,7 @@ export const GET: RequestHandler = async () => {
       // Handle rejected promises
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
-        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error',
-      };
+        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error` };
     }
   });
   // Determine overall health

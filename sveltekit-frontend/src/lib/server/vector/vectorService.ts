@@ -11,23 +11,21 @@ export interface VectorSearchOptions {
   includeMetadata?: boolean;
 }
 
-export interface EmbeddingResult {
-  id: string;
-  score: number;
+export interface EmbeddingResult { id: string;, score: number;
   metadata?: any;
   content?: string;
 }
 
-type QdrantPoint = { id: string; vector: number[]; payload?: Record<string, any> };
+type QdrantPoint = { id: string;, vector: number[]; payload?: Record<string, any> };
 
 interface QdrantClientLike {
   upsert(collection: string, payload: { wait?: boolean; points: QdrantPoint[] }): Promise<void>;
   search(
     collection: string,
-    args: { vector: number[]; limit?: number; score_threshold?: number; filter?: any; with_payload?: boolean }
-  ): Promise<Array<{ id: string; score: number; payload?: any }>>;
+    args: {, vector: number[]; limit?: number; score_threshold?: number; filter?: any; with_payload?: boolean }
+  ): Promise<Array<{ id: string;, score: number; payload?: any }>>;
   delete(collection: string, args: { wait?: boolean; points: string[] }): Promise<void>;
-  getCollections(): Promise<{ collections: Array<{ name: string; points_count: number }> }>;
+  getCollections(): Promise<{ collections: Array<{ name: string;, points_count: number }> }>;
   getCollection(collection: string): Promise<{ points_count?: number; name?: string } | null>;
 }
 
@@ -75,7 +73,7 @@ class QdrantStub implements QdrantClientLike {
     return denom === 0 ? 0 : dot / denom;
   }
 
-  async search(collection: string, args: { vector: number[]; limit?: number; score_threshold?: number; filter?: any; with_payload?: boolean }) {
+  async search(collection: string, args: {, vector: number[]; limit?: number; score_threshold?: number; filter?: any; with_payload?: boolean }) {
     const points = this.collections.get(collection) ?? [];
     const results = points
       .map((p) => ({ id: p.id, score: this.cosine(args.vector, p.vector), payload: p.payload }))
@@ -299,9 +297,8 @@ export class VectorService {
           ...cases.map((c: any) => ({
             id: c.id,
             score: 0.6,
-            metadata: { type: 'case', title: c.title, case_id: c.id },
-            content: `${c.title} ${c.description || ''}`
-          }))
+            metadata: {, type: 'case', title: c.title, case_id: c.id },
+            content: '${c.title} ${c.description || ''}' }))
         );
       }
       // Evidence
@@ -311,9 +308,8 @@ export class VectorService {
           ...ev.map((e: any) => ({
             id: e.id,
             score: 0.6,
-            metadata: { type: 'evidence', title: e.title, case_id: e.caseId },
-            content: `${e.title} ${e.description || ''} ${e.summary || ''}`
-          }))
+            metadata: {, type: 'evidence', title: e.title, case_id: e.caseId },
+            content: '${e.title} ${e.description || ''} ${e.summary || ''}` }))
         );
       }
       // Criminals
@@ -323,9 +319,8 @@ export class VectorService {
           ...cr.map((c: any) => ({
             id: c.id,
             score: 0.6,
-            metadata: { type: 'criminal', title: `${c.firstName} ${c.lastName}` },
-            content: `${c.firstName} ${c.lastName} ${c.notes || ''}`
-          }))
+            metadata: {, type: 'criminal', title: `${c.firstName} ${c.lastName}' },
+            content: '${c.firstName} ${c.lastName} ${c.notes || ''}` }))
         );
       }
       return results;
@@ -354,10 +349,10 @@ export class VectorService {
   private buildQdrantFilter(filter: Record<string, any> | undefined) {
     if (!filter || Object.keys(filter).length === 0) return undefined;
     const must: any[] = [];
-    if (filter.type) must.push({ key: 'type', match: { value: filter.type } });
-    if (filter.case_id) must.push({ key: 'case_id', match: { value: filter.case_id } });
-    if (filter.created_after) must.push({ key: 'created_at', range: { gte: filter.created_after } });
-    if (filter.created_before) must.push({ key: 'created_at', range: { lte: filter.created_before } });
+    if (filter.type) must.push({ key: 'type', match: {, value: filter.type } });
+    if (filter.case_id) must.push({ key: 'case_id', match: {, value: filter.case_id } });
+    if (filter.created_after) must.push({ key: 'created_at', range: {, gte: filter.created_after } });
+    if (filter.created_before) must.push({ key: 'created_at', range: {, lte: filter.created_before } });
     return must.length ? { must } : undefined;
   }
 
@@ -378,13 +373,13 @@ export class VectorService {
     }
   }
 
-  async bulkIndex(documents: Array<{ id: string; content: string; metadata?: Record<string, any> }>): Promise<void> {
+  async bulkIndex(documents: Array<{, id: string; content: string; metadata?: Record<string, any> }>): Promise<void> {
     try {
       const batchSize = 50;
       for (let i = 0; i < documents.length; i += batchSize) {
         const batch = documents.slice(i, i + batchSize);
         const embeddings = await Promise.all(batch.map((d) => this.generateEmbedding(d.content)));
-        const points = batch.map((doc, idx) => ({ id: doc.id, vector: embeddings[idx], payload: { content: doc.content, ...(doc.metadata || {}) } }));
+        const points = batch.map((doc, idx) => ({ id: doc.id, vector: embeddings[idx], payload: {, content: doc.content, ...(doc.metadata || {}) } }));
         await this.qdrant.upsert(this.collectionName, { wait: true, points });
         const metadataRecords = batch.map((doc) => ({
           id: `${doc.id}-meta`,
@@ -412,7 +407,7 @@ export class VectorService {
     }
   }
 
-  async healthCheck(): Promise<{ qdrant: boolean; redis: boolean; collection: boolean }> {
+  async healthCheck(): Promise<{ qdrant: boolean; redis: boolean;, collection: boolean }> {
     const status = { qdrant: false, redis: false, collection: false };
     try {
       const collections = await this.qdrant.getCollections();
@@ -430,7 +425,7 @@ export class VectorService {
     return status;
   }
 
-  async getStats(): Promise<{ documentCount: number; collectionInfo: any | null }> {
+  async getStats(): Promise<{ documentCount: number;, collectionInfo: any | null }> {
     try {
       const info = await this.qdrant.getCollection(this.collectionName);
       return { documentCount: info?.points_count ?? 0, collectionInfo: info ?? null };

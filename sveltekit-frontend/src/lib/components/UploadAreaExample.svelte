@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { UploadArea } from './UploadArea.svelte';
 
-  let uploadComponent: any = $state(null);
+  let uploadComponent: any = null;
   let uploadStatus = $state<string>('');
   let uploadedFiles: any[] = $state([]);
   let showProgress = $state<boolean>(true);

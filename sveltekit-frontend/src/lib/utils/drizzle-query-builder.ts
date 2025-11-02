@@ -14,5 +14,5 @@ export const QueryBuilder = {
 
   async selectReportByCase(caseId: string) {
     return db.select().from(reports).where(eq(reports.caseId, caseId));
-  },
+  }
 };

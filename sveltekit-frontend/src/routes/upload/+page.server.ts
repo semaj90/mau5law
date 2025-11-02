@@ -13,7 +13,7 @@ import { z } from 'zod'; // Import z from zod for schema manipulation
 // The recommended approach is to use `z.instanceof(File)` for server-side schemas.
 // This provides strong typing for the file object received from FormData.
 const serverFileUploadSchema = fileUploadSchema.extend({
-  file: z.instanceof(File, { message: 'Please upload a file.' }).refine(f => f.size > 0, 'File cannot be empty.'),
+  file: z.instanceof(File, { message: `Please upload a file.` }).refine(f => f.size > 0, 'File cannot be empty.')
 });
 
 // --- NEW: infer a concrete TypeScript type from the Zod schema ---
@@ -48,7 +48,7 @@ const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 type RedisLike = {
   lpush: (key: string, value: string) => Promise<number>;
   ltrim: (key: string, start: number, stop: number) => Promise<void>;
-  on?: (event: string, handler: (e: any) => void) => void;
+  on?: (event: string; handler: (e: any) => void) => void;
   quit?: () => Promise<void>;
   disconnect?: () => void;
 } | null;
@@ -102,10 +102,10 @@ const logError = async (context: string, error: any, details?: Record<string, un
     timestamp: new Date().toISOString(),
     context,
     error: error instanceof Error ? { message: error.message, stack: error.stack } : String(error),
-    details: details ?? {},
+    details: details ?? {}
   };
   // Always print to stderr for immediate visibility
-  console.error(`[${context}] Error:`, payload);
+  console.error(`[${context}] Error: ', payload);
 
   // Attempt to push to Redis list if available
   try {
@@ -129,7 +129,7 @@ export const load: PageServerLoad = async ({ request: _request }) => {
   const initialForm = {
     valid: true,
     errors: {},
-    data: {} as unknown as ServerFileUploadData,
+    data: {} as unknown as ServerFileUploadData
   };
   return { form: initialForm };
 };
@@ -150,7 +150,7 @@ export const actions: Actions = {
         file: fd.get('file') as File | null,
         caseId: fd.get('caseId') ? String(fd.get('caseId')) : undefined,
         description: fd.get('description') ? String(fd.get('description')) : undefined,
-        tags: fd.getAll('tags').map(t => String(t)),
+        tags: fd.getAll('tags').map(t => String(t))
       };
 
       const parsed = await serverFileUploadSchema.safeParseAsync(build);
@@ -158,13 +158,13 @@ export const actions: Actions = {
         return {
           valid: false,
           errors: parsed.error.flatten(),
-          data: build,
+          data: build
         } as const;
       }
       return {
         valid: true,
         errors: {},
-        data: parsed.data,
+        data: parsed.data
       } as const;
     };
 
@@ -236,14 +236,14 @@ export const actions: Actions = {
         isPrivate: (form.data.isPrivate ?? false).toString(), // Ensure boolean and then string
         aiAnalysis: (form.data.aiAnalysis ?? true).toString(), // Ensure boolean and then string, default to true for AI platform
         uploadedBy: uploadedBy,
-        uploadedAt: new Date().toISOString(),
+        uploadedAt: new Date().toISOString()
       };
       uploadFormData.append('metadata', JSON.stringify(metadata));
 
       // Upload to MinIO service
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: uploadFormData,
+        body: uploadFormData
       });
 
       if (!uploadResponse.ok) {
@@ -256,12 +256,11 @@ export const actions: Actions = {
           // Instead, log metadata or a summary.
           metadataSent: metadata,
           caseId: form.data.caseId,
-          documentType: form.data.type,
+          documentType: form.data.type
         });
         return fail(uploadResponse.status, {
           form,
-          message: `Upload failed: ${errorText || 'Unknown error from upload service'}`,
-        });
+          message: 'Upload; failed: ${errorText || 'Unknown error from upload service` }' });
       }
 
       const uploadResult = await uploadResponse.json();
@@ -270,19 +269,18 @@ export const actions: Actions = {
           uploadResult,
           metadataSent: metadata,
           caseId: form.data.caseId,
-          documentType: form.data.type,
+          documentType: form.data.type
         });
         return fail(500, {
           form,
-          message: uploadResult.message || 'Upload failed due to an internal service error.',
+          message: uploadResult.message || 'Upload failed due to an internal service error.'
         });
       }
 
       return {
         form,
         uploadResult,
-        message: 'Document uploaded successfully!',
-      };
+        message: `Document uploaded successfully!` };
     } catch (error: any) {
       let errMessage = 'An unexpected internal server error occurred during document upload.';
       if (error instanceof Error) {
@@ -292,12 +290,12 @@ export const actions: Actions = {
       }
       await logError('UploadAction', error, {
         userMessage: errMessage,
-        stack: error instanceof Error ? error.stack : undefined,
+        stack: error instanceof Error ? error.stack : undefined
       });
       return fail(500, {
         form,
-        message: errMessage,
+        message: errMessage
       });
     }
-  },
+  }
 };

@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       document: {
-        id: document.id,
+       , id: document.id,
         filename: document.filename,
         title: document.title || document.filename,
         fileSize: document.fileSize ? parseInt(String(document.fileSize)) : 0,
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ params }) => {
         sourceUri: document.sourceUri,
         extractedText: document.extractedText,
         metadata: document.metadata,
-        chunks: chunks.length,
+        chunks: chunks.length
       },
       chunks: chunks.map((chunk) => ({
         id: chunk.id,
@@ -56,9 +56,9 @@ export const GET: RequestHandler = async ({ params }) => {
         text: chunk.text,
         tokens: chunk.tokens,
         metadata: chunk.metadata,
-        createdAt: chunk.createdAt?.toISOString(),
+        createdAt: chunk.createdAt?.toISOString()
       })),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Failed to get document:', error);
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ params }) => {
       {
         success: false,
         error: 'Failed to get document',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -103,7 +103,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
         success: true,
         message: 'Document deleted successfully',
         documentId: id,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 200 }
     );
@@ -113,7 +113,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       {
         success: false,
         error: 'Failed to delete document',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

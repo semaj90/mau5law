@@ -31,9 +31,7 @@ interface VectorSearchOptions {
   usePostgreSQL?: boolean;
   useQdrant?: boolean;
 }
-interface HybridSearchResult {
-  results: Array<any>;
-  performance: {
+interface HybridSearchResult { results: Array<any>;, performance: {
     postgresqlTime?: number;
     qdrantTime?: number;
     totalTime: number;
@@ -48,7 +46,7 @@ let qdrantClient: QdrantClient | undefined;
 if (process.env.QDRANT_URL) {
   qdrantClient = new QdrantClient({
     url: process.env.QDRANT_URL,
-    apiKey: process.env.QDRANT_API_KEY,
+    apiKey: process.env.QDRANT_API_KEY
   } as any);
 }
 // ============================================================================
@@ -100,26 +98,24 @@ async function ensureQdrantCollection(
       ? collections.collections.some((c: any) => c.name === collectionName)
       : false;
     if (!exists) {
-      await (qdrantClient as any).createCollection?.(collectionName, {
-        vectors: {
-          size: vectorSize,
-          distance,
+      await (qdrantClient as any).createCollection?.(collectionName, { vectors: {, size: vectorSize,
+          distance
         },
         optimizers_config: {
           default_segment_number: 2,
           memmap_threshold: 20000,
-          indexing_threshold: 20000,
+          indexing_threshold: 20000
         },
         hnsw_config: {
-          m: 16,
+         , m: 16,
           ef_construct: 64,
-          full_scan_threshold: 10000,
-        },
+          full_scan_threshold: 10000
+        }
       });
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
     }
   } catch (error) {
-    console.error(`❌ Failed to ensure Qdrant collection ${collectionName}:`, error);
+    console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', error);
     throw error;
   }
 }
@@ -135,7 +131,7 @@ async function hybridVectorSearch(
     threshold = 0.7,
     filter = {},
     usePostgreSQL = true,
-    useQdrant = true,
+    useQdrant = true
   } = options;
   const results: HybridSearchResult['results'] = [];
   let postgresqlTime: number | undefined;
@@ -163,8 +159,7 @@ async function hybridVectorSearch(
           id: row.id,
           score: row.similarity,
           document: row as DocumentMetadata,
-          source: 'postgresql',
-        });
+          source: 'postgresql` });
       }
     } catch (error) {
       console.error('PostgreSQL vector search error:', error);
@@ -185,10 +180,10 @@ async function hybridVectorSearch(
             ? {
                 must: Object.entries(filter).map(([key, value]) => ({
                   key,
-                  match: { value },
-                })),
+                  match: { value }
+                }))
               }
-            : undefined,
+            : undefined
       });
 
       qdrantTime = Date.now() - qdrantStart;
@@ -210,8 +205,7 @@ async function hybridVectorSearch(
               id: idStr,
               score: result.score,
               document,
-              source: 'qdrant',
-            });
+              source: 'qdrant` });
           }
         }
       }
@@ -239,24 +233,22 @@ async function hybridVectorSearch(
     performance: {
       postgresqlTime,
       qdrantTime,
-      totalTime: Date.now() - startTime,
-    },
+      totalTime: Date.now() - startTime
+    }
   };
 }
 // ============================================================================
 // HEALTH CHECKS
 // ============================================================================
 async function healthCheck(): Promise<any> {
-  const health: {
-    postgresql: boolean;
-    qdrant: boolean;
+  const health: { postgresql: boolean;, qdrant: boolean;
     pgvector: boolean;
     overallHealth: boolean;
   } = {
     postgresql: false,
     qdrant: false,
     pgvector: false,
-    overallHealth: false,
+    overallHealth: false
   };
 
   try {
@@ -307,7 +299,7 @@ export const unifiedDb = {
   healthCheck,
   // Vector operations
   vectorSearch: hybridVectorSearch,
-  ensureCollection: ensureQdrantCollection,
+  ensureCollection: ensureQdrantCollection
 };
 
 // Re-export schema for convenience

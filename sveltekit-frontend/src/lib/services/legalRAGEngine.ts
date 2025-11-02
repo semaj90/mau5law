@@ -34,9 +34,7 @@ export interface OllamaService {
   generateCompletion(prompt: string): Promise<string>;
 }
 
-export interface LegalDocument {
-  id: string;
-  content: string;
+export interface LegalDocument { id: string;, content: string;
   title: string;
   caseId: string;
   caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
@@ -49,18 +47,14 @@ export interface LegalDocument {
   tags?: string[]; // Added tags property
 }
 
-export interface LegalEntities {
-  parties: string[];
-  dates: string[];
+export interface LegalEntities { parties: string[];, dates: string[];
   monetary: string[];
   clauses: string[];
   jurisdictions: string[];
   caseTypes: string[];
 }
 
-export interface RAGSearchResult {
-  document: LegalDocument;
-  originalScore: number;
+export interface RAGSearchResult { document: LegalDocument;, originalScore: number;
   rerankScore?: number;
   relevanceReason: string;
   legalPrecedent?: boolean;
@@ -73,7 +67,7 @@ export interface LegalRAGOptions {
   jurisdiction?: string;
   caseType?: string;
   requirePrecedent?: boolean;
-  timeRange?: { start: Date; end: Date };
+  timeRange?: { start: Date;, end: Date };
   riskThreshold?: number;
   useSemanticSearch?: boolean;
   useContext7?: boolean;
@@ -84,7 +78,7 @@ export interface LegalRAGOptions {
 }
 
 // NEW: Define a shared type for raw search results from vector databases
-type RawSearchResult = Array<{ document: LegalDocument; originalScore: number }>;
+type RawSearchResult = Array<{ document: LegalDocument;, originalScore: number }>;
 
 export class LegalRAGEngine {
   constructor(
@@ -92,7 +86,7 @@ export class LegalRAGEngine {
     private ollama: OllamaService
   ) {
     // Production Readiness Note:
-    // The: 'qdrant' client and: 'ollama' service should be instantiated elsewhere
+    // The: 'qdrant' client; and: 'ollama' service should be instantiated elsewhere
     // (e.g., in a central client factory or dependency injection setup)
     // and configured to respect environment variables for their endpoints.
     // For example, QdrantClient should use process.env.QDRANT_URL || 'http://localhost:6333',
@@ -182,8 +176,7 @@ export class LegalRAGEngine {
       // Convert to RAGSearchResult format
       const searchResults: RAGSearchResult[] = rawSearchResults.map(result => ({
         ...result,
-        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match',
-      }));
+        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match` }));
 
       // Apply custom legal reranker
       const rerankedResults = this.rerank(searchResults, {
@@ -191,7 +184,7 @@ export class LegalRAGEngine {
         jurisdiction: options.jurisdiction,
         caseType: options.caseType,
         requirePrecedent: options.requirePrecedent,
-        timeRange: options.timeRange,
+        timeRange: options.timeRange
       });
 
       const finalResults = this.applyLegalFilters(rerankedResults, options);
@@ -221,8 +214,7 @@ export class LegalRAGEngine {
       const resultsWithDistance = await db
         .select({
           doc: legalDocuments,
-          distance: sql<number>`${legalDocuments.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector`,
-        })
+          distance: sql<number>`${legalDocuments.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector` })
         .from(legalDocuments)
         .where(
           sql`${legalDocuments.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector <= ${1 - similarityThreshold}`
@@ -230,7 +222,7 @@ export class LegalRAGEngine {
         .orderBy(sql`distance`) // Order by distance (ascending for closest)
         .limit(limit);
 
-      return resultsWithDistance.map((r: { doc: LegalDocument; distance: number }) => ({
+      return resultsWithDistance.map((r: {, doc: LegalDocument; distance: number }) => ({
         document: r.doc,
         originalScore: 1 - r.distance, // Convert distance to similarity score
       }));
@@ -250,9 +242,7 @@ export class LegalRAGEngine {
   ): Promise<RawSearchResult> {
     // Use the new shared type
     // Define a local type for Qdrant search results to avoid importing PointStruct
-    type QdrantSearchResultPoint = {
-      id: string | number;
-      score: number;
+    type QdrantSearchResultPoint = { id: string | number;, score: number;
       payload?: Record<string, unknown>; // Use unknown for better type safety
       vector?: number[];
     };
@@ -261,7 +251,7 @@ export class LegalRAGEngine {
       const qdrantResults = (await this.qdrant.search(QDRANT_COLLECTION_NAME, {
         vector: queryEmbedding,
         limit: limit,
-        score_threshold: similarityThreshold,
+        score_threshold: similarityThreshold
       })) as QdrantSearchResultPoint[];
 
       // Production consideration: The payload from Qdrant is cast to LegalDocument.
@@ -272,9 +262,7 @@ export class LegalRAGEngine {
         // Destructure to explicitly omit: 'id' from the payload before spreading
         const { id: $_payloadId, ...payloadWithoutId } = payload;
 
-        return {
-          document: {
-            id: String(result.id), // Canonical ID from Qdrant
+        return { document: {, id: String(result.id), // Canonical ID from Qdrant
             content: payloadWithoutId.content ?? '', // Provide default if missing
             title: payloadWithoutId.title ?? 'Untitled Legal Document', // Provide default if missing
             caseId: payloadWithoutId.caseId ?? 'default_case_id', // Provide default if missing
@@ -286,9 +274,9 @@ export class LegalRAGEngine {
             entities: payloadWithoutId.entities,
             riskScore: payloadWithoutId.riskScore,
             confidenceScore: payloadWithoutId.confidenceScore,
-            tags: payloadWithoutId.tags,
+            tags: payloadWithoutId.tags
           },
-          originalScore: result.score,
+          originalScore: result.score
         };
       });
     } catch (qdrantError) {
@@ -307,14 +295,14 @@ export class LegalRAGEngine {
       jurisdiction?: string;
       caseType?: string;
       requirePrecedent?: boolean;
-      timeRange?: { start: Date; end: Date };
+      timeRange?: {, start: Date; end: Date };
     }
   ): RAGSearchResult[] {
     return results
       .map((result: RAGSearchResult) => {
         // Changed from any
         let score = result.originalScore || 0;
-        const reasons: string[] = [`Base similarity: ${(score * 100).toFixed(1)}%`]; // Changed to const
+        const reasons: string[] = [`Base; similarity: ${(score * 100).toFixed(1)}%`]; // Changed to const
         // Legal precedent bonus
         if (result.document.entities?.caseTypes && result.document.entities.caseTypes.length > 0) {
           // Added explicit check for caseTypes
@@ -365,7 +353,7 @@ export class LegalRAGEngine {
         return {
           ...result,
           rerankScore: score,
-          relevanceReason: reasons.join('; '),
+          relevanceReason: reasons.join('; ')
         };
       })
       .sort((a, b) => (b.rerankScore || 0) - (a.rerankScore || 0));
@@ -401,7 +389,7 @@ export class LegalRAGEngine {
     } catch (error: any) {
       // Changed from any
       console.error('Error generating embedding:', error);
-      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error'}`);
+      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error` }`);
     }
   }
   /**
@@ -424,7 +412,7 @@ export class LegalRAGEngine {
         monetary: extracted.monetary || [],
         clauses: extracted.clauses || [],
         jurisdictions: extracted.jurisdictions || [],
-        caseTypes: extracted.caseTypes || [],
+        caseTypes: extracted.caseTypes || []
       };
     } catch (error: any) {
       // Changed from any
@@ -450,20 +438,20 @@ export class LegalRAGEngine {
   /**
    * Assess legal risk using AI analysis
    */
-  private async assessLegalRisk(content: string, caseType?: string): Promise<{ score: number; confidence: number }> {
+  private async assessLegalRisk(content: string, caseType?: string): Promise<{ score: number;, confidence: number }> {
     // Changed return type from any
     try {
       // Use Ollama for risk assessment
       const riskAnalysis = await this.ollama.generateCompletion(
-        `Analyze the legal risk level of this ${caseType || 'legal'} document on a scale of 0-100.
+        `Analyze the legal risk level of this ${caseType || 'legal` } document on a scale of 0-100.
         Consider liability, compliance issues, and potential legal exposure.
         Document: ${content.substring(0, 2000)}
-        Return only a JSON object with: 'score' (0-100) and: 'confidence' (0-1) properties.`
+        Return only a JSON object with: 'score' (0-100); and: 'confidence' (0-1) properties.`
       );
       const parsed = JSON.parse(riskAnalysis);
       return {
         score: Math.max(0, Math.min(100, parsed.score || 25)),
-        confidence: Math.max(0, Math.min(1, parsed.confidence || 0.7)),
+        confidence: Math.max(0, Math.min(1, parsed.confidence || 0.7))
       };
     } catch (error: any) {
       // Changed from any
@@ -499,9 +487,9 @@ export class LegalRAGEngine {
         {
           id,
           vector: embedding,
-          payload: metadata,
+          payload: metadata
         },
-      ],
+      ]
     });
   }
   /**

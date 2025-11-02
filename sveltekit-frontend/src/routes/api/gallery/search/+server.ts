@@ -37,9 +37,7 @@ interface SearchOptions {
   includeMetadata?: boolean;
   includeContent?: boolean;
 }
-interface SearchResult {
-  id: string;
-  type: string;
+interface SearchResult { id: string;, type: string;
   title: string;
   description?: string;
   fileName: string;
@@ -56,21 +54,16 @@ interface SearchResult {
   matchedFields: string[];
   snippet?: string;
 }
-interface SearchResponse {
-  results: SearchResult[];
-  totalCount: number;
+interface SearchResponse { results: SearchResult[];, totalCount: number;
   searchTime: number;
-  facets: {
-    types: Array<{ name: string; count: number }>;
-    fileTypes: Array<{ name: string; count: number }>;
-    cases: Array<{ id: string; title: string; count: number }>;
-    tags: Array<{ name: string; count: number }>;
-    dateRanges: Array<{ range: string; count: number }>;
+  facets: { types: Array<{ name: string;, count: number }>;
+    fileTypes: Array<{ name: string;, count: number }>;
+    cases: Array<{ id: string; title: string;, count: number }>;
+    tags: Array<{ name: string;, count: number }>;
+    dateRanges: Array<{ range: string;, count: number }>;
   };
   suggestions?: string[];
-  pagination: {
-    page: number;
-    pageSize: number;
+  pagination: { page: number;, pageSize: number;
     totalPages: number;
   };
 }
@@ -79,7 +72,7 @@ interface SearchResponse {
 const GALLERY_SEARCH_API_URL = 'http://host.docker.internal:8094/api/gallery/search'; // Example Go microservice
 
 // Add lightweight, permissive aliases for Drizzle table objects to avoid TS property errors
-// Use: 'unknown' instead of: 'any' to avoid Unexpected any compiler errors
+// Use: 'unknown' instead; of: 'any' to avoid Unexpected any compiler errors
 const E = evidence as unknown as Record<string, unknown>;
 const C = cases as unknown as Record<string, unknown>;
 
@@ -89,7 +82,7 @@ async function tryDockerSearch(payload: Record<string, unknown>): Promise<Search
     const res = await fetch(GALLERY_SEARCH_API_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error(`Docker API error: ${res.status}`);
     return await res.json();
@@ -101,9 +94,7 @@ async function tryDockerSearch(payload: Record<string, unknown>): Promise<Search
 
 export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   try {
-    const { filters, options } = (await request.json()) as {
-      filters: SearchFilters;
-      options: SearchOptions;
+    const { filters, options } = (await request.json()) as { filters: SearchFilters;, options: SearchOptions;
     };
     const startTime = Date.now();
 
@@ -115,8 +106,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         headers: {
           'X-Search-Time': `${dockerResult.searchTime ?? Date.now() - startTime}ms`,
           'X-Total-Results': dockerResult.totalCount?.toString() ?? '0',
-          'Cache-Control': 'public, max-age=120',
-        },
+          'Cache-Control': `public, max-age=120` }
       });
     }
 
@@ -148,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         ocrText: includeContent ? E.ocrText : sql`NULL`,
         contentText: includeContent ? E.contentText : sql`NULL`,
         embedding: E.embedding,
-        isPublic: E.isPublic,
+        isPublic: E.isPublic
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id));
@@ -202,8 +192,8 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.max(1, Math.ceil(totalCount / pageSize)),
-      },
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
+      }
     };
 
     return json(response, {
@@ -211,11 +201,11 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         'X-Search-Time': `${searchTime}ms`,
         'X-Total-Results': totalCount.toString(),
         'Cache-Control': 'public, max-age=120', // Cache for 2 minutes
-      },
+      }
     });
   } catch (err) {
     console.error('Search error:', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 
@@ -241,7 +231,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
 
   // File type filters
   if (filters?.fileTypes && filters.fileTypes.length > 0) {
-    conditions.push(or(...filters.fileTypes.map(type => sql`${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%'}`)));
+    conditions.push(or(...filters.fileTypes.map(type => sql`${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%` }`)));
   }
 
   // Case filters
@@ -305,7 +295,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
 
 // Use Drizzle query builder type for query argument
 async function executeSearchQuery(
-  query: { execute: () => Promise<unknown[]>; orderBy: Function; limit: Function; offset: Function }, // more specific type
+  query: {, execute: () => Promise<unknown[]>; orderBy: Function; limit: Function; offset: Function }, // more specific type
   sortBy: string,
   sortOrder: string,
   page: number,
@@ -366,7 +356,7 @@ async function processSearchResult(item: Record<string, unknown>, filters: Searc
     fileName: String(item['fileName'] ?? item['file_name'] ?? ''),
     fileType: String(item['fileType'] ?? item['file_type'] ?? 'unknown'),
     fileSize: Number(item['fileSize'] ?? item['file_size'] ?? 0),
-    url: `/api/files/evidence/${String(item['id'] ?? '')}`,
+    url: '/api/files/evidence/${String(item['id'] ?? '')}`,
     thumbnailUrl: generateThumbnailUrl(
       String(item['filePath'] ?? item['file_path'] ?? ''),
       String(item['fileType'] ?? item['file_type'] ?? '')
@@ -378,7 +368,7 @@ async function processSearchResult(item: Record<string, unknown>, filters: Searc
     metadata: (item['metadata'] as Record<string, unknown>) || undefined,
     relevanceScore,
     matchedFields,
-    snippet,
+    snippet
   };
 }
 
@@ -489,8 +479,8 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
     // Try Docker Desktop microservice for facets
     const res = await fetch(`${GALLERY_SEARCH_API_URL}/facets`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ filters }),
+      headers: { 'content-type': `application/json` },
+      body: JSON.stringify({ filters })
     });
     if (res.ok) {
       return await res.json();
@@ -514,8 +504,8 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
         { range: 'Last 24 hours', count: 0 },
         { range: 'Last week', count: 0 },
         { range: 'Last month', count: 0 },
-        { range: 'Last year', count: 0 },
-      ],
+        { range: 'Last year', count: 0 }
+      ]
     };
   } catch (error) {
     console.error('Facet generation error:', error);
@@ -524,7 +514,7 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
       fileTypes: [],
       cases: [],
       tags: [],
-      dateRanges: [],
+      dateRanges: []
     };
   }
 }
@@ -536,7 +526,7 @@ async function getTypeFacets(): Promise<any> {
     { name: 'Document', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Video', count: 0 },
-    { name: 'Audio', count: 0 },
+    { name: 'Audio', count: 0 }
   ];
 }
 
@@ -547,7 +537,7 @@ async function getFileTypeFacets(): Promise<any> {
     { name: 'Image', count: 0 },
     { name: 'Word', count: 0 },
     { name: 'Excel', count: 0 },
-    { name: 'Video', count: 0 },
+    { name: 'Video', count: 0 }
   ];
 }
 
@@ -557,8 +547,7 @@ async function getCaseFacets(): Promise<any> {
       .select({
         id: cases.id,
         title: cases.title,
-        count: sql`count(${evidence.id})`,
-      })
+        count: sql`count(${evidence.id})` })
       .from(cases)
       .leftJoin(evidence, eq(cases.id, evidence.caseId))
       .groupBy(cases.id, cases.title)
@@ -566,7 +555,7 @@ async function getCaseFacets(): Promise<any> {
     return (caseCounts || []).map((c: Record<string, unknown>) => ({
       id: String(c.id),
       title: String(c.title || 'Untitled'),
-      count: Number(c.count || 0),
+      count: Number(c.count || 0)
     }));
   } catch (error) {
     console.error('getCaseFacets error:', error);
@@ -624,7 +613,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     'application/pdf': '/icons/pdf-thumbnail.svg',
     'video/': '/icons/video-thumbnail.svg',
     'audio/': '/icons/audio-thumbnail.svg',
-    'document': '/icons/document-thumbnail.svg',
+    'document': '/icons/document-thumbnail.svg'
   };
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
@@ -644,24 +633,24 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       query,
       types: type ? [type] : undefined,
       caseIds: caseId ? [caseId] : undefined,
-      contentSearch: true,
+      contentSearch: true
     };
     const options: SearchOptions = {
       page,
       pageSize,
       sortBy: 'uploadedAt',
       sortOrder: 'desc',
-      includeContent: false,
+      includeContent: false
     };
     const request = new Request('', {
       method: 'POST',
       body: JSON.stringify({ filters, options }),
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': `application/json` }
     });
     // Avoid casting to any, call POST directly
     return await POST({ request, locals: _locals });
   } catch (err) {
     console.error('GET search error:', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };

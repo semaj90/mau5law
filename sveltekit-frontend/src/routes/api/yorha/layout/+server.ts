@@ -5,7 +5,7 @@ export const GET: RequestHandler = async () => {
     version: '1.0.0',
     dataSources: [
       { name: 'brainGraph', type: 'rest', endpoint: '/api/brain/graph', intervalMs: 5000 },
-      { name: 'randomMetric', type: 'mock', intervalMs: 1500 },
+      { name: 'randomMetric', type: 'mock', intervalMs: 1500 }
     ],
     components: [
       {
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
         position: [0, 0, 0],
         rotation: [0, 0, 0],
         scale: [1, 1, 1],
-        style: { theme: 'yorha' },
+        style: {, theme: 'yorha' }
       },
       {
         id: 'metricPanel',
@@ -23,8 +23,8 @@ export const GET: RequestHandler = async () => {
         dataSource: 'randomMetric',
         position: [2, 0, 0],
         rotation: [0, 0, 0],
-        scale: [1, 1, 1],
+        scale: [1, 1, 1]
       },
-    ],
+    ]
   });
 };

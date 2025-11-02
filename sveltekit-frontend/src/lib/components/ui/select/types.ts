@@ -4,9 +4,7 @@ interface SelectCommonProps {
   className?: string;
   [key: string]: any;
 }
-export interface SelectContext {
-  selected: Writable<any>;
-  open: Writable<boolean>;
+export interface SelectContext { selected: Writable<any>;, open: Writable<boolean>;
   onSelect: (_value: any) => void;
   onToggle: () => void;
 }

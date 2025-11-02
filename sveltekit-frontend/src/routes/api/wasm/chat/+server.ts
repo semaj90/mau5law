@@ -11,14 +11,10 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Define options type for WebAssembly LLM
-interface WasmLLMOptions {
-  temperature: number;
-  maxTokens: number;
+interface WasmLLMOptions { temperature: number;, maxTokens: number;
 }
 
-interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
 }
 
 // WebAssembly LLM service interface
@@ -84,13 +80,13 @@ export const POST: RequestHandler = async ({ request }) => {
       stream = true,
       systemPrompt,
       conversationId,
-      context = [],
+      context = []
     } = body;
     if (!message) {
       return json(
         {
           success: false,
-          error: 'Message is required',
+          error: 'Message is required'
         },
         { status: 400 }
       );
@@ -101,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'WebAssembly LLM service not available',
+          error: 'WebAssembly LLM service not available'
         },
         { status: 503 }
       );
@@ -121,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       });
       fullPrompt += '\n';
     }
-    fullPrompt += `User: ${message}\nAssistant: `;
+    fullPrompt += `User: ${message}\nAssistant: ';
     // For streaming responses
     if (stream) {
       const encoder = new TextEncoder();
@@ -137,16 +133,16 @@ export const POST: RequestHandler = async ({ request }) => {
                   {
                     type: 'system',
                     content: 'WebAssembly Legal Assistant',
-                    confidence: 0.7,
+                    confidence: 0.7
                   },
-                ],
-              },
+                ]
+              }
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialChunk)}\n\n`));
             // Stream response
             const responseGenerator = wasm.generateResponse(fullPrompt, {
               temperature,
-              maxTokens,
+              maxTokens
             });
             for await (const chunk of responseGenerator) {
               const streamChunk = {
@@ -154,8 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 metadata: {
                   type: 'text',
                   confidence: 0.75,
-                  model: 'webassembly-llm',
-                },
+                  model: 'webassembly-llm` }
               };
               const data = `data: ${JSON.stringify(streamChunk)}\n\n`;
               controller.enqueue(encoder.encode(data));
@@ -167,27 +162,27 @@ export const POST: RequestHandler = async ({ request }) => {
             console.error('WebAssembly streaming error:', error);
             const errorChunk = {
               text: 'I apologize, but I encountered an error processing your request in WebAssembly mode. Please try again or connect to the full Ollama service for enhanced capabilities.',
-              metadata: { type: 'error', error: error.message },
+              metadata: { type: 'error', error: error.message }
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();
           }
-        },
+        }
       });
       return new Response(readable, {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*',
-        },
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
     // For non-streaming responses
     let fullResponse = '';
     const responseGenerator = wasm.generateResponse(fullPrompt, {
       temperature,
-      maxTokens,
+      maxTokens
     });
     for await (const chunk of responseGenerator) {
       fullResponse += chunk;
@@ -200,15 +195,15 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: 0.75,
         sources: [
           {
-            type: 'system',
+           , type: 'system',
             content: 'WebAssembly Legal Assistant',
-            confidence: 0.7,
+            confidence: 0.7
           },
         ],
         conversationId,
         timestamp: new Date().toISOString(),
-        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.',
-      },
+        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.'
+      }
     });
   } catch (error: any) {
     console.error('WebAssembly chat API error:', error);
@@ -216,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to process chat request in WebAssembly mode',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -242,16 +237,15 @@ export const GET: RequestHandler = async () => {
           'No access to external databases',
           'Reduced accuracy compared to full models',
           'Limited legal knowledge base',
-        ],
+        ]
       },
-      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable',
-    });
+      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable` });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: 'WebAssembly service error',
-        details: error.message,
+        details: error.message
       },
       { status: 500 }
     );

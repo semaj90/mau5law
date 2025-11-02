@@ -114,8 +114,8 @@ import type { User } from '$lib/types';
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
       recognition = new (window as any).webkitSpeechRecognition();
-      recognition.continuous = $state(false);
-      recognition.interimResults = $state(false);
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = "en-US";
       recognition.onresult = (_event: any) => {
         const transcript = event.results[0][0].transcript;
@@ -324,8 +324,8 @@ import type { User } from '$lib/types';
     if (!recognition) {
       const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognitio;
       recognition = new SpeechRecognitionClass();
-      recognition.continuous = $state(false);
-      recognition.interimResults = $state(false);
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = "en-US";
       recognition.onresult = (_event: any) => {
         const transcript = event.results[0][0].transcript;

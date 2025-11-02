@@ -49,18 +49,12 @@ const mockStorage = {
   length: 0,
   key: vi.fn()
 }
-Object.defineProperty(window, 'localStorage', {
-  value: mockStorage;
-  writable: true
+Object.defineProperty(window, 'localStorage', { value: mockStorage;, writable: true
 });
-Object.defineProperty(window, 'sessionStorage', {
-  value: mockStorage;
-  writable: true
+Object.defineProperty(window, 'sessionStorage', { value: mockStorage;, writable: true
 });
 // Mock crypto for session token generation
-Object.defineProperty(window, 'crypto', {
-  value: {
-    randomUUID: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
+Object.defineProperty(window, 'crypto', { value: {, randomUUID: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
     getRandomValues: (arr: Uint8Array) => {
       for (let i = 0; i < arr.length; i++) {
         arr[i] = Math.floor(Math.random() * 256);
@@ -70,9 +64,7 @@ Object.defineProperty(window, 'crypto', {
   }
 });
 // Mock performance API
-Object.defineProperty(window, 'performance', {
-  value: {
-    now: vi.fn(() => Date.now()),
+Object.defineProperty(window, 'performance', { value: {, now: vi.fn(() => Date.now()),
     mark: vi.fn(),
     measure: vi.fn(),
     getEntriesByType: vi.fn(() => []),
@@ -138,9 +130,7 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
     responseTime: 50,
     tablesAccessible: true
   }),
-  CaseOperations: {
-    create: vi.fn().mockResolvedValue({
-      id: 'test-case-id',
+  CaseOperations: { create: vi.fn().mockResolvedValue({, id: 'test-case-id',
       title: 'Test Case',
       status: 'active',
       caseNumber: 'CASE-001'
@@ -179,9 +169,7 @@ vi.mock('drizzle-orm', () => ({
   ne: vi.fn()
 });
 // Mock Redis service
-vi.mock('$lib/server/redis/redis-service.ts', () => ({
-  redisService: {
-    ping: vi.fn().mockResolvedValue('PONG'),
+vi.mock('$lib/server/redis/redis-service.ts', () => ({ redisService: {, ping: vi.fn().mockResolvedValue('PONG'),
     get: vi.fn().mockResolvedValue('test-value'),
     set: vi.fn().mockResolvedValue('OK'),
     del: vi.fn().mockResolvedValue(1),
@@ -191,9 +179,7 @@ vi.mock('$lib/server/redis/redis-service.ts', () => ({
   }
 });
 // Mock Ollama service
-vi.mock('$lib/server/services/OllamaService.js', () => ({
-  ollamaService: {
-    generate: vi.fn().mockResolvedValue('Test AI response'),
+vi.mock('$lib/server/services/OllamaService.js', () => ({ ollamaService: {, generate: vi.fn().mockResolvedValue('Test AI response'),
     isHealthy: vi.fn().mockResolvedValue(true),
     listModels: vi.fn().mockResolvedValue([
       { name: 'gemma3-legal:latest', size: '7.3GB' })
@@ -204,7 +190,7 @@ vi.mock('$lib/server/services/OllamaService.js', () => ({
 // Mock API response helpers
 vi.mock('$lib/server/api/response', () => ({
   withApiHandler: vi.fn((handler, event) => handler(event)),
-  parseRequestBody: vi.fn().mockImplementation((request, schema) => ({ title: 'Test', priority: 'medium' })),
+  parseRequestBody: vi.fn().mockImplementation((request, schema) => ({ title: 'Test', priority: `medium` })),
   apiSuccess: vi.fn((data) => ({ success: true, data })),
   validationError: vi.fn((message) => ({ error: message })),
   createPagination: vi.fn((page, limit, total) => ({ page, limit, total, pages: Math.ceil(total / limit) })),
@@ -222,23 +208,19 @@ vi.mock('$lib/server/embedding/embedding-repository.js', () => ({
     getJobStatus: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: 'completed' }),
     processNextJob: vi.fn().mockResolvedValue(null),
     querySimilar: vi.fn().mockResolvedValue([)
-      { id: '1', content: 'Test result', score: 0.95, documentId: 'doc-1' }
+      { id: '1', content: 'Test result', score: 0.95, documentId: `doc-1` }
     ])
   })
 });
 // Mock production logger
-vi.mock('$lib/server/production-logger.js', () => ({
-  logger: {
-    info: vi.fn(),
+vi.mock('$lib/server/production-logger.js', () => ({ logger: {, info: vi.fn(),
     error: vi.fn(),
     warn: vi.fn(),
     debug: vi.fn()
   }
 });
 // Mock SSR cache
-vi.mock('$lib/server/ssr/enhanced-load', () => ({
-  SSRCache: {
-    get: vi.fn(),
+vi.mock('$lib/server/ssr/enhanced-load', () => ({ SSRCache: {, get: vi.fn(),
     set: vi.fn(),
     clear: vi.fn()
   }
@@ -247,9 +229,7 @@ vi.mock('$lib/server/ssr/enhanced-load', () => ({
 global.URL.createObjectURL = vi.fn(() => 'mocked-object-url');
 global.URL.revokeObjectURL = vi.fn();
 // Mock File API with enhanced methods
-global.File = class MockFile {
-  name: string;
-  size: number;
+global.File = class MockFile { name: string;, size: number;
   type: string;
   lastModified: number;
   private _bits: BlobPart[];
@@ -306,9 +286,7 @@ global.File = class MockFile {
     return new MockFile(this._bits, this.name, { type: contentType || this.type });
   }
 } as any;
-global.FileReader = class MockFileReader extends EventTarget {
-  result: string | ArrayBuffer | null = null;
-  error: DOMException | null = null;
+global.FileReader = class MockFileReader extends EventTarget { result: string | ArrayBuffer | null = null;, error: DOMException | null = null;
   readyState: number = 0;
   readAsText(file: File) {
     setTimeout(() => {
@@ -389,9 +367,7 @@ global.FormData = class MockFormData {
   }
 } as any;
 // Mock Blob API
-global.Blob = class MockBlob {
-  size: number;
-  type: string;
+global.Blob = class MockBlob { size: number;, type: string;
   private _parts: BlobPart[];
   constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
     this._parts = blobParts || [];
@@ -451,10 +427,9 @@ beforeEach(() => {
         status: 200,
         json: () => Promise.resolve({,
           status: 'healthy',
-          services: {
-            database: { status: 'ok' },
+          services: { database: {, status: 'ok' },
             redis: { status: 'ok' },
-            ollama: { status: 'ok' }
+            ollama: {, status: 'ok' }
           },
           timestamp: new Date().toISOString()
         })
@@ -479,9 +454,7 @@ beforeEach(() => {
         ok: true,
         status: 200,
         headers: new Headers({ 'Content-Type': 'text/stream' }),
-        body: {
-          getReader: () => ({
-            read: vi.fn();
+        body: { getReader: () => ({, read: vi.fn();
               .mockResolvedValueOnce({
                 value: new TextEncoder().encode('{"response":"Test response"}'),
                 done: false
@@ -512,7 +485,7 @@ beforeEach(() => {
         json: () => Promise.resolve({,
           success: true,
           fileId: 'test-file-id',
-          metadata: { size: 1024, type: 'application/pdf' }
+          metadata: {, size: 1024, type: 'application/pdf' }
         })
       });
     }
@@ -535,8 +508,7 @@ beforeEach(() => {
         json: () => Promise.resolve({,
           id: 'test-case',
           title: 'Test Case',
-          status: 'active'
-        })
+          status: `active` })
       });
     }
     // Default response

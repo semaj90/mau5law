@@ -30,7 +30,7 @@ export class LegalCanvasManager {
     avgFrameTime: 0,
     fps: 0,
     lastFrameTime: 0,
-    droppedFrames: 0,
+    droppedFrames: 0
   };
   constructor(canvasElement: HTMLCanvasElement, config: CanvasConfig) {
     this.initializeFabricCanvas(canvasElement, config);
@@ -49,7 +49,7 @@ export class LegalCanvasManager {
       skipTargetFind: false,
       perPixelTargetFind: true,
       enableRetinaScaling: true,
-      imageSmoothingEnabled: true,
+      imageSmoothingEnabled: true
     });
     // Configure canvas for high performance
     this.canvas.freeDrawingBrush.width = 2;
@@ -176,7 +176,7 @@ export class LegalCanvasManager {
   }
   /**
    * Update cursor position for collaborative features
-   */ private updateCursorPosition(pointer: { x: number; y: number }): void {
+   */ private updateCursorPosition(pointer: {, x: number; y: number }): void {
     // Would update cursor via RabbitMQ for real-time collaboration
   }
   /**
@@ -192,7 +192,7 @@ export class LegalCanvasManager {
       ...this.renderMetrics,
       activeIndicators: this.progressIndicators.size,
       canvasObjects: this.canvas?.getObjects().length || 0,
-      memoryUsage: this.getCanvasMemoryUsage(),
+      memoryUsage: this.getCanvasMemoryUsage()
     };
   }
   /**
@@ -252,7 +252,7 @@ class ProgressIndicator {
       stroke: '#555555',
       strokeWidth: 1,
       rx: 4,
-      ry: 4,
+      ry: 4
     });
     // Progress bar
     this.progressBar = new fabric.Rect({
@@ -262,7 +262,7 @@ class ProgressIndicator {
       height: config.height - 4,
       fill: config.color || '#00ff88',
       rx: 2,
-      ry: 2,
+      ry: 2
     });
     // Progress text
     this.progressText = new fabric.Text('0%', {
@@ -273,12 +273,11 @@ class ProgressIndicator {
       fill: '#ffffff',
       textAlign: 'center',
       originX: 'center',
-      originY: 'center',
-    });
+      originY: 'center` });
     // Group elements
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
       selectable: false,
-      evented: false,
+      evented: false
     });
     this.canvas.add(this.progressGroup);
   }
@@ -338,7 +337,7 @@ class VectorVisualization {
         strokeWidth: 1,
         originX: 'center',
         originY: 'center',
-        selectable: false,
+        selectable: false
       });
       this.canvas.add(point);
       this.vectorPoints.push({
@@ -346,7 +345,7 @@ class VectorVisualization {
         originalX: x,
         originalY: y,
         similarity: vector.similarity,
-        phase: Math.random() * Math.PI * 2,
+        phase: Math.random() * Math.PI * 2
       });
       // Create connections to similar vectors
       if (vector.similarity > 0.7) {
@@ -370,7 +369,7 @@ class VectorVisualization {
       strokeWidth: 1,
       opacity: 0.3,
       selectable: false,
-      evented: false,
+      evented: false
     });
     this.canvas.add(line);
     this.connections.push(line);
@@ -430,19 +429,19 @@ export class LokiCacheManager {
     // Vector embeddings cache
     const vectorsCollection = this.db.addCollection('vectors', {
       indices: ['document_id', 'similarity', 'timestamp'],
-      unique: ['document_id'],
+      unique: ['document_id']
     });
     // Progress states cache
     const progressCollection = this.db.addCollection('progress', {
-      indices: ['id', 'status', 'timestamp'],
+      indices: ['id', 'status', 'timestamp']
     });
     // Canvas state cache
     const canvasCollection = this.db.addCollection('canvas_state', {
-      indices: ['canvas_id', 'user_id', 'timestamp'],
+      indices: ['canvas_id', 'user_id', 'timestamp']
     });
     // User interactions cache
     const interactionsCollection = this.db.addCollection('interactions', {
-      indices: ['user_id', 'action_type', 'timestamp'],
+      indices: ['user_id', 'action_type', 'timestamp']
     });
     this.collections.set('vectors', vectorsCollection);
     this.collections.set('progress', progressCollection);
@@ -463,7 +462,7 @@ export class LokiCacheManager {
         results: results.map(result => ({
           document_id: result.document_id,
           similarity: result.similarity,
-          metadata: result.metadata,
+          metadata: result.metadata
         })),
         timestamp: Date.now(),
         ttl: Date.now() + 3600000, // 1 hour TTL
@@ -557,7 +556,7 @@ export class LokiCacheManager {
       // Clean expired vector results
       const vectorsCollection = this.collections.get('vectors');
       if (vectorsCollection) {
-        const expired = vectorsCollection.find({ ttl: { $lt: now } });
+        const expired = vectorsCollection.find({ ttl: {, $lt: now } });
         expired.forEach(entry => vectorsCollection.remove(entry));
         cleanedCount += expired.length;
       }
@@ -587,14 +586,14 @@ export class LokiCacheManager {
     const stats: CacheStats = {
       totalEntries: 0,
       collectionStats: {},
-      isInitialized: true,
+      isInitialized: true
     };
     this.collections.forEach((collection, name) => {
       const count = collection.count();
       stats.totalEntries += count;
       stats.collectionStats[name] = {
         count,
-        size: this.estimateCollectionSize(collection),
+        size: this.estimateCollectionSize(collection)
       };
     });
     return stats;
@@ -670,7 +669,7 @@ export class RabbitMQRealtimeMessenger {
     // Create temporary queue
     const queue = await this.channel.assertQueue(queueName, {
       exclusive: true,
-      autoDelete: true,
+      autoDelete: true
     });
     // Bind to progress exchange
     await this.channel.bindQueue(queue.queue, 'legal-ai-realtime', routingKey);
@@ -699,11 +698,11 @@ export class RabbitMQRealtimeMessenger {
     const message = {
       ...progressData,
       timestamp: Date.now(),
-      id: progressId,
+      id: progressId
     };
     await this.channel.publish('legal-ai-realtime', routingKey, Buffer.from(JSON.stringify(message)), {
       persistent: false,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
   /**
@@ -715,7 +714,7 @@ export class RabbitMQRealtimeMessenger {
     // Create queue for canvas updates
     const queue = await this.channel.assertQueue(queueName, {
       exclusive: true,
-      autoDelete: true,
+      autoDelete: true
     });
     // Bind to canvas collaboration exchange
     await this.channel.bindQueue(queue.queue, 'canvas-collaboration', '');
@@ -745,7 +744,7 @@ export class RabbitMQRealtimeMessenger {
     const message = {
       ...updateData,
       canvasId,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     await this.channel.publish('canvas-collaboration', '', Buffer.from(JSON.stringify(message)), { persistent: false });
   }
@@ -757,7 +756,7 @@ export class RabbitMQRealtimeMessenger {
     const queueName = 'vector-updates';
     // Create durable queue for vector updates
     const queue = await this.channel.assertQueue(queueName, {
-      durable: true,
+      durable: true
     });
     // Bind to vector processing exchange
     await this.channel.bindQueue(queue.queue, 'vector-processing', 'vector.completed');
@@ -797,7 +796,7 @@ export class RabbitMQRealtimeMessenger {
     return {
       isConnected: this.isConnected,
       activeSubscriptions: this.subscriptions.size,
-      messageHandlers: this.messageHandlers.size,
+      messageHandlers: this.messageHandlers.size
     };
   }
   /**
@@ -823,7 +822,7 @@ export const realTimeUIMachine = createMachine(
     id: 'realTimeUI',
     initial: 'initializing',
     context: {
-      canvasManager: null,
+     , canvasManager: null,
       cacheManager: null,
       messenger: null,
       activeProgress: new Map(),
@@ -831,76 +830,66 @@ export const realTimeUIMachine = createMachine(
       collaborativeMode: false,
       renderMetrics: {
         fps: 0,
-        droppedFrames: 0,
-      },
+        droppedFrames: 0
+      }
     },
-    states: {
-      initializing: {
-        entry: 'initializeComponents',
+    states: { initializing: {, entry: 'initializeComponents',
         on: {
           COMPONENTS_READY: 'idle',
-          INITIALIZATION_FAILED: 'error',
-        },
+          INITIALIZATION_FAILED: 'error'
+        }
       },
-      idle: {
-        on: {
-          START_PROGRESS: {
+      idle: { on: {, START_PROGRESS: {
             target: 'trackingProgress',
-            actions: 'createProgressIndicator',
+            actions: 'createProgressIndicator'
           },
           LOAD_VECTORS: {
             target: 'renderingVectors',
-            actions: 'loadVectorVisualization',
+            actions: 'loadVectorVisualization'
           },
           ENABLE_COLLABORATION: {
             target: 'collaborative',
-            actions: 'enableCollaborativeMode',
-          },
-        },
+            actions: 'enableCollaborativeMode'
+          }
+        }
       },
       trackingProgress: {
         entry: 'startProgressTracking',
-        on: {
-          PROGRESS_UPDATE: {
-            actions: 'updateProgress',
+        on: { PROGRESS_UPDATE: {, actions: 'updateProgress'
           },
           PROGRESS_COMPLETE: {
             target: 'idle',
-            actions: 'completeProgress',
+            actions: 'completeProgress'
           },
           PROGRESS_ERROR: {
             target: 'error',
-            actions: 'handleProgressError',
-          },
-        },
+            actions: 'handleProgressError'
+          }
+        }
       },
       renderingVectors: {
         entry: 'startVectorRendering',
-        on: {
-          VECTOR_SIMILARITY_UPDATE: {
-            actions: 'updateVectorVisualization',
+        on: { VECTOR_SIMILARITY_UPDATE: {, actions: 'updateVectorVisualization'
           },
           VECTOR_RENDERING_COMPLETE: 'idle',
-          VECTOR_ERROR: 'error',
-        },
+          VECTOR_ERROR: 'error'
+        }
       },
       collaborative: {
         entry: 'setupCollaboration',
-        on: {
-          CANVAS_UPDATE: {
-            actions: 'broadcastCanvasUpdate',
+        on: { CANVAS_UPDATE: {, actions: 'broadcastCanvasUpdate'
           },
           REMOTE_CANVAS_UPDATE: {
-            actions: 'applyRemoteCanvasUpdate',
+            actions: 'applyRemoteCanvasUpdate'
           },
           USER_CURSOR_MOVE: {
-            actions: 'broadcastCursorPosition',
+            actions: 'broadcastCursorPosition'
           },
           DISABLE_COLLABORATION: {
             target: 'idle',
-            actions: 'disableCollaborativeMode',
-          },
-        },
+            actions: 'disableCollaborativeMode'
+          }
+        }
       },
       error: {
         entry: 'logError',
@@ -908,15 +897,12 @@ export const realTimeUIMachine = createMachine(
           RETRY: 'initializing',
           RESET: {
             target: 'idle',
-            actions: 'resetState',
-          },
-        },
-      },
-    },
+            actions: 'resetState` }
+        }
+      }
+    }
   },
-  {
-    actions: {
-      initializeComponents: assign((context, event) => {
+  { actions: {, initializeComponents: assign((context, event) => {
         console.log('🚀 Initializing real-time UI components');
         // Components would be initialized here
         return context;
@@ -964,24 +950,20 @@ export const realTimeUIMachine = createMachine(
           ...context,
           activeProgress: new Map(),
           vectorVisualization: null,
-          collaborativeMode: false,
+          collaborativeMode: false
         };
-      }),
-    },
+      })
+    }
   }
 );
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
-interface CanvasConfig {
-  width: number;
-  height: number;
+interface CanvasConfig { width: number;, height: number;
   backgroundColor?: string;
   enableGPUAcceleration?: boolean;
 }
-interface ProgressConfig {
-  x: number;
-  y: number;
+interface ProgressConfig { x: number;, y: number;
   width: number;
   height: number;
   color?: string;
@@ -991,22 +973,16 @@ interface ProgressDetails {
   stage?: string;
   eta?: number;
 }
-interface VectorData {
-  id: string;
-  embedding: number[];
+interface VectorData { id: string;, embedding: number[];
   similarity: number;
   metadata: any;
 }
-interface VectorPoint {
-  object: fabric.Circle;
-  originalX: number;
+interface VectorPoint { object: fabric.Circle;, originalX: number;
   originalY: number;
   similarity: number;
   phase: number;
 }
-interface RenderMetrics {
-  frameCount: number;
-  avgFrameTime: number;
+interface RenderMetrics { frameCount: number;, avgFrameTime: number;
   fps: number;
   lastFrameTime: number;
   droppedFrames: number;
@@ -1014,30 +990,20 @@ interface RenderMetrics {
   canvasObjects: number;
   memoryUsage: number;
 }
-interface SimilarityResult {
-  document_id: string;
-  similarity: number;
+interface SimilarityResult { document_id: string;, similarity: number;
   metadata: any;
 }
-interface CacheStats {
-  totalEntries: number;
-  collectionStats: Record<string, { count: number; size: number }>;
+interface CacheStats { totalEntries: number;, collectionStats: Record<string, { count: number;, size: number }>;
   isInitialized: boolean;
 }
-interface ProgressUpdate {
-  progress: number;
-  stage: string;
+interface ProgressUpdate { progress: number;, stage: string;
   details?: any;
 }
-interface CanvasUpdate {
-  action: 'add' | 'modify' | 'delete';
-  objectId: string;
+interface CanvasUpdate { action: 'add' | 'modify' | 'delete';, objectId: string;
   objectData: any;
   userId: string;
 }
-interface MessengerStatus {
-  isConnected: boolean;
-  activeSubscriptions: number;
+interface MessengerStatus { isConnected: boolean;, activeSubscriptions: number;
   messageHandlers: number;
 }
 type MessageHandler = (message: any) => void;
@@ -1054,5 +1020,5 @@ export {
   VectorData,
   RenderMetrics,
   CacheStats,
-  MessengerStatus,
+  MessengerStatus
 };

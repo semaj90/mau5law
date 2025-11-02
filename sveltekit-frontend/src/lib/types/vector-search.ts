@@ -14,9 +14,7 @@ export interface VectorSearchResult {
   searchStrategy: string;
   indexUsed: string;
   threshold: number;
-  embedding: {
-    dimensions: number;
-    model: string;
+  embedding: { dimensions: number;, model: string;
     format: string;
   }
 }
@@ -31,9 +29,7 @@ export interface VectorSearchOptions {
     tags?: string[];
   }
 }
-export interface EmbeddingVector {
-  dimensions: number;
-  values: number[];
+export interface EmbeddingVector { dimensions: number;, values: number[];
   model: string;
   createdAt: Date;
 }
@@ -134,16 +130,12 @@ export interface VectorSearchHealthStatus {
 }
 export interface VectorSearchStats {
   /** Count of vectors by entity type */
-  vectorCounts: {
-    evidence: number;
-    cases: number;
+  vectorCounts: { evidence: number;, cases: number;
     chunks?: number;
   }
   /** PostgreSQL index usage statistics */
   indexStats: {
-    [indexName: string]: {
-      table: string;
-      scans: number;
+    [indexName: string]: { table: string;, scans: number;
       tuplesRead: number;
       tuplesFetched: number;
     }
@@ -155,9 +147,7 @@ export interface VectorSearchStats {
     chunks?: number;
   }
   /** Recent activity and status */
-  recentActivity: {
-    lastUpdated: string;
-    healthStatus: string;
+  recentActivity: { lastUpdated: string;, healthStatus: string;
     error?: string;
     timestamp?: string;
   }
@@ -220,9 +210,7 @@ export interface VectorIndexInfo {
   /** Number of index scans */
   scans?: number;
   /** Index effectiveness metrics */
-  effectiveness?: {
-    tuplesRead: number;
-    tuplesFetched: number;
+  effectiveness?: { tuplesRead: number;, tuplesFetched: number;
     hitRatio: number;
   }
 }
@@ -260,9 +248,7 @@ export interface VectorEmbeddingMetadata {
     normalization?: string;
   }
   /** Quality metrics */
-  quality?: {
-    confidence: number;
-    completeness: number;
+  quality?: { confidence: number;, completeness: number;
     relevance: number;
   }
 }

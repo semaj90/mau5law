@@ -7,9 +7,7 @@ import type { Case } from '$lib/types';
 import crypto from 'crypto';
 import { env } from '$env/dynamic/private'; // ADDED: Import SvelteKit environment variables
 // Removed problematic external type import (some TS configs/parsers choke on .js type imports)
-export interface AIResponse {
-  id: string;
-  content: string;
+export interface AIResponse { id: string;, content: string;
   providerId?: string;
   model?: string;
   tokensUsed?: number;
@@ -17,12 +15,8 @@ export interface AIResponse {
   metadata?: Record<string, unknown>;
 }
 
-export interface AutoGenAgent {
-  name: string;
-  systemMessage: string;
-  llmConfig: {
-    model: string;
-    temperature: number;
+export interface AutoGenAgent { name: string;, systemMessage: string;
+  llmConfig: { model: string;, temperature: number;
     maxTokens: number;
     apiBase?: string;
   };
@@ -31,9 +25,7 @@ export interface AutoGenAgent {
   tools?: string[];
 }
 
-export interface AutoGenMessage {
-  id: string;
-  sender: string;
+export interface AutoGenMessage { id: string;, sender: string;
   recipient?: string;
   content: string;
   timestamp: number;
@@ -41,9 +33,7 @@ export interface AutoGenMessage {
   metadata?: Record<string, unknown>;
 }
 
-export interface AutoGenConversation {
-  id: string;
-  participants: AutoGenAgent[];
+export interface AutoGenConversation { id: string;, participants: AutoGenAgent[];
   messages: AutoGenMessage[];
   status: 'active' | 'completed' | 'failed' | 'terminated';
   startTime: number;
@@ -51,9 +41,7 @@ export interface AutoGenConversation {
   metadata: Record<string, unknown>;
 }
 
-export interface LegalAgentTeam {
-  prosecutor: AutoGenAgent;
-  legalResearcher: AutoGenAgent;
+export interface LegalAgentTeam { prosecutor: AutoGenAgent;, legalResearcher: AutoGenAgent;
   evidenceAnalyst: AutoGenAgent;
   coordinator: AutoGenAgent;
 }
@@ -85,11 +73,11 @@ export class AutoGenService {
         model: 'gemma3-legal:latest',
         temperature: 0.1,
         maxTokens: 1024,
-        apiBase: getOllamaEndpoint(),
+        apiBase: getOllamaEndpoint()
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 3,
-      tools: ['legal_database_search', 'case_precedent_lookup', 'statute_analysis'],
+      tools: ['legal_database_search', 'case_precedent_lookup', 'statute_analysis']
     };
 
     const legalResearcher: AutoGenAgent = {
@@ -105,11 +93,11 @@ export class AutoGenService {
         model: 'llama3:8b-instruct',
         temperature: 0.2,
         maxTokens: 1536,
-        apiBase: getOllamaEndpoint(),
+        apiBase: getOllamaEndpoint()
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 2,
-      tools: ['westlaw_search', 'lexis_search', 'statute_lookup', 'citation_formatter'],
+      tools: ['westlaw_search', 'lexis_search', 'statute_lookup', 'citation_formatter']
     };
 
     const evidenceAnalyst: AutoGenAgent = {
@@ -125,16 +113,16 @@ export class AutoGenService {
         model: 'gemma3-legal:latest',
         temperature: 0.1,
         maxTokens: 1024,
-        apiBase: getOllamaEndpoint(),
+        apiBase: getOllamaEndpoint()
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 2,
-      tools: ['evidence_validator', 'chain_custody_tracker', 'admissibility_checker'],
+      tools: ['evidence_validator', 'chain_custody_tracker', 'admissibility_checker']
     };
 
     const coordinator: AutoGenAgent = {
       name: 'coordinator',
-      systemMessage: `You are a case coordination specialist responsible for orchestrating the legal team's analysis.
+      systemMessage: 'You are a case coordination specialist responsible for orchestrating the legal team's analysis.
       Your role is to:
       - Coordinate between team members
       - Synthesize different perspectives
@@ -145,11 +133,11 @@ export class AutoGenService {
         model: 'gemma3-legal:latest',
         temperature: 0.3,
         maxTokens: 2048,
-        apiBase: getOllamaEndpoint(),
+        apiBase: getOllamaEndpoint()
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 5,
-      tools: ['case_synthesizer', 'recommendation_generator', 'team_coordinator'],
+      tools: ['case_synthesizer', 'recommendation_generator', 'team_coordinator']
     };
 
     return { prosecutor, legalResearcher, evidenceAnalyst, coordinator };
@@ -183,7 +171,7 @@ export class AutoGenService {
     const url = `${this.baseUrl}/api/conversation/start`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}' } : {})
     };
 
     try {
@@ -193,8 +181,7 @@ export class AutoGenService {
         initialMessage,
         context: taskContext,
         maxRounds: 10,
-        terminationCondition: 'max_rounds_or_agreement',
-      });
+        terminationCondition: `max_rounds_or_agreement` });
 
       const response = await this.withTimeout(fetch(url, { method: 'POST', headers, body }));
       if (!response.ok) {
@@ -207,11 +194,11 @@ export class AutoGenService {
         messages: [],
         status: 'active',
         startTime: Date.now(),
-        metadata: data?.metadata || {},
+        metadata: data?.metadata || {}
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Failed to start AutoGen conversation:', msg);
+      console.error('Failed to start AutoGen conversation: `, msg);
       throw error;
     }
   }
@@ -222,7 +209,7 @@ export class AutoGenService {
   async getConversation(conversationId: string): Promise<AutoGenConversation> {
     const url = `${this.baseUrl}/api/conversation/${conversationId}`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
     };
 
     try {
@@ -245,7 +232,7 @@ export class AutoGenService {
     const url = `${this.baseUrl}/api/conversation/${conversationId}/message`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
     };
     const body = JSON.stringify({ message, sender, timestamp: Date.now() });
 
@@ -258,7 +245,7 @@ export class AutoGenService {
       return (data.messages || []) as AutoGenMessage[];
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Failed to send message:', msg);
+      console.error('Failed to send message: `, msg);
       throw error;
     }
   }
@@ -269,7 +256,7 @@ export class AutoGenService {
   async terminateConversation(conversationId: string): Promise<void> {
     const url = `${this.baseUrl}/api/conversation/${conversationId}/terminate`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
     };
 
     try {
@@ -343,11 +330,11 @@ export class AutoGenService {
           conversationId: conversation.id,
           messagesCount: finalConversation.messages.length,
           participants: agents.map(a => a.name),
-          workflowType,
-        },
+          workflowType
+        }
       } as AIResponse;
     } catch (error: any) {
-      console.error('Legal workflow execution failed:', error);
+      console.error('Legal workflow execution failed: `, error);
       throw error;
     }
   }
@@ -357,7 +344,7 @@ export class AutoGenService {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await this.withTimeout(fetch(`${this.baseUrl}/health`, { method: 'GET' }), 5000);
+      const response = await this.withTimeout(fetch(`${this.baseUrl}/health`, { method: `GET` }), 5000);
       return response.ok;
     } catch {
       return false;
@@ -370,7 +357,7 @@ export class AutoGenService {
   async getCapabilities(): Promise<Capabilities> {
     const url = `${this.baseUrl}/api/capabilities`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
     };
 
     try {
@@ -384,7 +371,7 @@ export class AutoGenService {
         models: ['gemma3-legal:latest'],
         tools: ['legal_database_search', 'case_precedent_lookup', 'evidence_validator'],
         maxAgents: 5,
-        supportedWorkflows: ['case_analysis', 'evidence_review', 'legal_research'],
+        supportedWorkflows: ['case_analysis', 'evidence_review', 'legal_research']
       };
     }
   }
@@ -406,11 +393,11 @@ export class AutoGenService {
         model,
         temperature: 0.2,
         maxTokens: 1024,
-        apiBase: getOllamaEndpoint(),
+        apiBase: getOllamaEndpoint()
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 3,
-      tools: tools, // Explicitly assign the: 'tools' parameter to the: 'tools' property
+      tools: tools, // Explicitly assign the: 'tools' parameter to; the: 'tools' property
     };
   }
 
@@ -539,8 +526,7 @@ export async function analyzeCaseWithAgents(
   const context: Record<string, unknown> = {
     evidenceCount: evidenceList.length,
     jurisdiction,
-    analysisType: 'comprehensive',
-  };
+    analysisType: `comprehensive` };
 
   const evidenceSection =
     evidenceList && evidenceList.length > 0
@@ -565,8 +551,7 @@ export async function reviewEvidenceWithAgents(
   const context: Record<string, unknown> = {
     evidenceType,
     custodySteps: chainOfCustody.length,
-    reviewType: 'admissibility',
-  };
+    reviewType: `admissibility` };
 
   const custodySection =
     chainOfCustody && chainOfCustody.length > 0
@@ -591,8 +576,7 @@ export async function researchLegalPrecedents(
   const context: Record<string, unknown> = {
     jurisdiction,
     caseType,
-    researchDepth: 'comprehensive',
-  };
+    researchDepth: `comprehensive` };
 
   const input = [
     `Legal Question: ${legalQuestion}`,
@@ -613,12 +597,12 @@ export interface UltraJSONParser {
 
 export interface WasmClusteringService {
   // Clusters embeddings in WASM; returns array of cluster indices per vector
-  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean' }): Promise<number[]>;
+  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean` }): Promise<number[]>;
 }
 
 export interface NesGPUBridge {
   // Sends tensor to GPU bridge for accelerated ops (WebGPU/CUDA relay)
-  submitTensor(tensor: Float32Array, meta?: Record<string, unknown>): Promise<{ jobId: string; status: string }>;
+  submitTensor(tensor: Float32Array, meta?: Record<string, unknown>): Promise<{ jobId: string;, status: string }>;
   // Use unknown for opaque results from external GPU bridge
   getResult(jobId: string): Promise<unknown>;
 }
@@ -644,7 +628,7 @@ export interface PostgresClientMinimal {
     idColumn: string,
     idValue: any,
     jsonColumn: string,
-    jsonValue: any
+    jsonValue: any;
   ): Promise<void>;
 }
 
@@ -653,15 +637,13 @@ export interface QdrantClientMinimal {
   baseUrl: string;
   upsert(
     collection: string,
-    points: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{, id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<unknown>;
   search(collection: string, vector: number[], top: number, params?: Record<string, unknown>): Promise<unknown>;
 }
 
 // Moved: Capabilities is a top-level type (was accidentally declared inside the class)
-export interface Capabilities {
-  models: string[];
-  tools: string[];
+export interface Capabilities { models: string[];, tools: string[];
   maxAgents: number;
   supportedWorkflows: string[];
 }
@@ -689,8 +671,8 @@ export class OllamaEmbeddingsHelper {
       const resp = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         signal: controller.signal,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, inputs: texts }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ model, inputs: texts })
       });
       clearTimeout(id);
       if (!resp.ok) throw new Error(`Ollama embeddings failed: ${resp.status}`);
@@ -764,7 +746,7 @@ export class QdrantIndexer {
 
   async upsertVectors(
     collection: string,
-    vectors: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+    vectors: Array<{, id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<unknown> {
     if (!this.client) throw new Error('No Qdrant client provided');
     return this.client.upsert(collection, vectors);
@@ -785,7 +767,7 @@ export class PostgresJSONPersistence {
 
   /**
    * Upsert jsonb payload into table:
-   * - table: name
+   * -; table: name
    * - idColumn: primary key column
    * - idValue: primary key value
    * - jsonColumn: column that stores jsonb
@@ -824,7 +806,7 @@ export const DefaultUltraJSONParser: UltraJSONParser = {
   },
   stringify(input: any) {
     return JSON.stringify(input);
-  },
+  }
 };
 
 export const DefaultWasmClusteringService: WasmClusteringService = {
@@ -832,16 +814,16 @@ export const DefaultWasmClusteringService: WasmClusteringService = {
     const n = embeddings.length;
     // avoid unused-parameter/index warnings
     return new Array(n).fill(0).map(() => 0);
-  },
+  }
 };
 
 export const DefaultNesGPUBridge: NesGPUBridge = {
   async submitTensor(tensor: Float32Array) {
     // reference tensor to avoid: "declared but never read" lint warnings
     const len = tensor?.length ?? 0;
-    return { jobId: `gpu_${Date.now()}_len${len}`, status: 'queued' };
+    return { jobId: `gpu_${Date.now()}_len${len}`, status: `queued` };
   },
   async getResult(jobId: string) {
     return { jobId, status: 'completed', result: null } as unknown;
-  },
+  }
 };

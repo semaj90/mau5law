@@ -1,8 +1,6 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-export interface OllamaSuggestionRequest {
-  content: string;
-  reportType: string;
+export interface OllamaSuggestionRequest { content: string;, reportType: string;
   context?: {
     caseId?: string;
     evidenceIds?: string[];
@@ -11,9 +9,7 @@ export interface OllamaSuggestionRequest {
   maxSuggestions?: number;
   temperature?: number;
 }
-export interface OllamaSuggestion {
-  content: string;
-  type: string;
+export interface OllamaSuggestion { content: string;, type: string;
   confidence: number;
   reasoning: string;
   metadata: {
@@ -54,7 +50,7 @@ export class OllamaSuggestionsService {
   constructor({
     baseUrl = 'http://localhost:11434',
     model = 'gemma3-legal:latest',
-    timeout = 30000,
+    timeout = 30000
   }: { baseUrl?: string; model?: string; timeout?: number } = {}) {
     this.baseUrl = baseUrl;
     this.model = model;
@@ -71,7 +67,7 @@ export class OllamaSuggestionsService {
         temperature: request.temperature ?? 0.3,
         top_p: 0.9,
         top_k: 40,
-        num_predict: 1000,
+        num_predict: 1000
       });
       return this.parseSuggestionsResponse(response, request.reportType, request.maxSuggestions ?? 5);
     } catch (error: any) {
@@ -90,7 +86,7 @@ export class OllamaSuggestionsService {
       for await (const chunk of this.streamOllama(prompt, {
         temperature: request.temperature ?? 0.3,
         top_p: 0.9,
-        top_k: 40,
+        top_k: 40
       })) {
         // Each chunk is an OllamaResponse; attempt to parse suggestions and yield them
         const parsed = this.parseSuggestionsResponse(chunk, request.reportType, request.maxSuggestions ?? 5);
@@ -171,13 +167,13 @@ Provide practical, implementable suggestions that would genuinely improve the le
         model: this.model,
         prompt,
         stream: false,
-        ...options,
+        ...options
       };
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(payload),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
@@ -205,13 +201,13 @@ Provide practical, implementable suggestions that would genuinely improve the le
         model: this.model,
         prompt,
         stream: true,
-        ...options,
+        ...options
       };
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(payload),
-        signal: controller.signal,
+        signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
@@ -308,8 +304,8 @@ Provide practical, implementable suggestions that would genuinely improve the le
             aiGenerated: true,
             model: response.model ?? this.model,
             reportType,
-            index,
-          },
+            index
+          }
         } as OllamaSuggestion;
       });
     } catch (error: any) {
@@ -342,8 +338,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
           model: this.model,
           reportType,
           index: i + 1,
-          parseMethod: 'text_fallback',
-        },
+          parseMethod: `text_fallback` }
       });
     }
     return suggestions;
@@ -376,7 +371,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       return response.ok;
     } catch (error: any) {
@@ -391,7 +386,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
    */
   public async getAvailableModels(): Promise<string[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/models`, { method: 'GET' });
+      const response = await fetch(`${this.baseUrl}/api/models`, { method: `GET` });
       if (!response.ok) throw new Error('Failed to fetch models');
       const data: any = await response.json();
       if (!data || typeof data !== 'object') return [];
@@ -410,11 +405,11 @@ Provide practical, implementable suggestions that would genuinely improve the le
   /**
    * Get service configuration
    */
-  public getConfig(): { baseUrl: string; model: string; timeout: number } {
+  public getConfig(): { baseUrl: string; model: string;, timeout: number } {
     return {
       baseUrl: this.baseUrl,
       model: this.model,
-      timeout: this.timeout,
+      timeout: this.timeout
     };
   }
 }
@@ -436,7 +431,7 @@ export async function generateOllamaSuggestions(
     context,
     maxSuggestions: 5,
     temperature: 0.3,
-    ...options,
+    ...options
   };
   return await ollamaSuggestionsService.generateSuggestions(request);
 }
@@ -456,13 +451,13 @@ export async function testOllamaIntegration(): Promise<any> {
     const testSuggestions = await ollamaSuggestionsService.generateSuggestions({
       content: 'The defendant was arrested on suspicion of burglary. Evidence includes fingerprints found at the scene.',
       reportType: 'prosecution_memo',
-      maxSuggestions: 1,
+      maxSuggestions: 1
     });
     return {
       success: true,
       model: config.model,
       availableModels,
-      testSuggestion: testSuggestions[0],
+      testSuggestion: testSuggestions[0]
     };
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
@@ -470,7 +465,7 @@ export async function testOllamaIntegration(): Promise<any> {
       success: false,
       model: 'unknown',
       availableModels: [],
-      error: err.message,
+      error: err.message
     };
   }
 }

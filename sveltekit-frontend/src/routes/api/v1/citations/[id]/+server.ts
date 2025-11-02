@@ -28,7 +28,7 @@ const UpdateCitationSchema = z.object({
   notes: z.string().optional(),
   relevance: z.enum(['high', 'medium', 'low']).optional(),
   verified: z.boolean().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 // Add lightweight types for locals shape to avoid `any`
@@ -64,13 +64,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({
       success: true,
       data: {
-        citation,
+        citation
       },
       meta: {
         // use safe helper
-        userId: getUserIdFromLocals(locals),
-        timestamp: new Date().toISOString(),
-      },
+       , userId: getUserIdFromLocals(locals),
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Citation GET error:', err);
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid citation ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch citation',
         code: 'FETCH_FAILED',
-        details: msg,
+        details: msg
       })
     );
   }
@@ -132,7 +132,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Check if citation exists
     const [existingCitation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!existingCitation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
     }
 
     // Update citation (use a typed cast instead of `any`)
@@ -146,14 +146,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: {
         citation: updatedCitation,
-        message: 'Citation updated successfully',
+        message: 'Citation updated successfully'
       },
       meta: {
-        userId: getUserIdFromLocals(locals),
+       , userId: getUserIdFromLocals(locals),
         citationId,
         timestamp: new Date().toISOString(),
-        action: 'citation_updated',
-      },
+        action: 'citation_updated'
+      }
     });
   } catch (err: any) {
     console.error('Citation PUT error:', err);
@@ -163,7 +163,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid citation data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -173,7 +173,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to update citation',
         code: 'UPDATE_FAILED',
-        details: msg,
+        details: msg
       })
     );
   }
@@ -204,15 +204,14 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         message: 'Citation deleted successfully',
         deletedCitation: {
           id: citationId,
-          title: existingCitation.title,
-        },
+          title: existingCitation.title
+        }
       },
       meta: {
-        userId: getUserIdFromLocals(locals),
+       , userId: getUserIdFromLocals(locals),
         deletedCitationId: citationId,
         timestamp: new Date().toISOString(),
-        action: 'citation_deleted',
-      },
+        action: `citation_deleted` }
     });
   } catch (err: any) {
     console.error('Citation DELETE error:', err);
@@ -222,7 +221,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid citation ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -232,7 +231,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to delete citation',
         code: 'DELETE_FAILED',
-        details: msg,
+        details: msg
       })
     );
   }

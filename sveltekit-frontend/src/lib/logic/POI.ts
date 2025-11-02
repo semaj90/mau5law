@@ -6,9 +6,7 @@ export interface POIProfile {
   why: string; // Motivations, connections, reasons
   how: string; // Methods, capabilities, resources
 }
-export interface POIData {
-  id: string;
-  caseId: string;
+export interface POIData { id: string;, caseId: string;
   name: string;
   aliases: string[];
   profileImageUrl?: string;
@@ -23,9 +21,7 @@ export interface POIData {
   createdAt: Date;
   updatedAt: Date;
 }
-export class POI {
-  id: string;
-  caseId: string;
+export class POI { id: string;, caseId: string;
   name: Writable<string>;
   aliases: Writable<string[]>;
   profileImageUrl: Writable<string | undefined>;
@@ -104,7 +100,7 @@ export class POI {
       tags: this.getValueFromStore(this.tags),
       createdBy: this.createdBy,
       createdAt: this.createdAt,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
   }
   // Helper to get current value from writable store

@@ -15,29 +15,23 @@ import {
   type NewEmbeddingCache512,
   type NewCaseEmbedding,
   type NewEvidenceEmbedding,
-  EMBEDDING_MODELS,
+  EMBEDDING_MODELS
 } from '../db/schema-pgvector-512';
 import { eq, and, lt } from 'drizzle-orm';
 import Redis from 'ioredis';
 
-interface DocumentMetadata {
-  documentId: string;
-  documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
+interface DocumentMetadata { documentId: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
   caseId?: string;
   evidenceId?: string;
   practiceArea?: string[];
   jurisdiction?: string;
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
 }
-interface ChunkingOptions {
-  maxTokens: number;
-  overlapTokens: number;
+interface ChunkingOptions { maxTokens: number;, overlapTokens: number;
   preserveSentences: boolean;
   minChunkSize: number;
 }
-interface ProcessingResult {
-  documentId: string;
-  totalChunks: number;
+interface ProcessingResult { documentId: string;, totalChunks: number;
   totalTokens: number;
   embeddingsGenerated: number;
   cacheHits: number;
@@ -75,7 +69,7 @@ export class StreamingIngestionPipeline {
       embeddingsGenerated: 0,
       cacheHits: 0,
       processingTimeMs: 0,
-      errors: [],
+      errors: []
     };
 
     try {
@@ -90,7 +84,7 @@ export class StreamingIngestionPipeline {
         maxTokens: options.maxTokens ?? 512,
         overlapTokens: options.overlapTokens ?? 50,
         preserveSentences: options.preserveSentences ?? true,
-        minChunkSize: options.minChunkSize ?? 100,
+        minChunkSize: options.minChunkSize ?? 100
       });
 
       result.totalChunks = chunks.length;
@@ -174,7 +168,7 @@ export class StreamingIngestionPipeline {
           keyTerms: chunk.keyTerms ?? [],
           sentimentScore: chunk.sentimentScore ?? null,
           complexityScore: chunk.complexityScore ?? null,
-          model: EMBEDDING_MODELS.PRIMARY,
+          model: EMBEDDING_MODELS.PRIMARY
         };
         builtChunks.push(dbChunk);
       } catch (err: any) {
@@ -199,10 +193,10 @@ export class StreamingIngestionPipeline {
           textHash: c.textHash,
           model: c.model,
           metadata: {
-            documentType: c.documentType,
+           , documentType: c.documentType,
             practiceArea: c.practiceArea,
-            jurisdiction: c.jurisdiction,
-          },
+            jurisdiction: c.jurisdiction
+          }
         }));
         await db.insert(caseEmbeddings).values(caseEmbeddingData);
       }
@@ -218,10 +212,10 @@ export class StreamingIngestionPipeline {
           textHash: c.textHash,
           model: c.model,
           metadata: {
-            documentType: c.documentType,
+           , documentType: c.documentType,
             practiceArea: c.practiceArea,
-            jurisdiction: c.jurisdiction,
-          },
+            jurisdiction: c.jurisdiction
+          }
         }));
         await db.insert(evidenceEmbeddings).values(evidenceEmbeddingData);
       }
@@ -259,7 +253,7 @@ export class StreamingIngestionPipeline {
         model,
         tokenCount,
         accessCount: 1,
-        lastAccessed: new Date(),
+        lastAccessed: new Date()
       } as any;
       await db.insert(embeddingCache512).values(cacheData);
     } catch (error) {
@@ -273,7 +267,7 @@ export class StreamingIngestionPipeline {
         .update(embeddingCache512)
         .set({
           lastAccessed: new Date(),
-          accessCount: embeddingCache512.accessCount + 1,
+          accessCount: embeddingCache512.accessCount + 1
         } as any)
         .where(eq(embeddingCache512.textHash, textHash));
     } catch (error) {
@@ -295,7 +289,7 @@ export class StreamingIngestionPipeline {
         embeddingsGenerated: String(result.embeddingsGenerated),
         cacheHits: String(result.cacheHits),
         processingTimeMs: String(result.processingTimeMs),
-        timestamp: String(Date.now()),
+        timestamp: String(Date.now())
       });
       await this.redis.expire(statsKey, 24 * 60 * 60); // 24 hours
     } catch (err) {
@@ -323,9 +317,7 @@ export class StreamingIngestionPipeline {
 }
 
 // Supporting classes and interfaces
-interface DocumentChunk {
-  index: number;
-  text: string;
+interface DocumentChunk { index: number;, text: string;
   tokenCount: number;
   pageNumber?: number;
   entities?: any[];
@@ -341,7 +333,7 @@ class EmbeddingService {
       const response = await fetch(`${this.serviceUrl}/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, model }),
+        body: JSON.stringify({ text, model })
       });
       if (!response.ok) {
         throw new Error(`Embedding service error: ${response.statusText}`);
@@ -398,7 +390,7 @@ class DocumentChunker {
           index: chunkIndex++,
           text: currentChunk.trim(),
           tokenCount: currentTokens,
-          pageNumber: this.extractPageNumber(currentChunk),
+          pageNumber: this.extractPageNumber(currentChunk)
         });
         const overlapText = this.getOverlapText(currentChunk, options.overlapTokens);
         currentChunk = overlapText + ' ' + sentence;
@@ -414,7 +406,7 @@ class DocumentChunker {
         index: chunkIndex++,
         text: currentChunk.trim(),
         tokenCount: currentTokens,
-        pageNumber: this.extractPageNumber(currentChunk),
+        pageNumber: this.extractPageNumber(currentChunk)
       });
     }
     return chunks;

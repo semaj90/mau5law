@@ -7,9 +7,7 @@ const useIndexedDB = true; // toggle to enable IndexedDB storage for larger payl
 const IDB_DB_NAME = 'deeds_unsynced_uploads_db';
 const IDB_STORE = 'uploads';
 
-export type UnsyncedUpload = {
-  caseId: string | null;
-  originalFilename: string;
+export type UnsyncedUpload = { caseId: string | null;, originalFilename: string;
   storedFilename: string;
   mimeType?: string | null;
   fileSize?: number | null;
@@ -68,15 +66,15 @@ async function postMetadata(entry: UnsyncedUpload): Promise<boolean> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        caseId: entry.caseId,
+       , caseId: entry.caseId,
         originalFilename: entry.originalFilename,
         storedFilename: entry.storedFilename,
         mimeType: entry.mimeType,
         fileSize: entry.fileSize,
         storagePath: entry.storagePath,
-        metadata: entry.metadata,
+        metadata: entry.metadata
       }),
-      credentials: 'include',
+      credentials: 'include'
     });
     return res.ok;
   } catch (e) {
@@ -121,7 +119,7 @@ export default {
   saveLocalUpload,
   getAllLocalUploads,
   clearAllLocalUploads,
-  syncPendingUploads,
+  syncPendingUploads
 };
 
 // -------------------------

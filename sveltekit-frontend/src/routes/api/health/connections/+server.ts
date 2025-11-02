@@ -2,7 +2,7 @@
  * Health Check API - Connection Pool Status
  *
  * SvelteKit 2 Route Pattern:
- * ✅ Only exports: GET, POST, PUT, DELETE, PATCH
+ * ✅ Only; exports: GET, POST, PUT, DELETE, PATCH
  * ❌ NO arbitrary exports (RabbitConnection, createRedisInstance, etc.)
  *
  * QUIC/HTTP3 Safe:
@@ -42,8 +42,7 @@ export const GET: RequestHandler = async ({ request }) => {
 			status: allHealthy ? 200 : 503,
 			headers: {
 				'Cache-Control': 'no-cache, no-store, must-revalidate',
-				'X-Response-Time': `${responseTime}ms`
-			}
+				'X-Response-Time': '${responseTime}ms' }
 		});
 	} catch (error) {
 		console.error('Health check failed:', error);
@@ -70,8 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const { service } = body;
 
 		if (!service || !['redis', 'qdrant', 'neo4j', 'rabbitmq'].includes(service)) {
-			return json({
-				error: 'Invalid service. Must be: redis, qdrant, neo4j, or rabbitmq'
+			return json({ error: 'Invalid service. Must, be: redis, qdrant, neo4j, or rabbitmq'
 			}, {
 				status: 400
 			});
@@ -87,8 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	} catch (error) {
 		return json({
-			error: error instanceof Error ? error.message : 'Unknown error'
-		}, {
+			error: error instanceof Error ? error.message : `Unknown error` }, {
 			status: 500
 		});
 	}

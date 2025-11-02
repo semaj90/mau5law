@@ -8,29 +8,16 @@ import { db } from '$lib/server/db/connection'
 import { legalDocuments, documentChunks } from '$lib/server/db/schema'
 import { sql, desc, and, or, like, gte, lte } from 'drizzle-orm'
 // Mock Qdrant client
-interface QdrantPoint {
-  id: string
-  vector: number[]
-  payload: {
-    document_id: string
-    content: string
-    metadata: { [key: string]: any }
+interface QdrantPoint { id: string, vector: number[]; payload: { document_id: string, content: string; metadata: { [key: string]: any }
   }
 }
 // Mock MinIO metadata
-interface MinIOMetadata {
-  bucket: string
-  key: string
-  contentType: string
-  lastModified: Date
-  size: number
+interface MinIOMetadata { bucket: string, key: string; contentType: string
+  lastModified: Date; size: number
   metadata: Record<string, string>
 }
 // Mock Loki.js log entries
-interface LokiEntry {
-  timestamp: string
-  level: string
-  message: string
+interface LokiEntry { timestamp: string, level: string; message: string
   labels: Record<string, string>
   metadata?: { [key: string]: any }
 }
@@ -67,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(combinedIndex)
   } catch (error) {
     console.error('❌ Index building failed:', error)
-    return json({ error: 'Failed to build search index' }, { status: 500 })
+    return json({ error: `Failed to build search index` }, { status: 500 })
   }
 }
 /*
@@ -88,7 +75,7 @@ async function buildPostgreSQLIndex(): Promise<any> {
         uploadDate: legalDocuments.createdAt,
         metadata: legalDocuments.metadata,
         // pgvector similarity (would be calculated dynamically)
-        embedding: sql<number[]>`NULL`.as('embedding'),
+        embedding: sql<number[]>`NULL`.as('embedding')
       })
       .from(legalDocuments)
       .orderBy(desc(legalDocuments.createdAt))
@@ -105,8 +92,8 @@ async function buildPostgreSQLIndex(): Promise<any> {
         uploadDate: doc.uploadDate?.toISOString(),
         source: 'postgresql',
         hasEmbedding: doc.embedding !== null,
-        ...parseJsonMetadata(doc.metadata),
-      },
+        ...parseJsonMetadata(doc.metadata)
+      }
     }));
   } catch (error) {
     console.error('PostgreSQL index failed:', error)
@@ -140,7 +127,7 @@ async function buildVectorIndex(): Promise<any> {
     //   collection_name: 'legal_documents',
     //   limit: 1000,
     //   with_payload: true
-    //   with_vector: false
+    //  , with_vector: false
     // })
     // Mock Qdrant data
     const mockQdrantPoints: QdrantPoint[] = [
@@ -168,8 +155,7 @@ async function buildVectorIndex(): Promise<any> {
             practiceArea: 'Criminal Law',
             documentType: 'Audio',
             confidence: 0.87,
-            embedding_model: 'nomic-embed-text'
-          }
+            embedding_model: `nomic-embed-text` }
         }
       }
     ]
@@ -183,8 +169,8 @@ async function buildVectorIndex(): Promise<any> {
         source: 'qdrant',
         vectorId: point.id,
         hasVector: true,
-        vectorDimensions: point.vector.length,
-      },
+        vectorDimensions: point.vector.length
+      }
     }));
   } catch (error) {
     console.error('Qdrant index failed:', error)
@@ -224,17 +210,16 @@ async function buildMinIOIndex(): Promise<any> {
           'x-amz-meta-case-id': 'case_124',
           'x-amz-meta-practice-area': 'Criminal Law',
           'x-amz-meta-uploaded-by': 'paralegal_002',
-          'x-amz-meta-duration': '00:32:45'
-        }
+          'x-amz-meta-duration': `00:32:45` }
       }
     ]
     return mockMinioObjects.map(obj => {
       const fileName = obj.key.split('/').pop() || obj.key
       const fileType = obj.contentType.split('/')[0]
       return {
-        id: `minio_${obj.key.replace(/[^a-zA-Z0-9]/g, '_')}`,
+        id: 'minio_${obj.key.replace(/[^a-zA-Z0-9]/g, '_')}`,
         title: fileName.replace(/\.[^/.]+$/, '').replace(/_/g, ' '),
-        content: `File stored in MinIO: ${obj.key} (${formatFileSize(obj.size)})`,
+        content: `File stored in; MinIO: ${obj.key} (${formatFileSize(obj.size)})`,
         entities: [fileType, obj.metadata['x-amz-meta-practice-area'] || 'Legal'],
         metadata: {
           practiceArea: obj.metadata['x-amz-meta-practice-area'],
@@ -295,13 +280,12 @@ async function buildLokiIndex(): Promise<any> {
         metadata: {
           document_id: 'doc_slow_001',
           processing_time: '45.7s',
-          reason: 'large_file_size'
-        }
+          reason: `large_file_size` }
       }
     ]
     return mockLokiEntries.map((entry, index) => ({
       id: `loki_${index}`,
-      title: `System Log: ${entry.message}`,
+      title: `System; Log: ${entry.message}`,
       content: `${entry.level.toUpperCase()}: ${entry.message}`,
       entities: ['System Log', entry.level, entry.labels.service || 'unknown'],
       metadata: {
@@ -313,8 +297,8 @@ async function buildLokiIndex(): Promise<any> {
         logLevel: entry.level,
         service: entry.labels.service,
         job: entry.labels.job,
-        ...entry.metadata,
-      },
+        ...entry.metadata
+      }
     }));
   } catch (error) {
     console.error('Loki index failed:', error)

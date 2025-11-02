@@ -8,9 +8,7 @@ import { createWorker } from 'tesseract.js';
 import { z } from 'zod';
 
 // Types
-export interface OCRResult {
-  id: string;
-  text: string;
+export interface OCRResult { id: string;, text: string;
   confidence: number;
   boundingBoxes: BoundingBox[];
   extractedFields: ExtractedField[];
@@ -18,18 +16,14 @@ export interface OCRResult {
   processingTime: number;
 }
 
-export interface BoundingBox {
-  x: number;
-  y: number;
+export interface BoundingBox { x: number;, y: number;
   width: number;
   height: number;
   text: string;
   confidence: number;
 }
 
-export interface ExtractedField {
-  fieldName: string;
-  value: string;
+export interface ExtractedField { fieldName: string;, value: string;
   confidence: number;
   boundingBox: BoundingBox;
   fieldType: FieldType;
@@ -50,19 +44,15 @@ export type FieldType =
   | 'checkbox'
   | 'text_block';
 
-export interface OCRMetadata {
-  filename: string;
-  fileSize: number;
-  dimensions: { width: number; height: number };
+export interface OCRMetadata { filename: string;, fileSize: number;
+  dimensions: { width: number;, height: number };
   pageCount: number;
   language: string;
   documentType: string;
   processingDate: number;
 }
 
-export interface FormField {
-  name: string;
-  type: FieldType;
+export interface FormField { name: string;, type: FieldType;
   label: string;
   value?: string;
   confidence?: number;
@@ -72,15 +62,13 @@ export interface FormField {
 }
 
 // Field extraction patterns for different document types
-const FIELD_PATTERNS = {
-  legal_document: {
-    case_number: /case\s*(?:no\.?|number)?\s*:?\s*([A-Z0-9-]+)/i,
+const FIELD_PATTERNS = { legal_document: {, case_number: /case\s*(?:no\.?|number)?\s*:?\s*([A-Z0-9-]+)/i,
     date: /(?:date|filed|executed):\s*(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/i,
     jurisdiction: /(?:jurisdiction|court|county):\s*([^,\n]+)/i,
     plaintiff: /plaintiff:\s*([^,\n]+)/i,
     defendant: /defendant:\s*([^,\n]+)/i,
     attorney: /attorney\s*(?:for)?:\s*([^,\n]+)/i,
-    amount: /(?:amount|damages?):\s*\$?([\d]+\.?\d*)/i,
+    amount: /(?:amount|damages?):\s*\$?([\d]+\.?\d*)/i
   },
   contract: {
     party_1: /(?:party|contractor)\s*(?:1|one|first)?:\s*([^,\n]+)/i,
@@ -89,7 +77,7 @@ const FIELD_PATTERNS = {
     term: /term:\s*([^,\n]+)/i,
     amount: /(?:amount|payment|fee):\s*\$?([\d]+\.?\d*)/i,
     signature_1: /signature.*?([A-Za-z\s]{2,30})/i,
-    signature_2: /signature.*?([A-Za-z\s]{2,30})/i,
+    signature_2: /signature.*?([A-Za-z\s]{2,30})/i
   },
   form: {
     name: /(?:name|full\s*name):\s*([A-Za-z\s]{2,100})/i,
@@ -98,9 +86,9 @@ const FIELD_PATTERNS = {
     state: /state:\s*([A-Za-z]{2,20})/i,
     zip: /(?:zip|postal):\s*(\d{5}(?:-\d{4})?)/i,
     phone: /(?:phone|tel):\s*(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/i,
-    email: /email:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
-    ssn: /(?:ssn|social):\s*(\d{3}-?\d{2}-?\d{4})/i,
-  },
+    email: /email:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2})/i,
+    ssn: /(?:ssn|social):\s*(\d{3}-?\d{2}-?\d{4})/i
+  }
 } as const;
 
 type DocumentType = keyof typeof FIELD_PATTERNS;
@@ -112,7 +100,7 @@ const fieldValidationSchemas: Partial<Record<FieldType, z.ZodSchema>> = {
   date: z.string().regex(/^\d{1,2}\/\d{1,2}\/\d{4}$|^\d{4}-\d{2}-\d{2}$/),
   monetary_amount: z.string().regex(/^\$?[\d]+\.?\d*$/),
   case_number: z.string().min(1),
-  name: z.string().min(2).max(200),
+  name: z.string().min(2).max(200)
 };
 
 // OCR Service
@@ -140,7 +128,7 @@ export class OCRService {
           if (m.status === 'recognizing text' && typeof m.progress === 'number') {
             this.progress$.set(Math.round(m.progress * 100));
           }
-        },
+        }
       });
       await this.worker.load();
       await this.worker.loadLanguage('eng');
@@ -208,9 +196,9 @@ export class OCRService {
           pageCount: 1,
           language: options.language || 'eng',
           documentType: detectedType,
-          processingDate: Date.now(),
+          processingDate: Date.now()
         },
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
 
       this.currentResult$.set(result);
@@ -279,7 +267,7 @@ export class OCRService {
           width: Math.max(0, x1 - x0),
           height: Math.max(0, y1 - y0),
           text: String(word?.text || ''),
-          confidence: typeof word?.confidence === 'number' ? word.confidence : 0.9,
+          confidence: typeof word?.confidence === 'number' ? word.confidence : 0.9
         });
       }
     }
@@ -289,8 +277,7 @@ export class OCRService {
   private async detectDocumentType(text: string): Promise<DocumentType> {
     // Try LLM endpoint; on failure fall back to simple heuristics
     try {
-      const prompt = `Analyze this document text and determine its type:
-Text: "${text.substring(0, 1000)}..."
+      const prompt = `Analyze this document text and determine its type:; Text: "${text.substring(0, 1000)}..."
 Return only one of: legal_document, contract, form`;
       // Resolve Ollama endpoint via centralized helper
       // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -300,10 +287,10 @@ Return only one of: legal_document, contract, form`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
+         , model: 'gemma3-legal:latest',
           prompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (!res.ok) throw new Error('LLM not available');
       const body = await res.json();
@@ -344,9 +331,9 @@ Return only one of: legal_document, contract, form`;
           fieldName,
           value,
           confidence: boundingBox?.confidence ?? 0.8,
-          boundingBox: boundingBox ?? { x: 0, y: 0, width: 0, height: 0, text: value, confidence: 0.8 },
+          boundingBox: boundingBox ?? {, x: 0, y: 0, width: 0, height: 0, text: value, confidence: 0.8 },
           fieldType,
-          validationStatus: this.validateField(fieldType, value),
+          validationStatus: this.validateField(fieldType, value)
         });
       }
     }
@@ -397,7 +384,7 @@ Return only one of: legal_document, contract, form`;
     try {
       const existingNames = existingFields.map(f => f.fieldName).join(', ');
       const prompt = `Analyze this ${documentType} and extract additional structured fields that may have been missed:
-Document text: "${text.substring(0, 2000)}..."
+Document; text: "${text.substring(0, 2000)}..."
 Already extracted: ${existingNames}
 Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"name","confidence":0.85}]`;
       const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
@@ -406,10 +393,10 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
+         , model: 'gemma3-legal:latest',
           prompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (!res.ok) throw new Error('LLM failed');
       const body = await res.json();
@@ -459,7 +446,7 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
           confidence,
           boundingBox: { x: 0, y: 0, width: 0, height: 0, text: value, confidence },
           fieldType,
-          validationStatus: this.validateField(fieldType, value),
+          validationStatus: this.validateField(fieldType, value)
         } as ExtractedField;
       };
 
@@ -503,10 +490,10 @@ Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal',
+         , model: 'gemma3-legal',
           prompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       if (!res.ok) throw new Error('LLM suggestions failed');
       const body = await res.json();

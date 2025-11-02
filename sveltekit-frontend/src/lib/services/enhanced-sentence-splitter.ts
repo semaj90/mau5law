@@ -11,9 +11,7 @@ export interface SplitterOptions {
   headingPatterns?: RegExp[]; // custom heading patterns to merge with following sentence
 }
 
-export interface StreamingContext {
-  buffer: string;
-  processedSentences: string[];
+export interface StreamingContext { buffer: string;, processedSentences: string[];
 }
 
 export class EnhancedSentenceSplitter {
@@ -23,7 +21,7 @@ export class EnhancedSentenceSplitter {
   private mergeThreshold: number;
   private streamBufferSize: number;
   private customAbbreviations: Set<string>;
-  private abbreviationRegexes: { abbr: string; regex: RegExp }[];
+  private abbreviationRegexes: { abbr: string;, regex: RegExp }[];
   private headingPatterns: RegExp[];
 
   // Common legal and business abbreviations
@@ -276,9 +274,7 @@ export function splitSentencesEnhanced(text: string): string[] {
 /**
  * Create a streaming splitter with context
  */
-export function createStreamingSplitter(_options: SplitterOptions = {}): {
-  splitter: EnhancedSentenceSplitter;
-  context: StreamingContext;
+export function createStreamingSplitter(_options: SplitterOptions = {}): { splitter: EnhancedSentenceSplitter;, context: StreamingContext;
 } {
   const splitter = new EnhancedSentenceSplitter(_options);
   const context: StreamingContext = {

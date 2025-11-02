@@ -12,9 +12,7 @@ interface OllamaTagsResponse {
 }
 
 // Define the expected response type for this SvelteKit endpoint
-interface AIConnectionResponse {
-  success: boolean;
-  model: string;
+interface AIConnectionResponse { success: boolean;, model: string;
   availableModels: string[];
   status: string;
   timestamp: string;
@@ -56,8 +54,8 @@ export const POST: RequestHandler = async ({ request }) => {
             model,
             prompt: 'Test connection',
             stream: false,
-            options: { max_tokens: 1 },
-          }),
+            options: {, max_tokens: 1 }
+          })
         },
         15000
       );
@@ -70,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       model: model || modelList[0] || 'none',
       availableModels: modelList,
       status: 'connected',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('AI connection error:', err);

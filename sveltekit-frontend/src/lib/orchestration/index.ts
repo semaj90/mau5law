@@ -8,7 +8,7 @@ export type {
   JobType,
   JobPriority,
   RetryConfig,
-  OptimizedRabbitMQOrchestrator,
+  OptimizedRabbitMQOrchestrator
 } from './optimized-rabbitmq-orchestrator.js';
 export { optimizedOrchestrator } from './optimized-rabbitmq-orchestrator.js';
 // Sora Integration Exports
@@ -35,7 +35,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
       id: doc.id,
       processed: true,
       analysis: 'Mock analysis result',
-      confidence: 0.85,
+      confidence: 0.85
     };
   },
   async trainModel(data: any[]) {
@@ -43,7 +43,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
   },
   async predict(input: any) {
     return { prediction: 'mock_result', confidence: 0.9 };
-  },
+  }
 };
 export const soraGraphTraversal: SoraGraphTraversal = {
   async buildUserJourneyGraphs(data: any, options?: any, config?: any) {
@@ -54,7 +54,7 @@ export const soraGraphTraversal: SoraGraphTraversal = {
         ['start', 'process'],
         ['process', 'end'],
       ],
-      metadata: options || {},
+      metadata: options || {}
     };
   },
   async traverse(startNode: string, endNode: string) {
@@ -66,9 +66,9 @@ export const soraGraphTraversal: SoraGraphTraversal = {
   },
   async getNodeNeighbors(nodeId: string) {
     return [`neighbor_${nodeId}_1`, `neighbor_${nodeId}_2`];
-  },
+  }
 };
 export default {
   soraMoogleIntegration,
-  soraGraphTraversal,
+  soraGraphTraversal
 };

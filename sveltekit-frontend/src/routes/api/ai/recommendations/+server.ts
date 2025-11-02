@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!type || !entityId) {
       return json(
         {
-          error: 'type and entityId are required',
+          error: 'type and entityId are required'
         },
         { status: 400 }
       );
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
             score: caseScores.score,
             riskLevel: caseScores.riskLevel,
             breakdown: caseScores.breakdown,
-            recommendations: caseScores.recommendations,
+            recommendations: caseScores.recommendations
           })
           .from(caseScores)
           .where(
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
           entityId: item.caseId,
           confidence: parseFloat(item.score),
           reason: `Similar risk profile (${item.riskLevel})`,
-          metadata: item.breakdown,
+          metadata: item.breakdown
         }));
         break;
 
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
             tag: autoTags.tag,
             confidence: autoTags.confidence,
             source: autoTags.source,
-            model: autoTags.model,
+            model: autoTags.model
           })
           .from(autoTags)
           .where(and(eq(autoTags.entityId, entityId), gte(autoTags.confidence, '0.60')))
@@ -83,8 +83,8 @@ export const POST: RequestHandler = async ({ request }) => {
           type: 'tag-suggestion',
           entityId: tag.id,
           confidence: parseFloat(tag.confidence),
-          reason: `AI-suggested tag: ${tag.tag}`,
-          metadata: { source: tag.source, model: tag.model },
+          reason: `AI-suggested; tag: ${tag.tag}`,
+          metadata: { source: tag.source, model: tag.model }
         }));
         break;
 
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: userAiQueries.id,
             queryType: userAiQueries.queryType,
             confidence: userAiQueries.confidence,
-            contextUsed: userAiQueries.contextUsed,
+            contextUsed: userAiQueries.contextUsed
           })
           .from(userAiQueries)
           .where(eq(userAiQueries.caseId, entityId))
@@ -119,15 +119,13 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'next-action',
             entityId: `action_${action}`,
             confidence: Math.min(count / queryPatterns.length, 1.0),
-            reason: `Frequently used action: ${action}`,
-            metadata: { usage_count: count, total_queries: queryPatterns.length },
+            reason: `Frequently used; action: ${action}`,
+            metadata: { usage_count: count, total_queries: queryPatterns.length }
           }));
         break;
 
       default: return json(
-          {
-            error: `Unsupported recommendation type: ${type}`,
-          },
+          { error: `Unsupported recommendation, type: ${type}' },
           { status: 400 }
         );
     }
@@ -156,9 +154,8 @@ export const POST: RequestHandler = async ({ request }) => {
         entityId,
         count: recommendations.length,
         source: 'database',
-        enhanced_rag_available: false, // TODO: Check service connection
-        wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
-      },
+        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined'
+      }
     });
   } catch (error) {
     console.error('❌ Recommendations error:', error);
@@ -166,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Failed to generate recommendations',
         recommendations: [],
-        metadata: { type: '', entityId: '', count: 0, source: 'error' },
+        metadata: {, type: '', entityId: '', count: 0, source: `error` }
       },
       { status: 500 }
     );

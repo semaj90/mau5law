@@ -16,10 +16,8 @@ function getErrorMessage(err: any): string {
     // safe property access without `any` cast
     const maybe = err as Record<string, unknown>
     if (typeof maybe.message === 'string') return maybe.message
-    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}`
-  }
-  return 'Unknown error'
-}
+    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}' }
+  return 'Unknown error` }
 
 function extractId(result: any): number | string | undefined {
   if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object' && result[0] !== null) {
@@ -54,12 +52,12 @@ export const GET: RequestHandler = async ({ url }) => {
         const vectorTest = Array.isArray(vectorTestRaw) ? vectorTestRaw : [];
         results.vector = {
           installed: vectorTest.length > 0,
-          details: vectorTest[0] || null,
+          details: vectorTest[0] || null
         };
       } catch (error: any) {
         results.vector = {
           installed: false,
-          error: getErrorMessage(error),
+          error: getErrorMessage(error)
         };
       }
     }
@@ -75,12 +73,12 @@ export const GET: RequestHandler = async ({ url }) => {
         results.schema = {
           tables: tables,
           tablesCount: tables.length,
-          expectedTables: ['users', 'cases', 'evidence', 'document_chunks'],
+          expectedTables: ['users', 'cases', 'evidence', 'document_chunks']
         };
       } catch (error: any) {
         // use safe helper instead of `any` and direct .message access
         results.schema = {
-          error: getErrorMessage(error),
+          error: getErrorMessage(error)
         };
       }
     }
@@ -92,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
         hashed_password: await bcrypt.hash('test123', 10),
         first_name: 'Integration',
         last_name: 'Test',
-        role: 'attorney',
+        role: 'attorney'
       };
       try {
         // CREATE - Insert test user
@@ -116,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: 'Integration Test Case',
           description: 'Test case for database integration',
           assigned_attorney: userId,
-          status: 'open',
+          status: 'open'
         };
         const newCaseRaw = await db.insert(cases).values(testCase).returning();
         const caseId = extractId(newCaseRaw);
@@ -126,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
           case_id: caseId,
           title: 'Integration Test Evidence',
           description: 'Test evidence for database integration',
-          evidence_type: 'document',
+          evidence_type: 'document'
         };
         const newEvidence = await db.insert(evidence).values(testEvidence).returning();
 
@@ -135,7 +133,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .select({
             case cases,
             attorney: users,
-            evidence: evidence,
+            evidence: evidence
           })
           .from(cases)
           .leftJoin(users, eq(cases.assigned_attorney, users.id))
@@ -148,26 +146,23 @@ export const GET: RequestHandler = async ({ url }) => {
           .update(cases)
           .set({
             description: 'Updated test case description',
-            status: 'in_progress',
-          })
+            status: `in_progress` })
           .where(eq(cases.id, caseId))
           .returning();
 
         results.crud = {
           success: true,
-          operations: {
-            create: {
-              user: Array.isArray(newUserRaw) ? (newUserRaw as unknown[])[0] : newUserRaw,
+          operations: { create: {, user: Array.isArray(newUserRaw) ? (newUserRaw as unknown[])[0] : newUserRaw,
               case Array.isArray(newCaseRaw) ? (newCaseRaw as unknown[])[0] : newCaseRaw,
-              evidence: Array.isArray(newEvidence) ? (newEvidence as unknown[])[0] : newEvidence,
+              evidence: Array.isArray(newEvidence) ? (newEvidence as unknown[])[0] : newEvidence
             },
             read: {
-              caseWithDetails: Array.isArray(caseWithDetailsRaw) ? caseWithDetailsRaw[0] : caseWithDetailsRaw,
+              caseWithDetails: Array.isArray(caseWithDetailsRaw) ? caseWithDetailsRaw[0] : caseWithDetailsRaw
             },
             update: {
-              updatedCase: Array.isArray(updatedCaseRaw) ? updatedCaseRaw[0] : updatedCaseRaw,
-            },
-          },
+              updatedCase: Array.isArray(updatedCaseRaw) ? updatedCaseRaw[0] : updatedCaseRaw
+            }
+          }
         };
 
         // Cleanup - DELETE test data
@@ -181,7 +176,7 @@ export const GET: RequestHandler = async ({ url }) => {
       } catch (error: any) {
         results.crud = {
           success: false,
-          error: getErrorMessage(error),
+          error: getErrorMessage(error)
         };
       }
     }
@@ -196,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
           document_type: 'test',
           chunk_index: '0',
           content: 'This is a test document chunk for vector operations',
-          embedding: JSON.stringify(testEmbedding),
+          embedding: JSON.stringify(testEmbedding)
         };
         // Insert test chunk with embedding
         const newChunkRaw = await db.insert(documentChunks).values(testChunk).returning();
@@ -206,8 +201,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .select({
             id: documentChunks.id,
             content: documentChunks.content,
-            similarity: sql<number>`1 - (${documentChunks.embedding} <=> ${testEmbedding}::vector) as similarity`,
-          })
+            similarity: sql<number>`1 - (${documentChunks.embedding} <=> ${testEmbedding}::vector) as similarity` })
           .from(documentChunks)
           .where(sql`${documentChunks.embedding} IS NOT NULL`)
           .orderBy(sql`${documentChunks.embedding} <=> ${testEmbedding}::vector`)
@@ -223,13 +217,13 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           operations: {
             create: Array.isArray(newChunkRaw) ? (newChunkRaw as unknown[])[0] : newChunkRaw,
-            search: similarChunks,
-          },
+            search: similarChunks
+          }
         };
       } catch (error: any) {
         results.vectorOps = {
           success: false,
-          error: getErrorMessage(error),
+          error: getErrorMessage(error)
         };
       }
     }
@@ -238,21 +232,20 @@ export const GET: RequestHandler = async ({ url }) => {
     if (testType === 'mcp') {
       results.mcp = {
         success: false,
-        error: 'MCP tools temporarily disabled due to dependency issues - use direct database operations instead',
-      };
+        error: `MCP tools temporarily disabled due to dependency issues - use direct database operations instead` };
     }
     return json({
       success: true,
       timestamp: new Date().toISOString(),
       testType,
-      results,
+      results
     });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: getErrorMessage(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -275,8 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
             first_name: 'Test',
             last_name: 'User',
             role: 'attorney',
-            department: 'Integration Testing',
-          })
+            department: `Integration Testing` })
           .returning();
         const testUserId = extractId(testUserRaw);
 
@@ -286,42 +278,41 @@ export const POST: RequestHandler = async ({ request }) => {
             title: `Test Case ${Date.now()}`,
             description: 'Comprehensive integration test case',
             assigned_attorney: testUserId,
-            status: 'open',
-          })
+            status: `open` })
           .returning();
         return json({
           success: true,
           data: {
-            user: Array.isArray(testUserRaw) ? (testUserRaw as unknown[])[0] : testUserRaw,
-            case Array.isArray(testCaseRaw) ? (testCaseRaw as unknown[])[0] : testCaseRaw,
-          },
+           , user: Array.isArray(testUserRaw) ? (testUserRaw as unknown[])[0] : testUserRaw,
+            case Array.isArray(testCaseRaw) ? (testCaseRaw as unknown[])[0] : testCaseRaw
+          }
         });
       }
       case 'cleanup-test-data': {
         // Cleanup all test data
         const deletedEvidence = await db
           .delete(evidence)
-          .where(sql`${evidence.title} LIKE: '%Test%' OR ${evidence.title} LIKE: '%Integration%'`);
+          .where(sql`${evidence.title} LIKE: '%Test%' OR ${evidence.title}, LIKE: '%Integration%'`);
         const deletedCases = await db
           .delete(cases)
-          .where(sql`${cases.title} LIKE: '%Test%' OR ${cases.title} LIKE: '%Integration%'`);
+          .where(sql`${cases.title} LIKE: '%Test%' OR ${cases.title}, LIKE: '%Integration%'`);
         const deletedUsers = await db.delete(users).where(sql`${users.email} LIKE: '%test%@legal.ai'`);
         return json({
           success: true,
           cleanup: {
-            evidence: deletedEvidence,
+           , evidence: deletedEvidence,
             cases: deletedCases,
-            users: deletedUsers,
-          },
+            users: deletedUsers
+          }
         });
       }
-      default: return json({ error: 'Unknown action' }, { status: 400 });
+      default: return json({ error: `Unknown action` }, { status: 400 });
     }
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(error)
       },
       { status: 500 }
     );

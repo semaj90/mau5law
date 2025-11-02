@@ -6,22 +6,16 @@ import type { LegalEntities } from './legalRAGEngine.js';
  * Connects to Context7 MCP Server and provides legal-specific functionality
  */
 
-export interface LegalAnalysisResult {
-  riskLevel: 'Low' | 'Medium' | 'High';
-  riskScore: number;
+export interface LegalAnalysisResult { riskLevel: 'Low' | 'Medium' | 'High';, riskScore: number;
   keyFindings: string[];
-  complianceStatus: {
-    gdpr: 'Compliant' | 'Under Review' | 'Not Applicable';
-    contractLaw: 'Requires Review' | 'N/A';
+  complianceStatus: { gdpr: 'Compliant' | 'Under Review' | 'Not Applicable';, contractLaw: 'Requires Review' | 'N/A';
     liability: 'High Priority Review Needed' | 'Standard Processing';
   };
   recommendedActions: string[];
   integrationNotes: string[];
 }
 
-export interface ComplianceReport {
-  framework: string;
-  evidenceCount: number;
+export interface ComplianceReport { framework: string;, evidenceCount: number;
   regulationCount: number;
   complianceScore: number;
   status: 'Compliant' | 'Partially Compliant' | 'Non-Compliant';
@@ -62,7 +56,7 @@ export class EnhancedContext7Service {
       const response = await this.callMCPTool('analyze-legal-document', {
         content,
         caseType,
-        jurisdiction,
+        jurisdiction
       });
       return this.parseLegalAnalysis(response);
     } catch (error: any) {
@@ -84,7 +78,7 @@ export class EnhancedContext7Service {
       const response = await this.callMCPTool('generate-compliance-report', {
         evidence,
         regulations,
-        framework,
+        framework
       });
       return this.parseComplianceReport(response, framework);
     } catch (error: any) {
@@ -106,7 +100,7 @@ export class EnhancedContext7Service {
       const response = await this.callMCPTool('suggest-legal-precedents', {
         query,
         jurisdiction,
-        caseType,
+        caseType
       });
       return this.parseLegalPrecedents(response);
     } catch (error: any) {
@@ -126,7 +120,7 @@ export class EnhancedContext7Service {
     try {
       const response = await this.callMCPTool('extract-legal-entities', {
         content,
-        entityTypes,
+        entityTypes
       });
       return this.parseLegalEntities(response);
     } catch (error: any) {
@@ -199,7 +193,7 @@ export class EnhancedContext7Service {
         analysis,
         complianceScore: 85,
         riskAssessment: { level: 'Medium', score: 60 },
-        precedentMatches,
+        precedentMatches
       };
       return orchestrationResult;
     } catch (error: any) {
@@ -216,7 +210,7 @@ export class EnhancedContext7Service {
   private async callMCPTool(toolName: string, args?: Record<string, unknown>): Promise<unknown> {
     const endpoint = this.getMcpEndpoint();
     const url = `${endpoint.replace(/\/$/, '')}/tools/${encodeURIComponent(toolName)}`;
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = { 'Content-Type': `application/json` };
     if (this.apiKey) headers['Authorization'] = `Bearer ${this.apiKey}`;
 
     // timeout helper
@@ -232,7 +226,7 @@ export class EnhancedContext7Service {
         method: 'POST',
         headers,
         body: JSON.stringify(args ?? {}),
-        signal: controller?.signal,
+        signal: controller?.signal
       });
 
       if (!res.ok) {
@@ -247,7 +241,7 @@ export class EnhancedContext7Service {
       return await res.text();
     } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
-      console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error:`, message);
+      console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error: ', message);
       // forward typed args to simulation helper(s)
       return await this.simulateMCPCall(toolName, args ?? {});
     } finally {
@@ -301,10 +295,9 @@ export class EnhancedContext7Service {
         liability: normalizeCompliance(
           this.extractValue(text, 'Liability Assessment', 'Standard Processing'),
           'Standard Processing'
-        ) as: 'High Priority Review Needed' | 'Standard Processing',
-      },
+        ) as: 'High Priority Review Needed' | 'Standard Processing` },
       recommendedActions: this.extractList(text, 'Recommended Actions'),
-      integrationNotes: this.extractList(text, 'Integration Notes'),
+      integrationNotes: this.extractList(text, 'Integration Notes')
     };
   }
 
@@ -326,7 +319,7 @@ export class EnhancedContext7Service {
       complianceScore: score,
       status: score > 80 ? 'Compliant' : score > 60 ? 'Partially Compliant' : 'Non-Compliant',
       riskLevel: score > 80 ? 'Low' : score > 60 ? 'Medium' : 'High',
-      remediationRequired: score < 80,
+      remediationRequired: score < 80
     };
   }
 
@@ -356,7 +349,7 @@ export class EnhancedContext7Service {
         relevance,
         year,
         jurisdiction,
-        summary: this.extractValue(section, 'Summary', 'No summary available'),
+        summary: this.extractValue(section, 'Summary', 'No summary available')
       };
     });
   }
@@ -377,7 +370,7 @@ export class EnhancedContext7Service {
       monetary: this.extractEntityList(text, 'Monetary Amounts'),
       clauses: this.extractEntityList(text, 'Legal Clauses'),
       jurisdictions: this.extractEntityList(text, 'Jurisdictions'),
-      caseTypes: this.extractEntityList(text, 'Case Types'),
+      caseTypes: this.extractEntityList(text, 'Case Types')
     } as LegalEntities;
   }
 
@@ -445,22 +438,22 @@ export class EnhancedContext7Service {
     const hasLiability = content.toLowerCase().includes('liability');
     const riskScore = hasLiability ? 85 : 35;
     return {
-      text: `# Legal Document Analysis
+      text: '# Legal Document Analysis
 ## Risk Assessment
 - **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium'}
 - **Risk Score**: ${riskScore}/100
 ## Key Findings
 - Contract terms identified
-${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
+${hasLiability ? '- Liability clauses present' : `- Standard contract language` }
 ## GDPR Compliance
 - **GDPR Compliance**: Under Review
 - **Contract Law**: Requires Review
-- **Liability Assessment**: ${hasLiability ? 'High Priority Review Needed' : 'Standard Processing'}
+- **Liability Assessment**: ${hasLiability ? 'High Priority Review Needed' : `Standard Processing` }
 ## Recommended Actions
 - Legal review recommended
 - Compliance verification needed
 ## Integration Notes
-- Integrate with evidence pipeline`,
+- Integrate with evidence pipeline`
     };
   }
 
@@ -473,7 +466,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
 ## Executive Summary
 - **Evidence Items Analyzed**: ${evidence.length}
 - **Applicable Regulations**: ${regulations.length}
-- **Compliance Score**: ${score}`,
+- **Compliance Score**: ${score}`
     };
   }
 
@@ -483,7 +476,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
 ### Sample v. Case (2023)
 - **Relevance Score**: 85%
 - **Jurisdiction**: federal
-- **Summary**: Relevant legal precedent for contract disputes`,
+- **Summary**: Relevant legal precedent for contract disputes`
     };
   }
 
@@ -498,8 +491,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
 ### Monetary Amounts (1)
 - $50,000
 ### Legal Clauses (1)
-- Section 3.1`,
-    };
+- Section 3.1` };
   }
 
   // add small helper for safe coercion if needed elsewhere

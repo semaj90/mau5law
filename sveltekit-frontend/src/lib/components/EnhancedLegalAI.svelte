@@ -3,7 +3,7 @@ import type { Message } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button } from '$lib/components/ui/button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { Label } from '$lib/components/ui/label.svelte';
   import { Textarea } from '$lib/components/ui/textarea.svelte';
   // lucide-svelte exports some icons as default; import Loader2 as the default export

@@ -4,9 +4,7 @@
  * Provides distraction-free writing experience by dimming non-essential UI elements
  */
 import { writable } from "svelte/store";
-export interface FocusSettings {
-  dimOpacity: number;
-  transitionDuration: string;
+export interface FocusSettings { dimOpacity: number;, transitionDuration: string;
   hideElements: string[];
   exemptElements: string[];
   enableFullscreen: boolean;
@@ -24,7 +22,7 @@ export const defaultFocusSettings: FocusSettings = {
   ],
   exemptElements: [".editor-content", ".shortcuts-modal", ".save-indicator"],
   enableFullscreen: false,
-  enableZenMode: false,
+  enableZenMode: false
 }
 // Store for focus mode state
 export const focusMode = writable(false);
@@ -217,7 +215,7 @@ export class FocusManager {
     });
     this.observer.observe(document.body, {
       childList: true,
-      subtree: true,
+      subtree: true
     });
   }
   /**
@@ -273,9 +271,7 @@ export const focusModeStyles = `;
     --focus-dim-opacity: 0.3;
     --focus-transition: opacity 0.3s ease;
   }
-  .focus-mode-active .focus-dim {
-    opacity: var(--focus-dim-opacity);
-    transition: var(--focus-transition);
+  .focus-mode-active .focus-dim { opacity: var(--focus-dim-opacity);, transition: var(--focus-transition);
   }
   .focus-mode-active .focus-dim: hover {
     opacity: 1;
@@ -283,9 +279,7 @@ export const focusModeStyles = `;
   .focus-mode-active .focus-hide {
     display: none;
   }
-  .focus-mode-active .focus-exempt {
-    opacity: 1 !important;
-    display: block !important;
+  .focus-mode-active .focus-exempt { opacity: 1 !important;, display: block !important;
   }
   /* Zen mode styles */
   .focus-mode-active.zen-mode .toolbar,
@@ -342,16 +336,14 @@ export function setupFocusModeShortcut(
   }
 }
 // Presets for different focus levels
-export const focusPresets = {
-  minimal: {
-    dimOpacity: 0.7,
+export const focusPresets = { minimal: {, dimOpacity: 0.7,
     enableZenMode: false,
-    hideElements: [],
+    hideElements: []
   },
   moderate: {
     dimOpacity: 0.5,
     enableZenMode: false,
-    hideElements: [".sidebar"],
+    hideElements: [".sidebar"]
   },
   intense: {
     dimOpacity: 0.3,

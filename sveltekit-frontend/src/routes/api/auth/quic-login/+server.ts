@@ -24,7 +24,7 @@ export const POST: RequestHandler = async event => {
       email,
       password,
       ipAddress,
-      userAgent,
+      userAgent
     });
     if (!authResponse.success || !authResponse.sessionId) {
       return json({ success: false, error: authResponse.error || 'Authentication failed' }, { status: 401 });
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async event => {
           last_name: authResponse.profile.lastName,
           role: authResponse.profile.role || 'user',
           created_at: new Date(),
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .returning();
       userId = newUser[0].id;
@@ -60,24 +60,24 @@ export const POST: RequestHandler = async event => {
       ip_address: ipAddress,
       user_agent: userAgent,
       session_context: {
-        quic_auth: true,
+       , quic_auth: true,
         access_token: authResponse.accessToken,
-        refresh_token: authResponse.refreshToken,
-      },
+        refresh_token: authResponse.refreshToken
+      }
     });
     // Set session cookie
     setSessionCookie(event, authResponse.sessionId, expiresAt); // Changed: Pass the full event object
     return json({
       success: true,
       user: {
-        id: userId,
+       , id: userId,
         email: authResponse.profile?.email,
         firstName: authResponse.profile?.firstName,
         lastName: authResponse.profile?.lastName,
-        role: authResponse.profile?.role,
+        role: authResponse.profile?.role
       },
       sessionId: authResponse.sessionId,
-      expiresAt: authResponse.expiresAt,
+      expiresAt: authResponse.expiresAt
     });
   } catch (error) {
     console.error('QUIC login error:', error);
@@ -108,13 +108,13 @@ export const GET: RequestHandler = async event => {
     return json({
       valid: true,
       user: {
-        id: validation.userId,
+       , id: validation.userId,
         email: validation.profile?.email,
         firstName: validation.profile?.firstName,
         lastName: validation.profile?.lastName,
-        role: validation.profile?.role,
+        role: validation.profile?.role
       },
-      expiresAt: validation.expiresAt,
+      expiresAt: validation.expiresAt
     });
   } catch (error) {
     console.error('QUIC session validation error:', error);

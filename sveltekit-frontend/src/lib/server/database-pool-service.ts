@@ -6,9 +6,7 @@ import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { redisService } from './redis-service.js';
-interface DatabasePoolConfig {
-  host: string;
-  port: number;
+interface DatabasePoolConfig { host: string;, port: number;
   database: string;
   username: string;
   password: string;
@@ -18,9 +16,7 @@ interface DatabasePoolConfig {
   prepare: boolean;
   ssl: boolean | 'require' | 'allow' | 'prefer';
 }
-interface CachedQuery {
-  sql: string;
-  params: any[];
+interface CachedQuery { sql: string;, params: any[];
   timestamp: number;
   result?: any;
   ttl: number; // seconds
@@ -61,7 +57,7 @@ class DatabasePoolService {
       idle_timeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30', 10),
       connect_timeout: parseInt(process.env.DB_CONNECT_TIMEOUT || '10', 10),
       prepare: process.env.NODE_ENV === 'production',
-      ssl: process.env.DB_SSL === 'true' ? 'require' : false,
+      ssl: process.env.DB_SSL === 'true' ? 'require' : false
     };
   }
 
@@ -104,8 +100,7 @@ class DatabasePoolService {
       ssl: this.config.ssl,
       timeout: this.config.connect_timeout * 1000,
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development',
-    } as any);
+      debug: process.env.NODE_ENV === 'development` } as any);
     this.pools.set(poolKey, pool);
     await this.recordConnectionStats(context, 'created');
     console.log(`🔗 Database pool created for context: ${context} (size: ${dynamicConfig.max ?? this.config.max})`);
@@ -169,7 +164,7 @@ class DatabasePoolService {
           params,
           timestamp: Date.now(),
           result,
-          ttl,
+          ttl
         };
         await redisService.set(redisKey, JSON.stringify(cacheData), ttl);
         // update lightweight index for inspection (no result stored)
@@ -214,7 +209,7 @@ class DatabasePoolService {
         totalConnections: parseInt((stats?.total as string) || '0', 10),
         activeConnections: parseInt((stats?.active as string) || '0', 10),
         avgResponseTime: parseFloat((stats?.avgResponse as string) || '0'),
-        lastUpdate: parseInt((stats?.lastUpdate as string) || '0', 10),
+        lastUpdate: parseInt((stats?.lastUpdate as string) || '0', 10)
       };
     } catch (error) {
       console.warn('Failed to get connection stats:', (error as Error).message);
@@ -238,7 +233,7 @@ class DatabasePoolService {
     }
     return {
       max: Math.floor(adjustedSize),
-      idle_timeout: stats && stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout,
+      idle_timeout: stats && stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout
     };
   }
 
@@ -309,7 +304,7 @@ class DatabasePoolService {
         results[key] = true;
       } catch (error) {
         results[key] = false;
-        console.error(`❌ Health check failed for pool ${key}:`, (error as Error).message);
+        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);
       }
     }
     return results;
@@ -319,21 +314,18 @@ class DatabasePoolService {
    * Get pool statistics
    */
   getStats(): any {
-    const stats: {
-      totalPools: number;
-      totalDrizzleInstances: number;
+    const stats: { totalPools: number;, totalDrizzleInstances: number;
       cacheCount: number;
       pools: Record<string, any>;
     } = {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheCount: this.queryCacheIndex.size,
-      pools: {},
+      pools: {}
     };
     for (const [key /*, pool*/] of this.pools) {
       (stats.pools as Record<string, any>)[key] = {
-        status: 'active',
-      };
+        status: 'active` };
     }
     return stats;
   }

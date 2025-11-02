@@ -116,7 +116,7 @@ export async function streamToBuffer(body: any): Promise<Buffer> {
 /**
  * Parses a MinIO-specific URL format (minio://bucket/key) into its components.
  */
-export function parseMinioUrl(url: string): { bucket: string; key: string } {
+export function parseMinioUrl(url: string): { bucket: string;, key: string } {
   const match = url.match(/^minio:\/\/([^/]+)\/(.+)$/);
   if (!match) throw new Error(`Invalid MinIO URL: ${url}`);
   return { bucket: match[1], key: match[2] };
@@ -135,7 +135,7 @@ export async function fetchMinioObject(url: string): Promise<Response> {
     buffer,
     contentType: res.ContentType ?? null,
     metadata: res.Metadata ?? null,
-    size: typeof res.ContentLength === 'number' ? res.ContentLength : buffer.length,
+    size: typeof res.ContentLength === 'number' ? res.ContentLength : buffer.length
   };
 }
 
@@ -183,7 +183,7 @@ export async function uploadMinioObject(
         Bucket: bucket,
         Key: objectKey,
         Body: buffer,
-        ContentLength: buffer.length,
+        ContentLength: buffer.length
       })
     );
   } catch (err) {

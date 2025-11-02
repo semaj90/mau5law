@@ -27,22 +27,16 @@ export interface InferenceResponse {
   };
 }
 
-export interface ProviderConfig {
-  name: string;
-  baseUrl: string;
+export interface ProviderConfig { name: string;, baseUrl: string;
   modelName: string;
   priority: number;
   healthEndpoint?: string;
-  capabilities: {
-    streaming: boolean;
-    embeddings: boolean;
+  capabilities: { streaming: boolean;, embeddings: boolean;
     batchInference: boolean;
   };
 }
 
-export interface AIProvider {
-  config: ProviderConfig;
-  modelName: string;
+export interface AIProvider { config: ProviderConfig;, modelName: string;
 
   initialize(): Promise<void>;
   healthCheck(): Promise<boolean>;

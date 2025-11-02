@@ -168,7 +168,7 @@
                             <div class="text-xs text-gray-500">Confidence</div>
                             <div class="w-16 bg-gray-200 rounded-full h-1.5">
                               <div
-                                class="h-1.5" rounded-full {event.confidence > 0.8 ? 'bg-green-500' :
+                                class="h-1.5 rounded-full" {event.confidence > 0.8 ? 'bg-green-500' :
                                                           event.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500'}"
                                 style="width: {event.confidence * 100}%"
                               ></div>

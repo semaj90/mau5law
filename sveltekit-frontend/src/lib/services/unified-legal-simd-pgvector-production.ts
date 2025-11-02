@@ -25,9 +25,7 @@ import type {
 
 // ===== Type Definitions =====
 
-export interface LegalDocument {
-	id: string;
-	title: string;
+export interface LegalDocument { id: string;, title: string;
 	content: string;
 	documentType: 'contract' | 'brief' | 'evidence' | 'citation' | 'statute' | 'regulation';
 	jurisdiction?: string;
@@ -37,49 +35,37 @@ export interface LegalDocument {
 	updatedAt?: Date;
 }
 
-export interface ExtractedEntity {
-	text: string;
-	type: string;
+export interface ExtractedEntity { text: string;, type: string;
 	confidence: number;
 	startIndex: number;
 	endIndex: number;
 }
 
-export interface DidYouMeanSuggestion {
-	original: string;
-	suggestion: string;
+export interface DidYouMeanSuggestion { original: string;, suggestion: string;
 	confidence: number;
 	type: 'spelling' | 'legal_term' | 'entity';
 }
 
-export interface ParsedDocument {
-	content: string;
-	entities: ExtractedEntity[];
+export interface ParsedDocument { content: string;, entities: ExtractedEntity[];
 	suggestions: DidYouMeanSuggestion[];
 	confidence: number;
 	processingTime: number;
 }
 
-export interface EmbeddingResult {
-	documentId: string;
-	contentEmbedding: number[];
+export interface EmbeddingResult { documentId: string;, contentEmbedding: number[];
 	entityEmbeddings: number[][];
 	legalTermEmbeddings: number[][];
 	confidence: number;
 	processingTimeMs: number;
 }
 
-export interface VectorSearchResult {
-	document: LegalDocument;
-	similarityScore: number;
+export interface VectorSearchResult { document: LegalDocument;, similarityScore: number;
 	matchingEntities: ExtractedEntity[];
 	suggestedImprovements: DidYouMeanSuggestion[];
 	relevanceExplanation: string;
 }
 
-export interface SystemStats {
-	totalDocuments: number;
-	totalVectors: number;
+export interface SystemStats { totalDocuments: number;, totalVectors: number;
 	avgProcessingTime: number;
 	cacheHitRate: number;
 	servicesHealth: Record<string, boolean>;
@@ -458,7 +444,7 @@ export class UnifiedLegalSIMDPGVector {
 				id: document.id,
 				vector: embedding.contentEmbedding,
 				metadata: {
-					title: document.title,
+				, title: document.title,
 					content: document.content.substring(0, 1000), // Store excerpt
 					documentType: document.documentType,
 					jurisdiction: document.jurisdiction,
@@ -487,15 +473,13 @@ export class UnifiedLegalSIMDPGVector {
 
 		// Try Qdrant first (faster)
 		try {
-			const qdrantResults = await this.qdrant.search<{ title: string; documentType: string }>(
+			const qdrantResults = await this.qdrant.search<{ title: string;, documentType: string }>(
 				'legal_documents',
 				queryEmbedding,
 				limit
 			);
 
-			return qdrantResults.map((result) => ({
-				document: {
-					id: result.id,
+			return qdrantResults.map((result) => ({ document: {, id: result.id,
 					title: result.payload?.title || 'Untitled',
 					content: '',
 					documentType: (result.payload?.documentType as any) || 'brief',
@@ -504,8 +488,7 @@ export class UnifiedLegalSIMDPGVector {
 				similarityScore: result.score,
 				matchingEntities: [],
 				suggestedImprovements: [],
-				relevanceExplanation: `Semantic similarity: ${(result.score * 100).toFixed(1)}%`
-			}));
+				relevanceExplanation: `Semantic; similarity: ${(result.score * 100).toFixed(1)}%` }));
 		} catch (error) {
 			console.warn('Qdrant search failed, falling back to pgvector:', error);
 		}
@@ -513,9 +496,7 @@ export class UnifiedLegalSIMDPGVector {
 		// Fallback to pgvector
 		const pgResults = await this.pgvector.search('legal_documents', queryEmbedding, limit);
 
-		return pgResults.map((result) => ({
-			document: {
-				id: result.id,
+		return pgResults.map((result) => ({ document: {, id: result.id,
 				title: (result.metadata.title as string) || 'Untitled',
 				content: (result.metadata.content as string) || '',
 				documentType: (result.metadata.documentType as any) || 'brief',
@@ -524,8 +505,7 @@ export class UnifiedLegalSIMDPGVector {
 			similarityScore: result.similarity,
 			matchingEntities: [],
 			suggestedImprovements: [],
-			relevanceExplanation: `Cosine similarity: ${(result.similarity * 100).toFixed(1)}%`
-		}));
+			relevanceExplanation: `Cosine; similarity: ${(result.similarity * 100).toFixed(1)}%` }));
 	}
 
 	/**

@@ -3,18 +3,14 @@
  * Handles detection, port configuration, and health checking app-wide
  */
 }
-export interface OllamaConfig {
-  baseUrl: string;
-  port: number;
+export interface OllamaConfig { baseUrl: string;, port: number;
   isRunning: boolean;
   models: string[];
   version?: string;
   lastChecked: number;
 }
 }
-export interface OllamaHealthCheck {
-  isHealthy: boolean;
-  responseTime: number;
+export interface OllamaHealthCheck { isHealthy: boolean;, responseTime: number;
   models: string[];
   error?: string;
 }
@@ -77,8 +73,7 @@ class OllamaConfigService {
       return this.config.baseUrl;
     }
     // Fallback to environment or default
-    return this.getOllamaUrlFromEnv() || 'http://localhost:11434'
-  }
+    return this.getOllamaUrlFromEnv() || 'http://localhost:11434' }
   /**
    * Check if Ollama is healthy and return cached result if recent
    */
@@ -218,7 +213,7 @@ class OllamaConfigService {
         body: JSON.stringify({
           model,
           prompt: text,
-        )}),
+        )})
       });
       return response.embedding || nul,l;
     } catch (error) {
@@ -246,11 +241,11 @@ class OllamaConfigService {
           model,
           prompt,
           options: {
-            temperature: options.temperature || 0.7,
+           , temperature: options.temperature || 0.7,
             num_predict: options.maxTokens || 1000
           },
           stream: false,
-        )}),
+        )})
       });
       return response.response || nul,l;
     } catch (error) {

@@ -4,6 +4,7 @@
   Uses Bits UI v2 + GPU orchestrator + Context7 documentation
 -->
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
 import type { Message } from '$lib/types';
 import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported

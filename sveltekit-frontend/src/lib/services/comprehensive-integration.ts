@@ -4,17 +4,13 @@
  */
 import { writable, type Writable } from 'svelte/store';
 // Define types for missing dependencies
-export interface SemanticAnalysisResult {
-  summaryEmbedding: number[];
-  legalRelevanceScore: number;
+export interface SemanticAnalysisResult { summaryEmbedding: number[];, legalRelevanceScore: number;
   concepts: Array<KeyValue>; // replaced Array<any>
 }
 export interface RAGQuery {
   query: string;
   context?: string;
-  semantic: {
-    useEmbeddings: boolean;
-    expandConcepts: boolean;
+  semantic: { useEmbeddings: boolean;, expandConcepts: boolean;
     includeRelated: boolean;
   };
   filters: {
@@ -39,15 +35,14 @@ const semanticAnalyzer = {
     return {
       summaryEmbedding: new Array(384).fill(0).map(() => Math.random()),
       legalRelevanceScore: Math.random(),
-      concepts: [],
+      concepts: []
     };
   },
   // renamed unused param to _query to satisfy linter rule for unused args
   async enhancedQuery(_query: RAGQuery): Promise<RAGResponse> {
-    return {
-      results: [{ relevanceScore: Math.random() }],
+    return { results: [{, relevanceScore: Math.random() }]
     };
-  },
+  }
 };
 const webGPUAccelerator = {
   async initialize(): Promise<WebGPUCapabilities> {
@@ -56,7 +51,7 @@ const webGPUAccelerator = {
   // renamed unused params to _a and _b
   async computeVectorSimilarity(_a: Float32Array, _b: Float32Array): Promise<number> {
     return Math.random();
-  },
+  }
 };
 const realtimeComm = {
   // renamed unused params to _userId and _sessionId
@@ -67,35 +62,25 @@ const realtimeComm = {
   async sendStreamingRequest(_channel: string, _data: KeyValue): Promise<string> {
     // data: any -> KeyValue
     return `stream_${Date.now()}`;
-  },
+  }
 };
 
-export interface SystemStatus {
-  enhancedRAG: {
-    status: 'online' | 'offline' | 'degraded';
+export interface SystemStatus { enhancedRAG: {, status: 'online' | 'offline' | 'degraded';
     lastChecked: Date;
     responseTime: number;
   };
-  webGPU: {
-    available: boolean;
-    capabilities: WebGPUCapabilities | null;
+  webGPU: { available: boolean;, capabilities: WebGPUCapabilities | null;
     performance: number;
   };
-  realtimeComm: {
-    websocket: boolean;
-    sse: boolean;
+  realtimeComm: { websocket: boolean;, sse: boolean;
     webrtc: boolean;
     primaryChannel: string | null;
   };
-  databases: {
-    postgresql: boolean;
-    redis: boolean;
+  databases: { postgresql: boolean;, redis: boolean;
     qdrant: boolean;
     neo4j: boolean;
   };
-  models: {
-    ollama: boolean;
-    embeddings: boolean;
+  models: { ollama: boolean;, embeddings: boolean;
     gemma3Legal: boolean;
   };
 }
@@ -111,13 +96,9 @@ export interface IntegratedQuery {
     confidenceThreshold?: number;
   };
 }
-export interface IntegratedResponse {
-  query: string;
-  semanticAnalysis: SemanticAnalysisResult | null;
+export interface IntegratedResponse { query: string;, semanticAnalysis: SemanticAnalysisResult | null;
   ragResults: RAGResponse | null;
-  webGPUMetrics: {
-    used: boolean;
-    processingTime: number;
+  webGPUMetrics: { used: boolean;, processingTime: number;
     speedup: number;
   } | null;
   realtimeStreamId: string | null;
@@ -135,9 +116,7 @@ export interface Neo4jResultRow {
 }
 
 // Add small domain types to avoid `any`
-export interface QdrantPoint {
-  id: string;
-  vector: number[];
+export interface QdrantPoint { id: string;, vector: number[];
   payload?: Record<string, unknown>;
 }
 
@@ -148,15 +127,11 @@ export interface QdrantSearchResult {
 }
 
 // Replace `any` with explicit/unknown types
-export interface DatabaseOperations {
-  postgresql: {
-    query: (sql: string, params?: any[]) => Promise<unknown[]>;
+export interface DatabaseOperations { postgresql: {, query: (sql: string, params?: any[]) => Promise<unknown[]>;
     insert: (table: string, data: KeyValue) => Promise<string>;
     update: (table: string, id: string, data: KeyValue) => Promise<boolean>;
   };
-  redis: {
-    get: (key: string) => Promise<string | null>;
-    set: (key: string, value: string, ttl?: number) => Promise<boolean>;
+  redis: { get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ttl?: number) => Promise<boolean>;
     del: (key: string) => Promise<boolean>;
   };
   qdrant: {
@@ -171,34 +146,31 @@ export interface DatabaseOperations {
 }
 
 class ComprehensiveIntegrationService {
-  private systemStatus: SystemStatus = {
-    enhancedRAG: { status: 'offline', lastChecked: new Date(), responseTime: 0 },
+  private systemStatus: SystemStatus = { enhancedRAG: {, status: 'offline', lastChecked: new Date(), responseTime: 0 },
     webGPU: { available: false, capabilities: null, performance: 0 },
     realtimeComm: { websocket: false, sse: false, webrtc: false, primaryChannel: null },
     databases: { postgresql: false, redis: false, qdrant: false, neo4j: false },
-    models: { ollama: false, embeddings: false, gemma3Legal: false },
+    models: { ollama: false, embeddings: false, gemma3Legal: false }
   };
 
-  private dbOperations: DatabaseOperations = {
-    postgresql: {
-      query: this.executePostgreSQLQuery.bind(this),
+  private dbOperations: DatabaseOperations = { postgresql: {, query: this.executePostgreSQLQuery.bind(this),
       insert: this.insertPostgreSQL.bind(this),
-      update: this.updatePostgreSQL.bind(this),
+      update: this.updatePostgreSQL.bind(this)
     },
     redis: {
       get: this.getRedis.bind(this),
       set: this.setRedis.bind(this),
-      del: this.deleteRedis.bind(this),
+      del: this.deleteRedis.bind(this)
     },
     qdrant: {
       search: this.searchQdrant.bind(this),
-      upsert: this.upsertQdrant.bind(this),
+      upsert: this.upsertQdrant.bind(this)
     },
     neo4j: {
       query: this.queryNeo4j.bind(this),
       createNode: this.createNeo4jNode.bind(this),
-      createRelationship: this.createNeo4jRelationship.bind(this),
-    },
+      createRelationship: this.createNeo4jRelationship.bind(this)
+    }
   };
 
   /**
@@ -235,7 +207,7 @@ class ComprehensiveIntegrationService {
       realtimeStreamId: null,
       timestamp: new Date(),
       processingTime: 0,
-      confidence: 0,
+      confidence: 0
     };
     try {
       // Step 1: Perform semantic analysis
@@ -257,11 +229,11 @@ class ComprehensiveIntegrationService {
             semantic: {
               useEmbeddings: query.options.includeEmbeddings ?? true,
               expandConcepts: query.options.semanticExpansion ?? true,
-              includeRelated: true,
+              includeRelated: true
             },
             filters: {
-              confidenceThreshold: query.options.confidenceThreshold ?? 0.7,
-            },
+              confidenceThreshold: query.options.confidenceThreshold ?? 0.7
+            }
           };
           response.ragResults = await semanticAnalyzer.enhancedQuery(ragQuery);
           console.log('✅ RAG query completed');
@@ -283,7 +255,7 @@ class ComprehensiveIntegrationService {
             response.webGPUMetrics = {
               used: true,
               processingTime: gpuTime,
-              speedup: 1.5,
+              speedup: 1.5
             };
             console.log('✅ WebGPU acceleration applied (similarity:', similarity, ')');
           }
@@ -298,7 +270,7 @@ class ComprehensiveIntegrationService {
           response.realtimeStreamId = await realtimeComm.sendStreamingRequest('ai_chat', {
             query: query.query,
             results: response.ragResults,
-            analysis: response.semanticAnalysis,
+            analysis: response.semanticAnalysis
           } as KeyValue);
           console.log('✅ Real-time streaming initiated');
         } catch (error: any) {
@@ -345,7 +317,7 @@ class ComprehensiveIntegrationService {
         this.systemStatus.enhancedRAG = {
           status: 'online',
           lastChecked: new Date(),
-          responseTime: health.response_time || 0,
+          responseTime: health.response_time || 0
         };
         console.log('✅ Enhanced RAG system online');
       } else {
@@ -366,7 +338,7 @@ class ComprehensiveIntegrationService {
       this.systemStatus.webGPU = {
         available: capabilities.available,
         capabilities,
-        performance: capabilities.available ? 100 : 0,
+        performance: capabilities.available ? 100 : 0
       };
       console.log(capabilities.available ? '✅ WebGPU acceleration available' : 'ℹ️ WebGPU not available');
     } catch (error: any) {
@@ -388,8 +360,7 @@ class ComprehensiveIntegrationService {
         websocket: true,
         sse: true,
         webrtc: false,
-        primaryChannel: 'websocket',
-      };
+        primaryChannel: `websocket` };
       console.log('✅ Real-time communication initialized');
     } catch (error: any) {
       console.warn('⚠️ Real-time communication initialization failed:', error);
@@ -465,7 +436,7 @@ class ComprehensiveIntegrationService {
           gemma3Legal: models.some((m: any) => {
             const name = getModelName(m);
             return typeof name === 'string' && name.includes('gemma3-legal');
-          }),
+          })
         };
         console.log('🤖 Model availability checked');
       }
@@ -496,7 +467,7 @@ class ComprehensiveIntegrationService {
           query: query.query,
           response: JSON.stringify(response),
           timestamp: new Date(),
-          processing_time: response.processingTime,
+          processing_time: response.processingTime
         });
       }
 
@@ -514,8 +485,8 @@ class ComprehensiveIntegrationService {
             payload: {
               query: query.query,
               timestamp: response.timestamp.toISOString(),
-              confidence: response.confidence,
-            },
+              confidence: response.confidence
+            }
           },
         ]);
       }
@@ -541,7 +512,7 @@ class ComprehensiveIntegrationService {
           await this.dbOperations.neo4j.createNode('LegalConcept', {
             name,
             ...(category ? { category } : {}),
-            confidence: confidenceVal,
+            confidence: confidenceVal
           });
         }
       }
@@ -575,7 +546,7 @@ class ComprehensiveIntegrationService {
     const response = await fetch('http://localhost:8094/api/database/postgres/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sql, params }),
+      body: JSON.stringify({ sql, params })
     });
     if (!response.ok) throw new Error('PostgreSQL query failed');
     return response.json();
@@ -585,7 +556,7 @@ class ComprehensiveIntegrationService {
     const response = await fetch('http://localhost:8094/api/database/postgres/insert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ table, data }),
+      body: JSON.stringify({ table, data })
     });
     if (!response.ok) throw new Error('PostgreSQL insert failed');
     const result = await response.json();
@@ -595,8 +566,8 @@ class ComprehensiveIntegrationService {
   private async updatePostgreSQL(table: string, id: string, data: KeyValue): Promise<boolean> {
     const response = await fetch('http://localhost:8094/api/database/postgres/update', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ table, id, data }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ table, id, data })
     });
     return response.ok;
   }
@@ -611,24 +582,23 @@ class ComprehensiveIntegrationService {
   private async setRedis(key: string, value: string, ttl?: number): Promise<boolean> {
     const response = await fetch('http://localhost:8094/api/database/redis', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, value, ttl }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ key, value, ttl })
     });
     return response.ok;
   }
 
   private async deleteRedis(key: string): Promise<boolean> {
     const response = await fetch(`http://localhost:8094/api/database/redis/${encodeURIComponent(key)}`, {
-      method: 'DELETE',
-    });
+      method: `DELETE` });
     return response.ok;
   }
 
   private async searchQdrant(vector: number[], collection: string, limit = 10): Promise<QdrantSearchResult[]> {
     const response = await fetch(`http://localhost:6333/collections/${encodeURIComponent(collection)}/points/search`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vector, limit, with_payload: true }),
+      headers: { 'Content-Type': `application/json` },
+      body: JSON.stringify({ vector, limit, with_payload: true })
     });
     if (!response.ok) throw new Error('Qdrant search failed');
     const result: { result?: QdrantSearchResult[] } = await response.json();
@@ -639,7 +609,7 @@ class ComprehensiveIntegrationService {
     const response = await fetch(`http://localhost:6333/collections/${encodeURIComponent(collection)}/points`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ points }),
+      body: JSON.stringify({ points })
     });
     return response.ok;
   }
@@ -653,11 +623,9 @@ class ComprehensiveIntegrationService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Basic bmVvNGo6cGFzc3dvcmQ=',
-      },
-      body: JSON.stringify({
-        statements: [{ statement: cypher, parameters: params }],
-      }),
+        Authorization: `Basic bmVvNGo6cGFzc3dvcmQ=` },
+      body: JSON.stringify({, statements: [{, statement: cypher, parameters: params }]
+      })
     });
     if (!response.ok) throw new Error('Neo4j query failed');
     const result: any = await response.json();
@@ -703,7 +671,7 @@ class ComprehensiveIntegrationService {
     const result = await this.queryNeo4j(cypher, {
       from Number.isFinite(Number(from)) ? Number(from) : from,
       to: Number.isFinite(Number(to)) ? Number(to) : to,
-      props: properties || {},
+      props: properties || {}
     });
     const relId = result?.[0]?.row?.[0];
     return relId !== undefined && relId !== null ? String(relId) : '';

@@ -11,9 +11,7 @@
 import { VectorQuantizer, BatchVectorQuantizer } from './vector-quantization';
 import { defaultQueryCache, vectorSearchCache, ragQueryCache } from './query-cache';
 import { performance } from 'perf_hooks';
-interface BenchmarkResult {
-  name: string;
-  before: number;
+interface BenchmarkResult { name: string;, before: number;
   after: number;
   improvement: number;
   improvementPercent: string;
@@ -71,8 +69,7 @@ class BenchmarkSuite {
         memoryReduction: metrics.memoryReduction,
         compressionRatio: `${metrics.compressionRatio.toFixed(1)}x`,
         originalSize: `${(metrics.originalSize / 1024).toFixed(1)}KB`,
-        quantizedSize: `${(metrics.quantizedSize / 1024).toFixed(1)}KB`,
-      },
+        quantizedSize: `${(metrics.quantizedSize / 1024).toFixed(1)}KB' }
     };
     this.results.push(result);
     return result;
@@ -96,7 +93,7 @@ class BenchmarkSuite {
     const timeBefore = performance.now() - startBefore;
     // Benchmark AFTER (with cache)
     const cache = defaultQueryCache;
-    const query = { type: 'benchmark', id: 'test-query' };
+    const query = { type: 'benchmark', id: `test-query` };
     const startAfter = performance.now();
     const iterationsAfter = 10;
     // First call: cache miss
@@ -118,8 +115,7 @@ class BenchmarkSuite {
         cacheHits: iterationsAfter - 1,
         cacheMisses: 1,
         avgLatencyBefore: `${(timeBefore / iterationsBefore).toFixed(1)}ms`,
-        avgLatencyAfter: `${(timeAfter / iterationsAfter).toFixed(1)}ms`,
-      },
+        avgLatencyAfter: `${(timeAfter / iterationsAfter).toFixed(1)}ms` }
     };
     this.results.push(result);
     return result;
@@ -134,12 +130,10 @@ class BenchmarkSuite {
     // Simulate expensive vector search
     const expensiveVectorSearch = async () => {
       await new Promise(resolve => setTimeout(resolve, 150)); // 150ms latency
-      return {
-        results: Array.from({ length: 50 }, (_, i) => ({
+      return { results: Array.from({, length: 50 }, (_, i) => ({
           id: `doc_${i}`,
           score: Math.random(),
-          content: 'Legal document content...',
-        })),
+          content: `Legal document content...` }))
       };
     };
     // Benchmark BEFORE (no cache)
@@ -171,8 +165,8 @@ class BenchmarkSuite {
         iterations: iterationsBefore,
         cacheHits: iterationsAfter - 1,
         resultCount: 50,
-        embeddingDimensions: 768,
-      },
+        embeddingDimensions: 768
+      }
     };
     this.results.push(result);
     return result;
@@ -230,8 +224,8 @@ class BenchmarkSuite {
       improvementPercent: `${((improvement - 1) * 100).toFixed(1)}%`,
       details: {
         pipelineSteps: ['embedding', 'quantization', 'search', 'cache'],
-        iterations: 10,
-      },
+        iterations: 10
+      }
     };
     this.results.push(result);
     return result;
@@ -278,7 +272,7 @@ class BenchmarkSuite {
     console.log('═══════════════════════════════════════════════════');
     console.log(`\n  Average Improvement: ${avgImprovement.toFixed(2)}x faster`);
     console.log(`  Expected Latency Reduction: ${((avgImprovement - 1) * 100).toFixed(1)}%`);
-    console.log(`  Target Achievement: ${avgImprovement >= 2.5 ? '✅ EXCEEDED' : avgImprovement >= 2.0 ? '✅ MET' : '⚠️  BELOW TARGET'}`);
+    console.log(`  Target Achievement: ${avgImprovement >= 2.5 ? '✅ EXCEEDED' : avgImprovement >= 2.0 ? '✅ MET' : `⚠️  BELOW TARGET` }`);
     console.log('\n═══════════════════════════════════════════════════\n');
   }
   /**

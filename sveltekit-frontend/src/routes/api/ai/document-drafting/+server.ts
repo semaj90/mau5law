@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: documentProcessing
  *
  * Performance Impact:
- * - Cache Strategy: minimal
+ * - Cache; Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -28,9 +28,7 @@ import { json } from '@sveltejs/kit';
 export interface DocumentDraftingRequest {
   documentType: string;
   jurisdiction?: string;
-  parties: {
-    role: string;
-    name: string;
+  parties: { role: string;, name: string;
     type?: 'individual' | 'corporation' | 'government';
   }[];
   keyTerms?: {
@@ -42,9 +40,7 @@ export interface DocumentDraftingRequest {
   urgency?: 'low' | 'normal' | 'high';
   customRequirements?: string;
 }
-export interface DraftingAssistance {
-  documentStructure: {
-    section: string;
+export interface DraftingAssistance { documentStructure: {, section: string;
     description: string;
     required: boolean;
     template?: string;
@@ -67,7 +63,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       templateId,
       userRole,
       complexity = 'standard',
-      urgency = 'normal',
+      urgency = 'normal'
     } = body;
     if (!documentType?.trim()) {
       return json({ error: 'Document type is required' }, { status: 400 });
@@ -96,9 +92,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         userRole,
         confidence,
         partiesCount: parties.length,
-        templateUsed: templateId || 'auto-generated',
+        templateUsed: templateId || 'auto-generated'
       },
-      recommendations: generateDraftingRecommendations(body, assistance),
+      recommendations: generateDraftingRecommendations(body, assistance)
     };
     return json(response);
   } catch (error: any) {
@@ -108,7 +104,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Drafting assistance failed',
         message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -133,7 +129,7 @@ async function generateDraftingAssistance(request: DocumentDraftingRequest): Pro
     legalConsiderations,
     complianceChecklist,
     commonPitfalls,
-    nextSteps,
+    nextSteps
   };
 }
 function getDocumentStructure(documentType: string, _jurisdiction: string) {
@@ -143,49 +139,49 @@ function getDocumentStructure(documentType: string, _jurisdiction: string) {
         section: 'Title and Parties',
         description: 'Document title and identification of all parties',
         required: true,
-        guidance: ['Use full legal names', 'Include addresses', 'Specify entity types'],
+        guidance: ['Use full legal names', 'Include addresses', 'Specify entity types']
       },
       {
         section: 'Recitals',
         description: 'Background information and purpose',
         required: false,
-        guidance: ['Provide context', 'State purpose', 'Reference relevant facts'],
+        guidance: ['Provide context', 'State purpose', 'Reference relevant facts']
       },
       {
         section: 'Definitions',
         description: 'Key terms and definitions',
         required: true,
-        guidance: ['Define technical terms', 'Avoid ambiguity', 'Use consistent terminology'],
+        guidance: ['Define technical terms', 'Avoid ambiguity', 'Use consistent terminology']
       },
       {
         section: 'Terms and Conditions',
         description: 'Main contractual obligations',
         required: true,
-        guidance: ['Clearly state obligations', 'Include performance standards', 'Specify deadlines'],
+        guidance: ['Clearly state obligations', 'Include performance standards', 'Specify deadlines']
       },
       {
         section: 'Payment Terms',
         description: 'Payment obligations and schedules',
         required: true,
-        guidance: ['Specify amounts', 'Include due dates', 'Address late payments'],
+        guidance: ['Specify amounts', 'Include due dates', 'Address late payments']
       },
       {
         section: 'Term and Termination',
         description: 'Contract duration and termination provisions',
         required: true,
-        guidance: ['State contract period', 'Include termination events', 'Address post-termination obligations'],
+        guidance: ['State contract period', 'Include termination events', 'Address post-termination obligations']
       },
       {
         section: 'Dispute Resolution',
         description: 'Mechanisms for resolving disputes',
         required: true,
-        guidance: ['Specify governing law', 'Include arbitration clauses', 'Define jurisdiction'],
+        guidance: ['Specify governing law', 'Include arbitration clauses', 'Define jurisdiction']
       },
       {
         section: 'Miscellaneous',
         description: 'General provisions',
         required: true,
-        guidance: ['Include entire agreement clause', 'Address amendments', 'Include signatures'],
+        guidance: ['Include entire agreement clause', 'Address amendments', 'Include signatures']
       },
     ],
     motion: [
@@ -193,31 +189,31 @@ function getDocumentStructure(documentType: string, _jurisdiction: string) {
         section: 'Caption',
         description: 'Court identification and case information',
         required: true,
-        guidance: ['Include court name', 'Case number', 'Party names and roles'],
+        guidance: ['Include court name', 'Case number', 'Party names and roles']
       },
       {
         section: 'Introduction',
         description: 'Motion purpose and relief sought',
         required: true,
-        guidance: ['State motion type', 'Summarize relief requested', 'Cite applicable rules'],
+        guidance: ['State motion type', 'Summarize relief requested', 'Cite applicable rules']
       },
       {
         section: 'Statement of Facts',
         description: 'Relevant factual background',
         required: true,
-        guidance: ['Present facts chronologically', 'Include only relevant facts', 'Cite to record'],
+        guidance: ['Present facts chronologically', 'Include only relevant facts', 'Cite to record']
       },
       {
         section: 'Legal Argument',
         description: 'Legal basis for relief',
         required: true,
-        guidance: ['Cite applicable law', 'Apply law to facts', 'Address counterarguments'],
+        guidance: ['Cite applicable law', 'Apply law to facts', 'Address counterarguments']
       },
       {
         section: 'Conclusion',
         description: 'Summary and requested relief',
         required: true,
-        guidance: ['Summarize argument', 'Specify relief requested', 'Include prayer for relief'],
+        guidance: ['Summarize argument', 'Specify relief requested', 'Include prayer for relief']
       },
     ],
     brief: [
@@ -225,51 +221,51 @@ function getDocumentStructure(documentType: string, _jurisdiction: string) {
         section: 'Table of Contents',
         description: 'Document outline with page numbers',
         required: true,
-        guidance: ['Include all major sections', 'Update page numbers', 'Use consistent formatting'],
+        guidance: ['Include all major sections', 'Update page numbers', 'Use consistent formatting']
       },
       {
         section: 'Table of Authorities',
         description: 'Cases, statutes, and other authorities cited',
         required: true,
-        guidance: ['Alphabetize by type', 'Include pinpoint citations', 'Update before filing'],
+        guidance: ['Alphabetize by type', 'Include pinpoint citations', 'Update before filing']
       },
       {
         section: 'Statement of Issues',
         description: 'Questions presented for review',
         required: true,
-        guidance: ['Frame issues favorably', 'Be specific and concrete', 'Include standard of review'],
+        guidance: ['Frame issues favorably', 'Be specific and concrete', 'Include standard of review']
       },
       {
         section: 'Statement of Facts',
         description: 'Relevant factual and procedural background',
         required: true,
-        guidance: ['Present facts persuasively', 'Cite to record', 'Include procedural history'],
+        guidance: ['Present facts persuasively', 'Cite to record', 'Include procedural history']
       },
       {
         section: 'Summary of Argument',
         description: 'Concise overview of legal arguments',
         required: true,
-        guidance: ['Provide roadmap', 'Highlight key points', 'Keep concise'],
+        guidance: ['Provide roadmap', 'Highlight key points', 'Keep concise']
       },
       {
         section: 'Argument',
         description: 'Detailed legal analysis',
         required: true,
-        guidance: ['Use clear headings', 'Apply law to facts', 'Address opposing arguments'],
+        guidance: ['Use clear headings', 'Apply law to facts', 'Address opposing arguments']
       },
       {
         section: 'Conclusion',
         description: 'Summary and requested relief',
         required: true,
-        guidance: ['Restate key points', 'Specify relief requested', 'End persuasively'],
+        guidance: ['Restate key points', 'Specify relief requested', 'End persuasively']
       },
-    ],
+    ]
   };
   return commonStructures[documentType.toLowerCase()] || commonStructures['contract'];
 }
 async function generateTemplateContent(
   request: DocumentDraftingRequest,
-  structure: Array<{ section: string; description: string; required?: boolean; guidance?: string[]; template?: string }>
+  structure: Array<{, section: string; description: string; required?: boolean; guidance?: string[]; template?: string }>
 ): Promise<string> {
   const { documentType, parties, jurisdiction } = request;
   let template = `${documentType.toUpperCase()}\n\n`;
@@ -416,13 +412,12 @@ async function generateAIContentSuggestions(
   request: DocumentDraftingRequest,
   assistance: DraftingAssistance
 ): Promise<string> {
-  const prompt = `Generate specific content suggestions for a ${request.documentType} involving:
-Parties: ${request.parties.map(p => `${p.name} (${p.role})`).join(', ')}
+  const prompt = `Generate specific content suggestions for a ${request.documentType} involving:; Parties: ${request.parties.map(p => `${p.name} (${p.role})`).join(', ')}
 Jurisdiction: ${request.jurisdiction}
 Complexity: ${request.complexity}
 Key considerations:
 ${assistance.legalConsiderations.join('\n')}
-Provide specific language suggestions and alternatives for key sections:`;
+Provide specific language suggestions and alternatives for key sections: ';
   try {
     // Synthesize input and process the assistant query using the constructed prompt
     // Pass the prompt into the helper functions so the constructed prompt is actually used
@@ -440,7 +435,7 @@ Key Language Recommendations:
 • Consider alternative dispute resolution mechanisms
 For ${request.parties.length} parties: Ensure balanced obligations and mutual considerations.
 Jurisdiction (${request.jurisdiction}): Review applicable local law requirements.
-Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.'}`;
+Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.' }`;
   }
 }
 async function generateComplianceAnalysis(request: DocumentDraftingRequest): Promise<string> {

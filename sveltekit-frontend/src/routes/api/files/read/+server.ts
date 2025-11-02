@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       file,
       content,
       size: content.length,
-      lines: content.split('\n').length,
+      lines: content.split('\n').length
     });
   } catch (error: any) {
     // Safe extraction of message from unknown

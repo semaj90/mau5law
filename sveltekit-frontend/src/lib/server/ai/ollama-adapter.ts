@@ -1,9 +1,7 @@
 // This file provides a typed adapter for the Ollama service.
 // Placeholder for the actual Ollama client library or direct fetch implementation
 // In a real scenario, this would wrap a client like: 'ollama-ts' or a custom fetcher.
-interface OllamaClient {
-  generateCompletion: (
-    model: string,
+interface OllamaClient { generateCompletion: (, model: string,
     prompt: string,
     options?: { temperature?: number; max_tokens?: number }
   ) => Promise<string>; // Assuming it returns a string directly
@@ -23,7 +21,7 @@ const mockOllamaClient: OllamaClient = {
         legal_precedent: 0.9,
         public_interest: 0.75,
         case_complexity: 0.6,
-        resource_requirements: 0.7,
+        resource_requirements: 0.7
       });
     } else if (prompt.includes('strategic recommendations')) {
       return `1. Conduct further forensic analysis on digital evidence.
@@ -33,14 +31,14 @@ const mockOllamaClient: OllamaClient = {
       return `The case received a high score due to strong evidence, clear legal precedents, and high public interest. Weaknesses include some witness reliability concerns.`;
     }
     return `AI analysis for model ${model}: This is a comprehensive analysis based on the provided data.`;
-  },
+  }
 };
 export const ollamaService: OllamaClient = mockOllamaClient;
 // You might also have a function to summarize with Gemma specifically
-export async function summarizeWithGemma(params: { query: string; context: string }): Promise<string> {
+export async function summarizeWithGemma(params: {, query: string; context: string }): Promise<string> {
   const prompt = `Based on the following context, summarize the answer to the query.
 Query: ${params.query}
 Context: ${params.context}
-Summary:`;
+Summary: ';
   return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3, max_tokens: 300 });
 }

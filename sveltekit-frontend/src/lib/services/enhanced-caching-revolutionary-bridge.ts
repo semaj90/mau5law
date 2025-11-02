@@ -63,9 +63,7 @@ export interface UnifiedCacheResult {
   cacheSource: 'enhanced' | 'revolutionary' | 'hybrid';
 }
 
-export interface HybridCacheQuery {
-  query: string;
-  type: 'embedding' | 'query' | 'revolutionary';
+export interface HybridCacheQuery { query: string;, type: 'embedding' | 'query' | 'revolutionary';
   options?: {
     // Enhanced caching options
     useEmbeddingCache?: boolean;
@@ -92,8 +90,7 @@ class EnhancedCachingRevolutionaryBridge {
     hybridQueries: 0,
     totalQueries: 0,
     averageResponseTime: 0,
-    bestStrategy: 'adaptive' as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive',
-  };
+    bestStrategy: 'adaptive'; as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -167,9 +164,9 @@ class EnhancedCachingRevolutionaryBridge {
         cached?: boolean;
         processingTime?: number;
       };
-      console.log(`🚀 Unified query completed in ${stats.totalResponseTime?.toFixed?.(2) ?? 'N/A'}ms`);
+      console.log(`🚀 Unified query completed in ${stats.totalResponseTime?.toFixed?.(2) ?? 'N/A` }ms`);
       console.log(
-        `📊 Cache hit rate: ${stats.cacheHitRate?.toFixed?.(2) ?? 'N/A'}%, Source: ${stats.cacheSource ?? 'unknown'}`
+        `📊 Cache hit rate: ${stats.cacheHitRate?.toFixed?.(2) ?? 'N/A'}%, Source: ${stats.cacheSource ?? 'unknown` }`
       );
       return result;
     } catch (error) {
@@ -185,7 +182,7 @@ class EnhancedCachingRevolutionaryBridge {
         memoryPalacePath: [],
         simdAcceleration: false,
         documents: [],
-        visualizations: [],
+        visualizations: []
       };
     }
   }
@@ -275,8 +272,8 @@ class EnhancedCachingRevolutionaryBridge {
         useCHRROMPatterns: query.options?.useCHRROMPatterns || false,
         useMemoryPalace: query.options?.useMemoryPalace || false,
         compressionLevel: query.options?.compressionLevel || 'medium',
-        responseFormat: 'json',
-      },
+        responseFormat: 'json'
+      }
     };
 
     // Call the Revolutionary AI to get a response
@@ -295,7 +292,7 @@ class EnhancedCachingRevolutionaryBridge {
       compressionRatio: optim.compressionRatio ?? 1,
       optimizationLevel:
         (((optim.simdSpeedup || 0) + (optim.gpuAcceleration || 0) + (optim.memoryReduction || 0)) / 3) * 100,
-      cacheSource: source,
+      cacheSource: source
     };
   }
 
@@ -303,7 +300,7 @@ class EnhancedCachingRevolutionaryBridge {
     const keyData = {
       query: query.query,
       type: query.type,
-      options: query.options,
+      options: query.options
     };
     return btoa(JSON.stringify(keyData))
       .replace(/[^a-zA-Z0-9]/g, '')
@@ -337,9 +334,9 @@ class EnhancedCachingRevolutionaryBridge {
       query: text,
       type: 'embedding',
       options: {
-        useEmbeddingCache: true,
-        ...options,
-      },
+       , useEmbeddingCache: true,
+        ...options
+      }
     });
   }
 
@@ -351,9 +348,9 @@ class EnhancedCachingRevolutionaryBridge {
       query: queryText,
       type: 'query',
       options: {
-        useQueryCache: true,
-        ...options,
-      },
+       , useQueryCache: true,
+        ...options
+      }
     });
   }
 
@@ -365,13 +362,13 @@ class EnhancedCachingRevolutionaryBridge {
       query: queryText,
       type: 'revolutionary',
       options: {
-        enableSIMDAcceleration: true,
+       , enableSIMDAcceleration: true,
         useCHRROMPatterns: true,
         useMemoryPalace: true,
         compressionLevel: 'maximum',
         cacheStrategy: 'adaptive',
-        ...options,
-      },
+        ...options
+      }
     });
   }
 
@@ -386,7 +383,7 @@ class EnhancedCachingRevolutionaryBridge {
       enhancedCacheRate: total > 0 ? metrics.enhancedCacheHits / total : 0,
       revolutionaryCacheRate: total > 0 ? metrics.revolutionaryCacheHits / total : 0,
       hybridQueryRate: total > 0 ? metrics.hybridQueries / total : 0,
-      overallEfficiency: total > 0 ? (metrics.enhancedCacheHits + metrics.revolutionaryCacheHits) / total : 0,
+      overallEfficiency: total > 0 ? (metrics.enhancedCacheHits + metrics.revolutionaryCacheHits) / total : 0
     };
   }
 
@@ -400,7 +397,7 @@ class EnhancedCachingRevolutionaryBridge {
       hybridQueries: 0,
       totalQueries: 0,
       averageResponseTime: 0,
-      bestStrategy: 'adaptive',
+      bestStrategy: 'adaptive'
     };
   }
 
@@ -419,10 +416,9 @@ class EnhancedCachingRevolutionaryBridge {
       memoryPalace: memoryPalaceAnalytics,
       chrRomPatternCache: {
         size: patternCacheSize,
-        status: patternCacheSize > 0 ? 'active' : 'idle',
+        status: patternCacheSize > 0 ? 'active' : 'idle'
       },
-      status: redisStatus.local && redisStatus.redis && memoryPalaceAnalytics ? 'healthy' : 'degraded',
-    };
+      status: redisStatus.local && redisStatus.redis && memoryPalaceAnalytics ? 'healthy' : `degraded` };
   }
 }
 

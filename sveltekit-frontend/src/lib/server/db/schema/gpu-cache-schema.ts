@@ -122,7 +122,7 @@ export const shaderDependencies = pgTable("shader_dependencies", {
   metadata: jsonb("metadata").default("{}")
 }, (table) => ({
   // Unique constraint and indexes
-  uniqueDependency: primaryKey({ columns: [table.parentShaderCacheId, table.dependentShaderCacheId] }),
+  uniqueDependency: primaryKey({, columns: [table.parentShaderCacheId, table.dependentShaderCacheId] }),
   parentIdx: index("parent_shader_idx").on(table.parentShaderCacheId),
   dependentIdx: index("dependent_shader_idx").on(table.dependentShaderCacheId),
   dependencyTypeIdx: index("dependency_type_idx").on(table.dependencyType),
@@ -246,29 +246,21 @@ export type ShaderPerformanceMetric = typeof shaderPerformanceMetrics.$inferSele
 export type NewShaderPerformanceMetric = typeof shaderPerformanceMetrics.$inferInsert;
 // === Helper Types for API ===
 }
-export interface ShaderCacheConfig {
-  maxCacheSize: number;
-  preloadThreshold: number;
+export interface ShaderCacheConfig { maxCacheSize: number;, preloadThreshold: number;
   reinforcementLearningEnabled: boolean;
   predictivePreloadEnabled: boolean;
 }
-export interface ShaderPredictionContext {
-  userId: string;
-  currentWorkflow: string;
+export interface ShaderPredictionContext { userId: string;, currentWorkflow: string;
   caseContext?: any;
   userHistory?: ShaderUserPattern[];
   sessionContext?: any;
 }
-export interface ReinforcementReward {
-  timestamp: number;
-  reward: number;
+export interface ReinforcementReward { timestamp: number;, reward: number;
   context: string;
   performanceBonus: number;
   userSatisfactionScore: number;
 }
-export interface PredictionResult {
-  shaderCacheId: string;
-  confidence: number;
+export interface PredictionResult { shaderCacheId: string;, confidence: number;
   model: string;
   features: { [key: string]: any }
   priority: number;

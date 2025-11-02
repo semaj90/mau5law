@@ -15,9 +15,7 @@ export interface GraphQuery {
 }
 
 // Lightweight typed shapes used in this reader
-interface GraphNode {
-  id: string;
-  type: string;
+interface GraphNode { id: string;, type: string;
   label: string;
   data: Record<string, unknown>;
   connections: any[];
@@ -33,9 +31,7 @@ interface GraphRelation {
 
 /* Row shapes returned by Drizzle queries (minimal necessary fields) */
 interface CaseRow {
-  case {
-    id: string;
-    title: string;
+  case { id: string;, title: string;
     description?: string;
     status?: string;
     priority?: string | null;
@@ -46,9 +42,7 @@ interface CaseRow {
   };
   creator?: { id: string; name?: string; email?: string } | null;
 }
-interface EvidenceRow {
-  evidence: {
-    id: string;
+interface EvidenceRow { evidence: {, id: string;
     title: string;
     description?: string;
     evidenceType?: string | null;
@@ -64,9 +58,7 @@ interface EvidenceRow {
   case?: { id: string; title?: string } | null;
   creator?: { id: string; name?: string } | null;
 }
-interface ReportRow {
-  report: {
-    id: string;
+interface ReportRow { report: {, id: string;
     title: string;
     content?: string;
     reportType?: string | null;
@@ -93,7 +85,7 @@ export class MCPGraphReader {
   /**
    * Read case nodes
    */
-  private static async readCaseNodes(query: GraphQuery): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
+  private static async readCaseNodes(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[] }> {
     const whereFragments: ReturnType<typeof sql>[] = [];
     if (query.userId) {
       whereFragments.push(sql`${cases.createdBy} = ${query.userId}`);
@@ -108,10 +100,10 @@ export class MCPGraphReader {
       .select({
         case cases,
         creator: {
-          id: users.id,
+         , id: users.id,
           name: users.name,
-          email: users.email,
-        },
+          email: users.email
+        }
       })
       .from(cases)
       .leftJoin(users, sql`${cases.createdBy} = ${users.id}`);
@@ -133,14 +125,14 @@ export class MCPGraphReader {
           status: c.status,
           priority: c.priority,
           caseType: c.category,
-          creator,
+          creator
         },
         connections: [],
         metadata: {
-          createdAt: c.createdAt,
+         , createdAt: c.createdAt,
           updatedAt: c.updatedAt,
-          weight: c.priority === 'high' ? 10 : c.priority === 'medium' ? 7 : 5,
-        },
+          weight: c.priority === 'high' ? 10 : c.priority === 'medium' ? 7 : 5
+        }
       };
     });
 
@@ -151,7 +143,7 @@ export class MCPGraphReader {
         to: item.case.id,
         type: 'owns',
         weight: 8,
-        metadata: { relationship: 'case_owner' },
+        metadata: {, relationship: `case_owner` }
       }));
 
     return { nodes, relations };
@@ -162,7 +154,7 @@ export class MCPGraphReader {
    */
   private static async readEvidenceNodes(
     query: GraphQuery
-  ): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
+  ): Promise<{ nodes: GraphNode[];, relations: GraphRelation[] }> {
     const whereFragments: ReturnType<typeof sql>[] = [];
     if (query.userId) {
       whereFragments.push(sql`${evidence.uploadedBy} = ${query.userId}`);
@@ -177,12 +169,12 @@ export class MCPGraphReader {
         evidence: evidence,
         case {
           id: cases.id,
-          title: cases.title,
+          title: cases.title
         },
         creator: {
-          id: users.id,
-          name: users.name,
-        },
+         , id: users.id,
+          name: users.name
+        }
       })
       .from(evidence)
       .leftJoin(cases, sql`${evidence.caseId} = ${cases.id}`)
@@ -208,13 +200,13 @@ export class MCPGraphReader {
           tags: e.tags,
           aiTags: e.aiTags,
           case item.case ?? null,
-          creator: item.creator ?? null,
+          creator: item.creator ?? null
         },
         connections: [],
         metadata: {
-          createdAt: e.uploadedAt,
-          weight: e.evidenceType === 'critical' ? 10 : e.evidenceType === 'digital' ? 8 : 6,
-        },
+         , createdAt: e.uploadedAt,
+          weight: e.evidenceType === 'critical' ? 10 : e.evidenceType === 'digital' ? 8 : 6
+        }
       };
     });
 
@@ -226,7 +218,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 9,
-          metadata: { relationship: 'evidence_in_case' },
+          metadata: {, relationship: 'evidence_in_case' }
         })),
       ...evidenceData
         .filter(item => !!item.creator)
@@ -235,7 +227,7 @@ export class MCPGraphReader {
           to: item.evidence.id,
           type: 'owns' as const,
           weight: 7,
-          metadata: { relationship: 'evidence_owner' },
+          metadata: {, relationship: `evidence_owner` }
         })),
     ];
 
@@ -246,7 +238,7 @@ export class MCPGraphReader {
   /**
    * Read report nodes
    */
-  private static async readReportNodes(query: GraphQuery): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
+  private static async readReportNodes(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[] }> {
     // Build where fragments like other readers
     const whereFragments: ReturnType<typeof sql>[] = [];
     if (query.userId) {
@@ -264,12 +256,12 @@ export class MCPGraphReader {
         report: reports,
         case {
           id: cases.id,
-          title: cases.title,
+          title: cases.title
         },
         creator: {
-          id: users.id,
-          name: users.name,
-        },
+         , id: users.id,
+          name: users.name
+        }
       })
       .from(reports)
       .leftJoin(cases, sql`${reports.caseId} = ${cases.id}`)
@@ -292,14 +284,14 @@ export class MCPGraphReader {
           status: r.status,
           aiAnalysis: r.metadata,
           case item.case ?? null,
-          creator: item.creator ?? null,
+          creator: item.creator ?? null
         },
         connections: [],
         metadata: {
-          createdAt: r.createdAt,
+         , createdAt: r.createdAt,
           updatedAt: r.updatedAt,
-          weight: r.reportType === 'person_of_interest' ? 9 : r.reportType === 'case_analysis' ? 8 : 6,
-        },
+          weight: r.reportType === 'person_of_interest' ? 9 : r.reportType === 'case_analysis' ? 8 : 6
+        }
       };
     });
 
@@ -311,7 +303,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 8,
-          metadata: { relationship: 'report_for_case' },
+          metadata: {, relationship: 'report_for_case' }
         })),
       ...reportData
         .filter(item => !!item.creator)
@@ -320,7 +312,7 @@ export class MCPGraphReader {
           to: item.report.id,
           type: 'generated_from' as const,
           weight: 7,
-          metadata: { relationship: 'report_generator' },
+          metadata: {, relationship: 'report_generator' }
         })),
     ];
 
@@ -330,10 +322,8 @@ export class MCPGraphReader {
   /**
    * Main read graph method
    */
-  static async readGraph(query: GraphQuery): Promise<{
-    nodes: GraphNode[];
-    relations: GraphRelation[];
-    metadata: { totalNodes: number; queryTime: number; mcpSource: string };
+  static async readGraph(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[];
+    metadata: { totalNodes: number; queryTime: number;, mcpSource: string };
   }> {
     const startTime = Date.now();
     const nodes: GraphNode[] = [];
@@ -360,8 +350,7 @@ export class MCPGraphReader {
         metadata: {
           totalNodes: nodes.length,
           queryTime: Date.now() - startTime,
-          mcpSource: 'drizzle-postgres-graph-reader',
-        },
+          mcpSource: `drizzle-postgres-graph-reader` }
       };
     } catch (error: any) {
       console.error('Graph reading error:', error);

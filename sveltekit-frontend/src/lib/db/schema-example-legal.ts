@@ -21,7 +21,7 @@ import {
   integer,
   real,
   index,
-  primaryKey,
+  primaryKey
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { vector } from 'drizzle-orm/pg-core';
@@ -29,29 +29,21 @@ import { vector } from 'drizzle-orm/pg-core';
 // Type Definitions for JSONB Fields
 // ==================================================
 export interface LegalMetadata {
-  case {
-    id: string;
-    caseNumber: string;
+  case { id: string;, caseNumber: string;
     jurisdiction: string;
     courtLevel: 'district' | 'appellate' | 'supreme';
-    parties: Array<{
-      role: 'plaintiff' | 'defendant' | 'witness' | 'expert';
-      name: string;
+    parties: Array<{ role: 'plaintiff' | 'defendant' | 'witness' | 'expert';, name: string;
       type: 'individual' | 'corporation' | 'government';
     }>;
     datesFiled: string[];
     status: 'active' | 'closed' | 'pending' | 'appealed';
   };
-  classification: {
-    documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'motion' | 'order';
-    practiceArea: string[];
+  classification: { documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'motion' | 'order';, practiceArea: string[];
     confidenceLevel: number; // 0-1
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     priority: number; // 1-10
   };
-  processing: {
-    extractedEntities: Array<{
-      type: string;
+  processing: { extractedEntities: Array<{, type: string;
       value: string;
       confidence: number;
     }>;
@@ -60,9 +52,7 @@ export interface LegalMetadata {
     complexity: number; // 0-1
     language: string;
   };
-  aiAnalysis: {
-    summary: string;
-    keyPoints: string[];
+  aiAnalysis: { summary: string;, keyPoints: string[];
     recommendations: string[];
     relatedCases: string[];
     confidence: number;
@@ -70,9 +60,7 @@ export interface LegalMetadata {
     timestamp: string;
   };
 }
-export interface ChainOfCustody {
-  entries: Array<{
-    timestamp: string;
+export interface ChainOfCustody { entries: Array<{, timestamp: string;
     action: 'uploaded' | 'modified' | 'accessed' | 'shared' | 'deleted';
     userId: string;
     userName: string;
@@ -94,8 +82,7 @@ export const legalDocuments = pgTable(
     content: text('content').notNull(),
     documentType: varchar('document_type', { length: 100 }).notNull(),
     subType: varchar('sub_type', { length: 100 }),
-    // Vector embedding for semantic search (Gemma embeddings: 768 dimensions)
-    embedding: vector('embedding', { dimensions: 768 }),
+    // Vector embedding for semantic search (Gemma embeddings: 768 dimensions); embedding: vector('embedding', { dimensions: 768 }),
     // AI-generated content
     aiSummary: text('ai_summary'),
     aiAnalysis: jsonb('ai_analysis'),
@@ -123,7 +110,7 @@ export const legalDocuments = pgTable(
     searchVector: text('search_vector'), // PostgreSQL full-text search
     // Analytics
     viewCount: integer('view_count').default(0),
-    lastAccessedAt: timestamp('last_accessed_at'),
+    lastAccessedAt: timestamp('last_accessed_at')
   },
   (table) => ({
     // GIN index for JSONB metadata queries
@@ -142,7 +129,7 @@ export const legalDocuments = pgTable(
     uploadedByIdx: index('legal_documents_uploaded_by_idx').on(table.uploadedBy),
     createdAtIdx: index('legal_documents_created_at_idx').on(table.createdAt),
     // Composite index for case + type queries
-    caseTypeIdx: index('legal_documents_case_type_idx').on(table.caseId, table.documentType),
+    caseTypeIdx: index('legal_documents_case_type_idx').on(table.caseId, table.documentType)
   })
 );
 // ==================================================
@@ -176,13 +163,13 @@ export const legalCases = pgTable(
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     // Analytics
     documentCount: integer('document_count').default(0),
-    evidenceCount: integer('evidence_count').default(0),
+    evidenceCount: integer('evidence_count').default(0)
   },
   (table) => ({
     caseNumberIdx: index('legal_cases_case_number_idx').on(table.caseNumber),
     statusIdx: index('legal_cases_status_idx').on(table.status),
     createdByIdx: index('legal_cases_created_by_idx').on(table.createdBy),
-    jurisdictionIdx: index('legal_cases_jurisdiction_idx').on(table.jurisdiction),
+    jurisdictionIdx: index('legal_cases_jurisdiction_idx').on(table.jurisdiction)
   })
 );
 // ==================================================
@@ -197,9 +184,7 @@ export const vectorSearchCache = pgTable(
     queryEmbedding: vector('query_embedding', { dimensions: 768 }).notNull(),
     queryHash: varchar('query_hash', { length: 64 }).notNull(), // SHA-256 of query
     // Search results (cached)
-    results: jsonb('results').$type<Array<{
-      documentId: string;
-      score: number;
+    results: jsonb('results').$type<Array<{ documentId: string;, score: number;
       title: string;
       snippet: string;
     }>>().notNull(),
@@ -210,7 +195,7 @@ export const vectorSearchCache = pgTable(
     hitCount: integer('hit_count').default(0),
     lastUsedAt: timestamp('last_used_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    expiresAt: timestamp('expires_at').notNull(),
+    expiresAt: timestamp('expires_at').notNull()
   },
   (table) => ({
     queryHashIdx: index('vector_search_cache_query_hash_idx').on(table.queryHash),
@@ -218,7 +203,7 @@ export const vectorSearchCache = pgTable(
     embeddingIdx: index('vector_search_cache_embedding_idx').using(
       'hnsw',
       sql`${table.queryEmbedding} vector_cosine_ops`
-    ),
+    )
   })
 );
 // ==================================================
@@ -246,13 +231,13 @@ export const aiProcessingQueue = pgTable(
     completedAt: timestamp('completed_at'),
     // Performance metrics
     processingTime: integer('processing_time'), // milliseconds
-    tokensUsed: integer('tokens_used'),
+    tokensUsed: integer('tokens_used')
   },
   (table) => ({
     documentIdIdx: index('ai_processing_queue_document_id_idx').on(table.documentId),
     statusIdx: index('ai_processing_queue_status_idx').on(table.status),
     taskTypeIdx: index('ai_processing_queue_task_type_idx').on(table.taskType),
-    createdAtIdx: index('ai_processing_queue_created_at_idx').on(table.createdAt),
+    createdAtIdx: index('ai_processing_queue_created_at_idx').on(table.createdAt)
   })
 );
 // ==================================================
@@ -271,13 +256,13 @@ export const auditLog = pgTable(
     // Context
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
-    timestamp: timestamp('timestamp').defaultNow().notNull(),
+    timestamp: timestamp('timestamp').defaultNow().notNull()
   },
   (table) => ({
     userIdIdx: index('audit_log_user_id_idx').on(table.userId),
     resourceTypeIdx: index('audit_log_resource_type_idx').on(table.resourceType),
     resourceIdIdx: index('audit_log_resource_id_idx').on(table.resourceId),
-    timestampIdx: index('audit_log_timestamp_idx').on(table.timestamp),
+    timestampIdx: index('audit_log_timestamp_idx').on(table.timestamp)
   })
 );
 // ==================================================

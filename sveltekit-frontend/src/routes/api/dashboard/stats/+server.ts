@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: true,
-          data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() },
+          data: {, totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() }
         },
         { status: 200 }
       );
@@ -53,17 +53,17 @@ export const GET: RequestHandler = async ({ url }) => {
       analysisRate:
         totals.totalEvidence > 0 ? Math.round((totals.totalEvidence / (totals.totalEvidence + 1)) * 100) : 0,
       generatedAt: new Date().toISOString(),
-      timeRange: url.searchParams.get('timeRange') || '30d',
+      timeRange: url.searchParams.get('timeRange') || '30d'
     };
 
-    return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': 'max-age=30' } });
+    return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': `max-age=30` } });
   } catch (err) {
     console.error('[Stats API] unexpected error', err);
     return json(
       {
         success: false,
         error: 'Failed to fetch stats',
-        data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() },
+        data: {, totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() }
       },
       { status: 500 }
     );

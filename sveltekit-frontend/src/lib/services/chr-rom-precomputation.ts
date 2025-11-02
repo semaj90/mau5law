@@ -11,24 +11,17 @@ import type { LegalDocument } from '../types/legal.js';
 // CHR-ROM Pattern Types - tiny, optimized UI representations
 export type PatternType = 'icon' | 'badge' | 'summary' | 'gauge' | 'graph' | 'heatmap';
 
-export interface CHRROMPattern {
-  type: PatternType;
-  size: 'xs' | 'sm' | 'md' | 'lg';
+export interface CHRROMPattern { type: PatternType;, size: 'xs' | 'sm' | 'md' | 'lg';
   data: string; // Hyper-compressed representation
-  metadata: {
-    confidence: number;
-    timestamp: number;
+  metadata: { confidence: number;, timestamp: number;
     version: string;
   };
 }
 
 // Pre-computation strategies for different UI patterns
-export interface PrecomputationStrategy {
-  pattern: string;
-  priority: number;
+export interface PrecomputationStrategy { pattern: string;, priority: number;
   frequency: number; // milliseconds
-  // changed: accept Partial<LegalDocument> so lightweight/mock docs are valid
-  generator: (data: Partial<LegalDocument>) => Promise<CHRROMPattern>;
+  // changed: accept Partial<LegalDocument> so lightweight/mock docs are valid; generator: (data: Partial<LegalDocument>) => Promise<CHRROMPattern>;
   trigger: 'hover' | 'scroll' | 'focus' | 'background';
 }
 
@@ -51,9 +44,7 @@ async function loadPatternOptimizer(): Promise<PatternOptimizer> {
 
 // <-- NEW: module-level type for precompute documents (moved out of class)
 export type PrecomputeDocument = Partial<LegalDocument> & {
-  analysis?: {
-    confidence: number;
-    riskLevel: number;
+  analysis?: { confidence: number;, riskLevel: number;
     entities: string[];
   };
 };
@@ -77,7 +68,7 @@ export class CHRROMPrecomputationService {
       priority: 10,
       frequency: 30000, // 30 seconds
       generator: this.generateDocumentSummaryIcon.bind(this),
-      trigger: 'hover',
+      trigger: 'hover'
     });
     // Risk Assessment Gauges - Tiny progress bars
     this.strategies.set('risk_gauge', {
@@ -85,7 +76,7 @@ export class CHRROMPrecomputationService {
       priority: 9,
       frequency: 60000, // 1 minute
       generator: this.generateRiskGauge.bind(this),
-      trigger: 'hover',
+      trigger: 'hover'
     });
     // Entity Relationship Heatmaps - 32x32 pixel patterns
     this.strategies.set('entity_heatmap', {
@@ -93,7 +84,7 @@ export class CHRROMPrecomputationService {
       priority: 8,
       frequency: 120000, // 2 minutes
       generator: this.generateEntityHeatmap.bind(this),
-      trigger: 'focus',
+      trigger: 'focus'
     });
     // Confidence Badges - Single color + number
     this.strategies.set('confidence_badge', {
@@ -101,7 +92,7 @@ export class CHRROMPrecomputationService {
       priority: 7,
       frequency: 45000, // 45 seconds
       generator: this.generateConfidenceBadge.bind(this),
-      trigger: 'scroll',
+      trigger: 'scroll'
     });
     // Similarity Graphs - Micro line graphs
     this.strategies.set('similarity_graph', {
@@ -109,7 +100,7 @@ export class CHRROMPrecomputationService {
       priority: 6,
       frequency: 180000, // 3 minutes
       generator: this.generateSimilarityGraph.bind(this),
-      trigger: 'background',
+      trigger: 'background'
     });
     // Category Color Patterns - Single hex color
     this.strategies.set('category_color', {
@@ -117,7 +108,7 @@ export class CHRROMPrecomputationService {
       priority: 10,
       frequency: 15000, // 15 seconds
       generator: this.generateCategoryColor.bind(this),
-      trigger: 'background',
+      trigger: 'background'
     });
     // Processing Status Indicators - Animated SVG
     this.strategies.set('status_indicator', {
@@ -125,7 +116,7 @@ export class CHRROMPrecomputationService {
       priority: 9,
       frequency: 10000, // 10 seconds
       generator: this.generateStatusIndicator.bind(this),
-      trigger: 'background',
+      trigger: 'background'
     });
   }
 
@@ -186,11 +177,11 @@ export class CHRROMPrecomputationService {
       // Store in Redis L1 cache with appropriate TTL (seconds)
       await redisWebGPUIntegration.cacheResult(cacheKey, pattern, {
         ttl: Math.ceil(strategy.frequency / 1000) * 2, // 2x frequency in seconds
-        priority: strategy.priority,
+        priority: strategy.priority
       });
       console.log(`🎮 Generated CHR-ROM pattern: ${cacheKey}`);
     } catch (error) {
-      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}:`, error);
+      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);
     }
   }
 
@@ -260,7 +251,7 @@ export class CHRROMPrecomputationService {
       summary: '',
       gauge: '<div style="width:40px;height:4px;background:#e5e7eb;border-radius:2px"></div>',
       graph: '<svg viewBox="0 0 40 20" style="width:40px;height:20px"></svg>',
-      heatmap: '<div style="width:32px;height:32px;background:#f3f4f6"></div>',
+      heatmap: '<div style="width:32px;height:32px;background:#f3f4f6"></div>'
     };
     return {
       type,
@@ -269,8 +260,8 @@ export class CHRROMPrecomputationService {
       metadata: {
         confidence: 0,
         timestamp: Date.now(),
-        version: '1.0',
-      },
+        version: '1.0'
+      }
     };
   }
 
@@ -287,20 +278,19 @@ export class CHRROMPrecomputationService {
         id: 'doc_001',
         metadata: { type: 'contract', category: 'nda' },
         analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
-        processingStatus: 'completed',
+        processingStatus: 'completed'
       },
       {
         id: 'doc_002',
         metadata: { type: 'brief', category: 'litigation' },
         analysis: { confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
-        processingStatus: 'processing',
+        processingStatus: 'processing'
       },
       {
         id: 'doc_003',
         metadata: { type: 'agreement', category: 'agreement' },
         analysis: { confidence: 0.76, riskLevel: 0.5, entities: ['client', 'vendor'] },
-        processingStatus: 'completed',
-      },
+        processingStatus: `completed` },
     ];
   }
 
@@ -347,15 +337,14 @@ export class CHRROMPrecomputationService {
       id: docId,
       metadata: { type: 'contract', category: 'nda' },
       analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
-      processingStatus: 'completed',
-    };
+      processingStatus: `completed` };
     try {
       const pattern = await strategy.generator(doc);
       // Store in cache
       const cacheKey = strategy.pattern.replace('{id}', docId);
       await redisWebGPUIntegration.cacheResult(cacheKey, pattern, {
         ttl: 3600,
-        priority: 10,
+        priority: 10
       });
       return pattern;
     } catch (error) {
@@ -380,11 +369,11 @@ export class CHRROMPrecomputationService {
   /**
    * Get service statistics
    */
-  getStats(): { isRunning: boolean; strategiesCount: number; strategies: string[] } {
+  getStats(): { isRunning: boolean; strategiesCount: number;, strategies: string[] } {
     return {
       isRunning: this.isRunning,
       strategiesCount: this.strategies.size,
-      strategies: Array.from(this.strategies.keys()),
+      strategies: Array.from(this.strategies.keys())
     };
   }
 

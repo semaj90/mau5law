@@ -14,7 +14,7 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/prosecutor_db';
   console.log('🐘 Connecting to PostgreSQL database');
   _pool = new Pool({
-    connectionString: databaseUrl,
+    connectionString: databaseUrl
   });
   _db = drizzle(_pool, { schema });
   console.log('✅ PostgreSQL database connected successfully');
@@ -27,10 +27,10 @@ export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as any, {
       throw new Error('Database not initialized');
     }
     return Reflect.get(database, prop, receiver);
-  },
+  }
 });
 export const isPostgreSQL = true;
-export const isSQLite = $state(false);
+export const isSQLite = false;
 export * from '$lib/server/db/schema-postgres';
 export function closeDatabase() {
   if (_pool) {

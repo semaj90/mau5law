@@ -17,8 +17,8 @@ export async function POST({ request }): Promise<any> {
     type: 'hmm_predictions',
     sequence: seq,
     predictions: finalPredictions,
-    context: { source: 'api:hmm', topK },
-    timestamp: new Date().toISOString(),
+    context: {, source: 'api:hmm', topK },
+    timestamp: new Date().toISOString()
   });
   return json({ predictions: finalPredictions });
 }

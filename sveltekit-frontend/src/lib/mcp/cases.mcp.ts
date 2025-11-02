@@ -57,9 +57,7 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
     // Query PostgreSQL with Drizzle
     const result = await db.query.cases.findFirst({
       where: eq(schema.cases.id, caseId),
-      with: {
-        evidence: {
-          limit: 10,
+      with: { evidence: {, limit: 10,
           orderBy: desc(schema.evidence.createdAt)
         }
       }
@@ -130,12 +128,12 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     }
     // Invalidate caches
     await cache.del(`case:${caseId}`);
-    await cache.del(`user:${updated.userId}:cases`);
+    await cache.del(`user:${updated.userId}:cases');
     // Publish update event
     await cache.publish('case:updated', {
       caseId,
       changes: updates;
-      timestamp: Date.now()
+     , timestamp: Date.now()
     });
     console.log(`✅ Case ${caseId} updated`);
     return { success: true }
@@ -165,10 +163,9 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       content: evidence.content,
       type: evidence.evidenceType,
       evidenceType: evidence.evidenceType,
-      createdBy: 'system', // TODO: get from context
-      tags: evidence.tags ? JSON.stringify(evidence.tags) : null;
+      createdBy: 'system', // TODO: get from context; tags: evidence.tags ? JSON.stringify(evidence.tags) : null;
       metadata: evidence,
-      createdAt: new Date(),
+      createdAt: new Date()
     }).returning();
     // Invalidate case cache
     await cache.del(`case:${caseId}`);
@@ -201,13 +198,13 @@ export async function searchCases(query: string, userId: string, filters?: {
     const cached = await cache.getSearchResults?.(query, 'cases', filters);
     if (cached && typeof cached === 'object' && 'cases' in cached && 'totalCount' in cached) {
       console.log(`📦 Cache hit for search: ${query}`);
-      return cached as { cases: CaseData[]; totalCount: number }
+      return cached as { cases: CaseData[];, totalCount: number }
     }
     // Build query conditions
     let conditions = [eq(schema.cases.userId, userId)];
     if (query.trim()) {
       conditions.push(
-        sql`(${schema.cases.title} ILIKE ${`%${query}%`} OR ${schema.cases.description} ILIKE ${`%${query}%`})`
+        sql`(${schema.cases.title} ILIKE ${`%${query}%`} OR ${schema.cases.description} ILIKE ${`%${query}%' })`
       );
     }
     if (filters?.status) {
@@ -221,16 +218,14 @@ export async function searchCases(query: string, userId: string, filters?: {
       where: and(...conditions),
       orderBy: desc(schema.cases.updatedAt),
       limit: 50,
-      with: {
-        evidence: {
-          limit: 3,
+      with: { evidence: {, limit: 3,
           orderBy: desc(schema.evidence.createdAt)
         }
       }
     });
     const searchResult = {
       cases: results as CaseData[],
-      totalCount: results.length,
+      totalCount: results.length
     }
     // Cache results using specialized search cache
     await cache.setSearchResults(query, 'cases', searchResult.cases, filters);
@@ -257,7 +252,7 @@ export async function getUserCases(userId: string, options: {
     const cacheKey = `user:${userId}:cases:${JSON.stringify(options)}`;
     const cached = await cache.get(cacheKey);
     if (cached && typeof cached === 'object' && 'cases' in cached && 'totalCount' in cached) {
-      return cached as { cases: CaseData[]; totalCount: number }
+      return cached as { cases: CaseData[];, totalCount: number }
     }
     let conditions = [eq(schema.cases.userId, userId)];
     if (status) {
@@ -331,8 +326,7 @@ export async function healthCheck(): Promise<any> {
     return {
       status: 'unhealthy',
       details: {
-        error: error instanceof Error ? error.message: 'Unknown error'
-      }
+        error: error instanceof Error ? error.message: 'Unknown error' }
     }
   }
 }

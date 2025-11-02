@@ -6,9 +6,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Add precise types for imports/results
-type ImportResult = {
-  imported: number;
-  updated: number;
+type ImportResult = { imported: number;, updated: number;
   skipped: number;
   errors: string[];
 };
@@ -92,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
       imported: 0,
       updated: 0,
       skipped: 0,
-      errors: [],
+      errors: []
     };
 
     // Process import based on type
@@ -133,8 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       results,
-      message: `Import completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped`,
-    });
+      message: `Import; completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped' });
   } catch (error: any) {
     console.error('Import error:', error);
     return json({ error: error instanceof Error ? error.message : 'Import failed' }, { status: 500 });
@@ -154,7 +151,7 @@ async function importCases(
 
   for (const caseData of casesArray) {
     try {
-      // Basic validation: prefer: 'title' but accept legacy: 'name'
+      // Basic validation: prefer: 'title' but accept; legacy: 'name'
       const title = caseData?.title ?? caseData?.name;
       if (!title || !caseData?.status) {
         results.errors.push(`Case missing required fields: ${JSON.stringify(caseData)}`);
@@ -175,7 +172,7 @@ async function importCases(
               description: caseData.description ?? null,
               status: caseData.status,
               priority: caseData.priority ?? 'medium',
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(cases.id, caseData.id));
           results.updated++;
@@ -191,7 +188,7 @@ async function importCases(
           status: caseData.status || 'open',
           priority: caseData.priority || 'medium',
           createdAt: caseData.created_at ? new Date(caseData.created_at) : new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
         await db.insert(cases).values(newCase);
         results.imported++;
@@ -235,7 +232,7 @@ async function importEvidence(
               evidenceType: evidenceItem.type,
               description: evidenceItem.description,
               fileUrl: evidenceItem.file_path,
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(evidence.id, evidenceItem.id));
           results.updated++;
@@ -264,7 +261,7 @@ async function importEvidence(
           confidentialityLevel: evidenceItem.confidentiality_level || 'standard',
           canvasPosition: evidenceItem.canvas_position || {},
           uploadedBy: evidenceItem.uploaded_by || null,
-          uploadedAt: evidenceItem.uploaded_at ? new Date(evidenceItem.uploaded_at) : new Date(),
+          uploadedAt: evidenceItem.uploaded_at ? new Date(evidenceItem.uploaded_at) : new Date()
         };
         await db.insert(evidence).values(newEvidence);
         results.imported++;
@@ -309,7 +306,7 @@ async function importParticipants(
               notes: participant.role ? `Role: ${participant.role}` : null,
               email: participant.contact_info?.email || null,
               phone: participant.contact_info?.phone || null,
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(criminals.id, participant.id));
           results.updated++;
@@ -326,7 +323,7 @@ async function importParticipants(
           phone: participant.contact_info?.phone || null,
           notes: participant.role ? `Role: ${participant.role}` : null,
           createdAt: participant.created_at ? new Date(participant.created_at) : new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
         await db.insert(criminals).values(newParticipant);
         results.imported++;

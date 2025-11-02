@@ -17,9 +17,7 @@ import crypto from "crypto";
 import { EventEmitter } from "events";
 ;
 // Browser polyfills for Node.js APIs
-export interface NodePolyfills {
-  Buffer: typeof Buffer;
-  process: typeof process;
+export interface NodePolyfills { Buffer: typeof Buffer;, process: typeof process;
   global: typeof globalThis;
   crypto: Crypto;
   util: any;
@@ -102,8 +100,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       }
       // Process polyfill
       if (typeof process === 'undefined') {
-        (globalThis as any).process = {
-          env: { NODE_ENV: dev ? 'development' : 'production' },
+        (globalThis as any).process = { env: {, NODE_ENV: dev ? 'development' : 'production' },
           nextTick: (callback: () => void) => Promise.resolve().then(callback),
           browser: true,
           version: 'v18.0.0',
@@ -214,9 +211,8 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         // Add legal AI-specific imports
         const enhancedImports = {
           ...imports,
-          legal_ai: {
-            log: (ptr: number) => console.log('WASM Legal AI:', ptr),
-            error: (ptr: number) => console.error('WASM Legal AI Error:', ptr),
+          legal_ai: { log: (ptr: number) => console.log('WASM Legal, AI:', ptr),
+            error: (ptr: number) => console.error('WASM Legal AI; Error:', ptr),
             performance_now: () => performance.now(),
             random: () => Math.random(),
             // Legal-specific functions
@@ -244,8 +240,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           // Return a mock adapter that uses WebGL internally
           return {
             requestDevice: async (descriptor?: any) => {
-              return {
-                createShaderModule: (descriptor: any) => ({ id: Math.random() }),
+              return { createShaderModule: (descriptor: any) => ({, id: Math.random() }),
                 createBuffer: (descriptor: any) => ({ ,
                   id: Math.random(),
                   size: descriptor.size,
@@ -305,24 +300,21 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
             onsuccess: null,
             onerror: null,
             onupgradeneeded: null,
-            result: {
-              createObjectStore: () => ({
-                createIndex: () => {},
+            result: { createObjectStore: () => ({, createIndex: () => {},
                 add: () => ({ onsuccess: null, onerror: null }),
                 get: () => ({ onsuccess: null, onerror: null }),
                 put: () => ({ onsuccess: null, onerror: null }),
                 delete: () => ({ onsuccess: null, onerror: null })
               }),
               transaction: () => ({,
-                objectStore: () => ({
-                  add: () => ({ onsuccess: null, onerror: null }),
+                objectStore: () => ({ add: () => ({, onsuccess: null, onerror: null }),
                   get: () => ({ onsuccess: null, onerror: null }),
                   put: () => ({ onsuccess: null, onerror: null }),
                   delete: () => ({ onsuccess: null, onerror: null }),
                   openCursor: () => ({ onsuccess: null, onerror: null })
                 }),
                 oncomplete: null,
-                onerror: null,
+                onerror: null
               }),
               close: () => {}
             }
@@ -380,10 +372,10 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         registration.active.postMessage({
           type: 'init-legal-ai',
           config: {
-            enableWASMCache: true,
+           , enableWASMCache: true,
             enableVectorCache: true,
             enableDocumentProcessing: true,
-            cacheStrategy: 'legal-optimized',
+            cacheStrategy: 'legal-optimized'
           }
         });
       }

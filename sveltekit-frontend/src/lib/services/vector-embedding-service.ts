@@ -6,12 +6,8 @@ import type { OCRResult } from '../types/ocr';
 // Note: dynamic import of Ollama integration is used to avoid static resolution errors
 // when typechecking in different TS module modes. We import at runtime inside generateEmbedding().
 
-export interface EmbeddingVector {
-  id: string;
-  vector: number[];
-  metadata: {
-    document_id: string;
-    case_id: string;
+export interface EmbeddingVector { id: string;, vector: number[];
+  metadata: { document_id: string;, case_id: string;
     content_type: 'case' | 'document' | 'evidence' | 'precedent';
     text_chunk: string;
     confidence: number;
@@ -22,9 +18,7 @@ export interface EmbeddingVector {
   };
 }
 
-export interface SearchResult {
-  id: string;
-  score: number;
+export interface SearchResult { id: string;, score: number;
   metadata: EmbeddingVector['metadata'];
   highlights: string[];
   legal_relevance_score: number;
@@ -32,9 +26,7 @@ export interface SearchResult {
   final_rank: number;
 }
 
-export interface RankingWeights {
-  similarity_weight: number;
-  legal_relevance_weight: number;
+export interface RankingWeights { similarity_weight: number;, legal_relevance_weight: number;
   prosecution_weight: number;
   recency_weight: number;
   confidence_weight: number;
@@ -42,9 +34,7 @@ export interface RankingWeights {
 }
 
 // Add typed processing stats shape to avoid: 'any'
-export interface ProcessingStats {
-  total_vectors: number;
-  total_documents: number;
+export interface ProcessingStats { total_vectors: number;, total_documents: number;
   total_cases: number;
   cache_hit_rate: number;
   avg_processing_time: number;
@@ -62,7 +52,7 @@ export class EnhancedVectorEmbeddingService {
     prosecution_weight: 0.2,
     recency_weight: 0.1,
     confidence_weight: 0.05,
-    jurisdiction_boost: 0.05,
+    jurisdiction_boost: 0.05
   };
 
   constructor() {
@@ -196,7 +186,7 @@ export class EnhancedVectorEmbeddingService {
       const res = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: this.embeddingModel, input: text }),
+        body: JSON.stringify({, model: this.embeddingModel, input: text })
       });
 
       if (!res.ok) {
@@ -206,7 +196,7 @@ export class EnhancedVectorEmbeddingService {
 
       const data = (await res.json().catch(() => null)) as any;
       // Normalize common response shapes:
-      // - { embedding: [...] } or { data: { embedding: [...] } } or { embeddings: [...] } or { data: [{embedding:[...]}] }
+      // - { embedding: [...] } or { data: {, embedding: [...] } } or { embeddings: [...] } or { data: [{embedding:[...]}] }
       let embedding: number[] | undefined;
       if (Array.isArray(data?.embedding)) embedding = data.embedding;
       else if (Array.isArray(data?.embeddings)) embedding = data.embeddings[0];
@@ -214,7 +204,7 @@ export class EnhancedVectorEmbeddingService {
       else if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embeddings))
         embedding = data.data[0].embeddings[0];
 
-      // Last attempt: some Ollama-style endpoints return { result: { embedding: [...] } }
+      // Last attempt: some Ollama-style endpoints return { result: {, embedding: [...] } }
       if (!embedding && Array.isArray(data?.result?.embedding)) embedding = data.result.embedding;
 
       if (!embedding || !Array.isArray(embedding) || !embedding.every((v: any) => typeof v === 'number')) {
@@ -266,8 +256,8 @@ export class EnhancedVectorEmbeddingService {
             text_chunk: chunk,
             confidence: ocrResult.confidence ?? 1,
             timestamp: new Date(),
-            user_id: userId,
-          },
+            user_id: userId
+          }
         };
         await this.storeEmbeddingVector(embeddingVector, legalRelevanceScore);
         storedIds.push(vectorId);
@@ -279,7 +269,7 @@ export class EnhancedVectorEmbeddingService {
         chunk_count: textChunks.length.toString(),
         total_confidence: String(ocrResult.confidence ?? 1),
         processing_time: String(ocrResult.processing_time ?? 0),
-        created_at: new Date().toISOString(),
+        created_at: new Date().toISOString()
       });
       console.log(`🎉 Completed processing document ${documentId}: ${storedIds.length} chunks stored`);
       return storedIds;
@@ -304,7 +294,7 @@ export class EnhancedVectorEmbeddingService {
       jurisdiction: embeddingVector.metadata.jurisdiction ?? '',
       case_type: embeddingVector.metadata.case_type ?? '',
       user_id: embeddingVector.metadata.user_id ?? '',
-      legal_relevance_score: String(legalRelevanceScore),
+      legal_relevance_score: String(legalRelevanceScore)
     });
   }
 
@@ -507,7 +497,7 @@ export class EnhancedVectorEmbeddingService {
           timestamp: new Date(Number(map['timestamp'] ?? Date.now())),
           jurisdiction: map['jurisdiction'] || undefined,
           case_type: map['case_type'] || undefined,
-          user_id: map['user_id'] || undefined,
+          user_id: map['user_id'] || undefined
         };
         const legalRelevanceScore = parseFloat(map['legal_relevance_score'] ?? '0');
         const prosecutionScore = this.calculateProsecutionScore(metadata.text_chunk, metadata.case_type);
@@ -518,7 +508,7 @@ export class EnhancedVectorEmbeddingService {
           confidence: metadata.confidence,
           timestamp: metadata.timestamp,
           jurisdiction_match: jurisdiction === metadata.jurisdiction,
-          weights: rankingWeights,
+          weights: rankingWeights
         });
         results.push({
           id,
@@ -527,7 +517,7 @@ export class EnhancedVectorEmbeddingService {
           highlights: this.extractHighlights(metadata.text_chunk, queryText),
           legal_relevance_score: legalRelevanceScore,
           prosecution_score: prosecutionScore,
-          final_rank: finalRank,
+          final_rank: finalRank
         });
       }
       // Sort by final_rank (desc) and return top results limited by `limit`
@@ -539,14 +529,12 @@ export class EnhancedVectorEmbeddingService {
     }
   }
 
-  private calculateFinalRank(params: {
-    similarity_score: number;
-    legal_relevance_score: number;
+  private calculateFinalRank(params: { similarity_score: number;, legal_relevance_score: number;
     prosecution_score: number;
     confidence: number;
     timestamp: Date;
     jurisdiction_match: boolean;
-    weights: RankingWeights;
+   , weights: RankingWeights;
   }): number {
     const {
       similarity_score,
@@ -555,7 +543,7 @@ export class EnhancedVectorEmbeddingService {
       confidence,
       timestamp,
       jurisdiction_match,
-      weights,
+      weights
     } = params;
     const normalizedSimilarity = Math.max(0, Math.min(1, similarity_score));
     const normalizedLegalRelevance = Math.max(0, Math.min(1, legal_relevance_score / 100));
@@ -635,7 +623,7 @@ export class EnhancedVectorEmbeddingService {
         total_documents: docKeys.length,
         total_cases: 0,
         cache_hit_rate: 0.85,
-        avg_processing_time: 2500,
+        avg_processing_time: 2500
       };
     } catch (error: any) {
       console.error('❌ Failed to get processing stats:', error);
@@ -644,7 +632,7 @@ export class EnhancedVectorEmbeddingService {
         total_documents: 0,
         total_cases: 0,
         cache_hit_rate: 0,
-        avg_processing_time: 0,
+        avg_processing_time: 0
       };
     }
   }

@@ -62,9 +62,7 @@ declare module '$env/static/public' {
 // `any` declarations for dev-time only and should be replaced with proper
 // typed services as we stabilize the runtime wiring.
 declare module NodeJS {
-  interface Global {
-    monitoringService: any;
-    ollamaLLM: any;
+  interface Global { monitoringService: any;, ollamaLLM: any;
     cachingLayer: any;
     aiPipeline: any;
     enhancedRAGPipeline: any;

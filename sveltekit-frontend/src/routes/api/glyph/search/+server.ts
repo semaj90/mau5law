@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!query) {
       return json({
         success: false,
-        error: 'Query parameter: "q" is required'
+        error: 'Query; parameter: "q" is required'
       }, { status: 400 })
     }
     // Generate embedding for search query
@@ -71,22 +71,22 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        query: query,
+       , query: query,
         results: filteredResults.map((result: GlyphSearchResult) => ({
           id: result.id,
           manifest: result.manifest,
           created_at: result.created_at,
           access_count: result.access_count,
           style: result.manifest?.metadata?.style,
-          prompt: result.manifest?.metadata?.prompt,
+          prompt: result.manifest?.metadata?.prompt
         })),
         count: filteredResults.length,
         search_stats: {
           total_candidates: results.length,
           filtered_by_style: !!style,
-          embedding_dimensions: queryEmbedding.embedding.length,
-        },
-      },
+          embedding_dimensions: queryEmbedding.embedding.length
+        }
+      }
     });
   } catch (error) {
     console.error('Tensor search error:', error)
@@ -114,22 +114,20 @@ export const POST: RequestHandler = async ({ request }) => {
       : results;
     return json({
       success: true,
-      data: {
-        results: filteredResults.map((result: GlyphSearchResult) => ({
-          id: result.id,
+      data: {, results: filteredResults.map((result: GlyphSearchResult) => ({, id: result.id,
           manifest: result.manifest,
           created_at: result.created_at,
           access_count: result.access_count,
           style: result.manifest?.metadata?.style,
-          prompt: result.manifest?.metadata?.prompt,
+          prompt: result.manifest?.metadata?.prompt
         })),
         count: filteredResults.length,
         search_stats: {
           total_candidates: results.length,
           filtered_by_style: !!style,
-          embedding_dimensions: embedding.length,
-        },
-      },
+          embedding_dimensions: embedding.length
+        }
+      }
     });
   } catch (error) {
     console.error('Tensor vector search error:', error)

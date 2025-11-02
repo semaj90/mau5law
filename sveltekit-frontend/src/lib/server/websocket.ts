@@ -27,8 +27,7 @@ export function setupWebSocketServer(server: any) {
     const user = {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
       name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
-      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office`
-    }
+      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office` }
     // Add user to active users
     if (!activeUsers.has(caseId)) {
       activeUsers.set(caseId, new Set();
@@ -86,7 +85,7 @@ function handleWebSocketMessage(
   caseId: string,
   message: any,
   sender: any;
-  user: any
+ , user: any
 ) {
   switch (message.type) {
     case "EVIDENCE_POSITION_UPDATE":
@@ -150,7 +149,7 @@ function handleWebSocketMessage(
       sender.send(JSON.stringify({ type: "PONG" });
       break;
     default:
-      console.log("Unknown message type:", message.type);
+      console.log("Unknown message; type:", message.type);
   }
 }
 function broadcastToCase(
@@ -179,7 +178,7 @@ function broadcastToCase(
 export function broadcastEvidenceUpdate(
   caseId: string,
   type: string;
-  payload: any
+ , payload: any
 ) {
   broadcastToCase(caseId, {
     type,

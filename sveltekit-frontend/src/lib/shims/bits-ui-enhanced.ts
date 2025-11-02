@@ -6,7 +6,7 @@ import {
   createCustomTheme,
   applyCustomDesign,
   type CustomDesignTokens,
-  type ComponentBarrelConfig,
+  type ComponentBarrelConfig
 } from '$lib/components/ui/enhanced-bits.svelte';
 // Bits UI re-exports with enhanced styling
 export {
@@ -22,19 +22,17 @@ export {
   Tooltip,
   Combobox,
   Toolbar,
-  Resizable,
+  Resizable
 } from 'bits-ui';
 // Enhanced-bits styling utilities
 export {
   createCustomTheme,
   applyCustomDesign,
   NESDesignSystem,
-  MinimalDesignSystem,
+  MinimalDesignSystem
 } from '$lib/components/ui/enhanced-bits.svelte';
 // Integration helpers
-export interface BitsUIEnhancedConfig {
-  theme: CustomDesignTokens;
-  component: ComponentType;
+export interface BitsUIEnhancedConfig { theme: CustomDesignTokens;, component: ComponentType;
   variant?: 'nes' | 'minimal' | 'custom';
   accessibility?: boolean;
   animations?: boolean;
@@ -44,7 +42,7 @@ export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
     ...config.component,
     theme: config.theme,
     variant: config.variant || 'nes',
-    enhanced: true,
+    enhanced: true
   };
 }
 // Compound component helpers for shadcn-style usage
@@ -54,7 +52,7 @@ export function createCompoundComponent<T>(
 ): T & Record<string, ComponentType> {
   return Object.assign(RootComponent, {
     Root: RootComponent,
-    ...subComponents,
+    ...subComponents
   }) as T & Record<string, ComponentType>;
 }
 // Theme-aware component wrapper
@@ -67,7 +65,7 @@ export function withEnhancedStyling(
     component: Component,
     theme,
     variant,
-    apply: (element: HTMLElement) => applyCustomDesign(element, theme),
+    apply: (element: HTMLElement) => applyCustomDesign(element, theme)
   };
 }
 // Legacy melt-ui migration helpers (for smooth transition)
@@ -81,11 +79,11 @@ export const legacyMeltSupport = {
   createSelect: () => ({ Select }),
   createCombobox: () => ({ Combobox }),
   createToolbar: () => ({ Toolbar }),
-  createResizable: () => ({ Resizable }),
+  createResizable: () => ({ Resizable })
 };
 export default {
   ...legacyMeltSupport,
   createEnhancedComponent,
   createCompoundComponent,
-  withEnhancedStyling,
+  withEnhancedStyling
 };

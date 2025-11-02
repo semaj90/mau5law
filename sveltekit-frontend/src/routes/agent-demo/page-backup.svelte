@@ -3,7 +3,7 @@ import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
 
   // Stores for reactive state
   const selectedTask = writable(null);
@@ -293,7 +293,7 @@ import type { User } from '$lib/types';
           <div class="flex justify-between items-center mb-2">
             <span class="font-semibold">Status:</span>
             <span
-              class="px-2" py-1 rounded text-xs {$agentStatus === 'working'
+              class="px-2 py-1 rounded text-xs" {$agentStatus === 'working'
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-green-600 bg-green-50'}"
             >

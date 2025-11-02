@@ -2,14 +2,10 @@ import type { SearchResult } from '$lib/types';
 import { writable, type Writable, get } from 'svelte/store';
 import type { LLMProvider } from '$lib/types/llm';
 
-export interface SearchResult {
-  id: string;
-  score: number;
+export interface SearchResult { id: string;, score: number;
   payload: { content: string };
 }
-export interface QueryIntent {
-  type: string;
-  confidence: number;
+export interface QueryIntent { type: string;, confidence: number;
   entities: string[];
 }
 export interface QueryContext {
@@ -17,17 +13,13 @@ export interface QueryContext {
   sessionId?: string;
   previousQueries?: string[];
 }
-export interface RAGQuery {
-  id: string;
-  originalQuery: string;
+export interface RAGQuery { id: string;, originalQuery: string;
   expandedQueries: string[];
   intent: QueryIntent;
   context: QueryContext;
   timestamp: number;
 }
-export interface RAGResponse {
-  queryId: string;
-  synthesizedAnswer: string;
+export interface RAGResponse { queryId: string;, synthesizedAnswer: string;
   sources: SearchResult[];
   confidence: number;
 }
@@ -52,7 +44,7 @@ export class EnhancedRAGSystem {
       queryId: `stub_${Date.now()}`,
       synthesizedAnswer: '(stub)',
       sources: [],
-      confidence: 0,
+      confidence: 0
     };
     this.ragResponse$.set(resp);
     this.processing$.set(false);
@@ -75,8 +67,7 @@ const _ollamaStub = {
   endpoint: 'http://localhost:11434',
   models: [] as string[],
   capabilities: [] as string[],
-  status: 'online',
-} as unknown as Partial<LLMProvider>;
+  status: 'online` } as unknown as Partial<LLMProvider>;
 
 export const enhancedRAG = new EnhancedRAGSystem(_ollamaStub);
 

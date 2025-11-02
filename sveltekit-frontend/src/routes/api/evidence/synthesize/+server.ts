@@ -17,9 +17,7 @@ import { cases, evidence } from '$lib/server/db/schema';
 import { enhancedVectorSearchService } from '$lib/server/vector/enhanced-vector-search-service';
 
 // Type definitions
-interface EvidenceItem {
-  id: string;
-  title: string;
+interface EvidenceItem { id: string;, title: string;
   description: string | null;
   caseId: string;
   evidenceType: string;
@@ -37,9 +35,7 @@ interface EvidenceItem {
 }
 
 // Define a type for the items in the evidenceContext array
-interface SynthesizedEvidenceContextItem {
-  id: string;
-  title: string;
+interface SynthesizedEvidenceContextItem { id: string;, title: string;
   description: string | null | undefined;
   content: string | null | undefined;
   type: string;
@@ -51,17 +47,13 @@ interface SynthesizedEvidenceContextItem {
 }
 
 // Define a type for the results from enhancedVectorSearchService.search
-interface EnhancedVectorSearchResult {
-  id: string;
-  score: number;
+interface EnhancedVectorSearchResult { id: string;, score: number;
   content: string; // Explicitly include content
   metadata?: Record<string, unknown>;
   payload?: Record<string, unknown>;
 }
 
-interface RAGResult {
-  answer: string;
-  confidence: number;
+interface RAGResult { answer: string;, confidence: number;
   sources: Array<{ content: string }>;
   metadata: { ragScore: number };
 }
@@ -73,30 +65,22 @@ interface EmbeddingOptions {
 }
 
 // New interface for the synthesized evidence object
-interface SynthesizedEvidence {
-  summary: string;
-  analysis: string;
+interface SynthesizedEvidence { summary: string;, analysis: string;
   recommendations: string[];
   methodology: string;
   sourceCount: number;
-  correlations: Array<{ type: string; description: string; items: string[] }>;
-  timeline: {
-    events: Array<{
-      date: Date | string;
+  correlations: Array<{ type: string; description: string;, items: string[] }>;
+  timeline: { events: Array<{, date: Date | string;
       evidenceId: string;
       title: string;
       type: string;
       location?: string | null;
     }>;
-    timespan: {
-      start: Date | string;
-      end: Date | string;
+    timespan: { start: Date | string;, end: Date | string;
     };
-    gaps: Array<{ start: string; end: string; days: number }>;
+    gaps: Array<{ start: string; end: string;, days: number }>;
   } | null;
-  patterns: Array<{
-    type: string;
-    description: string;
+  patterns: Array<{ type: string;, description: string;
     data: Array<{ type?: string; tag?: string; count: number }>;
   }>;
 }
@@ -108,8 +92,8 @@ const aiService = {
       const model = options?.model || 'embeddinggemma:latest';
       const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, prompt: text }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ model, prompt: text })
       });
 
       if (!response.ok) {
@@ -123,7 +107,7 @@ const aiService = {
       // Fallback to zero vector
       return new Array(768).fill(0);
     }
-  },
+  }
 };
 
 const enhancedRAGService = {
@@ -134,14 +118,14 @@ const enhancedRAGService = {
       const results: EnhancedVectorSearchResult[] = await enhancedVectorSearchService.search({
         embedding,
         limit: 10,
-        filter: options.caseId ? { caseId: options.caseId } : undefined,
+        filter: options.caseId ? {, caseId: options.caseId } : undefined
       });
 
       return {
         answer: results.length > 0 ? results[0].content : 'No analysis available',
         confidence: results.length > 0 ? results[0].score : 0.5,
         sources: results.map(r => ({ content: r.content })),
-        metadata: { ragScore: results.length > 0 ? results[0].score : 0.5 },
+        metadata: { ragScore: results.length > 0 ? results[0].score : 0.5 }
       };
     } catch (error: any) {
       console.error('RAG query failed:', error);
@@ -149,11 +133,11 @@ const enhancedRAGService = {
         answer: 'AI analysis temporarily unavailable',
         confidence: 0.5,
         sources: [],
-        metadata: { ragScore: 0.5 },
+        metadata: { ragScore: 0.5 }
       };
     }
   },
-  indexDocument: async (doc: { id: string; content: string; metadata: Record<string, unknown> }) => {
+  indexDocument: async (doc: { id: string; content: string;, metadata: Record<string, unknown> }) => {
     try {
       // Index document for future RAG queries
       const embedding = (doc.metadata?.embedding as number[]) || (await aiService.generateEmbedding(doc.content));
@@ -161,13 +145,13 @@ const enhancedRAGService = {
         id: doc.id,
         content: doc.content,
         embedding,
-        metadata: doc.metadata,
+        metadata: doc.metadata
       });
       console.log('Indexed document:', doc.id);
     } catch (error: any) {
       console.error('Document indexing failed:', error);
     }
-  },
+  }
 };
 
 // Helper to get user ID from locals
@@ -175,30 +159,25 @@ function getUserId(locals: App.Locals): string {
   return locals.user?.id || 'anonymous';
 }
 
-export interface SynthesisRequest {
-  evidenceIds: string[];
-  synthesisType: 'merge' | 'compare' | 'timeline' | 'correlation';
+export interface SynthesisRequest { evidenceIds: string[];, synthesisType: 'merge' | 'compare' | 'timeline' | 'correlation';
   prompt?: string;
   caseId: string;
   title: string;
   description?: string;
 }
 
-export interface SynthesisResult {
-  synthesizedEvidence: SynthesizedEvidence;
-  embedding: number[];
+export interface SynthesisResult { synthesizedEvidence: SynthesizedEvidence;, embedding: number[];
   ragScore: number;
   confidence: number;
   sources: string[];
 }
 
 // New: XState types for synthesis machine
-type SynthesisContext = {
-  request: SynthesisRequest & { userId: string };
+type SynthesisContext = { request: SynthesisRequest & {;, userId: string };
   evidenceItems: EvidenceItem[];
   synthesisResult: SynthesisResult | null;
   synthesizedEvidenceRecord: EvidenceItem | null;
-  error: { message: string; code: string; details?: string; stage?: string } | null;
+  error: { message: string;, code: string; details?: string; stage?: string } | null;
   cachedAt: string | null;
   userId: string;
 };
@@ -213,7 +192,7 @@ async function initRedis(): Promise<void> {
   if (!redisClient) {
     try {
       redisClient = createClient({
-        url: REDIS_URL || 'redis://localhost:6379',
+        url: REDIS_URL || 'redis://localhost:6379'
       }) as RedisClientType;
       await redisClient.connect();
     } catch (error: any) {
@@ -232,7 +211,7 @@ async function publishSynthesisUpdate(type: string, data: Record<string, unknown
           type,
           timestamp: new Date().toISOString(),
           userId,
-          ...data,
+          ...data
         })
       );
     } catch (error: any) {
@@ -243,10 +222,8 @@ async function publishSynthesisUpdate(type: string, data: Record<string, unknown
 
 // XState v5 Synthesis Machine
 const synthesisMachine = createMachine({
-  types: {} as {
-    context: SynthesisContext;
-    events: SynthesisEvents;
-    input: SynthesisRequest & { userId: string };
+  types: {} as { context: SynthesisContext;, events: SynthesisEvents;
+    input: SynthesisRequest & {, userId: string };
   },
   id: 'evidenceSynthesis',
   initial: 'idle',
@@ -260,13 +237,9 @@ const synthesisMachine = createMachine({
     cachedAt: null,
     userId: input.userId, // Initialize userId from input
   }),
-  states: {
-    idle: {
-      on: { START_SYNTHESIS: 'checkingCache' },
+  states: { idle: {, on: { START_SYNTHESIS: `checkingCache` }
     },
-    checkingCache: {
-      invoke: {
-        input: ({ context }) => context,
+    checkingCache: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
           const cached = await redisClient?.get(cacheKey);
@@ -279,49 +252,43 @@ const synthesisMachine = createMachine({
             actions: assign({
               synthesizedEvidenceRecord: ({ event }) => event.output.synthesizedEvidence,
               synthesisResult: ({ event }) => event.output.synthesisResult,
-              cachedAt: ({ event }) => event.output.cachedAt,
-            }),
+              cachedAt: ({ event }) => event.output.cachedAt
+            })
           },
-          { target: 'validatingInput' },
+          { target: `validatingInput` }
         ],
         onError: {
           target: 'validatingInput', // Continue even if cache check fails
           actions: assign({
-            error: ({ event }) => ({
-              message: `Cache check failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+            error: ({ event }) => ({ message: `Cache check, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'CACHE_ERROR',
-              stage: 'checkingCache',
-            }),
-          }),
-        },
-      },
+              stage: 'checkingCache'
+            })
+          })
+        }
+      }
     },
     validatingInput: {
       always: [
         {
           guard: ({ context }) => !context.request.evidenceIds || context.request.evidenceIds.length < 2,
           target: 'failure',
-          actions: assign({
-            error: {
-              message: 'At least 2 evidence items required for synthesis',
+          actions: assign({ error: {, message: 'At least 2 evidence items required for synthesis',
               code: 'INVALID_INPUT',
-              stage: 'validatingInput',
-            },
-          }),
+              stage: 'validatingInput'
+            }
+          })
         },
         {
           guard: ({ context }) => !context.request.caseId || !context.request.title,
           target: 'failure',
-          actions: assign({
-            error: { message: 'Case ID and title are required', code: 'INVALID_INPUT', stage: 'validatingInput' },
-          }),
+          actions: assign({ error: {, message: 'Case ID and title are required', code: 'INVALID_INPUT', stage: 'validatingInput' }
+          })
         },
-        { target: 'verifyingCaseAccess' },
-      ],
+        { target: 'verifyingCaseAccess' }
+      ]
     },
-    verifyingCaseAccess: {
-      invoke: {
-        input: ({ context }) => context,
+    verifyingCaseAccess: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           const caseRecord = await db
@@ -341,15 +308,13 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'ACCESS_DENIED',
-              stage: 'verifyingCaseAccess',
-            }),
-          }),
-        },
-      },
+              stage: 'verifyingCaseAccess'
+            })
+          })
+        }
+      }
     },
-    fetchingEvidence: {
-      invoke: {
-        input: ({ context }) => context,
+    fetchingEvidence: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           const evidenceItems = (await db
             .select()
@@ -365,7 +330,7 @@ const synthesisMachine = createMachine({
         }),
         onDone: {
           target: 'performingAISynthesis',
-          actions: assign({ evidenceItems: ({ event }) => event.output }),
+          actions: assign({ evidenceItems: ({ event }) => event.output })
         },
         onError: {
           target: 'failure',
@@ -373,15 +338,13 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'EVIDENCE_FETCH_FAILED',
-              stage: 'fetchingEvidence',
-            }),
-          }),
-        },
-      },
+              stage: 'fetchingEvidence'
+            })
+          })
+        }
+      }
     },
-    performingAISynthesis: {
-      invoke: {
-        input: ({ context }) => context,
+    performingAISynthesis: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           return await synthesizeEvidence(
@@ -394,7 +357,7 @@ const synthesisMachine = createMachine({
         }),
         onDone: {
           target: 'persistingSynthesis',
-          actions: assign({ synthesisResult: ({ event }) => event.output }),
+          actions: assign({ synthesisResult: ({ event }) => event.output })
         },
         onError: {
           target: 'failure',
@@ -402,15 +365,12 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'AI_SYNTHESIS_FAILED',
-              stage: 'performingAISynthesis',
-            }),
-          }),
-        },
-      },
+              stage: `performingAISynthesis` })
+          })
+        }
+      }
     },
-    persistingSynthesis: {
-      invoke: {
-        input: ({ context }) => context,
+    persistingSynthesis: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           if (!context.synthesisResult) throw new Error('Synthesis result missing');
@@ -425,11 +385,11 @@ const synthesisMachine = createMachine({
               evidenceType: 'synthesized',
               subType: context.request.synthesisType,
               aiAnalysis: {
-                synthesisMethod: context.request.synthesisType,
+               , synthesisMethod: context.request.synthesisType,
                 sourceEvidenceIds: context.request.evidenceIds,
                 synthesisTimestamp: new Date().toISOString(),
                 confidence: context.synthesisResult.confidence,
-                ragScore: context.synthesisResult.ragScore,
+                ragScore: context.synthesisResult.ragScore
               },
               aiSummary: context.synthesisResult.synthesizedEvidence.summary,
               summary: context.synthesisResult.synthesizedEvidence.analysis,
@@ -441,20 +401,20 @@ const synthesisMachine = createMachine({
                   timestamp: new Date().toISOString(),
                   details: {
                     sourceCount: context.evidenceItems.length,
-                    method: context.request.synthesisType,
-                  },
+                    method: context.request.synthesisType
+                  }
                 },
               ],
               uploadedBy: context.userId, // Use userId from context
               isAdmissible: true,
-              confidentialityLevel: 'restricted',
+              confidentialityLevel: 'restricted'
             })
             .returning();
           return synthesizedEvidence[0];
         }),
         onDone: {
           target: 'indexingRAG',
-          actions: assign({ synthesizedEvidenceRecord: ({ event }) => event.output }),
+          actions: assign({ synthesizedEvidenceRecord: ({ event }) => event.output })
         },
         onError: {
           target: 'failure',
@@ -462,15 +422,12 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'PERSISTENCE_FAILED',
-              stage: 'persistingSynthesis',
-            }),
-          }),
-        },
-      },
+              stage: `persistingSynthesis` })
+          })
+        }
+      }
     },
-    indexingRAG: {
-      invoke: {
-        input: ({ context }) => context,
+    indexingRAG: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           if (!context.synthesizedEvidenceRecord || !context.synthesisResult)
             throw new Error('Missing data for RAG indexing');
@@ -486,18 +443,14 @@ const synthesisMachine = createMachine({
         onError: {
           target: 'publishingUpdate', // Continue even if RAG indexing fails
           actions: assign({
-            error: ({ event }) => ({
-              message: `RAG indexing failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+            error: ({ event }) => ({ message: `RAG indexing, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'RAG_INDEXING_FAILED',
-              stage: 'indexingRAG',
-            }),
-          }),
-        },
-      },
+              stage: `indexingRAG` })
+          })
+        }
+      }
     },
-    publishingUpdate: {
-      invoke: {
-        input: ({ context }) => context,
+    publishingUpdate: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           if (!context.synthesizedEvidenceRecord) throw new Error('Missing synthesized evidence record for publishing');
@@ -509,7 +462,7 @@ const synthesisMachine = createMachine({
               synthesisType: context.request.synthesisType,
               sourceCount: context.evidenceItems.length,
               ragScore: context.synthesisResult?.ragScore,
-              data: context.synthesizedEvidenceRecord,
+              data: context.synthesizedEvidenceRecord
             },
             context.userId // Use userId from context
           );
@@ -519,25 +472,21 @@ const synthesisMachine = createMachine({
         onError: {
           target: 'cachingResults', // Continue even if publishing fails
           actions: assign({
-            error: ({ event }) => ({
-              message: `Publishing update failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+            error: ({ event }) => ({ message: `Publishing update, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'PUBLISH_FAILED',
-              stage: 'publishingUpdate',
-            }),
-          }),
-        },
-      },
+              stage: `publishingUpdate` })
+          })
+        }
+      }
     },
-    cachingResults: {
-      invoke: {
-        input: ({ context }) => context,
+    cachingResults: { invoke: {, input: ({ context }) => context,
         src: fromPromise(async ({ input: context }) => {
           if (context.synthesizedEvidenceRecord && context.synthesisResult) {
             const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
             const cacheObj = {
               synthesizedEvidence: context.synthesizedEvidenceRecord,
               synthesisResult: context.synthesisResult,
-              cachedAt: new Date().toISOString(),
+              cachedAt: new Date().toISOString()
             };
             await redisClient?.setex(cacheKey, SYNTHESIS_CACHE_TTL, JSON.stringify(cacheObj));
           }
@@ -545,11 +494,11 @@ const synthesisMachine = createMachine({
         }),
         onDone: 'success',
         onError: 'success', // Continue even if caching fails
-      },
+      }
     },
     success: { type: 'final' },
-    failure: { type: 'final' },
-  },
+    failure: { type: 'final' }
+  }
 });
 
 // Type helper for XState snapshot
@@ -572,11 +521,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       input: {
         ...body,
         userId: getUserId(locals), // Pass userId as part of the input
-      },
+      }
     });
 
     actor.start();
-    actor.send({ type: 'START_SYNTHESIS' });
+    actor.send({ type: `START_SYNTHESIS` });
 
     // Add a timeout to the XState subscription to prevent hanging requests
     const timeoutPromise = new Promise<void>(
@@ -598,13 +547,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (snapshot.value === 'failure') {
       const error = snapshot.context.error;
-      console.error(`❌ [${requestId}] XState synthesis failure in stage ${error?.stage || 'unknown'}:`, error);
+      console.error(`❌ [${requestId}] XState synthesis failure in stage ${error?.stage || 'unknown` }: ', error);
       return json(
         {
           error: error?.message || 'Evidence synthesis failed',
           code: error?.code || 'XSTATE_FAILURE',
           stage: error?.stage,
-          details: error?.details,
+          details: error?.details
         },
         { status: 500 }
       );
@@ -621,7 +570,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       synthesizedEvidence: snapshot.context.synthesizedEvidenceRecord,
       metadata: {
-        ragScore: snapshot.context.synthesisResult?.ragScore,
+       , ragScore: snapshot.context.synthesisResult?.ragScore,
         confidence: snapshot.context.synthesisResult?.confidence,
         sources: snapshot.context.synthesisResult?.sources,
         embeddingDimensions: snapshot.context.synthesisResult?.embedding.length,
@@ -629,17 +578,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         sourceEvidenceCount: snapshot.context.evidenceItems.length,
         processingTime,
         cached: isCached,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
-    console.error(`❌ [${requestId}] Evidence synthesis error:`, error);
+    console.error(`❌ [${requestId}] Evidence synthesis error: ', error);
     return json(
       {
         error: 'Evidence synthesis failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -665,7 +614,7 @@ async function synthesizeEvidence(
     tags: item.tags,
     aiAnalysis: item.aiAnalysis,
     collectedAt: item.collectedAt,
-    location: item.location,
+    location: item.location
   }));
 
   // Generate synthesis prompt based on type
@@ -676,7 +625,7 @@ async function synthesizeEvidence(
   // TODO: Add Transformer.js v3 client-side fallback for offline mode
   const ragResult = await enhancedRAGService.query(synthesisPrompt, {
     caseId: caseId,
-    documentTypes: ['evidence', 'legal'],
+    documentTypes: ['evidence', 'legal']
   });
 
   // Generate embeddings (Transformer.js integration point)
@@ -687,27 +636,25 @@ async function synthesizeEvidence(
   // TODO: Replace with Transformer.js v3 embedding model (client-side)
   const embedding = await aiService.generateEmbedding(synthesizedContent, {
     provider: 'tauri-legal-bert',
-    legalDomain: true,
+    legalDomain: true
   });
 
   // Calculate high RAG score
   const ragScore = calculateHighRAGScore(evidenceItems, ragResult, embedding, synthesisType);
 
-  return {
-    synthesizedEvidence: {
-      summary: analysis,
-      analysis: `Synthesis Analysis (${synthesisType}):\n\n${analysis}\n\nRecommendations:\n- ${recommendations.join('\n- ')}`,
+  return { synthesizedEvidence: {, summary: analysis,
+      analysis: 'Synthesis Analysis (${synthesisType}):\n\n${analysis}\n\nRecommendations:\n- ${recommendations.join('\n- ')}`,
       recommendations: recommendations,
       methodology: synthesisType,
       sourceCount: evidenceItems.length,
       correlations: identifyCorrelations(evidenceItems),
       timeline: synthesisType === 'timeline' ? buildTimeline(evidenceItems) : null,
-      patterns: identifyPatterns(evidenceItems),
+      patterns: identifyPatterns(evidenceItems)
     },
     embedding,
     ragScore,
     confidence: ragResult.confidence || 0.8,
-    sources: ragResult.sources.map(s => s.content) || [],
+    sources: ragResult.sources.map(s => s.content) || []
   };
 }
 
@@ -727,9 +674,9 @@ ${evidenceContext
   ${idx + 1}. Title: ${item.title}
      Type: ${item.type}${item.subType ? ` (${item.subType})` : ''}
      Content: ${item.content}
-     Tags: ${item.tags?.join(', ') || 'None'}
-     ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : ''}
-     ${item.location ? `Location: ${item.location}` : ''}
+     Tags: ${item.tags?.join(', ') || 'None` }
+     ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : `` }
+     ${item.location ? `Location: ${item.location}` : `` }
   `
   )
   .join('\n')}
@@ -745,9 +692,9 @@ Instructions:
 ${synthesisType === 'timeline' ? '- Create chronological sequence with gaps identified' : ''}
 ${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : ''}
 ${synthesisType === 'compare' ? '- Highlight similarities, differences, and contradictions' : ''}
-${synthesisType === 'merge' ? '- Combine evidence into coherent narrative' : ''}
+${synthesisType === 'merge' ? '- Combine evidence into coherent narrative' : `` }
 
-Provide comprehensive analysis:`;
+Provide comprehensive analysis: ';
 
   return basePrompt;
 }
@@ -783,7 +730,7 @@ function calculateHighRAGScore(
     correlation: 1.2,
     timeline: 1.15,
     compare: 1.1,
-    merge: 1.0,
+    merge: 1.0
   };
   score *= typeMultipliers[synthesisType as keyof typeof typeMultipliers] || 1.0;
 
@@ -806,19 +753,17 @@ function extractTagsFromEvidence(evidenceItems: EvidenceItem[]): string[] {
   return uniqueTags.slice(0, 10);
 }
 
-function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{
-  type: string;
-  description: string;
+function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   items: string[];
 }> {
-  const correlations: Array<{ type: string; description: string; items: string[] }> = [];
+  const correlations: Array<{ type: string; description: string;, items: string[] }> = [];
 
   const datedItems = evidenceItems.filter(item => item.collectedAt);
   if (datedItems.length > 1) {
     correlations.push({
       type: 'temporal',
       description: 'Evidence items with overlapping timeframes',
-      items: datedItems.map(item => item.id),
+      items: datedItems.map(item => item.id)
     });
   }
 
@@ -827,7 +772,7 @@ function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{
     correlations.push({
       type: 'spatial',
       description: 'Evidence items from related locations',
-      items: locatedItems.map(item => item.id),
+      items: locatedItems.map(item => item.id)
     });
   }
 
@@ -836,26 +781,22 @@ function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{
     correlations.push({
       type: 'thematic',
       description: 'Evidence items with common themes',
-      items: taggedItems.map(item => item.id),
+      items: taggedItems.map(item => item.id)
     });
   }
 
   return correlations;
 }
 
-function buildTimeline(evidenceItems: EvidenceItem[]): {
-  events: Array<{
-    date: Date | string;
+function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{, date: Date | string;
     evidenceId: string;
     title: string;
     type: string;
     location?: string | null;
   }>;
-  timespan: {
-    start: Date | string;
-    end: Date | string;
+  timespan: { start: Date | string;, end: Date | string;
   };
-  gaps: Array<{ start: string; end: string; days: number }>;
+  gaps: Array<{ start: string; end: string;, days: number }>;
 } | null {
   const datedItems = evidenceItems
     .filter((item): item is EvidenceItem & { collectedAt: Date | string } => !!item.collectedAt)
@@ -863,26 +804,24 @@ function buildTimeline(evidenceItems: EvidenceItem[]): {
 
   if (datedItems.length === 0) return null;
 
-  return {
-    events: datedItems.map(item => ({
-      date: item.collectedAt,
+  return { events: datedItems.map(item => ({, date: item.collectedAt,
       evidenceId: item.id,
       title: item.title,
       type: item.evidenceType,
-      location: item.location,
+      location: item.location
     })),
     timespan: {
       start: datedItems[0].collectedAt,
-      end: datedItems[datedItems.length - 1].collectedAt,
+      end: datedItems[datedItems.length - 1].collectedAt
     },
-    gaps: identifyTimelineGaps(datedItems),
+    gaps: identifyTimelineGaps(datedItems)
   };
 }
 
 function identifyTimelineGaps(
-  datedItems: Array<EvidenceItem & { collectedAt: Date | string }>
-): Array<{ start: string; end: string; days: number }> {
-  const gaps: Array<{ start: string; end: string; days: number }> = [];
+  datedItems: Array<EvidenceItem & {, collectedAt: Date | string }>
+): Array<{ start: string; end: string;, days: number }> {
+  const gaps: Array<{ start: string; end: string;, days: number }> = [];
   for (let i = 1; i < datedItems.length; i++) {
     const prev = new Date(datedItems[i - 1].collectedAt);
     const curr = new Date(datedItems[i].collectedAt);
@@ -892,21 +831,17 @@ function identifyTimelineGaps(
       gaps.push({
         start: prev.toISOString(),
         end: curr.toISOString(),
-        days: Math.floor(diffDays),
+        days: Math.floor(diffDays)
       });
     }
   }
   return gaps;
 }
 
-function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{
-  type: string;
-  description: string;
+function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   data: Array<{ type?: string; tag?: string; count: number }>;
 }> {
-  const patterns: Array<{
-    type: string;
-    description: string;
+  const patterns: Array<{ type: string;, description: string;
     data: Array<{ type?: string; tag?: string; count: number }>;
   }> = [];
 
@@ -927,7 +862,7 @@ function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{
     patterns.push({
       type: 'evidence_type',
       description: 'Dominant evidence types identified',
-      data: dominantTypes,
+      data: dominantTypes
     });
   }
 
@@ -949,7 +884,7 @@ function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{
     patterns.push({
       type: 'thematic',
       description: 'Common themes across evidence',
-      data: commonTags,
+      data: commonTags
     });
   }
 
@@ -970,7 +905,7 @@ async function addToEnhancedRAG(
       id: synthesizedEvidence.id,
       content: synthesizedEvidence.summary || synthesizedEvidence.description || '',
       metadata: {
-        evidenceId: synthesizedEvidence.id,
+       , evidenceId: synthesizedEvidence.id,
         caseId: synthesizedEvidence.caseId,
         ragScore,
         priority: ragScore > 0.8 ? 'high' : ragScore > 0.6 ? 'medium' : 'normal',
@@ -979,8 +914,8 @@ async function addToEnhancedRAG(
         timestamp: new Date().toISOString(),
         tags: synthesizedEvidence.tags || [],
         synthesisMethod: synthesisType,
-        sourceCount,
-      },
+        sourceCount
+      }
     });
 
     console.log(`✅ Added synthesized evidence to RAG with score: ${ragScore}`);
@@ -1008,27 +943,24 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({
       suggestions,
       metadata: {
-        totalEvidence: caseEvidence.length,
+       , totalEvidence: caseEvidence.length,
         suggestionsGenerated: suggestions.length,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     console.error('Failed to generate synthesis suggestions:', error);
     return json(
       {
         error: 'Failed to generate suggestions',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
 };
 
 async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Promise<
-  Array<{
-    type: string;
-    evidenceIds: string[];
+  Array<{ type: string;, evidenceIds: string[];
     title: string;
     description: string;
     confidence: number;
@@ -1053,7 +985,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       description: 'Create chronological sequence of events',
       confidence: 0.85,
       priority: 'high',
-      estimatedValue: calculateSuggestionValue(timelineItems, 'timeline'),
+      estimatedValue: calculateSuggestionValue(timelineItems, 'timeline')
     });
   }
 
@@ -1070,7 +1002,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       description: 'Analyze communication patterns and digital footprints',
       confidence: 0.9,
       priority: 'high',
-      estimatedValue: calculateSuggestionValue(digitalItems, 'correlation'),
+      estimatedValue: calculateSuggestionValue(digitalItems, 'correlation')
     });
   }
 
@@ -1084,7 +1016,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       description: 'Compare similar evidence items for inconsistencies',
       confidence: 0.75,
       priority: 'medium',
-      estimatedValue: calculateSuggestionValue(similarItems, 'compare'),
+      estimatedValue: calculateSuggestionValue(similarItems, 'compare')
     });
   }
 
@@ -1101,7 +1033,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       description: 'Combine fragmented evidence into coherent narrative',
       confidence: 0.8,
       priority: 'medium',
-      estimatedValue: calculateSuggestionValue(fragmentedItems, 'merge'),
+      estimatedValue: calculateSuggestionValue(fragmentedItems, 'merge')
     });
   }
 
@@ -1111,7 +1043,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
 function findSimilarEvidence(evidenceItems: EvidenceItem[]): EvidenceItem[] {
   const typeGroups = evidenceItems.reduce(
     (acc, item) => {
-      const key = `${item.evidenceType}-${item.subType || 'general'}`;
+      const key = `${item.evidenceType}-${item.subType || 'general` }`;
       if (!acc[key]) acc[key] = [];
       acc[key].push(item);
       return acc;
@@ -1150,7 +1082,7 @@ function calculateSuggestionValue(items: EvidenceItem[], synthesisType: string):
     correlation: 1.3,
     timeline: 1.2,
     compare: 1.1,
-    merge: 1.0,
+    merge: 1.0
   };
   value *= typeMultipliers[synthesisType as keyof typeof typeMultipliers] || 1.0;
 

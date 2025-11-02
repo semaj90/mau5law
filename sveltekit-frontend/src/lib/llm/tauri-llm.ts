@@ -21,7 +21,7 @@ export async function getAvailableModels(): Promise<string[]> {
 }
 export async function runInference(
   model: string;
-  prompt: string
+ , prompt: string
 ): Promise<string> {
   if (!tauriInitialized) {
     await initializeTauri();

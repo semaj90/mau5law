@@ -4,9 +4,7 @@ import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { Client as MinIOClient } from 'minio';
 import type { RequestHandler } from './$types';
-interface MinIOUploadResult {
-  success: boolean;
-  document_id: string;
+interface MinIOUploadResult { success: boolean;, document_id: string;
   object_path: string;
   size: number;
   content_type: string;
@@ -36,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
     // Generate unique object path
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -57,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       'x-amz-meta-case-id': caseId || 'general',
       'x-amz-meta-document-type': documentType || 'unknown',
       'x-amz-meta-priority': priority.toString(),
-      'x-amz-meta-uploaded-at': new Date().toISOString(),
+      'x-amz-meta-uploaded-at': new Date().toISOString()
     });
     const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const uploadResult: MinIOUploadResult = {
@@ -67,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
       size: file.size,
       content_type: file.type,
       uploaded_at: new Date().toISOString(),
-      etag: uploadInfo.etag,
+      etag: uploadInfo.etag
     };
     console.log(`📁 MinIO Upload Success: ${objectPath} (${file.size} bytes) ETag: ${uploadInfo.etag}`);
     // TODO: Store metadata in PostgreSQL
@@ -78,8 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed',
-      },
+        error: error instanceof Error ? error.message : 'Upload failed` },
       { status: 500 }
     );
   }

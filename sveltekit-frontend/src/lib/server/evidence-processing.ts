@@ -54,22 +54,16 @@ const evidenceProcessingMachine = createMachine({
     stage: 'upload',
     retryCount: 0
   } as WorkflowContext,
-  states: {
-    idle: {
-      on: {
-        PROCESS_EVIDENCE: {
-          target: 'analyzing',
+  states: { idle: {, on: { PROCESS_EVIDENCE: {, target: 'analyzing',
           actions: assign({
-            currentFile: ({ event }) => event.data,
+           , currentFile: ({ event }) => event.data,
             progress: 10,
             stage: 'analysis'
           })
         }
       }
     },
-    analyzing: {
-      invoke: {
-        src: 'analyzeWithAI',
+    analyzing: { invoke: {, src: 'analyzeWithAI',
         onDone: {
           target: 'embedding',
           actions: assign({
@@ -87,9 +81,7 @@ const evidenceProcessingMachine = createMachine({
         }
       }
     },
-    embedding: {
-      invoke: {
-        src: 'generateEmbeddings',
+    embedding: { invoke: {, src: 'generateEmbeddings',
         onDone: {
           target: 'storing',
           actions: assign({
@@ -106,9 +98,7 @@ const evidenceProcessingMachine = createMachine({
         }
       }
     },
-    storing: {
-      invoke: {
-        src: 'storeVectors',
+    storing: { invoke: {, src: 'storeVectors',
         onDone: {
           target: 'completed',
           actions: assign({
@@ -126,11 +116,8 @@ const evidenceProcessingMachine = createMachine({
       }
     },
     completed: {
-      type: 'final'
-    },
-    failed: {
-      on: {
-        RETRY: {
+      type: `final` },
+    failed: { on: {, RETRY: {
           target: 'analyzing',
           actions: assign({
             retryCount: ({ context }) => context.retryCount + 1,
@@ -140,9 +127,7 @@ const evidenceProcessingMachine = createMachine({
       }
     }
   }
-}, {
-  actors: {
-    analyzeWithAI: async ({ context }) => {
+}, { actors: {, analyzeWithAI: async ({ context }) => {
       if (!context.currentFile) {
         throw new Error('No file to analyze');
       }

@@ -26,8 +26,8 @@ class ProductionServiceClient {
       method: options.method,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
-      },
+        ...options.headers
+      }
     };
     // Handle body data
     if (options.body) {
@@ -65,7 +65,7 @@ class ProductionServiceClient {
         data = {
           error: 'Non-JSON response',
           text,
-          parseError: parseErrMessage,
+          parseError: parseErrMessage
         };
       }
       return {
@@ -74,7 +74,7 @@ class ProductionServiceClient {
         headers: Object.fromEntries(response.headers.entries()),
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
-        latency,
+        latency
       };
     } catch (error: any) {
       const latency = now() - startTime;
@@ -82,17 +82,14 @@ class ProductionServiceClient {
       const message = error instanceof Error ? error.message : String(error);
       const name = error instanceof Error ? error.name : 'Error';
       // Handle network errors, timeouts, etc.
-      return {
-        data: {
-          error: message,
+      return { data: {, error: message,
           type: name,
-          code: name === 'AbortError' ? 'TIMEOUT' : 'NETWORK_ERROR',
-        },
+          code: name === 'AbortError' ? 'TIMEOUT' : 'NETWORK_ERROR` },
         status: 0, // Indicates network failure / aborted
         headers: {} as Record<string, string>,
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
-        latency,
+        latency
       };
     } finally {
       // Clear fallback timeout if set
@@ -147,9 +144,7 @@ class ProductionServiceClient {
     endpoint: string,
     options: IntegrationServiceRequest,
     iterations: number = 5
-  ): Promise<{
-    averageLatency: number;
-    minLatency: number;
+  ): Promise<{ averageLatency: number;, minLatency: number;
     maxLatency: number;
     successRate: number;
     results: ServiceResponse[];
@@ -170,7 +165,7 @@ class ProductionServiceClient {
       minLatency: Math.min(...latencies),
       maxLatency: Math.max(...latencies),
       successRate: successCount / iterations,
-      results,
+      results
     };
   }
 }

@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
       analysisType = 'comprehensive',
       limit = 5,
       includeRecommendations = true,
-      includeMetadata = true,
+      includeMetadata = true
     } = await request.json();
     if (!query) {
       return json({ success: false, error: 'Query is required' }, { status: 400 });
@@ -40,8 +40,8 @@ export const POST: RequestHandler = async ({ request }) => {
           .where(
             or(
               sql`${legalDocuments.title} LIKE ${`%${query}%`}`,
-              sql`${legalDocuments.content} LIKE ${`%${query}%`}`,
-              sql`${legalDocuments.summary} LIKE ${`%${query}%`}`,
+              sql`${legalDocuments.content} LIKE ${`%${query}%` }`,
+              sql`${legalDocuments.summary} LIKE ${`%${query}%` }`,
               sql`${legalDocuments.keywords} @> ${JSON.stringify([query.toLowerCase()])}`
             )
           )
@@ -54,8 +54,8 @@ export const POST: RequestHandler = async ({ request }) => {
           .where(
             or(
               sql`${cases.title} LIKE ${`%${query}%`}`,
-              sql`${cases.description} LIKE ${`%${query}%`}`,
-              sql`${cases.caseNumber} LIKE ${`%${query}%`}`
+              sql`${cases.description} LIKE ${`%${query}%` }`,
+              sql`${cases.caseNumber} LIKE ${`%${query}%` }`
             )
           )
           .limit(limit);
@@ -67,8 +67,8 @@ export const POST: RequestHandler = async ({ request }) => {
           .where(
             or(
               sql`${evidence.title} LIKE ${`%${query}%`}`,
-              sql`${evidence.description} LIKE ${`%${query}%`}`,
-              sql`${evidence.evidenceType} LIKE ${`%${query}%`}`
+              sql`${evidence.description} LIKE ${`%${query}%` }`,
+              sql`${evidence.evidenceType} LIKE ${`%${query}%` }`
             )
           )
           .limit(limit);
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime: Date.now() - startTime,
         aiModelUsed: 'enhanced-rag-yorha',
         legalComplexity: assessLegalComplexity(analysisResults),
-        riskLevel: assessRiskLevel(analysisResults),
+        riskLevel: assessRiskLevel(analysisResults)
       },
       // Enhanced features
       recommendations: includeRecommendations ? recommendations : [],
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
         legalAreas: extractLegalAreas(analysisResults),
         precedents: findRelevantPrecedents(analysisResults),
         keyTerms: extractKeyTerms(analysisResults),
-        citations: extractCitations(analysisResults),
+        citations: extractCitations(analysisResults)
       },
       // YoRHa-specific formatting
       yorhaMetadata: includeMetadata
@@ -117,12 +117,12 @@ export const POST: RequestHandler = async ({ request }) => {
             analysisMode: 'ENHANCED',
             dataIntegrity: 'VERIFIED',
             processingNode: 'YORHA-LEGAL-AI-001',
-            classification: 'CONFIDENTIAL',
+            classification: 'CONFIDENTIAL'
           }
         : null,
       // Service information
       service: 'yorha-enhanced-rag-api',
-      version: '4.0.0',
+      version: '4.0.0'
     };
     return json(yorhaResponse);
   } catch (err: any) {
@@ -138,8 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
         yorhaMetadata: {
           systemStatus: 'ERROR',
           errorCode: 'ERR_ANALYSIS_FAILED',
-          processingNode: 'YORHA-LEGAL-AI-001',
-        },
+          processingNode: 'YORHA-LEGAL-AI-001` }
       },
       { status: 500 }
     );
@@ -172,9 +171,7 @@ type AnalysisResult = {
   };
 };
 
-type Recommendation = {
-  id: string;
-  type: 'INVESTIGATE' | 'ANALYSIS' | string;
+type Recommendation = { id: string;, type: 'INVESTIGATE' | 'ANALYSIS' | string;
   priority: 'HIGH' | 'MEDIUM' | 'LOW' | string;
   title: string;
   description: string;
@@ -208,15 +205,14 @@ async function performYoRHaAnalysis(
       source: 'enhanced-rag',
       yorha_type: 'AI_ANALYSIS',
       // safely extract numeric rerank/score fields without `any`
-      yorha_confidence: extractNumberField(r as unknown, ['rerankScore', 'score'], 0.5),
+      yorha_confidence: extractNumberField(r as unknown, ['rerankScore', 'score'], 0.5)
     })),
     ...dbResults.map((r: DBRecord) => ({
       ...(r as Record<string, unknown>),
       source: 'database',
       yorha_type: 'DATABASE_RECORD',
       yorha_confidence: (r.confidenceScore ?? 0.7) as number,
-      content: r.content ?? r.description ?? r.title ?? '',
-    })),
+      content: r.content ?? r.description ?? r.title ?? '` })),
   ];
   // Apply YoRHa-specific scoring and analysis
   return allResults
@@ -230,8 +226,8 @@ async function performYoRHaAnalysis(
         legalWeight: calculateLegalWeight(result),
         riskFactor: calculateRiskFactor(result),
         actionRequired: determineActionRequired(result),
-        classification: classifyResult(result),
-      },
+        classification: classifyResult(result)
+      }
     }))
     .sort((a, b) => (b.yorha_confidence || 0) - (a.yorha_confidence || 0));
 }
@@ -248,11 +244,11 @@ async function generateYoRHaRecommendations(
       id: `REC-${Date.now()}-1`,
       type: 'INVESTIGATE',
       priority: 'HIGH',
-      title: `Further investigation recommended for: ${query}`,
+      title: `Further investigation recommended; for: ${query}`,
       description: `Based on analysis of ${analysisResults.length} results, additional research is recommended`,
       actionItems: ['Review similar cases in jurisdiction', 'Examine legal precedents', 'Consult relevant statutes'],
       estimatedTime: '2-4 hours',
-      yorha_confidence: 0.85,
+      yorha_confidence: 0.85
     },
     {
       id: `REC-${Date.now()}-2`,
@@ -262,7 +258,7 @@ async function generateYoRHaRecommendations(
       description: 'Several documents require detailed legal analysis',
       actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'],
       estimatedTime: '1-2 hours',
-      yorha_confidence: 0.75,
+      yorha_confidence: 0.75
     },
   ];
   return recommendations;

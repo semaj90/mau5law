@@ -3,9 +3,7 @@ import crypto from 'crypto';
 import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
 
 // Stub interfaces for missing types
-export interface WorkerConfiguration {
-  maxConcurrentTasks: number;
-  enableLogging: boolean;
+export interface WorkerConfiguration { maxConcurrentTasks: number;, enableLogging: boolean;
   enableMetrics: boolean;
   // Use a generic record to avoid `any` while remaining flexible for provider configs
   providers: Record<string, unknown>;
@@ -18,9 +16,7 @@ export interface AIResponse {
   [key: string]: any;
 }
 
-export interface ProcessingMetrics {
-  taskId: string;
-  startTime: number;
+export interface ProcessingMetrics { taskId: string;, startTime: number;
   endTime?: number;
   processingTime?: number;
   queueTime: number;
@@ -32,25 +28,19 @@ export interface ProcessingMetrics {
   error?: string;
 }
 
-export interface TaskResult {
-  taskId: string;
-  status: 'completed' | 'failed' | 'cancelled';
+export interface TaskResult { taskId: string;, status: 'completed' | 'failed' | 'cancelled';
   response?: AIResponse;
   error?: Error;
   metrics: ProcessingMetrics;
 }
 
-interface ActiveTask {
-  task: AITask;
-  startTime: number;
+interface ActiveTask { task: AITask;, startTime: number;
   resolve: (result: TaskResult) => void;
   // Use unknown for rejection reasons to avoid `any`
   reject: (reason?: any) => void;
 }
 
-export interface WorkerPool {
-  workers: Worker[];
-  currentLoad: number[];
+export interface WorkerPool { workers: Worker[];, currentLoad: number[];
   completedTasks: number;
   failedTasks: number;
 }
@@ -80,7 +70,7 @@ export class AIWorkerManager {
       enableMetrics: true,
       providers: {},
       defaultTimeout: 30000,
-      ...config,
+      ...config
     };
     this.workerPool = { workers: [], currentLoad: [], completedTasks: 0, failedTasks: 0 };
     this.activeTasks = new Map();
@@ -117,7 +107,7 @@ export class AIWorkerManager {
       totalWorkers: this.workerPool.workers.length,
       activeTasks: this.activeTasks.size,
       completedTasks: this.workerPool.completedTasks,
-      failedTasks: this.workerPool.failedTasks,
+      failedTasks: this.workerPool.failedTasks
     } as unknown as WorkerStatus;
   }
 
@@ -157,7 +147,7 @@ export class AIWorkerManager {
           maxConcurrent: this.config.maxConcurrentTasks,
           uptime: 0,
           totalProcessed: 0,
-          errors: 0,
+          errors: 0
         } as unknown as WorkerStatus);
       }, 1000);
       const messageHandler = (event: MessageEvent<WorkerMessage>) => {
@@ -172,7 +162,7 @@ export class AIWorkerManager {
       worker.postMessage({
         type: 'GET_STATUS',
         taskId: `status-${workerId}`,
-        payload: null,
+        payload: null
       });
     });
   }
@@ -204,7 +194,7 @@ export class AIWorkerManager {
         provider: activeTask.task.providerId ?? 'unknown',
         model: activeTask.task.model ?? 'unknown',
         tokensProcessed: 0,
-        success: false,
+        success: false
       };
       this.metrics.set(taskId, metrics);
     }
@@ -216,7 +206,7 @@ export class AIWorkerManager {
       taskId,
       status: 'completed',
       response,
-      metrics: this.updateMetrics(taskId, response, true),
+      metrics: this.updateMetrics(taskId, response, true)
     };
     activeTask.resolve(result);
     this.cleanupTask(taskId, workerId);
@@ -250,12 +240,11 @@ export class AIWorkerManager {
     }
   }
   private handleWorkerError(workerId: number, error: ErrorEvent) {
-    console.error(`Worker ${workerId} encountered an error:`, error);
+    console.error(`Worker ${workerId} encountered an error: ', error);
     if (this.workerPool.workers[workerId]) {
       this.workerPool.workers[workerId].terminate();
       const newWorker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
-        type: 'module',
-      });
+        type: 'module` });
       this.setupWorkerEventHandlers(newWorker, workerId);
       this.workerPool.workers[workerId] = newWorker;
       this.workerPool.currentLoad[workerId] = 0;
@@ -289,7 +278,7 @@ export class AIWorkerManager {
         model: 'unknown',
         tokensProcessed: tokens,
         success,
-        error,
+        error
       };
     }
     const updated: ProcessingMetrics = {
@@ -298,7 +287,7 @@ export class AIWorkerManager {
       processingTime: Date.now() - existing.startTime,
       tokensProcessed: tokens,
       success,
-      error,
+      error
     };
     this.metrics.set(taskId, updated);
     return updated;
@@ -311,7 +300,7 @@ export class AIWorkerManager {
       worker.postMessage({
         type: 'UPDATE_PROVIDER_CONFIG',
         taskId: `config-update-${index}`,
-        payload: this.config.providers,
+        payload: this.config.providers
       });
     });
   }
@@ -337,7 +326,7 @@ export class AIWorkerManager {
             taskId,
             status: metrics.success ? 'completed' : 'failed',
             metrics,
-            error: metrics.error ? new Error(metrics.error) : undefined,
+            error: metrics.error ? new Error(metrics.error) : undefined
           });
         }
       }, 100);
@@ -368,7 +357,7 @@ export function createGenerationTask(
     prompt,
     timestamp: Date.now(),
     priority: 'medium',
-    ...options,
+    ...options
   } as AITask;
 }
 export function createAnalysisTask(
@@ -388,7 +377,7 @@ export function createAnalysisTask(
     prompt: `Analyze the following content for ${analysisType}:\n\n${content}`,
     timestamp: Date.now(),
     priority: 'medium',
-    ...options,
+    ...options
   } as AITask;
 }
 export function createEmbeddingTask(
@@ -407,6 +396,6 @@ export function createEmbeddingTask(
     prompt: text,
     timestamp: Date.now(),
     priority: 'low',
-    ...options,
+    ...options
   } as AITask;
 }

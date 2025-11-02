@@ -9,14 +9,12 @@ import type { RequestHandler } from './$types';
 // Environment variables fallback
 const env = process.env || {};
 const qdrantClient = new QdrantClient({
-  url: env.QDRANT_URL || 'http://localhost:6333',
+  url: env.QDRANT_URL || 'http://localhost:6333'
 });
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || 'http://localhost:8000';
 
 // Add 'task' type for recommendations
-export interface Recommendation {
-  id: string;
-  type: 'missing_info' | 'link_case' | 'link_statute' | 'investigative_step' | 'task';
+export interface Recommendation { id: string;, type: 'missing_info' | 'link_case' | 'link_statute' | 'investigative_step' | 'task';
   title: string;
   description: string;
   confidence: number;
@@ -53,13 +51,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         title: 'Expand Case Description',
         description: 'A more detailed description will improve AI analysis and case clarity.',
         confidence: 0.9,
-        actionData: { field: 'description' },
+        actionData: {, field: 'description' }
       });
     }
 
     // Check for missing evidence
     const evidenceCountResult = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })
       .from(evidence)
       .where(eq(evidence.caseId, caseId));
     const evidenceTotal = Number(evidenceCountResult?.[0]?.count ?? 0);
@@ -71,13 +69,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         title: 'Add Evidence',
         description: 'This case has no evidence attached. Upload relevant documents, images, or other files.',
         confidence: 0.95,
-        actionData: { relation: 'evidence' },
+        actionData: {, relation: `evidence` }
       });
     }
 
     // Check for activities
     const activitiesCountResult = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })
       .from(caseActivities)
       .where(eq(caseActivities.caseId, caseId));
     const activitiesTotal = Number(activitiesCountResult?.[0]?.count ?? 0);
@@ -90,7 +88,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         description:
           'This case is open but has no activities. Consider scheduling an initial review or evidence collection.',
         confidence: 0.8,
-        actionData: { activityType: 'initial_review' },
+        actionData: {, activityType: `initial_review` }
       });
     }
 
@@ -100,8 +98,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
       const nlpResponse = await fetch(`${NLP_SERVICE_URL}/analyze-criminal-actions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: textToEmbed }),
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, text: textToEmbed })
       });
 
       if (nlpResponse.ok) {
@@ -111,8 +109,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           const searchResult = await qdrantClient.search('prosecutor_cases', {
             vector: caseEmbedding,
             limit: 5,
-            filter: { must_not: [{ key: 'id', match: { value: caseId } }] },
-            with_payload: true,
+            filter: { must_not: [{, key: 'id', match: {, value: caseId } }] },
+            with_payload: true
           });
 
           // qdrantClient.search returns an array of hits; guard and iterate
@@ -122,14 +120,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
               recommendations.push({
                 id: `rec-case-${hit.id}`,
                 type: 'link_case',
-                title: `Review Similar Case: ${hit.payload?.title ?? 'Untitled'}`,
+                title: 'Review Similar; Case: ${hit.payload?.title ?? 'Untitled` }`,
                 description: `This case has a similarity score of ${scoreNum.toFixed(2)}. It may contain related evidence or criminals.`,
                 confidence: scoreNum,
                 actionData: {
                   caseId: hit.id,
                   title: hit.payload?.title,
-                  summary: hit.payload?.aiSummary,
-                },
+                  summary: hit.payload?.aiSummary
+                }
               });
             }
           }
@@ -146,7 +144,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // 4. Suggest statutes - type DB result and iterate safely
     if (currentCase.aiTags && Array.isArray(currentCase.aiTags) && currentCase.aiTags.includes('fraud')) {
-      const fraudStatutes: Array<{ id: string; title: string; code?: string }> = await db
+      const fraudStatutes: Array<{ id: string;, title: string; code?: string }> = await db
         .select()
         .from(statutes)
         .where(ilike(statutes.title, '%fraud%'))
@@ -156,17 +154,17 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         recommendations.push({
           id: `rec-statute-${statute.id}`,
           type: 'link_statute',
-          title: `Review Statute: ${statute.title} (${statute.code ?? 'N/A'})`,
+          title: 'Review; Statute: ${statute.title} (${statute.code ?? 'N/A` })`,
           description: `This statute may be relevant to the fraud aspects of this case.`,
           confidence: 0.75,
-          actionData: { statuteId: statute.id, title: statute.title },
+          actionData: { statuteId: statute.id, title: statute.title }
         });
       }
     }
 
     return json({
       success: true,
-      recommendations: recommendations.sort((a, b) => b.confidence - a.confidence).slice(0, 10),
+      recommendations: recommendations.sort((a, b) => b.confidence - a.confidence).slice(0, 10)
     });
   } catch (error: any) {
     console.error('Error generating recommendations:', error);

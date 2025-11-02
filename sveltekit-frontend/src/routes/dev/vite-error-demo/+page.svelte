@@ -150,7 +150,7 @@
           🧹 Clear Errors
         </button>
         <button
-          class="px-4" py-2 {isWatching
+          class="px-4 py-2" {isWatching
             ? 'bg-yellow-600 hover:bg-yellow-700'
             : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-md transition-colors"
           onclick={isWatching ? stopWatching : startWatching}
@@ -224,7 +224,7 @@
                       </p>
                       <div class="flex items-center space-x-2">
                         <span
-                          class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getErrorColor(
+                          class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium {getErrorColor(
                             error.level
                           )} border"
                         >

@@ -26,10 +26,10 @@ export const POST: RequestHandler = async ({ request, params }) => {
         name: data.name || 'New Person of Interest',
         aliases: data.aliases || [],
         profileData: data.profileData || {
-          who: '',
+         , who: '',
           what: '',
           why: '',
-          how: '',
+          how: ''
         },
         position: data.position || {},
         relationship: data.relationship,

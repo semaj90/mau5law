@@ -40,15 +40,14 @@ export const POST: RequestHandler = async (event) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+          Accept: 'application/json` },
         body: JSON.stringify({
           messages,
           model,
           temperature,
           max_tokens: requestData.max_tokens || 1024,
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if (!bridgeResponse.ok) {
@@ -58,7 +57,7 @@ export const POST: RequestHandler = async (event) => {
           {
             error: 'TensorRT bridge failed',
             detail: errorText,
-            bridge_status: bridgeResponse.status,
+            bridge_status: bridgeResponse.status
           },
           { status: 500 }
         );
@@ -81,23 +80,22 @@ export const POST: RequestHandler = async (event) => {
             index: 0,
             message: {
               role: 'assistant',
-              content: bridgeData.response || bridgeData.output || 'No response generated',
+              content: bridgeData.response || bridgeData.output || 'No response generated'
             },
-            finish_reason: 'stop',
-          },
+            finish_reason: 'stop` },
         ],
         usage: {
           total_tokens: Math.ceil((fullPrompt + (bridgeData.output || '')).length / 4),
           prompt_tokens: Math.ceil(fullPrompt.length / 4),
-          completion_tokens: Math.ceil((bridgeData.output || '').length / 4),
+          completion_tokens: Math.ceil((bridgeData.output || '').length / 4)
         },
         tensorrt: {
           bridge_used: true,
           bridge_url: TENSORRT_BRIDGE_URL,
           model_used: model,
           gpu_accelerated: true,
-          response_time_ms: totalTime,
-        },
+          response_time_ms: totalTime
+        }
       });
     } catch (bridgeError: any) {
       const detail = bridgeError instanceof Error ? bridgeError.message : String(bridgeError);
@@ -107,7 +105,7 @@ export const POST: RequestHandler = async (event) => {
           error: 'TensorRT bridge connection failed',
           detail,
           suggestion: `Ensure TensorRT bridge is reachable at ${TENSORRT_BRIDGE_URL}`,
-          fallback_available: false,
+          fallback_available: false
         },
         { status: 503 }
       );
@@ -119,7 +117,7 @@ export const POST: RequestHandler = async (event) => {
       {
         error: 'Failed to generate response',
         detail,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

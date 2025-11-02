@@ -1,8 +1,6 @@
 import type { User } from '$lib/types';
 import { createMachine, assign } from 'xstate';
-export interface SystemContext {
-  lastActivity: number;
-  latency: number;
+export interface SystemContext { lastActivity: number;, latency: number;
 }
 export type SystemEvent =
   | { type: 'USER_ACTIVITY' }
@@ -13,53 +11,48 @@ export const systemMonitorMachine = createMachine<SystemContext, SystemEvent>(
   {
     id: 'systemMonitor',
     context: {
-      lastActivity: Date.now(),
-      latency: 0,
+     , lastActivity: Date.now(),
+      latency: 0
     },
     initial: 'active',
-    states: {
-      active: {
-        on: {
-          USER_ACTIVITY: { actions: 'updateActivity' },
+    states: { active: {, on: { USER_ACTIVITY: {, actions: 'updateActivity' },
           NETWORK_PING: [
             { cond: 'highLatency', target: 'degraded', actions: 'updateLatency' },
-            { target: 'active', actions: 'updateLatency' },
+            { target: 'active', actions: 'updateLatency' }
           ],
-          NETWORK_TIMEOUT: 'offline',
+          NETWORK_TIMEOUT: 'offline'
         },
         after: { 60000: 'idle' }, // 1 min idle timeout
       },
       idle: {
         entry: 'markIdle',
-        on: { USER_ACTIVITY: { target: 'active', actions: 'updateActivity' } },
+        on: { USER_ACTIVITY: {, target: 'active', actions: 'updateActivity' } }
       },
       degraded: {
         entry: 'notifyLatencyHigh',
         on: {
           NETWORK_PING: [
-            { cond: 'lowLatency', target: 'active', actions: 'updateLatency' },
+            { cond: 'lowLatency', target: 'active', actions: 'updateLatency' }
           ],
-          NETWORK_TIMEOUT: 'offline',
+          NETWORK_TIMEOUT: 'offline'
         },
-        after: { 120000: 'offline' },
+        after: { 120000: 'offline' }
       },
       offline: {
         entry: 'notifyOffline',
-        on: { NETWORK_PING: { target: 'active', actions: 'updateLatency' } },
-      },
-    },
+        on: { NETWORK_PING: {, target: 'active', actions: 'updateLatency' } }
+      }
+    }
   },
-  {
-    actions: {
-      updateActivity: assign({ lastActivity: () => Date.now() }),
+  { actions: {, updateActivity: assign({ lastActivity: () => Date.now() }),
       updateLatency: assign({ latency: (_ctx, evt: any) => evt.latency ?? 0 }),
       markIdle: () => console.log('🕓 User idle'),
       notifyLatencyHigh: () => console.warn('⚠️ High network latency'),
-      notifyOffline: () => console.error('🚫 Network offline'),
+      notifyOffline: () => console.error('🚫 Network offline')
     },
     guards: {
       highLatency: (_ctx, evt: any) => (evt as any).latency > 500,
-      lowLatency: (_ctx, evt: any) => (evt as any).latency <= 250,
-    },
+      lowLatency: (_ctx, evt: any) => (evt as any).latency <= 250
+    }
   }
 );

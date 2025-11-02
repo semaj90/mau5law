@@ -15,24 +15,22 @@ import {
   QdrantClient,
   type QdrantPoint,
   type VectorSearchResult,
-  type HybridSearchOptions,
+  type HybridSearchOptions
 } from './hybrid-vector-operations'; // Reusing Qdrant client and types
 import { db } from '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
 import { sql } from 'drizzle-orm'; // Drizzle SQL utilities
 import * as schema from '$lib/server/db/schema'; // Main Drizzle schema
 import { redis } from '$lib/server/cache/redis'; // Redis client for caching
 
-// NOTE: This service assumes a: 'graphNodes' table exists in your Drizzle schema
+// NOTE: This service assumes; a: 'graphNodes' table exists in your Drizzle schema
 // (e.g., src/lib/server/db/schema.ts) with columns like:
-// id: text('id').primaryKey().notNull(),
+//; id: text('id').primaryKey().notNull(),
 // content: text('content').notNull(),
 // embedding: real('embedding').array(), // For pgvector
 // metadata: jsonb('metadata'),
 // If this table does not exist, you will need to create it or adjust the pgvectorTableName.
 
-interface GraphNode {
-  id: string;
-  content: string;
+interface GraphNode { id: string;, content: string;
   embedding: number[];
   metadata?: Record<string, unknown>;
 }
@@ -44,9 +42,7 @@ export interface GraphTilingConfig {
   targetDevice: 'cpu' | 'gpu' | 'wasm';
 }
 
-export interface TiledGraphData {
-  tileId: string;
-  nodes: GraphNode[];
+export interface TiledGraphData { tileId: string;, nodes: GraphNode[];
   edges: any[]; // Placeholder for edge data
   tileEmbedding: number[]; // Embedding representing the entire tile
   metadata: Record<string, unknown>;
@@ -70,7 +66,7 @@ export class GraphTensorTilingOrchestrator {
     this.qdrantClient = new QdrantClient(qdrantUrl);
 
     console.log(`GraphTensorTilingOrchestrator initialized:
-      Ollama Endpoint: ${getOllamaEndpoint()}
+      Ollama; Endpoint: ${getOllamaEndpoint()}
       Qdrant Endpoint: ${qdrantUrl}
     `);
   }
@@ -109,7 +105,7 @@ export class GraphTensorTilingOrchestrator {
   /**
    * Ingests a graph node or edge, generates its embedding, and stores it
    * in both PostgreSQL (pgvector) and Qdrant.
-   * @param nodeData The data for the graph node/edge. Must include: 'id' and: 'content'.
+   * @param nodeData The data for the graph node/edge. Must include: 'id'; and: 'content'.
    */
   async ingestGraphElement(nodeData: Omit<GraphNode, 'embedding'>): Promise<void> {
     try {
@@ -121,7 +117,7 @@ export class GraphTensorTilingOrchestrator {
         id: fullNode.id,
         content: fullNode.content,
         embedding: fullNode.embedding,
-        metadata: fullNode.metadata || {},
+        metadata: fullNode.metadata || {}
       });
       console.log(`✅ Stored graph node ${fullNode.id} in PostgreSQL.`);
 
@@ -131,15 +127,15 @@ export class GraphTensorTilingOrchestrator {
           id: fullNode.id,
           vector: fullNode.embedding,
           payload: {
-            content: fullNode.content,
-            ...fullNode.metadata,
-          },
+           , content: fullNode.content,
+            ...fullNode.metadata
+          }
         },
       ]);
       console.log(`✅ Stored graph node ${fullNode.id} in Qdrant.`);
     } catch (error) {
       console.error(`❌ Error ingesting graph element ${nodeData.id}:`, error);
-      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
@@ -184,7 +180,7 @@ export class GraphTensorTilingOrchestrator {
             title: ((row.metadata as Record<string, unknown>)?.title as string) || undefined,
             similarity: row.similarity as number,
             source: 'pgvector',
-            metadata: row.metadata as Record<string, unknown>,
+            metadata: row.metadata as Record<string, unknown>
           }))
         );
         console.log(`Found ${pgvectorResults.length} results from pgvector.`);
@@ -206,7 +202,7 @@ export class GraphTensorTilingOrchestrator {
             title: (point.payload.title as string) || undefined,
             similarity: point.score || 0, // Qdrant returns score directly
             source: 'qdrant',
-            metadata: point.payload,
+            metadata: point.payload
           }))
         );
         console.log(`Found ${qdrantResults.length} results from Qdrant.`);
@@ -227,7 +223,7 @@ export class GraphTensorTilingOrchestrator {
       return Array.from(uniqueResultsMap.values()).slice(0, limit);
     } catch (error) {
       console.error(`❌ Error searching graph elements for query: "${query}":`, error);
-      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error' }`);
     }
   }
 
@@ -251,31 +247,31 @@ export class GraphTensorTilingOrchestrator {
     // 4. Potentially preparing data for WebGPU/WASM processing.
 
     // Placeholder implementation:
-    const mockNodes: GraphNode[] = [
+    const; mockNodes: GraphNode[] = [
       {
         id: 'node1',
         content: 'Legal document about contract law',
-        embedding: await this.getCachedEmbedding('Legal document about contract law'),
+        embedding: await this.getCachedEmbedding('Legal document about contract law')
       },
       {
         id: 'node2',
         content: 'Case summary for a corporate dispute',
-        embedding: await this.getCachedEmbedding('Case summary for a corporate dispute'),
+        embedding: await this.getCachedEmbedding('Case summary for a corporate dispute')
       },
       {
         id: 'node3',
         content: 'Patent application for AI technology',
-        embedding: await this.getCachedEmbedding('Patent application for AI technology'),
+        embedding: await this.getCachedEmbedding('Patent application for AI technology')
       },
       {
         id: 'node4',
         content: 'Regulatory compliance guidelines',
-        embedding: await this.getCachedEmbedding('Regulatory compliance guidelines'),
+        embedding: await this.getCachedEmbedding('Regulatory compliance guidelines')
       },
       {
         id: 'node5',
         content: 'Financial audit report',
-        embedding: await this.getCachedEmbedding('Financial audit report'),
+        embedding: await this.getCachedEmbedding('Financial audit report')
       },
     ];
 
@@ -293,10 +289,10 @@ export class GraphTensorTilingOrchestrator {
         edges: [], // Mock edges
         tileEmbedding: tileEmbedding,
         metadata: {
-          strategy: config.strategy,
+         , strategy: config.strategy,
           targetDevice: config.targetDevice,
-          nodeCount: tileNodes.length,
-        },
+          nodeCount: tileNodes.length
+        }
       });
     }
 

@@ -8,10 +8,8 @@ type CacheStrategy = 'aggressive' | 'conservative' | 'minimal' | 'bypass';
 type MemoryBank = 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
 export function withRedisOrchestrator(
   originalHandler: RequestHandler,
-  config: {
-    endpointName: string;
-    cacheStrategy: CacheStrategy;
-    memoryBank: MemoryBank;
+  config: { endpointName: string;, cacheStrategy: CacheStrategy;
+   , memoryBank: MemoryBank;
     requiresFresh?: boolean;
   }
 ): RequestHandler {
@@ -29,33 +27,33 @@ export const redisMiddleware = {
     withRedisOrchestrator(handler, {
       endpointName: 'ai-chat',
       cacheStrategy: 'aggressive',
-      memoryBank: 'CHR_ROM',
+      memoryBank: 'CHR_ROM'
     }),
   aiAnalysis: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
       endpointName: 'ai-analysis',
       cacheStrategy: 'conservative',
-      memoryBank: 'PRG_ROM',
+      memoryBank: 'PRG_ROM'
     }),
   evidence: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
       endpointName: 'evidence',
       cacheStrategy: 'minimal',
-      memoryBank: 'SAVE_RAM',
+      memoryBank: 'SAVE_RAM'
     }),
   caseScoring: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
       endpointName: 'case-scoring',
       cacheStrategy: 'bypass',
       memoryBank: 'INTERNAL_RAM',
-      requiresFresh: true,
+      requiresFresh: true
     }),
   search: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
       endpointName: 'search',
       cacheStrategy: 'aggressive',
-      memoryBank: 'CHR_ROM',
-    }),
+      memoryBank: 'CHR_ROM'
+    })
 };
 export const redisOptimized = redisMiddleware;
 export default redisMiddleware;

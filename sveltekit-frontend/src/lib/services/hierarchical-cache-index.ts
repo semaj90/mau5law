@@ -7,25 +7,19 @@ import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-
 import type { BitmapHiddenMarkovSOM } from './bitmap-hmm-som.js';
 import type { QLoRATrainingService } from './q-lora-training.js';
 
-export interface CacheLevel {
-  name: string;
-  maxSize: number;
+export interface CacheLevel { name: string;, maxSize: number;
   ttl: number; // Time to live in milliseconds
   accessPattern: 'lru' | 'lfu' | 'fifo' | 'neural_priority';
   compressionRatio: number;
   indexingStrategy: 'hash' | 'btree' | 'spatial' | 'temporal' | 'semantic';
 }
 
-export interface CacheEntry {
-  key: string;
-  value: any;
-  metadata: {
-    timestamp: number;
-    accessCount: number;
+export interface CacheEntry { key: string;, value: any;
+  metadata: { timestamp: number;, accessCount: number;
     lastAccess: number;
     predictionConfidence: number;
     neuralPriority: number;
-    spatialLocation?: { x: number; y: number };
+    spatialLocation?: { x: number;, y: number };
     semanticTags: string[];
     compressionRatio: number;
     parentKey?: string;
@@ -35,8 +29,7 @@ export interface CacheEntry {
   size: number;
 }
 
-export interface SpatialIndex {
-  bounds: { minX: number; maxX: number; minY: number; maxY: number };
+export interface SpatialIndex { bounds: { minX: number; maxX: number; minY: number;, maxY: number };
   quadrants: Map<string, string[]>; // quadrant -> cache keys
   resolution: number;
 }
@@ -82,7 +75,7 @@ export class HierarchicalCacheIndex {
         ttl: 60000, // 1 minute
         accessPattern: 'neural_priority',
         compressionRatio: 0.9, // 10% compression
-        indexingStrategy: 'spatial',
+        indexingStrategy: 'spatial'
       },
       // L2: Neural Prediction Cache (System RAM)
       {
@@ -91,7 +84,7 @@ export class HierarchicalCacheIndex {
         ttl: 300000, // 5 minutes
         accessPattern: 'lfu',
         compressionRatio: 0.6, // 40% compression
-        indexingStrategy: 'semantic',
+        indexingStrategy: 'semantic'
       },
       // L3: SOM Cluster Cache (Redis)
       {
@@ -100,7 +93,7 @@ export class HierarchicalCacheIndex {
         ttl: 1800000, // 30 minutes
         accessPattern: 'lru',
         compressionRatio: 0.4, // 60% compression
-        indexingStrategy: 'spatial',
+        indexingStrategy: 'spatial'
       },
       // L4: HMM State Cache (PostgreSQL)
       {
@@ -109,7 +102,7 @@ export class HierarchicalCacheIndex {
         ttl: 3600000, // 1 hour
         accessPattern: 'fifo',
         compressionRatio: 0.2, // 80% compression
-        indexingStrategy: 'temporal',
+        indexingStrategy: 'temporal'
       },
       // L5: Long-term Storage (Disk/MinIO)
       {
@@ -118,7 +111,7 @@ export class HierarchicalCacheIndex {
         ttl: 86400000, // 24 hours
         accessPattern: 'lru',
         compressionRatio: 0.1, // 90% compression
-        indexingStrategy: 'hash',
+        indexingStrategy: 'hash'
       },
     ];
     // Initialize cache maps for each level
@@ -132,8 +125,7 @@ export class HierarchicalCacheIndex {
    */
   private initializeIndexes(): void {
     // Spatial index for SOM positions and 3D coordinates
-    this.spatialIndex = {
-      bounds: { minX: 0, maxX: 100, minY: 0, maxY: 100 },
+    this.spatialIndex = { bounds: {, minX: 0, maxX: 100, minY: 0, maxY: 100 },
       quadrants: new Map(),
       resolution: 10, // 10x10 grid
     };
@@ -141,14 +133,14 @@ export class HierarchicalCacheIndex {
     this.temporalIndex = {
       timeSlots: new Map(),
       accessPatterns: new Map(),
-      seasonalPatterns: new Map(),
+      seasonalPatterns: new Map()
     };
     // Semantic index for legal document clustering
     this.semanticIndex = {
       termFrequency: new Map(),
       documentFrequency: new Map(),
       tfidfVectors: new Map(),
-      clusters: new Map(),
+      clusters: new Map()
     };
     console.log('📊 Initialized spatial, temporal, and semantic indexes');
   }
@@ -166,7 +158,7 @@ export class HierarchicalCacheIndex {
   async get(
     key: string,
     context?: {
-      spatialHint?: { x: number; y: number };
+      spatialHint?: { x: number;, y: number };
       semanticHint?: string[];
       temporalHint?: number;
       predictionContext?: any;
@@ -201,7 +193,7 @@ export class HierarchicalCacheIndex {
       await this.set(key, value, {
         predictionConfidence: context?.predictionContext?.confidence || 0.5,
         spatialLocation: context?.spatialHint,
-        semanticTags: context?.semanticHint || [],
+        semanticTags: context?.semanticHint || []
       });
     }
     return value;
@@ -214,7 +206,7 @@ export class HierarchicalCacheIndex {
     value: any,
     metadata: {
       predictionConfidence?: number;
-      spatialLocation?: { x: number; y: number };
+      spatialLocation?: {, x: number; y: number };
       semanticTags?: string[];
       compressionRatio?: number;
     } = {}
@@ -231,10 +223,10 @@ export class HierarchicalCacheIndex {
         spatialLocation: metadata.spatialLocation,
         semanticTags: metadata.semanticTags || [],
         compressionRatio: metadata.compressionRatio || 0.6,
-        childKeys: [],
+        childKeys: []
       },
       level: this.selectOptimalLevel(key, metadata),
-      size: this.estimateSize(value),
+      size: this.estimateSize(value)
     };
     // Store in selected level
     const cache = this.caches.get(entry.level)!;
@@ -272,7 +264,7 @@ export class HierarchicalCacheIndex {
   /**
    * Calculate spatial priority based on SOM neighborhood
    */
-  private calculateSpatialPriority(location: { x: number; y: number }): number {
+  private calculateSpatialPriority(location: {, x: number; y: number }): number {
     // Higher priority for central SOM locations (more connections)
     const centerX = 50; // Assume 100x100 SOM grid
     const centerY = 50;
@@ -374,7 +366,7 @@ export class HierarchicalCacheIndex {
   /**
    * Get spatial quadrant for location
    */
-  private getQuadrant(location: { x: number; y: number }): string {
+  private getQuadrant(location: {, x: number; y: number }): string {
     const qx = Math.floor(location.x / this.spatialIndex.resolution);
     const qy = Math.floor(location.y / this.spatialIndex.resolution);
     return `${qx},${qy}`;
@@ -490,7 +482,7 @@ export class HierarchicalCacheIndex {
   /**
    * Predict spatial neighbors using SOM topology
    */
-  private async predictSpatialNeighbors(location: { x: number; y: number }): Promise<string[]> {
+  private async predictSpatialNeighbors(location: {, x: number; y: number }): Promise<string[]> {
     const quadrant = this.getQuadrant(location);
     const neighbors: string[] = [];
     // Get neighboring quadrants
@@ -587,7 +579,7 @@ export class HierarchicalCacheIndex {
             });
           }
         } catch (error) {
-          console.warn(`Prefetch failed for ${key}:`, error);
+          console.warn(`Prefetch failed for ${key}: ', error);
         }
       }
     }
@@ -606,8 +598,7 @@ export class HierarchicalCacheIndex {
       generated: true,
       timestamp: Date.now(),
       context: context || {},
-      source: 'hierarchical_cache_fallback',
-    };
+      source: 'hierarchical_cache_fallback` };
   }
   /**
    * Check if cache entry is expired
@@ -683,14 +674,10 @@ export class HierarchicalCacheIndex {
   /**
    * Get comprehensive cache statistics
    */
-  getStatistics(): {
-    levels: Array<any>;
-    hitRate: number;
+  getStatistics(): { levels: Array<any>;, hitRate: number;
     totalHits: number;
     totalMisses: number;
-    indexSizes: {
-      spatial: number;
-      temporal: number;
+    indexSizes: { spatial: number;, temporal: number;
       semantic: number;
     };
   } {
@@ -704,7 +691,7 @@ export class HierarchicalCacheIndex {
         entries: cache.size,
         maxSize: config.maxSize,
         utilization: cache.size / config.maxSize,
-        avgNeuralPriority: avgPriority,
+        avgNeuralPriority: avgPriority
       };
     });
     const hitRate = this.totalHits / Math.max(1, this.totalHits + this.totalMisses);
@@ -716,8 +703,8 @@ export class HierarchicalCacheIndex {
       indexSizes: {
         spatial: this.spatialIndex.quadrants.size,
         temporal: this.temporalIndex.timeSlots.size,
-        semantic: this.semanticIndex.tfidfVectors.size,
-      },
+        semantic: this.semanticIndex.tfidfVectors.size
+      }
     };
   }
 }

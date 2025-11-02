@@ -591,7 +591,7 @@ import type { User } from '$lib/types';
   </div>
   <!-- Advanced Configuration Panel -->
   {#if showAdvancedOptions}
-    <div class="advanced-panel" transition:slide={{ duration: 300 }}>
+    <div class="advanced-panel" transitionslide={{ duration: 300 }}>
       <div class="config-grid">
         <div class="config-group">
           <label for="chunk-size">Chunk Size</label><input

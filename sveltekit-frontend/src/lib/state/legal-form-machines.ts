@@ -9,7 +9,7 @@ import {
   fromPromise,
   type ActorRefFrom,
   type ErrorActorEvent,
-  type DoneActorEvent,
+  type DoneActorEvent
 } from 'xstate';
 import { z } from 'zod';
 // ============================================================================
@@ -39,7 +39,7 @@ export const DocumentUploadSchema = z.object({
       riskAssessment: z.boolean().default(true),
       compareWithRAG: z.boolean().default(true),
       compareTopK: z.number().min(1).max(20).default(8),
-      generateRecommendations: z.boolean().default(false),
+      generateRecommendations: z.boolean().default(false)
     })
     .optional()
     .default({
@@ -48,8 +48,8 @@ export const DocumentUploadSchema = z.object({
       riskAssessment: true,
       compareWithRAG: true,
       compareTopK: 8,
-      generateRecommendations: false,
-    }),
+      generateRecommendations: false
+    })
 });
 export const CaseCreationSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(255, 'Title too long'),
@@ -61,7 +61,7 @@ export const CaseCreationSchema = z.object({
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
   estimatedDuration: z.number().min(1).max(365).optional(),
-  budget: z.number().min(0).optional(),
+  budget: z.number().min(0).optional()
 });
 export const SearchQuerySchema = z.object({
   query: z.string().min(1, 'Search query is required').max(500, 'Query too long'),
@@ -72,17 +72,17 @@ export const SearchQuerySchema = z.object({
       dateRange: z
         .object({
           from z.date().optional(),
-          to: z.date().optional(),
+          to: z.date().optional()
         })
         .optional(),
       tags: z.array(z.string()).default([]),
       similarityThreshold: z.number().min(0).max(1).default(0.7),
-      maxResults: z.number().min(1).max(100).default(20),
+      maxResults: z.number().min(1).max(100).default(20)
     })
     .optional()
     .default({}),
   useAI: z.boolean().default(true),
-  cacheResults: z.boolean().default(true),
+  cacheResults: z.boolean().default(true)
 });
 export const AIAnalysisSchema = z.object({
   documentId: cuidSchema,
@@ -93,7 +93,7 @@ export const AIAnalysisSchema = z.object({
       temperature: z.number().min(0).max(2).default(0.7),
       maxTokens: z.number().min(100).max(8000).default(2000),
       includeConfidence: z.boolean().default(true),
-      generateCitations: z.boolean().default(true),
+      generateCitations: z.boolean().default(true)
     })
     .optional()
     .default({
@@ -101,37 +101,31 @@ export const AIAnalysisSchema = z.object({
       temperature: 0.7,
       maxTokens: 2000,
       includeConfidence: true,
-      generateCitations: true,
-    }),
+      generateCitations: true
+    })
 });
 // ============================================================================
 // TYPE DEFINITIONS FOR API & CONTEXTS
 // ============================================================================
 // Placeholder for API response for an uploaded file
-export interface UploadedFile {
-  id: string;
-  filename: string;
+export interface UploadedFile { id: string;, filename: string;
   url: string;
   [key: string]: any;
 }
 // Placeholder for AI processing results
 export interface AIResults {
   summary?: string;
-  entities?: { type: string; value: string }[];
-  riskAssessment?: { level: 'low' | 'medium' | 'high'; details: string };
+  entities?: { type: string;, value: string }[];
+  riskAssessment?: { level: 'low' | 'medium' | 'high';, details: string };
   comparison?: any; // Add comparison property here
   [key: string]: any;
 }
 // Placeholder for a created case from the API
-export interface CreatedCase extends z.infer<typeof CaseCreationSchema> {
-  id: string;
-  createdAt: string;
+export interface CreatedCase extends z.infer<typeof CaseCreationSchema> { id: string;, createdAt: string;
   updatedAt: string;
 }
 // Placeholder for a search result item
-export interface SearchResult {
-  id: string;
-  title: string;
+export interface SearchResult { id: string;, title: string;
   documentType: string;
   snippet: string;
   score: number;
@@ -140,8 +134,8 @@ export interface SearchResult {
 // Placeholder for AI analysis results
 export interface AIAnalysisResult {
   summary?: string;
-  entities?: { type: string; value: string }[];
-  risk?: { level: string; details: string };
+  entities?: { type: string;, value: string }[];
+  risk?: { level: string;, details: string };
   recommendations?: string[];
   [key: string]: any;
 }
@@ -157,17 +151,13 @@ interface ProcessDocumentActorInput {
 }
 
 // Define the output type for the processDocument actor
-interface ProcessDocumentOutput {
-  results: AIResults;
-  processingTime: number;
+interface ProcessDocumentOutput { results: AIResults;, processingTime: number;
 }
 
 // ============================================================================
 // STATE MACHINE CONTEXTS
 // ============================================================================
-export interface DocumentUploadContext {
-  formData: z.infer<typeof DocumentUploadSchema> | null;
-  validationErrors: Record<string, string[]>;
+export interface DocumentUploadContext { formData: z.infer<typeof DocumentUploadSchema> | null;, validationErrors: Record<string, string[]>;
   uploadProgress: number;
   uploadedFile: UploadedFile | null;
   processingProgress: number;
@@ -176,37 +166,27 @@ export interface DocumentUploadContext {
   retryCount: number;
   maxRetries: number;
 }
-export interface CaseCreationContext {
-  formData: z.infer<typeof CaseCreationSchema> | null;
-  validationErrors: Record<string, string[]>;
+export interface CaseCreationContext { formData: z.infer<typeof CaseCreationSchema> | null;, validationErrors: Record<string, string[]>;
   createdCase: CreatedCase | null;
   relatedDocuments: UploadedFile[];
   error: string | null;
   isAutoSaving: boolean;
   lastSaved: Date | null;
 }
-export interface SearchContext {
-  query: z.infer<typeof SearchQuerySchema> | null;
-  results: SearchResult[];
+export interface SearchContext { query: z.infer<typeof SearchQuerySchema> | null;, results: SearchResult[];
   validationErrors: Record<string, string[]>;
   isSearching: boolean;
   searchHistory: string[];
   filters: z.infer<typeof SearchQuerySchema>['filters'];
-  pagination: {
-    page: number;
-    pageSize: number;
+  pagination: { page: number;, pageSize: number;
     total: number;
   };
-  analytics: {
-    searchTime: number;
-    resultCount: number;
+  analytics: { searchTime: number;, resultCount: number;
     cacheHit: boolean;
   } | null;
   error: string | null;
 }
-export interface AIAnalysisContext {
-  analysisData: z.infer<typeof AIAnalysisSchema> | null;
-  validationErrors: Record<string, string[]>;
+export interface AIAnalysisContext { analysisData: z.infer<typeof AIAnalysisSchema> | null;, validationErrors: Record<string, string[]>;
   analysisResults: AIAnalysisResult | null;
   confidence: number;
   processingTime: number;
@@ -221,10 +201,10 @@ export interface AIAnalysisContext {
 // DOCUMENT UPLOAD STATE MACHINE
 // ============================================================================
 type DocumentUploadEvent =
-  | { type: 'SUBMIT_FORM'; data: z.infer<typeof DocumentUploadSchema> }
-  | { type: 'UPDATE_FORM'; data: z.infer<typeof DocumentUploadSchema> }
-  | { type: 'UPLOAD_PROGRESS'; progress: number }
-  | { type: 'PROCESSING_PROGRESS'; progress: number }
+  | { type: 'SUBMIT_FORM';, data: z.infer<typeof DocumentUploadSchema> }
+  | { type: 'UPDATE_FORM';, data: z.infer<typeof DocumentUploadSchema> }
+  | { type: 'UPLOAD_PROGRESS';, progress: number }
+  | { type: 'PROCESSING_PROGRESS';, progress: number }
   | { type: 'RETRY' }
   | { type: 'RESET' }
   | { type: 'SKIP_PROCESSING' }
@@ -243,96 +223,81 @@ export const documentUploadMachine = createMachine(
       aiResults: null,
       error: null,
       retryCount: 0,
-      maxRetries: 3,
+      maxRetries: 3
     } as DocumentUploadContext,
-    states: {
-      idle: {
-        on: {
-          SUBMIT_FORM: {
-            target: 'validating',
+    states: { idle: {, on: { SUBMIT_FORM: {, target: 'validating',
             actions: assign({
-              formData: ({ event }) => (event as DocumentUploadEvent & { type: 'SUBMIT_FORM' }).data,
+             , formData: ({ event }) => (event as DocumentUploadEvent & { type: 'SUBMIT_FORM' }).data,
               validationErrors: {}, // Clear previous errors
               uploadProgress: 0,
               processingProgress: 0,
               error: null,
-              retryCount: 0,
-            }),
+              retryCount: 0
+            })
           },
-          UPDATE_FORM: {
-            actions: assign({
-              formData: ({ event }) => (event as DocumentUploadEvent & { type: 'UPDATE_FORM' }).data,
-            }),
-          },
-        },
+          UPDATE_FORM: { actions: assign({, formData: ({ event }) => (event as DocumentUploadEvent & { type: 'UPDATE_FORM' }).data
+            })
+          }
+        }
       },
-      validating: {
-        invoke: {
-          id: 'validateDocumentForm',
+      validating: { invoke: {, id: 'validateDocumentForm',
           src: 'validateDocumentForm',
           input: ({ context }) => context.formData,
           onDone: {
             target: 'uploading',
             actions: assign({
               validationErrors: {}, // Clear errors on success
-            }),
+            })
           },
           onError: {
             target: 'idle', // Go back to idle or a specific validationError state
             actions: assign({
               validationErrors: ({ event }) => event.error as Record<string, string[]>,
-              error: () => 'Form validation failed.',
-            }),
-          },
-        },
+              error: () => 'Form validation failed.'
+            })
+          }
+        }
       },
-      uploading: {
-        invoke: {
-          id: 'uploadDocument',
+      uploading: { invoke: {, id: 'uploadDocument',
           src: 'uploadDocument',
           input: ({ context }) => context.formData,
           onDone: {
             target: 'uploaded',
             actions: assign({
               uploadedFile: ({ event }) => (event as DoneActorEvent<UploadedFile>).output,
-              uploadProgress: () => 100,
-            }),
+              uploadProgress: () => 100
+            })
           },
           onError: {
             target: 'uploadError',
             actions: assign({
-              error: ({ event }) => (event as ErrorActorEvent<Error>).error.message,
-            }),
-          },
+              error: ({ event }) => (event as ErrorActorEvent<Error>).error.message
+            })
+          }
         },
-        on: {
-          UPLOAD_PROGRESS: {
-            actions: assign(({ event }) => ({
+        on: { UPLOAD_PROGRESS: {, actions: assign(({ event }) => ({
               // Removed explicit cast, event is now typed
-              uploadProgress: event.progress,
-            })),
-          },
-        },
+              uploadProgress: event.progress
+            }))
+          }
+        }
       },
       uploaded: {
         always: [
           {
             // explicitly type ctx to avoid implicit any
             target: 'processing',
-            cond: (
-              ctx: DocumentUploadContext // Explicitly type ctx
+            cond: (; ctx: DocumentUploadContext // Explicitly type ctx
             ) =>
               !!ctx.formData?.aiProcessing &&
               (ctx.formData.aiProcessing.generateSummary ||
                 ctx.formData.aiProcessing.extractEntities ||
-                ctx.formData.aiProcessing.riskAssessment),
+                ctx.formData.aiProcessing.riskAssessment)
           },
-          { target: 'completed' },
-        ],
+          { target: 'completed' }
+        ]
       },
-      processing: {
-        invoke: {
-          id: 'processDocument',
+      processing: { invoke: {, id: 'processDocument',
           src: 'processDocument',
           input: ({ context }): ProcessDocumentActorInput => ({
             // Explicitly type the input
@@ -341,15 +306,15 @@ export const documentUploadMachine = createMachine(
             file: context.formData?.file,
             title: context.formData?.title,
             description: context.formData?.description,
-            tags: context.formData?.tags,
+            tags: context.formData?.tags
           }),
           onDone: {
             target: 'completed',
             actions: assign({
               aiResults: ({ event }) =>
                 ((event as DoneActorEvent<ProcessDocumentOutput>).output?.results ?? null) as AIResults | null, // Use ProcessDocumentOutput
-              processingProgress: () => 100,
-            }),
+              processingProgress: () => 100
+            })
           },
           onError: {
             target: 'processingError',
@@ -361,22 +326,18 @@ export const documentUploadMachine = createMachine(
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: any }).message);
                 return String(err ?? 'Processing error');
-              },
-            }),
-          },
+              }
+            })
+          }
         },
-        on: {
-          PROCESSING_PROGRESS: {
-            actions: assign(({ event }) => ({
+        on: { PROCESSING_PROGRESS: {, actions: assign(({ event }) => ({
               // Removed explicit cast, event is now typed
-              processingProgress: event.progress,
-            })),
-          },
-        },
+              processingProgress: event.progress
+            }))
+          }
+        }
       },
-      uploadError: {
-        on: {
-          RETRY: [
+      uploadError: { on: {, RETRY: [
             {
               // use functional assign to ensure correct typing for ctx modifications (see retry logic)
               cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type ctx
@@ -384,46 +345,40 @@ export const documentUploadMachine = createMachine(
               actions: assign(({ context }) => ({
                 // Changed from (ctx: DocumentUploadContext) to ({ context })
                 retryCount: context.retryCount + 1,
-                error: null,
-              })),
+                error: null
+              }))
             },
             {
               target: 'failed', // If max retries reached, go to failed
             },
           ],
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
-      processingError: {
-        on: {
-          RETRY: [
+      processingError: { on: {, RETRY: [
             {
               target: 'processing',
               cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type ctx
               actions: assign(({ context }) => ({
                 // Changed from (ctx: DocumentUploadContext) to ({ context })
                 retryCount: context.retryCount + 1,
-                error: null,
-              })),
+                error: null
+              }))
             },
-            { target: 'failed' },
+            { target: 'failed' }
           ],
           SKIP_PROCESSING: 'completed',
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
-      completed: {
-        on: {
-          RESET: 'idle',
-          NEW_UPLOAD: 'idle',
-        },
+      completed: { on: {, RESET: 'idle',
+          NEW_UPLOAD: 'idle'
+        }
       },
-      failed: {
-        on: {
-          RESET: 'idle',
-        },
-      },
-    },
+      failed: { on: {, RESET: 'idle'
+        }
+      }
+    }
   },
   {
     actors: {
@@ -459,7 +414,7 @@ export const documentUploadMachine = createMachine(
         });
         const response = await fetch('/api/documents/upload', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
         if (!response.ok) {
           throw new Error(`Upload failed: ${response.statusText}`);
@@ -476,7 +431,7 @@ export const documentUploadMachine = createMachine(
             const resp = await fetch('/api/ai/process-document', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ documentId: input?.documentId, options: input?.options }),
+              body: JSON.stringify({, documentId: input?.documentId, options: input?.options })
             });
             if (resp.ok) {
               baseResults = await resp.json();
@@ -511,13 +466,13 @@ export const documentUploadMachine = createMachine(
           return {
             results: {
               ...(baseResults ?? {}), // Access baseResults directly, it's already AIResults | null
-              comparison,
+              comparison
             },
-            processingTime: Date.now() - started,
+            processingTime: Date.now() - started
           };
         }
-      ),
-    },
+      )
+    }
   }
 );
 // ============================================================================
@@ -526,7 +481,7 @@ export const documentUploadMachine = createMachine(
 type CaseCreationEvent =
   | { type: 'START_CREATION' }
   | { type: 'LOAD_DRAFT' }
-  | { type: 'UPDATE_FORM'; data: z.infer<typeof CaseCreationSchema> }
+  | { type: 'UPDATE_FORM';, data: z.infer<typeof CaseCreationSchema> }
   | { type: 'AUTO_SAVE' }
   | { type: 'VALIDATE' }
   | { type: 'SUBMIT' }
@@ -544,84 +499,72 @@ export const caseCreationMachine = createMachine(
       relatedDocuments: [],
       error: null,
       isAutoSaving: false,
-      lastSaved: null,
+      lastSaved: null
     } as CaseCreationContext, // Explicitly cast to CaseCreationContext
-    states: {
-      idle: {
-        on: {
+    states: { idle: {, on: {
           START_CREATION: 'creating',
-          LOAD_DRAFT: 'loadingDraft',
-        },
+          LOAD_DRAFT: 'loadingDraft'
+        }
       },
-      loadingDraft: {
-        invoke: {
-          id: 'loadDraft',
+      loadingDraft: { invoke: {, id: 'loadDraft',
           src: 'loadDraft',
           onDone: {
             target: 'editing',
             actions: assign({
               // Correctly type the event and access output
-              formData: ({ event }) => (event as DoneActorEvent<z.infer<typeof CaseCreationSchema> | null>).output,
-            }),
+             , formData: ({ event }) => (event as DoneActorEvent<z.infer<typeof CaseCreationSchema> | null>).output
+            })
           },
-          onError: 'creating',
-        },
+          onError: 'creating'
+        }
       },
-      creating: {
-        on: {
-          UPDATE_FORM: {
+      creating: { on: {, UPDATE_FORM: {
             target: 'editing',
             actions: assign({
               // Correctly type the event and access data
               formData: ({ event }) =>
-                (event as { type: 'UPDATE_FORM'; data: z.infer<typeof CaseCreationSchema> }).data,
-            }),
-          },
-        },
+                (event as { type: 'UPDATE_FORM';, data: z.infer<typeof CaseCreationSchema> }).data
+            })
+          }
+        }
       },
-      editing: {
-        on: {
-          UPDATE_FORM: {
+      editing: { on: {, UPDATE_FORM: {
             actions: assign({
               // Correctly type the event and access data
               formData: ({ event }) =>
-                (event as { type: 'UPDATE_FORM'; data: z.infer<typeof CaseCreationSchema> }).data,
-            }),
+                (event as { type: 'UPDATE_FORM';, data: z.infer<typeof CaseCreationSchema> }).data
+            })
           },
           AUTO_SAVE: 'autoSaving',
           VALIDATE: 'validating',
-          SUBMIT: 'validating',
+          SUBMIT: 'validating'
         },
         after: {
           5000: 'autoSaving', // Auto-save every 5 seconds
-        },
+        }
       },
-      autoSaving: {
-        invoke: {
-          id: 'autoSave',
+      autoSaving: { invoke: {, id: 'autoSave',
           src: 'autoSave',
           input: ({ context }) => context.formData,
           onDone: {
             target: 'editing',
             actions: assign({
               lastSaved: () => new Date(),
-              isAutoSaving: () => false,
-            }),
+              isAutoSaving: () => false
+            })
           },
           onError: {
             target: 'editing',
             actions: assign({
-              isAutoSaving: () => false,
-            }),
-          },
+              isAutoSaving: () => false
+            })
+          }
         },
         entry: assign({
-          isAutoSaving: () => true,
-        }),
+          isAutoSaving: () => true
+        })
       },
-      validating: {
-        invoke: {
-          id: 'validateCase',
+      validating: { invoke: {, id: 'validateCase',
           src: 'validateCase',
           input: ({ context }) => context.formData,
           onDone: 'submitting',
@@ -651,22 +594,20 @@ export const caseCreationMachine = createMachine(
                   return cleanedErrors;
                 }
                 return {};
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
-      submitting: {
-        invoke: {
-          id: 'createCase',
+      submitting: { invoke: {, id: 'createCase',
           src: 'createCase',
           input: ({ context }) => context.formData,
           onDone: {
             target: 'completed',
             actions: assign({
               // Correctly type the event and access output
-              createdCase: ({ event }) => (event as DoneActorEvent<CreatedCase | null>).output,
-            }),
+              createdCase: ({ event }) => (event as DoneActorEvent<CreatedCase | null>).output
+            })
           },
           onError: {
             target: 'editing',
@@ -679,22 +620,18 @@ export const caseCreationMachine = createMachine(
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: any }).message);
                 return 'An unknown error occurred';
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
-      completed: {
-        on: {
-          NEW_CASE: 'idle',
-          EDIT_CASE: 'editing',
-        },
-      },
-    },
+      completed: { on: {, NEW_CASE: 'idle',
+          EDIT_CASE: 'editing'
+        }
+      }
+    }
   },
-  {
-    actors: {
-      loadDraft: fromPromise(async () => {
+  { actors: {, loadDraft: fromPromise(async () => {
         const draft = typeof localStorage !== 'undefined' ? localStorage.getItem('case-draft') : null;
         return draft ? JSON.parse(draft) : null;
       }),
@@ -718,22 +655,22 @@ export const caseCreationMachine = createMachine(
       createCase: fromPromise(async ({ input }) => {
         const response = await fetch('/api/cases', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(input)
         });
         if (!response.ok) {
           throw new Error(`Case creation failed: ${response.statusText}`);
         }
         return await response.json();
-      }),
-    },
+      })
+    }
   }
 );
 // ============================================================================
 // SEARCH STATE MACHINE
 // ============================================================================
 type SearchEvent =
-  | { type: 'SEARCH'; data: z.infer<typeof SearchQuerySchema> }
+  | { type: 'SEARCH';, data: z.infer<typeof SearchQuerySchema> }
   | { type: 'LOAD_HISTORY' }
   | { type: 'REFINE_SEARCH' }
   | { type: 'CLEAR_RESULTS' }
@@ -742,9 +679,7 @@ type SearchEvent =
   | { type: 'NEW_SEARCH' };
 
 // Define specific output type for performSearch actor
-interface PerformSearchOutput {
-  results: SearchResult[];
-  analytics: SearchContext['analytics'];
+interface PerformSearchOutput { results: SearchResult[];, analytics: SearchContext['analytics'];
   pagination: SearchContext['pagination'];
   query: string; // The query that was performed
 }
@@ -754,7 +689,7 @@ export const searchMachine = createMachine(
     id: 'search',
     initial: 'idle',
     context: {
-      query: null,
+     , query: null,
       results: [],
       validationErrors: {},
       isSearching: false,
@@ -763,40 +698,32 @@ export const searchMachine = createMachine(
       pagination: {
         page: 1,
         pageSize: 20,
-        total: 0,
+        total: 0
       },
       analytics: null,
-      error: null,
+      error: null
     } as SearchContext, // Explicitly cast to SearchContext
-    states: {
-      idle: {
-        on: {
-          SEARCH: {
-            target: 'validating',
+    states: { idle: {, on: { SEARCH: {, target: 'validating',
             actions: assign({
-              query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data,
-            }),
+              query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data
+            })
           },
-          LOAD_HISTORY: 'loadingHistory',
-        },
+          LOAD_HISTORY: 'loadingHistory'
+        }
       },
-      loadingHistory: {
-        invoke: {
-          id: 'loadSearchHistory',
+      loadingHistory: { invoke: {, id: 'loadSearchHistory',
           src: 'loadSearchHistory',
           onDone: {
             target: 'idle',
             actions: assign({
               // Removed explicit generics from assign
-              searchHistory: ({ event }) => (event as DoneActorEvent<string[]>).output ?? [],
-            }),
+              searchHistory: ({ event }) => (event as DoneActorEvent<string[]>).output ?? []
+            })
           },
-          onError: 'idle',
-        },
+          onError: 'idle'
+        }
       },
-      validating: {
-        invoke: {
-          id: 'validateSearch',
+      validating: { invoke: {, id: 'validateSearch',
           src: 'validateSearch',
           input: ({ context }) => context.query,
           onDone: 'searching',
@@ -826,14 +753,12 @@ export const searchMachine = createMachine(
                   return cleanedErrors;
                 }
                 return {};
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
-      searching: {
-        invoke: {
-          id: 'performSearch',
+      searching: { invoke: {, id: 'performSearch',
           src: 'performSearch',
           input: ({ context }) => context.query,
           onDone: {
@@ -849,8 +774,8 @@ export const searchMachine = createMachine(
                 // Destructure event from the second argument
                 const outQuery = (event as DoneActorEvent<PerformSearchOutput>).output.query ?? ''; // Access output directly
                 return [outQuery, ...context.searchHistory.filter((q: string) => q !== outQuery)].slice(0, 10); // Corrected context access
-              },
-            }),
+              }
+            })
           },
           onError: {
             target: 'error',
@@ -863,41 +788,37 @@ export const searchMachine = createMachine(
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: any }).message);
                 return String(err ?? 'Search error');
-              },
-            }),
-          },
+              }
+            })
+          }
         },
         entry: assign({
           // Removed explicit generics from assign
           isSearching: () => true,
-          results: () => [],
+          results: () => []
         }),
         exit: assign({
           // Removed explicit generics from assign
-          isSearching: () => false,
-        }),
+          isSearching: () => false
+        })
       },
-      results: {
-        on: {
-          SEARCH: {
+      results: { on: {, SEARCH: {
             target: 'validating',
             actions: assign({
               // Removed explicit generics from assign
               query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data, // Corrected event typing
-            }),
+            })
           },
           REFINE_SEARCH: 'validating',
           CLEAR_RESULTS: 'idle',
-          LOAD_MORE: 'loadingMore',
-        },
+          LOAD_MORE: 'loadingMore'
+        }
       },
-      loadingMore: {
-        invoke: {
-          id: 'loadMoreResults',
+      loadingMore: { invoke: {, id: 'loadMoreResults',
           src: 'loadMoreResults',
           input: ({ context }) => ({
             query: context.query,
-            page: context.pagination.page + 1,
+            page: context.pagination.page + 1
           }),
           onDone: {
             target: 'results',
@@ -909,23 +830,19 @@ export const searchMachine = createMachine(
                 ...((event as DoneActorEvent<PerformSearchOutput>)?.output?.results ?? []),
               ],
               pagination: ({ event }) =>
-                (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 },
-            }),
+                (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 }
+            })
           },
-          onError: 'results',
-        },
+          onError: 'results'
+        }
       },
-      error: {
-        on: {
-          RETRY: 'searching',
-          NEW_SEARCH: 'idle',
-        },
-      },
-    },
+      error: { on: {, RETRY: 'searching',
+          NEW_SEARCH: 'idle'
+        }
+      }
+    }
   },
-  {
-    actors: {
-      loadSearchHistory: fromPromise(async () => {
+  { actors: {, loadSearchHistory: fromPromise(async () => {
         const history = typeof localStorage !== 'undefined' ? localStorage.getItem('search-history') : null;
         return history ? JSON.parse(history) : [];
       }),
@@ -946,8 +863,8 @@ export const searchMachine = createMachine(
           const query = input?.query || '';
           const response = await fetch('/api/search/vector', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(input),
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify(input)
           });
           if (!response.ok) {
             throw new Error(`Search failed: ${response.statusText}`);
@@ -963,20 +880,19 @@ export const searchMachine = createMachine(
       ),
       loadMoreResults: fromPromise(
         async ({
-          input,
-        }: {
-          input: { query: z.infer<typeof SearchQuerySchema> | null; page: number };
+          input
+        }: { input: {, query: z.infer<typeof SearchQuerySchema> | null; page: number };
         }): Promise<PerformSearchOutput> => {
           // Add return type
           const query = input?.query || {};
           const page = input?.page || 1;
           const response = await fetch('/api/search/vector', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               ...query,
-              pagination: { page },
-            }),
+              pagination: { page }
+            })
           });
           if (!response.ok) {
             throw new Error(`Load more failed: ${response.statusText}`);
@@ -984,8 +900,8 @@ export const searchMachine = createMachine(
           const data = await response.json();
           return { ...data, query: input.query?.query || '' }; // Ensure query is part of the returned data, safely access
         }
-      ),
-    },
+      )
+    }
   }
 );
 // ============================================================================
@@ -993,17 +909,15 @@ export const searchMachine = createMachine(
 // ============================================================================
 
 // Define specific output type for performAnalysis actor
-interface PerformAnalysisOutput {
-  results: AIAnalysisResult | null;
-  confidence: number;
+interface PerformAnalysisOutput { results: AIAnalysisResult | null;, confidence: number;
   processingTime: number;
   tokensUsed: number;
 }
 
 // Define the union of all possible events for the AIAnalysisMachine
 type AIAnalysisEvent =
-  | { type: 'START_ANALYSIS'; data: z.infer<typeof AIAnalysisSchema> }
-  | { type: 'STREAM_CONTENT'; content: string }
+  | { type: 'START_ANALYSIS';, data: z.infer<typeof AIAnalysisSchema> }
+  | { type: 'STREAM_CONTENT';, content: string }
   | { type: 'NEW_ANALYSIS' }
   | { type: 'RETRY_ANALYSIS' }
   | { type: 'RETRY' };
@@ -1024,22 +938,16 @@ export const aiAnalysisMachine = createMachine(
       model: 'gemma3-legal:latest',
       error: null,
       isStreaming: false,
-      streamedContent: '',
+      streamedContent: ''
     } as AIAnalysisContext,
-    states: {
-      idle: {
-        on: {
-          START_ANALYSIS: {
-            target: 'validating',
+    states: { idle: {, on: { START_ANALYSIS: {, target: 'validating',
             actions: assign({
-              analysisData: ({ event }) => (event as AIAnalysisEvent & { type: 'START_ANALYSIS' }).data ?? null,
-            }),
-          },
-        },
+             , analysisData: ({ event }) => (event as AIAnalysisEvent & { type: 'START_ANALYSIS' }).data ?? null
+            })
+          }
+        }
       },
-      validating: {
-        invoke: {
-          id: 'validateAnalysis',
+      validating: { invoke: {, id: 'validateAnalysis',
           src: 'validateAnalysis',
           input: ({ context }) => context.analysisData,
           onDone: 'analyzing',
@@ -1069,14 +977,12 @@ export const aiAnalysisMachine = createMachine(
                   return cleanedErrors;
                 }
                 return {}; // Default to empty object if error is not a ZodError or a suitable object
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
-      analyzing: {
-        invoke: {
-          id: 'performAnalysis',
+      analyzing: { invoke: {, id: 'performAnalysis',
           src: 'performAnalysis',
           input: ({ context }) => context.analysisData,
           onDone: {
@@ -1086,8 +992,8 @@ export const aiAnalysisMachine = createMachine(
               confidence: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.confidence ?? 0,
               processingTime: ({ event }) =>
                 (event as DoneActorEvent<PerformAnalysisOutput>).output.processingTime ?? 0,
-              tokensUsed: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.tokensUsed ?? 0,
-            }),
+              tokensUsed: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.tokensUsed ?? 0
+            })
           },
           onError: {
             target: 'error',
@@ -1099,42 +1005,32 @@ export const aiAnalysisMachine = createMachine(
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: any }).message);
                 return 'Analysis failed with an unknown error';
-              },
-            }),
-          },
+              }
+            })
+          }
         },
-        on: {
-          STREAM_CONTENT: {
-            actions: assign({
+        on: { STREAM_CONTENT: {, actions: assign({
               streamedContent: ({
                 context,
-                event,
-              }: {
-                context: AIAnalysisContext;
-                event: { type: 'STREAM_CONTENT'; content: string };
+                event
+              }: { context: AIAnalysisContext;, event: {, type: 'STREAM_CONTENT'; content: string };
               }) => context.streamedContent + (event.content ?? ''),
-              isStreaming: () => true,
-            }),
-          },
-        },
+              isStreaming: () => true
+            })
+          }
+        }
       },
-      completed: {
-        on: {
-          NEW_ANALYSIS: 'idle',
-          RETRY_ANALYSIS: 'analyzing',
-        },
+      completed: { on: {, NEW_ANALYSIS: 'idle',
+          RETRY_ANALYSIS: 'analyzing'
+        }
       },
-      error: {
-        on: {
-          RETRY: 'analyzing',
-          NEW_ANALYSIS: 'idle',
-        },
-      },
-    },
+      error: { on: {, RETRY: 'analyzing',
+          NEW_ANALYSIS: 'idle'
+        }
+      }
+    }
   },
-  {
-    actors: {
-      validateAnalysis: fromPromise(async ({ input }) => {
+  { actors: {, validateAnalysis: fromPromise(async ({ input }) => {
         try {
           AIAnalysisSchema.parse(input);
           return true;
@@ -1149,8 +1045,8 @@ export const aiAnalysisMachine = createMachine(
         const startTime = Date.now();
         const response = await fetch('/api/ai/analyze', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify(input)
         });
         if (!response.ok) {
           throw new Error(`Analysis failed: ${response.statusText}`);
@@ -1158,10 +1054,10 @@ export const aiAnalysisMachine = createMachine(
         const data = await response.json();
         return {
           ...data,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         } as PerformAnalysisOutput;
-      }),
-    },
+      })
+    }
   }
 );
 // ============================================================================

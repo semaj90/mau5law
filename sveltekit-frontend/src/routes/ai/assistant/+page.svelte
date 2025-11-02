@@ -779,7 +779,7 @@ $effect(() => {
 
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} size="lg" on:openChange={(e) => { if (!e?.detail) closePOIDetails(); }}>
+  <Dialog bind:open={showPOIDialog} size="lg" onopenChange={(e) => { if (!e?.detail) closePOIDetails(); }}>
     <!-- Modal Header -->
     <div class="flex justify-between items-start mb-6">
       <div>

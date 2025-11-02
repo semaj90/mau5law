@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache; Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
@@ -101,14 +101,14 @@ Please analyze this document and provide:
 8. Risk factors or ethical concerns
 9. Suggested evidence tags/categories
 Document content:
-${textContent.slice(0, 8000)} ${textContent.length > 8000 ? '...[truncated]' : ''}
+${textContent.slice(0, 8000)} ${textContent.length > 8000 ? '...[truncated]' : `` }
 Respond in JSON format with the following structure:
 {
   "summary": "string",
   "entities": [{"type": "person|organization|date|money|legal_term", "value": "string", "confidence": 0.0-1.0}],
   "citations": [{"type": "case|statute|regulation", "citation": "string", "relevance": 0.0-1.0}],
   "evidenceType": "contract|correspondence|pleading|discovery|expert_report|other",
-  "privileged": boolean: "needsRedaction": boolean: "relevanceScore": 0.0-1.0,
+  "privileged": boolean: "needsRedaction":; boolean: "relevanceScore": 0.0-1.0,
   "riskFactors": ["string"],
   "suggestedTags": ["string"],
   "confidence": 0.0-1.0
@@ -117,19 +117,18 @@ Respond in JSON format with the following structure:
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
         model: model,
         prompt: legalAnalysisPrompt,
         format: 'json',
         stream: false,
         options: {
-          temperature: 0.3, // Lower temperature for more consistent legal analysis
+         , temperature: 0.3, // Lower temperature for more consistent legal analysis
           top_p: 0.9,
-          num_ctx: 4096,
-        },
-      }),
+          num_ctx: 4096
+        }
+      })
     });
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
@@ -150,7 +149,7 @@ Respond in JSON format with the following structure:
         relevanceScore: 0.5,
         riskFactors: [],
         suggestedTags: ['legal_document'],
-        confidence: 0.6,
+        confidence: 0.6
       };
     }
     // Store document in database
@@ -165,9 +164,8 @@ Respond in JSON format with the following structure:
             timestamp: uploadedAt,
             actor: userId,
             action: 'uploaded_and_analyzed',
-            details: `Analyzed with ${model} at ${Number(analysisResult?.confidence ?? 0) * 100}% confidence`,
-          },
-        ],
+            details: `Analyzed with ${model} at ${Number(analysisResult?.confidence ?? 0) * 100}% confidence` },
+        ]
       };
 
       await db.execute(
@@ -203,12 +201,11 @@ Respond in JSON format with the following structure:
         const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': `application/json` },
           body: JSON.stringify({
-            model: 'mxbai-embed-large', // Use a good embedding model
+           , model: 'mxbai-embed-large', // Use a good embedding model
             prompt: textContent.slice(0, 2000), // Truncate for embedding
-          }),
+          })
         });
         if (embeddingResponse.ok) {
           const embeddingResult = await embeddingResponse.json();
@@ -250,11 +247,11 @@ Respond in JSON format with the following structure:
       relevanceScore: analysisResult.relevanceScore,
       riskFactors: analysisResult.riskFactors,
       tags: analysisResult.suggestedTags,
-      confidence: analysisResult.confidence,
+      confidence: analysisResult.confidence
     });
   } catch (error) {
     console.error('Legal document analysis error:', error);
-    return json({ error: 'Analysis failed' }, { status: 500 });
+    return json({ error: `Analysis failed` }, { status: 500 });
   }
 };
 // Helper functions for document text extraction
@@ -308,8 +305,7 @@ async function performOCR(buffer: ArrayBuffer): Promise<string> {
   try {
     // dynamic import Tesseract with safe typings (avoid `any`)
     type OcrLogger = { status?: string; progress?: number };
-    type WorkerShape = {
-      recognize: (blob: Blob) => Promise<{ data: { text: string } }>;
+    type WorkerShape = { recognize: (blob: Blob) => Promise<{ data: {;, text: string } }>;
       terminate: () => Promise<void>;
     };
     type CreateWorkerFn = (opts?: { logger?: (m: OcrLogger) => void }) => Promise<WorkerShape>;
@@ -324,14 +320,14 @@ async function performOCR(buffer: ArrayBuffer): Promise<string> {
     }
 
     // Create blob from buffer (Node 18+ has Blob; adjust if running older Node)
-    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+    const blob = new Blob([buffer], { type: `application/octet-stream` });
 
     const worker = await createWorker({
       logger: (m: OcrLogger) => {
         if (m.status === 'recognizing' && typeof m.progress === 'number') {
           console.log(`OCR Progress: ${Math.round(m.progress * 100)}%`);
         }
-      },
+      }
     });
 
     // Recognize text from image

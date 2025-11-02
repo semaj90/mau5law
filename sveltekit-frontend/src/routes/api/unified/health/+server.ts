@@ -12,10 +12,10 @@ export const GET: RequestHandler = async _event => {
         services: health,
         version: '1.0.0',
         uptime: process.uptime(),
-        memory: process.memoryUsage(),
+        memory: process.memoryUsage()
       },
       {
-        status: overall ? 200 : 503,
+        status: overall ? 200 : 503
       }
     );
   } catch (error) {
@@ -30,8 +30,8 @@ export const GET: RequestHandler = async _event => {
           redis: false,
           minio: false,
           qdrant: false,
-          neo4j: false,
-        },
+          neo4j: false
+        }
       },
       { status: 503 }
     );

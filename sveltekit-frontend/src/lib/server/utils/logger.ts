@@ -7,28 +7,20 @@ export enum LogLevel {
   ERROR = 3,
   FATAL = 4
 }
-interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
+interface LogEntry { timestamp: string;, level: LogLevel;
   message: string;
   component: string;
   userId?: string;
   conversationId?: string;
   requestId?: string;
   metadata?: { [key: string]: any }
-  error?: {
-    name: string;
-    message: string;
+  error?: { name: string;, message: string;
     stack?: string;
   }
-  performance?: {
-    duration: number;
-    memoryUsage: number;
+  performance?: { duration: number;, memoryUsage: number;
   }
 }
-interface LoggerConfig {
-  level: LogLevel;
-  enableConsole: boolean;
+interface LoggerConfig { level: LogLevel;, enableConsole: boolean;
   enableFile: boolean;
   enableDatabase: boolean;
   maxRetries: number;
@@ -338,7 +330,7 @@ export const logger = new Logger({
   level: LogLevel.INFO,
   enableConsole: true,
   enableDatabase: true,
-  enableFile: false,
+  enableFile: false
 });
 // Initialize logs table on startup
 logger.initializeLogTable();

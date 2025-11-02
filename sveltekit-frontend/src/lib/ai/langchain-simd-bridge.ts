@@ -9,7 +9,7 @@ import {
   langChainOllamaService,
   type LangChainConfig,
   type ProcessingResult,
-  type QueryResult,
+  type QueryResult
 } from './langchain-ollama-service.js';
 import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js';
 import { webgpuTextTileRenderer, type InstantUIComponent } from '$lib/webgpu/text-tile-renderer.js';
@@ -59,16 +59,12 @@ export interface SIMDLangChainConfig extends Partial<LangChainConfig> {
 }
 export interface SIMDProcessingResult extends ProcessingResult {
   // Enhanced with SIMD compression data
-  simdData: {
-    compressedTiles: TextTile[];
-    totalCompressionRatio: number;
+  simdData: { compressedTiles: TextTile[];, totalCompressionRatio: number;
     gpuProcessingTime: number;
     instantUIComponents: InstantUIComponent[];
   };
   // Performance metrics
-  pipelineStats: {
-    langchainTime: number;
-    simdCompressionTime: number;
+  pipelineStats: { langchainTime: number;, simdCompressionTime: number;
     uiGenerationTime: number;
     totalPipelineTime: number;
     memoryEfficiency: number;
@@ -77,9 +73,7 @@ export interface SIMDProcessingResult extends ProcessingResult {
 export interface SIMDQueryResult extends QueryResult {
   // Enhanced with instant UI components
   instantComponents: InstantUIComponent[];
-  compressionStats: {
-    sourceCompression: number;
-    averageCompressionRatio: number;
+  compressionStats: { sourceCompression: number;, averageCompressionRatio: number;
     semanticPreservation: number;
   };
 }
@@ -97,7 +91,7 @@ export class LangChainSIMDBridge {
     averageCompressionRatio: 0,
     averageProcessingTime: 0,
     cacheHitRatio: 0,
-    gpuUtilizationAverage: 0,
+    gpuUtilizationAverage: 0
   };
   constructor(config: Partial<SIMDLangChainConfig> = {}) {
     this.config = {
@@ -119,7 +113,7 @@ export class LangChainSIMDBridge {
         enableGPUAcceleration: true,
         qualityTier: 'nes',
         semanticClustering: true,
-        preserveSemantics: true,
+        preserveSemantics: true
       },
       enableInstantUI: true,
       compressionTarget: 109,
@@ -129,12 +123,12 @@ export class LangChainSIMDBridge {
       maxConcurrentProcessing: 8,
       memoryPoolSize: 256,
       gpuAccelerationLevel: 0.85,
-      ...config,
+      ...config
     };
     console.log('🌉 LangChain-SIMD Bridge initialized:', {
       compressionTarget: this.config.compressionTarget,
       qualityTier: this.config.qualityTier,
-      gpuAcceleration: this.config.gpuAccelerationLevel,
+      gpuAcceleration: this.config.gpuAccelerationLevel
     });
   }
   /**
@@ -166,7 +160,7 @@ export class LangChainSIMDBridge {
         chunksCreated: 1,
         embeddings: [new Array(this.config.vectorDimensions || 384).fill(0.1)],
         processingTime: 0,
-        metadata: { totalTokens: Math.ceil(content.length / 4), avgChunkSize: content.length, model: 'direct' },
+        metadata: { totalTokens: Math.ceil(content.length / 4), avgChunkSize: content.length, model: 'direct' }
       } as unknown as ProcessingResult;
     }
     // Phase 2: SIMD compression with enhanced configuration
@@ -175,8 +169,8 @@ export class LangChainSIMDBridge {
     const simdType: SIMDType = isSIMDType(metadata.type) ? metadata.type : 'general';
     const simdResult = await simdTextTilingEngine.processText(content, {
       type: simdType,
-      context: `langchain-${this.config?.model || 'unknown'}`,
-      uiTarget: options.generateUI ? 'component' : undefined,
+      context: 'langchain-${this.config?.model || 'unknown` }`,
+      uiTarget: options.generateUI ? 'component' : undefined
     });
     const simdCompressionTime = Date.now() - simdStart;
     // Phase 3: Instant UI generation (if enabled)
@@ -191,7 +185,7 @@ export class LangChainSIMDBridge {
           instantComponents = await renderer.renderTilesToComponents(simdResult.compressedTiles, {
             target: 'component-data',
             instantMode: true,
-            qualityOverride: this.config.qualityTier,
+            qualityOverride: this.config.qualityTier
           });
         } else {
           console.warn('WebGPU not available or renderer method missing, generating CPU-fallback components');
@@ -215,19 +209,16 @@ export class LangChainSIMDBridge {
       metadata: {
         totalTokens: lcMeta.totalTokens || 0,
         avgChunkSize: lcMeta.avgChunkSize || 0,
-        model: lcMeta.model || 'unknown',
-      } as { totalTokens: number; avgChunkSize: number; model: string },
+        model: lcMeta.model || 'unknown` } as { totalTokens: number; avgChunkSize: number;, model: string },
       // SIMD enhancement data
-      simdData: {
-        compressedTiles: (simdResult.compressedTiles as TextTile[]).map(tile => ({
-          id: tile.id,
+      simdData: { compressedTiles: (simdResult.compressedTiles as TextTile[]).map(tile => ({, id: tile.id,
           compressedBytes: tile.compressedData?.length || 0,
           compressionRatio: tile.compressionRatio,
-          semanticPreservation: tile.tileMetadata?.semanticDensity,
+          semanticPreservation: tile.tileMetadata?.semanticDensity
         })),
         totalCompressionRatio: simdResult.processingStats.totalCompressionRatio,
         gpuProcessingTime: simdCompressionTime + uiGenerationTime,
-        instantUIComponents: instantComponents,
+        instantUIComponents: instantComponents
       },
       // Performance pipeline metrics
       pipelineStats: {
@@ -235,8 +226,8 @@ export class LangChainSIMDBridge {
         simdCompressionTime,
         uiGenerationTime,
         totalPipelineTime,
-        memoryEfficiency: this.calculateMemoryEfficiency(content.length, simdResult),
-      },
+        memoryEfficiency: this.calculateMemoryEfficiency(content.length, simdResult)
+      }
     };
     // Update performance metrics
     this.updatePerformanceMetrics(enhancedResult);
@@ -270,7 +261,7 @@ export class LangChainSIMDBridge {
     let compressionStats = {
       sourceCompression: 0,
       averageCompressionRatio: 1,
-      semanticPreservation: 1,
+      semanticPreservation: 1
     };
     if (options.generateInstantComponents !== false) {
       try {
@@ -280,15 +271,14 @@ export class LangChainSIMDBridge {
         const simdResult = await simdTextTilingEngine.processText(combinedContent, {
           type: 'legal',
           context: `query-response-${question.substring(0, 20)}`,
-          uiTarget: 'component',
-        });
+          uiTarget: `component` });
         const renderer = webgpuTextTileRenderer as unknown as WebGPURendererLike;
         const initialized = await (renderer.initialize?.() ?? Promise.resolve(false));
         if (initialized && typeof renderer.renderTilesToComponents === 'function') {
           instantComponents = await renderer.renderTilesToComponents(simdResult.compressedTiles, {
             target: 'component-data',
             instantMode: true,
-            qualityOverride: this.config.qualityTier,
+            qualityOverride: this.config.qualityTier
           });
         } else {
           instantComponents = this.generateCPUFallbackComponents(simdResult.compressedTiles);
@@ -301,7 +291,7 @@ export class LangChainSIMDBridge {
               0
             ),
           averageCompressionRatio: simdResult.processingStats.totalCompressionRatio,
-          semanticPreservation: simdResult.processingStats.semanticPreservationScore || 1,
+          semanticPreservation: simdResult.processingStats.semanticPreservationScore || 1
         };
       } catch (error) {
         console.warn('SIMD query processing failed:', error);
@@ -316,7 +306,7 @@ export class LangChainSIMDBridge {
       processingTime,
       // SIMD enhancements
       instantComponents,
-      compressionStats,
+      compressionStats
     };
     console.log(`✅ SIMD Query complete: ${processingTime}ms, ${instantComponents.length} instant components`);
     return enhancedResult;
@@ -339,7 +329,7 @@ export class LangChainSIMDBridge {
       const batch = documents.slice(i, i + concurrencyLimit);
       const batchPromises = batch.map(doc =>
         this.processDocument(doc.content, doc.metadata || {}, {
-          generateUI: enableUIGeneration,
+          generateUI: enableUIGeneration
         })
       );
       const batchResults = await Promise.all(batchPromises);
@@ -378,10 +368,10 @@ export class LangChainSIMDBridge {
           display: inline-block;
         }
       `,
-      domStructure: `<span class="cpu-fallback-${tile.id}">${(tile.tileMetadata?.categories || []).join(' ')}</span>`,
+      domStructure: '<span class="cpu-fallback-${tile.id}">${(tile.tileMetadata?.categories || []).join(' ')}</span>`,
       interactionHandlers: '',
       renderTime: 1, // Fast CPU fallback
-      gpuUtilization: 0,
+      gpuUtilization: 0
     }));
   }
   /**
@@ -428,7 +418,7 @@ export class LangChainSIMDBridge {
         activeProcessing: this.processingQueue.length,
         maxConcurrency: this.config.maxConcurrentProcessing,
         memoryPoolSize: this.config.memoryPoolSize,
-        gpuAccelerationLevel: this.config.gpuAccelerationLevel,
+        gpuAccelerationLevel: this.config.gpuAccelerationLevel
       },
       capabilities: {
         directLangChainIntegration: true,
@@ -436,8 +426,8 @@ export class LangChainSIMDBridge {
         instantUIGeneration: !!this.config.enableInstantUI,
         webgpuAcceleration: true,
         batchOptimization: !!this.config.batchOptimization,
-        supportedQualityTiers: ['nes', 'snes', 'n64'],
-      },
+        supportedQualityTiers: ['nes', 'snes', 'n64']
+      }
     };
   }
   /**
@@ -465,11 +455,11 @@ export class LangChainSIMDBridge {
       // Test document processing
       const processResult = await this.processDocument(testDocument, {
         type: 'legal',
-        test: true,
+        test: true
       });
       // Test query processing
       const queryResult = await this.queryDocuments('What are the key terms of this software license?', {
-        maxResults: 5,
+        maxResults: 5
       });
       const totalTime = Date.now() - startTime;
       return {
@@ -479,31 +469,30 @@ export class LangChainSIMDBridge {
           compressionRatio: processResult.simdData.totalCompressionRatio,
           instantComponents: processResult.simdData.instantUIComponents.length,
           queryComponents: queryResult.instantComponents.length,
-          memoryEfficiency: processResult.pipelineStats.memoryEfficiency,
+          memoryEfficiency: processResult.pipelineStats.memoryEfficiency
         },
         results: {
           processing: processResult,
-          query: queryResult,
-        },
+          query: queryResult
+        }
       };
     } catch (error) {
       console.error('Pipeline test failed:', error);
       return {
         success: false,
         performance: {},
-        results: { error: error instanceof Error ? error.message : 'Unknown error' },
+        results: { error: error instanceof Error ? error.message : `Unknown error` }
       };
     }
   }
 }
 // Export singleton instance for global use
 export const langchainSIMDBridge = new LangChainSIMDBridge({
-  compressionTarget: 109, // Target 109:1 for 7-byte tiles
-  qualityTier: 'nes',
+  compressionTarget: 109, // Target 109:1 for 7-byte tiles; qualityTier: 'nes',
   enableInstantUI: true,
   batchOptimization: true,
   cacheStrategy: 'balanced',
   maxConcurrentProcessing: 8,
   memoryPoolSize: 256,
-  gpuAccelerationLevel: 0.85,
+  gpuAccelerationLevel: 0.85
 });

@@ -7,16 +7,12 @@ import type { LegalSimilarityResult } from '../webgpu/legal-similarity-compute.j
 export interface AcceleratedAnalysisRequest {
   query: string;
   queryEmbedding?: Float32Array;
-  caseDocuments: Array<{
-    id: string;
-    title: string;
+  caseDocuments: Array<{ id: string;, title: string;
     content: string;
     embedding: Float32Array;
     metadata?: any;
   }>;
-  evidenceDocuments: Array<{
-    id: string;
-    title: string;
+  evidenceDocuments: Array<{ id: string;, title: string;
     content: string;
     embedding: Float32Array;
     metadata?: any;
@@ -30,31 +26,21 @@ export interface AcceleratedAnalysisRequest {
     riskAssessmentLevel?: 'low' | 'medium' | 'high';
   };
 }
-export interface AcceleratedAnalysisResult {
-  similarities: LegalSimilarityResult[];
-  recommendations: Array<{
-    type: 'case_similarity' | 'evidence_match' | 'risk_assessment' | 'legal_precedent';
-    confidence: number;
+export interface AcceleratedAnalysisResult { similarities: LegalSimilarityResult[];, recommendations: Array<{ type: 'case_similarity' | 'evidence_match' | 'risk_assessment' | 'legal_precedent';, confidence: number;
     description: string;
     documentId: string;
     relevanceScore: number;
     legalImplications?: string[];
   }>;
-  riskAssessment: {
-    overallRisk: number;
-    riskFactors: string[];
+  riskAssessment: { overallRisk: number;, riskFactors: string[];
     mitigationStrategies: string[];
   };
-  processingMetrics: {
-    totalProcessingTime: number;
-    simdPreprocessingTime: number;
+  processingMetrics: { totalProcessingTime: number;, simdPreprocessingTime: number;
     webgpuComputeTime: number;
     vectorsProcessed: number;
     accelerationUsed: 'cpu' | 'gpu' | 'hybrid';
   };
-  nesMemoryOptimizations?: {
-    memoryBankUtilization: number;
-    cacheHitRate: number;
+  nesMemoryOptimizations?: { memoryBankUtilization: number;, cacheHitRate: number;
     patternRecognitionMatches: number;
   };
 }
@@ -102,7 +88,7 @@ export class AcceleratedLegalAssistant {
         enableGPUAcceleration: this.webgpuAvailable,
         enableSIMDPreprocessing: this.simdAvailable,
         riskAssessmentLevel: 'medium' as const,
-        ...request.analysisOptions,
+        ...request.analysisOptions
       };
       // Step 1: Prepare embeddings for acceleration
       const preprocessingStart = performance.now();
@@ -144,7 +130,7 @@ export class AcceleratedLegalAssistant {
             maxResults: options.maxResults,
             similarityThreshold: options.similarityThreshold,
             legalDomainWeights: options.legalDomainWeights,
-            useNESMemory: true,
+            useNESMemory: true
           }
         );
         webgpuComputeTime = performance.now() - gpuStart;
@@ -178,9 +164,9 @@ export class AcceleratedLegalAssistant {
           simdPreprocessingTime,
           webgpuComputeTime,
           vectorsProcessed: queryEmbeddings.length + documentEmbeddings.length,
-          accelerationUsed,
+          accelerationUsed
         },
-        nesMemoryOptimizations: nesOptimizations,
+        nesMemoryOptimizations: nesOptimizations
       };
       console.log(`✅ Accelerated analysis completed in ${totalProcessingTime.toFixed(2)}ms`);
       console.log(
@@ -234,10 +220,10 @@ export class AcceleratedLegalAssistant {
         recommendations.push({
           type: match.similarity > 0.8 ? 'legal_precedent' : 'evidence_match',
           confidence: match.confidence,
-          description: `High similarity match: "${document.title}" (${(match.similarity * 100).toFixed(1)}% similarity)`,
+          description: `High similarity; match: "${document.title}" (${(match.similarity * 100).toFixed(1)}% similarity)`,
           documentId: document.id,
           relevanceScore: match.similarity,
-          legalImplications: this.extractLegalImplications(match, document),
+          legalImplications: this.extractLegalImplications(match, document)
         });
       }
     }
@@ -249,13 +235,13 @@ export class AcceleratedLegalAssistant {
         recommendations.push({
           type: 'risk_assessment',
           confidence: 1.0 - riskMatch.riskAssessment,
-          description: `Risk factor identified in: "${document.title}" - requires attention`,
+          description: `Risk factor identified; in: "${document.title}" - requires attention`,
           documentId: document.id,
           relevanceScore: riskMatch.similarity,
           legalImplications: [
             `High risk factor (${(riskMatch.riskAssessment * 100).toFixed(1)}%)`,
             'Requires legal review',
-          ],
+          ]
         });
       }
     }
@@ -283,7 +269,7 @@ export class AcceleratedLegalAssistant {
     const riskThresholds = {
       low: 0.3,
       medium: 0.5,
-      high: 0.7,
+      high: 0.7
     };
     const threshold = riskThresholds[riskLevel];
     const highRiskMatches = similarities.filter(s => s.riskAssessment > threshold);
@@ -305,7 +291,7 @@ export class AcceleratedLegalAssistant {
     return {
       overallRisk,
       riskFactors,
-      mitigationStrategies,
+      mitigationStrategies
     };
   }
   private async getNESMemoryOptimizations(): Promise<AcceleratedAnalysisResult['nesMemoryOptimizations']> {
@@ -313,7 +299,7 @@ export class AcceleratedLegalAssistant {
     return {
       memoryBankUtilization: 0.85,
       cacheHitRate: 0.92,
-      patternRecognitionMatches: 147,
+      patternRecognitionMatches: 147
     };
   }
   async destroy(): Promise<void> {
@@ -332,9 +318,7 @@ export async function enhanceAIResponse(
   caseDocuments: any[],
   evidenceDocuments: any[],
   options?: AcceleratedAnalysisRequest['analysisOptions']
-): Promise<{
-  enhancedResponse: string;
-  acceleratedResults: AcceleratedAnalysisResult;
+): Promise<{ enhancedResponse: string;, acceleratedResults: AcceleratedAnalysisResult;
 }> {
   if (!acceleratedLegalAssistant) {
     throw new Error('Accelerated Legal Assistant not available');
@@ -343,7 +327,7 @@ export async function enhanceAIResponse(
     query,
     caseDocuments,
     evidenceDocuments,
-    analysisOptions: options,
+    analysisOptions: options
   };
   const results = await acceleratedLegalAssistant.analyzeEvidence(analysisRequest);
   // Generate enhanced response text
@@ -365,6 +349,6 @@ export async function enhanceAIResponse(
   enhancedResponse += `⚡ **Performance:** Processed in ${results.processingMetrics.totalProcessingTime.toFixed(1)}ms using ${results.processingMetrics.accelerationUsed} acceleration`;
   return {
     enhancedResponse,
-    acceleratedResults: results,
+    acceleratedResults: results
   };
 }

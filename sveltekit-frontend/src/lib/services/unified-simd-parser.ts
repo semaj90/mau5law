@@ -25,9 +25,7 @@ export enum ParseMode {
   ULTRA_PERFORMANCE = 'ultra_performance',
   WEBGPU_ACCELERATED = 'webgpu_accelerated'
 }
-export interface UnifiedParseResult {
-  data: any;
-  backend_used: string;
+export interface UnifiedParseResult { data: any;, backend_used: string;
   parse_time_ms: number;
   memory_bank: string;
   legal_entities?: number;
@@ -94,12 +92,12 @@ export class UnifiedSIMDParser {
         parse: async (s: string) => JSON.parse(s),
         getPerformanceStats: () => ({}),
         getCacheHitRate: () => 0,
-        clearCache: () => {},
+        clearCache: () => {}
       };
     this.v1Parser =
       (simdJSONParser as unknown as V1ParserType) ??
       {
-        parse: (s: string) => JSON.parse(s),
+        parse: (s: string) => JSON.parse(s)
       };
     this.ultraParser =
       (UltraJSONParser as unknown as UltraParserType) ??
@@ -109,7 +107,7 @@ export class UnifiedSIMDParser {
         fastParse: async (s: string, _opts?: any) => JSON.parse(s),
         getPerformanceMetrics: () => ({}),
         getCacheHitRate: () => 0,
-        clearCache: () => {},
+        clearCache: () => {}
       };
 
     // WASM warm-up: non-blocking attempt to JIT/initialise parsers
@@ -160,7 +158,7 @@ export class UnifiedSIMDParser {
       // Ensure backendResult is an object and add parse_time_ms
       const result: UnifiedParseResult = {
         ...backendResult,
-        parse_time_ms: performance.now() - startTime,
+        parse_time_ms: performance.now() - startTime
       };
       return result;
     } catch (error: any) {
@@ -185,7 +183,7 @@ export class UnifiedSIMDParser {
         await localDB?.saveParseResult?.(cacheKey, {
           parsedAt: new Date().toISOString(),
           mode: ParseMode.LEGAL_DOCUMENT,
-          result: legalDoc,
+          result: legalDoc
         });
       } catch (err) {
         // non-fatal; continue parsing even if persisting fails
@@ -229,7 +227,7 @@ export class UnifiedSIMDParser {
         citations: Array.isArray((legalDoc as unknown as { citations?: any }).citations)
           ? (legalDoc as unknown as { citations: string[] }).citations
           : [],
-        confidence: typeof legalDoc.confidence === 'number' ? legalDoc.confidence : undefined,
+        confidence: typeof legalDoc.confidence === 'number' ? legalDoc.confidence : undefined
       };
     } catch (error) {
       // Fallback to V2 parser — handle both sync and async v2.parse safely
@@ -243,7 +241,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L2_V2_FALLBACK',
+        memory_bank: 'L2_V2_FALLBACK'
       };
     }
   }
@@ -259,7 +257,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_PLAYWRIGHT',
         parse_time_ms: 0,
-        memory_bank: 'L1_PLAYWRIGHT_OPTIMIZED',
+        memory_bank: 'L1_PLAYWRIGHT_OPTIMIZED'
       };
     } catch (error) {
       // Fallback to V1 parser
@@ -268,7 +266,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V1_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L3_V1_FALLBACK',
+        memory_bank: 'L3_V1_FALLBACK'
       };
     }
   }
@@ -282,7 +280,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_TEST_RESULTS',
         parse_time_ms: 0,
-        memory_bank: 'L2_TEST_CACHE',
+        memory_bank: 'L2_TEST_CACHE'
       };
     } catch (error) {
       // Very robust fallback for test data
@@ -291,8 +289,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'NATIVE_JSON',
         parse_time_ms: 0,
-        memory_bank: 'L3_NATIVE_FALLBACK',
-      };
+        memory_bank: 'L3_NATIVE_FALLBACK` };
     }
   }
   /**
@@ -305,14 +302,13 @@ export class UnifiedSIMDParser {
         this.ultraParser.fastParse(jsonString, {
           enableSIMD: true,
           enableGPU: false,
-          cacheKey: `ultra_${this.generateCacheKey(jsonString)}`,
-        })
+          cacheKey: 'ultra_${this.generateCacheKey(jsonString)}' })
       );
       return {
         data,
         backend_used: 'ULTRA_SIMD',
         parse_time_ms: 0,
-        memory_bank: 'L1_ULTRA_PERFORMANCE',
+        memory_bank: 'L1_ULTRA_PERFORMANCE'
       };
     } catch (error) {
       // Fallback to V2 parser (await safely even if v2 returns sync)
@@ -321,8 +317,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_ULTRA_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L2_V2_FALLBACK',
-      };
+        memory_bank: 'L2_V2_FALLBACK` };
     }
   }
   /**
@@ -334,28 +329,27 @@ export class UnifiedSIMDParser {
         this.ultraParser.fastParse(jsonString, {
           enableSIMD: true,
           enableGPU: true,
-          cacheKey: `webgpu_${this.generateCacheKey(jsonString)}`,
-        })
+          cacheKey: 'webgpu_${this.generateCacheKey(jsonString)}' })
       );
       return {
         data,
         backend_used: 'WEBGPU_ULTRA',
         parse_time_ms: 0,
-        memory_bank: 'L1_WEBGPU_ACCELERATION',
+        memory_bank: 'L1_WEBGPU_ACCELERATION'
       };
     } catch (error) {
       // Fallback to Ultra without GPU (await safely)
       const data = await Promise.resolve(
         this.ultraParser.fastParse(jsonString, {
           enableSIMD: true,
-          enableGPU: false,
+          enableGPU: false
         })
       );
       return {
         data,
         backend_used: 'ULTRA_NO_GPU',
         parse_time_ms: 0,
-        memory_bank: 'L2_ULTRA_FALLBACK',
+        memory_bank: 'L2_ULTRA_FALLBACK'
       };
     }
   }
@@ -368,8 +362,7 @@ export class UnifiedSIMDParser {
       data,
       backend_used: 'V2_GENERIC',
       parse_time_ms: 0,
-      memory_bank: 'L1_V2_GENERIC',
-    };
+      memory_bank: 'L1_V2_GENERIC` };
   }
   /**
    * Clean Playwright-specific JSON issues
@@ -417,7 +410,7 @@ export class UnifiedSIMDParser {
               parse_time_ms: 0,
               memory_bank: 'L1_WASM_BATCH',
               legal_entities,
-              confidence,
+              confidence
             };
           });
         }
@@ -446,7 +439,7 @@ export class UnifiedSIMDParser {
       test: 'benchmark',
       data: Array(100)
         .fill(0)
-        .map((_, i) => ({ id: i, value: `test_${i}` })),
+        .map((_, i) => ({ id: i, value: `test_${i}` }))
     });
     // Ultra parser benchmarks
     const ultraStartTime = Date.now();
@@ -518,7 +511,7 @@ export class UnifiedSIMDParser {
       v2_stats: this.v2Parser.getPerformanceStats?.() ?? {},
       ultra_stats: this.ultraParser.getPerformanceMetrics?.() ?? {},
       memory_usage: formatMemoryUsage(),
-      backends_available: ['WASM_SIMD_Legal', 'Ultra_WebGPU', 'Ultra_SIMD', 'V2_Auto', 'V1_Legacy', 'Native_JSON'],
+      backends_available: ['WASM_SIMD_Legal', 'Ultra_WebGPU', 'Ultra_SIMD', 'V2_Auto', 'V1_Legacy', 'Native_JSON']
     };
   }
   /**
@@ -543,8 +536,8 @@ export class UnifiedSIMDParser {
       cache_hit_rates: {
         redis: (redisStats?.hit_rate as number) ?? 0,
         ultra: this.ultraParser.getCacheHitRate?.() ?? 0,
-        v2: this.v2Parser.getCacheHitRate?.() ?? 0,
-      },
+        v2: this.v2Parser.getCacheHitRate?.() ?? 0
+      }
     };
   }
   /**
@@ -680,7 +673,7 @@ export class UnifiedSIMDParser {
       memory_bank,
       legal_entities: typeof obj.legal_entities === 'number' ? (obj.legal_entities as number) : undefined,
       citations: Array.isArray(obj.citations) ? (obj.citations as string[]) : undefined,
-      confidence: typeof obj.confidence === 'number' ? (obj.confidence as number) : undefined,
+      confidence: typeof obj.confidence === 'number' ? (obj.confidence as number) : undefined
     };
   }
 }

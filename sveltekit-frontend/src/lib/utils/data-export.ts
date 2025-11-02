@@ -4,10 +4,10 @@ import { browser } from "$app/environment";
  * Advanced data export/utilities for the Detective Mode app
  * Provides secure, comprehensive data management with multiple formats
  */
-// TODO: Fix import - // Orphaned content: import { logSecurityEvent, secureDataExport  // Export/Import types
+// TODO: Fix import - // Orphaned; content: import { logSecurityEvent, secureDataExport  // Export/Import types
 
 // Mock security functions to resolve missing imports and address TODO
-const logSecurityEvent = (event: { type: string; details: any; severity: string }) => {
+const logSecurityEvent = (event: { type: string; details: any;, severity: string }) => {
   console.log("Security Event:", event);
   // In a real app, this would send logs to a security monitoring service
 };
@@ -16,42 +16,34 @@ const secureDataExport = (data: any[], user: string) => {
   logSecurityEvent({
     type: "data_export",
     details: {
-      action: "export_initiated",
+     , action: "export_initiated",
       recordCount: data.length,
-      user,
+      user
     },
-    severity: "info",
+    severity: "info"
   });
   // In a real app, this would perform checks, watermarking, etc.
 };
 
-export interface ExportOptions {
-  format: "json" | "csv" | "pdf" | "excel";
-  includeMetadata: boolean;
+export interface ExportOptions { format: "json" | "csv" | "pdf" | "excel";, includeMetadata: boolean;
   includeFiles: boolean;
-  dateRange?: { start: Date; end: Date }
+  dateRange?: { start: Date;, end: Date }
   filters?: { [key: string]: any }
   compression?: boolean;
   encryption?: boolean;
 }
-export interface ImportOptions {
-  format: "json" | "csv" | "excel";
-  validateData: boolean;
+export interface ImportOptions { format: "json" | "csv" | "excel";, validateData: boolean;
   mergeStrategy: "replace" | "merge" | "append";
   handleDuplicates: "skip" | "overwrite" | "rename";
 }
-export interface ExportResult {
-  success: boolean;
-  filename: string;
+export interface ExportResult { success: boolean;, filename: string;
   size: number;
   recordCount: number;
   errors: string[];
   warnings: string[];
   blob?: Blob;
 }
-export interface ImportResult {
-  success: boolean;
-  imported: number;
+export interface ImportResult { success: boolean;, imported: number;
   skipped: number;
   errors: string[];
   warnings: string[];
@@ -61,7 +53,7 @@ export interface ImportResult {
 export async function exportCases(
   cases: any[],
   options: ExportOptions = {
-    format: "json",
+   , format: "json",
     includeMetadata: true,
     includeFiles: false
   },
@@ -155,7 +147,7 @@ export async function exportCases(
 export async function exportEvidence(
   evidence: any[],
   options: ExportOptions = {
-    format: "json",
+   , format: "json",
     includeMetadata: true,
     includeFiles: true
   },
@@ -269,7 +261,7 @@ export async function importCases(
     logSecurityEvent({
       type: "data_export",
       details: {
-        action: "import_cases",
+       , action: "import_cases",
         imported,
         skipped,
         errors: errors.length
@@ -349,8 +341,8 @@ function convertToCSV(data: any[]): string {
     headers.join(","),
     ...data.map((row) =>
       headers
-        .map((header) => {
-          const value = row[header];
+        .map((header) => {];
+  const value = row[header];
           if (
             typeof value === "string" &&
             (value.includes(",") || value.includes('"'))
@@ -440,7 +432,7 @@ function parseCSV(csvText: string): any[] {
 function validateImportData(
   data: any,
   type: "cases" | "evidence",
-): { success: boolean; errors: string[]; warnings: string[] } {
+): { success: boolean; errors: string[];, warnings: string[] } {
   const errors: string[] = [];
   const warnings: string[] = [];
   if (!data || (!Array.isArray(data) && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).cases && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence)) {
@@ -482,19 +474,18 @@ async function processCaseImport(
     const response = await fetch('/api/cases/import', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         caseData,
-        options,
+        options
       }),
-      credentials: 'include',
-    });
+      credentials: 'include` });
 
     if (response.ok) {
       return true;
     } else {
-      const error = await response.json().catch(() => ({ message: `Server error: ${response.status}` }));
+      const error = await response.json().catch(() => ({ message: `Server, error: ${response.status}` }));
       throw new Error(error.message);
     }
   } catch (error: any) {

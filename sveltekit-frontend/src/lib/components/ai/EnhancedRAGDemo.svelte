@@ -207,7 +207,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   <!-- Tab Navigation -->
   <div class="flex border-b border-gray-200">
     <button
-      class="px-4" py-2 text-sm font-medium border-b-2 {activeTab === 'analyze'
+      class="px-4 py-2 text-sm" font-medium border-b-2 {activeTab === 'analyze'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
       onclick={() => (activeTab = 'analyze')}
@@ -215,7 +215,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       Document Analysis
     </button>
     <button
-      class="px-4" py-2 text-sm font-medium border-b-2 {activeTab === 'query'
+      class="px-4 py-2 text-sm" font-medium border-b-2 {activeTab === 'query'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
       onclick={() => (activeTab = 'query')}

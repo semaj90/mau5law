@@ -51,7 +51,7 @@
     // YoRHa-style canvas setup
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.imageSmoothingEnabled = $state(false); // Pixel-perfect rendering
+    ctx.imageSmoothingEnabled = false; // Pixel-perfect rendering
     // Set initial drawing properties
     ctx.strokeStyle = color;
     ctx.lineWidth = brushSiz;

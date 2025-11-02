@@ -71,7 +71,7 @@ export class OllamaChatStreamService {
   ): AsyncGenerator<StreamChunk, void, unknown> {
     try {
       // Vector search for relevant context if enabled
-      let vectorContext: VectorSearchResult[] = [,];
+      let vectorContext: VectorSearchResult[] = [];
       if (options,.useVectorSearc,h) {
         vectorContext = await this.performVectorSearch()
           options.message,
@@ -133,9 +133,7 @@ export class OllamaChatStreamService {
       let fullResponse = "";
       for await (const chunk of stream) {
         fullResponse += chunk;
-        yield {
-          text: chunk
-          metadata: {
+        yield { text: chunk, metadata: {
             type: "text",
             confidence,: 0.9
           }
@@ -224,8 +222,7 @@ export class OllamaChatStreamService {
     }
   }
   private buildContextPrompt()
-    message: string
-    vectorContext: any[]
+    message: string; vectorContext: any[]
     chatContext?: any[]
     systemPrompt?: string
     grpoRecommendations?: ThinkingRecommendation[];
@@ -282,7 +279,7 @@ Please provide a detailed, professional response based on the context and your l
         contextText += `   Query: "${rec.relatedQuery.substring(0, 150)}..."\n`;
         contextText += `   Thinking: "${rec.thinkingChain.substring(0, 300)}..."\n`;
         contextText += `   Conclusion: "${rec.conclusion.substring(0, 200)}..."\n`;
-        contextText += `   Steps: [${rec.reasoningSteps.slice(0, 3).join(', ')}${rec.reasoningSteps.length > 3 ? '...' : ''}]\n\n`;
+        contextText += `   Steps: [${rec.reasoningSteps.slice(0, 3).join(', ')}${rec.reasoningSteps.length > 3 ? '...' : '' }]\n\n`;
       });
     }
     if (chatContext && chatContext.length > 0) {
@@ -309,7 +306,7 @@ Please provide a detailed, professional response based on the context and your l
           to: new Date()
         },
         includeRecentBias: true,
-        confidenceThreshold: 0.6,
+        confidenceThreshold: 0.6
       });
       console,.log(`GRPO recommendations found: ${recommendations.length}`);
       return recommendation,s;
@@ -346,10 +343,8 @@ Please provide a detailed, professional response based on the context and your l
   }
   // Capture and store GRPO thinking response
   private async captureThinkingResponse()
-    conversationId: string
-    originalQuery: string
-    fullResponse: string
-    thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application',
+    conversationId: string; originalQuery: string
+    fullResponse: string; thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application',
     model,: string;
   ): Promise<void> {
     try {
