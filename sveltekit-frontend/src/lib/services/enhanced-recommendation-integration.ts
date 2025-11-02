@@ -59,7 +59,7 @@ declare module '$lib/wasm/qlora-wasm-loader' {
     load(config: { modelPath: string; enableSIMDOptimization: boolean;, enableGPUOffloading: boolean }): Promise<void>;
     enhanceRecommendations(
       recommendations: RecommendationRaw[],
-      options: { query: string; context: RecommendationContext; enhancementType: string;, maxEnhancements: number }
+      options: { query: string; context: RecommendationContext; enhancementType: string; maxEnhancements: number }
     ): Promise<RecommendationRaw[]>;
     destroy?(): void;
   }
@@ -244,7 +244,7 @@ export class EnhancedRecommendationIntegration {
         this.handleWorkerMessage(event.data);
       });
       this.worker.addEventListener('error', error => {
-        console.error('Recommendation worker error:', error);
+        console.error('Recommendation worker error:', error);'
       });
 
       // Test worker connection
@@ -360,7 +360,7 @@ export class EnhancedRecommendationIntegration {
     (console[level] as (...args: any[]) => void)?.('[EnhancedRecommendationIntegration]', ...args);
   }
 
-  private async sendWorkerMessage<T extends WorkerMessage>(type: string, data: Record<string, unknown>): Promise<T> {
+  private async sendWorkerMessage<T extends, WorkerMessage>(type: string, data: Record<string, unknown>): Promise<T> {
     if (!this.worker || !this.isInitialized) {
       throw new Error('Recommendation worker not initialized');
     }
@@ -461,12 +461,12 @@ export class EnhancedRecommendationIntegration {
     feedback: 'positive' | 'negative',
     recommendation: EnhancedRecommendation,
     context: RecommendationContext
-  ): Promise<{ success: boolean; shouldTriggerDistillation: boolean;, totalFeedbackCount: number }> {
+  ): Promise<{ success: boolean; shouldTriggerDistillation: boolean; totalFeedbackCount: number }> {
     try {
       // Submit to RL feedback API
       const response = await fetch('/api/rl-feedback', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
           recommendationId,
           feedback,
@@ -563,7 +563,7 @@ export class EnhancedRecommendationIntegration {
         query,
         context,
         userProfile,
-        predictionType: `recommendation_needs` });
+        predictionType: `recommendation_needs' });'`
 
       return {
         predictedAssets: result.predictedAssets || [],

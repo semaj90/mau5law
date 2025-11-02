@@ -44,7 +44,7 @@ const postHandler: RequestHandler = async ({ request, locals }) => {
   }
 
   // Use the union type for: 'data' instead; of: 'any'
-  const { channel, data } = body as { channel: string;, data: RedisPublishData };
+  const { channel, data } = body as { channel: string; data: RedisPublishData };
 
   const redisService = getRedisService();
   if (!redisService.isConnectedToRedis()) {

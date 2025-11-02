@@ -43,9 +43,9 @@ interface HealthCheckResult {
 
 interface RealAIService {
   connect?: (model?: string) => Promise<{ success: boolean; model?: string; availableModels?: string[]; [k: string]: any }>;
-  sendMessage?: (opts: {, message: string; sessionId: string; context?: Record<string, unknown>; options?: Record<string, unknown> }) => Promise<RealAIChatResponse>;
+  sendMessage?: (opts: {, message: string;, sessionId: string; context?: Record<string, unknown>; options?: Record<string, unknown> }) => Promise<RealAIChatResponse>;
   searchSimilarDocuments?: (query: string, opts?: SearchOptions) => Promise<SimilarDocument[]>;
-  indexDocument?: (doc: {, title: string; content: string; metadata?: Record<string, unknown> }) => Promise<IndexResult>;
+  indexDocument?: (doc: {, title: string;, content: string; metadata?: Record<string, unknown> }) => Promise<IndexResult>;
   switchModel?: (model: string) => Promise<{ success: boolean; error?: string }>;
   healthCheck?: () => Promise<HealthCheckResult>;
   // ...other optional methods...
@@ -184,8 +184,7 @@ const createAIAgentStore = () => {
           ...state,
           isConnected: false,
           isProcessing: false,
-          systemHealth: 'critical'
-        }));
+          systemHealth: `critical` }));
       }
     },
     disconnect() {
@@ -291,8 +290,7 @@ const createAIAgentStore = () => {
       update(state => ({
         ...state,
         isStreaming: true,
-        streamingResponse: ''
-      }));
+        streamingResponse: `` }));
       try {
         let done = false;
         while (!done) {
@@ -340,7 +338,7 @@ const createAIAgentStore = () => {
           reader.releaseLock();
         } catch (releaseError: any) {
           // non-fatal: log for diagnostics
-          console.warn('reader.releaseLock failed:', releaseError);
+          console.warn('reader.releaseLock failed: `, releaseError);'`
         }
         update(state => ({
           ...state,
@@ -396,7 +394,7 @@ const createAIAgentStore = () => {
       }
     },
 
-    async indexDocument(document: {, title: string; content: string; metadata?: any }) {
+    async indexDocument(document: {, title: string;, content: string; metadata?: any }) {
       try {
         const service = realAIService as unknown as RealAIService;
         const result =

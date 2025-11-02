@@ -24,7 +24,7 @@ const CreatePersonOfInterestSchema = z.object({
   tags: z.array(z.string()).optional(),
   position: z.record(z.unknown()).optional()
 });
-type CreatePersonOfInterestData = z.infer<typeof CreatePersonOfInterestSchema>;
+type CreatePersonOfInterestData = z.infer<typeof, CreatePersonOfInterestSchema>;
 class PersonsOfInterestCRUDService {
   constructor(private userId: string) {}
   async list({ page, limit }: { page: number;, limit: number }) {
@@ -39,7 +39,7 @@ class PersonsOfInterestCRUDService {
   }
   async listByRiskLevel(
     riskLevel: 'low' | 'medium' | 'high' | 'critical',
-    { page, limit }: { page: number;, limit: number }
+    { page, limit }: { page: number; limit: number }
   ) {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
@@ -85,7 +85,7 @@ class PersonsOfInterestCRUDService {
 }
 /*
  * GET /api/v1/persons-of-interest
- * List user's persons of interest with pagination and filtering
+ * List user's persons of interest with pagination and filtering'
  */
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
@@ -176,8 +176,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         {
           success: false,
           message: 'Authentication required',
-          code: 'AUTH_REQUIRED'
-        },
+          code: `AUTH_REQUIRED` },
         { status: 401 }
       );
     }
@@ -223,7 +222,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         {
           success: false,
           message: errorMessage,
-          code: 'ACCESS_DENIED` },
+          code: `ACCESS_DENIED` },
         { status: 403 }
       );
     }

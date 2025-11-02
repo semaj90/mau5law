@@ -13,7 +13,7 @@ import { eq } from 'drizzle-orm/expressions';
 import { sql } from 'drizzle-orm/sql';
 
 // --- Added types & guards ---
-type MinioUploadResult = { objectName: string; size: number;, url: string };
+type MinioUploadResult = { objectName: string; size: number; url: string };
 function isMinioUploadResult(x: any): x is MinioUploadResult {
   return !!x && typeof x === 'object' && 'objectName' in x && 'size' in x && 'url' in x;
 }
@@ -22,7 +22,7 @@ function isMinioUploadResult(x: any): x is MinioUploadResult {
 type AsyncFn<T = unknown> = (...args: any[]) => Promise<T>;
 
 type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
-type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown';, source: string };
+type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown'; source: string };
 
 export interface DocumentUpload { file: Buffer;, fileName: string;
   contentType: string;
@@ -42,8 +42,8 @@ export interface SearchOptions {
 }
 
 // Return/result shapes
-type UploadResult = { id: string; fileUrl: string; embeddingId: string;, cached: true };
-type SearchResults = { results: SearchHit[]; recommendations: Recommendation[]; cached: boolean;, sources: string[] };
+type UploadResult = { id: string; fileUrl: string; embeddingId: string; cached: true };
+type SearchResults = { results: SearchHit[]; recommendations: Recommendation[]; cached: boolean; sources: string[] };
 type FullDocument = {
   metadata: Record<string, unknown>;
   fileUrl: string;
@@ -51,7 +51,7 @@ type FullDocument = {
   similarDocuments: QdrantHit[];
   recommendations: Recommendation[];
 };
-type HealthStatus = { postgresql: boolean; redis: boolean; minio: boolean; qdrant: boolean;, neo4j: boolean };
+type HealthStatus = { postgresql: boolean; redis: boolean; minio: boolean; qdrant: boolean; neo4j: boolean };
 type Recommendation = { id: string; reason?: string };
 
 /**
@@ -179,7 +179,7 @@ export class UnifiedLegalAIService {
       return {
         id: documentId,
         fileUrl: minioUrl,
-        embeddingId: documentId, // Use documentId since qdrant upsert doesn't necessarily return an id
+        embeddingId: documentId, // Use documentId since qdrant upsert doesn't necessarily return an id'
         cached: true
       };
     } catch (error) {
@@ -262,7 +262,7 @@ export class UnifiedLegalAIService {
         const res = await (qc['health'] as AsyncFn)();
         return !!res;
       }
-      // Many clients expose collection listing; it's a cheap health probe
+      // Many clients expose collection listing; it's a cheap health probe'
       if (typeof qc['getCollections'] === 'function') {
         await (qc['getCollections'] as AsyncFn)();
         return true;
@@ -320,8 +320,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'evidence',
-              source: 'qdrant+postgresql'
-            });
+              source: 'qdrant+postgresql' });
           }
         }
         sources.push('qdrant', 'postgresql');
@@ -345,7 +344,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'document',
-              source: 'qdrant+postgresql` });
+              source: `qdrant+postgresql' });'`
           }
         }
         sources.push('qdrant', 'postgresql');

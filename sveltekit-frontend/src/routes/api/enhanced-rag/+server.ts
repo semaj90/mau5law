@@ -67,6 +67,6 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    return json({ error: message || 'Failed to run enhanced RAG' }, { status: 500 });
+    return json({ error: message || 'Failed to run enhanced RAG` }, { status: 500 });'`
   }
 };

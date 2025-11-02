@@ -8,7 +8,7 @@ export const GET: RequestHandler = async () => {
     }
     // Check all system components
     const statusChecks = await Promise.allSettled([
-      // Test Redis connection
+      // Test Redis connection,
       enhancedRAGService.testRedisConnection(),
       // Test PostgreSQL connection
       enhancedRAGService.testPostgreSQLConnection(),

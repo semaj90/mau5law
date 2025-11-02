@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import crypto from 'node:crypto'
 // Placeholder orchestrator route (repaired). Full multi-agent logic will be reinstated later.
-export interface WorkflowStatus { id: string; state: string;, createdAt: string }
+export interface WorkflowStatus { id: string; state: string; createdAt: string }
 // In-memory mock store
 const workflows: Record<string, WorkflowStatus> = {}
 // Helper to generate RFC4122 v4 UUID when crypto.randomUUID is not available

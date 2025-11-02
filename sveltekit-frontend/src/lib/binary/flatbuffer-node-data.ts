@@ -46,7 +46,7 @@ export interface FlatBufferNode {
   readonly flags: number;
   readonly confidence: number;
   readonly riskCode: number;
-  readonly position: { x: number; y: number;, z: number };
+  readonly position: { x: number; y: number; z: number };
   readonly embedding: Float32Array | null;
   readonly metadata: ArrayBuffer | null;
 }

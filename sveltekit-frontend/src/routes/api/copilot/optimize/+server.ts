@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         status: 'healthy',
         services: {
-          simdProcessor: true,
+         , simdProcessor: true,
           indexOptimizer: true,
           vectorEmbeddings: true,
           cache: true
@@ -71,8 +71,8 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         optimizedIndex: {
-          entries: [
-            {
+         , entries: [
+            {,
              , id: 'demo_1',
               content: (content as string) || 'Demo content',
               score: 0.95,
@@ -96,11 +96,11 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         query: content,
         results: [
-          {
+          {,
             id: 'result_1',
             content: 'Example search result',
             score: 0.92,
-            explanation: 'Context7 pattern; match: Svelte 5 runes` },
+            explanation: 'Context7 pattern; match: Svelte 5 runes' }
         ],
         count: 1,
         timestamp: Date.now()
@@ -112,14 +112,14 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 function generateExampleCopilotContent(): string {
-  return `# Copilot Context - Legal AI System
+  return `# Copilot Context - Legal AI System`
 ## SvelteKit 2 & Svelte 5 Patterns
 ### Modern Component Patterns
-- **Props**: Use \`let { prop = 'default` } = $props()\`
+- **Props**: Use \`let { prop = 'default' } = $props()\`
 - **State**: Use \`$state()\` for reactive state
 - **Computed**: Use \`$derived()\` for computed values
 - **Effects**: Use \`$effect()\` for side effects
-\n+\`\`\`typescript
+\n+\`\`\`typescript`
 // Example Svelte 5 component
 export function MyComponent() {
   let { data = [] } = $props()
@@ -131,7 +131,7 @@ export function MyComponent() {
 }
 \n+\`\`\`
 ## Database Patterns with Drizzle ORM
-\n+\`\`\`typescript
+\n+\`\`\`typescript`
 // Legal case schema
 export const cases = pgTable('cases', {
   id: text('id').primaryKey(),
@@ -141,7 +141,7 @@ export const cases = pgTable('cases', {
 })
 \n+\`\`\`
 ## AI Integration Patterns
-\n+\`\`\`typescript
+\n+\`\`\`typescript`
 // RAG document processing
 export async function processLegalDocument(content: string): Promise<any> {
   const embedding = await generateEmbedding(content)
@@ -149,5 +149,5 @@ export async function processLegalDocument(content: string): Promise<any> {
   return { embedding, similarDocs }
 }
 \n+\`\`\`
-`;
+`;`
 }

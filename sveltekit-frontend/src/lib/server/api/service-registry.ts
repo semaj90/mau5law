@@ -365,7 +365,7 @@ export class ApiServiceRegistry {
       extra: []
     };
     if (!existsSync(apiPath)) {
-      return { ...results, error: 'API directory not found' };
+      return { ...results, error: 'API directory not found` };'`
     }
     // Scan existing API routes
     const scanDir = (dir: string, prefix = '') => {

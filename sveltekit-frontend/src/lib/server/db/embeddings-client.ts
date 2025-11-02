@@ -99,4 +99,4 @@ export class EmbeddingsService {
   }
 }
 // Export the database instance for other uses
-export { db as embeddingsDb };
+export { db, as embeddingsDb };

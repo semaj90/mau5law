@@ -49,14 +49,14 @@ export const GET: RequestHandler = async _event => {
     try {
       console.log('Generated SQL:', getToSQL(joinQuery) ?? '[toSQL not available]');
     } catch {
-      /* ignore toSQL errors in environments where it's not present */
+      /* ignore toSQL errors in environments where it's not present */'
     }
 
     // Execute the join query
     const joinResults = await joinQuery;
     console.log('Join results:', Array.isArray(joinResults) ? joinResults.length : 0);
 
-    // Test 3: Simulate Lucia's getSessionAndUser query
+    // Test 3: Simulate Lucia's getSessionAndUser query'
     console.log('Test 3: Simulated Lucia query');
     const luciaQuery = db
       .select({

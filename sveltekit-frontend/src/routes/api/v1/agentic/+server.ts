@@ -34,7 +34,7 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
     }
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Agentic API error:', err);
+    console.error('Agentic API error:', err);'
 
     // Safely extract status and message from unknown error
     let statusCode: number | undefined = undefined;
@@ -59,7 +59,7 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }
+        'X-Error': `true` }
     });
   }
 }) as RequestHandler;
@@ -95,7 +95,7 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
     }
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Agentic POST error:', err);
+    console.error('Agentic POST error:', err);'
 
     // Safely extract status and body message if present
     let statusCode: number | undefined = undefined;
@@ -170,7 +170,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
     try {
       redis = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis` });
+        password: process.env.REDIS_PASSWORD || 'redis` });'`
     } catch (e) {
       console.warn('Failed to create Redis client:', e);
       redis = null;
@@ -250,7 +250,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms' }
+        'X-Processing-Time': '${Math.round(processingTime)}ms' }
     }
   );
 }
@@ -258,7 +258,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 async function getRecentErrors(startTime: number): Promise<Response> {
   const { Pool } = await import('pg');
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });
+    connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
   try {
     const result = await pool.query(`
@@ -272,7 +272,7 @@ async function getRecentErrors(startTime: number): Promise<Response> {
       FROM error_embeddings
       ORDER BY created_at DESC
       LIMIT 20
-    `);
+    `);`
 
     // ---- changed code: add a typed row and cast result.rows to avoid; implicit: 'any' ----
     type ErrorRow = { id: number;, error_text: string;
@@ -304,7 +304,7 @@ async function getRecentErrors(startTime: number): Promise<Response> {
 
 async function getFixSuggestions(query: string, startTime: number): Promise<Response> {
   try {
-    // Use the controller's fix suggestion function via subprocess
+    // Use the controller's fix suggestion function via subprocess'
     const controllerPath = join(process.cwd(), 'scripts', 'agentic-controller.mjs');
 
     return new Promise((resolve, reject) => {
@@ -342,7 +342,7 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
             reject(error(500, 'Failed to parse controller response'));
           }
         } else {
-          console.error('Controller process error:', errorOutput);
+          console.error('Controller process error:', errorOutput);'
           reject(error(500, 'Controller process failed'));
         }
       });
@@ -435,7 +435,7 @@ async function processScreenshot(
 
 async function analyzeErrorText(errorText: string, startTime: number): Promise<Response> {
   try {
-    // This would integrate with the controller's embedding system
+    // This would integrate with the controller's embedding system'
     // For now, return a mock response
     const processingTime = performance.now() - startTime;
 
@@ -455,7 +455,7 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });
+      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
     const result = await pool.query(
       `
@@ -468,7 +468,7 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
       FROM contextual_fixes cf
       WHERE cf.error_id = $1
       ORDER BY cf.created_at DESC
-    `,
+    `,`
       [errorId]
     );
 
@@ -491,7 +491,7 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });
+      connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
     await pool.query(
       `
@@ -503,7 +503,7 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
           ELSE GREATEST(success_rate - 0.1, 0.0)
         END
       WHERE id = $1
-    `,
+    `,`
       [fixId, success]
     );
 

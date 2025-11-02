@@ -39,7 +39,7 @@ interface ModelState { isLoaded: boolean;, loadingProgress: number;
 type WasmInferenceFn = (
   prompt: string,
   config: Gemma270mConfig
-) => Promise<{ text: string; tokens: number;, latencyMs: number }>;
+) => Promise<{ text: string; tokens: number; latencyMs: number }>;
 
 type WasmModuleSimulation = {
   inference?: WasmInferenceFn;
@@ -158,7 +158,7 @@ class ClientSideGemma270m {
         throw new Error('WebGPU not supported');
       }
       // @ts-ignore
-      const adapter = await (navigator as any).gpu.requestAdapter({ powerPreference: 'high-performance` });
+      const adapter = await (navigator as any).gpu.requestAdapter({ powerPreference: 'high-performance' });
       if (!adapter) {
         throw new Error('No WebGPU adapter found');
       }
@@ -197,11 +197,11 @@ class ClientSideGemma270m {
           // Simplified placeholder compute
           output[index] = input[index];
         }
-      `;
+      `;`
       const shaderModule = this.webGPUDevice.createShaderModule({ code: computeShader });
       const computePipeline = this.webGPUDevice.createComputePipeline({
         layout: 'auto',
-        compute: {, module: shaderModule, entryPoint: `main` }
+        compute: {, module: shaderModule, entryPoint: `main' }'`
       } as any);
       console.log('✅ WebGPU model loaded for 270M parameters (simulated)');
       this.modelState.update(state => ({
@@ -215,7 +215,7 @@ class ClientSideGemma270m {
       console.error('❌ Failed to load model weights:', error);
       this.modelState.update(state => ({
         ...state,
-        error: `WebGPU loading; failed: ${error?.message ?? String(error)}` }));
+        error: 'WebGPU loading; failed: ${error?.message ?? String(error)}' }));
     }
   }
   private async initializeWebAssembly(): Promise<void> {
@@ -247,7 +247,7 @@ class ClientSideGemma270m {
       }));
     } catch (error: any) {
       console.error('❌ WebAssembly initialization failed:', error);
-      this.modelState.update(state => ({ ...state, error: 'WASM loading; failed: ${error?.message ?? String(error)}' }));
+      this.modelState.update(state => ({ ...state, error: 'WASM loading;, failed: ${error?.message ?? String(error)}' }));
     }
   }
   private connectToTensorRT(): void {
@@ -283,7 +283,7 @@ class ClientSideGemma270m {
       case 'MODEL_READY':
         if (data.model_name === 'gemma3:270m') {
           console.log('⚡ TensorRT 270m model is ready');
-          this.modelState.update(state => ({ ...state, source: 'tensorrt' }));
+          this.modelState.update(state => ({ ...state, source: `tensorrt` }));
         }
         break;
       case 'MEMORY_PRESSURE':
@@ -292,14 +292,14 @@ class ClientSideGemma270m {
         break;
       case 'IDLE_TIMEOUT':
         console.log('😴 GPU going idle, switching to client-side');
-        this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu' : 'webassembly` }));
+        this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu` : `webassembly` }));'`
         break;
     }
   }
   private handleMemoryPressure(): void {
     if (get(this.modelState).source === 'tensorrt') {
       console.log('🔄 Switching to client-side due to memory pressure');
-      this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu` : `webassembly` }));
+      this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu` : `webassembly` }));'`
     }
   }
   public async generateText(prompt: string, config?: Partial<Gemma270mConfig>): Promise<InferenceResponse> {
@@ -443,7 +443,7 @@ class ClientSideGemma270m {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: 'gemma3:270m',
+       , model: 'gemma3:270m',
         prompt,
         stream: false,
         options: {
@@ -464,8 +464,7 @@ class ClientSideGemma270m {
       text: data.response,
       tokens: data.eval_count || 0,
       latencyMs: (data.total_duration ?? 0) / 1000000,
-      source: 'server'
-    };
+      source: `server` };
   }
   private convertWebAsmResponse(webAsmResponse: WebAssemblyAIResponse, requestId: string): InferenceResponse {
     return {
@@ -521,11 +520,11 @@ class ClientSideGemma270m {
   }
   private generateSimulatedResponse(prompt: string, maxTokens: number): string {
     const responses = [
-      "I understand you're asking about legal matters. As a 270M parameter model running client-side, I can provide basic legal information and analysis.",
+      "I understand you're asking about legal matters. As a 270M parameter model running client-side, I can provide basic legal information and analysis.",'
       'Based on your query, here are some key legal considerations to keep in mind for this type of situation.',
       'From a legal perspective, this involves several important factors that should be carefully evaluated.',
       'This legal question touches on multiple areas of law. Let me break down the main points for you.',
-      "In legal terms, the situation you're describing typically involves these key principles and precedents.",
+      "In legal terms, the situation you're describing typically involves these key principles and precedents.",'
     ];
     const baseResponse = responses[Math.floor(Math.random() * responses.length)];
     const words = baseResponse.split(' ');
@@ -579,7 +578,7 @@ class ClientSideGemma270m {
       this.modelState.update(state => ({ ...state, lastUsed: Date.now() }));
       return {
         ...result,
-        method: 'Gemma3:270m via WebAssembly Infrastructure` };
+        method: `Gemma3:270m via WebAssembly Infrastructure` };
     } catch (error) {
       console.error('❌ Legal document analysis failed:', error);
       throw error;

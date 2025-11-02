@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
 
@@ -50,19 +50,19 @@ https://svelte.dev/e/js_parse_error -->
 <svelte:head>
   <title>Law Database - WardenNet</title>
 </svelte:head>
-<div class="space-y-4 p-4"> <!-- Main container with spacing -->
-  <div class="flex items-center justify-between">
-    <h1 class="text-3xl font-bold">Law Database</h1>
-    <a href="/law/add" class="flex items-center gap-2 text-blue-600 hover:underline">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+<div class="space-y-4, p-4"> <!-- Main container with, spacing -->
+  <div class="flex items-center, justify-between">
+    <h1 class="text-3xl, font-bold">Law Database</h1>
+    <a href="/law/add" class="flex items-center gap-2 text-blue-600, hover:underline">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6, 0H6" />
       </svg>
       Add Statute
     </a>
   </div>
-  <div class="mt-4">
-    <div class="flex flex-col gap-2">
-      <label for="search" class="text-lg font-medium">
+  <div, class="mt-4">
+    <div class="flex flex-col, gap-2">
+      <label for="search" class="text-lg, font-medium">
         Search laws and statutes
       </label>
       <input
@@ -75,13 +75,13 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
   {#if loading}
-    <div class="flex items-center justify-center gap-2 text-gray-600">
-      <div class="h-5 w-5 animate-spin rounded-full border-b-2 border-gray-900"></div>
+    <div class="flex items-center justify-center gap-2, text-gray-600">
+      <div class="h-5 w-5 animate-spin rounded-full border-b-2, border-gray-900"></div>
       <span>Loading laws...</span>
     </div>
   {:else if error}
-    <div class="flex items-center justify-center gap-2 text-red-600">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24">
+    <div class="flex items-center justify-center gap-2, text-red-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -92,8 +92,8 @@ https://svelte.dev/e/js_parse_error -->
       <span>{error}</span>
     </div>
   {:else if filteredLaws.length === 0}
-    <div class="flex flex-col items-center justify-center gap-4 text-gray-600">
-      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex flex-col items-center justify-center gap-4, text-gray-600">
+      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -101,24 +101,24 @@ https://svelte.dev/e/js_parse_error -->
           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
         />
       </svg>
-      <h3 class="text-xl font-semibold">No laws found</h3>
-      <p class="text-center">
+      <h3 class="text-xl, font-semibold">No laws found</h3>
+      <p, class="text-center">
         {searchQuery ? 'No laws match your search criteria' : 'Start building your legal database'}
       </p>
       {#if !searchQuery}
-        <a href="/law/add" class="mt-2 text-blue-600 hover:underline">Add First Statute</a>
+        <a href="/law/add" class="mt-2 text-blue-600, hover:underline">Add First Statute</a>
       {/if}
     </div>
   {:else}
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2, lg:grid-cols-3">
       {#each filteredLaws as law (law.id)}
-        <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-xl font-bold">
+        <div class="rounded-lg border border-gray-200 bg-white p-4, shadow-sm">
+          <div class="flex flex-col, gap-2">
+            <h2 class="text-xl, font-bold">
               {law.title || 'Untitled Law'}
             </h2>
             <div class="text-sm text-gray-500">{law.code || 'No Code'}</div>
-            <p class="text-gray-700">
+            <p, class="text-gray-700">
               {law.description
                 ? law.description.length > 200
                   ? law.description.substring(0, 200) + '...'
@@ -126,13 +126,13 @@ https://svelte.dev/e/js_parse_error -->
                 : 'No description available'}
             </p>
             {#if law.category}
-              <div class="text-sm text-gray-600">Category: {law.category}</div>
+              <div class="text-sm, text-gray-600">Category: {law.category}</div>
             {/if}
-            <div class="text-xs text-gray-500">
+            <div class="text-xs, text-gray-500">
               Added: {law.createdAt ? new Date(law.createdAt).toLocaleDateString() : 'Unknown'}
             </div>
-            <div class="mt-2">
-              <a href="/law/{law.id}" class="text-blue-600 hover:underline">View Full Text</a>
+            <div, class="mt-2">
+              <a href="/law/{law.id}" class="text-blue-600, hover:underline">View Full Text</a>
             </div>
           </div>
         </div>

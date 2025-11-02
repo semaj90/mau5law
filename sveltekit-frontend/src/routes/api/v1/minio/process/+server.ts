@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 import { minioService } from '$lib/server/storage/minio-service';
-import { MinIOService as MinIOUtility } from '$lib/server/minio-service';
+import { MinIOService, as MinIOUtility } from '$lib/server/minio-service';
 /**
  * MinIO File Processing API - Upload + AI Analysis
  * POST: Upload file to MinIO and trigger AI processing pipeline
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
       JSON.stringify({
         success: true,
         upload: {
-          fileId: uploadResult.fileId,
+         , fileId: uploadResult.fileId,
           fileName: uploadResult.fileName,
           originalName: file.name,
           bucket: uploadResult.bucket,
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     );
   } catch (error) {
-    console.error('File processing error:', error);
+    console.error('File processing error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Processing failed',
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url }) => {
       );
     }
     // This would typically query a processing status database
-    // For now, we'll check if the file exists in MinIO
+    // For now, we'll check if the file exists in MinIO'
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json` }'`
         }
       );
     }
@@ -184,11 +184,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': `application/json` }
       }
     );
   } catch (error) {
-    console.error('Processing status error:', error);
+    console.error('Processing status error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Status check failed',

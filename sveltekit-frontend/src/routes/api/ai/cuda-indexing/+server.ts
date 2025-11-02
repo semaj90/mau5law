@@ -179,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       gpu_accelerated: true,
       performance_metrics: {
        , vectors_per_second: requestData.vectors.length / (totalProcessingTime / 1000),
-        memory_efficient: result.stats?.memory_usage_mb < 6000, // Under 6GB for RTX 3060 Ti
+        memory_efficient: result.stats?.memory_usage_mb < 6000, // Under 6GB for RTX 3060, Ti
         build_successful: result.success
       }
     });
@@ -210,11 +210,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           cuda_indexing_capabilities: {
-            supported_index_types: ['hnsw', 'ivfpq', 'flat'],
+           , supported_index_types: ['hnsw', 'ivfpq', 'flat'],
             max_dimensions: 4096,
             max_vectors_per_batch: 100000,
             rtx_3060_ti_specs: {
-              vram_gb: 8,
+             , vram_gb: 8,
               cuda_cores: 4864,
               tensor_cores: 152,
               memory_bandwidth_gbs: 448
@@ -235,7 +235,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           cuda_service: {
-            available: healthResponse.ok,
+           , available: healthResponse.ok,
             ...healthData
           },
           indexing_endpoints: {
@@ -265,8 +265,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
            , POST: 'Build GPU index',
             GET: 'Get capabilities/status',
             PATCH: 'Search GPU index',
-            PUT: 'Batch operations'
-          }
+            PUT: `Batch operations` }
         });
     }
   } catch (error: any) {
@@ -331,8 +330,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       performance_metrics: {
        , gpu_search: true,
         sub_millisecond: result.stats?.search_time_ms < 1,
-        efficiency_score: searchTime < 100 ? 'excellent' : 'good'
-      }
+        efficiency_score: searchTime < 100 ? 'excellent' : 'good` }'`
     });
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
@@ -356,8 +354,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'operations array is required'
-        },
+          error: `operations array is required` },
         { status: 400 }
       );
     }
@@ -415,7 +412,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
           results.push({
             operation: operation.operation,
             success: false,
-            error: `HTTP ${response.status}' });
+            error: `HTTP ${response.status}` });
         }
       } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
@@ -479,7 +476,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 				requestBody = {
 					query: simdRequest.query,
 					candidates: simdRequest.candidates,
-					operation: 'similarity' }
+					operation: `similarity` }
 				break
 			default: return json(
           {
@@ -502,7 +499,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 			...result,
 			simd_operation: simdRequest.operation,
 			cpu_accelerated: true,
-			instruction_set: result.instruction_set || 'AVX2/SSE4` })
+			instruction_set: result.instruction_set || 'AVX2/SSE4` })'`
 	} catch (error: any) {
 		const errMsg = error instanceof Error ? error.message : String(error)
 		return json(

@@ -134,7 +134,7 @@ declare interface ActivationIdentifier extends string {
 }
 declare interface TensorSlice { data: Float32Array;, dimensions: number[];
 }
-declare interface SOMConfig { gridSize: { width: number;, height: number };
+declare interface SOMConfig { gridSize: { width: number; height: number };
   learningRate: number;
   neighborhoodRadius: number;
   epochs: number;

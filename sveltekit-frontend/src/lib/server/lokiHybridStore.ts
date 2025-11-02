@@ -51,12 +51,12 @@ type KnowledgeRecordMap = { evidence: EvidenceItem;, notes: NoteItem;
 
 type KnowledgeItem = KnowledgeRecordMap[keyof KnowledgeRecordMap];
 
-interface CollectionContext<K extends KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
+interface CollectionContext<K extends, KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
   fuse: Fuse<KnowledgeRecordMap[K]>;
   fuseKeys: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
 }
 
-interface CollectionSpec<K extends KnowledgeCollectionName> {
+interface CollectionSpec<K extends, KnowledgeCollectionName> {
   name: K;
   indices?: string[];
   fuseKeys?: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
@@ -95,7 +95,7 @@ interface BroadcastMessage<T extends KnowledgeItem = KnowledgeItem> { instanceId
 }
 
 const DEFAULT_COLLECTIONS: Array<CollectionSpec<KnowledgeCollectionName>> = [
-  {
+  {,
     name: 'evidence',
     indices: ['id', 'tags', 'fileName'],
     fuseKeys: ['title', 'content', 'fileName', 'tags']
@@ -202,18 +202,18 @@ export class LokiHybridStore {
     return Array.from(this.contexts.keys());
   }
 
-  getAll<K extends KnowledgeCollectionName>(collection: K): KnowledgeRecordMap[K][] {
+  getAll<K extends, KnowledgeCollectionName>(collection: K): KnowledgeRecordMap[K][] {
     const ctx = this.getContext(collection);
     return ctx.collection.find();
   }
 
-  search<K extends KnowledgeCollectionName>(collection: K, query: string): KnowledgeRecordMap[K][] {
+  search<K extends, KnowledgeCollectionName>(collection: K, query: string): KnowledgeRecordMap[K][] {
     if (!query) return this.getAll(collection);
     const ctx = this.getContext(collection);
     return ctx.fuse.search(query).map((res) => res.item);
   }
 
-  add<K extends KnowledgeCollectionName>(
+  add<K extends, KnowledgeCollectionName>(
     collection: K,
     item: KnowledgeRecordMap[K],
     options?: {
@@ -257,7 +257,7 @@ export class LokiHybridStore {
     return enriched;
   }
 
-  upsertMany<K extends KnowledgeCollectionName>(
+  upsertMany<K extends, KnowledgeCollectionName>(
     collection: K,
     items: KnowledgeRecordMap[K][],
     options?: {
@@ -344,7 +344,7 @@ export class LokiHybridStore {
   async embedAndSyncToQdrant(item: EvidenceItem): Promise<void> {
     if (!this.qdrant) return;
 
-    const content = `${item.title ?? ''}\n${item.content ?? '` }`.trim();
+    const content = `${item.title ?? ''}\n${item.content ?? '` }`.trim();'`
     if (!content) return;
 
     const embeddings = await this.ensureEmbeddings();
@@ -374,13 +374,13 @@ export class LokiHybridStore {
       client = await this.pgPool.connect();
       for (const item of ctx.collection.find()) {
         await client.query(
-          `INSERT INTO evidence (id, title, content, tags, metadata)
+          `INSERT INTO evidence (id, title, content, tags, metadata)`
            VALUES ($1, $2, $3, $4, $5)
            ON CONFLICT (id) DO UPDATE SET
              title = EXCLUDED.title,
              content = EXCLUDED.content,
              tags = EXCLUDED.tags,
-             metadata = EXCLUDED.metadata`,
+             metadata = EXCLUDED.metadata`,`
           [
             item.id,
             item.title ?? null,
@@ -405,11 +405,11 @@ export class LokiHybridStore {
       session = this.neo4jDriver.session();
       for (const item of ctx.collection.find()) {
         await session.run(
-          `MERGE (e:Evidence {id: $id})
+          `MERGE (e:Evidence {id: $id})`
            SET e.title = $title,
                e.summary = $summary,
                e.tags = $tags,
-               e.updatedAt = datetime()`,
+               e.updatedAt = datetime()`,`
           {
             id: item.id,
             title: item.title ?? null,
@@ -451,16 +451,16 @@ export class LokiHybridStore {
 
   private setupCollections(specs: Array<CollectionSpec<KnowledgeCollectionName>>): void {
     for (const spec of specs) {
-      const collection = this.db.addCollection<KnowledgeRecordMap[typeof spec.name]>(spec.name, {
+      const collection = this.db.addCollection<KnowledgeRecordMap[typeof, spec.name]>(spec.name, {
         indices: spec.indices
       });
-      const fuse = new Fuse<KnowledgeRecordMap[typeof spec.name]>([], {
+      const fuse = new Fuse<KnowledgeRecordMap[typeof, spec.name]>([], {
         threshold: 0.3,
         keys: spec.fuseKeys ?? ['title', 'content', 'tags'],
         includeScore: true,
         shouldSort: true
       });
-      const ctx: CollectionContext<typeof spec.name> = {
+      const ctx: CollectionContext<typeof, spec.name> = {
         name: spec.name,
         collection,
         fuse,
@@ -470,7 +470,7 @@ export class LokiHybridStore {
     }
   }
 
-  private getContext<K extends KnowledgeCollectionName>(name: K): CollectionContext<K> {
+  private getContext<K extends, KnowledgeCollectionName>(name: K): CollectionContext<K> {
     const ctx = this.contexts.get(name);
     if (!ctx) {
       throw new Error(`Collection ${name} not registered in LokiHybridStore`);
@@ -478,7 +478,7 @@ export class LokiHybridStore {
     return ctx;
   }
 
-  private syncFuse<K extends KnowledgeCollectionName>(ctx: CollectionContext<K>): void {
+  private syncFuse<K extends, KnowledgeCollectionName>(ctx: CollectionContext<K>): void {
     ctx.fuse.setCollection(ctx.collection.find());
   }
 
@@ -490,7 +490,7 @@ export class LokiHybridStore {
     return `${this.config.redisPrefix}:events`;
   }
 
-  private async persistToRedis<K extends KnowledgeCollectionName>(
+  private async persistToRedis<K extends, KnowledgeCollectionName>(
     collection: K,
     item: KnowledgeRecordMap[K]
   ): Promise<void> {
@@ -499,7 +499,7 @@ export class LokiHybridStore {
     await this.redis.hset(key, item.id, JSON.stringify(this.prepareForStorage(item)));
   }
 
-  private prepareForStorage<T extends KnowledgeItem>(item: T): T {
+  private prepareForStorage<T extends, KnowledgeItem>(item: T): T {
     return {
       ...item,
       createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : undefined,

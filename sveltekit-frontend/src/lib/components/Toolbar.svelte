@@ -1,6 +1,6 @@
-<script lang="ts">
+<script, lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
-	// defensive import of the canvas module (works whether it's named or default)
+	// defensive import of the canvas module (works whether it's named or default)'
 	import * as canvasModule from "../stores/canvas";
 	const toolbarStore = (canvasModule as any).toolbarStore ?? (canvasModule as any).default ?? null;
 	const dispatch = createEventDispatcher();
@@ -135,10 +135,10 @@
 		dispatch('change', { zoom: newZoom });
 	}
 </script>
-<div class="toolbar-container container mx-auto px-4" role="toolbar" aria-label="Canvas tools">
-	<!-- Tool Selection -->
-	<div class="toolbar-section container mx-auto px-4">
-		<div class="tool-group container mx-auto px-4">
+<div class="toolbar-container container mx-auto px-4" role="toolbar" aria-label="Canvas, tools">
+	<!-- Tool, Selection -->
+	<div class="toolbar-section container mx-auto, px-4">
+		<div class="tool-group container mx-auto, px-4">
 			{#each Array.isArray(tools) ? tools : [] as tool}
 				<button
 					class="tool-button container mx-auto px-4"
@@ -147,15 +147,15 @@
 					aria-label={tool.label}
 					title={tool.label}
 				>
-					<span class="icon">{tool.icon}</span>
+					<span, class="icon">{tool.icon}</span>
 				</button>
 			{/each}
 		</div>
 	</div>
-	<div class="toolbar-separator" aria-hidden="true"></div>
-	<!-- Text Formatting -->
-	<div class="toolbar-section container mx-auto px-4">
-		<div class="tool-group container mx-auto px-4">
+	<div, class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Text, Formatting -->
+	<div class="toolbar-section container mx-auto, px-4">
+		<div class="tool-group container mx-auto, px-4">
 			{#each Array.isArray(formatActions) ? formatActions : [] as action}
 				<button
 					class="format-button container mx-auto px-4"
@@ -165,11 +165,11 @@
 					title={action.label}
 					disabled={selectedTool !== 'text'}
 				>
-					<span class="icon">{action.icon}</span>
+					<span, class="icon">{action.icon}</span>
 				</button>
 			{/each}
 		</div>
-		<div class="tool-group container mx-auto px-4">
+		<div class="tool-group container mx-auto, px-4">
 			{#each Array.isArray(alignActions) ? alignActions : [] as action}
 				<button
 					class="align-button container mx-auto px-4"
@@ -179,12 +179,12 @@
 					title={action.label}
 					disabled={selectedTool !== 'text'}
 				>
-					<span class="icon">{action.icon}</span>
+					<span, class="icon">{action.icon}</span>
 				</button>
 			{/each}
 		</div>
-		<div class="tool-group container mx-auto px-4">
-			<label class="color-input container mx-auto px-4">
+		<div class="tool-group container mx-auto, px-4">
+			<label class="color-input container mx-auto, px-4">
 				<input
 					type="color"
 					value={formatting.color}
@@ -192,9 +192,9 @@
 					title="Text Color"
 					disabled={selectedTool !== 'text'}
 				/>
-				<span class="color-preview container mx-auto px-4" style="background-color: {formatting.color}"></span>
+				<span class="color-preview container mx-auto, px-4" style="background-color: {formatting.color}"></span>
 			</label>
-			<label class="size-input container mx-auto px-4">
+			<label class="size-input container mx-auto, px-4">
 				<input
 					type="range"
 					min="8"
@@ -204,15 +204,15 @@
 					title="Font Size: {formatting.fontSize}px"
 					disabled={selectedTool !== 'text'}
 				/>
-				<span class="size-label container mx-auto px-4">{formatting.fontSize}px</span>
+				<span class="size-label container mx-auto, px-4">{formatting.fontSize}px</span>
 			</label>
 		</div>
 	</div>
-	<div class="toolbar-separator" aria-hidden="true"></div>
-	<!-- Drawing Tools -->
-	<div class="toolbar-section container mx-auto px-4">
-		<div class="tool-group container mx-auto px-4">
-			<label class="color-input container mx-auto px-4">
+	<div, class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Drawing, Tools -->
+	<div class="toolbar-section container mx-auto, px-4">
+		<div class="tool-group container mx-auto, px-4">
+			<label class="color-input container mx-auto, px-4">
 				<input
 					type="color"
 					value={drawing.strokeColor}
@@ -220,9 +220,9 @@
 					title="Stroke Color"
 					disabled={!['draw', 'rectangle', 'circle'].includes(selectedTool)}
 				/>
-				<span class="color-preview container mx-auto px-4" style="background-color: {drawing.strokeColor}"></span>
+				<span class="color-preview container mx-auto, px-4" style="background-color: {drawing.strokeColor}"></span>
 			</label>
-			<label class="size-input container mx-auto px-4">
+			<label class="size-input container mx-auto, px-4">
 				<input
 					type="range"
 					min="1"
@@ -232,14 +232,14 @@
 					title="Stroke Width: {drawing.strokeWidth}px"
 					disabled={!['draw', 'rectangle', 'circle'].includes(selectedTool)}
 				/>
-				<span class="size-label container mx-auto px-4">{drawing.strokeWidth}px</span>
+				<span class="size-label container mx-auto, px-4">{drawing.strokeWidth}px</span>
 			</label>
 		</div>
 	</div>
-	<div class="toolbar-separator" aria-hidden="true"></div>
+	<div, class="toolbar-separator" aria-hidden="true"></div>
 	<!-- Actions -->
-	<div class="toolbar-section container mx-auto px-4">
-		<div class="tool-group container mx-auto px-4">
+	<div class="toolbar-section container mx-auto, px-4">
+		<div class="tool-group container mx-auto, px-4">
 			<button
 				class="action-button container mx-auto px-4"
 				onclick={() => handleAction('undo')}
@@ -247,7 +247,7 @@
 				aria-label="Undo"
 				title="Undo"
 			>
-				<span class="icon">↺</span>
+				<span, class="icon">↺</span>
 			</button>
 			<button
 				class="action-button container mx-auto px-4"
@@ -256,28 +256,28 @@
 				aria-label="Redo"
 				title="Redo"
 			>
-				<span class="icon">↻</span>
+				<span, class="icon">↻</span>
 			</button>
 		</div>
-		<div class="tool-group container mx-auto px-4">
-			<button class="action-button container mx-auto px-4" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
-				<span class="icon">⧉</span>
+		<div class="tool-group container mx-auto, px-4">
+			<button class="action-button container mx-auto, px-4" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
+				<span, class="icon">⧉</span>
 			</button>
-			<button class="action-button container mx-auto px-4" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
-				<span class="icon">🗑️</span>
+			<button class="action-button container mx-auto, px-4" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
+				<span, class="icon">🗑️</span>
 			</button>
 		</div>
 	</div>
-	<div class="toolbar-separator" aria-hidden="true"></div>
-	<!-- Zoom Controls -->
-	<div class="toolbar-section container mx-auto px-4">
-		<div class="tool-group container mx-auto px-4">
-			<button class="action-button container mx-auto px-4" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
-				<span class="icon">➖</span>
+	<div, class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Zoom, Controls -->
+	<div class="toolbar-section container mx-auto, px-4">
+		<div class="tool-group container mx-auto, px-4">
+			<button class="action-button container mx-auto, px-4" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
+				<span, class="icon">➖</span>
 			</button>
-			<span class="zoom-level container mx-auto px-4">{zoom}%</span>
-			<button class="action-button container mx-auto px-4" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
-				<span class="icon">➕</span>
+			<span class="zoom-level container mx-auto, px-4">{zoom}%</span>
+			<button class="action-button container mx-auto, px-4" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
+				<span, class="icon">➕</span>
 			</button>
 		</div>
 	</div>

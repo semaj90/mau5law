@@ -44,13 +44,13 @@ function extractOutput<T>(event: any): T | undefined {
 // --- end added ---
 
 // XState v5 Evidence Canvas Machine for Legal AI Platform
-// NOTE: remove explicit generic type parameters — XState v5's createMachine has a large generic arity.
+// NOTE: remove explicit generic type parameters — XState v5's createMachine has a large generic arity.'
 const evidenceCanvasMachine = createMachine({
   id: 'evidenceCanvasMachine',
   initial: 'idle',
   context: {
     // omit optional string/number fields instead of setting them to `undefined`
-    // canvasId: undefined,
+    //, canvasId: undefined,
     // sessionId: undefined,
     collaborators: [],
     evidenceItems: [],
@@ -59,10 +59,9 @@ const evidenceCanvasMachine = createMachine({
     fabricState: undefined,
     performanceMetrics: undefined,
     error: undefined
-  } as EvidenceCanvasContext, // <-- cast context to the explicit type to fix assign typings
-  states: { idle: {, on: {
-        INITIALIZE_CANVAS: 'initializing'
-      }
+  } as EvidenceCanvasContext, // <-- cast context to the explicit type to fix assign, typings
+  states: {, idle: {, on: {
+       , INITIALIZE_CANVAS: `initializing` }
     },
     initializing: {, invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
@@ -73,7 +72,7 @@ const evidenceCanvasMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'canvas_initialization` }
+              operation: `canvas_initialization` }
           };
         }),
         input: ({ event }) => ({
@@ -138,7 +137,7 @@ const evidenceCanvasMachine = createMachine({
             lastUpdate: () => Date.now()
           })
         },
-        COLLABORATOR_JOIN: { actions: assign({, collaborators: ({ event, context }: { event: EvidenceCanvasEvent;, context: EvidenceCanvasContext }) => [
+        COLLABORATOR_JOIN: {, actions: assign({, collaborators: ({ event, context }: { event: EvidenceCanvasEvent;, context: EvidenceCanvasContext }) => [
               ...context.collaborators,
               event.collaborator,
             ],
@@ -313,12 +312,11 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
-      });
+        caseId: `case-456` });
       await new Promise(resolve => setTimeout(resolve, 100));
       const activeSnapshot = canvasActor.getSnapshot() as EvidenceCanvasSnapshot;
       expect(activeSnapshot.value).toBe('active');
-      // canvas id comes from the mock service — assert it's present rather than a specific value
+      // canvas id comes from the mock service — assert it's present rather than a specific value'
       expect(activeSnapshot.context.canvasId).toBeDefined();
       expect(activeSnapshot.context.sessionId).toBe('session-789');
       expect(activeSnapshot.context.evidenceItems).toBeDefined();
@@ -335,17 +333,17 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456` });
+        caseId: 'case-456' });
       await new Promise(resolve => setTimeout(resolve, 100));
       // Add evidence item
       canvasActor.send({
         type: 'ADD_EVIDENCE',
         evidence: {
-          id: 'evidence-1',
+         , id: 'evidence-1',
           type: 'document',
           title: 'Crime Scene Photo',
-          position: { x: 100, y: 150 },
-          metadata: {, relevance: 0.95, category: `physical' }
+          position: {, x: 100, y: 150 },
+          metadata: {, relevance: 0.95, category: `physical` }
         }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -364,7 +362,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           to: 'evidence-2',
           type: 'temporal',
           strength: 0.8,
-          description: 'Sequence of events` }
+          description: `Sequence of events` }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       const finalSnapshot = canvasActor.getSnapshot() as EvidenceCanvasSnapshot;
@@ -449,20 +447,19 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
-      });
+        caseId: `case-456` });
       await new Promise(resolve => setTimeout(resolve, 100));
       // Update fabric state (simulating user interaction)
       const fabricState = {
         objects: [
-          {
+          {,
             type: 'rect',
             left: 100,
             top: 100,
             width: 200,
             height: 150,
             fill: 'rgba(255, 0, 0, 0.3)',
-            metadata: { evidenceId: 'evidence-1', type: 'highlight` }
+            metadata: { evidenceId: 'evidence-1', type: `highlight` }
           },
           {
             type: 'line',
@@ -531,8 +528,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
         evidence: {
          , id: 'evidence-1',
           type: 'document',
-          content: 'Legal document requiring analysis'
-        }
+          content: `Legal document requiring analysis` }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       expect(documentProcessingHandler).toHaveBeenCalledWith(
@@ -555,12 +551,11 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
-      });
+        caseId: `case-456` });
       await new Promise(resolve => setTimeout(resolve, 100));
       canvasActor.send({
         type: 'ADD_EVIDENCE',
-        evidence: {, id: 'evidence-1', type: 'photo` }
+        evidence: {, id: 'evidence-1', type: `photo` }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       // Save canvas state
@@ -578,13 +573,13 @@ describe('Phase 5-7 Evidence Canvas Performance Benchmarks', () => {
   it('should establish real-time collaboration baseline for gRPC streams', () => {
     const stats = perf.getStats('canvas-initialization');
     if (stats) {
-      console.log('\n📊 Evidence Canvas Performance Stats: `);
+      console.log('\n📊 Evidence Canvas Performance Stats: `);'`
       console.log(`   Canvas Init: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);
       console.log(`\n🎯 Phase 5-7 Canvas gRPC Targets:`);
       console.log(`   Real-time Sync: WebSocket → gRPC bidirectional streams`);
-      console.log(`   Collaborative Updates: <5ms latency`);
+      console.log(`   Collaborative Updates: <5ms, latency`);
       console.log(`   Concurrent Users: 50+ per canvas`);
       console.log(`   Canvas Objects: 10,000+ evidence items`);
     }

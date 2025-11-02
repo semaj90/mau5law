@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import ollama from '$lib/server/ollama'; // Changed to default import
@@ -90,8 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
         execution: {
           timeMs: executionTime,
           tokensEstimate: Math.ceil(response.length / 4), // Rough estimate
-          provider: 'ollama'
-        },
+          provider: `ollama` },
         timestamp: new Date().toISOString()
       });
     } catch (generateError: any) {
@@ -101,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'error',
           error: 'Model generation failed',
           details: generateError instanceof Error ? generateError.message : 'Unknown generation error',
-          suggestion: 'Check if gemma3-legal model is; imported: ollama list` },
+          suggestion: `Check if gemma3-legal model is; imported: ollama list` },
         { status: 500 }
       );
     }

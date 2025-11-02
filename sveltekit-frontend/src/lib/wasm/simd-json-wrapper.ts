@@ -93,7 +93,7 @@ export class SIMDJSONAccelerator {
     }
   }
   private async loadWasmCode(): Promise<Uint8Array> {
-    // For now, we'll use a pre-compiled version
+    // For now, we'll use a pre-compiled version'
     // In production, this would load the compiled .wasm file
     return new Uint8Array([
       0x00,
@@ -179,7 +179,7 @@ export class SIMDJSONAccelerator {
    * Compress embeddings using SIMD operations
    */ async compressDocumentEmbeddings(
     embeddings: number[]
-  ): Promise<{ compressed: Uint8Array;, compressionRatio: number }> {
+  ): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
     const startTime = performance.now();
     if (!this.compressEmbeddings || !this.memory) {
       console.warn('⚠️ SIMD compression not available');
@@ -282,7 +282,7 @@ export class SIMDJSONAccelerator {
       }
       console.warn('⚠️ readParsedJSON: parsed object missing required fields, falling back to mock');
     } catch (err) {
-      console.warn('⚠️ readParsedJSON: failed to read structured data from WASM; memory:', err);
+      console.warn('⚠️ readParsedJSON: failed to read structured data from WASM;, memory:', err);
     }
 
     // Fallbacks: server (SSR) and client-friendly mocks
@@ -454,7 +454,7 @@ export async function validateLegalDocumentWithSIMD(jsonString: string): Promise
 
 export async function compressEmbeddingsWithSIMD(
   embeddings: number[]
-): Promise<{ compressed: Uint8Array;, compressionRatio: number }> {
+): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
   if (isWASMReady) return simdJSONAccelerator.compressDocumentEmbeddings(embeddings);
   // Fallback: encode embeddings as float32 bytes
   const float32 = new Float32Array(embeddings);

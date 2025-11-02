@@ -1,5 +1,5 @@
 // Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN queries
-// import { type Adapter, type DatabaseSession, type DatabaseUser } from 'lucia'
+// import { type, Adapter, type DatabaseSession, type DatabaseUser } from 'lucia'
 // Temporary type stubs for Lucia (not installed)
 interface Adapter {
   deleteSession(sessionId: string): Promise<void>;
@@ -215,8 +215,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   }
   async deleteExpiredSessions(): Promise<void> {
     try {
-      // use sql helper to perform <= comparison (lte isn't exported from utils)
-      await db.delete(sessions).where(sql`${sessions.expires_at} <= ${new Date()}`);
+      // use sql helper to perform <= comparison (lte isn't exported from, utils)'
+      await db.delete(sessions).where(sql`${sessions.expires_at} <= ${new, Date()}`);
     } catch (error) {
       console.error('[AUTH] Error deleting expired sessions:', error);
       throw error;

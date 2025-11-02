@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     title?: string | null;
@@ -7,11 +7,11 @@
   }
   let { title = 'Detective Interface', subtitle = '', children }: Props = $props();
 </script>
-<div class="detective-layout" role="region" tabindex="-1" aria-labelledby="detective-title">
-  <header class="header">
-    <h1 id="detective-title">{title}</h1>
+<div, class="detective-layout" role="region" tabindex="-1" aria-labelledby="detective-title">
+  <header, class="header">
+    <h1, id="detective-title">{title}</h1>
     {#if subtitle}
-      <div class="subtitle">{subtitle}{/if}
+      <div, class="subtitle">{subtitle}{/if}
   </header>
   <main>
     <slot />

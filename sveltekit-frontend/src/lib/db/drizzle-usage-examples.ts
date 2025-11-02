@@ -70,7 +70,7 @@ export async function findDocumentsByType(documentType: string): Promise<any> {
     .select()
     .from(legalDocuments)
     .where(
-      sql`${legalDocuments.metadata} @> ${JSON.stringify({
+      sql`${legalDocuments.metadata} @> ${JSON.stringify({`
         classification: { documentType }
       })}`
     );
@@ -130,7 +130,7 @@ export async function semanticSearch(
       AND 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${minSimilarity}
     ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
     LIMIT ${limit}
-  `);
+  `);`
 }
 // Hybrid search: Combine vector search with metadata filtering
 export async function hybridSearch(
@@ -150,7 +150,7 @@ export async function hybridSearch(
       AND case_id = ${caseId}
     ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
     LIMIT ${limit}
-  `);
+  `);`
 }
 // Find similar documents using HNSW index
 export async function findSimilarDocuments(
@@ -177,7 +177,7 @@ export async function findSimilarDocuments(
       AND embedding IS NOT NULL
     ORDER BY embedding <=> ${sourceDoc[0].embedding}::vector
     LIMIT ${limit}
-  `);
+  `);`
 }
 // ==================================================
 // 4. Joins and Relationships
@@ -233,7 +233,7 @@ export async function uploadAndQueueDocument(
     await tx
       .update(legalCases)
       .set({
-        documentCount: sql`${legalCases.documentCount} + 1` })
+        documentCount: sql`${legalCases.documentCount} + 1' })'`
       .where(eq(legalCases.id, documentData.caseId));
     return document[0];
   });
@@ -252,7 +252,7 @@ export async function getCaseStatistics(caseId: string): Promise<any> {
       COUNT(CASE WHEN is_admissible THEN 1 END) as admissible_count
     FROM legal_documents
     WHERE case_id = ${caseId}
-  `);
+  `);`
 }
 // Get processing queue statistics
 export async function getQueueStatistics(): Promise<any> {
@@ -266,7 +266,7 @@ export async function getQueueStatistics(): Promise<any> {
     FROM ai_processing_queue
     GROUP BY task_type, status
     ORDER BY task_type, status
-  `);
+  `);`
 }
 // ==================================================
 // 7. Pagination
@@ -308,7 +308,7 @@ export async function getPaginatedDocuments(
   const documents = await query;
   // Get total count
   const countResult = await db
-    .select({ count: sql<number>`count(*)::int` })
+    .select({ count: sql<number>`count(*)::int' })'`
     .from(legalDocuments)
     .where(conditions.length > 0 ? and(...conditions) : undefined);
   const totalCount = countResult[0]?.count || 0;
@@ -380,12 +380,12 @@ export async function cleanExpiredCache(): Promise<any> {
 // ==================================================
 // 10. Real-world Example: Complete Document Upload Flow
 // ==================================================
-export async function completeDocumentUpload(params: { caseId: string;, userId: string;
+export async function completeDocumentUpload(params: {, caseId: string;, userId: string;
   title: string;
-  content: string;
-  documentType: string;
-  fileUrl: string;
-  fileSize: number;
+ , content: string;
+ , documentType: string;
+ , fileUrl: string;
+ , fileSize: number;
  , fileHash: string;
 }): Promise<any> {
   return db.transaction(async (tx) => {
@@ -403,27 +403,26 @@ export async function completeDocumentUpload(params: { caseId: string;, userId:
         uploadedBy: params.userId,
         metadata: {
           case {
-            id: params.caseId,
+           , id: params.caseId,
             caseNumber: '',
             jurisdiction: '',
             courtLevel: 'district',
             parties: [],
             datesFiled: [],
-            status: 'active'
-          },
+            status: 'active' },
           classification: {
-            documentType: params.documentType as any,
+           , documentType: params.documentType as any,
             practiceArea: [],
             confidenceLevel: 0,
             riskLevel: 'low',
             priority: 5
           },
           processing: {
-            extractedEntities: [],
+           , extractedEntities: [],
             keyTerms: [],
             sentiment: 0,
             complexity: 0,
-            language: 'en` },
+            language: `en' },'`
           aiAnalysis: {
            , summary: '',
             keyPoints: [],
@@ -436,7 +435,7 @@ export async function completeDocumentUpload(params: { caseId: string;, userId:
         },
         chainOfCustody: {
           entries: [
-            {
+            {,
               timestamp: new Date().toISOString(),
               action: 'uploaded',
               userId: params.userId,
@@ -452,7 +451,7 @@ export async function completeDocumentUpload(params: { caseId: string;, userId:
       .returning();
     // 2. Queue AI processing tasks
     await tx.insert(aiProcessingQueue).values([
-      {
+      {,
         documentId: document[0].id,
         taskType: 'embedding',
         priority: 10

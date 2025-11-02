@@ -1,7 +1,7 @@
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types.js';
@@ -17,7 +17,7 @@ const serverFileUploadSchema = fileUploadSchema.extend({
 });
 
 // --- NEW: infer a concrete TypeScript type from the Zod schema ---
-type ServerFileUploadData = z.infer<typeof serverFileUploadSchema>;
+type ServerFileUploadData = z.infer<typeof, serverFileUploadSchema>;
 
 // Dynamic port detection for dev:quic (Caddy on 5178) and regular dev (Vite on 5173+)
 const detectServicePort = (): string => {
@@ -32,8 +32,8 @@ const detectServicePort = (): string => {
   // Priority 3: Use PORT env var or infer from Vite
   const port = process.env.PORT || process.env.VITE_PORT || 5173;
 
-  // If behind Caddy QUIC, use Caddy's port (5178)
-  // Otherwise use Vite's direct port (5173, 5174, 5175, etc.)
+  // If behind Caddy QUIC, use Caddy's port (5178)'
+  // Otherwise use Vite's direct port (5173, 5174, 5175, etc.)'
   const servicePort = isCaddyQuic ? 5178 : port;
 
   return `http://localhost:${servicePort}/api/v1/minio`;
@@ -45,10 +45,8 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 
 // --- Replace `any` with a minimal Redis-like interface to satisfy TS ---
-type RedisLike = {
-  lpush: (key: string, value: string) => Promise<number>;
-  ltrim: (key: string, start: number, stop: number) => Promise<void>;
-  on?: (event: string; handler: (e: any) => void) => void;
+type RedisLike = { lpush: (key: string;, value: string) => Promise<number>;, ltrim: (key: string; start: number;, stop: number) => Promise<void>;
+  on?: (event: string;, handler: (e: any) => void) => void;
   quit?: () => Promise<void>;
   disconnect?: () => void;
 } | null;
@@ -105,7 +103,7 @@ const logError = async (context: string, error: any, details?: Record<string, un
     details: details ?? {}
   };
   // Always print to stderr for immediate visibility
-  console.error(`[${context}] Error: ', payload);
+  console.error(`[${context}] Error: ', payload);'`
 
   // Attempt to push to Redis list if available
   try {
@@ -117,7 +115,7 @@ const logError = async (context: string, error: any, details?: Record<string, un
       await client.ltrim('error_logs', 0, 999); // keep last 1000 entries
     }
   } catch (redisErr) {
-    // don't throw - just log that redis logging failed
+    // don't throw - just log that redis logging failed'
     console.warn('[logError] failed to write to redis', redisErr);
   }
 };
@@ -260,7 +258,7 @@ export const actions: Actions = {
         });
         return fail(uploadResponse.status, {
           form,
-          message: 'Upload; failed: ${errorText || 'Unknown error from upload service` }' });
+          message: 'Upload; failed: ${errorText || 'Unknown error from upload service' }` });'`
       }
 
       const uploadResult = await uploadResponse.json();
@@ -273,8 +271,7 @@ export const actions: Actions = {
         });
         return fail(500, {
           form,
-          message: uploadResult.message || 'Upload failed due to an internal service error.'
-        });
+          message: uploadResult.message || 'Upload failed due to an internal service error.` });'`
       }
 
       return {

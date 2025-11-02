@@ -37,8 +37,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       throw error(404, 'Unknown embedding endpoint');
     }
   } catch (err) {
-    console.error('Embedding API error:', err);
-    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('Embedding API error: ', err);'
+    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : 'Unknown error' }');'`
   }
 };
 async function handleEmbeddings(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
@@ -77,7 +77,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
       originalUrl: minioUrl
     };
   } else {
-    // Chunk provided texts if they're large
+    // Chunk provided texts if they're large'
     const largeTexts = texts.filter(text => text.length > chunkSize);
     if (largeTexts.length > 0) {
       const chunkedTexts: string[] = [];
@@ -102,7 +102,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     useCUDA && (processedTexts.length > 10 || textComplexity > 75 || processedTexts.some(text => text.length > 2000));
   if (shouldUseCUDA) {
     // Ask the centralized service to use the CUDA/TensorRT backend
-    const resp = await generateEmbeddings({ texts: processedTexts, model, mode: 'tensorrt' });
+    const resp = await generateEmbeddings({ texts: processedTexts, model, mode: 'tensorrt` });'`
     embeddings = resp.embeddings;
     // Note: gpuTime/parallelWorkers are not returned by the wrapper currently
     cudaTime = 0;
@@ -173,11 +173,11 @@ async function handleChunking(request: Request, _requestId: string, _apiStartTim
     ...result
   });
 }
-async function processCUDAEmbeddings(params: { texts: string[];, model: string;
-  normalize: boolean;
-  batchSize: number;
+async function processCUDAEmbeddings(params: {, texts: string[];, model: string;
+ , normalize: boolean;
+ , batchSize: number;
  , requestId: string;
-}): Promise<{ embeddings: number[][]; gpuTime: number;, parallelWorkers: number }> {
+}): Promise<{ embeddings: number[][]; gpuTime: number; parallelWorkers: number }> {
   const { texts, model, normalize, batchSize, requestId } = params;
   const cudaUrl = getCudaServiceUrl('submit');
   // CHR-ROM optimized embedding payload
@@ -202,15 +202,13 @@ async function processCUDAEmbeddings(params: { texts: string[];, model: string;
       memory_gb: PGVECTOR_CONFIG.cuda.gpu.memoryGB,
       compute_capability: PGVECTOR_CONFIG.cuda.gpu.computeCapability,
       memory_bandwidth_optimization: true,
-      mixed_precision: 'fp16_fp32_adaptive'
-    },
+      mixed_precision: `fp16_fp32_adaptive` },
     performance_hints: {
       text_type: 'legal_documents',
       expected_token_density: 'high',
       semantic_complexity: 'legal_terminology',
       batch_coherence: 'document_sections',
-      cache_strategy: 'embedding_reuse'
-    }
+      cache_strategy: `embedding_reuse` }
   };
   const response = await fetch(cudaUrl, {
     method: 'POST',
@@ -228,8 +226,8 @@ async function processCUDAEmbeddings(params: { texts: string[];, model: string;
     parallelWorkers: result.parallel_workers || 1
   };
 }
-async function processOllamaEmbeddings(params: { texts: string[];, model: string;
-  normalize: boolean;
+async function processOllamaEmbeddings(params: {, texts: string[];, model: string;
+ , normalize: boolean;
  , batchSize: number;
 }): Promise<number[][]> {
   const { texts, model, batchSize } = params;

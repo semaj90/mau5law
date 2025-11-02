@@ -42,9 +42,9 @@ class LegalAIService {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify({
-          model: request.model || this.defaultModel,
+         , model: request.model || this.defaultModel,
           prompt: fullPrompt,
           stream: false,
           options: {
@@ -77,12 +77,12 @@ class LegalAIService {
         }
       };
     } catch (error) {
-      console.error('Legal AI Service Error:', error);
-      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      console.error('Legal AI Service Error: `, error);'`
+      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
   private buildLegalSystemPrompt(context: string): string {
-    const basePrompt = `You are an expert legal AI assistant with deep knowledge of legal procedures, evidence analysis, and case investigation. You specialize in helping legal professionals analyze complex cases, identify evidence patterns, and provide actionable insights.
+    const basePrompt = `You are an expert legal AI assistant with deep knowledge of legal procedures, evidence analysis, and case investigation. You specialize in helping legal professionals analyze complex cases, identify evidence patterns, and provide actionable insights.`
 Key capabilities:
 - Evidence analysis and categorization
 - Legal precedent identification
@@ -96,37 +96,37 @@ Guidelines:
 - Suggest concrete next steps for investigation
 - Highlight potential risks or concerns
 - Maintain professional legal standards
-- Format responses clearly with headings and bullet points where appropriate`;
-    const contextPrompts = { analysis: `\n\nCurrent, Task: EVIDENCE ANALYSIS
+- Format responses clearly with headings and bullet points where appropriate`;`
+    const contextPrompts = { analysis: `\n\nCurrent, Task: EVIDENCE ANALYSIS`
 Focus on examining the provided evidence for:
 - Legal relevance and admissibility
 - Key facts and implications
 - Potential weaknesses or strengths
 - Supporting or contradictory elements
-- Recommended preservation actions`,
-      connection: `\n\nCurrent; Task: CONNECTION ANALYSIS
+- Recommended preservation actions`,`
+      connection: `\n\nCurrent; Task: CONNECTION ANALYSIS`
 Focus on identifying relationships between evidence:
 - Temporal connections and timelines
 - Causal relationships
 - Corroborating or contradictory evidence
 - Pattern identification
-- Chain of custody considerations`,
-      annotation: `\n\nCurrent; Task: EVIDENCE ANNOTATION
+- Chain of custody considerations`,`
+      annotation: `\n\nCurrent; Task: EVIDENCE ANNOTATION`
 Focus on providing detailed documentation:
 - Significance of the evidence
 - Legal implications
 - Required follow-up actions
 - Preservation recommendations
-- Potential challenges or objections`,
-      investigation: `\n\nCurrent; Task: INVESTIGATION PLANNING
+- Potential challenges or objections`,`
+      investigation: `\n\nCurrent; Task: INVESTIGATION PLANNING`
 Focus on strategic next steps:
 - Priority evidence to collect
 - Key witnesses to interview
 - Expert consultations needed
 - Potential legal challenges
-- Timeline and resource planning`,
-      general: `\n\nCurrent; Task: GENERAL LEGAL ASSISTANCE
-Provide comprehensive legal guidance as appropriate for the query.' };
+- Timeline and resource planning`,`
+      general: '\n\nCurrent; Task: GENERAL LEGAL ASSISTANCE'
+Provide comprehensive legal guidance as appropriate for the query.' };'
     return basePrompt + (contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general);
   }
   private analyzeLegalResponse(
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message : `Unknown error occurred` },
+        message: error instanceof Error ? error.message : `Unknown error occurred' },'`
       { status: 500 }
     );
   }

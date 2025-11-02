@@ -12,4 +12,4 @@ export const fileUploadSchema = z.object({
   file: z.instanceof(File, { message: 'A file is required for upload.' })
 });
 export type FileUploadSchema = typeof fileUploadSchema;
-export type FileUploadFormData = z.infer<typeof fileUploadSchema>;
+export type FileUploadFormData = z.infer<typeof, fileUploadSchema>;

@@ -48,7 +48,7 @@ export class WebAssemblyClusteringService {
     }
     try {
       // In a real implementation, you would load and instantiate the WASM module
-      // For now, we'll mock this functionality
+      // For now, we'll mock this functionality'
       console.log(`Loading WASM module from ${wasmPath}...`);
       // Mock WASM loading - in production you would do:
       // const wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmPath)

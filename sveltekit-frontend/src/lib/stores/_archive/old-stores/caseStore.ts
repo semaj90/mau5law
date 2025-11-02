@@ -101,8 +101,7 @@ const createCaseStore = (): CaseStoreAPI => {
       params.append('page', currentState.pagination.page.toString());
       params.append('limit', currentState.pagination.limit.toString());
       const response = await fetch(`/api/cases?${params}`, {
-        credentials: 'include'
-      });
+        credentials: `include` });
       if (response.ok) {
         const data = await response.json();
         update(state => ({
@@ -209,7 +208,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while creating case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };
+      return { success: false, error: message || 'Network error` };'`
     }
   };
 
@@ -250,7 +249,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while updating case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };
+      return { success: false, error: message || 'Network error` };'`
     }
   };
 
@@ -291,7 +290,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while deleting case',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };
+      return { success: false, error: message || 'Network error` };'`
     }
   };
 
@@ -341,7 +340,7 @@ const createCaseStore = (): CaseStoreAPI => {
         error: message || 'Network error while generating report',
         isLoading: false
       }));
-      return { success: false, error: message || 'Network error` };
+      return { success: false, error: message || 'Network error` };'`
     }
   };
 
@@ -420,7 +419,7 @@ const createCaseStore = (): CaseStoreAPI => {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      return { success: false, error: message || 'Network error during analysis` };
+      return { success: false, error: message || 'Network error during analysis` };'`
     }
   };
 

@@ -50,7 +50,7 @@ export default class DetectiveWebSocketManager {
       this.ws = new WebSocket(wsUrl);
       this.ws.onopen = () => {
         this.heartbeatInterval = window.setInterval(() => {
-          if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify({ type: 'ping' }));
+          if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify({ type: 'ping` }));'`
         }, 30000);
       };
       this.ws.onmessage = () => {
@@ -60,7 +60,7 @@ export default class DetectiveWebSocketManager {
         this.ws = null;
       };
     } catch (err) {
-      // Keep this conservative: don't change behavior, just log
+      // Keep this conservative: don't change behavior, just log'
       // eslint-disable-next-line no-console
       console.error('[DetectiveWS] Connection failed:', err);
     }

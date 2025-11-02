@@ -29,7 +29,7 @@ export class AIAccessibilityPatterns {
    * Initialize voice commands for AI interactions
    */
   private initializeVoiceCommands() {
-    // Check if we're in a browser environment
+    // Check if we're in a browser environment'
     if (typeof window === 'undefined') {
       return;
     }
@@ -50,7 +50,7 @@ export class AIAccessibilityPatterns {
       this.processVoiceCommand(command);
     });
     this.voiceRecognition.onerror = (event) => {
-      console.warn('Voice recognition error:', event.error);
+      console.warn('Voice recognition error:', event.error);'
       accessibilityService.announceToScreenReader('Voice command error. Please try again or use keyboard navigation.');
     });
   }
@@ -120,7 +120,7 @@ export class AIAccessibilityPatterns {
           transition: none;
         }
       }
-    `;
+    `;`
     document.head.appendChild(style);
   }
   /**
@@ -129,7 +129,7 @@ export class AIAccessibilityPatterns {
   createProgressiveDisclosure(
     container: HTMLElement,
     data: any;
-    options: { summary: string; levels: Array<{ label: string; content: any;, level: number }> }
+    options: { summary: string; levels: Array<{ label: string; content: any; level: number }> }
   ) {
     if (typeof document === 'undefined' || !this.options.progressiveDisclosure) {
       if (typeof document !== 'undefined') {
@@ -147,13 +147,13 @@ export class AIAccessibilityPatterns {
     summary.innerHTML = `
       <h3>Analysis Summary</h3>
       <p>${options.summary}</p>
-      <button class="expand-btn nes-btn is-primary"
+      <button class="expand-btn nes-btn, is-primary"
         aria-expanded="false"
         aria-controls="ai-details"
       >
         Show Details
       </button>
-    `;
+    `;`
     // Detailed content
     const details = document.createElement('div');
     details.id = 'ai-details';
@@ -164,10 +164,10 @@ export class AIAccessibilityPatterns {
       section.className = `ai-level-${level.level}`;
       section.innerHTML = `
         <h${Math.min(level.level + 3, 6)}>${level.label}</h${Math.min(level.level + 3, 6)}>
-        <div class="ai-content" role="region" aria-label="${level.label} details">
+        <div, class="ai-content" role="region" aria-label="${level.label} details">
           ${this.formatAIContent(level.content)}
         </div>
-      `;
+      `;`
       details.appendChild(section);
     });
     disclosure.appendChild(summary);
@@ -185,10 +185,10 @@ export class AIAccessibilityPatterns {
     }
     if (Array.isArray(content)) {
       return `
-        <ul role="list">
+        <ul, role="list">
           ${content.map(item => `<li>${this.formatAIContent(item)}</li>`).join('')}
         </ul>
-      `;
+      `;`
     }
     if (typeof content === 'object') {
       return `
@@ -196,9 +196,9 @@ export class AIAccessibilityPatterns {
           ${Object.entries(content).map(([key, value]) => `
             <dt>${key}:</dt>
             <dd>${this.formatAIContent(value)}</dd>
-          `).join('')}
+          `).join('')}`
         </dl>
-      `;
+      `;`
     }
     return String(content);
   }
@@ -210,43 +210,43 @@ export class AIAccessibilityPatterns {
     card.className = 'ai-result-card ai-component';
     card.setAttribute('role', 'article');
     card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `AI analysis result: ${(result as any)?.title || 'Untitled' }`);
+    card.setAttribute('aria-label', `AI analysis result: ${(result as any)?.title || 'Untitled` }`);'`
     card.innerHTML = `
-      <header class="ai-result-header">
-        <h3>${(result as any)?.title || 'AI Analysis Result' }</h3>
-        <div class="ai-result-meta" aria-label="Result metadata">
-          <span class="confidence" aria-label="Confidence score">
+      <header, class="ai-result-header">
+        <h3>${(result as any)?.title || 'AI Analysis Result` }</h3>'`
+        <div class="ai-result-meta" aria-label="Result, metadata">
+          <span class="confidence" aria-label="Confidence, score">
             Confidence: ${Math.round(((result as any)?.confidence || 0) * 100)}%
           </span>
-          <span class="timestamp" aria-label="Analysis time">
+          <span class="timestamp" aria-label="Analysis, time">
             ${new Date((result as any)?.timestamp || Date.now()).toLocaleString()}
           </span>
         </div>
       </header>
-      <div class="ai-result-content" role="region" aria-label="Analysis content">
+      <div class="ai-result-content" role="region" aria-label="Analysis, content">
         ${this.formatAIContent((result as any)?.content || result)}
       </div>
-      <footer class="ai-result-actions">
-        <button class="action-btn nes-btn is-success"
+      <footer, class="ai-result-actions">
+        <button class="action-btn nes-btn, is-success"
           onclick="this.closest('.ai-result-card').dispatchEvent(new CustomEvent('ai-result-accept', { detail: this.closest('.ai-result-card') }))"
           aria-label="Accept this analysis result"
         >
           Accept
         </button>
-        <button class="action-btn nes-btn is-warning"
+        <button class="action-btn nes-btn, is-warning"
           onclick="this.closest('.ai-result-card').dispatchEvent(new CustomEvent('ai-result-review', { detail: this.closest('.ai-result-card') }))"
           aria-label="Flag this result for review"
         >
           Review
         </button>
-        <button class="action-btn nes-btn is-error"
+        <button class="action-btn nes-btn, is-error"
           onclick="this.closest('.ai-result-card').dispatchEvent(new CustomEvent('ai-result-reject', { detail: this.closest('.ai-result-card') }))"
           aria-label="Reject this analysis result"
         >
           Reject
         </button>
       </footer>
-    `;
+    `;`
     // Add keyboard navigation
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -265,9 +265,9 @@ export class AIAccessibilityPatterns {
     this.currentAIContext = operation;
     const messages = {
       started: `${operation} started. Please wait for completion.`,
-      progress: '${operation} in progress. ${details || '' }`,
-      completed: '${operation} completed successfully. ${details || 'Results are now available.' }`,
-      error: '${operation} failed. ${details || 'Please try again or contact support.`}' }
+      progress: '${operation} in progress. ${details || '` }`,
+      completed: '${operation} completed successfully. ${details || 'Results are now available.` }`,
+      error: '${operation} failed. ${details || 'Please try again or contact support.' }` }'`
     accessibilityService.announceToScreenReader(messages[status]);
     // Update live region for continuous feedback
     const liveRegion = document.getElementById('ai-status-live') || this.createAIStatusLiveRegion();
@@ -347,7 +347,7 @@ export class AIAccessibilityPatterns {
     }
   }
   private showContextualHelp() {
-    const helpText = `;
+    const helpText = `;`
       Available voice commands:
       - "Start analysis"; or: "Analyze document" to begin AI analysis
       - "Read summary" to hear the analysis summary
@@ -359,7 +359,7 @@ export class AIAccessibilityPatterns {
       - Enter or Space to activate buttons
       - Alt+A to open accessibility settings
       - Alt+S to skip to main content
-    `;
+    `;`
     accessibilityService.announceToScreenReader(helpText);
   }
   private stopAIOperation() {

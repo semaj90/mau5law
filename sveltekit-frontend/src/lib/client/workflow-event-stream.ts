@@ -5,8 +5,8 @@
  * using Server-Sent Events (SSE) from the browser.
  *
  * Usage:
- * ```svelte
- * <script lang="ts">
+ * ```svelte`
+ * <script, lang="ts">
  *   import { WorkflowEventStream } from '$lib/client/workflow-event-stream';
  *
  *   const stream = new WorkflowEventStream(sessionId);
@@ -103,7 +103,7 @@ export class WorkflowEventStream {
     };
     // Handle errors
     this.eventSource.onerror = error => {
-      console.error('[WorkflowEventStream] Connection error:', error);
+      console.error('[WorkflowEventStream] Connection error:', error);'
       // Notify listeners about the connection error
       this.emit('SSE_ERROR', {
         type: 'SSE_ERROR',
@@ -128,7 +128,7 @@ export class WorkflowEventStream {
           type: 'SSE_ERROR',
           sessionId: this.sessionId,
           timestamp: new Date().toISOString(),
-          error: 'Max reconnection attempts reached` });
+          error: 'Max reconnection attempts reached' });
         this.disconnect();
       }
     };
@@ -175,7 +175,7 @@ export class WorkflowEventStream {
         try {
           callback(event);
         } catch (error) {
-          console.error(`[WorkflowEventStream] Error in ${eventType} callback: ', error);
+          console.error(`[WorkflowEventStream] Error in ${eventType} callback: ', error);'`
         }
       });
     }

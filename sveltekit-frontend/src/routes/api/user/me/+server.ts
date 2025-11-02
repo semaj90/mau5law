@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ locals }) => {
       user
     });
   } catch (error) {
-    console.error('User profile API error:', error);
+    console.error('User profile API error:', error);'
     // Return mock user data on failure
     const mockUser = {
       success: false,

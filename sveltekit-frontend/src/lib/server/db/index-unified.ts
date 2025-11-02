@@ -146,7 +146,7 @@ export async function getSystemHealth(): Promise<any> {
     },
     application: appHealth,
     timestamp: new Date().toISOString(),
-    version: '2.0.0-unified' }
+    version: '2.0.0-unified` }'`
 }
 // Vector store with centralized connection (updated for embeddinggemma)
 export function getVectorStore() {
@@ -188,7 +188,7 @@ export async function runMigration(migrationName: string, migrationSql: string):
           executed_at = NOW(),
           execution_time_ms = $2,
           status = 'completed'
-      `, [migrationName, Date.now() - start]);
+      `, [migrationName, Date.now() - start]);`
       await client.query('COMMIT');
       return { success: true, executionTime: Date.now() - start }
     } catch (error) {
@@ -201,7 +201,7 @@ export async function runMigration(migrationName: string, migrationSql: string):
           executed_at = NOW(),
           status = 'failed',
           error_message = $2
-      `, [migrationName, error.message]);
+      `, [migrationName, error.message]);`
       throw error;
     }
   }, true); // Use admin connection for migrations

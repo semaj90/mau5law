@@ -122,7 +122,7 @@ export class EnhancedAuthService {
       });
       return { success: true, user: existingUser, session };
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error('Login error:', error);'
       return { success: false, error: 'An unexpected error occurred' };
     }
   }
@@ -180,7 +180,7 @@ export class EnhancedAuthService {
 
       return { success: true, user: newUser, session };
     } catch (error: any) {
-      console.error('Registration error:', error);
+      console.error('Registration error:', error);'
       return { success: false, error: 'Registration failed. Please try again.' };
     }
   }
@@ -204,7 +204,7 @@ export class EnhancedAuthService {
         metadata: { sessionId }
       });
     } catch (error: any) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error);'
     }
   }
 
@@ -231,7 +231,7 @@ export class EnhancedAuthService {
       });
       return { success: true, user };
     } catch (error: any) {
-      console.error('Email verification error:', error);
+      console.error('Email verification error:', error);'
       return { success: false, error: 'Verification failed' };
     }
   }
@@ -257,7 +257,7 @@ export class EnhancedAuthService {
       });
       return { success: true };
     } catch (error: any) {
-      console.error('Password reset request error:', error);
+      console.error('Password reset request error:', error);'
       return { success: false, error: 'Failed to process password reset request' };
     }
   }
@@ -271,7 +271,7 @@ export class EnhancedAuthService {
         .where(and(eq(users.passwordResetToken, token), sql`${users.passwordResetExpires} >= ${new Date()}`))
         .limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
-      if (!user) return { success: false, error: 'Invalid or expired reset token' };
+      if (!user) return { success: false, error: `Invalid or expired reset token` };
       if (!this.validatePassword(newPassword))
         return { success: false, error: 'Password does not meet security requirements' };
       const passwordHash = await bcrypt.hash(newPassword, 12);
@@ -294,12 +294,12 @@ export class EnhancedAuthService {
       });
       return { success: true, user };
     } catch (error: any) {
-      console.error('Password reset error:', error);
-      return { success: false, error: `Password reset failed` };
+      console.error('Password reset error: ', error);'
+      return { success: false, error: 'Password reset failed' };
     }
   }
 
-  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number;, securitySettings: SecuritySettings } | null> {
+  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number; securitySettings: SecuritySettings } | null> {
     try {
       const recentLogs = await db
         .select()
@@ -311,7 +311,7 @@ export class EnhancedAuthService {
         .select()
         .from(sessions)
         // replaced gte(sessions.expiresAt, new Date()) with SQL expression
-        .where(and(eq(sessions.userId, userId), sql`${sessions.expiresAt} >= ${new Date()}'));
+        .where(and(eq(sessions.userId, userId), sql'${sessions.expiresAt} >= ${new Date()}'));
       const activeSessionsCount = Array.isArray(activeSessionsRows) ? activeSessionsRows.length : 0;
       return {
         recentActivity: recentLogs,
@@ -319,14 +319,14 @@ export class EnhancedAuthService {
         securitySettings: this.securitySettings
       };
     } catch (error: any) {
-      console.error('Security summary error:', error);
+      console.error('Security summary error:', error);'
       return null;
     }
   }
 
   // Private helpers
   private async handleFailedLogin(user: User, loginData: LoginAttempt): Promise<void> {
-    // use a narrow local type so we don't rely on `any`
+    // use a narrow local type so we don't rely on `any`'
     type UserWithAttempts = User & { loginAttempts?: number };
     const currentAttempts = (user as UserWithAttempts).loginAttempts ?? 0;
     const newAttempts = currentAttempts + 1;
@@ -352,8 +352,8 @@ export class EnhancedAuthService {
     }
   }
 
-  private async logAuthEvent(entry: { userId: string | null;, action: string;
-    ipAddress: string;
+  private async logAuthEvent(entry: {, userId: string | null;, action: string;
+   , ipAddress: string;
    , userAgent: string;
     metadata?: Record<string, unknown>;
     createdAt?: Date;
@@ -374,10 +374,10 @@ export class EnhancedAuthService {
 
   private validateRegistrationData(data: RegisterData): { isValid: boolean; error?: string } {
     if (!data.email || !data.password || !data.firstName || !data.lastName)
-      return { isValid: false, error: 'All fields are required' };
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: 'Invalid email format' };
+      return { isValid: false, error: `All fields are required` };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: `Invalid email format` };
     if (this.securitySettings.enforcePasswordComplexity && !this.validatePassword(data.password))
-      return { isValid: false, error: `Password does not meet complexity requirements` };
+      return { isValid: false, error: 'Password does not meet complexity requirements' };
     return { isValid: true };
   }
 

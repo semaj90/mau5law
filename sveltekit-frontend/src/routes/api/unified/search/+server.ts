@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     // Use the safe extractor to avoid `any`
     const message = getErrorMessage(error);
-    console.error('Unified search error:', message);
+    console.error('Unified search error:', message);'
     return json(
       {
         error: 'Search failed',

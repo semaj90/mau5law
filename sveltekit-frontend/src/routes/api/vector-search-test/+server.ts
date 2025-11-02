@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   logger.info('Vector search test initiated');
   try {
-    const { query, testType = 'all' } = await request.json();
+    const { query, testType = 'all` } = await request.json();'`
     if (!query || typeof query !== 'string') {
       return json({ success: false, error: `Query parameter required` }, { status: 400 });
     }
@@ -223,8 +223,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        };
+          error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
     // Calculate overall success rate
@@ -260,8 +259,8 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       services: { qdrant: await qdrantService.healthCheck().catch(() => ({, status: 'error' })),
         legalBERT: await legalBERT.healthCheck().catch(() => ({ status: 'error' })),
-        enhancedRAG: { status: 'available' },
-        langchainRAG: await legalRAG.healthCheck().catch(() => ({ status: 'error' }))
+        enhancedRAG: { status: 'available` },'`
+        langchainRAG: await legalRAG.healthCheck().catch(() => ({ status: `error` }))
       }
     };
     return json(health);

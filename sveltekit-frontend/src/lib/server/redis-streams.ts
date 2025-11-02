@@ -10,11 +10,11 @@ import Redis from 'ioredis'; // Import the Redis constructor
 import type RedisType from 'ioredis';
 // Use centralized factory for Redis connections (singleton for producers/read, fresh for blocking consumers)
 import { redis } from '$lib/server/redis';
-import redisConnection from '$lib/server/redis'; // <-- fixed: default import for connection options
+import redisConnection from '$lib/server/redis'; // <-- fixed: default import for connection, options
 
 let client: RedisType | null = null;
 try {
-  // Prefer a lazy singleton so module load doesn't try to connect during SSR build steps
+  // Prefer a lazy singleton so module load doesn't try to connect during SSR build steps'
   // Use the already existing singleton: 'redis' client
   client = redis as unknown as RedisType;
 } catch (err) {
@@ -22,7 +22,7 @@ try {
   client = null;
 }
 
-export type TokenEntry = { id: string; seq: number; chunk: string;, meta: Record<string, unknown> };
+export type TokenEntry = { id: string; seq: number; chunk: string; meta: Record<string, unknown> };
 
 function streamKey(requestId: string) {
   return `stream:tokens:${requestId}`;
@@ -122,12 +122,12 @@ export async function consumeTokenStream(
   let lastId = fromId;
   const start = Date.now();
 
-  // Use a dedicated connection for blocking XREAD so we don't block the shared client
+  // Use a dedicated connection for blocking XREAD so we don't block the shared client'
   // Create a new Redis instance using the shared connection options and ensure lazyConnect
   const reader = redis as unknown as RedisType;
   try {
     while (Date.now() - start < stopAfterMs) {
-      // Use the reader's call/sendCommand API directly
+      // Use the reader's call/sendCommand API directly'
       const rawRes = (await callRedisRaw(
         reader,
         'XREAD',
@@ -192,7 +192,7 @@ function redisCall(...args: string[]): Promise<unknown> {
   return Promise.reject(new Error('Redis client does not support call/sendCommand'));
 }
 
-export { client as redisClient };
+export { client, as redisClient };
 
 // --- Server-Side Integration Helpers & Typed Interfaces ---
 
@@ -217,7 +217,7 @@ export interface WasmClusteringService {
  * Interface for bridging with nes.css styled WebGPU components.
  */
 export interface NesGPUBridge {
-  getDeviceInfo(): Promise<{ adapter: string;, device: string }>;
+  getDeviceInfo(): Promise<{ adapter: string; device: string }>;
   runComputeShader(shader: string, data: Buffer): Promise<Buffer>;
 }
 
@@ -266,7 +266,7 @@ export class QdrantIndexer {
   ) {
     const response = await fetch(`http://localhost:6333/collections/${collection}/points`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({ points })
     });
     if (!response.ok) {
@@ -279,7 +279,7 @@ export class QdrantIndexer {
 
 /**
  * Postgres JSONB Persistence Helper (requires a Drizzle instance)
- * Example: assumes a: 'documents' table with: 'id'; and: 'data' (jsonb) columns.
+ * Example: assumes; a: 'documents' table; with: 'id'; and: 'data' (jsonb) columns.
  */
 export class PostgresJsonbPersistence {
   // NOTE: `db` would be your imported Drizzle instance.

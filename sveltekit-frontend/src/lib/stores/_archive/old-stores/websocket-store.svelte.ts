@@ -83,7 +83,7 @@ async function connect(userId?: string): Promise<void> {
     wsClient.on('error', (error: any) => {
       websocketStore.error = error.message || 'WebSocket error';
       websocketStore.connecting = $state(false);
-      console.error('❌ WebSocket error:', error);
+      console.error('❌ WebSocket error:', error);'
     });
 
     // Real-time event handlers
@@ -345,9 +345,9 @@ function getTimeAgo(date: Date): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffMins < 1) return 'just, now';
+  if (diffMins < 60) return `${diffMins}m, ago`;
+  if (diffHours < 24) return `${diffHours}h, ago`;
   return `${diffDays}d ago`;
 }
 

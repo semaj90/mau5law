@@ -13,10 +13,9 @@ import { eq } from 'drizzle-orm'
 
 interface DownloadLog {
   itemId: string
-  userId?: string
+  userId?: string;
   userAgent: string; ip: string;
-  timestamp: Date; fileSize: number
-  downloadType: 'view' | 'download'
+  timestamp: Date; fileSize: number; downloadType: 'view' | 'download'
 }
 
 // New: typed evidence row to avoid many `any` casts
@@ -128,7 +127,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       headers
     });
   } catch (err) {
-    console.error('Download error:', err);
+    console.error('Download error:', err);'
     if (
       err instanceof Error &&
       (err.message.includes('400') || err.message.includes('403') || err.message.includes('404'))
@@ -136,7 +135,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500;
       throw error(statusCode, err.message);
     }
-    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 function handleRangeRequest(
@@ -157,7 +156,7 @@ function handleRangeRequest(
         headers: {
           'Content-Type': contentType,
           'Content-Length': fileSize.toString(),
-          'Accept-Ranges': `bytes` }
+          'Accept-Ranges': `bytes' }'`
       });
     }
 
@@ -176,10 +175,10 @@ function handleRangeRequest(
         'Content-Type': contentType,
         'Content-Length': chunkSize.toString(),
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': `bytes` }
+        'Accept-Ranges': `bytes' }'`
     });
   } catch (error) {
-    console.error('Range request error:', error);
+    console.error('Range request error:', error);'
     // Fallback to full file - return full ArrayBuffer
     return new Response(bodyArrayBuffer, {
       status: 200,
@@ -192,14 +191,14 @@ function handleRangeRequest(
 }
 
 // Replace broken parseRangeHeader with a correct implementation
-function parseRangeHeader(range: string, fileSize: number): Array<{ start: number;, end: number }> | null {
+function parseRangeHeader(range: string, fileSize: number): Array<{ start: number; end: number }> | null {
   try {
     if (!range || !range.startsWith('bytes=')) return null;
     const ranges = range
       .slice(6)
       .split(',')
       .map(r => r.trim());
-    const parsed: Array<{ start: number;, end: number }> = [];
+    const parsed: Array<{ start: number; end: number }> = [];
     for (const r of ranges) {
       const [startStr, endStr] = r.split('-');
       let start: number;
@@ -293,10 +292,10 @@ export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
         'Last-Modified': item.uploadedAt ? new Date(item.uploadedAt).toUTCString() : new Date().toUTCString(),
         'Accept-Ranges': 'bytes',
         'X-File-ID': item.id,
-        'X-File-Name': item.originalFileName || item.fileName || 'unknown` }
+        'X-File-Name': item.originalFileName || item.fileName || 'unknown' }
     });
   } catch (err) {
-    console.error('HEAD request error:', err)
+    console.error('HEAD request error:', err)'
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500
       throw error(statusCode, err.message)

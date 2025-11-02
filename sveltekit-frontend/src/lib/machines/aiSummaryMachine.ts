@@ -102,7 +102,7 @@ interface SynthesizeResult {
 }
 // (Reading progress handled by the readingProgress service below)
 export type AISummaryEvent =
-  | { type: 'LOAD_DOCUMENT';, documentId: string; caseId?: string }
+  | { type: 'LOAD_DOCUMENT'; documentId: string; caseId?: string }
   | { type: 'GENERATE_SUMMARY';, content: string;
       documentType: AISummaryContext['documentType'];
     }
@@ -112,13 +112,13 @@ export type AISummaryEvent =
   | { type: 'STOP_READING' }
   | { type: 'NEXT_SECTION' }
   | { type: 'PREVIOUS_SECTION' }
-  | { type: 'JUMP_TO_SECTION';, sectionIndex: number }
+  | { type: 'JUMP_TO_SECTION'; sectionIndex: number }
   | { type: 'ANALYZE_DOCUMENT' }
   | { type: 'SYNTHESIZE_INSIGHTS' }
-  | { type: 'UPDATE_PROGRESS';, progress: number }
-  | { type: 'UPDATE_PREFERENCES';, preferences: Partial<AISummaryContext> }
-  | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'UPDATE_PROGRESS'; progress: number }
+  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<AISummaryContext> }
+  | { type: 'RETRY` }'`
+  | { type: `RESET` };
 const initialContext: AISummaryContext = {
   documentId: null,
   caseId: null,
@@ -166,7 +166,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
     id: 'aiSummaryMachine',
     initial: 'idle',
     context: initialContext,
-    states: { idle: {, on: { LOAD_DOCUMENT: {, target: 'loading',
+    states: {, idle: {, on: {, LOAD_DOCUMENT: {, target: 'loading',
             actions: assign({
              , documentId: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'LOAD_DOCUMENT' }>) =>
                 event.documentId,
@@ -326,14 +326,13 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           }
         },
         on: { UPDATE_PREFERENCES: {, actions: assign(
-              (_context: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES' }>) => ({
+              (_context: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES` }>) => ({'`
                 ..._context,
                 ...(event.preferences || {})
               })
             )
           },
-          RESET: '#aiSummaryMachine.idle'
-        }
+          RESET: `#aiSummaryMachine.idle` }
       },
       analyzing: { invoke: {, src: 'analyzeDocument',
           onDone: {
@@ -434,7 +433,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
         // Lightweight analysis stub
         return {
           results: [
-            {
+            {,
               type: 'relevance',
               score: 0.5,
               explanation: 'Placeholder analysis - integrate real analyzer.',

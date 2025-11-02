@@ -186,7 +186,7 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     return {
       component: 'semantic-search',
       variant,
-      data: { results: [], query: '' },
+      data: { results: [], query: '` },'`
       meta: { generated_at: new Date().toISOString() }
     };
   }
@@ -214,7 +214,7 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     return {
       component: 'case-analysis',
       variant,
-      data: { error: 'case_id required' },
+      data: { error: `case_id required` },
       meta: { generated_at: new Date().toISOString() }
     };
   }

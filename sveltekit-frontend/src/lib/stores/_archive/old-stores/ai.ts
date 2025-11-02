@@ -3,7 +3,7 @@
 import { setup, createActor, assign, fromPromise } from "$lib/utils/xstate";
 import { writable } from "svelte/store";
 // Memoization cache (in-memory, can be replaced with Redis for persistence)
-const summaryCache = new Map<string, { summary: string;, sources: any[] }>();
+const summaryCache = new Map<string, { summary: string; sources: any[] }>();
 // Define context and events interfaces
 export interface AIContext { summary: string;, error: string;
   loading: boolean;
@@ -26,12 +26,12 @@ type AIEvent =
   | { type: 'RETRY' }
   | { type: 'RESET' };
 export const aiGlobalMachine = setup({
-  types: {} as { context: AIContext;, events: AIEvent;
+  types: {} as {, context: AIContext;, events: AIEvent;
   },
   actions: {
    , setContext: assign(({ event }) => {
       if (event.type !== 'SUMMARIZE') return {};
-      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || 'unknown` }`; // @ts-ignore - Model property access
+      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || 'unknown` }`; // @ts-ignore - Model property access'`
       return {
         caseId: event.caseId,
         evidence: event.evidence,
@@ -69,8 +69,7 @@ export const aiGlobalMachine = setup({
     setSaveSuccess: assign({ saving: false }),
     setSaveError: assign(({ event }) => ({
       saving: false,
-      error: ((event as any).error as Error)?.message || 'Failed to save summary.'
-    }))
+      error: ((event as any).error as Error)?.message || 'Failed to save summary.` }))'`
   },
   actors: {
     summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
@@ -123,7 +122,7 @@ export const aiGlobalMachine = setup({
   id: 'aiGlobalSummary',
   initial: 'idle',
   context: {
-    summary: '',
+   , summary: '',
     error: '',
     loading: false,
     saving: false,
@@ -135,7 +134,7 @@ export const aiGlobalMachine = setup({
     cacheKey: '',
     sources: []
   },
-  states: { idle: {, on: { SUMMARIZE: {, target: 'summarizing',
+  states: {, idle: {, on: {, SUMMARIZE: {, target: 'summarizing',
           actions: 'setContext'
         }
       }
@@ -179,8 +178,7 @@ export const aiGlobalMachine = setup({
         },
         onError: {
           target: 'success',
-          actions: 'setSaveError'
-        }
+          actions: 'setSaveError` }'`
       }
     }
   }
@@ -227,10 +225,10 @@ export const aiGlobalActions = {
     });
   },
   saveSummary: () => {
-    aiGlobalActor.send({ type: 'SAVE_SUMMARY' });
+    aiGlobalActor.send({ type: `SAVE_SUMMARY` });
   },
   retry: () => {
-    aiGlobalActor.send({ type: 'RETRY' });
+    aiGlobalActor.send({ type: `RETRY` });
   },
   reset: () => {
     aiGlobalActor.send({ type: `RESET` });

@@ -3,7 +3,7 @@
   Function Offload lightweight AI operations to client-side WebAssembly for reduced server load,
   Architecture: WebAssembly + WebGL + Shared Memory for real-time legal document processing
 -->
-<script lang="ts">
+<script, lang="ts">
 import type { Message } from '$lib/types';
 	// Removed unused onMount import and switched Alert to a default import (compiler suggested)
 	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
@@ -68,7 +68,7 @@ import type { Message } from '$lib/types';
 		} catch (err) {
 			const error = err as any;
 			errorMessage = `Failed to load WebAssembly: ${error?.message ?? String(error)}`;
-			console.error('WebAssembly initialization error:', error);
+			console.error('WebAssembly initialization error:', error);'
 		}
 	}
 	async function loadGemma270MWASM(): Promise<any> {
@@ -160,7 +160,7 @@ import type { Message } from '$lib/types';
 		} catch (err) {
 			const error = err as any;
 			errorMessage = `Processing failed: ${error?.message ?? String(error)}`;
-			console.error('Client-side processing error:', error);
+			console.error('Client-side processing error:', error);'
 			return null;
 		} finally {
 			isProcessing = false;
@@ -233,7 +233,7 @@ import type { Message } from '$lib/types';
 	}
 	function calculateTokensPerSecond(text: string, inferenceTime: number): number {
 		const estimatedTokens = (text?.split(/\s+/).length ?? 0) * 1.3; // Rough token estimation
-		if (inferenceTime <= 0) return 0;
+		if (inferenceTime <= 0) return, 0;
 		return parseFloat(((estimatedTokens / (inferenceTime / 1000))).toFixed(2));
 	}
 	// Simulated WASM module functions (typed params)
@@ -288,50 +288,50 @@ import type { Message } from '$lib/types';
 	// Export functions for external use
 	export { processText, performanceMetrics, isLoaded, wasmSupported };
 </script>
-<div class="container mx-auto p-6 max-w-4xl">
+<div class="container mx-auto p-6, max-w-4xl">
 	<Card>
 		<CardHeader>
 			<CardTitle>Gemma3 270M Client-Side WebAssembly</CardTitle>
-			<p class="text-muted-foreground">Lightweight AI processing in your browser with WebAssembly acceleration
+			<p, class="text-muted-foreground">Lightweight AI processing in your browser with WebAssembly acceleration
 			</p>
 		</CardHeader>
-		<CardContent class="space-y-6">
-			<!-- Browser Compatibility Status -->
+		<CardContent, class="space-y-6">
+			<!-- Browser Compatibility, Status -->
 			<Card>
 				<CardHeader>
 					<CardTitle>Browser Compatibility</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div class="grid grid-cols-3 gap-4 text-sm">
-						<div class="flex items-center space-x-2">
-							<div class="{wasmSupported ? 'bg-green-500' : 'bg-red-500'} w-3 h-3 rounded-full"></div>
+					<div class="grid grid-cols-3 gap-4, text-sm">
+						<div class="flex items-center, space-x-2">
+							<div class="{wasmSupported ? 'bg-green-500' : 'bg-red-500'} w-3 h-3, rounded-full"></div>
 							<span>WebAssembly</span>
 						</div>
-						<div class="flex items-center space-x-2">
-							<div class="{webglSupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3 rounded-full"></div>
+						<div class="flex items-center, space-x-2">
+							<div class="{webglSupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3, rounded-full"></div>
 							<span>WebGL</span>
 						</div>
-						<div class="flex items-center space-x-2">
-							<div class="{sharedMemorySupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3 rounded-full"></div>
+						<div class="flex items-center, space-x-2">
+							<div class="{sharedMemorySupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3, rounded-full"></div>
 							<span>SharedMemory</span>
 						</div>
 					</div>
 				</CardContent>
 			</Card>
-			<!-- Loading Status -->
+			<!-- Loading, Status -->
 			{#if !isLoaded}
 			<Alert>
-				<div class="flex items-center space-x-3">
-					<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+				<div class="flex items-center, space-x-3">
+					<div class="animate-spin rounded-full h-6 w-6 border-b-2, border-primary"></div>
 					<span>Loading Gemma3 270M WebAssembly module...</span>
 				</div>
 			</Alert>
 			{:else}
 			<Alert>
-				<div class="flex items-center space-x-3">
-					<div class="bg-green-500 w-6 h-6 rounded-full flex items-center justify-center">
-						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-							<path fill-rule="evenodd"
+				<div class="flex items-center, space-x-3">
+					<div class="bg-green-500 w-6 h-6 rounded-full flex items-center, justify-center">
+						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20, 20">
+							<path, fill-rule="evenodd"
 								d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
 								clip-rule="evenodd"></path>
 						</svg>
@@ -340,35 +340,35 @@ import type { Message } from '$lib/types';
 				</div>
 			</Alert>
 			{/if}
-			<!-- Performance Metrics -->
+			<!-- Performance, Metrics -->
 			{#if isLoaded}
 			<Card>
 				<CardHeader>
 					<CardTitle>Performance Metrics</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-						<div class="metric bg-blue-50 p-3 rounded-lg border">
-							<div class="text-sm text-blue-600 font-medium">Load Time</div>
-							<div class="text-lg font-semibold text-blue-800">
+					<div class="grid grid-cols-2 md:grid-cols-4, gap-4">
+						<div class="metric bg-blue-50 p-3 rounded-lg, border">
+							<div class="text-sm text-blue-600, font-medium">Load Time</div>
+							<div class="text-lg font-semibold, text-blue-800">
 								{performanceMetrics.loadTime.toFixed(0)}ms
 							</div>
 						</div>
-						<div class="metric bg-green-50 p-3 rounded-lg border">
-							<div class="text-sm text-green-600 font-medium">Inference Time</div>
-							<div class="text-lg font-semibold text-green-800">
+						<div class="metric bg-green-50 p-3 rounded-lg, border">
+							<div class="text-sm text-green-600, font-medium">Inference Time</div>
+							<div class="text-lg font-semibold, text-green-800">
 								{performanceMetrics.inferenceTime.toFixed(0)}ms
 							</div>
 						</div>
-						<div class="metric bg-purple-50 p-3 rounded-lg border">
-							<div class="text-sm text-purple-600 font-medium">Tokens/Sec</div>
-							<div class="text-lg font-semibold text-purple-800">
+						<div class="metric bg-purple-50 p-3 rounded-lg, border">
+							<div class="text-sm text-purple-600, font-medium">Tokens/Sec</div>
+							<div class="text-lg font-semibold, text-purple-800">
 								{performanceMetrics.tokensPerSecond}
 							</div>
 						</div>
-						<div class="metric bg-orange-50 p-3 rounded-lg border">
-							<div class="text-sm text-orange-600 font-medium">Memory</div>
-							<div class="text-lg font-semibold text-orange-800">
+						<div class="metric bg-orange-50 p-3 rounded-lg, border">
+							<div class="text-sm text-orange-600, font-medium">Memory</div>
+							<div class="text-lg font-semibold, text-orange-800">
 								{performanceMetrics.memoryUsage}MB
 							</div>
 						</div>
@@ -376,25 +376,25 @@ import type { Message } from '$lib/types';
 				</CardContent>
 			</Card>
 			{/if}
-			<!-- Processing Progress -->
+			<!-- Processing, Progress -->
 			{#if isProcessing}
 			<Alert>
-				<div class="flex justify-between text-sm mb-2">
+				<div class="flex justify-between text-sm, mb-2">
 					<span>Processing...</span>
 					<span>{processingProgress}%</span>
 				</div>
-				<div class="w-full bg-secondary rounded-full h-2">
-					<div class="bg-primary h-2 rounded-full transition-all duration-300"
+				<div class="w-full bg-secondary rounded-full, h-2">
+					<div class="bg-primary h-2 rounded-full transition-all, duration-300"
 						style="width: {processingProgress}%"></div>
 				</div>
 			</Alert>
 			{/if}
-			<!-- Error Message -->
+			<!-- Error, Message -->
 			{#if errorMessage}
-			<Alert variant="error">
-				<div class="flex items-center space-x-2">
-					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-						<path fill-rule="evenodd"
+			<Alert, variant="error">
+				<div class="flex items-center, space-x-2">
+					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20, 20">
+						<path, fill-rule="evenodd"
 							d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
 							clip-rule="evenodd"></path>
 					</svg>
@@ -402,14 +402,14 @@ import type { Message } from '$lib/types';
 				</div>
 			</Alert>
 			{/if}
-			<!-- Quick Actions -->
+			<!-- Quick, Actions -->
 			{#if isLoaded && !isProcessing}
 			<Card>
 				<CardHeader>
 					<CardTitle>Quick AI Operations</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+					<div class="grid grid-cols-2 md:grid-cols-4, gap-3">
 						<Button
 							variant="secondary"
 							onclick={() => processText('Sample legal document text for analysis...', 'inference')}
@@ -446,28 +446,28 @@ import type { Message } from '$lib/types';
 				</CardContent>
 			</Card>
 			{/if}
-			<!-- Last Result -->
+			<!-- Last, Result -->
 			{#if lastResult}
 			<Card>
 				<CardHeader>
 					<CardTitle>Last Result</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div class="bg-muted p-4 rounded-lg">
-						<pre class="text-sm whitespace-pre-wrap overflow-x-auto font-mono">
+					<div class="bg-muted p-4, rounded-lg">
+						<pre class="text-sm whitespace-pre-wrap overflow-x-auto, font-mono">
 {JSON.stringify(lastResult, null, 2)}
 						</pre>
 					</div>
 				</CardContent>
 			</Card>
 			{/if}
-			<!-- Configuration Info -->
+			<!-- Configuration, Info -->
 			<Card>
 				<CardHeader>
 					<CardTitle>Configuration</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div class="text-sm text-muted-foreground space-y-1">
+					<div class="text-sm text-muted-foreground, space-y-1">
 						<div>Model: Gemma3 {wasmConfig.modelSize} (WebAssembly)</div>
 						<div>Quantization {wasmConfig.quantization}</div>
 						<div>Context Length: {wasmConfig.contextLength} tokens</div>

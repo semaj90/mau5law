@@ -51,8 +51,7 @@ export class WebGPUPolyfillService {
         try {
           const gpu = nav.gpu;
           const adapter = await gpu.requestAdapter?.({
-            powerPreference: 'high-performance'
-          });
+            powerPreference: 'high-performance' });
           this.adapter = adapter ?? null;
           if (this.adapter) {
             this.device = (await this.adapter.requestDevice?.()) ?? null;
@@ -84,7 +83,7 @@ export class WebGPUPolyfillService {
       if (typeof document === 'undefined') return false;
       this.canvas = document.createElement('canvas');
       this.webglFallback = this.canvas.getContext('webgl2', {
-        powerPreference: 'high-performance` });
+        powerPreference: `high-performance' });'`
       if (!this.webglFallback) {
         this.safeError('WebGL2 not available');
         return false;

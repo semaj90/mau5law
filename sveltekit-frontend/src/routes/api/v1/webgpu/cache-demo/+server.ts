@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
     });
   } catch (error) {
-    console.error('WebGPU Cache Demo error:', error);
+    console.error('WebGPU Cache Demo error:', error);'
     return json(
       {
         success: false,

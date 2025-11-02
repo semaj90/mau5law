@@ -51,8 +51,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       throw error(404, 'Unknown matrix endpoint');
     }
   } catch (err) {
-    console.error('Matrix API error:', err);
-    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('Matrix API error:', err);'
+    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 async function handleMatrixOperation(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
@@ -210,13 +210,13 @@ async function handleBatchOperation(request: Request, _requestId: string, _apiSt
   };
   return json(response);
 }
-async function processCUDAMatrixOperation(params: { operation: string;, matrixA: number[][];
+async function processCUDAMatrixOperation(params: {, operation: string;, matrixA: number[][];
   matrixB?: number[][];
-  precision: string;
-  workers: number;
-  requestId: string;
+ , precision: string;
+ , workers: number;
+ , requestId: string;
  , complexity: number;
-}): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number;, parallelWorkers: number }> {
+}): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number; parallelWorkers: number }> {
   const { operation, matrixA, matrixB, precision, workers, requestId, complexity } = params;
   const cudaUrl = getCudaServiceUrl('submit');
   // Enhanced tensor core optimized payload
@@ -265,7 +265,7 @@ async function processCUDAMatrixOperation(params: { operation: string;, matrixA
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': `application/json` },
+      'Content-Type': `application/json' },'`
     body: JSON.stringify(payload)
   });
   if (!response.ok) {
@@ -279,11 +279,11 @@ async function processCUDAMatrixOperation(params: { operation: string;, matrixA
     parallelWorkers: result.parallel_workers || 1
   };
 }
-async function processCUDABatchOperation(params: { operation: string;, matrices: number[][][];
+async function processCUDABatchOperation(params: {, operation: string;, matrices: number[][][];
   transformMatrix?: number[][];
-  maxParallelWorkers: number;
+ , maxParallelWorkers: number;
  , chunkSize: number;
-}): Promise<{ result: number[][][]; flops: number; memoryUsed: number;, parallelWorkers: number }> {
+}): Promise<{ result: number[][][]; flops: number; memoryUsed: number; parallelWorkers: number }> {
   const { operation, matrices, transformMatrix, maxParallelWorkers, chunkSize } = params;
   const cudaUrl = getCudaServiceUrl('submit');
   const payload = {
@@ -304,7 +304,7 @@ async function processCUDABatchOperation(params: { operation: string;, matrices
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': `application/json` },
+      'Content-Type': `application/json' },'`
     body: JSON.stringify(payload)
   });
   if (!response.ok) {
@@ -318,7 +318,7 @@ async function processCUDABatchOperation(params: { operation: string;, matrices
     parallelWorkers: result.parallel_workers || 1
   };
 }
-async function processCPUMatrixOperation(params: { operation: string;, matrixA: number[][];
+async function processCPUMatrixOperation(params: {, operation: string;, matrixA: number[][];
   matrixB?: number[][];
  , precision: string;
 }): Promise<number[][] | number[]> {
@@ -337,7 +337,7 @@ async function processCPUMatrixOperation(params: { operation: string;, matrixA:
       throw new Error(`Unknown CPU; operation: ${operation}`);
   }
 }
-async function processCPUBatchOperation(params: { operation: string;, matrices: number[][][];
+async function processCPUBatchOperation(params: {, operation: string;, matrices: number[][][];
   transformMatrix?: number[][];
  , chunkSize: number;
 }): Promise<number[][][]> {
@@ -547,7 +547,7 @@ function generateMatrixClientHints(operation: string, rows: number, cols: number
       texture_format: totalElements > 1000 ? 'RGBA32F' : 'RGBA16F',
       framebuffer_optimization: true,
       vertex_array_streaming: operation === 'multiply',
-      fragment_precision: complexity > 75 ? 'highp' : `mediump` },
+      fragment_precision: complexity > 75 ? 'highp' : `mediump' },'`
     wasm_simd_hints: {
       vector_width: 128, // 4x float32
       loop_unrolling: Math.min(8, Math.max(2, Math.floor(cols / 16))),

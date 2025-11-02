@@ -7,7 +7,7 @@ import { pgTable, uuid, integer, varchar, text, timestamp, jsonb, index } from '
 import { sql } from 'drizzle-orm';
 import { customType } from 'drizzle-orm/pg-core';
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
-const vector = customType<{ data: number[];, config: { dimensions?: number } }>({
+const vector = customType<{ data: number[]; config: { dimensions?: number } }>({
   dataType(config) {
     return `vector(${config?.dimensions || 512})`;
   },
@@ -56,7 +56,7 @@ export const evidence = pgTable('evidence', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
-  caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
+  caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade` }),'`
   title: varchar('title', { length: 500 }),
   description: text('description'),
   evidenceType: varchar('evidence_type', { length: 100 }),

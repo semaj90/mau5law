@@ -3,11 +3,11 @@ import Loki from 'lokijs'; // Import Loki.js
 // Define a lightweight local type that captures the collection methods used here.
 type LokiCollection<T> = {
 	insert: (doc: T) => T | T[] | undefined; // allow Loki to return undefined or an array
-	// Loki's update() can return the updated document(s) or a number (changes) in some typings; accept all common possibilities
+	// Loki's update() can return the updated document(s) or a number (changes) in some typings; accept all common possibilities'
 	update: (doc: T) => T | T[] | number | void;
-	// Broaden query parameter to typed shapes compatible with Loki's PartialModel query shape
+	// Broaden query parameter to typed shapes compatible with Loki's PartialModel query shape'
 	find: (query?: Partial<T> | Record<string, unknown>, ...args: any[]) => T[];
-	// Loki's findOne may return T | null | undefined depending on typings/runtime
+	// Loki's findOne may return T | null | undefined depending on typings/runtime'
 	findOne: (query?: Partial<T> | Record<string, unknown>) => T | null | undefined;
 	remove?: (doc: T) => void;
 	// add any other minimal methods you rely on
@@ -100,7 +100,7 @@ export async function rerank(
   const res = await fetch('/api/rerank', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json` },
+      'Content-Type': 'application/json' },
     body: JSON.stringify({ query, candidates, options })
   });
   let reranked: Candidate[] = [];

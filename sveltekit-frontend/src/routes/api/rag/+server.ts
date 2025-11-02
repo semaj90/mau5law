@@ -1,5 +1,5 @@
 import type { User } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types.js'
 /*
  * Enhanced RAG API Endpoints - Backend Integration
@@ -112,7 +112,7 @@ async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {
     // Log error
     if (err instanceof Error) {
       // Type narrowing for Error
-      console.error(`RAG Backend API call error [${duration}ms]: ', {
+      console.error(`RAG Backend API call error [${duration}ms]: ', {'`
         endpoint,
         error: err.message
       });
@@ -178,7 +178,7 @@ async function handleQueueSummarize(request: Request): Promise<Response> {
     return json({ success: true, data: result });
   } catch (err: any) {
     // Use unknown for catch block
-    console.error('queue-summarize error:', err);
+    console.error('queue-summarize error:', err);'
     let errorMessage = 'Unknown error';
     if (err instanceof Error) {
       // Type narrowing for Error
@@ -219,7 +219,7 @@ async function handleSearch(request: Request): Promise<Response> {
       const result = await forwardToRAGBackend<RagSearchResult>('/api/v1/rag/search', {
         // Use specific type
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           query,
           searchType,
@@ -241,8 +241,7 @@ async function handleSearch(request: Request): Promise<Response> {
         results: result.results, // Use typed result
         metadata: result.metadata, // Use typed result
         total: result.total || result.results?.length || 0, // Use typed result
-        source: 'rag-backend'
-      });
+        source: `rag-backend` });
     } catch (backendError: any) {
       // Use unknown for catch block
       let backendErrorMessage = 'Unknown backend error';
@@ -322,7 +321,7 @@ async function handleAnalyze(request: Request): Promise<Response> {
     });
   } catch (err: any) {
     // Use unknown for catch block
-    console.error('Analysis error:', err);
+    console.error('Analysis error:', err);'
     let errorMessage = 'Unknown error';
     if (err instanceof Error) {
       // Type narrowing for Error
@@ -358,7 +357,7 @@ async function handleSummarize(request: Request): Promise<Response> {
     });
   } catch (err: any) {
     // Use unknown for catch block
-    console.error('Summarization error:', err);
+    console.error('Summarization error:', err);'
     let errorMessage = 'Unknown error';
     if (err instanceof Error) {
       // Type narrowing for Error
@@ -411,7 +410,7 @@ async function handleStatus(): Promise<Response> {
     });
   } catch (err: any) {
     // Use unknown for catch block
-    console.error('Status check error:', err);
+    console.error('Status check error:', err);'
     let errorMessage = 'Unknown error';
     if (err instanceof Error) {
       // Type narrowing for Error
@@ -464,7 +463,7 @@ export const GET: RequestHandler = async ({ url }) => {
           const searchResult = await forwardToRAGBackend<RagSearchResult>('/api/v1/rag/search', {
             // Use specific type
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json` },'`
             body: JSON.stringify({
               query,
               searchType,
@@ -478,8 +477,7 @@ export const GET: RequestHandler = async ({ url }) => {
             query,
             results: searchResult.results,
             total: searchResult.total,
-            source: 'rag-backend'
-          });
+            source: `rag-backend` });
         } catch (backendError: any) {
           // Use unknown for catch block
           let backendErrorMessage = 'Unknown backend error';
@@ -510,11 +508,11 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
       default:
-        throw error(400, `Invalid action: ${action || 'none` }`);
+        throw error(400, `Invalid action: ${action || 'none` }`);'`
     }
   } catch (err: any) {
     // Use unknown for catch block
-    console.error(`GET /${action} error: ', err);
+    console.error(`GET /${action} error: ', err);'`
     // Check if err is an instance of HttpError from SvelteKit or has a status property
     if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
       throw err; // Re-throw SvelteKit HttpError
@@ -538,7 +536,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         const refreshResult = await forwardToRAGBackend<RagCacheResult>('/api/v1/rag/cache', {
           // Use specific type
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, action: `refresh` })
         });
         return json({ success: true, result: refreshResult.result }); // Use typed result
@@ -552,7 +550,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     }
   } catch (err: any) {
     // Use unknown for catch block
-    console.error('PATCH operation error:', err);
+    console.error('PATCH operation error:', err);'
     // Check if err is an instance of HttpError from SvelteKit or has a status property
     if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
       throw err; // Re-throw SvelteKit HttpError
@@ -579,10 +577,10 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       message: result.message || 'Cache cleared successfully', // Use typed result
-      pattern: pattern || 'all` });
+      pattern: pattern || 'all` });'`
   } catch (err: any) {
     // Use unknown for catch block
-    console.error('Cache clear error:', err);
+    console.error('Cache clear error:', err);'
     // Check if err is an instance of HttpError from SvelteKit or has a status property
     if (err && typeof err === 'object' && 'status' in err && typeof (err as { status: number }).status === 'number') {
       throw err; // Re-throw SvelteKit HttpError

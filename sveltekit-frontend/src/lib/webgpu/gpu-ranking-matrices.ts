@@ -93,14 +93,13 @@ export class GPURankingMatrices {
     // Create bind group layout for ranking compute shader
     this.bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {
-          binding: 0,
+        {,
+         , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
           storageTexture: {
-            access: 'write-only',
+           , access: 'write-only',
             format: 'rgba32float' as GPUTextureFormat,
-            viewDimension: '2d'
-          }
+            viewDimension: '2d' }
         },
         {
           binding: 1,
@@ -120,7 +119,7 @@ export class GPURankingMatrices {
       }),
       compute: {
         module: shaderModule,
-        entryPoint: 'main` }
+        entryPoint: `main' }'`
     });
   }
   private generateRankingComputeShader(): string {
@@ -200,13 +199,13 @@ export class GPURankingMatrices {
           optimization === 'fast'
             ? '// Fast optimization: Direct write'
             : optimization === 'accurate'
-              ? `// Accurate optimization: Normalized values
+              ? `// Accurate optimization: Normalized values`
            pixelValue = normalize(pixelValue);`
-              : `// Balanced optimization: Clamped values
-           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));` }
+              : `// Balanced optimization: Clamped values`
+           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));' }'
         textureStore(rankingTexture, texCoord, pixelValue);
       }
-    `;
+    `;`
   }
   async updateRankingMatrices(documents: LegalDocument[]): Promise<void> {
     if (!this.isInitialized) await this.initialize();
@@ -240,7 +239,7 @@ export class GPURankingMatrices {
     const bindGroup = this.device.createBindGroup({
       layout: this.bindGroupLayout,
       entries: [
-        {
+        {,
          , binding: 0,
           resource: this.rankingTexture!.createView()
         },

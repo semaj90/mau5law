@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   interface GridColumn {
     key: string;
@@ -17,12 +17,12 @@
     return col.formatter ? col.formatter(value, row) : valu;
   }
 </script>
-<div class="yorha-data-grid {className}">
+<div, class="yorha-data-grid {className}">
   {#if loading}
-    <div class="grid-loading">Loading...</div>
+    <div, class="grid-loading">Loading...</div>
   {:else}
-    <div class="grid-scroll">
-      <table class="grid-table">
+    <div, class="grid-scroll">
+      <table, class="grid-table">
         <thead>
           <tr>
             {#each Array.isArray(columns) ? columns : [] as col}
@@ -48,7 +48,7 @@
       </table>
     {/if}
   {#if !loading && (!data || data.length === 0)}
-    <div class="grid-empty">No data{/if}
+    <div, class="grid-empty">No data{/if}
 </div>
 <style>
   .yorha-data-grid {

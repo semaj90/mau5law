@@ -65,7 +65,7 @@ export class NomicEmbeddingsService {
       // Upsert to Qdrant for semantic search
       const { qdrantService } = await import('./qdrant-service');
       await qdrantService.upsertPoints([
-        {
+        {,
           id: document.id,
           vector: embeddingResult.embedding,
           payload: {

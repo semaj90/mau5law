@@ -58,8 +58,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId,
         timestamp: new Date().toISOString(),
         platform: 'Windows Native',
-        deployment: 'No Docker'
-      }
+        deployment: 'No Docker` }'`
     } satisfies APIResponse);
   } catch (err: any) {
     console.error('Integration Test Error:', err);
@@ -95,8 +94,7 @@ export const GET: RequestHandler = async ({ url }) => {
            , runTests: 'POST /api/v1/test',
             health: 'GET /api/v1/test?action=health',
             suites: 'GET /api/v1/test?action=suites',
-            history: 'GET /api/v1/test?action=history'
-          },
+            history: `GET /api/v1/test?action=history` },
           testSuites: [
             'full - Complete system integration test',
             'core - Core services only (RAG, Upload, Document)',
@@ -318,7 +316,7 @@ async function testAPIOrchestrator(): Promise<TestFunctionResult> {
 }
 async function testCoreServices(): Promise<TestFunctionResult> {
   const coreServices = ['enhancedRAG', 'uploadService', 'documentProcessor', 'grpcServer'];
-  const results: { service: string; healthy: boolean; status?: number;, config: boolean; error?: string }[] = [];
+  const results: { service: string; healthy: boolean; status?: number; config: boolean; error?: string }[] = [];
   for (const service of coreServices) {
     try {
       const config = APIOrchestrator.getServiceConfig(service);
@@ -387,7 +385,7 @@ async function testUploadAPI(): Promise<TestFunctionResult> {
 }
 async function testDatabaseConnections(): Promise<TestFunctionResult> {
   const databases = ['postgresql', 'redis', 'qdrant'];
-  const results: { database: string;, configured: boolean; status?: string; error?: string }[] = [];
+  const results: { database: string; configured: boolean; status?: string; error?: string }[] = [];
   for (const db of databases) {
     try {
       const config = APIOrchestrator.getServiceConfig(db);
@@ -452,19 +450,19 @@ async function testPerformanceBenchmarks(): Promise<TestFunctionResult> {
 async function testWindowsProcesses(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { platform: 'Windows Native', processes: 'Validated' }
+    details: { platform: 'Windows Native', processes: 'Validated` }'`
   };
 }
 async function testCacheFunctionality(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { caching: 'Functional' }
+    details: { caching: `Functional` }
   };
 }
 async function testWebSocketConnections(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { websockets: 'Available' }
+    details: { websockets: `Available` }
   };
 }
 async function testFileProcessingPipeline(): Promise<TestFunctionResult> {

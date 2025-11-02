@@ -30,7 +30,7 @@ const DetectiveAnalysisSchema = z.object({
     .default({})
 });
 // Add a derived TypeScript type for clearer typing (replaces inline z.infer usage)
-type DetectiveAnalysis = z.infer<typeof DetectiveAnalysisSchema>;
+type DetectiveAnalysis = z.infer<typeof, DetectiveAnalysisSchema>;
 /**
  * Detective Mode Service
  */
@@ -43,7 +43,7 @@ class DetectiveModeService {
     // Replace `any` cast with a typed assertion and runtime guard
     const caseResult = (await db.execute(sql`
       SELECT * FROM cases WHERE id = ${caseId} LIMIT 1
-    `)) as Array<Record<string, unknown>> | undefined;
+    `)) as Array<Record<string, unknown>> | undefined;`
     if (!Array.isArray(caseResult) || caseResult.length === 0) {
       throw new Error('Case not found');
     }
@@ -69,7 +69,7 @@ class DetectiveModeService {
     // For now, return sample insights
     const sampleInsights = {
       pattern_detection: [
-        {
+        {,
           title: 'Recurring Location Pattern',
           description: 'Multiple evidence pieces reference the same location',
           confidence: 0.85,
@@ -77,35 +77,33 @@ class DetectiveModeService {
         },
       ],
       anomaly_detection: [
-        {
+        {,
           title: 'Timeline Inconsistency',
-          description: "Evidence timestamps don't align with witness statements",
+          description: "Evidence timestamps don't align with witness statements",'
           confidence: 0.78,
           priority: 'high'
         },
       ],
       connection_analysis: [
-        {
+        {,
           title: 'Person of Interest Connection',
           description: 'Multiple POIs share common associates',
           confidence: 0.92,
-          priority: 'critical'
-        },
+          priority: 'critical` }'`
       ],
       timeline_gap: [
-        {
+        {,
           title: 'Missing Evidence Window',
           description: '30-day gap in evidence collection',
           confidence: 0.88,
-          priority: 'medium'
-        },
+          priority: `medium` }
       ],
       risk_assessment: [
-        {
+        {,
           title: 'High-Stakes Case Risk',
           description: 'Case contains indicators requiring immediate attention',
           confidence: 0.94,
-          priority: `critical` },
+          priority: `critical` }
       ]
     };
     return sampleInsights[analysisType as keyof typeof sampleInsights] || [];
@@ -139,12 +137,12 @@ function getErrorMessage(err: any): string {
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 });
+      return json({ success: false, message: 'Authentication required` }, { status: 401 });'`
     }
     const caseId = url.searchParams.get('caseId');
     // Return sample insights for now
     const insights = [
-      {
+      {,
         id: crypto.randomUUID(),
         caseId,
         type: 'pattern_detection',
@@ -176,7 +174,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 });
+      return json({ success: false, message: `Authentication required` }, { status: 401 });
     }
     const body = await request.json();
     const validatedData = DetectiveAnalysisSchema.parse(body);

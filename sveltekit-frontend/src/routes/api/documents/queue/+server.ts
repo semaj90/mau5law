@@ -11,7 +11,7 @@ import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabb
  * - Upload → Queue job → Background workers process → XState manages state → WebSocket notifies frontend
  *
  * Example Request:
- * ```json
+ * ```json`
  * {
  *   "s3Key": "documents/2024/case-123/evidence.pdf",
  *   "s3Bucket": "legal-documents",
@@ -26,7 +26,7 @@ import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabb
  * ```
  *
  * Example Response (202 Accepted):
- * ```json
+ * ```json`
  * {
  *   "message": "Document processing job accepted.",
  *   "jobId": "uuid-here",
@@ -102,12 +102,12 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           error: 'Failed to queue document processing job.',
           details: 'RabbitMQ unavailable or connection error',
-          retry: 'Please try again in a few seconds` },
+          retry: 'Please try again in a few seconds' },
         { status: 500 }
       );
     }
   } catch (error: any) {
-    console.error('❌ [queue] API POST error:', error);
+    console.error('❌ [queue] API POST error:', error);'
     return json(
       {
         error: 'An unexpected error occurred.',
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
  * GET /api/documents/queue - Check RabbitMQ queue health
  *
  * Example Response:
- * ```json
+ * ```json`
  * {
  *   "healthy": true,
  *   "queues": {
@@ -144,12 +144,12 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('❌ [queue] Health check error:', error);
+    console.error('❌ [queue] Health check error:', error);'
     return json(
       {
         healthy: false,
         error: error instanceof Error ? error.message : String(error),
-        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672` },
+        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672' },
       { status: 503 } // 503 Service Unavailable
     );
   }

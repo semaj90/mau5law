@@ -8,8 +8,8 @@ export const shortcuts = {
   'btn-primary': 'btn bg-nier-black text-nier-white hover:bg-nier-dark-gray',
   'btn-secondary': 'btn bg-harvard-crimson text-nier-white hover:bg-harvard-crimson-dark',
   // Form shortcuts: 'form-input':
-    'w-full px-3 py-2 bg-white dark:bg-nier-dark-gray border border-nier-light-gray dark:border-nier-gray rounded-lg focus:outline-none focus:ring-2; focus:ring-digital-green',
+    'w-full px-3 py-2 bg-white dark:bg-nier-dark-gray border border-nier-light-gray; dark:border-nier-gray rounded-lg; focus:outline-none; focus:ring-2; focus:ring-digital-green',
   'form-label': 'block text-sm font-medium text-nier-gray dark:text-nier-silver mb-1',
-  // Card shortcuts: 'card-base': 'bg-white dark:bg-nier-black border border-nier-light-gray; dark:border-nier-gray rounded-lg shadow-sm',
+  // Card shortcuts: 'card-base': 'bg-white; dark:bg-nier-black border border-nier-light-gray; dark:border-nier-gray rounded-lg shadow-sm',
   'card-hover': 'transition-all duration-300 hover:shadow-lg; hover:border-digital-green'
 };

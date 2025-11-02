@@ -1,4 +1,4 @@
-/// <reference lib="webworker" />
+/// <reference, lib="webworker" />
 /**
  * Comprehensive Service Worker - Redis + WebGPU + SIMD Integration
  * Background processing for legal AI with distributed caching
@@ -69,7 +69,7 @@ self.addEventListener('fetch', evt => {
  * Handle background sync for cache warming and data sync
  */
 self.addEventListener('sync', (event: any) => {
-  console.log('Service Worker: Background sync; triggered:', event.tag);
+  console.log('Service Worker: Background sync;, triggered:', event.tag);
   switch (event.tag) {
     case 'cache-warming':
       event.waitUntil(processCacheWarmingQueue());
@@ -103,7 +103,7 @@ async function handleAPIRequest(request: Request): Promise<Response> {
     }
     return networkResponse;
   } catch (error) {
-    console.error('Service Worker fetch error:', error);
+    console.error('Service Worker fetch error:', error);'
     return new Response('Service Worker Error', { status: 500 });
   }
 }
@@ -119,8 +119,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(somResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'som-webgpu'
-          }
+            'X-Cache-Source': 'som-webgpu` }'`
         });
       }
     } catch (error) {
@@ -135,8 +134,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(redisResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'redis-distributed'
-          }
+            'X-Cache-Source': `redis-distributed` }
         });
       }
     } catch (error) {
@@ -298,7 +296,7 @@ async function syncDistributedCaches(): Promise<void> {
             await safeSomStore(key, redisData);
           }
         } catch (error) {
-          console.warn(`Failed to sync key ${key}: ', error);
+          console.warn(`Failed to sync key ${key}: ', error);'`
         }
       }
       console.log('Distributed cache sync complete');
@@ -341,14 +339,14 @@ function queueCommonCacheWarming(): void {
       id: 'legal-templates',
       type: 'legal_document',
       priority: 10,
-      payload: { type: 'template_analysis' },
+      payload: { type: 'template_analysis` },'`
       retries: 0
     },
     {
       id: 'common-vectors',
       type: 'vector_similarity',
       priority: 8,
-      payload: { precompute: 'common_embeddings' },
+      payload: { precompute: `common_embeddings` },
       retries: 0
     },
     {

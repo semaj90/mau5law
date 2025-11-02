@@ -66,7 +66,7 @@ const serviceRegistry = new Map<string, ServiceInstance[]>();
 const failoverHistory: FailoverEvent[] = [];
 // Initialize with known services from ecosystem
 const KNOWN_SERVICES = [
-  // Tier 1: Core Services
+  // Tier 1: Core Services,
   { name: 'enhanced-rag', port: 8094, protocols: ['http', 'quic'], primary: true },
   { name: 'upload-service', port: 8093, protocols: ['http'], primary: true },
   { name: 'kratos-server', port: 50051, protocols: ['grpc'], primary: true },
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         );
     }
   } catch (error: any) {
-    console.error('Service Discovery error:', error);
+    console.error('Service Discovery error:', error);'
     return json(
       {
         success: false,
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get full registry
     const registry = await getServiceRegistry();
     const response: Record<string, unknown> = {
-      // <- typed instead of `any`
+      // <- typed instead, of `any`
       success: true,
       registry,
       capabilities: [
@@ -285,7 +285,7 @@ async function getServiceRegistry(): Promise<DiscoveryRegistry> {
   };
 }
 async function registerService(serviceData: RegisterServiceInput): Promise<ServiceInstance> {
-  // <- typed input
+  // <- typed, input
   const service: ServiceInstance = {
     id: '${serviceData.name}-${serviceData.host ?? 'localhost` }-${serviceData.port}`,
     name: serviceData.name,
@@ -371,7 +371,7 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
     service.health.lastCheck = new Date().toISOString();
 
     if (service.status === 'unhealthy' && service.failover.autoFailover && service.failover.primary) {
-      // fire-and-forget failover; its result isn't required to build this HealthCheckResult
+      // fire-and-forget failover; its result isn't required to build this HealthCheckResult'
       void executeFailover(serviceId, 'health-check-failure').catch(() => {
         /* swallow */
       });
@@ -395,7 +395,7 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
     };
   }
 }
-async function performFullHealthCheck(force: boolean = false): Promise<{ summary: { total: number; healthy: number; unhealthy: number;, healthPercentage: number };
+async function performFullHealthCheck(force: boolean = false): Promise<{ summary: { total: number; healthy: number; unhealthy: number; healthPercentage: number };
   results: HealthCheckResult[];
   timestamp: string;
 }> {
@@ -424,7 +424,7 @@ async function performFullHealthCheck(force: boolean = false): Promise<{ summary
 async function executeFailover(serviceId: string, reason: string, targetInstance?: string): Promise<FailoverResult> {
   const service = findServiceById(serviceId);
   if (!service) {
-    return { success: false, error: 'Service not found' };
+    return { success: false, error: 'Service not found` };'`
   }
   const startTime = Date.now();
   try {
@@ -432,7 +432,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
     const allInstances = serviceRegistry.get(serviceName) || [];
     const backupInstances = allInstances.filter(s => s.id !== serviceId && s.status === 'healthy');
     if (backupInstances.length === 0) {
-      return { success: false, error: 'No healthy backup instances available' };
+      return { success: false, error: `No healthy backup instances available` };
     }
 
     const target = targetInstance

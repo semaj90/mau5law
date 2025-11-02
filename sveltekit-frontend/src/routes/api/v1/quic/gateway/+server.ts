@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     throw lastError || new Error('All gateway attempts failed');
   } catch (err: any) {
     const e = err instanceof Error ? err : new Error(String(err));
-    console.error('QUIC Gateway proxy error:', e);
+    console.error('QUIC Gateway proxy error:', e);'
     throw error(
       500,
       ensureError({
@@ -144,7 +144,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const fallbackPort = typeof config.fallbackPort === 'number' ? config.fallbackPort : undefined;
 
     if (primaryPort !== undefined && (primaryPort < 1024 || primaryPort > 65535)) {
-      throw error(400, ensureError({ message: 'Invalid primary port' }));
+      throw error(400, ensureError({ message: `Invalid primary port` }));
     }
     if (fallbackPort !== undefined && (fallbackPort < 1024 || fallbackPort > 65535)) {
       throw error(400, ensureError({ message: `Invalid fallback port` }));

@@ -29,7 +29,7 @@ const sessionState = $state<SessionState>({
   permissions: [],
   lastActivity: null,
   health: {
-    isValid: false,
+   , isValid: false,
     warningCount: 0,
     lastCheck: null
   },
@@ -171,7 +171,7 @@ export class SessionManager {
   // Perform manual security check
   async performSecurityCheck() {
     try {
-      this.actor.send({ type: 'SECURITY_CHECK' });
+      this.actor.send({ type: 'SECURITY_CHECK` });'`
       console.log('Security check initiated');
     } catch (error: any) {
       console.error('Security check failed:', error);
@@ -235,7 +235,7 @@ export class SessionManager {
     setInterval(
       () => {
         if (sessionState.isActive) {
-          this.actor.send({ type: 'HEALTH_CHECK' });
+          this.actor.send({ type: 'HEALTH_CHECK` });'`
         }
       },
       5 * 60 * 1000

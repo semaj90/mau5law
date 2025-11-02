@@ -63,7 +63,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
       }
       return;
     }
-    console.error('Redis connection error:', err);
+    console.error('Redis connection error:', err);'
   };
   // attach handlers (guarded to avoid: "possibly undefined" issues)
   if (hasOnMethod(inst)) {
@@ -116,7 +116,7 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
         }
         return;
       }
-      console.error('Redis connection error:', err);
+      console.error('Redis connection error:', err);'
     });
   }
   return conn;

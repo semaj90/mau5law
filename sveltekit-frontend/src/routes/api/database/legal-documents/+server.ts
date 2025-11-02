@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           legalContext,
           uploadMetadata: metadata,
           chainOfCustody: result.metadata?.chain_of_custody || [
-            {
+            {,
               timestamp: new Date().toISOString(),
               actor: session.userId,
               action: 'uploaded',
@@ -151,9 +151,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       documentsStored: documentIds.length,
       documentIds: documentIds,
       caseId: caseId,
-      message: `Successfully stored ${documentIds.length} documents' });
+      message: 'Successfully stored ${documentIds.length} documents' });
   } catch (error) {
-    console.error('Database storage error:', error);
+    console.error('Database storage error:', error);'
     return json(
       {
         error: 'Failed to store documents',
@@ -172,12 +172,12 @@ async function generateSearchEmbeddings(documentIds: string[]): Promise<any> {
       if (document.length === 0) continue;
       const docData = document[0];
       const textContent = docData.textContent || docData.aiAnalysis?.summary || '';
-      if (textContent.length < 10) continue; // Skip documents with minimal content
+      if (textContent.length < 10) continue; // Skip documents with minimal, content
       // Generate embeddings using Ollama
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
          , model: 'mxbai-embed-large',
           prompt: textContent.slice(0, 2000), // Limit content for embedding

@@ -42,8 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
            , processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            endpoint: '/api/v1/health/database'
-          }
+            endpoint: `/api/v1/health/database` }
         });
       }
       case 'metrics': {
@@ -54,7 +53,7 @@ export const GET: RequestHandler = async ({ url }) => {
         } else {
           metrics = {
             fallback: true,
-            note: 'getDatabaseMetrics not available` };
+            note: `getDatabaseMetrics not available` };
         }
         return json({
           success: true,
@@ -72,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: true,
             data: {
-              schemaValid: isValid.valid,
+             , schemaValid: isValid.valid,
               missingTables: isValid.missingTables
             },
             metadata: {
@@ -85,7 +84,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: true,
             data: {
-              schemaValid: valid,
+             , schemaValid: valid,
               missingTables: null,
               fallback: true
             },
@@ -104,7 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            vectorOperationsWorking: vectorTest,
+           , vectorOperationsWorking: vectorTest,
             pgvectorEnabled
           },
           metadata: {
@@ -114,12 +113,12 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default: return error(
           400,
-          ensureError({ message: `Invalid, action: ${action}., Available: health, metrics, validate, vector' })
+          ensureError({ message: `Invalid, action: ${action}., Available: health, metrics, validate, vector` })
         );
     }
   } catch (err: any) {
     const normalized = ensureError(err);
-    console.error('Database health check error:', normalized);
+    console.error('Database health check error:', normalized);'
     return json(
       {
         success: false,
@@ -145,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (typeof checker.clearCache === 'function') {
           checker.clearCache();
         } else {
-          // fallback: no-op (module doesn't support cache clearing)
+          // fallback: no-op (module doesn't support cache clearing)'
           console.warn('dbHealthChecker.clearCache not available; skipping clear cache.');
         }
         return json({
@@ -166,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
           health = {
             fallback: true,
             schemaValid: valid,
-            message: 'checkHealth not available; returned minimal fallback result` };
+            message: `checkHealth not available; returned minimal fallback result` };
         }
         return json({
           success: true,
@@ -184,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (err: any) {
     const normalized = ensureError(err);
-    console.error('Database health check POST error:', normalized);
+    console.error('Database health check POST error:', normalized);'
     return json(
       {
         success: false,

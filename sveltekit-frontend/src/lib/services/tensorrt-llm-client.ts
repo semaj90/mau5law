@@ -157,8 +157,7 @@ class TensorRTLLMClient {
         'X-Request-ID': requestId,
         'X-Priority': options.priority || 'normal',
         'X-SIMD-Preferred': 'true',
-        'Cache-Control': 'no-cache'
-      },
+        'Cache-Control': `no-cache` },
       body: JSON.stringify(optimizedRequest),
       signal: controller.signal,
       keepalive: true,
@@ -221,7 +220,7 @@ class TensorRTLLMClient {
     requestId: string
   ): Promise<LegalAIResponse> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'`
     }
     // Use optimized JSON parsing
     const result: LegalAIResponse = await this.parseResponseOptimized(response);
@@ -236,7 +235,7 @@ class TensorRTLLMClient {
       clientLatency: latency,
       requestId,
       simdOptimized: response.headers.get('X-SIMD-Optimized') === 'true',
-      quicUsed: response.headers.get('X-QUIC-Enabled') === 'true` };
+      quicUsed: response.headers.get('X-QUIC-Enabled') === 'true` };'`
 
     return result;
   }
@@ -250,7 +249,7 @@ class TensorRTLLMClient {
     requestId: string
   ): AsyncGenerator<StreamingResponse, void, unknown> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'`
     }
     const reader = response.body?.getReader();
     if (!reader) {

@@ -87,7 +87,7 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , vector: request.query_vector,
           limit: request.limit || 10,
@@ -110,7 +110,7 @@ export class QdrantHTTPClient {
         vector: item.vector
       }));
     } catch (error) {
-      console.error('Qdrant HTTP search error:', error);
+      console.error('Qdrant HTTP search error:', error);'
       throw error;
     }
   }
@@ -122,7 +122,7 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, points: request.points })
       });
 
@@ -133,7 +133,7 @@ export class QdrantHTTPClient {
       const data = await response.json();
       return { status: data.status };
     } catch (error) {
-      console.error('Qdrant HTTP upsert error:', error);
+      console.error('Qdrant HTTP upsert error:', error);'
       throw error;
     }
   }
@@ -154,11 +154,11 @@ export class QdrantHTTPClient {
       // Create collection
       const createResponse = await fetch(`${this.baseUrl}/collections/${this.collectionName}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vectors: {, size: VECTOR_DIMENSIONS,
-            distance: `Cosine` },
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, vectors: {, size: VECTOR_DIMENSIONS,
+            distance: `Cosine' },'`
           optimizers_config: {
-            default_segment_number: 4,
+           , default_segment_number: 4,
             indexing_threshold: 10000
           },
           hnsw_config: {
@@ -175,7 +175,7 @@ export class QdrantHTTPClient {
 
       console.log(`Qdrant collection: '${this.collectionName}' created successfully`);
     } catch (error) {
-      console.error('Qdrant collection creation error:', error);
+      console.error('Qdrant collection creation error:', error);'
       throw error;
     }
   }
@@ -194,7 +194,7 @@ export class QdrantHTTPClient {
       const data = await response.json();
       return data.result;
     } catch (error) {
-      console.error('Qdrant collection info error:', error);
+      console.error('Qdrant collection info error:', error);'
       throw error;
     }
   }
@@ -278,7 +278,7 @@ export class QdrantQUICClient {
         yield result;
       }
     } catch (error) {
-      console.error('QUIC search stream error:', error);
+      console.error('QUIC search stream error:', error);'
       throw error;
     }
   }

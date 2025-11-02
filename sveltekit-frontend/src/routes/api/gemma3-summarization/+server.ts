@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const response = await fetch(`${GEMMA3_SUMMARIZATION_SERVICE_URL}${backendEndpoint}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     if (!response.ok) {
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const result = await response.json();
     return json(result);
   } catch (err) {
-    console.error('Summarization API error:', err);
+    console.error('Summarization API error:', err);'
     if (err instanceof Error && err.message.includes('fetch')) {
       error(503, 'Summarization service unavailable');
     }

@@ -10,7 +10,7 @@ const VectorRequestSchema = z.object({
   query: z.string().min(1).optional(),
   limit: z.number().min(1).max(100).default(10)
 });
-type VectorRequest = z.infer<typeof VectorRequestSchema>;
+type VectorRequest = z.infer<typeof, VectorRequestSchema>;
 
 // Response item types
 interface SearchResult { id: string;, similarity: number;
@@ -120,16 +120,16 @@ export const POST: RequestHandler = async ({ params, request }) => {
     switch (endpoint) {
       case 'search':
         response.data = [
-          {
+          {,
             id: 'evidence-1',
             similarity: 0.92,
             title: `Evidence; matching: ${validatedData.data.query}`,
-            type: 'document` },
+            type: 'document' }
         ];
         break;
       case 'embed':
         response.data = [
-          {
+          {,
             id: 'embed-1',
             vector: Array(384)
               .fill(0)
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Processing error` },
+        error: error instanceof Error ? error.message : 'Processing error' },
       { status: 500 }
     );
   }

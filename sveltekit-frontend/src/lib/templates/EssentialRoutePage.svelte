@@ -2,7 +2,7 @@
 Essential Route Page Template with CSS Bits UI Integration
 Use this template for all essential routes
 -->
-<script lang="ts">
+<script, lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   // Svelte 5 runes are auto-imported
 	import { onMount } from 'svelte';
@@ -43,12 +43,12 @@ Use this template for all essential routes
 	<meta name="description" content={description || pageTitle} />
 </svelte:head>
 <ProductionLayout>
-	<div class="essential-route-page {className}">
+	<div, class="essential-route-page {className}">
 		<!-- Header -->
-		<Card.Root class="mb-6 nes-container is-rounded">
+		<Card.Root class="mb-6 nes-container, is-rounded">
 			<CardHeader>
-				<div class="flex justify-between items-center">
-					<div class="flex items-center gap-4">
+				<div class="flex justify-between, items-center">
+					<div class="flex items-center, gap-4">
 						{#if showBackButton}
 							<Button.Root
 								variant="ghost"
@@ -59,46 +59,46 @@ Use this template for all essential routes
 								← Back
 						{/if}
 						<div>
-							<CardTitle class="nes-text is-primary text-2xl">
+							<CardTitle class="nes-text is-primary, text-2xl">
 								{pageTitle}
 							</div.Title>
 							{#if description}
-								<CardDescription class="nes-text is-disabled mt-1">
+								<CardDescription class="nes-text is-disabled, mt-1">
 									{description}
 								</div.Description>
 							{/if}
 						</div>
 					</div>
-					<div class="flex items-center gap-2">
-						<span class="nes-badge is-success">Active</span>
-						<div class="nes-text is-disabled text-sm">
+					<div class="flex items-center, gap-2">
+						<span class="nes-badge, is-success">Active</span>
+						<div class="nes-text is-disabled, text-sm">
 							{$page.url.pathname}
 						</div>
 					</div>
 				</div>
 			</div.Header>
 		</div.Root>
-		<!-- Main Content -->
-		<main class="essential-route-main">
+		<!-- Main, Content -->
+		<main, class="essential-route-main">
 			{#if isClient}
 				{#if children}
 					{@render children()}
 				{:else}
-					<!-- Default placeholder content -->
-					<Card.Root class="nes-container is-rounded">
-						<CardContent class="p-8 text-center">
-							<div class="mb-4">
-								<div class="text-6xl mb-4">🚧</div>
-								<h2 class="nes-text is-primary text-xl mb-2">
+					<!-- Default placeholder, content -->
+					<Card.Root class="nes-container, is-rounded">
+						<CardContent class="p-8, text-center">
+							<div, class="mb-4">
+								<div class="text-6xl, mb-4">🚧</div>
+								<h2 class="nes-text is-primary text-xl, mb-2">
 									Page Under Development
 								</h2>
-								<p class="nes-text is-disabled">
+								<p class="nes-text, is-disabled">
 									This essential route needs implementation.
 									Current path: {$page.url.pathname}
 								</p>
 							</div>
-							<div class="flex justify-center gap-4 mt-6">
-								<Button.Root class="nes-btn is-primary" onclick={goBack}>
+							<div class="flex justify-center gap-4, mt-6">
+								<Button.Root class="nes-btn, is-primary" onclick={goBack}>
 									Go Back
 								<Button.Root
 									variant="ghost"
@@ -111,11 +111,11 @@ Use this template for all essential routes
 					</div.Root>
 				{/if}
 			{:else}
-				<!-- Loading state -->
-				<Card.Root class="nes-container is-rounded">
-					<CardContent class="p-8 text-center">
-						<div class="nes-text is-disabled">
-							<div class="animate-pulse">Loading...</div>
+				<!-- Loading, state -->
+				<Card.Root class="nes-container, is-rounded">
+					<CardContent class="p-8, text-center">
+						<div class="nes-text, is-disabled">
+							<div, class="animate-pulse">Loading...</div>
 						</div>
 					</div.Content>
 				</div.Root>
@@ -142,7 +142,7 @@ Use this template for all essential routes
 		border-image-slice: 2;
 		border-image-width: 2px;
 		border-image-outset: 0;
-border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>") {}
+border-image-source: url("data:image/svg+xml,<svg, width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect, width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>") {}
 	}
 	:global(.nes-btn) {
 		font-family: 'Press Start 2P', cursive !important;

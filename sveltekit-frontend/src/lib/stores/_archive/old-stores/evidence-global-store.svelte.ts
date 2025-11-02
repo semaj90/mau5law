@@ -7,7 +7,7 @@ export interface EvidenceNode { id: string;, title: string;
   content: string;
   type: 'document' | 'photo' | 'testimony' | 'physical' | 'digital';
   tags: string[];
-  position: { x: number;, y: number }
+  position: { x: number; y: number }
   connections: string[]; // IDs of connected nodes,
   metadata: { dateCreated: number;, lastModified: number;
     source?: string;
@@ -181,7 +181,7 @@ class EvidenceGlobalStore {
     this.currentCase.connections = this.currentCase.connections.filter(
       c => c.fromNodeId !== nodeId && c.toNodeId !== nodeId
     );
-    // Remove from other nodes' connections
+    // Remove from other nodes' connections'
     this.currentCase.nodes.forEach(node => {
       node.connections = node.connections.filter(id => id !== nodeId);
     });
@@ -192,12 +192,12 @@ class EvidenceGlobalStore {
     console.log(`🗑️ Deleted evidence node: ${nodeId}`);
   }
   // === Node Positioning (for drag & drop) ===
-  updateNodePosition(nodeId: string, position: {, x: number; y: number }) {
+  updateNodePosition(nodeId: string, position: {, x: number;, y: number }) {
     if (!this.currentCase) return;
     const node = this.currentCase.nodes.find(n => n.id === nodeId);
     if (node) {
       node.position = position;
-      // Don't trigger full persistence for just position changes
+      // Don't trigger full persistence for just position changes'
     }
   }
   startDrag(nodeId: string) {
@@ -366,7 +366,7 @@ class EvidenceGlobalStore {
         }
       };
       this.aiWorker.onerror = error => {
-        console.error('AI Worker error:', error);
+        console.error('AI Worker error:', error);'
       };
     }
   }
@@ -453,7 +453,7 @@ class EvidenceGlobalStore {
   }
   private checkUnsavedChanges(): boolean {
     // Simple check - in real app would compare with last saved state
-    return this.stats.lastSync < Date.now() - 5000; // 5 seconds
+    return this.stats.lastSync < Date.now() - 5000; // 5, seconds
   }
   // === Export/Import ===
   exportCase(caseId: string): string {
@@ -463,7 +463,7 @@ class EvidenceGlobalStore {
       {
         case caseData,
         exportedAt: new Date().toISOString(),
-        version: `1.0` },
+        version: `1.0' },'`
       null,
       2
     );
@@ -507,7 +507,7 @@ export function createEvidenceNode(
     type,
     tags: [],
     position,
-    status: `pending` }
+    status: `pending' }'`
 }
 export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
   return evidenceStore.currentNodes.filter(node => node.type === type);

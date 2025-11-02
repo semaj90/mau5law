@@ -6,7 +6,7 @@
  */
 import { writable, type Writable, get as getStore } from 'svelte/store';
 import { browser } from '$app/environment';
-import { set as idbSet, get as idbGet, del as idbDel } from 'idb-keyval';
+import { set, as idbSet, get as idbGet, del as idbDel } from 'idb-keyval';
 
 // LokiJS is optional; wrap dynamic import & define minimal types to avoid build break if absent.
 // Provide a small, explicit interface for the collection so we avoid `any`.
@@ -117,7 +117,7 @@ class ComprehensiveCachingService {
     // LokiJS initialization can be done lazily if required by the runtime;
     // we keep a typed handle (lokiCollection) and avoid introducing `any`.
     this.initializeSIMD();
-    this.initializePerformanceTracking(); // <-- ensure performance tracking starts
+    this.initializePerformanceTracking(); // <-- ensure performance tracking, starts
     // Provide a runtime alias for `delete` (some tooling/parsers choke on `delete` as a method name).
     // This keeps backward compatibility for callers using `instance.delete(key)`.
     (this as any)['delete'] = this.deleteKey.bind(this);
@@ -334,7 +334,7 @@ class ComprehensiveCachingService {
         layerEntry.metadata.layer = layer;
         await this.setInLayer(layerEntry, layer);
       } catch (err: any) {
-        console.warn(`Failed to set key: "${key}" in, layer: "${layer}": ', err);
+        console.warn(`Failed to set key: "${key}" in, layer: "${layer}": ', err);'`
       }
     });
 
@@ -350,7 +350,7 @@ class ComprehensiveCachingService {
       try {
         await this.deleteFromLayer(key, layer);
       } catch (err: any) {
-        console.warn(`Failed to delete key: "${key}" from, layer: "${layer}": ', err);
+        console.warn(`Failed to delete key: "${key}" from, layer: "${layer}": ', err);'`
       }
     });
     await Promise.allSettled(promises);
@@ -441,7 +441,7 @@ class ComprehensiveCachingService {
       // Always write to the normal multi-layer cache as the canonical store
       await this.set(key, value, { ttl, tags });
     } catch (err: any) {
-      console.warn('SIMD set failed, falling back to normal set: `, err);
+      console.warn('SIMD set failed, falling back to normal set: `, err);'`
       await this.set(key, value, { ttl, tags });
     }
   }
@@ -462,10 +462,10 @@ class ComprehensiveCachingService {
    * Warm up cache with frequently accessed data
    * - avoid `any` by using `unknown` and typed options
    */
-  public async warmup(data: Array<{, key: string; value: any; options?: Record<string, unknown> }>): Promise<void> {
+  public async warmup(data: Array<{, key: string;, value: any; options?: Record<string, unknown> }>): Promise<void> {
     console.log(`🔥 Warming up cache with ${data.length} entries`);
     // Use a typed call to set to avoid casting to `any`.
-    const promises = data.map(({ key, value }) => this.set<unknown>(key, value, { strategy: `fast' }));
+    const promises = data.map(({ key, value }) => this.set<unknown>(key, value, { strategy: `fast` }));
     await Promise.allSettled(promises);
     console.log('✅ Cache warmup completed');
   }

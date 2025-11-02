@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
         };
       } catch (vectorError) {
         vectorHealth = {
-          error: vectorError instanceof Error ? vectorError.message : 'Vector ops failed` };
+          error: vectorError instanceof Error ? vectorError.message : 'Vector ops failed' };
       }
     }
     // Get available models if requested
@@ -96,23 +96,23 @@ export const GET: RequestHandler = async ({ url }) => {
         console.warn('Models endpoint failed:', modelsError);
         availableModels = {
           configured: Object.values(ENHANCED_RAG_CONFIG.models),
-          note: 'Dynamic model discovery failed, showing configured models` };
+          note: 'Dynamic model discovery failed, showing configured models' };
       }
     }
     return json({
       service: 'enhanced-rag-integration',
       status: ragHealth ? 'healthy' : 'degraded',
-      services: { enhancedRAG: {, url: ENHANCED_RAG_CONFIG.baseUrl,
+      services: {, enhancedRAG: {, url: ENHANCED_RAG_CONFIG.baseUrl,
           status: ragHealth ? 'healthy' : 'unhealthy',
           health: ragHealth
         },
         uploadService: {
-          url: ENHANCED_RAG_CONFIG.uploadServiceUrl,
+         , url: ENHANCED_RAG_CONFIG.uploadServiceUrl,
           status: uploadHealth ? 'healthy' : 'unhealthy',
           health: uploadHealth
         },
         vectorOperations: {
-          status: vectorHealth ? 'healthy' : 'not-checked',
+         , status: vectorHealth ? 'healthy' : 'not-checked',
           health: vectorHealth
         }
       },
@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Request-Source': 'sveltekit-frontend` },
+          'X-Request-Source': 'sveltekit-frontend' },
         body: JSON.stringify(enhancedRequest),
         signal: AbortSignal.timeout(ENHANCED_RAG_CONFIG.timeout)
       });
@@ -265,7 +265,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       JSON.stringify({
         ...metadata,
         processForRAG: true,
-        source: 'sveltekit-frontend` })
+        source: 'sveltekit-frontend' })
     );
     const uploadResponse = await fetch(`${ENHANCED_RAG_CONFIG.uploadServiceUrl}/upload`, {
       method: 'POST',
@@ -299,7 +299,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const deleteResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/api/rag/documents/${documentId}`, {
       method: 'DELETE',
       headers: {
-        'X-Request-Source': 'sveltekit-frontend` },
+        'X-Request-Source': 'sveltekit-frontend' },
       signal: AbortSignal.timeout(10000)
     });
     if (!deleteResponse.ok) {
@@ -308,7 +308,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await deleteResponse.json();
     return json({
       success: true,
-      message: 'Document '${documentId}' removed from RAG index`,
+      message: 'Document '${documentId}' removed from RAG index`,'`
       result,
       timestamp: new Date().toISOString()
     });

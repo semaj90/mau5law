@@ -31,8 +31,7 @@ export const GET: RequestHandler = async () => {
         ]
       },
       timestamp: new Date().toISOString(),
-      source: 'Enhanced Semantic Architecture'
-    });
+      source: 'Enhanced Semantic Architecture` });'`
 	} catch (error: any) {
 		console.error('Cache Stats API Error:', error)
 		// Fallback: Mock cache statistics
@@ -66,8 +65,7 @@ export const GET: RequestHandler = async () => {
 			data: mockStats,
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Cache Monitor',
-			note: 'Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.'
-		})
+			note: `Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.` })
 	}
 }
 export const POST: RequestHandler = async ({ request }) => {
@@ -118,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown cache; action: ${action}' },
+            error: `Unknown cache; action: ${action}` },
           { status: 400 }
         );
     }

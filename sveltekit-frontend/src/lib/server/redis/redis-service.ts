@@ -13,9 +13,9 @@ type RedisClientLike = {
   // pub/sub
   publish?: (channel: string, message: string) => Promise<number> | void;
   // cache commands (various shim/name permutations)
-  setEx?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
-  setex?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
-  set?: (key: string; value: string, opts?: any) => Promise<'OK' | null> | void;
+  setEx?: (key: string; ttl: number;, value: string) => Promise<'OK' | null> | void;
+  setex?: (key: string; ttl: number;, value: string) => Promise<'OK' | null> | void;
+  set?: (key: string;, value: string, opts?: any) => Promise<'OK' | null> | void;
   get?: (key: string) => Promise<string | null> | void;
   del?: (key: string) => Promise<number> | void;
 };
@@ -79,7 +79,7 @@ class RedisService {
     }
   }
   private handleError(clientName: string, error: any) {
-    console.error(`[RedisService] ${clientName} error: ', error);
+    console.error(`[RedisService] ${clientName} error: ', error);'`
     this.isConnected = $state(false);
   }
   // Evidence Updates
@@ -205,7 +205,7 @@ class RedisService {
         await this.publisher.publish(channel, message as string);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Failed to publish to ${channel}: ', error);
+      console.error(`[RedisService] Failed to publish to ${channel}: ', error);'`
     }
   }
   // Cache operations with robust method detection
@@ -225,7 +225,7 @@ class RedisService {
         console.warn('[RedisService] No supported SET method available on client');
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache set error for key: "${key}": ', error);
+      console.error(`[RedisService] Cache set error for key: "${key}": ', error);'`
     }
   }
   public async getCache(key: string) {
@@ -234,7 +234,7 @@ class RedisService {
       const cached = typeof this.client.get === 'function' ? await this.client.get(key) : null;
       return cached ? JSON.parse(cached) : null;
     } catch (error: any) {
-      console.error(`[RedisService] Cache get error for key: "${key}": ', error);
+      console.error(`[RedisService] Cache get error for key: "${key}": ', error);'`
       return null;
     }
   }
@@ -245,7 +245,7 @@ class RedisService {
         await this.client.del(key);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache delete error for key: "${key}": ', error);
+      console.error(`[RedisService] Cache delete error for key: "${key}": ', error);'`
     }
   }
   // trackEvent - corrected variable usage
@@ -267,7 +267,7 @@ class RedisService {
   public getStats() {
     return {
       connected: this.isConnected,
-      status: this.isConnected ? 'connected' : 'disconnected` };
+      status: this.isConnected ? 'connected' : 'disconnected' };
   }
   public async disconnect() {
     try {

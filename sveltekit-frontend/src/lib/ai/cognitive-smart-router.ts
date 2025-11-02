@@ -97,7 +97,7 @@ class CognitiveSmartRouter {
     }
   }
   private metrics: CognitiveMetrics;
-  private engineHealthCache: Map<string, { healthy: boolean;, lastCheck: number }>;
+  private engineHealthCache: Map<string, { healthy: boolean; lastCheck: number }>;
   private isWebGPUAvailable: boolean = $state(false);
   private isOllamaAvailable: boolean = $state(false);
   private gpuLayers: number = 35; // Reasonable default, not 999
@@ -242,7 +242,7 @@ class CognitiveSmartRouter {
     // Use your existing NES orchestrator for legal analysis
     const startTime = performance.now();
     // This would integrate with your existing NES cache system
-    // For now, we'll simulate the response format
+    // For now, we'll simulate the response format'
     const response: WebLlamaResponse = {
       text: `[NES Orchestrator Processing] ${request.prompt}`,
       tokensGenerated: Math.floor(Math.random() * 500) + 100,
@@ -270,9 +270,9 @@ class CognitiveSmartRouter {
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-          model: 'gemma3:legal-latest',
+         , model: 'gemma3:legal-latest',
           prompt: request.prompt,
           stream: false,
           options: {

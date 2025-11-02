@@ -54,7 +54,7 @@ class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel: string = 'gemma3-legal:latest';
   private availableModels: Map<string, OllamaModel> = new Map();
-  private modelCache: Map<string, { loaded: boolean;, lastUsed: number }> = new Map();
+  private modelCache: Map<string, { loaded: boolean; lastUsed: number }> = new Map();
   constructor(baseUrl: string = 'http://localhost:11434') {
     this.baseUrl = baseUrl;
     this.initialize();
@@ -133,7 +133,7 @@ class OllamaLocalLLM {
       const modelfile = `
 FROM ${baseModel}
 # Legal domain specialization
-SYSTEM: """You are a legal AI assistant with expertise in legal analysis, case law, statutes, and legal procedures.
+SYSTEM: """You are a legal AI assistant with expertise in legal analysis, case law, statutes, and legal procedures."
 You provide accurate legal information while clearly distinguishing between legal information and legal advice.
 You cite sources appropriately and acknowledge the limitations of AI-generated legal analysis."""
 # Adjust parameters for legal text
@@ -143,16 +143,16 @@ PARAMETER top_p 0.9
 PARAMETER repeat_penalty 1.1
 PARAMETER num_ctx 4096
 # Legal-specific template
-TEMPLATE: """{{ if .System }}<|system|>
+TEMPLATE: """{{ if .System }}<|system|>"
 {{ .System }}<|end|>
 {{ end }}{{ if .Prompt }}<|user|>
 {{ .Prompt }}<|end|>
 <|assistant|>
 {{ end }}"""
-`;
+`;`
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , name: targetName,
           modelfile: modelfile
@@ -166,7 +166,7 @@ TEMPLATE: """{{ if .System }}<|system|>
         throw new Error(`Failed to create model: ${response.statusText} - ${errorText}`);
       }
     } catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);
+      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);'`
     }
   }
   /**
@@ -194,7 +194,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       logger.info(`[OllamaLLM] Generating with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           ...options,
           model,
@@ -230,7 +230,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       logger.info(`[OllamaLLM] Streaming generation with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           ...options,
           model,
@@ -284,7 +284,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       const embeddingModel = model || 'nomic-embed-text';
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: embeddingModel,
           prompt: text
@@ -304,12 +304,12 @@ TEMPLATE: """{{ if .System }}<|system|>
   /**
    * Chat completion with conversation history
    */
-  async chat(messages: Array<{, role: 'user' | 'assistant'; content: string }>, model?: string): Promise<string | null> {
+  async chat(messages: Array<{, role: 'user' | 'assistant';, content: string }>, model?: string): Promise<string | null> {
     try {
       const selectedModel = this.selectBestModel(model);
       const response = await fetch(`${this.baseUrl}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: selectedModel,
           messages,
@@ -332,7 +332,7 @@ TEMPLATE: """{{ if .System }}<|system|>
   async processLegalDocument(
     document: string,
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
-    options?: { format?: 'json' }
+    options?: { format?: 'json` }'`
   ): Promise<string | JsonObject | null> {
     try {
       let prompt = '';
@@ -345,7 +345,7 @@ TEMPLATE: """{{ if .System }}<|system|>
           prompt = `Extract the following information from this legal document:\n- Case citations\n- Statute references\n- Legal entities and parties\n- Key dates\n- Monetary amounts\n- Legal holdings or decisions\nDocument:\n${document}`;
           break;
         case 'analyze':
-          prompt = `Perform a detailed legal analysis of this document, including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;
+          prompt = `Perform a detailed legal analysis of this document, including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;'
           systemPrompt += ' Focus on legal reasoning and precedential value.';
           break;
         case 'classify':

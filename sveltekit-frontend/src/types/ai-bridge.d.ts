@@ -1,5 +1,5 @@
 declare module '$lib/server/services/analytics-bridge' {
-  export function postAnalytics(event: {, user_id: string; event_type: string; payload?: any; timestamp?: number }): Promise<any>;
+  export function postAnalytics(event: {, user_id: string;, event_type: string; payload?: any; timestamp?: number }): Promise<any>;
   export function fetchIntent(userId: string): Promise<any | null>;
 }
 export interface UserAnalyticsEvent { userId: string;, action: string;

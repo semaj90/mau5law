@@ -80,7 +80,7 @@ export class RealAIService {
   private ragServiceUrl: string;
   private timeout: number;
   constructor(_options: AIServiceOptions = {}) {
-    this.ollamaUrl = Promise.resolve(_options.ollamaUrl || getOllamaEndpoint()); // Ensure it's a Promise
+    this.ollamaUrl = Promise.resolve(_options.ollamaUrl || getOllamaEndpoint()); // Ensure it's a Promise'
     this.ragServiceUrl = _options.ragServiceUrl || import.meta.env.RAG_SERVICE_URL || 'http://localhost:8094';
     this.timeout = _options.timeout || 30000;
   }
@@ -187,9 +187,9 @@ export class RealAIService {
         try {
           const vectorResponse = await fetch('/api/ai/vector-search', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              query: request.message,
+             , query: request.message,
               options: {
                , maxResults: 5,
                 threshold: 0.7,
@@ -279,8 +279,7 @@ export class RealAIService {
       // Changed from any
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Model switch failed'
-      };
+        error: error instanceof Error ? error.message : `Model switch failed` };
     }
   }
   /**

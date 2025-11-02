@@ -82,14 +82,14 @@ async function extractTextFromFile(
         embedding: first.embedding || undefined
       };
     } catch (error: any) {
-      console.error('GPU OCR service error: ', error);
+      console.error('GPU OCR service error: ', error);'
       // Fallback: Return placeholder
       return {
-        text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.` };
+        text: '[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.' };
     }
   }
 
-  throw new Error(`Unsupported file type: ${fileType}`);
+  throw new Error(`Unsupported file type: ${fileType}');'`
 }
 
 /**
@@ -126,7 +126,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
     const files = formData.getAll('files') as File[];
 
     if (files.length === 0) {
-      return json({ error: `No files uploaded` }, { status: 400 });
+      return json({ error: 'No files uploaded' }, { status: 400 });
     }
 
     for (const file of files) {
@@ -240,7 +240,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       } catch (fileErr: any) {
         result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
-        console.error(`Failed to process file ${file.name}: ', fileErr);
+        console.error(`Failed to process file ${file.name}: ', fileErr);'`
       }
 
       results.push(result);
@@ -256,7 +256,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       results
     });
   } catch (error: any) {
-    console.error('Document upload error:', error);
+    console.error('Document upload error:', error);'
     return json(
       { error: 'Upload failed', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
@@ -267,7 +267,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
 export const POST = withValidationAndRate(handler, null, {
   capacity: 20,
   refillPerSecond: 0.5,
-  keyPrefix: `rl:docs:upload-ocr:` });
+  keyPrefix: 'rl:docs:upload-ocr:' });
 
 /**
  * GET: Check upload endpoint health

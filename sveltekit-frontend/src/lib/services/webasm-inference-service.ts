@@ -128,7 +128,7 @@ export class WebASMInferenceService {
       // Best-effort SIMD detection; platform support varies
       // Use the `in` operator instead of calling hasOwnProperty on globalThis
       const simdSupported = typeof WebAssembly !== 'undefined' && 'SIMD' in globalThis;
-      console.log(`🔧 WebASM SIMD Support: ${simdSupported ? 'Enabled' : 'Disabled' }`);
+      console.log(`🔧 WebASM SIMD Support: ${simdSupported ? 'Enabled' : 'Disabled` }`);'`
       return simdSupported;
     } catch {
       return false;
@@ -272,7 +272,7 @@ export class WebASMInferenceService {
           `webasm-inference-${modelName}-end`
         );
       } catch {
-        // ignore in environments that don't support measure
+        // ignore in environments that don't support measure'
       }
 
       const tokensPerSecond = inputSize / (inferenceTime / 1000);
@@ -311,7 +311,7 @@ export class WebASMInferenceService {
       performance.clearMarks?.(`webasm-inference-${modelName}-start`);
       performance.clearMarks?.(`webasm-inference-${modelName}-end`);
       throw new Error(
-        `Inference failed for model: '${modelName}': ${
+        `Inference failed for model: '${modelName}': ${`
           error instanceof Error ? error.message : String(error)
         }`
       );
@@ -392,7 +392,7 @@ export class WebASMInferenceService {
 export class VectorSearchInferenceEngine {
   private wasmService: WebASMInferenceService;
   private config: VectorSearchInferenceConfig;
-  private embeddingCache = new Map<string, { embedding: Float32Array;, timestamp: number }>();
+  private embeddingCache = new Map<string, { embedding: Float32Array; timestamp: number }>();
 
   constructor(config: VectorSearchInferenceConfig) {
     this.wasmService = new WebASMInferenceService();
@@ -409,7 +409,7 @@ export class VectorSearchInferenceEngine {
     const cacheKey = `embedding:${text}`;
     if (useCache && this.embeddingCache.has(cacheKey)) {
       const cached = this.embeddingCache.get(cacheKey)!;
-      if (Date.now() - cached.timestamp <= this.config.cacheTTL) return cached.embedding;
+      if (Date.now() - cached.timestamp <= this.config.cacheTTL) return, cached.embedding;
       this.embeddingCache.delete(cacheKey);
     }
     const tokenized = this.tokenizeText(text);
@@ -429,7 +429,7 @@ export class VectorSearchInferenceEngine {
     queryEmbedding: Float32Array,
     candidateEmbeddings: Float32Array[],
     topK = 10
-  ): Promise<Array<{ index: number;, similarity: number }>> {
+  ): Promise<Array<{ index: number; similarity: number }>> {
     const startTime = performance.now();
     const similarities = await Promise.all(
       candidateEmbeddings.map(async (candidate, index) => {

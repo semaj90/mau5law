@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ success: true, key, value: parsed, message: 'Value retrieved from Redis cache' });
       } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
-        console.error('[cache/get] Redis GET error:', message);
+        console.error('[cache/get] Redis GET error:', message);'
         // fallthrough to memoryCache handling below
       }
     }

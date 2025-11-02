@@ -464,8 +464,7 @@ export class WebASMLlamaCppEngine {
       }
       const transaction = this.db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
-      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')'
-    } catch (error) {
+      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')` } catch (error) {'`
       console.warn('Failed to cache model:', error);
     }
   }

@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('[CRUD Test] Database error:', err);
+    console.error('[CRUD Test] Database error:', err);'
     const { message } = getErrorInfo(err);
     return json(
       {
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 201 }
     );
   } catch (err: any) {
-    console.error('[CRUD Test] Create user error:', err);
+    console.error('[CRUD Test] Create user error:', err);'
     const { message, code, detail } = getErrorInfo(err);
 
     // Handle unique constraint violation (Postgres code 23505) safely

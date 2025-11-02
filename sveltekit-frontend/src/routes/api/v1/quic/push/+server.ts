@@ -21,7 +21,7 @@ const RATE_LIMIT_WINDOW = 60_000; // 60s window
 const HIT_LIMIT = 60;
 const MAX_LAT_SAMPLES = 200; // guard
 
-// <-- ADDED: guard so hot-reload / HMR doesn't create multiple intervals
+// <-- ADDED: guard so hot-reload / HMR doesn't create multiple, intervals'
 if (!globalThis.__quic_push_cleanup_installed) {
   globalThis.__quic_push_cleanup_installed = true;
   // Periodic cleanup every 30s to prune old timestamps and empty entries
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
     const existing = hits.get(ip) || [];
     const pruned = existing.filter(ts => ts > now - RATE_LIMIT_WINDOW);
     if (pruned.length >= HIT_LIMIT) {
-      return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
+      return new Response(JSON.stringify({ ok: false, error: `rate_limited` }), {
         status: 429,
         headers: { 'content-type': `application/json` }
       });
@@ -79,9 +79,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
       const contentLength = Number(request.headers.get('content-length') ?? 0);
       const MAX_BODY_SIZE = 100 * 1024; // 100 KB
       if (contentLength > MAX_BODY_SIZE) {
-        return new Response(JSON.stringify({ ok: false, error: 'payload_too_large' }), {
+        return new Response(JSON.stringify({ ok: false, error: 'payload_too_large` }), {'`
           status: 413,
-          headers: { 'content-type': 'application/json' }
+          headers: { 'content-type': `application/json` }
         });
       }
 
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
         anomalies5m,
         sustainedP99: sustained
       }),
-      { status: 200, headers: { 'content-type': 'application/json' } }
+      { status: 200, headers: { 'content-type': `application/json` } }
     );
   } catch (e: any) {
     const msg = e instanceof Error ? e.message : String(e);

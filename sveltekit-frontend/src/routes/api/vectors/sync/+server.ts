@@ -15,12 +15,11 @@ const qdrant = QdrantVectorService; // use the exported service object directly
 type QdrantExt = {
   ensureCollection?: (name: string) => Promise<unknown>;
   upsertVector?: (
-    id: string,
-    vector: number[],
+    id: string; vector: number[],
     payload?: Record<string, unknown>,
     collectionName?: string
   ) => Promise<unknown>;
-  deletePoint?: (collection: string; id: string) => Promise<unknown>;
+  deletePoint?: (collection: string;, id: string) => Promise<unknown>;
 };
 
 const qdrantExt = qdrant as unknown as QdrantExt;
@@ -48,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🔄 Syncing vector to Qdrant: ${jobId} (${event})`);
     // Validate required fields
     if (!jobId || !ownerType || !ownerId || !event) {
-      return json({ error: `Missing required, fields: jobId, ownerType, ownerId, event` }, { status: 400 });
+      return json({ error: 'Missing required, fields: jobId, ownerType, ownerId, event` }, { status: 400 });'`
     }
     // Update job status to processing
     await db
@@ -69,9 +68,9 @@ export const POST: RequestHandler = async ({ request }) => {
       .set({ status: 'succeeded', progress: 100, completedAt: new Date(), result })
       .where(eq(vectorJobs.jobId, jobId));
     console.log(`✅ Vector sync completed: ${jobId}`);
-    return json({ success: true, jobId, result, message: 'Vector ${event} completed successfully' });
+    return json({ success: true, jobId, result, message: 'Vector ${event} completed successfully` });'`
   } catch (error: any) {
-    console.error('❌ Vector sync error:', error);
+    console.error('❌ Vector sync error:', error);'
     // Update job status to failed
     if (jobId) {
       await db
@@ -100,7 +99,7 @@ type SourceDataType = {
   tags?: string[];
   reportType?: string;
   status?: string;
-}; // <-- closed the type
+}; // <-- closed the, type
 
 async function ensureQdrantCollectionFallback(collectionName: string, dimension: number): Promise<void> {
   try {
@@ -109,7 +108,7 @@ async function ensureQdrantCollectionFallback(collectionName: string, dimension:
     if (!checkResp.ok) {
       await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ vectors: {, size: dimension, distance: `Cosine` },
           // minimal default config; adjust if your platform uses HNSW or other params
         })
@@ -176,7 +175,7 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
       const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
       const body = {
         points: [
-          {
+          {,
             id: ownerId,
             vector: pointVector,
             payload
@@ -269,8 +268,8 @@ export const GET: RequestHandler = async () => {
 
     return json({
       success: true,
-      services: { qdrant: {, connected: response.ok, collections: collections?.result?.collections || collections || [] },
-        postgresql: { connected: !!pgTest },
+      services: {, qdrant: {, connected: response.ok, collections: collections?.result?.collections || collections || [] },
+        postgresql: {, connected: !!pgTest },
         redis: {, connected: redisOk }
       },
       timestamp: new Date().toISOString()

@@ -14,7 +14,7 @@ interface ServiceHealthStatus {
   message?: string
   // changed `any` -> `unknown` to avoid unexpected any and enforce safer typing
   details?: any
-  responseTime?: number
+  responseTime?: number;
   lastChecked: string
 }
 interface AggregatedHealthResponse {
@@ -74,7 +74,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<CheckRes
   } catch (err: any) {
     const responseTime = Date.now() - startTime;
     if ((err as { name?: string })?.name === 'AbortError') {
-      return { status: 'unhealthy', responseTime, details: { error: `Request timeout` } };
+      return { status: 'unhealthy', responseTime, details: { error: 'Request timeout` } };'`
     }
     return { status: 'unhealthy', responseTime, details: { error: getErrorMessage(err) } };
   }
@@ -190,7 +190,7 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       message: 'OCR service unavailable',
       details: {
         error: getErrorMessage(error),
-        endpoint: (globalThis as unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr` },
+        endpoint: (globalThis as unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr` },'`
       responseTime: Date.now() - startTime,
       lastChecked: new Date().toISOString()
     };

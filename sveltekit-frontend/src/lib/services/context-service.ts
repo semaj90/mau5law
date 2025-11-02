@@ -6,7 +6,7 @@ export type ContextData = { pageType: string;, entityId: string | null;
   lastUpdated?: string;
 };
 
-export type UpdateResult = { success: true; id?: string } | { success: false;, error: string };
+export type UpdateResult = { success: true; id?: string } | { success: false; error: string };
 
 export class ContextService {
   static async getCurrentContext(): Promise<ContextData> {
@@ -58,7 +58,7 @@ export class ContextService {
         return { success: true };
       }
     } catch (err: any) {
-      console.error('updateChatContext error:', err);
+      console.error('updateChatContext error:', err);'
       return { success: false, error: String(err?.message ?? err) };
     }
   }
@@ -79,7 +79,7 @@ export class ContextService {
         return { success: true };
       }
     } catch (err: any) {
-      console.error('updateCaseContext error:', err);
+      console.error('updateCaseContext error:', err);'
       return { success: false, error: String(err?.message ?? err) };
     }
   }

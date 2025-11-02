@@ -70,8 +70,8 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
     { path: '/api/case-chat', icon: '💭', description: 'Case Chat API' },
     { path: '/api/reports', icon: '📋', description: 'Reports API' },
     { path: '/api/search/advanced', icon: '🔍', description: 'Advanced Search API' },
-    { path: '/api/canvas', icon: '🎨', description: 'Canvas API' },
-    { path: '/api/modules', icon: '🧩', description: 'Modules API' },
+    { path: '/api/canvas', icon: '🎨', description: 'Canvas API` },'`
+    { path: '/api/modules', icon: '🧩', description: `Modules API` },
     { path: '/api/updates', icon: '🔄', description: `Updates API` }
   ];
 

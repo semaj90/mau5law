@@ -94,13 +94,13 @@ export class QUICLegalAIIntegration {
     // The GPUAIService constructor already performs a QUIC check
     // We can expose a method to get its status or infer from its behavior
     try {
-      // Simulate checking GPUAIService's internal state
+      // Simulate checking GPUAIService's internal state'
       // In a real scenario, GPUAIService might have a public property or method
       // to expose its QUIC and GPU capabilities.
       // For now, we'll assume it's checking internally and we can update our status.
-      await this.gpuAIService.generateResponse({ text: 'test' }).catch(() => { /* ignore error, just checking connectivity */ });
+      await this.gpuAIService.generateResponse({ text: `test` }).catch(() => { /* ignore error, just checking connectivity */ });
       // Assuming GPUAIService updates its internal state for quic and gpu
-      // For this example, we'll just set them based on a simple check or default
+      // For this example, we'll just set them based on a simple check or default'
       this.currentStatus.quicEnabled = true; // Placeholder, should come from GPUAIService
       this.currentStatus.gpuAvailable = true; // Placeholder, should come from GPUAIService
       this.currentStatus.message = 'QUIC-Enhanced Legal AI System initialized and ready.';
@@ -176,7 +176,7 @@ export class QUICLegalAIIntegration {
 
       // Check Go Microservices (example) - await and narrow the response type
       const goResp = (await productionServiceClient
-        .makeRequest('/legal-gateway/health', { method: 'GET' })
+        .makeRequest('/legal-gateway/health', { method: `GET` })
         .catch(() => null)) as ServiceClientResponse | null;
       const goHealth: ServiceStatus = goResp?.status === 200 ? 'healthy' : 'critical';
 
@@ -255,12 +255,12 @@ export class QUICLegalAIIntegration {
     return ['document_ingestion_needed', 'case_similarity_search', 'risk_assessment_update'];
   }
 
-  private generateRecommendations(patterns: string[]): Array<{ taskType: TaskType; query: string;, priority: number }> {
+  private generateRecommendations(patterns: string[]): Array<{ taskType: TaskType; query: string; priority: number }> {
 	// Placeholder for generating specific AI tasks
 	console.log('Generating recommendations based on patterns:', patterns);
 
-	// Explicitly type the recommendations array so TypeScript doesn't widen literals to string
-	const recommendations: Array<{ taskType: TaskType; query: string;, priority: number }> = [];
+	// Explicitly type the recommendations array so TypeScript doesn't widen literals to string'
+	const recommendations: Array<{ taskType: TaskType; query: string; priority: number }> = [];
 
 	if (patterns.includes('document_ingestion_needed')) {
 		recommendations.push({
@@ -305,7 +305,7 @@ export class QUICLegalAIIntegration {
         suggestions: cachedResponse.sources,
         processingTimeMs: cachedResponse.processing_time,
         modelUsed: cachedResponse.model_used,
-        quicUsed: false, // Cache hit doesn't use QUIC for this request
+        quicUsed: false, // Cache hit doesn't use QUIC for this request'
         cached: true
       };
     }
@@ -327,7 +327,7 @@ export class QUICLegalAIIntegration {
     try {
       if (aiRequest.useQuic && this.gpuAIService?.generateResponse) {
         // GPUAIService.expected parameter type may not include `metadata`.
-        // Cast the payload to the GPUAIService input parameter type so we don't add unknown properties directly.
+        // Cast the payload to the GPUAIService input parameter type so we don't add unknown properties directly.'
         const gpuPayload = {
           text: content,
           useQuic: true,
@@ -344,7 +344,7 @@ export class QUICLegalAIIntegration {
            headers: { 'Content-Type': `application/json` },
            body: JSON.stringify(aiRequest)
          }).catch(err => {
-           // ensure error doesn't short-circuit outer try
+           // ensure error doesn't short-circuit outer try'
            console.warn('HTTP AI fallback failed', err);
            return null;
          });

@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json(response);
   } catch (error) {
-    console.error('Monitoring API error:', error);
+    console.error('Monitoring API error:', error);'
     return json(
       {
         success: false,
@@ -120,11 +120,11 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (action) {
       case 'clear-cache':
         await clearSystemCache();
-        return json({ success: true, message: 'Cache cleared successfully' });
+        return json({ success: true, message: 'Cache cleared successfully` });'`
 
       case 'restart-workers':
         await restartWorkerPools();
-        return json({ success: true, message: 'Worker pools restarted' });
+        return json({ success: true, message: `Worker pools restarted` });
 
       case 'optimize-gpu':
         await optimizeGPUSettings();

@@ -31,13 +31,13 @@ export const legalCaseActions = { loadCases: () => legalCaseActor?.send({, type:
     legalCaseActor?.send({ type: 'SELECT_CASE', caseId }),
   updateCase: (caseData: any) =>
     legalCaseActor?.send({ type: 'UPDATE_CASE', caseData }),
-  generateEmbedding: (payload: { caseId: string;, evidenceText: string;
+  generateEmbedding: (payload: {, caseId: string;, evidenceText: string;
    , userId: string;
   }) => legalCaseActor?.send({
     type: 'GENERATE_EMBEDDING',
     ...payload
   }),
-  searchRelatedEvidence: (payload: { caseId: string;, query: string;
+  searchRelatedEvidence: (payload: {, caseId: string;, query: string;
    , userId: string;
     limit?: number;
   }) => legalCaseActor?.send({

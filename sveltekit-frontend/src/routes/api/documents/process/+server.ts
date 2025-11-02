@@ -123,7 +123,7 @@ export const OPTIONS: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: message || 'Health check failed` },
+        error: message || 'Health check failed' },
       {
         status: 500
       }
@@ -274,8 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
       type UnifiedWithBatch = {
         // Use the imported ProcessingResult type (already imported at the top of the file)
         batchProcess?: (
-          files: File[],
-          config: DocumentProcessingConfig; metadata: any
+          files: File[]; config: DocumentProcessingConfig; metadata: any
         ) => Promise<ProcessingResult[]>;
       };
       if ((udp as UnifiedWithBatch).batchProcess) {

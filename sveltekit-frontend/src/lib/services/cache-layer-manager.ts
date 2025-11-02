@@ -65,7 +65,7 @@ export class CacheLayerManager {
           return data;
         }
       } catch (error: any) {
-        console.warn(`Cache layer ${layer.name} failed: ', String(error));
+        console.warn(`Cache layer ${layer.name} failed: ', String(error));'`
       }
     }
     return null;
@@ -97,7 +97,7 @@ export class CacheLayerManager {
                   break;
                 }
               } catch (error: any) {
-                console.warn(`Batch cache layer ${layer.name} failed for key ${key}: ', String(error));
+                console.warn(`Batch cache layer ${layer.name} failed for key ${key}: ', String(error));'`
               }
             }
           })
@@ -160,7 +160,7 @@ export class CacheLayerManager {
               await this.set(key, data, _dataType, 3600);
             }
           } catch (error: any) {
-            console.warn(`Cache warming failed for key ${key}: ', String(error));
+            console.warn(`Cache warming failed for key ${key}: ', String(error));'`
           }
         });
         await Promise.allSettled(loadPromises);
@@ -261,7 +261,7 @@ export class CacheLayerManager {
         return raw;
       }
     } catch (error: any) {
-      console.warn('Redis get error:', String(error));
+      console.warn('Redis get error:', String(error));'
       try {
         await client.disconnect();
       } catch {
@@ -283,7 +283,7 @@ export class CacheLayerManager {
       }
       await client.disconnect();
     } catch (error: any) {
-      console.warn('Redis set error:', String(error));
+      console.warn('Redis set error:', String(error));'
       try {
         await client.disconnect();
       } catch {
@@ -298,15 +298,15 @@ export class CacheLayerManager {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          vector: [0], // placeholder vector
-          filter: { must: [{, key: 'cache_key', match: {, value: key } }] },
+         , vector: [0], // placeholder vector
+          filter: {, must: [{, key: 'cache_key', match: {, value: key } }] },
           limit: 1
         })
       });
       const json = await res.json();
       return json?.result?.[0]?.payload?.data ?? null;
     } catch (error: any) {
-      console.warn('Qdrant get error:', String(error));
+      console.warn('Qdrant get error:', String(error));'
       return null;
     }
   }
@@ -316,7 +316,7 @@ export class CacheLayerManager {
       // ensure collection exists (idempotent)
       await fetch(`http://localhost:6333/collections/cache`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, vectors: {, size: 384, distance: `Cosine` }
         })
       });
@@ -325,8 +325,8 @@ export class CacheLayerManager {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          points: [
-            {
+         , points: [
+            {,
              , id: Date.now().toString(),
               vector: new Array(384).fill(0.0),
               payload: { cache_key: key, data, timestamp: Date.now() }
@@ -335,7 +335,7 @@ export class CacheLayerManager {
         })
       });
     } catch (error: any) {
-      console.warn('Qdrant set error:', String(error));
+      console.warn('Qdrant set error:', String(error));'
     }
   }
 

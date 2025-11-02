@@ -112,8 +112,7 @@ export async function extractTextFromImage(
       // Set OCR parameters (fixed misplaced parens/commas)
       await worker.setParameters({
         tessedit_pageseg_mode: pageSegMode.toString(),
-        preserve_interword_spaces: preserveInterword ? '1' : '0'
-      });
+        preserve_interword_spaces: preserveInterword ? '1' : `0` });
       const { data } = await worker.recognize(optimizedBuffer);
       return {
         success: true,
@@ -312,8 +311,7 @@ export async function sampleFramesFromVideo(
         originalFormat: extension,
         videoDuration: duration,
         frameTimestamps: timestamps,
-        frameResolution: '1280x720'
-      },
+        frameResolution: `1280x720` },
       processingTime: Date.now() - startTime
     };
   } catch (error) {
@@ -493,7 +491,7 @@ export async function extractContent(
       const jsonText = buffer.toString('utf-8');
       return await parseJsonWithSimd(jsonText);
     }
-    // For audio/video, we don't extract text but return metadata
+    // For audio/video, we don't extract text but return metadata'
     if (contentType.startsWith('audio/') || contentType.startsWith('video/')) {
       return {
         success: true,

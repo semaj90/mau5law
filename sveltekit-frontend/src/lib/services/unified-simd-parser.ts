@@ -2,7 +2,7 @@ import type { Document } from '$lib/types';
 // Unified SIMD JSON Parser - Combines all SIMD backends
 // Nintendo-Style Performance with Legal Document Optimization + Redis Integration
 // Normalize/import paths to relative locations and avoid duplicate/ambiguous named imports
-import { SIMDJSONParser as WASMParser, benchmarkSIMDParsing } from '$lib/wasm/simd-json-parser';
+import { SIMDJSONParser, as WASMParser, benchmarkSIMDParsing } from '$lib/wasm/simd-json-parser';
 import { SIMDJSONParserV2 } from '$lib/services/simd-json-parser-v2';
 import { simdJSONParser } from '$lib/services/simd-json-parser';
 import { UltraJSONParser, ultraJSONParser } from '$lib/wasm/ultra-json-parser';
@@ -289,7 +289,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'NATIVE_JSON',
         parse_time_ms: 0,
-        memory_bank: 'L3_NATIVE_FALLBACK` };
+        memory_bank: 'L3_NATIVE_FALLBACK' };
     }
   }
   /**
@@ -297,7 +297,7 @@ export class UnifiedSIMDParser {
    */
   private async parseUltraPerformance(jsonString: string): Promise<UnifiedParseResult> {
     try {
-      // ensure fastParse result is awaited even if it's synchronous
+      // ensure fastParse result is awaited even if it's synchronous'
       const data = await Promise.resolve(
         this.ultraParser.fastParse(jsonString, {
           enableSIMD: true,
@@ -317,7 +317,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_ULTRA_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L2_V2_FALLBACK` };
+        memory_bank: 'L2_V2_FALLBACK' };
     }
   }
   /**
@@ -349,8 +349,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'ULTRA_NO_GPU',
         parse_time_ms: 0,
-        memory_bank: 'L2_ULTRA_FALLBACK'
-      };
+        memory_bank: `L2_ULTRA_FALLBACK` };
     }
   }
   /**
@@ -362,7 +361,7 @@ export class UnifiedSIMDParser {
       data,
       backend_used: 'V2_GENERIC',
       parse_time_ms: 0,
-      memory_bank: 'L1_V2_GENERIC` };
+      memory_bank: `L1_V2_GENERIC` };
   }
   /**
    * Clean Playwright-specific JSON issues

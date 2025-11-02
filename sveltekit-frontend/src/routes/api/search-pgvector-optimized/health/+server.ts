@@ -27,7 +27,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Check 1: PostgreSQL connection
     const db = getDb();
-    const dbTest = await db.select({ one: sql`1' });
+    const dbTest = await db.select({ one: sql`1` });
     checks.checks.postgresql = {
       status: 'ok',
       connected: true
@@ -50,14 +50,12 @@ export const GET: RequestHandler = async () => {
     checks.checks.pgvector = {
       status: 'ok',
       installed: true,
-      version: (pgvectorCheck as any)[0]?.extversion || 'unknown'
-    };
+      version: (pgvectorCheck as any)[0]?.extversion || 'unknown` };'`
   } catch (error) {
     checks.checks.pgvector = {
       status: 'error',
       installed: false,
-      error: error instanceof Error ? error.message : 'pgvector not found'
-    };
+      error: error instanceof Error ? error.message : `pgvector not found` };
     checks.status = 'unhealthy';
   }
 
@@ -75,14 +73,14 @@ export const GET: RequestHandler = async () => {
       status: 'error',
       healthy: false,
       error: error instanceof Error ? error.message : `Redis check failed` };
-    // Redis being down doesn't make service unhealthy (graceful degradation)
+    // Redis being down doesn't make service unhealthy (graceful degradation)'
   }
 
   try {
     // Check 4: Indexed documents count
     const db = getDb();
     const countResult = await db
-      .select({ count: sql<number>`count(*)' })
+      .select({ count: sql<number>`count(*)` })
       .from(legalDocumentsJsonb);
 
     const documentCount = countResult[0]?.count || 0;
@@ -90,8 +88,7 @@ export const GET: RequestHandler = async () => {
       status: 'ok',
       indexed: documentCount,
       embeddingDimensions: 384,
-      indexType: 'IVFFlat'
-    };
+      indexType: `IVFFlat` };
   } catch (error) {
     checks.checks.documents = {
       status: 'error',

@@ -24,7 +24,7 @@ export class PostgreSQLVectorService {
   private async initializeConnection() {
     try {
       // In a real implementation, this would connect to PostgreSQL with pgvector
-      // For now, we'll simulate a connection
+      // For now, we'll simulate a connection'
       this.isConnected = true;
       console.log('PostgreSQL Vector Service initialized (fallback mode)');
     } catch (error) {
@@ -169,7 +169,7 @@ export class PostgreSQLVectorService {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error' }`);
+        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error` }`);'`
       }
 
       const data = await response.json();

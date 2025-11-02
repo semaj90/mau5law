@@ -23,7 +23,7 @@ type VectorSearch = {
   performSimilaritySearch: (embedding: any, limit?: number, threshold?: number) => Promise<unknown[]>
 }
 
-type MockDataGenerators = { generateMockLegalDocuments: (count: number) => Promise<unknown[]> | unknown[]; generateMockQLoRAStates: (count: number) => Promise<unknown[]> | unknown[]; generateMockAssetPredictions: (count: number) => Promise<unknown[]> | unknown[]; generateMockEmbeddingShards: (count: number) => Promise<unknown[]> | unknown[];, generateMockCHRManifests: (count: number) => Promise<unknown[]> | unknown[]
+type MockDataGenerators = { generateMockLegalDocuments: (count: number) => Promise<unknown[]> | unknown[]; generateMockQLoRAStates: (count: number) => Promise<unknown[]> | unknown[]; generateMockAssetPredictions: (count: number) => Promise<unknown[]> | unknown[]; generateMockEmbeddingShards: (count: number) => Promise<unknown[]> | unknown[]; generateMockCHRManifests: (count: number) => Promise<unknown[]> | unknown[]
 }
 
 type SyncModule = {
@@ -36,7 +36,7 @@ type SyncModule = {
 // safe cast from imported namespace to the typed module
 const importedSyncModule = (syncModule as unknown) as SyncModule
 
-const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({, status: 'unknown' }),
+const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({, status: 'unknown` }),'`
   performFullSync: async () => ({ success: false })
 }
 const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? { syncMockLegalDocuments: async () => ({, success: false }),
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     // avoid `as any` casts; narrow error safely
     const message = error instanceof Error ? error.message : String(error);
-    console.error('❌ Sync API error:', message);
+    console.error('❌ Sync API error:', message);'
     return json(
       {
         error: 'Sync operation failed',
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case 'chr_manifests':
             mockData = mockDataGenerators.generateMockCHRManifests(count);
             break;
-          default: return json({ error: `Unknown mock data type` }, { status: 400 });
+          default: return json({ error: 'Unknown mock data type` }, { status: 400 });'`
         }
         // normalize to array in case generator returned a promise or a sync array
         const resolvedData = await Promise.resolve(mockData);
@@ -214,7 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
               bulkResults[syncType] = await databaseSync.syncPredictiveAssetCache();
               break;
             default:
-              bulkResults[syncType] = { error: `unsupported sync type` };
+              bulkResults[syncType] = { error: 'unsupported sync type` };'`
           }
         }
         return json({
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('❌ Sync POST API error:', message);
+    console.error('❌ Sync POST API error:', message);'
     return json(
       {
         error: 'POST operation failed',

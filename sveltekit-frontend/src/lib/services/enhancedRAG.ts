@@ -53,7 +53,7 @@ export class EnhancedRAGSystem {
   }
 
   public calculateOverallConfidence(): number {
-    // read the current value from the store using Svelte's get() helper
+    // read the current value from the store using Svelte's get() helper'
     const last = get(this.ragResponse$);
     return last?.confidence ?? 0;
   }
@@ -67,7 +67,7 @@ const _ollamaStub = {
   endpoint: 'http://localhost:11434',
   models: [] as string[],
   capabilities: [] as string[],
-  status: 'online` } as unknown as Partial<LLMProvider>;
+  status: 'online' } as unknown as Partial<LLMProvider>;
 
 export const enhancedRAG = new EnhancedRAGSystem(_ollamaStub);
 

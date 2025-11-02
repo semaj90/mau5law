@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
 <!--
   UnifiedDialog.svelte
   Phase 14 - Unified UI Kit Component
@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   - Memory-efficient rendering (8KB budget)
   - Legal AI context integration
 -->
-<script lang="ts">
+<script, lang="ts">
 import type { User } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
@@ -132,9 +132,9 @@ import type { User } from '$lib/types';
 </script>
 
 {#if open}
-  <div class="fixed inset-0 z-50">
+  <div class="fixed inset-0, z-50">
     {#if webgpuEffects}
-      <!-- canvas must not be self-closing -->
+      <!-- canvas must not be, self-closing -->
       <canvas
         bind:this={canvas}
         class="absolute inset-0 w-full h-full"
@@ -144,7 +144,7 @@ import type { User } from '$lib/types';
       ></canvas>
     {/if}
 
-    <!-- Overlay: use a semantic button so keyboard users can close with Enter/Space and ARIA role is implicit -->
+    <!-- Overlay: use a semantic button so keyboard users can close with Enter/Space and ARIA role is, implicit -->
     <button
       type="button"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm appearance-none border-none p-0 m-0"
@@ -153,18 +153,18 @@ import type { User } from '$lib/types';
       aria-label="Close dialog"
     ></button>
 
-    <!-- Dialog Container -->
-    <div class={dialogClasses} aria-hidden={!open}>
-      <!-- Dialog Content -->
+    <!-- Dialog, Container -->
+    <div, class={dialogClasses} aria-hidden={!open}>
+      <!-- Dialog, Content -->
       <div
         class={contentClasses}
         transitionscale={{ duration: 200, easing: cubicInOut }}
         role="dialog"
         aria-modal="true"
       >
-        <!-- Collaboration Users -->
+        <!-- Collaboration, Users -->
         {#if collaboration?.enabled}
-          <div class="absolute -top-8 right-0 flex -space-x-2">
+          <div class="absolute -top-8 right-0, flex -space-x-2">
             {#each collaboration.users || [] as user (user.id)}
               <div
                 class="w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white"
@@ -176,15 +176,15 @@ import type { User } from '$lib/types';
             {/each}
           {/if}
 
-        <!-- Legal AI Risk Indicator -->
+        <!-- Legal AI Risk, Indicator -->
         {#if legalContext?.aiAnalysis?.riskLevel === 'high'}
-          <!-- do not self-close non-void elements -->
-          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white">{/if}
+          <!-- do not self-close non-void, elements -->
+          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2, border-white">{/if}
 
         <!-- Header -->
         {#if title}
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-3">
+          <div class="px-6 py-4 border-b, border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center, gap-3">
               {#if typeof title === 'function'}
                 {title()}
               {:else}
@@ -207,7 +207,7 @@ import type { User } from '$lib/types';
           {/if}
 
         <!-- Content -->
-        <div class="px-6 py-4 overflow-y-auto max-h-[60vh]">
+        <div class="px-6 py-4 overflow-y-auto, max-h-[60vh]">
           {#if typeof content === 'function'}
             {content()}
           {:else}
@@ -215,12 +215,12 @@ import type { User } from '$lib/types';
           {/if}
 
           {#if legalContext?.aiAnalysis?.suggestions?.length > 0}
-            <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 class="text-sm font-medium text-blue-900 mb-2">AI Suggestions:</h4>
-              <ul class="text-sm text-blue-800 space-y-1">
+            <div class="mt-4 p-3 bg-blue-50 rounded-lg border, border-blue-200">
+              <h4 class="text-sm font-medium text-blue-900, mb-2">AI Suggestions:</h4>
+              <ul class="text-sm text-blue-800, space-y-1">
                 {#each Array.isArray(legalContext.aiAnalysis.suggestions) ? legalContext.aiAnalysis.suggestions : [] as suggestion}
-                  <li class="flex items-start gap-2">
-                    <span class="text-blue-600">•</span>
+                  <li class="flex items-start, gap-2">
+                    <span, class="text-blue-600">•</span>
                     {suggestion}
                   </li>
                 {/each}
@@ -230,7 +230,7 @@ import type { User } from '$lib/types';
 
         <!-- Footer -->
         {#if footer}
-          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+          <div class="px-6 py-4 border-t border-gray-200, bg-gray-50">
             {#if typeof footer === 'function'}
               {footer()}
             {:else}
@@ -238,8 +238,8 @@ import type { User } from '$lib/types';
             {/if}
           </div>
         {:else}
-          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-            <!-- Use native button to avoid component event typing issues -->
+          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end, gap-3">
+            <!-- Use native button to avoid component event typing, issues -->
             <button
               class="px-3 py-1 text-sm rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm"
               type="button"
@@ -249,26 +249,26 @@ import type { User } from '$lib/types';
             </button>
           {/if}
 
-        <!-- Close button -->
+        <!-- Close, button -->
         <button
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
           onclick={closeDialog}
           aria-label="Close"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12, 12" />
           </svg>
         </button>
 
-        <!-- Collaboration Cursors -->
+        <!-- Collaboration, Cursors -->
         {#each renderCollaborationCursors() as cursor (cursor.id)}
           <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
             transitionfade={{ duration: 200 }}
           >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M7 2L17 12L12 13L13 18L7 2Z"/>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24, 24">
+              <path d="M7 2L17 12L12 13L13 18L7, 2Z"/>
             </svg>
             <span
               class="ml-2 px-1 py-0.5 text-xs font-medium text-white rounded shadow-lg"

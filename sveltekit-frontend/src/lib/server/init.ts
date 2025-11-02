@@ -7,7 +7,7 @@
  * - Graceful fallbacks
  *
  * Usage:
- * ```typescript
+ * ```typescript`
  * // In hooks.server.ts or main entry point
  * import { initializeServer } from '$lib/server/init';
  *
@@ -20,15 +20,15 @@ import {
   getServiceDiscovery
 } from '$lib/server/helpers/service-discovery';
 
-export interface ServerServices { minio: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  minioConsole: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  ollama: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  qdrant: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  redis: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  postgres: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  neo4j: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  rabbitmq: { url: string;, source: 'env' | 'discovery' | 'fallback' };
-  rabbitmqManagement: { url: string;, source: 'env' | 'discovery' | 'fallback` };
+export interface ServerServices { minio: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  minioConsole: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  ollama: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  qdrant: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  redis: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  postgres: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  neo4j: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  rabbitmq: { url: string; source: 'env' | 'discovery' | 'fallback' };
+  rabbitmqManagement: { url: string; source: 'env' | 'discovery' | 'fallback` };'`
 }
 
 // Global services instance
@@ -177,7 +177,7 @@ export function getServiceUrls(): Record<string, string> {
  * Utility: Format service discovery results for logging
  */
 function formatServiceTable(
-  services: Record<string, { url: string;, source: string }>
+  services: Record<string, { url: string; source: string }>
 ): void {
   const data = Object.entries(services).map(([name, service]) => ({
     Service: name,

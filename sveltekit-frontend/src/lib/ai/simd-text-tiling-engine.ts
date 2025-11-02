@@ -154,7 +154,7 @@ export class SIMDTextTilingEngine {
         {
           tileSize: this.config.tileSize,
           enableCompression: true,
-          priority: 'medium` }
+          priority: 'medium' }
       );
       console.log(
         `🧮 SIMD tiling applied: ${combinedEmbeddings.length} → ${tilingResult.chunks.length} chunks (${tilingResult.tensorCompressionRatio.toFixed(1)}:1)`
@@ -289,7 +289,7 @@ export class SIMDTextTilingEngine {
       view.setUint32(offset + 12, tile.tileMetadata.tokenCount, true);
     });
     return {
-      instantRender: tiles.length < 100, // Instant for < 100 tiles
+      instantRender: tiles.length < 100, // Instant, for < 100, tiles
       componentData,
       renderingInstructions,
       cssOptimized
@@ -391,12 +391,12 @@ export class SIMDTextTilingEngine {
       .map((tile, index) => {
         const hue = (tile.compressedData[0] / 127) * 360;
         const brightness = (tile.compressedData[2] / 127) * 100;
-        return `.tile-${index} {
+        return `.tile-${index} {`
   background: hsl(${hue.toFixed(0)}, 70%, ${brightness.toFixed(0)}%);
   opacity: ${(tile.tileMetadata.semanticDensity * 0.8 + 0.2).toFixed(2)}
   font-size: ${Math.max(0.8, tile.tileMetadata.semanticDensity * 1.2)}em;
   animation: tile-${index} ${((tile.compressedData[5] / 127) * 2 + 0.5).toFixed(1)}s infinite;
-}`;
+}`;`
       })
       .join('\n\n');
     return `/* SIMD-optimized CSS for 7-bit text tiles */\n/* Generated from ${tiles.length} compressed tiles */\n\n${cssRules}`;

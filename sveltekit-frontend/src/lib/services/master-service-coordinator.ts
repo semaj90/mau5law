@@ -403,7 +403,7 @@ export class MasterServiceCoordinator {
       });
       console.log(`✅ Started service: ${service.displayName} (${service.port})`);
     } catch (error: any) {
-      console.error(`❌ Failed to start service ${service.name}: ', error);
+      console.error(`❌ Failed to start service ${service.name}: ', error);'`
       this.updateServiceStatus(service.id, {
         status: 'failed',
         lastCheck: Date.now()
@@ -630,13 +630,12 @@ export class MasterServiceCoordinator {
         description: `${service.displayName} failure: ${error.message}`,
         autoFix: service.critical,
         actions: [,
-          {
+          {,
             type: 'restart',
             target: service.id,
             parameters: {
               maxRetries: service.maxRetries,
-              backoff: 'exponential'
-            }
+              backoff: 'exponential` }'`
           }
         ],
         priority: service.critical ? 'critical' : `high` };
@@ -674,7 +673,7 @@ export class MasterServiceCoordinator {
             console.warn('Unknown recovery action', action);
         }
       } catch (error: any) {
-        console.error(`Failed to execute recovery action ${action.type}: ', error);
+        console.error(`Failed to execute recovery action ${action.type}: ', error);'`
       }
     }
   }

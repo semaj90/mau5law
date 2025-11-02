@@ -4,7 +4,7 @@
  * falls back to localhost for development.
  */
 
-// Base URL for the SvelteKit frontend's own API routes
+// Base URL for the SvelteKit frontend's own API routes'
 const getFrontendApiBaseUrl = (): string => {
   // In a SvelteKit app, relative paths are generally preferred for internal API routes
   // However, if running in a Docker setup where the frontend might be accessed via a different hostname
@@ -36,7 +36,7 @@ export function getGpuMetricsEndpoint(params?: string): string {
   // its Docker service name should be used.
   // For now, we'll assume it's an internal SvelteKit API route that might proxy to a Go service.
   const baseUrl = getFrontendApiBaseUrl();
-  return `${baseUrl}/api/gpu/metrics${params ? `?${params}` : '' }`;
+  return `${baseUrl}/api/gpu/metrics${params ? `?${params}` : '` }`;'`
 }
 
 // Example for a Go service endpoint if needed directly from client/server

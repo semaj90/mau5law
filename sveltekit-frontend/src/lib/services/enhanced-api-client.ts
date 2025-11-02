@@ -110,7 +110,7 @@ export class LegalAIApiClient {
         }
 
         if (!response.ok) {
-          const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}` };
+          const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}' };'`
           const ed = errorData as Record<string, unknown>;
           const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as string) : 'API_ERROR';
           const errMessage =
@@ -126,7 +126,7 @@ export class LegalAIApiClient {
         return (parsed as T) ?? ({} as T);
       } catch (error) {
         lastError = error;
-        // Don't retry on client errors (4xx) except 429 (rate limit)
+        // Don't retry on client errors (4xx) except 429 (rate limit)'
         if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.status !== 429) {
           throw error;
         }
@@ -190,10 +190,10 @@ export class LegalAIApiClient {
   async updateCase(
     id: string,
     caseData: Partial<{ title: string;, description: string;
-      caseNumber: string;
-      status: 'open' | 'closed' | 'pending' | 'archived';
-      priority: 'low' | 'medium' | 'high' | 'urgent';
-      category: string;
+     , caseNumber: string;
+     , status: 'open' | 'closed' | 'pending' | 'archived';
+     , priority: 'low' | 'medium' | 'high' | 'urgent';
+     , category: string;
      , metadata: Record<string, unknown>;
     }>,
     signal?: AbortSignal
@@ -240,7 +240,7 @@ export class LegalAIApiClient {
    * Create new evidence
    */
   async createEvidence(
-    evidenceData: { caseId: string;, title: string;
+    evidenceData: {, caseId: string;, title: string;
      , evidenceType: string;
       description?: string;
       fileUrl?: string;
@@ -276,10 +276,10 @@ export class LegalAIApiClient {
       mimeType: string;
       hash: string;
       tags: string[];
-      chainOfCustody: any[];
-      aiSummary: string;
-      summary: string;
-      isAdmissible: boolean;
+     , chainOfCustody: any[];
+     , aiSummary: string;
+     , summary: string;
+     , isAdmissible: boolean;
      , confidentialityLevel: string;
     }>,
     signal?: AbortSignal
@@ -327,7 +327,7 @@ export class LegalAIApiClient {
    */
   async createReport(
     reportData: {
-      title: string;
+     , title: string;
       description?: string;
      , reportType: string;
       caseId?: string;
@@ -349,10 +349,10 @@ export class LegalAIApiClient {
   async updateReport(
     id: string,
     reportData: Partial<{ title: string;, description: string;
-      reportType: string;
-      caseId: string;
-      content: string;
-      status: string;
+     , reportType: string;
+     , caseId: string;
+     , content: string;
+     , status: string;
      , metadata: Record<string, unknown>;
     }>,
     signal?: AbortSignal
@@ -399,7 +399,7 @@ export class LegalAIApiClient {
    */
   async createPersonOfInterest(
     personData: {
-      name: string;
+     , name: string;
       description?: string;
      , riskLevel: string;
       caseId?: string;
@@ -420,10 +420,10 @@ export class LegalAIApiClient {
    */
   async updatePersonOfInterest(
     id: string,
-    personData: Partial<{ name: string;, description: string;
-      riskLevel: string;
-      caseId: string;
-      contactInfo: Record<string, unknown>;
+    personData: Partial<{, name: string;, description: string;
+     , riskLevel: string;
+     , caseId: string;
+     , contactInfo: Record<string, unknown>;
       aliases: string[];
      , metadata: Record<string, unknown>;
     }>,
@@ -452,7 +452,7 @@ export class LegalAIApiClient {
     file: File,
     onProgress?: (progress: number) => void,
     signal?: AbortSignal
-  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string;, hash: string }> {
+  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string; hash: string }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -506,8 +506,8 @@ export class LegalAIApiClient {
    */
   async getHealthStatus(
     signal?: AbortSignal
-  ): Promise<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>> {
-    return this.request<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>>(
+  ): Promise<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>> {
+    return this.request<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>>(
       '/health',
       { signal }
     );
@@ -561,7 +561,7 @@ export const CreatePersonOfInterestSchema = z.object({
   metadata: z.record(z.unknown()).optional()
 });
 // Type exports for forms
-export type CreateCaseData = z.infer<typeof CreateCaseSchema>;
-export type CreateEvidenceData = z.infer<typeof CreateEvidenceSchema>;
-export type CreateReportData = z.infer<typeof CreateReportSchema>;
-export type CreatePersonOfInterestData = z.infer<typeof CreatePersonOfInterestSchema>;
+export type CreateCaseData = z.infer<typeof, CreateCaseSchema>;
+export type CreateEvidenceData = z.infer<typeof, CreateEvidenceSchema>;
+export type CreateReportData = z.infer<typeof, CreateReportSchema>;
+export type CreatePersonOfInterestData = z.infer<typeof, CreatePersonOfInterestSchema>;

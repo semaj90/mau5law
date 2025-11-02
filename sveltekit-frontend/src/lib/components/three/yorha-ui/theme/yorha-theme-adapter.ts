@@ -17,7 +17,7 @@ export const NES_PALETTE = {
 } as const;
 // Bits UI v2 style semantic roles we want to map (simplified)
 // These reference UnoCSS theme token names (see uno.config.ts)
-const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string;, text: string; accent?: string }> = { primary: {, bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
+const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string; accent?: string }> = { primary: {, bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
   secondary: { bg: 'yorha-bg-secondary', border: 'yorha-border', text: 'yorha-text-secondary' },
   accent: { bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
   ghost: { bg: 'yorha-bg-primary', border: 'yorha-border', text: 'yorha-text-primary' },

@@ -78,11 +78,11 @@ const LEGAL_MODEL_FALLBACK = 'gemma3:270m';
 async function extractTimelineWithAI(
   content: string,
   documentType: string,
-  _options: z.infer<typeof TimelineExtractionSchema>['extractionOptions'] // typed via z.infer
+  _options: z.infer<typeof, TimelineExtractionSchema>['extractionOptions'] // typed via z.infer
 ): Promise<TimelineData> {
   const model = await getOptimalModel();
 
-  const extractionPrompt = `You are a legal AI assistant specializing in chronological analysis. Extract all temporal events from this legal document and provide a structured timeline.
+  const extractionPrompt = `You are a legal AI assistant specializing in chronological analysis. Extract all temporal events from this legal document and provide a structured timeline.`
 
 DOCUMENT TYPE: ${documentType}
 CONTENT: ${content.substring(0, 4000)}${content.length > 4000 ? '...' : `` }
@@ -98,7 +98,7 @@ ANALYSIS REQUIREMENTS:
 Provide your analysis in this exact JSON format:
 {
   "timeline_events": [
-    {
+    {,
       "date": "2024-01-15T14:30:00Z",
       "date_confidence": 0.95,
       "event_type": "incident",
@@ -119,7 +119,7 @@ Provide your analysis in this exact JSON format:
     "extraction_quality": "high",
     "missing_context": []
   }
-}`;
+}`;`
 
   try {
     const response = await fetch(getOllamaEndpoint('api/generate'), {
@@ -254,9 +254,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       data: {
         caseId,
         timeline: {
-          events: processedEvents,
+         , events: processedEvents,
           summary: {
-            total_events: processedEvents.length,
+           , total_events: processedEvents.length,
             date_range: timelineData.date_range,
             confidence: timelineData.confidence_summary,
             extraction_method: 'ai_powered'
@@ -322,7 +322,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const mockTimeline = {
       caseId,
       events: [
-        {
+        {,
           id: crypto.randomUUID(),
           date: '2024-01-15T14:30:00Z',
           event_type: 'incident',
@@ -331,8 +331,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           participants: ['John Doe', 'Jane Smith'],
           location: '123 Main Street',
           evidence_references: ['DOC-001', 'PHOTO-001'],
-          legal_significance: 'High - establishes timeline of events'
-        },
+          legal_significance: 'High - establishes timeline of events` },'`
         {
           id: crypto.randomUUID(),
           date: '2024-01-16T09:00:00Z',
@@ -342,8 +341,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           participants: ['Officer Johnson'],
           location: 'Police Station',
           evidence_references: ['REPORT-001'],
-          legal_significance: 'Medium - procedural requirement'
-        },
+          legal_significance: `Medium - procedural requirement` }
       ] as TimelineEvent[], // Cast mock events to TimelineEvent[]
       summary: {
         total_events: 2,
@@ -363,7 +361,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
 
     if (endDate) {
-      filteredEvents = filteredEvents.filter((event: TimelineEvent) => new Date(event.date) <= new Date(endDate));
+      filteredEvents = filteredEvents.filter((event: TimelineEvent) => new Date(event.date) <= new, Date(endDate));
     }
 
     if (eventTypes && eventTypes.length > 0) {

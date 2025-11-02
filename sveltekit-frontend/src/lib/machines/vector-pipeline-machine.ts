@@ -45,11 +45,11 @@ export interface VectorPipelineContext {
   };
 }
 export type VectorPipelineEvent =
-  | { type: 'SUBMIT_JOB';, job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
-  | { type: 'SUBMIT_BATCH';, jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> }
-  | { type: 'JOB_PROGRESS'; jobId: string; progress: number;, status: string }
-  | { type: 'JOB_COMPLETED'; jobId: string;, result: any }
-  | { type: 'JOB_FAILED'; jobId: string;, error: string }
+  | { type: 'SUBMIT_JOB'; job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
+  | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> }
+  | { type: 'JOB_PROGRESS'; jobId: string; progress: number; status: string }
+  | { type: 'JOB_COMPLETED'; jobId: string; result: any }
+  | { type: 'JOB_FAILED'; jobId: string; error: string }
   | { type: 'RETRY_FAILED_JOBS' }
   | { type: 'HEALTH_CHECK' }
   | { type: 'RESET_PIPELINE' }
@@ -184,8 +184,7 @@ export const vectorPipelineMachine = setup({ types: {, context: {} as VectorPip
             ownerType: job.ownerType,
             ownerId: job.ownerId,
             event: job.event,
-            status: 'enqueued'
-          })
+            status: `enqueued` })
           .returning();
         await workflowQueue.add('vector-processing', { jobId: newJob.id, ...job });
         return { jobId: newJob.id, status: 'enqueued', progress: 0 };
@@ -272,10 +271,10 @@ export const vectorPipelineMachine = setup({ types: {, context: {} as VectorPip
   id: 'vectorPipeline',
   initial: 'initializing',
   context: initialContext,
-  states: { initializing: {, invoke: {
-        src: 'healthCheck',
-        onDone: { target: 'idle', actions: ['updatePipelineStatus', 'clearErrors'] },
-        onError: { target: 'error', actions: [assign({, errors: ({ event }) => [String(event.error)] })] }
+  states: {, initializing: {, invoke: {
+       , src: 'healthCheck',
+        onDone: {, target: 'idle', actions: ['updatePipelineStatus', 'clearErrors'] },
+        onError: {, target: 'error', actions: [assign({, errors: ({ event }) => [String(event.error)] })] }
       }
     },
     idle: { on: {, SUBMIT_JOB: { target: 'processingJob', actions: ['setCurrentJob'] },
@@ -334,9 +333,9 @@ export const vectorPipelineActions = {
   submitBatch: (jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>>) =>
     vectorPipelineActor.send({ type: 'SUBMIT_BATCH', jobs }),
   retryFailedJobs: () => vectorPipelineActor.send({ type: 'RETRY_FAILED_JOBS' }),
-  healthCheck: () => vectorPipelineActor.send({ type: 'HEALTH_CHECK' }),
-  enableWebGPU: () => vectorPipelineActor.send({ type: 'ENABLE_WEBGPU' }),
-  disableWebGPU: () => vectorPipelineActor.send({ type: 'DISABLE_WEBGPU' }),
+  healthCheck: () => vectorPipelineActor.send({ type: 'HEALTH_CHECK` }),'`
+  enableWebGPU: () => vectorPipelineActor.send({ type: `ENABLE_WEBGPU` }),
+  disableWebGPU: () => vectorPipelineActor.send({ type: `DISABLE_WEBGPU` }),
   reset: () => vectorPipelineActor.send({ type: `RESET_PIPELINE` }),
   stop: () => safeStop(vectorPipelineActor)
 };

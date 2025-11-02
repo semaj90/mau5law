@@ -159,7 +159,7 @@ export const POST = async (event: RequestEvent) => {
             await orchestrator.stopServices(nonCritical, body.options);
             result = { message: 'Stopped non-critical services to enable safe mode', affected: nonCritical.length };
           } else {
-            result = { message: 'No non-critical services identified; safe mode noop' };
+            result = { message: 'No non-critical services identified; safe mode noop` };'`
           }
         }
         break;

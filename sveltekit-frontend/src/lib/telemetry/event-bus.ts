@@ -172,7 +172,7 @@ export class TelemetryEventBus {
       type: 'cache_hit',
       duration: 0,
       operation: `${bank.type}_usage`,
-      success: utilizationPercent < 90, // Flag high memory usage
+      success: utilizationPercent < 90, // Flag high memory, usage
     });
     if (this.options.enableDebug) {
       console.log(`[Telemetry] ${bank.type} utilization: ${utilizationPercent.toFixed(1)}%`);
@@ -227,8 +227,7 @@ export class TelemetryEventBus {
       }
     };
     return new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
-    });
+      type: 'application/json' });
   }
   /**
    * Force flush events
@@ -298,7 +297,7 @@ export class TelemetryEventBus {
     const response = await fetch(this.options.endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json` },
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
@@ -313,7 +312,7 @@ export class TelemetryEventBus {
       if (window.__GPU_MANAGER__) {
         return {
           acceleration: window.__GPU_MANAGER__.getAcceleration(),
-          contextType: 'detected` };
+          contextType: `detected' };'`
       }
     } catch {
       return null;

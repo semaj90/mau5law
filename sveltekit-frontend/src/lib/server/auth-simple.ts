@@ -39,7 +39,7 @@ export class SimpleAuthService {
         SELECT id, email, hashed_password, first_name, last_name, role, is_active
         FROM users
         WHERE email = $1 AND is_active = true
-      `,
+      `,`
         [email]
       );
       if ((result as { rows?: any }).rows.length === 0) {

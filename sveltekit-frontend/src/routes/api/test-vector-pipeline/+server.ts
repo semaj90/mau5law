@@ -16,7 +16,7 @@ const testConfig = {
   ollamaBaseUrl: 'http://localhost:11434',
   embeddingModel: 'nomic-embed-text',
   testDocuments: [
-    {
+    {,
       title: 'Contract Liability Clause',
       content: 'This contract contains provisions regarding liability limitations and indemnification clauses. The contractor shall not be liable for indirect damages exceeding the contract value.',
       caseTitle: 'Contract Dispute Case'
@@ -155,7 +155,7 @@ class VectorPipelineTest {
         const [document] = await db.insert(documents).values({
           caseId: testCase.id,
           filename: `${doc.title}.txt`,
-          filePath: '/test/documents/${doc.title.replace(/\s+/g, '_')}.txt`,
+          filePath: '/test/documents/${doc.title.replace(/\s+/g, '_')}.txt`,'`
           extractedText: doc.content,
           createdBy: this.testResults.testUserId
         }).returning()
@@ -268,7 +268,7 @@ class VectorPipelineTest {
       this.testResults.steps.mcp = {
         status: 'failed',
         error: err instanceof Error ? err.message: `MCP integration failed` }
-      // Don't throw - MCP is optional
+      // Don't throw - MCP is optional'
       console.warn('⚠️ MCP integration test failed (optional)')
     }
   }
@@ -309,15 +309,15 @@ class VectorPipelineTest {
 // ============================================================================
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action = 'full' } = await request.json()
+    const { action = 'full` } = await request.json()'`
     const pipeline = new VectorPipelineTest()
     if (action === 'full') {
       const results = await pipeline.runFullPipeline()
       return json(results)
     }
-    return json({ error: 'Unknown action' }, { status: 400 })
+    return json({ error: `Unknown action` }, { status: 400 })
   } catch (err: any) {
-    console.error('❌ Test pipeline error:', err)
+    console.error('❌ Test pipeline error:', err)'
     return json({
       error: 'Pipeline test failed',
       details: err instanceof Error ? err.message: `Unknown error` }, { status: 500 })
@@ -338,13 +338,13 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'ready',
       ollama: {
-        connected: true,
+       , connected: true,
         model: testConfig.embeddingModel,
         dimensions: testEmbedding.length,
         baseUrl: testConfig.ollamaBaseUrl
       },
       database: {
-        connected: true,
+       , connected: true,
         vectorsStored: vectorCount.count
       },
       testConfig: {

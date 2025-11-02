@@ -13,7 +13,7 @@ import { dev } from '$app/environment';
 import Redis from 'ioredis';
 
 // --- Minimal runtime Redis surface used by this service ---
-// Keep this small so we don't depend on any specific vendor type definitions
+// Keep this small so we don't depend on any specific vendor type definitions'
 type RedisStatus = 'connecting' | 'ready' | 'end' | string;
 interface MinimalRedis {
   status?: RedisStatus;
@@ -59,7 +59,7 @@ const DOCKER_FRIENDLY_DEFAULTS = {
 // --- Type Definitions ---
 
 export interface RedisGPUCacheEntry { key: string;, response: string;
-  // Data prepared on the server for the client's GPU
+  // Data prepared on the server for the client's GPU'
   quantized: { compressed: Uint8Array;, compressionRatio: number;
     glyphMap: Record<string, string>;
   };
@@ -77,7 +77,7 @@ export interface RedisGPUCacheEntry { key: string;, response: string;
   };
 }
 
-// A type for the data before it's serialized for Redis
+// A type for the data before it's serialized for Redis'
 type SerializableCacheEntry = Omit<
   RedisGPUCacheEntry,
   'quantized' | 'gpuTexturePayload' | 'embeddings' | 'metadata'
@@ -99,7 +99,7 @@ type OllamaEmbeddingResponse = {
 };
 
 class RedisGPUChatOptimizationService {
-  // Replace the previous InstanceType<typeof Redis> with the small interface
+  // Replace the previous InstanceType<typeof, Redis> with the small interface
   private redis: MinimalRedis | null = null;
   private l1Cache: Map<string, RedisGPUCacheEntry> = new Map(); // L1: In-memory cache
   private readonly L1_MAX_SIZE = 1000;
@@ -170,7 +170,7 @@ class RedisGPUChatOptimizationService {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error('ensureRedisConnected error:', message);
+      console.error('ensureRedisConnected error:', message);'
       // swallow; operations will fallback to L1 only if Redis is unavailable
     }
   }
@@ -345,7 +345,7 @@ class RedisGPUChatOptimizationService {
     try {
       const response = await fetch(`${this.config.ollamaApiBase}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: this.config.embeddingModel,
           prompt: text

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   // Accept an optional children snippet in Svelte 5
   export let  Snippet | undefined = undefined;
@@ -7,5 +7,5 @@
   // so convert through unknown first which preserves runtime behavior.
   const _noop: Snippet = (() => '') as unknown as Snippet;
 </script>
-<!-- Prefer explicit `children` prop; use optional chaining and a noop to avoid invalid_snippet -->
+<!-- Prefer explicit `children` prop; use optional chaining and a noop to avoid, invalid_snippet -->
 {@render (children ?? _noop)()}

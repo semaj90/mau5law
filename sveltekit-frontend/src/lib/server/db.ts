@@ -15,7 +15,7 @@ export { db, sql, pool } from './db/drizzle';
 export type DB = typeof import('./db/drizzle').db;
 
 // Re-export Drizzle query helpers
-import { sql as drizzleSql } from 'drizzle-orm';
+import { sql, as drizzleSql } from 'drizzle-orm';
 import { eq, and, or, ilike, like } from 'drizzle-orm';
 import { count } from 'drizzle-orm';
 

@@ -113,8 +113,7 @@ class TensorRTQuicClient {
           'X-Legal-Domain': request.legalDomain || 'general',
           'X-Session-ID': request.sessionId || this.generateSessionId(),
           'X-Request-ID': crypto.randomUUID(),
-          'Connection': 'keep-alive'
-        },
+          'Connection': 'keep-alive` },'`
         body: JSON.stringify({
           prompt: request.prompt,
           max_tokens: request.maxTokens || 512,

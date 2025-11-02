@@ -1,19 +1,17 @@
 /**
  * 🔍 Last Searched Items API
- * Returns user's recent search history with intelligent suggestions
+ * Returns user's recent search history with intelligent suggestions'
  */
 import type { RequestHandler } from './$types'
 import { json } from '@sveltejs/kit'
 import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
-interface SearchItem { id: string, query: string; timestamp: string
-  resultCount: number; searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients'
+interface SearchItem { id: string, query: string; timestamp: string; resultCount: number; searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients'
   filters?: {
     practiceArea?: string
     dateRange?: string
     status?: string
   }
-  confidence: number; clickedResults: string[]
-  timeSpent: number; // seconds
+  confidence: number; clickedResults: string[]; timeSpent: number; // seconds
 }
 // Mock search history - in production this would be in PostgreSQL
 const mockSearchHistory: SearchItem[] = [
@@ -89,7 +87,7 @@ const mockSearchHistory: SearchItem[] = [
 export const GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10')
   const searchType = url.searchParams.get('type') as SearchItem['searchType'] | null
-  const cacheKey = `last-searched-${limit}-${searchType || 'all` }`
+  const cacheKey = `last-searched-${limit}-${searchType || 'all` }`'`
   try {
     // Check cache first
     const cached = await multiLayerCache.get<SearchItem[]>(cacheKey)
@@ -140,11 +138,11 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!query || !searchType) {
       return json({
         success: false,
-        error: `Missing required; fields: query, searchType` }, { status: 400 })
+        error: 'Missing required; fields: query, searchType' }, { status: 400 })
     }
     // Create new search entry
     const newSearch: SearchItem = {
-      id: `search-${Date.now()}',
+      id: 'search-${Date.now()}',
       query,
       timestamp: new Date().toISOString(),
       resultCount: resultCount || 0,
@@ -183,8 +181,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     if (!searchId) {
       return json({
         success: false,
-        error: 'Missing required; field: searchId'
-      }, { status: 400 })
+        error: `Missing required; field: searchId` }, { status: 400 })
     }
     // Find and update search entry
     const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId)
@@ -192,8 +189,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Search not found'
-        },
+          error: `Search not found` },
         { status: 404 }
       );
     }
@@ -216,7 +212,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     })
   } catch (error) {
-    console.error('Error updating search:', error)
+    console.error('Error updating search: `, error)'`
     return json({
       success: false,
       error: `Failed to update search` }, { status: 500 })

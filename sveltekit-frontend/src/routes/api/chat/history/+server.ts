@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       sessions
     });
   } catch (error) {
-    console.error('Chat history API error:', error);
+    console.error('Chat history API error:', error);'
     // Return mock chat history on failure
     const sessionId = url.searchParams.get('sessionId');
     const mockData = sessionId
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           error: 'failure default to mock',
           sessionId,
           messages: [
-            {
+            {,
               id: 'mock-msg-001',
               content: 'Mock chat message - legal analysis request',
               role: 'user',
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           success: false,
           error: 'failure default to mock',
           sessions: [
-            {
+            {,
               id: 'mock-session-001',
               title: 'Employment Contract Analysis',
               lastMessage: 'Mock legal consultation',

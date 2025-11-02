@@ -58,7 +58,7 @@ export class YoRHaUIExample {
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
-      `,
+      `,`
       fragmentShader: '
         uniform vec3 topColor;
         uniform vec3 bottomColor;
@@ -66,7 +66,7 @@ export class YoRHaUIExample {
         void main() {
           gl_FragColor = vec4(mix(bottomColor, topColor, vUv.y), 1.0);
         }
-      ' });
+      ' });'
     const background = new THREE.Mesh(gradientGeometry, gradientMaterial);
     background.position.z = -10;
     this.scene.add(background);
@@ -290,13 +290,11 @@ export class YoRHaUIExample {
     const confirmButton = new YoRHaButton3D({
       text: 'Confirm Execution',
       variant: 'primary',
-      size: 'medium'
-    });
+      size: 'medium` });'`
     const cancelButton = new YoRHaButton3D({
       text: 'Cancel',
       variant: 'secondary',
-      size: 'medium'
-    });
+      size: `medium` });
     confirmButton.addEventListener('click', () => {
       this.modal?.close();
       this.showSuccessModal();

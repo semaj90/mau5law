@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({}) => {
       status: 'healthy',
       protocol: 'HTTP',
       ports: {
-        quic: QUIC_VECTOR_CONFIG.primaryPort,
+       , quic: QUIC_VECTOR_CONFIG.primaryPort,
         fallback: QUIC_VECTOR_CONFIG.fallbackPort
       },
       backends: {
@@ -92,8 +92,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const service = getVectorSearchService();
       const ragSearchResponse = await service.searchDocuments(searchQuery.query || 'vector search', {
         maxResults: searchQuery.limit || 10,
-        collection: searchQuery.collection || 'legal_documents'
-      });
+        collection: searchQuery.collection || 'legal_documents` });'`
       const response = ragSearchResponse as VectorServiceResponse;
       const results =
         response && typeof response === 'object' && !Array.isArray(response) && response.results
@@ -118,8 +117,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           totalResults,
           executionTimeMs: 0,
           cacheHit: false,
-          backend: 'local-service'
-        }
+          backend: `local-service` }
       });
     }
 
@@ -154,7 +152,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Fallback to Enhanced RAG service
     return await handleEnhancedRagFallback(searchQuery, 'HTTP', 'vector-search-service');
   } catch (err: any) {
-    console.error('QUIC Vector search error:', err);
+    console.error('QUIC Vector search error:', err);'
     error(
       500,
       ensureError({
@@ -190,7 +188,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('Vector cache clear error:', err);
+    console.error('Vector cache clear error:', err);'
     error(
       500,
       ensureError({
@@ -208,10 +206,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.cacheTTL && (config.cacheTTL < 10 || config.cacheTTL > 3600)) {
-      error(400, ensureError({ message: 'Cache TTL must be between 10 and 3600 seconds' }));
+      error(400, ensureError({ message: 'Cache TTL must be between 10 and 3600 seconds` }));'`
     }
     if (config.maxCacheSize && (config.maxCacheSize < 10 || config.maxCacheSize > 10000)) {
-      error(400, ensureError({ message: 'Max cache size must be between 10 and 10000' }));
+      error(400, ensureError({ message: `Max cache size must be between 10 and 10000` }));
     }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {

@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               helpers.or(
                 helpers.ilike(evidence.title, `%${searchQuery}%`),
                 helpers.ilike(evidence.description, `%${searchQuery}%`),
-                sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%` }`
+                sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%' }`'`
               )
             )
           )
@@ -231,7 +231,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     };
     return json(response);
   } catch (error) {
-    console.error('Command search error:', error);
+    console.error('Command search error:', error);'
     return json(
       {
         success: false,

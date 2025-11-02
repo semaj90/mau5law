@@ -52,7 +52,7 @@ export class QdrantVectorStore {
   async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
-      // Create collections if they don't exist
+      // Create collections if they don't exist'
       await this.ensureCollection(COLLECTIONS.CONVERSATIONS, EMBEDDING_DIM);
       await this.ensureCollection(COLLECTIONS.ENTITIES, EMBEDDING_DIM);
       await this.ensureCollection(COLLECTIONS.SUMMARIES, EMBEDDING_DIM);
@@ -82,7 +82,7 @@ export class QdrantVectorStore {
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
       }
     } catch (error) {
-      console.error(`❌ Error creating collection ${collectionName}: ', error);
+      console.error(`❌ Error creating collection ${collectionName}: ', error);'`
       throw error;
     }
   }
@@ -95,8 +95,8 @@ export class QdrantVectorStore {
     userMessage: string,
     agentResponse: string,
     embedding: number[],
-    metadata: { intent: string;, hmmState: number;
-      confidence: number;
+    metadata: {, intent: string;, hmmState: number;
+     , confidence: number;
      , entities: LegalEntity[];
     }
   ): Promise<string> {
@@ -110,7 +110,7 @@ export class QdrantVectorStore {
     await this.client.upsert(COLLECTIONS.CONVERSATIONS, {
       wait: true,
       points: [
-        {
+        {,
          , id: pointId,
           vector: embedding,
           payload: {
@@ -147,7 +147,7 @@ export class QdrantVectorStore {
     await this.client.upsert(COLLECTIONS.ENTITIES, {
       wait: true,
       points: [
-        {
+        {,
          , id: pointId,
           vector: embedding,
           payload: {
@@ -170,7 +170,7 @@ export class QdrantVectorStore {
     sessionId: string,
     summary: string,
     embedding: number[],
-    metadata: { turnCount: number;, currentState: number;
+    metadata: {, turnCount: number;, currentState: number;
      , confidence: number;
     }
   ): Promise<string> {
@@ -182,7 +182,7 @@ export class QdrantVectorStore {
     await this.client.upsert(COLLECTIONS.SUMMARIES, {
       wait: true,
       points: [
-        {
+        {,
          , id: pointId,
           vector: embedding,
           payload: {
@@ -279,8 +279,8 @@ export class QdrantVectorStore {
       with_payload: true,
       ...(entityType
         ? { filter: {, must: [
-                {
-                  key: 'entityType',
+                {,
+                 , key: 'entityType',
                   match: {, value: entityType }
                 }
               ]
@@ -335,8 +335,8 @@ export class QdrantVectorStore {
     await this.ensureInitialized();
     // Scroll through all entities of this type
     const scrollResult = await this.client.scroll(COLLECTIONS.ENTITIES, { filter: {, must: [
-          {
-            key: 'entityType',
+          {,
+           , key: 'entityType',
             match: {, value: entityType }
           }
         ]
@@ -346,7 +346,7 @@ export class QdrantVectorStore {
       with_vector: true
     });
     // Simple clustering: group by similarity threshold
-    const clusters: Array<{ centroid: string;, members: Array<{ entityValue: string;, confidence: number }>;
+    const clusters: Array<{ centroid: string;, members: Array<{ entityValue: string; confidence: number }>;
       size: number;
     }> = [];
     const processed = new Set<string>();
@@ -379,9 +379,9 @@ export class QdrantVectorStore {
         vector,
         limit: 50,
         filter: {
-          must: [
-            {
-              key: 'entityType',
+         , must: [
+            {,
+             , key: 'entityType',
               match: {, value: entityType }
             }
           ]
@@ -414,9 +414,9 @@ export class QdrantVectorStore {
       this.client.delete(COLLECTIONS.CONVERSATIONS, {
         wait: true,
         filter: {
-          must: [
-            {
-              key: 'sessionId',
+         , must: [
+            {,
+             , key: 'sessionId',
               match: {, value: sessionId }
             }
           ]
@@ -425,9 +425,9 @@ export class QdrantVectorStore {
       this.client.delete(COLLECTIONS.ENTITIES, {
         wait: true,
         filter: {
-          must: [
-            {
-              key: 'sessionId',
+         , must: [
+            {,
+             , key: 'sessionId',
               match: {, value: sessionId }
             }
           ]
@@ -436,9 +436,9 @@ export class QdrantVectorStore {
       this.client.delete(COLLECTIONS.SUMMARIES, {
         wait: true,
         filter: {
-          must: [
-            {
-              key: 'sessionId',
+         , must: [
+            {,
+             , key: 'sessionId',
               match: {, value: sessionId }
             }
           ]

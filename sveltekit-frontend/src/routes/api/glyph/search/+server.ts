@@ -20,7 +20,7 @@ interface GlyphManifest {
 interface GlyphSearchResult {
   id?: string;
   manifest?: GlyphManifest;
-  created_at?: string; // Assuming it's a string timestamp
+  created_at?: string; // Assuming it's a string timestamp'
   access_count?: number;
   // Add other properties that might be returned by the search service
 }
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error) {
-    console.error('Tensor search error:', error)
+    console.error('Tensor search error:', error)'
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Search failed'
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('Tensor vector search error:', error)
+    console.error('Tensor vector search error:', error)'
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Vector search failed'

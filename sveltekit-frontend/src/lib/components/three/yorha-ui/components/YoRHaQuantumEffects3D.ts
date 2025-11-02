@@ -171,9 +171,9 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
     geometry.setAttribute('phase', new THREE.BufferAttribute(phases, 1));
     // Quantum particle shader material
-    const material = new THREE.ShaderMaterial({ uniforms: {, time: { value: 0 },
-        quantumCoherence: { value: this.quantumOptions.quantumCoherence },
-        uncertaintyPrinciple: { value: this.quantumOptions.uncertaintyPrinciple ? 1.0 : 0.0 },
+    const material = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
+        quantumCoherence: {, value: this.quantumOptions.quantumCoherence },
+        uncertaintyPrinciple: {, value: this.quantumOptions.uncertaintyPrinciple ? 1.0 : 0.0 },
         waveFunction: {, value: this.getWaveFunctionValue() }
       },
       vertexShader: this.getQuantumVertexShader(),
@@ -249,9 +249,9 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     const streamCount = 50;
     for (let i = 0; i < streamCount; i++) {
       const streamGeometry = new THREE.PlaneGeometry(0.1, 4);
-      const streamMaterial = new THREE.ShaderMaterial({ uniforms: {, time: { value: 0 },
-          glitchIntensity: { value: this.realityOptions.matrixGlitchIntensity },
-          temporalDistortion: { value: this.realityOptions.temporalDistortion },
+      const streamMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
+          glitchIntensity: {, value: this.realityOptions.matrixGlitchIntensity },
+          temporalDistortion: {, value: this.realityOptions.temporalDistortion },
           matrixCode: {, value: Math.random() }
         },
         vertexShader: this.getMatrixVertexShader(),
@@ -279,7 +279,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         try {
           const particles = this.quantumParticles.map(p => ({
             position: p.position,
-            velocity: {, x: 0, y: 0, z: 0 }, // Quantum particles don't have classical velocity
+            velocity: {, x: 0, y: 0, z: 0 }, // Quantum particles don't have classical velocity'
             mass: 1, // Quantum mass-energy equivalence
           }));
           // Call GPU simulation with delta and no gravity vector (explicit zero vector)
@@ -521,7 +521,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         gl_Position = projectionMatrix * mvPosition;
         gl_PointSize = size * 300.0 / -mvPosition.z;
       }
-    `;
+    `;`
   }
   private getQuantumFragmentShader(): string {
     return `
@@ -545,7 +545,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         vec3 finalColor = vColor * interference * coherence * uncertainty;
         gl_FragColor = vec4(finalColor, probability * 0.8);
       }
-    `;
+    `;`
   }
   private getMatrixVertexShader(): string {
     return `
@@ -563,7 +563,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         vDistortion = timeWarp;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
       }
-    `;
+    `;`
   }
   private getMatrixFragmentShader(): string {
     return `
@@ -590,7 +590,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         color += vec3(0.0, 0.5, 1.0) * digital * glitchIntensity;
         gl_FragColor = vec4(color, (rain + code) * 0.8);
       }
-    `;
+    `;`
   }
   // Public control methods
   public activateQuantumMode(): void {

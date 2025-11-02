@@ -62,13 +62,13 @@ export class AutoGenService {
   createLegalAgentTeam(): LegalAgentTeam {
     const prosecutor: AutoGenAgent = {
       name: 'prosecutor',
-      systemMessage: `You are an experienced prosecutor with expertise in criminal law, evidence evaluation, and case strategy.
+      systemMessage: `You are an experienced prosecutor with expertise in criminal law, evidence evaluation, and case strategy.`
       Your role is to:
       - Evaluate evidence for prosecutorial merit
       - Identify legal theories and charges
       - Assess case strengths and weaknesses
       - Provide strategic recommendations
-      Always maintain ethical standards and consider due process requirements.`,
+      Always maintain ethical standards and consider due process requirements.`,`
       llmConfig: {
         model: 'gemma3-legal:latest',
         temperature: 0.1,
@@ -82,13 +82,13 @@ export class AutoGenService {
 
     const legalResearcher: AutoGenAgent = {
       name: 'legal_researcher',
-      systemMessage: `You are a skilled legal researcher specializing in case law, statutes, and legal precedents.
+      systemMessage: `You are a skilled legal researcher specializing in case law, statutes, and legal precedents.`
       Your role is to:
       - Research relevant case law and statutes
       - Find legal precedents and citations
       - Analyze jurisdictional requirements
       - Provide comprehensive legal background
-      Focus on accuracy and cite all sources with proper legal citations.`,
+      Focus on accuracy and cite all sources with proper legal citations.`,`
       llmConfig: {
         model: 'llama3:8b-instruct',
         temperature: 0.2,
@@ -102,13 +102,13 @@ export class AutoGenService {
 
     const evidenceAnalyst: AutoGenAgent = {
       name: 'evidence_analyst',
-      systemMessage: `You are a forensic evidence analyst with expertise in digital and physical evidence evaluation.
+      systemMessage: `You are a forensic evidence analyst with expertise in digital and physical evidence evaluation.`
       Your role is to:
       - Analyze evidence authenticity and reliability
       - Identify chain of custody issues
       - Assess evidence admissibility
       - Recommend additional evidence collection
-      Apply rigorous scientific and legal standards to all analysis.`,
+      Apply rigorous scientific and legal standards to all analysis.`,`
       llmConfig: {
         model: 'gemma3-legal:latest',
         temperature: 0.1,
@@ -128,7 +128,7 @@ export class AutoGenService {
       - Synthesize different perspectives
       - Ensure comprehensive case coverage
       - Provide final recommendations
-      Facilitate productive collaboration and ensure all aspects are covered.`,
+      Facilitate productive collaboration and ensure all aspects are covered.`,`
       llmConfig: {
         model: 'gemma3-legal:latest',
         temperature: 0.3,
@@ -171,7 +171,7 @@ export class AutoGenService {
     const url = `${this.baseUrl}/api/conversation/start`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}' } : {})
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
     };
 
     try {
@@ -198,7 +198,7 @@ export class AutoGenService {
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Failed to start AutoGen conversation: `, msg);
+      console.error('Failed to start AutoGen conversation: `, msg);'`
       throw error;
     }
   }
@@ -245,7 +245,7 @@ export class AutoGenService {
       return (data.messages || []) as AutoGenMessage[];
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Failed to send message: `, msg);
+      console.error('Failed to send message: `, msg);'`
       throw error;
     }
   }
@@ -334,7 +334,7 @@ export class AutoGenService {
         }
       } as AIResponse;
     } catch (error: any) {
-      console.error('Legal workflow execution failed: `, error);
+      console.error('Legal workflow execution failed: `, error);'`
       throw error;
     }
   }
@@ -467,7 +467,7 @@ export class AutoGenService {
     eventSource.onmessage = handleMessage;
 
     const handleError = (err: Event) => {
-      console.error('EventSource error:', err);
+      console.error('EventSource error:', err);'
       isDone = true; // Mark as done on error
       if (rejectNext) {
         rejectNext(err); // Reject any pending pullMessage promise with the error
@@ -502,7 +502,7 @@ export class AutoGenService {
 
 /* Add helper to obtain Ollama endpoint from env or default */
 function getOllamaEndpoint(): string {
-  // Use SvelteKit's env for consistent environment variable access
+  // Use SvelteKit's env for consistent environment variable access'
   const endpoint = env.OLLAMA_ENDPOINT;
   if (!endpoint) {
     throw new Error(
@@ -597,12 +597,12 @@ export interface UltraJSONParser {
 
 export interface WasmClusteringService {
   // Clusters embeddings in WASM; returns array of cluster indices per vector
-  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean` }): Promise<number[]>;
+  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean` }): Promise<number[]>;'`
 }
 
 export interface NesGPUBridge {
   // Sends tensor to GPU bridge for accelerated ops (WebGPU/CUDA relay)
-  submitTensor(tensor: Float32Array, meta?: Record<string, unknown>): Promise<{ jobId: string;, status: string }>;
+  submitTensor(tensor: Float32Array, meta?: Record<string, unknown>): Promise<{ jobId: string; status: string }>;
   // Use unknown for opaque results from external GPU bridge
   getResult(jobId: string): Promise<unknown>;
 }
@@ -783,7 +783,7 @@ export class PostgresJSONPersistence {
 			VALUES ($1, $2::jsonb)
 			ON CONFLICT (${idColumn}) DO UPDATE
 			SET ${jsonColumn} = EXCLUDED.${jsonColumn};
-		`;
+		`;`
     await this.client.query(sql, [idValue, JSON.stringify(jsonValue)]);
   }
 

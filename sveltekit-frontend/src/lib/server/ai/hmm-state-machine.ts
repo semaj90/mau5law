@@ -102,7 +102,7 @@ export class HMMStateMachine {
     predictions: NextStepPrediction[];
   } {
     // Get possible transitions from current state
-    const possibleTransitions: Array<{ state: number;, prob: number }> = [];
+    const possibleTransitions: Array<{ state: number; prob: number }> = [];
     for (const [key, transition] of this.transitions.entries()) {
       if (transition.fromState === currentState) {
         possibleTransitions.push({
@@ -270,7 +270,7 @@ export class HMMStateMachine {
       [LegalConversationState.RISK_ASSESSMENT]: 'Risk Assessment',
       [LegalConversationState.RECOMMENDATION]: 'Recommendation',
       [LegalConversationState.FOLLOW_UP]: 'Follow-up',
-      [LegalConversationState.CONCLUSION]: 'Conclusion' };
+      [LegalConversationState.CONCLUSION]: 'Conclusion` };'`
     return names[state] || 'Unknown';
   }
   /**

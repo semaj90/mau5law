@@ -184,7 +184,7 @@ export class SearchExamples {
         time: performance.now() - vectorStart
       };
     } catch (error) {
-      console.error('Search comparison error: ', error);
+      console.error('Search comparison error: ', error);'
     }
     const totalTime = performance.now() - startTime;
     console.log(`\nSearch Performance Comparison Results:`);
@@ -193,8 +193,8 @@ export class SearchExamples {
     Object.entries(results).forEach(([method, stats]) => {
       console.log(`${method.toUpperCase()}:`);
       console.log(`  Results: ${stats.count}`);
-      console.log(`  Time: ${stats.time.toFixed(2)}ms`);
-      console.log(`  Speed: ${(stats.count / (stats.time / 1000)).toFixed(1)} results/sec\n');
+      console.log('  Time: ${stats.time.toFixed(2)}ms');
+      console.log('  Speed: ${(stats.count / (stats.time / 1000)).toFixed(1)} results/sec\n');
     });
     return results;
   }

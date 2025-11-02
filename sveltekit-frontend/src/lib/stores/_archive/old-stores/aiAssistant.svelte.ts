@@ -51,7 +51,7 @@ const aiAssistantState = $state<AIAssistantState>({
   maxTokens: 2048,
   error: null,
   ollamaClusterHealth: {
-    primary: false,
+   , primary: false,
     secondary: false,
     embeddings: false
   },
@@ -103,7 +103,7 @@ export class AIAssistantManager {
           console.warn('[AI Assistant] WebAssembly initialization failed, using fallback');
         }
       } catch (error) {
-        console.error('[AI Assistant] WebAssembly setup error:', error);
+        console.error('[AI Assistant] WebAssembly setup error:', error);'
         this.webAssemblyEnabled = $state(false);
         this.langChainBridgeEnabled = $state(false);
       }
@@ -402,8 +402,7 @@ export class AIAssistantManager {
       throw new Error('AI Assistant actor not initialized');
     }
     this.actor.send({
-      type: 'START_STREAMING'
-    });
+      type: 'START_STREAMING` });'`
     // Then send the message
     this.sendMessage(message);
   }
@@ -411,7 +410,7 @@ export class AIAssistantManager {
   async checkClusterHealth() {
     if (!this.actor) return;
     try {
-      this.actor.send({ type: 'CHECK_CLUSTER_HEALTH' });
+      this.actor.send({ type: `CHECK_CLUSTER_HEALTH` });
       console.log('Cluster health check initiated');
     } catch (error: any) {
       console.error('Failed to check cluster health:', error);

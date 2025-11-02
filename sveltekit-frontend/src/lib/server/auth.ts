@@ -40,7 +40,7 @@ const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
  */
 export const auth = new Lucia(adapter, { sessionCookie: {, name: 'auth_session',
     attributes: {
-      secure: process.env.NODE_ENV === 'production',
+     , secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/'
     }
@@ -128,7 +128,7 @@ export class AuthService {
         throw error;
       }
 
-      console.error('[AUTH] Registration failed with unknown error:', error);
+      console.error('[AUTH] Registration failed with unknown error:', error);'
       throw new RegistrationError('Failed to create user account', ERROR_CODES.REGISTRATION_FAILED, {
         originalError: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -171,7 +171,7 @@ export class AuthService {
         throw error;
       }
 
-      console.error('[AUTH] Login failed with unknown error:', error);
+      console.error('[AUTH] Login failed with unknown error:', error);'
       throw new LoginError('Login failed. Please try again.', ERROR_CODES.LOGIN_FAILED, {
         originalError: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -257,12 +257,12 @@ export class AuthService {
    */
   async updateProfile(
     userId: string,
-    data: Partial<{ firstName: string | null;, lastName: string | null;
+    data: Partial<{, firstName: string | null;, lastName: string | null;
      , avatarUrl: string | null;
     }>
   ) {
     try {
-      const updateData: Partial<typeof users.$inferInsert> = {
+      const updateData: Partial<typeof, users.$inferInsert> = {
         updatedAt: new Date().toISOString()
       };
 
@@ -337,7 +337,7 @@ export class AuthService {
    */
   async getCaseById(caseId: string) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }'`
       });
 
       if (!response.ok) {
@@ -359,7 +359,7 @@ export class AuthService {
       console.error('[AUTH] Failed to get case by ID:', error);
       throw new MicroserviceError('Service temporarily unavailable', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
         caseId,
-        originalError: error instanceof Error ? error.message : 'Unknown error` });
+        originalError: error instanceof Error ? error.message : `Unknown error` });
     }
   }
 
@@ -369,7 +369,7 @@ export class AuthService {
   async getCaseDocuments(caseId: string) {
     try {
       const response = await fetch(
-        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}/documents`,
+        `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}/documents`,'`
         { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }
         }
       );
@@ -390,7 +390,7 @@ export class AuthService {
    */
   async getTotalCases(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }'`
       });
 
       if (!response.ok) {
@@ -410,7 +410,7 @@ export class AuthService {
    */
   async getTotalDocuments(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }'`
       });
 
       if (!response.ok) {
@@ -430,7 +430,7 @@ export class AuthService {
    */
   async getSampleCases(limit: number = 5) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: {, Authorization: 'Bearer ${process.env.SERVICE_AUTH_TOKEN}' }'`
       });
 
       if (!response.ok) {
@@ -463,7 +463,7 @@ export const authService = new AuthService();
 /**
  * Helper function to get user from request event with session validation
  */
-export async function getUser(event: RequestEvent): Promise<{ user: User | null;, session: Session | null }> {
+export async function getUser(event: RequestEvent): Promise<{ user: User | null; session: Session | null }> {
   try {
     const sessionId = event.cookies.get(auth.sessionCookieName);
     if (!sessionId) {
@@ -484,8 +484,7 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
       const sessionCookie = auth.createBlankSessionCookie();
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         ...sessionCookie.attributes,
-        path: '/'
-      });
+        path: `/` });
       return { user: null, session: null };
     }
 
@@ -493,14 +492,14 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
   } catch (error) {
     console.error('[AUTH] User retrieval failed:', error);
     throw new SessionError('Failed to retrieve user session', ERROR_CODES.SESSION_ERROR, {
-      originalError: error instanceof Error ? error.message : 'Unknown error` });
+      originalError: error instanceof Error ? error.message : `Unknown error` });
   }
 }
 
 /**
  * Require authenticated user middleware
  */
-export async function requireAuth(event: RequestEvent): Promise<{ user: User;, session: Session }> {
+export async function requireAuth(event: RequestEvent): Promise<{ user: User; session: Session }> {
   const { user, session } = await getUser(event);
 
   if (!user || !session) {

@@ -7,7 +7,7 @@ export async function getEmbeddings(texts: string[]): Promise<number[][]> {
   for (const text of texts) {
     const res = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({, model: MODEL, prompt: text })
     });
     const data = await res.json();
@@ -19,7 +19,7 @@ export async function getEmbeddings(texts: string[]): Promise<number[][]> {
 
 // Simple k-means clustering (Euclidean distance)
 export function kMeans(vectors: number[][], k: number, maxIter = 100): { centroids: number[][], labels: number[] } {
-  if (vectors.length < k) throw new Error('k > number of vectors');
+  if (vectors.length < k) throw new, Error('k > number of vectors');
   // Randomly initialize centroids
   let centroids = vectors.slice(0, k).map(v => [...v]);
   let labels = new Array(vectors.length).fill(0);

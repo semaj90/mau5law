@@ -66,7 +66,7 @@ export class CudaCacheSOMOptimizer {
     this.updateSOMWeights(winnerNeuron, queryEmbedding);
     this.updateModelAffinity(behavior, winnerNeuron);
   }
-  private findBestMatchingUnit(input: Float32Array): { x: number;, y: number } {
+  private findBestMatchingUnit(input: Float32Array): { x: number; y: number } {
     let minDistance = Infinity;
     let winner = { x: 0, y: 0 };
     const grid = this.gridSize;
@@ -86,7 +86,7 @@ export class CudaCacheSOMOptimizer {
     }
     return winner;
   }
-  private updateSOMWeights(winner: {, x: number; y: number }, input: Float32Array): void {
+  private updateSOMWeights(winner: {, x: number;, y: number }, input: Float32Array): void {
     const grid = this.gridSize;
     for (let x = 0; x < grid; x++) {
       for (let y = 0; y < grid; y++) {
@@ -101,7 +101,7 @@ export class CudaCacheSOMOptimizer {
       }
     }
   }
-  private updateModelAffinity(behavior: UserBehaviorPattern, winner: {, x: number; y: number }): void {
+  private updateModelAffinity(behavior: UserBehaviorPattern, winner: {, x: number;, y: number }): void {
     // Update model affinity based on successful interactions
     const affinityIndex = winner.x * this.gridSize + winner.y;
     // Implementation would update based on behavior patterns
@@ -142,11 +142,11 @@ export class CudaCacheSOMOptimizer {
   }
   // Optimize CUDA memory layout for model switching
   optimizeCudaMemoryLayout(activeModels: string[]): {
-    layout: Map<string, { offset: number;, size: number }>;
+    layout: Map<string, { offset: number; size: number }>;
     totalMemoryUsed: number;
     fragmentationRatio: number;
   } {
-    const layout = new Map<string, { offset: number;, size: number }>();
+    const layout = new Map<string, { offset: number; size: number }>();
     let currentOffset = 0;
     let totalMemory = 0;
     // Sort models by usage frequency for optimal layout
@@ -295,7 +295,7 @@ export class SelfPromptingIntelligence {
         return 'extract key information from a document or summarize content';
       case 'code-generation':
         return 'write code, debug an error, or explain a programming concept';
-      default: return "be more specific about what you're looking for";
+      default: return "be more specific about what you're looking for";'
     }
   }
   private generateExpansionSuggestions(query: string, intent: UserIntent): SelfPromptingSuggestion[] {
@@ -331,7 +331,7 @@ export class SelfPromptingIntelligence {
   }
   private generateFollowUpSuggestions(intent: UserIntent): SelfPromptingSuggestion[] {
     const followUps: SelfPromptingSuggestion[] = [];
-    // Based on user's previous interaction patterns
+    // Based on user's previous interaction patterns'
     const recentCategories = intent.context.previousQueries.slice(-3);
     if (recentCategories.filter(item => item.length).length >= 2) {
       followUps.push({
@@ -369,7 +369,7 @@ export class IntelligentModelOrchestrator {
   private performanceMetrics: Map<string, ModelPerformanceMetrics> = new Map();
   private activeModel: string = 'gemma-270m';
   private modelSwitchQueue: string[] = [];
-  private performanceIntervalId?: ReturnType<typeof setInterval>; // <-- added to manage interval
+  private performanceIntervalId?: ReturnType<typeof, setInterval>; // <-- added to manage, interval
   // Svelte stores for reactive UI
   public readonly currentModel = writable<ModelVariant | null>(null);
   public readonly suggestions = writable<SelfPromptingSuggestion[]>([]);
@@ -652,7 +652,7 @@ export class IntelligentModelOrchestrator {
     for (const [modelId, metrics] of this.performanceMetrics.entries()) {
       // Simulate metric updates - would integrate with actual monitoring
       const timeSinceLastUse = Date.now() - metrics.lastUsed.getTime();
-      // Decay unused models' scores
+      // Decay unused models' scores'
       if (timeSinceLastUse > 300000) {
         // 5 minutes
         metrics.cachePredictionAccuracy *= 0.95;

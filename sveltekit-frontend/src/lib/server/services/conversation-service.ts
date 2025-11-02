@@ -95,7 +95,7 @@ class ConversationService {
   /** Retrieve a conversation with its messages */
   async getConversationWithMessages(
     conversationId: string
-  ): Promise<{ conversation: Conversation | null;, messages: ChatMessage[] }> {
+  ): Promise<{ conversation: Conversation | null; messages: ChatMessage[] }> {
     let conversation = this.conversations.get(conversationId) ?? null;
     let messages = this.messages.get(conversationId) ?? [];
     if (!conversation) {
@@ -113,7 +113,7 @@ class ConversationService {
     return { conversation, messages };
   }
   /** Convert messages to chat-friendly format */
-  convertTochatMessages(messages: ChatMessage[]): Array<{ role: ChatMessage['role'];, content: string }> {
+  convertTochatMessages(messages: ChatMessage[]): Array<{ role: ChatMessage['role']; content: string }> {
     return messages.map(msg => ({
       role: msg.role,
       content: msg.content
@@ -138,7 +138,7 @@ class ConversationService {
     return true;
   }
   /** Simple statistics about stored conversations */
-  async getStats(): Promise<{ totalConversations: number; totalMessages: number;, averageMessagesPerConversation: number }> {
+  async getStats(): Promise<{ totalConversations: number; totalMessages: number; averageMessagesPerConversation: number }> {
     const totalConversations = this.conversations.size;
     const totalMessages = Array.from(this.messages.values()).reduce((sum, list) => sum + list.length, 0);
     const averageMessagesPerConversation =

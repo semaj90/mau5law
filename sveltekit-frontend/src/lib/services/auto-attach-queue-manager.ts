@@ -220,16 +220,16 @@ export interface GlobalConfiguration { autoAttachThreshold: number;, optimizati
 
 /* Events (clean) */
 type AttachmentEvent =
-  | { type: 'DETECT_WORKLOAD_PATTERN';, pattern: Record<string, unknown> }
-  | { type: 'ATTACH_QUEUE'; queueName: string;, jobTypes: JobType[] }
-  | { type: 'DETACH_QUEUE';, queueName: string }
-  | { type: 'OPTIMIZE_QUEUE';, queueName: string }
-  | { type: 'SCALE_WORKERS'; queueName: string;, action: ScaleAction }
-  | { type: 'WORKER_HEALTH_UPDATE'; workerId: string;, health: WorkerHealth }
-  | { type: 'PERFORMANCE_THRESHOLD_BREACH'; queueName: string; metric: string;, value: number }
+  | { type: 'DETECT_WORKLOAD_PATTERN'; pattern: Record<string, unknown> }
+  | { type: 'ATTACH_QUEUE'; queueName: string; jobTypes: JobType[] }
+  | { type: 'DETACH_QUEUE'; queueName: string }
+  | { type: 'OPTIMIZE_QUEUE'; queueName: string }
+  | { type: 'SCALE_WORKERS'; queueName: string; action: ScaleAction }
+  | { type: 'WORKER_HEALTH_UPDATE'; workerId: string; health: WorkerHealth }
+  | { type: 'PERFORMANCE_THRESHOLD_BREACH'; queueName: string; metric: string; value: number }
   | { type: 'LEARN_FROM_DATA' }
   | { type: 'APPLY_OPTIMIZATIONS' }
-  | { type: 'HANDLE_ANOMALY'; queueName: string;, anomaly: Record<string, unknown> };
+  | { type: 'HANDLE_ANOMALY'; queueName: string; anomaly: Record<string, unknown> };
 
 /* Machine */
 /* NOTE: removed explicit generics from createMachine(...) to avoid XState v5 generic arity errors.
@@ -305,17 +305,15 @@ const autoAttachMachine = createMachine({
             id: 'machineLearning',
             src: 'runLearningAlgorithms',
             onDone: { target: 'optimizing', actions: 'storeLearningResults' },
-            onError: 'active'
-          }
+            onError: 'active` }'`
         },
         optimizing: {
           entry: 'startOptimization',
           invoke: {
             id: 'optimizer',
             src: 'runOptimizationEngine',
-            onDone: { target: 'active', actions: 'applyOptimizations' },
-            onError: 'active'
-          }
+            onDone: { target: 'active', actions: `applyOptimizations` },
+            onError: `active` }
         }
       }
     },

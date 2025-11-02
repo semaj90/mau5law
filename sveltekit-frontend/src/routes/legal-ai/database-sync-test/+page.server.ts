@@ -123,7 +123,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
       processingMetrics.status === 'fulfilled'
         ? processingMetrics.value
         : [
-            {
+            {,
               avgProcessingTime: 0,
               cacheHits: 0,
               totalProcessed: 0
@@ -181,7 +181,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
     const pageData: DatabaseSyncTestData = { initialState: {, langchainService: {
           isAvailable: isOllamaAvailable,
           models: availableModels,
-          error: isOllamaAvailable ? null : 'Ollama service not available` },
+          error: isOllamaAvailable ? null : 'Ollama service not available' },
         recentSessions: sessionsWithCounts,
         recentDocuments: documents.map(doc => ({
           id: doc.id,
@@ -219,7 +219,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
     return { initialState: {, langchainService: {
           isAvailable: false,
           models: [],
-          error: 'Failed to load service; data: ${error instanceof Error ? error.message : 'Unknown error`}` },
+          error: 'Failed to load service; data: ${error instanceof Error ? error.message : 'Unknown error' }` },'`
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {

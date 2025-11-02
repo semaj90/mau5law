@@ -10,7 +10,7 @@ interface OllamaStreamResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
 }
-interface TensorRTRequest { model_name: string;, inputs: Array<{ name: string; shape: number[]; datatype: string;, data: string[] }>;
+interface TensorRTRequest { model_name: string;, inputs: Array<{ name: string; shape: number[]; datatype: string; data: string[] }>;
   outputs: Array<{ name: string }>;
 }
 // Main streaming function with Ollama primary + TensorRT fallback
@@ -56,10 +56,10 @@ async function streamFromOllama(
   let fullText = '';
   let tokensGenerated = 0;
   return new Promise((resolve, reject) => {
-    // Use HTTP streaming endpoint (Ollama doesn't support WS for chat)
+    // Use HTTP streaming endpoint (Ollama doesn't support WS for chat)'
     fetch(`${getOllamaEndpoint()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         model: options?.model || MODEL_NAME,
         prompt: options?.systemPrompt ? `${options.systemPrompt}\n\nUser: ${prompt}` : prompt,
@@ -103,7 +103,7 @@ async function streamFromOllama(
                 await onChunk(parsed.response, fullText);
               }
             } catch (error) {
-              console.error('[AI] ❌ Parse error:', error);
+              console.error('[AI] ❌ Parse error:', error);'
             }
           }
           return processChunk();
@@ -125,20 +125,20 @@ async function streamFromTensorRT(
   }
 ): Promise<AIResponse> {
   const startTime = Date.now();
-  // TensorRT doesn't natively support streaming - simulate it
+  // TensorRT doesn't natively support streaming - simulate it'
   const response = await fetch(`${TENSORRT_BASE}/v2/models/legal-llm/infer`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({
-      inputs: [
-        {
-          name: 'input_text',
+     , inputs: [
+        {,
+         , name: 'input_text',
           shape: [1],
           datatype: 'BYTES',
           data: [options?.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt]
         },
       ],
-      outputs: [{, name: 'output_text' }]
+      outputs: [{, name: 'output_text` }]'`
     } as TensorRTRequest)
   });
   if (!response.ok) {
@@ -183,12 +183,12 @@ async function webSearch(query: string): Promise<{ results: string[] }> {
   return { results: [`Search result, for: ${query}`] };
 }
 // Stub: Legal citation lookup
-async function legalCitationLookup(citation: string): Promise<{ case string; summary: string }> {
+async function legalCitationLookup(citation: string): Promise<{ case, string; summary: string }> {
   console.log('[AI] ⚖️ Legal citation lookup:', citation);
   // TODO: Integrate with legal database (CourtListener, Justia, etc.)
   return {
     case citation,
-    summary: `Legal case summary for ${citation}' };
+    summary: `Legal case summary for ${citation}` };
 }
 // Stub: Entity extraction
 async function extractEntities(text: string): Promise<{ entities: string[] }> {
@@ -201,7 +201,7 @@ async function extractEntities(text: string): Promise<{ entities: string[] }> {
 export async function generateEmbedding(text: string): Promise<number[]> {
   const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({
       model: 'nomic-embed-text',
       prompt: text
@@ -221,7 +221,7 @@ export async function chatCompletion(
   const startTime = Date.now();
   const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({
       model: options?.model || MODEL_NAME,
       messages: messages.map(msg => ({

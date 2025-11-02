@@ -40,7 +40,7 @@ export class OllamaLegalAIService {
   async generateLegalCompletion(prompt: string, options: Partial<CompletionRequest> = {}): Promise<CompletionResponse> {
     const response = await fetch(`${this.baseURL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: options.model || this.defaultModel,
         prompt: this.formatLegalPrompt(prompt),
@@ -66,7 +66,7 @@ export class OllamaLegalAIService {
   ): AsyncGenerator<string, void, unknown> {
     const response = await fetch(`${this.baseURL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: options.model || this.defaultModel,
         prompt: this.formatLegalPrompt(prompt),
@@ -105,11 +105,11 @@ export class OllamaLegalAIService {
    * Format prompt with legal context
    */
   private formatLegalPrompt(prompt: string): string {
-    return `You are a legal AI assistant specializing in legal document analysis, contract interpretation, and legal research.
+    return `You are a legal AI assistant specializing in legal document analysis, contract interpretation, and legal research.`
 
 User Query: ${prompt}
 
-Provide a comprehensive, legally-informed response:`;
+Provide a comprehensive, legally-informed response:`;`
   }
 
   /**

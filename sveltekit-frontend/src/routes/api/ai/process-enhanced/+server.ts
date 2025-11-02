@@ -143,7 +143,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
            , vector: embeddings,
             limit: options.vectorSearchLimit || 10,
             threshold: options.similarityThreshold || 0.7,
-            excludeIds: [evidence.id], // Don't match with itself
+            excludeIds: [evidence.id], // Don't match with itself'
           })
         });
         const searchResult = await searchResponse.json();
@@ -161,7 +161,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       pipeline.stages.graphDiscovery.status = 'processing';
       const graphResponse = await fetch(`/api/graph/discover/${evidence.id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , content: evidence.content,
           tags: taggingResult?.tags || [],
@@ -189,7 +189,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       pipeline,
       results: {
         // Access properties directly after type assertion in pipeline interface
-        embeddings: pipeline.stages.embedding.result?.embeddings || pipeline.stages.embedding.result?.vector,
+       , embeddings: pipeline.stages.embedding.result?.embeddings || pipeline.stages.embedding.result?.vector,
         tags: taggingResult?.tags || [],
         analysis: analysisResult,
         vectorMatches,

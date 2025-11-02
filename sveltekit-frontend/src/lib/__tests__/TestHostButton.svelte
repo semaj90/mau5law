@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { Button } from '../components/ui/wrappers/bits/Button.svelte';
   const { onclick } = $props<{ onclick: ((e: MouseEvent) }>()
   const { disabled } = $props<{ disabled: boolean }>()

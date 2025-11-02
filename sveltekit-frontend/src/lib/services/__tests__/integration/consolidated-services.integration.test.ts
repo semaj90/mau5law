@@ -70,8 +70,7 @@ describe('Legal AI Services Integration Tests', () => {
     });
     it('should retrieve session details', async () => {
       const response = await testSetup.makeAuthenticatedRequest(`/sessions/${sessionId}`, {
-        method: 'GET'
-      });
+        method: 'GET` });'`
       IntegrationAssertions.assertSuccessResponse(response);
       IntegrationAssertions.assertResponseFields(response, [
         'session_id',
@@ -122,8 +121,7 @@ describe('Legal AI Services Integration Tests', () => {
     });
     it('should retrieve canvas details', async () => {
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}`, {
-        method: 'GET'
-      });
+        method: 'GET` });'`
       IntegrationAssertions.assertSuccessResponse(response);
       IntegrationAssertions.assertResponseFields(response, [
         'canvas_id',
@@ -192,8 +190,7 @@ describe('Legal AI Services Integration Tests', () => {
       const sessionResponse = await testSetup.makeAuthenticatedRequest(`/sessions/${context.testSessionId}`, {
         method: `GET` });
       const canvasResponse = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${context.testCanvasId}`, {
-        method: 'GET'
-      });
+        method: 'GET` });'`
       IntegrationAssertions.assertSuccessResponse(sessionResponse);
       IntegrationAssertions.assertSuccessResponse(canvasResponse);
       expect(canvasResponse.data.session_id).toBe(sessionResponse.data.session_id);
@@ -208,7 +205,7 @@ describe('Legal AI Services Integration Tests', () => {
       const evidenceResponse = await testSetup.makeAuthenticatedRequest(`/workflow/evidence`, {
         method: 'POST',
         body: JSON.stringify({
-          session_id: workflowTest.step1_session,
+         , session_id: workflowTest.step1_session,
           canvas_id: workflowTest.step2_canvas,
           evidence_data: {
            , type: 'workflow_test',

@@ -212,7 +212,7 @@ export const webgpuRAGService = {
         data: Array.isArray(emb) ? new Float32Array(emb) : emb,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       })),
-      { precision: 'fp16' } // Default quantization for legal AI
+      { precision: 'fp16` } // Default quantization for legal AI'`
     );
     let totalCompression = 0;
     bufferMap.forEach(result => {

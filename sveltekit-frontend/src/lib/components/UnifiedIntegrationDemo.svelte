@@ -1,5 +1,5 @@
-<!-- Unified GPU/WASM Integration Demo Component -->
-<script lang="ts">
+<!-- Unified GPU/WASM Integration Demo, Component -->
+<script, lang="ts">
 import type { Document } from '$lib/types';
 
   // Svelte 5 runes are auto-imported
@@ -39,14 +39,14 @@ import type { Document } from '$lib/types';
 
   // Demo data for different operations (valid JS objects / strings)
   const demoInputs: Record<string, string> = {
-    processDocument: `LEGAL CONTRACT AGREEMENT
+    processDocument: `LEGAL CONTRACT AGREEMENT`
 This Service Agreement is entered into between Company A and Company B.
 TERMS AND CONDITIONS:
 1. Service Period: 12 months from execution
 2. Payment Terms: Net 30 days
 3. Deliverables: As specified in Schedule A
 4. Termination Either party may terminate with 60 days notice
-Both parties acknowledge they have read and agree to these terms.`,
+Both parties acknowledge they have read and agree to these terms.`,`
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
     processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
     matmul: JSON.stringify({
@@ -219,49 +219,49 @@ Both parties acknowledge they have read and agree to these terms.`,
 
 </script>
 
-<div class="unified-integration-demo p-6 max-w-7xl mx-auto">
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+<div class="unified-integration-demo p-6 max-w-7xl, mx-auto">
+  <div, class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900, mb-2">
       Unified GPU/WASM Integration System
     </h1>
-    <p class="text-gray-600">
+    <p, class="text-gray-600">
       Complete integration of WASM modules, GPU acceleration, QUIC services, and neural processing
     </p>
   </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <!-- System Health Card -->
-    <div class="lg:col-span-1 nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary">System Health</h3>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6, mb-8">
+    <!-- System Health, Card -->
+    <div class="lg:col-span-1, nes-container">
+      <div, class="yorha-panel-header">
+        <h3 class="nes-text, is-primary">System Health</h3>
       </div>
-      <div class="yorha-panel-content">
+      <div, class="yorha-panel-content">
         {#if $systemHealth}
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-sm font-medium">Overall Status:</span>
-              <span class={`text-sm font-semibold ${getHealthColor($systemHealth.overall ?? '')}`}>
+          <div, class="space-y-3">
+            <div class="flex justify-between, items-center">
+              <span class="text-sm, font-medium">Overall Status:</span>
+              <span class={`text-sm, font-semibold ${getHealthColor($systemHealth.overall ?? '')}`}>
                 {($systemHealth.overall ?? 'unknown').toString().toUpperCase()}
               </span>
             </div>
-            <div class="border-t pt-3">
-              <h4 class="text-xs font-semibold text-gray-700 mb-2">Services</h4>
-              <div class="space-y-1">
+            <div class="border-t, pt-3">
+              <h4 class="text-xs font-semibold text-gray-700, mb-2">Services</h4>
+              <div, class="space-y-1">
                 {#each Object.entries($systemHealth.services ?? {}) as [service, status]}
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="capitalize">{service}:</span>
-                    <span class={getServiceColor((status as string) ?? '')}>{status}</span>
+                  <div class="flex justify-between items-center, text-xs">
+                    <span, class="capitalize">{service}:</span>
+                    <span class={getServiceColor((status as, string) ?? '')}>{status}</span>
                   </div>
                 {/each}
               </div>
             </div>
-            <div class="border-t pt-3">
-              <h4 class="text-xs font-semibold text-gray-700 mb-2">Performance</h4>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between">
+            <div class="border-t, pt-3">
+              <h4 class="text-xs font-semibold text-gray-700, mb-2">Performance</h4>
+              <div class="space-y-1, text-xs">
+                <div class="flex, justify-between">
                   <span>Avg Latency:</span>
                   <span>{($systemHealth.performance?.averageLatency ?? 0).toFixed(0)}ms</span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex, justify-between">
                   <span>Throughput:</span>
                   <span>{($systemHealth.performance?.throughput ?? 0).toFixed(1)}/s</span>
                 </div>
@@ -269,19 +269,19 @@ Both parties acknowledge they have read and agree to these terms.`,
             </div>
           </div>
         {:else}
-          <div class="text-center text-gray-500">Loading system health...{/if}
+          <div class="text-center, text-gray-500">Loading system health...{/if}
       </div>
     </div>
-    <!-- Operation Controls Card -->
-    <div class="lg:col-span-2 nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary">Execute Operations</h3>
+    <!-- Operation Controls, Card -->
+    <div class="lg:col-span-2, nes-container">
+      <div, class="yorha-panel-header">
+        <h3 class="nes-text, is-primary">Execute Operations</h3>
       </div>
-      <div class="yorha-panel-content">
-        <div class="space-y-4">
-          <!-- Operation Selection -->
+      <div, class="yorha-panel-content">
+        <div, class="space-y-4">
+          <!-- Operation, Selection -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2" for="-operation-type-">
+            <label class="block text-sm font-medium text-gray-700, mb-2" for="-operation-type-">
               Operation Type
             </label>
             <select
@@ -290,17 +290,17 @@ Both parties acknowledge they have read and agree to these terms.`,
               onchange={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="processDocument">Legal Document Processing</option>
-              <option value="performInference">Neural Inference</option>
-              <option value="processCanvas">Canvas State Processing</option>
-              <option value="matmul">Matrix Multiplication</option>
-              <option value="attention">Attention Mechanism</option>
+              <option, value="processDocument">Legal Document Processing</option>
+              <option, value="performInference">Neural Inference</option>
+              <option, value="processCanvas">Canvas State Processing</option>
+              <option, value="matmul">Matrix Multiplication</option>
+              <option, value="attention">Attention Mechanism</option>
             </select>
           </div>
 
-          <!-- Input Data -->
+          <!-- Input, Data -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2" for="-input-data-">
+            <label class="block text-sm font-medium text-gray-700, mb-2" for="-input-data-">
               Input Data
             </label>
             <textarea
@@ -312,22 +312,22 @@ Both parties acknowledge they have read and agree to these terms.`,
             ></textarea>
           </div>
 
-          <!-- Error Display -->
+          <!-- Error, Display -->
           {#if errorMessage}
-            <div class="bg-red-50 border border-red-200 rounded-md p-3">
-              <p class="text-red-600 text-sm">{errorMessage}</p>
+            <div class="bg-red-50 border border-red-200 rounded-md, p-3">
+              <p class="text-red-600, text-sm">{errorMessage}</p>
             {/if}
-          <!-- Execute Button -->
+          <!-- Execute, Button -->
           <Button.Root
             onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >
 {#if isLoading}
-              <span class="inline-flex items-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <span class="inline-flex, items-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24, 24">
+                  <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3, 7.938l3-2.647z"></path>
                 </svg>
                 Processing...
               </span>
@@ -339,41 +339,41 @@ Both parties acknowledge they have read and agree to these terms.`,
       </div>
     </div>
   </div>
-  <!-- Results and Metrics -->
-  <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-    <!-- Results Card -->
-    <div class="nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary">Operation Results</h3>
+  <!-- Results and, Metrics -->
+  <div class="grid grid-cols-1 xl:grid-cols-2, gap-6">
+    <!-- Results, Card -->
+    <div, class="nes-container">
+      <div, class="yorha-panel-header">
+        <h3 class="nes-text, is-primary">Operation Results</h3>
       </div>
-      <div class="yorha-panel-content">
-        <div class="space-y-4 max-h-96 overflow-y-auto">
+      <div, class="yorha-panel-content">
+        <div class="space-y-4 max-h-96, overflow-y-auto">
           {#if $results.length > 0}
             {#each $results as result (result.id)}
-              <div class="border border-gray-200 rounded-lg p-4">
-                <div class="flex justify-between items-start mb-2">
+              <div class="border border-gray-200 rounded-lg, p-4">
+                <div class="flex justify-between items-start, mb-2">
                   <div>
-                    <h4 class="font-medium text-gray-900 capitalize">
+                    <h4 class="font-medium text-gray-900, capitalize">
                       {result.operation.replace(/([A-Z])/g, ' $1').trim()}
                     </h4>
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xs, text-gray-500">
                       {result.timestamp.toLocaleTimeString()}
                     </p>
                   </div>
-                  <div class="text-right">
-                    <p class="text-xs text-gray-600">
+                  <div, class="text-right">
+                    <p class="text-xs, text-gray-600">
                       {result.processingTime}ms
                     </p>
                     {#if result.metadata?.servicesUsed}
-                      <p class="text-xs text-blue-600">
+                      <p class="text-xs, text-blue-600">
                         {result.metadata.servicesUsed.join(', ')}
                       </p>
                     {/if}
                   </div>
                 </div>
-                <div class="bg-gray-50 rounded p-2 text-xs font-mono">
+                <div class="bg-gray-50 rounded p-2 text-xs, font-mono">
                   {#if result.data?.success !== undefined}
-                    <p class={result.data.success ? 'text-green-600 mb-1' : 'text-red-600 mb-1'}>
+                    <p class={result.data.success ? 'text-green-600 mb-1' : 'text-red-600, mb-1'}>
                       Status: {result.data.success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
@@ -383,7 +383,7 @@ Both parties acknowledge they have read and agree to these terms.`,
                     <p>Resource Usage: {result.metadata.performance.resourceUsage.toFixed(2)}</p>
                   {/if}
                   {#if result.metadata?.fallbacksTriggered?.length > 0}
-                    <p class="text-yellow-600">
+                    <p, class="text-yellow-600">
                       Fallbacks: {result.metadata.fallbacksTriggered.join(' → ')}
                     </p>
                   {/if}
@@ -391,56 +391,56 @@ Both parties acknowledge they have read and agree to these terms.`,
               </div>
             {/each}
           {:else}
-            <div class="text-center text-gray-500 py-8">
+            <div class="text-center text-gray-500, py-8">
               No results yet. Execute an operation to see results here.
             {/if}
         </div>
       </div>
     </div>
-    <!-- Performance Metrics Card -->
-    <div class="nes-container">
-      <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary">Performance Metrics</h3>
+    <!-- Performance Metrics, Card -->
+    <div, class="nes-container">
+      <div, class="yorha-panel-header">
+        <h3 class="nes-text, is-primary">Performance Metrics</h3>
       </div>
-      <div class="yorha-panel-content">
+      <div, class="yorha-panel-content">
         {#if $metrics?.metrics?.length > 0}
-          <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-blue-50 rounded-lg p-3">
-                <h4 class="text-sm font-medium text-blue-800">Total Operations</h4>
-                <p class="text-2xl font-bold text-blue-600">{$metrics.count}</p>
+          <div, class="space-y-4">
+            <div class="grid grid-cols-2, gap-4">
+              <div class="bg-blue-50 rounded-lg, p-3">
+                <h4 class="text-sm font-medium, text-blue-800">Total Operations</h4>
+                <p class="text-2xl font-bold, text-blue-600">{$metrics.count}</p>
               </div>
               {#if $metrics.latestMetric}
-                <div class="bg-green-50 rounded-lg p-3">
-                  <h4 class="text-sm font-medium text-green-800">Latest Latency</h4>
-                  <p class="text-2xl font-bold text-green-600">
+                <div class="bg-green-50 rounded-lg, p-3">
+                  <h4 class="text-sm font-medium, text-green-800">Latest Latency</h4>
+                  <p class="text-2xl font-bold, text-green-600">
                     {$metrics.latestMetric.latency ?? 'N/A'}ms
                   </p>
                 {/if}
             </div>
-            <!-- Recent Metrics Chart (simplified) -->
+            <!-- Recent Metrics, Chart (simplified) -->
             <div>
-              <h4 class="text-sm font-medium text-gray-700 mb-2">Recent Performance</h4>
-              <div class="space-y-1">
+              <h4 class="text-sm font-medium text-gray-700, mb-2">Recent Performance</h4>
+              <div, class="space-y-1">
                 {#each $metrics.metrics.slice(-10) as metric, i}
-                  <div class="flex items-center space-x-2 text-xs">
-                    <span class="w-16 text-gray-500">
+                  <div class="flex items-center space-x-2, text-xs">
+                    <span class="w-16, text-gray-500">
                       {metric.timestamp ? new Date(metric.timestamp).toLocaleTimeString() : 'N/A'}
                     </span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-2">
+                    <div class="flex-1 bg-gray-200 rounded-full, h-2">
                       <div
                         class="bg-blue-500 h-2 rounded-full transition-all duration-300"
                         style="width: {Math.min(100, ((metric.latency ?? 0) / 1000) * 100)}%"
                       ></div>
                     </div>
-                    <span class="w-12 text-right">{metric.latency ?? 'N/A'}ms</span>
+                    <span class="w-12, text-right">{metric.latency ?? 'N/A'}ms</span>
                   </div>
                 {/each}
               </div>
             </div>
           </div>
         {:else}
-          <div class="text-center text-gray-500 py-8">
+          <div class="text-center text-gray-500, py-8">
             No metrics available yet. Execute some operations to see performance.
           {/if}
       </div>

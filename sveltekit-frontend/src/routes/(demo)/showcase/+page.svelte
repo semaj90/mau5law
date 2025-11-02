@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   type DemoFeature = {
@@ -21,7 +21,7 @@ import type { Document } from '$lib/types';
       name: 'AI & Processing',
       icon: '🤖',
       demos: [
-        {
+        {,
           slug: 'ai-assistant',
           name: 'AI Legal Assistant',
           description: 'Intelligent legal research and document analysis with Gemma embeddings.',
@@ -51,7 +51,7 @@ import type { Document } from '$lib/types';
       name: 'Legal Workflow',
       icon: '⚖️',
       demos: [
-        {
+        {,
           slug: 'evidence-canvas',
           name: 'Evidence Canvas',
           description: 'Interactive evidence organization and case visualization.',
@@ -73,7 +73,7 @@ import type { Document } from '$lib/types';
       name: 'Performance & UI',
       icon: '⚡',
       demos: [
-        {
+        {,
           slug: 'webgpu',
           name: 'WebGPU Acceleration',
           description: 'Hardware-accelerated computing for legal AI processing.',
@@ -128,11 +128,11 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Demo Showcase - Legal AI Platform</title>
-  <meta name="description" content="Explore interactive demos across the YoRHa Legal AI platform." />
+  <meta name="description" content="Explore interactive demos across the YoRHa Legal AI, platform." />
 </svelte:head>
 
-<div class="showcase-layout">
-  <header class="showcase-hero">
+<div, class="showcase-layout">
+  <header, class="showcase-hero">
     <h1>YoRHa Demo Showcase</h1>
     <p>
       Explore interactive demonstrations of the YoRHa Legal AI capabilities. Each demo highlights
@@ -140,31 +140,31 @@ import type { Document } from '$lib/types';
     </p>
   </header>
 
-  <section class="category-section">
+  <section, class="category-section">
     {#each Array.isArray(demoCategories) ? demoCategories : [] as category}
-      <article class="category">
-        <header class="category-header">
-          <span class="category-icon">{category.icon}</span>
+      <article, class="category">
+        <header, class="category-header">
+          <span, class="category-icon">{category.icon}</span>
           <h2>{category.name}</h2>
         </header>
-        <div class="demo-grid">
+        <div, class="demo-grid">
           {#each Array.isArray(category.demos) ? category.demos : [] as demo}
-            <div class="demo-card">
-              <div class="demo-card-header">
+            <div, class="demo-card">
+              <div, class="demo-card-header">
                 <h3>{demo.name}</h3>
-                <span class={`status-label ${statusLabelClass(demo.status)}`}>{demo.status}</span>
+                <span, class={`status-label ${statusLabelClass(demo.status)}`}>{demo.status}</span>
               </div>
-              <p class="demo-description">{demo.description}</p>
-              <ul class="demo-features">
+              <p, class="demo-description">{demo.description}</p>
+              <ul, class="demo-features">
                 {#each Array.isArray(demo.features) ? demo.features : [] as feature}
                   <li>{feature}</li>
                 {/each}
               </ul>
-              <footer class="demo-meta">
-                <span class={`complexity-label ${complexityLabelClass(demo.complexity)}`}>
+              <footer, class="demo-meta">
+                <span, class={`complexity-label ${complexityLabelClass(demo.complexity)}`}>
                   {demo.complexity} complexity
                 </span>
-                <a class="demo-launch" href={`/demo/${demo.slug}`}>
+                <a, class="demo-launch" href={`/demo/${demo.slug}`}>
                   Launch Demo →
                 </a>
               </footer>

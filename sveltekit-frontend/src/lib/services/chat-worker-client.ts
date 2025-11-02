@@ -32,7 +32,7 @@ interface ChatResponse {
 type WorkerProgressEvent =
   | { type: 'queued'; position?: number }
   | { type: 'started'; timestamp?: string }
-  | { type: 'stream_data';, data: any }
+  | { type: 'stream_data'; data: any }
   | { type: 'stream_end' }
   | { type: 'stream_complete' };
 
@@ -52,7 +52,7 @@ export class ChatWorkerClient {
 
   private async initializeServiceWorker(): Promise<void> {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
-      // Environment doesn't support service workers
+      // Environment doesn't support service workers'
       return;
     }
 
@@ -222,7 +222,7 @@ export class ChatWorkerClient {
     // Fallback for environments without service worker support
     return new Promise<ChatResponse>((resolve) => {
       setTimeout(() => {
-        resolve({ success: true, response: 'Fallback response' });
+        resolve({ success: true, response: 'Fallback response` });'`
       }, 1000);
     });
   }

@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 /**
  * Environment Service - SvelteKit 2 + Svelte 5 Compatible
  * Provides environment detection, LLM endpoint health, and client utilities
@@ -23,7 +23,7 @@ export const CLIENT_ENV: ClientEnvironment = {
 class LLMHealthChecker {
   private endpoints: Map<string, LLMEndpoint> = new Map();
   private checkInterval: number = 30000; // 30 seconds
-  private intervalId?: ReturnType<typeof setInterval>;
+  private intervalId?: ReturnType<typeof, setInterval>;
 
   constructor() {
     // Initialize with default endpoints from your MCP config
@@ -48,7 +48,7 @@ class LLMHealthChecker {
   }
 
   addEndpoint(endpoint: LLMEndpoint): void {
-    const key = `${endpoint.url}/${endpoint.model ?? 'unknown` }`;
+    const key = `${endpoint.url}/${endpoint.model ?? 'unknown' }`;
     this.endpoints.set(key, endpoint);
   }
 
@@ -62,7 +62,7 @@ class LLMHealthChecker {
         signal: controller.signal,
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json` }
+          'Content-Type': 'application/json' }
       });
 
       clearTimeout(timeoutId);
@@ -89,7 +89,7 @@ class LLMHealthChecker {
       // Network/timeout/errors -> mark unhealthy
       // console.warn intentionally minimal per guidelines
       const errMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown` }: ', errMsg);
+      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown' }: ', errMsg);'`
     } finally {
       clearTimeout(timeoutId);
     }
@@ -199,12 +199,12 @@ export function getServiceConfig(serviceName: string) {
 }
 
 /**
- * Check if we're in development mode
+ * Check if we're in development mode'
  */
 export const isDev = (): boolean => CLIENT_ENV.dev;
 
 /**
- * Check if we're running in browser
+ * Check if we're running in browser'
  */
 export const isBrowser = (): boolean => CLIENT_ENV.browser;
 

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   interface Props {
@@ -27,65 +27,65 @@
     { href: '#', label: 'Community', icon: '👥' }
   ];
 </script>
-<footer class="app-footer nes-container is-dark" data-variant={variant}>
-  <div class="footer-content">
+<footer class="app-footer nes-container, is-dark" data-variant={variant}>
+  <div, class="footer-content">
     {#if variant === 'full'}
-      <!-- Full Footer with Links -->
-      <div class="footer-sections">
-        <!-- Brand Section -->
-        <div class="footer-section brand-section">
-          <h3 class="footer-title nes-text is-warning">YoRHa Legal AI</h3>
-          <p class="footer-description">Professional Legal Intelligence Platform</p>
-          <div class="gaming-badges">
-            <span class="badge nes-badge">
-              <span class="is-success">AI-POWERED</span>
+      <!-- Full Footer with, Links -->
+      <div, class="footer-sections">
+        <!-- Brand, Section -->
+        <div class="footer-section, brand-section">
+          <h3 class="footer-title nes-text, is-warning">YoRHa Legal AI</h3>
+          <p, class="footer-description">Professional Legal Intelligence Platform</p>
+          <div, class="gaming-badges">
+            <span class="badge, nes-badge">
+              <span, class="is-success">AI-POWERED</span>
             </span>
-            <span class="badge nes-badge">
-              <span class="is-primary">SECURE</span>
+            <span class="badge, nes-badge">
+              <span, class="is-primary">SECURE</span>
             </span>
             {#if isDemoRoute}
-              <span class="badge nes-badge">
-                <span class="is-warning">DEMO MODE</span>
+              <span class="badge, nes-badge">
+                <span, class="is-warning">DEMO MODE</span>
               </span>
             {/if}
           </div>
         </div>
-        <!-- Quick Links Section -->
+        <!-- Quick Links, Section -->
         {#if showQuickLinks}
-          <div class="footer-section links-section">
-            <h4 class="section-title nes-text is-primary">Quick Links</h4>
-            <nav class="footer-nav" aria-label="Footer navigation">
+          <div class="footer-section, links-section">
+            <h4 class="section-title nes-text, is-primary">Quick Links</h4>
+            <nav class="footer-nav" aria-label="Footer, navigation">
               {#each Array.isArray(quickLinks) ? quickLinks : [] as link}
-                <a href={link.path} class="footer-link nes-btn is-dark">
-                  <span class="link-icon">{link.icon}</span>
-                  <span class="link-label">{link.label}</span>
+                <a href={link.path} class="footer-link nes-btn, is-dark">
+                  <span, class="link-icon">{link.icon}</span>
+                  <span, class="link-label">{link.label}</span>
                 </a>
               {/each}
             </nav>
           {/if}
-        <!-- System Status Section -->
-        <div class="footer-section status-section">
-          <h4 class="section-title nes-text is-primary">System Status</h4>
-          <div class="status-indicators">
-            <div class="status-item">
-              <span class="status-dot nes-container is-rounded" style="background: var(--nes-success, #50e3c2);"></span>
-              <span class="status-label">AI Services</span>
+        <!-- System Status, Section -->
+        <div class="footer-section, status-section">
+          <h4 class="section-title nes-text, is-primary">System Status</h4>
+          <div, class="status-indicators">
+            <div, class="status-item">
+              <span class="status-dot nes-container, is-rounded" style="background: var(--nes-success, #50e3c2);"></span>
+              <span, class="status-label">AI Services</span>
             </div>
-            <div class="status-item">
-              <span class="status-dot nes-container is-rounded" style="background: var(--nes-success, #50e3c2);"></span>
-              <span class="status-label">Database</span>
+            <div, class="status-item">
+              <span class="status-dot nes-container, is-rounded" style="background: var(--nes-success, #50e3c2);"></span>
+              <span, class="status-label">Database</span>
             </div>
-            <div class="status-item">
-              <span class="status-dot nes-container is-rounded" style="background: var(--n64-secondary, #7ed321);"
+            <div, class="status-item">
+              <span class="status-dot nes-container, is-rounded" style="background: var(--n64-secondary, #7ed321);"
               ></span>
-              <span class="status-label">GPU Cluster</span>
+              <span, class="status-label">GPU Cluster</span>
             </div>
           </div>
         </div>
-        <!-- Resources Section -->
-        <div class="footer-section resources-section">
-          <h4 class="section-title nes-text is-primary">Resources</h4>
-          <div class="resource-links">
+        <!-- Resources, Section -->
+        <div class="footer-section, resources-section">
+          <h4 class="section-title nes-text, is-primary">Resources</h4>
+          <div, class="resource-links">
             {#each Array.isArray(socialLinks) ? socialLinks : [] as social}
               <a
                 href={social.href}
@@ -94,58 +94,58 @@
                 rel="noopener noreferrer"
                 aria-label={social.label}
               >
-                <span class="resource-icon">{social.icon}</span>
-                <span class="resource-label">{social.label}</span>
+                <span, class="resource-icon">{social.icon}</span>
+                <span, class="resource-label">{social.label}</span>
               </a>
             {/each}
           </div>
         </div>
       </div>
-      <!-- Bottom Bar -->
-      <div class="footer-bottom">
-        <div class="copyright-section">
-          <p class="copyright-text nes-text is-disabled">
+      <!-- Bottom, Bar -->
+      <div, class="footer-bottom">
+        <div, class="copyright-section">
+          <p class="copyright-text nes-text, is-disabled">
             © {currentYear} YoRHa Legal AI Platform. All rights reserved.
           </p>
-          <p class="version-info nes-text is-disabled">
+          <p class="version-info nes-text, is-disabled">
             Version 2.0.0 | Build: {String(Date.now()).slice(-6)}
           </p>
         </div>
-        <div class="tech-stack">
-          <span class="tech-badge nes-badge">
-            <span class="is-dark">Svelte 5</span>
+        <div, class="tech-stack">
+          <span class="tech-badge, nes-badge">
+            <span, class="is-dark">Svelte 5</span>
           </span>
-          <span class="tech-badge nes-badge">
-            <span class="is-dark">bits-ui</span>
+          <span class="tech-badge, nes-badge">
+            <span, class="is-dark">bits-ui</span>
           </span>
-          <span class="tech-badge nes-badge">
-            <span class="is-dark">UnoCSS</span>
+          <span class="tech-badge, nes-badge">
+            <span, class="is-dark">UnoCSS</span>
           </span>
-          <span class="tech-badge nes-badge">
-            <span class="is-dark">NES.css</span>
+          <span class="tech-badge, nes-badge">
+            <span, class="is-dark">NES.css</span>
           </span>
         </div>
       </div>
     {:else if variant === 'minimal'}
-      <!-- Minimal Footer -->
-      <div class="minimal-footer">
-        <p class="minimal-copyright nes-text is-disabled">
+      <!-- Minimal, Footer -->
+      <div, class="minimal-footer">
+        <p class="minimal-copyright nes-text, is-disabled">
           © {currentYear} YoRHa Legal AI
         </p>
-        <div class="minimal-links">
-          <a href="/privacy" class="nes-btn is-dark">Privacy</a>
-          <a href="/terms" class="nes-btn is-dark">Terms</a>
+        <div, class="minimal-links">
+          <a href="/privacy" class="nes-btn, is-dark">Privacy</a>
+          <a href="/terms" class="nes-btn, is-dark">Terms</a>
         </div>
       </div>
     {:else if variant === 'demo'}
-      <!-- Demo Footer -->
-      <div class="demo-footer nes-container with-title is-rounded">
-        <p class="title">Demo Environment</p>
-        <div class="demo-info">
-          <p class="demo-text nes-text is-warning">🎮 This is a demonstration of the YoRHa Legal AI Platform</p>
-          <div class="demo-actions">
-            <a href="/" class="nes-btn is-primary"> Return to Main App </a>
-            <a href="/all-routes" class="nes-btn is-dark"> Explore All Routes </a>
+      <!-- Demo, Footer -->
+      <div class="demo-footer nes-container with-title, is-rounded">
+        <p, class="title">Demo Environment</p>
+        <div, class="demo-info">
+          <p class="demo-text nes-text, is-warning">🎮 This is a demonstration of the YoRHa Legal AI Platform</p>
+          <div, class="demo-actions">
+            <a href="/" class="nes-btn, is-primary"> Return to Main App </a>
+            <a href="/all-routes" class="nes-btn, is-dark"> Explore All Routes </a>
           </div>
         </div>
       {/if}

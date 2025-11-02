@@ -116,14 +116,14 @@ class StorageManager {
         delete (window as any).__memoryStorage?.[key];
       }
     } catch (error) {
-      console.error(`[StorageManager] Failed to remove ${key}: ', error);
+      console.error(`[StorageManager] Failed to remove ${key}: ', error);'`
     }
   }
 
   clear(): void {
     try {
       if (this.isAvailable) {
-        // Only clear our app's keys
+        // Only clear our app's keys'
         Object.values(CACHE_KEYS).forEach(key => localStorage.removeItem(key));
       } else {
         (window as any).__memoryStorage = {};
@@ -190,7 +190,7 @@ export class AIPs {
   /**
    * Generate embeddings with fallback
    */
-  async generateEmbedding(text: string): Promise<{ embedding: number[] | null;, cached: boolean }> {
+  async generateEmbedding(text: string): Promise<{ embedding: number[] | null; cached: boolean }> {
     // Check cache first
     const cacheKey = `${CACHE_KEYS.EMBEDDINGS_CACHE}:${this.hashText(text)}`;
     const cached = this.storage.get<number[]>(cacheKey);
@@ -211,7 +211,7 @@ export class AIPs {
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ text }),
         signal: AbortSignal.timeout(10000), // 10s timeout
       });
@@ -239,7 +239,7 @@ export class AIPs {
   async analyzeDocument(
     content: string,
     documentType: string = 'unknown'
-  ): Promise<{ analysis: any | null;, cached: boolean }> {
+  ): Promise<{ analysis: any | null; cached: boolean }> {
     // Check cache
     const cacheKey = `${CACHE_KEYS.ANALYSIS_CACHE}:${this.hashText(content)}`;
     const cached = this.storage.get<any>(cacheKey);
@@ -263,7 +263,7 @@ export class AIPs {
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ content, documentType }),
         signal: AbortSignal.timeout(30000), // 30s timeout
       });
@@ -294,8 +294,8 @@ export class AIPs {
   async semanticSearch(
     query: string,
     options: { limit?: number; caseId?: string } = {}
-  ): Promise<{ results: any[];, cached: boolean }> {
-    const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all' }`;
+  ): Promise<{ results: any[]; cached: boolean }> {
+    const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all` }`;'`
     const cached = this.storage.get<any[]>(cacheKey);
 
     if (cached) {
@@ -314,7 +314,7 @@ export class AIPs {
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/rag`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ query, ...options }),
         signal: AbortSignal.timeout(15000), // 15s timeout
       });
@@ -339,7 +339,7 @@ export class AIPs {
   /**
    * Queue operation for retry when offline
    */
-  queueOfflineOperation(operation: { type: 'upload' | 'analyze' | 'search';, data: any;
+  queueOfflineOperation(operation: {, type: 'upload' | 'analyze' | 'search';, data: any;
    , timestamp: number;
   }): void {
     const queue = this.storage.get<any[]>(CACHE_KEYS.OFFLINE_QUEUE) || [];

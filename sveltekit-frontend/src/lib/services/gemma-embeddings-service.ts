@@ -78,34 +78,34 @@ class GemmaEmbeddingsService {
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         )
-      `);
+      `);`
       // Create optimized indexes for vector search
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embeddings_vector_cosine
         ON embeddings USING hnsw (embedding vector_cosine_ops)
         WITH (m = 16, ef_construction = 64)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embeddings_vector_l2
         ON embeddings USING hnsw (embedding vector_l2_ops)
         WITH (m = 16, ef_construction = 64)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embeddings_text_hash
         ON embeddings (text_hash)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embeddings_document_type
         ON embeddings (document_type)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embeddings_metadata_gin
         ON embeddings USING gin (metadata)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embeddings_created_at
         ON embeddings (created_at DESC)
-      `);
+      `);`
       // Update function for timestamp
       await db.execute(sql`
         CREATE OR REPLACE FUNCTION update_embeddings_updated_at()
@@ -115,15 +115,15 @@ class GemmaEmbeddingsService {
           RETURN NEW;
         END;
         $$ language: 'plpgsql'
-      `);
+      `);`
       await db.execute(sql`
         DROP TRIGGER IF EXISTS trigger_update_embeddings_updated_at ON embeddings
-      `);
+      `);`
       await db.execute(sql`
         CREATE TRIGGER trigger_update_embeddings_updated_at
         BEFORE UPDATE ON embeddings
         FOR EACH ROW EXECUTE FUNCTION update_embeddings_updated_at()
-      `);
+      `);`
       this.isInitialized = true;
       console.log('Gemma embeddings service initialized with pgvector support');
     } catch (error) {
@@ -201,7 +201,7 @@ class GemmaEmbeddingsService {
           1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')}]'::vector`)}) as similarity
         FROM embeddings
         WHERE 1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')}]'::vector`)}) > ${threshold}
-      `;
+      `;`
       // Add document type filter
       if (request.document_types && request.document_types.length > 0) {
         query = sql`${query} AND document_type = ANY(${request.document_types})`;
@@ -215,8 +215,8 @@ class GemmaEmbeddingsService {
       query = sql`${query} ORDER BY similarity DESC LIMIT ${limit}`;
       const results = await db.execute(query);
       return results.rows.map(
-        (row: { id: string;, similarity: string;
-          content: string;
+        (row: {, id: string;, similarity: string;
+         , content: string;
          , metadata: Record<string, unknown>;
           document_type: string;
         }) => ({
@@ -224,7 +224,7 @@ class GemmaEmbeddingsService {
           similarity: parseFloat(row.similarity),
           content: row.content,
           metadata: row.metadata || {},
-          document_type: row.document_type || 'unknown` })
+          document_type: row.document_type || 'unknown` })'`
       );
     } catch (error) {
       console.error('Vector search failed:', error);
@@ -242,7 +242,7 @@ class GemmaEmbeddingsService {
           pg_size_pretty(pg_total_relation_size('embeddings')) as index_size,
           MAX(created_at) as last_updated
         FROM embeddings
-      `);
+      `);`
       const avgSimilarity = await db.execute(sql`
         SELECT AVG(
           1 - (e1.embedding <=> e2.embedding)
@@ -251,8 +251,8 @@ class GemmaEmbeddingsService {
         CROSS JOIN embeddings e2
         WHERE e1.id != e2.id
         LIMIT 1000
-      `);
-      const row = stats.rows[0] as { total_vectors: string; index_size: string;, last_updated: string };
+      `);`
+      const row = stats.rows[0] as { total_vectors: string; index_size: string; last_updated: string };
       const avgRow = avgSimilarity.rows[0] as { avg_similarity: string };
       return {
         total_vectors: parseInt(row.total_vectors),
@@ -319,7 +319,7 @@ class GemmaEmbeddingsService {
     const response = await fetch(`${OLLAMA_ENDPOINT}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify(payload),
       signal: controller.signal
     }).finally(() => clearTimeout(timeoutId));
@@ -375,7 +375,7 @@ class GemmaEmbeddingsService {
         FROM embeddings
         WHERE text_hash = ${textHash}
         LIMIT 1
-      `);
+      `);`
       if (result.rows.length === 0) {
         return null;
       }
@@ -417,7 +417,7 @@ class GemmaEmbeddingsService {
           ${content},
           ${sql.raw(`'[${embedding.join(',')}]'::vector`)},
           ${request.model || GEMMA_EMBEDDING_MODEL},
-          ${request.document_type || 'unknown` },
+          ${request.document_type || 'unknown` },'`
           ${JSON.stringify(request.metadata || {})}
         )
         ON CONFLICT (text_hash) DO UPDATE SET
@@ -426,7 +426,7 @@ class GemmaEmbeddingsService {
           document_type = EXCLUDED.document_type,
           metadata = EXCLUDED.metadata,
           updated_at = NOW()
-      `);
+      `);`
     } catch (error) {
       console.error('Failed to store embedding:', error);
       throw error;
@@ -451,7 +451,7 @@ class GemmaEmbeddingsService {
    * Cleanup resources
    */
   async cleanup(): Promise<void> {
-    // The createRedisInstance returns a singleton, so we don't need to quit it here.
+    // The createRedisInstance returns a singleton, so we don't need to quit it here.'
     // The singleton instance will be managed globally.
     // If a dedicated connection was created (e.g., for pub/sub), it would need to be quit.
     // await gemmaRedis.quit();

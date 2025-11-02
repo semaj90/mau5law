@@ -9,6 +9,6 @@ export async function json(_event: any): Promise<any> {
     await writeFile(LOG_PATH, line, { flag: 'a' });
   } catch (err: any) {
     // Fallback: log to console
-    console.error('Analytics log error:', err);
+    console.error('Analytics log error:', err);'
   }
 }

@@ -8,9 +8,9 @@ import { browser } from '$app/environment';
 import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
 // replace loose `any` types with stricter input shapes
 type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
-type BBox = { x0: number; y0: number; x1: number;, y1: number } | number[];
-type Word = { text: string; bbox: BBox;, confidence: number };
-type RecognizeResult = { data: { text: string; confidence: number;, words: Word[] } };
+type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
+type Word = { text: string; bbox: BBox; confidence: number };
+type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } };
 type LoggerMessage = Record<string, unknown>;
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
@@ -219,7 +219,7 @@ export class OCRTensorProcessor {
       const ocrOptions = this.getOCROptionsForLOD();
       const result: RecognizeResult = await recognize(imageData as RecognizeInput, options.language || 'eng', {
         // Type logger message
-        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]: ', m),
+        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]: ', m),'`
         ...ocrOptions
       });
       const ocrResult: OCRResult = {
@@ -238,7 +238,7 @@ export class OCRTensorProcessor {
       });
       return ocrResult;
     } catch (error) {
-      console.error('OCR processing failed: `, error);
+      console.error('OCR processing failed: `, error);'`
       throw error;
     }
   }
@@ -293,7 +293,7 @@ export class OCRTensorProcessor {
       const isGPUBusy = statusData.gpu_busy || statusData.models_loading > 0;
       const isGPURecognized = statusData.gpu_detected && statusData.gpu_memory_total > 0;
       const availableMemory = statusData.gpu_memory_available || 0;
-      // Prioritize Gemma 270MB when GPU isn't recognized or is busy
+      // Prioritize Gemma 270MB when GPU isn't recognized or is busy'
       if (!isGPURecognized || isGPUBusy || availableMemory < 512) {
         console.log('🎮 GPU not recognized/busy, using Gemma 270MB for optimal UX');
         return {
@@ -355,7 +355,7 @@ export class OCRTensorProcessor {
   }
   private async generateEmbeddings(
     text: string
-  ): Promise<{ embeddings: Float32Array; fromCache: boolean;, model: string }> {
+  ): Promise<{ embeddings: Float32Array; fromCache: boolean; model: string }> {
     try {
       // Intelligent model selection based on Ollama GPU memory and system state
       const modelConfig = await this.selectOptimalModel();
@@ -377,12 +377,12 @@ export class OCRTensorProcessor {
         })
       });
       if (!response.ok) {
-        throw new Error(`Embedding API failed: ${response.status}`); // No need for: `as { ok?: any; ... }' }
+        throw new Error(`Embedding API failed: ${response.status}`); // No need for: 'as { ok?: any; ... }' }
       const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
         embeddings: new Float32Array(data.embedding), // Access properties directly
         fromCache: data.fromCache || false,
-        model: data?.model || 'unknown` };
+        model: data?.model || 'unknown` };'`
     } catch (error) {
       console.error('Embedding generation failed:', error);
       throw error;
@@ -492,7 +492,7 @@ export class OCRTensorProcessor {
         try {
           return await this.processImageAsync(item.image, item.options); // Access properties directly
         } catch (error) {
-          console.warn(`Failed to process image ${i}: ', error);
+          console.warn(`Failed to process image ${i}: ', error);'`
           return null;
         }
       });
@@ -642,7 +642,7 @@ export class OCRTensorProcessor {
     // Process smaller images first for better user experience
     if (image instanceof ImageData) {
       const pixels = image.width * image.height;
-      if (pixels < 300000) priority += 0.2; // Small images (<300K pixels)
+      if (pixels < 300000) priority += 0.2; // Small, images (<300K, pixels)
     }
     // Slight preference for earlier items in the queue
     priority += (1.0 / (index + 1)) * 0.1;

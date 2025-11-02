@@ -4,8 +4,8 @@ import { CONFIG } from '$lib/config/env.server';
 import { RabbitMQXStateIntegration } from '$lib/messaging/rabbitmq-xstate-integration';
 // Minimal local type declarations to avoid: 'any' and keep defensive calls typed
 type RabbitMQIntegration = {
-  publishEvent?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
-  enqueue?: (topic: string; payload: Record<string, unknown>) => Promise<unknown> | unknown;
+  publishEvent?: (topic: string;, payload: Record<string, unknown>) => Promise<unknown> | unknown;
+  enqueue?: (topic: string;, payload: Record<string, unknown>) => Promise<unknown> | unknown;
 };
 type ExtendedConfig = typeof CONFIG & { LOKI_INGEST_URL?: string };
 type SystemLoad = { gpu: number;, cpu: number;
@@ -81,18 +81,18 @@ export class AIAnalyticsService {
       if (lokiUrl) {
         void fetch(lokiUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ streams: [{, stream: {, service: `ai-analytics` }, values: [[evt.timestamp, JSON.stringify(evt)]] }] })
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify({, streams: [{, stream: {, service: `ai-analytics` }, values: [[evt.timestamp, JSON.stringify(evt)]] }] })
         });
       }
     } catch {
       // non-fatal
     }
   }
-  async getSignalsForCase(caseId: string): Promise<{ hotness: number;, confidenceDrift: number }> {
+  async getSignalsForCase(caseId: string): Promise<{ hotness: number; confidenceDrift: number }> {
     try {
       const raw = await redis.get(`ai:analytics:case:${caseId}:signals`);
-      if (raw) return JSON.parse(raw) as { hotness: number;, confidenceDrift: number };
+      if (raw) return JSON.parse(raw) as { hotness: number; confidenceDrift: number };
     } catch (e: any) {
       console.debug('getSignalsForCase failed', e);
     }

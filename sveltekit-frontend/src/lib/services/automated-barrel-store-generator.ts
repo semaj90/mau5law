@@ -77,7 +77,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     if (base && typeof fetch !== 'undefined') {
       const resp = await fetch(`${base}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ model, input: texts })
       });
       if (resp.ok) {
@@ -166,7 +166,7 @@ export class QdrantIndexer {
       if (typeof fetch !== 'undefined') {
         await fetch(`${this.baseUrl}/collections/${collection}/points?wait=true`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({, points: vectors })
         });
       }
@@ -181,7 +181,7 @@ export class QdrantIndexer {
       if (typeof fetch !== 'undefined') {
         const resp = await fetch(`${this.baseUrl}/collections/${collection}/points/search`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({ vector, limit: topK })
         });
         if (resp.ok) return await resp.json();
@@ -203,7 +203,7 @@ export class PostgresJSONStore {
       return { success: true };
     }
     // fallback: noop storage
-    return { success: true, note: 'noop' };
+    return { success: true, note: 'noop` };'`
   }
 }
 
@@ -273,7 +273,7 @@ export class AutomatedBarrelStoreGenerator {
       } catch (error: any) {
         const fallback = this.createFallbackImplementation(item);
         resolution.fallbacks.set(item, fallback);
-        console.warn(`fetchMissingImplementations fallback for ${item}: ', String(error));
+        console.warn(`fetchMissingImplementations fallback for ${item}: ', String(error));'`
       }
     }
     return resolution;
@@ -325,20 +325,20 @@ export class AutomatedBarrelStoreGenerator {
 
   /* Implementation helpers */
   private async parseErrorLine(errorLine: string, analysis: MissingImportAnalysis): Promise<void> {
-    if (errorLine.includes("Cannot find name: '")) {
-      const match = errorLine.match(/Cannot find name: '([^']+)'/);
+    if (errorLine.includes("Cannot find name: '")) {'
+      const match = errorLine.match(/Cannot find name: '([^']+)'/);'
       if (match) analysis.missingFunctions.add(match[1]);
     }
     if (errorLine.includes("Property '") && errorLine.includes("' does not exist on type")) {
-      const match = errorLine.match(/Property '([^']+)' does not exist on type/);
+      const match = errorLine.match(/Property '([^']+)' does not exist on type/);'
       if (match) analysis.missingMethods.add(match[1]);
     }
     if (errorLine.includes("Module '") && errorLine.includes("' has no exported member")) {
       const match = errorLine.match(/Module '[^']+' has no exported member: '([^']+)'/);
       if (match) analysis.missingClasses.add(match[1]);
     }
-    if (errorLine.includes("Cannot find module: '")) {
-      const match = errorLine.match(/Cannot find module: '([^']+)'/);
+    if (errorLine.includes("Cannot find module: '")) {'
+      const match = errorLine.match(/Cannot find module: '([^']+)'/);'
       if (match) analysis.missingModules.add(match[1]);
     }
     const fileMatch = errorLine.match(/^([^:]+):(\d+):(\d+):/);
@@ -411,14 +411,14 @@ export class AutomatedBarrelStoreGenerator {
       name: item,
       implementation: `// Auto-generated implementation for ${item}\nexport const ${item} = (...args: any[]) => { return null; };`,
       types: `export type ${item} = any;`,
-      usage: '//; Usage: import { ${item} } from './barrel-store';' };
+      usage: '//; Usage: import { ${item} } from './barrel-store';` };'`
   }
 
   private createFallbackImplementation(item: string): FetchImplementation {
     return {
       name: item,
-      implementation: 'export const ${item} = (..._args: any[]) => { console.warn('${item} fallback'); return null; };`,
-      types: `export type ${item} = (...args: any[]) => any;' };
+      implementation: 'export const ${item} = (..._args: any[]) => { console.warn('${item} fallback'); return null; };`,'`
+      types: `export type ${item} = (...args: any[]) => any;` };
   }
 
   private async fetchContext7Docs(library: string, topics: string): Promise<Context7Docs> {
@@ -447,7 +447,7 @@ export class AutomatedBarrelStoreGenerator {
     _svelteCompleteDocs?: Context7Docs | null
   ): Promise<string> {
     const envs = Array.from(analysis?.missingTypes ?? new Set<string>()).filter(t => t.includes('_'));
-    return `/**
+    return `/**`
  * AUTO-GENERATED SVELTEKIT BARREL STORE
  */
 export const svelte5Runes = { state: <T>(initial: T) => ({, current: initial }),
@@ -462,8 +462,8 @@ export const environmentVariables = {
 export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), params: {}, route: { id: null } },
   navigating: null,
   browser: typeof window !== 'undefined',
-  dev: process?.env?.NODE_ENV === 'development' };
-`;
+  dev: process?.env?.NODE_ENV === 'development` };'`
+`;`
   }
 
   private async generateDatabaseStore(
@@ -486,11 +486,11 @@ export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), 
         'vector',
       ].includes(fn)
     );
-    return `/**
+    return `/**`
  * AUTO-GENERATED DATABASE BARREL STORE
  */
 export const drizzleColumns = {
-  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: '${fn}' })`).join(',\n  ')}
+  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: '${fn}` })`).join(',\n  ')}'`
 };
 
 export const drizzleOperators = {
@@ -504,7 +504,7 @@ export const postgres = (options?: Record<string, unknown>) => ({
   query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }),
   end: async () => {}
 });
-`;
+`;`
   }
 
   private async generateStateStore(
@@ -512,7 +512,7 @@ export const postgres = (options?: Record<string, unknown>) => ({
     _resolution?: WebFetchResolution,
     _xStateDocs?: Context7Docs | null
   ): Promise<string> {
-    return `/**
+    return `/**`
  * AUTO-GENERATED STATE MANAGEMENT BARREL STORE
  */
 export const xStateUtils = { createMachine: (config: any) => ({, id: config?.id || 'machine', states: config?.states || {}, context: config?.context || {}, initial: config?.initial }),
@@ -520,11 +520,11 @@ export const xStateUtils = { createMachine: (config: any) => ({, id: config?.id 
   assign: (assigner: any) => ({ type: 'assign', assigner }),
   spawn: (entity: any) => ({ type: 'spawn', entity })
 };
-`;
+`;`
   }
 
   private async generateAPIStore(_analysis?: MissingImportAnalysis, _resolution?: WebFetchResolution): Promise<string> {
-    return `/**
+    return `/**`
  * AUTO-GENERATED API INTEGRATION BARREL STORE
  */
 export const apiClients = { createClient: (baseURL: string) => ({, get: async (_path: string) => ({ data: null, status: 200 }),
@@ -537,19 +537,19 @@ export const apiClients = { createClient: (baseURL: string) => ({, get: async (
     async del(k: string) { return this.store.delete(k) ? 1 : 0; }
   }
 };
-`;
+`;`
   }
 
   private async generateTypeStore(analysis?: MissingImportAnalysis, _resolution?: WebFetchResolution): Promise<string> {
     const types = Array.from(analysis?.missingTypes ?? []);
     const classes = Array.from(analysis?.missingClasses ?? []);
-    return `/**
+    return `/**`
  * AUTO-GENERATED TYPE DEFINITIONS
  */
 ${types.map(t => `export type ${t} = any;`).join('\n')}
 
 ${classes.map(c => `export class ${c} { constructor(..._args: any[]) {} }`).join('\n')}
-`;
+`;`
   }
 
   async executeAutomatedResolution(typeScriptErrorOutput: string): Promise<Record<string, string>> {
@@ -570,8 +570,8 @@ ${classes.map(c => `export class ${c} { constructor(..._args: any[]) {} }`).join
   private initializeErrorPatterns(): void {
     this.errorPatterns.set('missing-function', ["Cannot find name: '", "' is not defined", 'ReferenceError:']);
     this.errorPatterns.set('missing-property', ["Property '", "' does not exist on type"]);
-    this.errorPatterns.set('missing-module', ["Cannot find module: '", 'Module not found:']);
-    this.errorPatterns.set('missing-export', ["' has no exported member: '", "' is not exported from module"]);
+    this.errorPatterns.set('missing-module', ["Cannot find module: '", 'Module not found:']);'
+    this.errorPatterns.set('missing-export', ["' has no exported member: '", "' is not exported from module"]);'
   }
 }
 

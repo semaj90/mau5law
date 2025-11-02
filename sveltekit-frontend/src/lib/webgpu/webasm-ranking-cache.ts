@@ -19,7 +19,7 @@ export interface RankingRequest { id: string;, vectors: Float32Array[];
   threshold?: number;
   useCache?: boolean;
 }
-export type RankingItem = { index: number;, score: number };
+export type RankingItem = { index: number; score: number };
 
 export interface RankingResponse { id: string;, rankings: RankingItem[];
   cached: boolean;
@@ -203,7 +203,7 @@ class WebASMRankingCache {
         this.serviceWorker = null;
         return;
       }
-      const reg = await swContainer.register('/webasm-ranking-worker.js', { scope: `/webasm/` });
+      const reg = await swContainer.register('/webasm-ranking-worker.js', { scope: `/webasm/' });'`
       this.serviceWorker = reg;
 
       // If the worker is installing, wait for activation (best-effort)
@@ -538,7 +538,7 @@ class WebASMRankingCache {
         return (await response.json()) as Record<string, number>;
       }
     } catch (error) {
-      console.warn('Failed to get QUIC metrics: `, error);
+      console.warn('Failed to get QUIC metrics: `, error);'`
     }
     return null;
   }
@@ -574,14 +574,14 @@ export const webASMRankingCache = new WebASMRankingCache({
   maxEntries: 1000,
   ttlSeconds: 300,
   enableServiceWorker: true,
-  wasmModulePath: '/webasm/ranking-cache.wasm` });
+  wasmModulePath: '/webasm/ranking-cache.wasm' });
 
 // Auto-initialize on client side
 if (typeof window !== 'undefined') {
   webASMRankingCache.initialize().catch(err => {
     // keep initialization errors visible but avoid crashing builds
     // eslint-disable-next-line no-console
-    console.error('Initialization error:', err);
+    console.error('Initialization error:', err);'
   });
 }
 

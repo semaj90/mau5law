@@ -73,15 +73,15 @@ export function getCacheHeaders(maxAge: number = 0) {
     return {
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Pragma': 'no-cache',
-      'Expires': '0` };
+      'Expires': '0' };
   }
   return {
-    'Cache-Control': `public, max-age=${maxAge}` };
+    'Cache-Control': `public, max-age=${maxAge}' };'`
 }
 /**
  * Standardized API handler wrapper with error catching
  */
-export function withErrorHandling<T extends RequestEvent>(handler: (_event: T) => Promise<Response>) {
+export function withErrorHandling<T extends, RequestEvent>(handler: (_event: T) => Promise<Response>) {
   return async (_event: T): Promise<Response> => {
     const requestId = getRequestId(_event);
     try {

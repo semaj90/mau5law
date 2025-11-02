@@ -59,7 +59,7 @@ export class LegalAIJobQueue {
       const queue = new Queue(name, {
         connection: redisConnection,
         defaultJobOptions: {
-          removeOnComplete: 100,
+         , removeOnComplete: 100,
           removeOnFail: 50,
           attempts: 3,
           backoff: {
@@ -90,7 +90,7 @@ export class LegalAIJobQueue {
         });
       });
       any.on('failed', (job: BullMQJob<JobData> | undefined, err: Error) => {
-        console.error(`❌ Job ${job?.id} failed in queue ${name}: ', err?.message);
+        console.error(`❌ Job ${job?.id} failed in queue ${name}: ', err?.message);'`
         if (job?.data?.uploadId) {
           this.broadcastProgress(job.data.uploadId, {
             stage: name,
@@ -196,8 +196,7 @@ export class LegalAIJobQueue {
         extractedText,
         chunkCount: chunks.length,
         metadata,
-        nextStage: 'embedding-generation'
-      };
+        nextStage: `embedding-generation` };
     } catch (error) {
       console.error('❌ Document extraction failed:', error);
       if (error instanceof Error) throw error;
@@ -247,8 +246,7 @@ export class LegalAIJobQueue {
       return {
         embeddingCount: embeddings.length,
         dimensions: embeddings[0]?.length || 0,
-        nextStage: 'vector-indexing'
-      };
+        nextStage: `vector-indexing` };
     } catch (error) {
       console.error('❌ Embedding generation failed:', error);
       if (error instanceof Error) throw error;
@@ -265,10 +263,10 @@ export class LegalAIJobQueue {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          job_id: job.id,
+         , job_id: job.id,
           upload_id: job.data.uploadId,
           tensor_tile: {
-            tile_id: `${job.data.uploadId}-${job.id}`,
+           , tile_id: `${job.data.uploadId}-${job.id}`,
             dimensions,
             halo_size: haloSize || 2,
             data: tensorData,
@@ -328,7 +326,7 @@ export class LegalAIJobQueue {
           // Store in PostgreSQL with pgvector
           const pgResponse = await fetch('http://localhost:5434/api/vectors/insert', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               embeddings,
               metadata,
@@ -369,8 +367,7 @@ export class LegalAIJobQueue {
       await this.addNotificationJob({
         ...job.data,
         message: `Document ${job.data.uploadId} successfully processed and indexed`,
-        type: 'completion'
-      });
+        type: `completion` });
       await job.updateProgress(100);
       return {
         indexedCount: embeddings.length,

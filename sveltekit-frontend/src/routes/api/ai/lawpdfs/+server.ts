@@ -159,7 +159,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
         // Generate evidence ID for this file
         const evidenceId = `pdf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         // TODO: Save file to MinIO or file system
-        // For now, we'll simulate file storage
+        // For now, we'll simulate file storage'
         console.log(`[LawPDF] Saving file ${file.name} as evidence ${evidenceId}`);
         // Prepare processing steps
         const steps: ('ocr' | 'embedding' | 'analysis')[] = []; // Explicitly typed steps array
@@ -194,7 +194,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           contentLength: file.size,
           embeddingGenerated: enableEmbedding,
           processingTime: 'In progress',
-          webSocketUrl: '${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}` });
+          webSocketUrl: '${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}' });
       } catch (error: any) {
         // Changed any to unknown
         console.error(`[LawPDF] Failed to process file ${file.name}:`, error);
@@ -239,7 +239,7 @@ async function processWithLocalModels(
     // 1. Generate comprehensive legal summary with gemma3-legal
     const summaryResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , model: summaryModel.replace(':latest', ''),
         prompt: legalPrompt,
@@ -262,7 +262,7 @@ async function processWithLocalModels(
     try {
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: embeddingModel.replace(':latest', ''),
           prompt: content.substring(0, 2000), // Limit for embedding
@@ -328,11 +328,11 @@ async function processWithCloudFallback(content: string, analysisType: string): 
   };
 }
 function buildLegalAnalysisPrompt(content: string, analysisType: string): string {
-  const basePrompt = `As a legal AI assistant, analyze this document and provide a comprehensive legal analysis.
+  const basePrompt = `As a legal AI assistant, analyze this document and provide a comprehensive legal analysis.`
 Document Content:
 ${content.substring(0, 3000)}
 Please provide your analysis in the following structured format:; SUMMARY:
-[Provide a clear, concise summary of the document's main legal points]
+[Provide a clear, concise summary of the document's main legal points]'
 ENTITIES:
 [List key persons, organizations, locations, and dates mentioned]
 LEGAL CONCEPTS:
@@ -341,12 +341,12 @@ KEY TERMS:
 [Extract the most important legal terms and phrases]
 RISK ASSESSMENT:
 [Evaluate potential legal risks and provide recommendations]
-Focus on accuracy and legal precision. Use clear, professional language.`;
+Focus on accuracy and legal precision. Use clear, professional language.`;`
   const enhancedPrompts = {
     basic: basePrompt,
     comprehensive: basePrompt + '\n\nProvide detailed analysis with citations and cross-references where applicable.',
     'legal-focused':
-      basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.` };
+      basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.' };
   return enhancedPrompts[analysisType] || enhancedPrompts['comprehensive'];
 }
 function parseGemmaLegalResponse(response: string): { summary: string;, entities: LawPdfResponse['entities'];

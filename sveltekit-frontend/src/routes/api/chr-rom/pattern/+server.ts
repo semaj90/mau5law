@@ -1,7 +1,7 @@
 /**
  * CHR-ROM Pattern API Endpoint
  * Ultra-fast access to pre-computed UI patterns
- * Target latency: <5ms for cache hits
+ * Target latency: <5ms for cache, hits
  */
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
@@ -94,7 +94,7 @@ async function handleSinglePattern(data: any, startTime: number): Promise<any> {
   if (!docId || !patternType) {
     return json({
       success: false,
-      error: `docId and patternType required` }, { status: 400 })
+      error: 'docId and patternType required' }, { status: 400 })
   }
   const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss)
   return json(
@@ -113,7 +113,7 @@ async function handleSinglePattern(data: any, startTime: number): Promise<any> {
     {
       headers: {
         'X-CHR-ROM-Source': result.source,
-        'X-CHR-ROM-Latency': `${result.latency.toFixed(2)}ms' }
+        'X-CHR-ROM-Latency': '${result.latency.toFixed(2)}ms` }'`
     }
   );
 }
@@ -126,8 +126,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
     return json(
       {
         success: false,
-        error: 'requests array required'
-      },
+        error: 'requests array required' },
       { status: 400 }
     );
   }
@@ -139,7 +138,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
     return json(
       {
         success: false,
-        error: `No valid requests found. Each request needs docId and patternType.` },
+        error: 'No valid requests found. Each request needs docId and patternType.' },
       { status: 400 }
     );
   }
@@ -154,7 +153,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
       success: true,
       operation: 'get_batch',
       result: {
-        patterns: batchResults,
+       , patterns: batchResults,
         statistics: {
          , total: batchResults.length,
           cacheHits,
@@ -168,7 +167,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
     {
       headers: {
         'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
-        'X-CHR-ROM-Hit-Rate': `${((cacheHits / batchResults.length) * 100).toFixed(1)}%' }
+        'X-CHR-ROM-Hit-Rate': '${((cacheHits / batchResults.length) * 100).toFixed(1)}%` }'`
     }
   );
 }
@@ -180,8 +179,7 @@ async function handlePrefetch(data: any, startTime: number): Promise<Response> {
   if (!Array.isArray(docIds) || docIds.length === 0) {
     return json({
       success: false,
-      error: 'docIds array required'
-    }, { status: 400 })
+      error: `docIds array required` }, { status: 400 })
   }
   // Execute prefetch (fire-and-forget style)
   chrROMCacheReader.prefetchPatterns(docIds, patternTypes)

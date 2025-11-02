@@ -240,11 +240,11 @@ export class AIWorkerManager {
     }
   }
   private handleWorkerError(workerId: number, error: ErrorEvent) {
-    console.error(`Worker ${workerId} encountered an error: ', error);
+    console.error(`Worker ${workerId} encountered an error: ', error);'`
     if (this.workerPool.workers[workerId]) {
       this.workerPool.workers[workerId].terminate();
       const newWorker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
-        type: 'module` });
+        type: 'module' });
       this.setupWorkerEventHandlers(newWorker, workerId);
       this.workerPool.workers[workerId] = newWorker;
       this.workerPool.currentLoad[workerId] = 0;

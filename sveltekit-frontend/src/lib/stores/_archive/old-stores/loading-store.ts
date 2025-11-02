@@ -162,7 +162,7 @@ export function withLoadingTimeout<T>(
     }, timeoutMs);
   });
   return Promise.race([
-    promise
+    promise,
       .then(result => {
         loadingStore.completeOperation(id, 'success');
         return result;

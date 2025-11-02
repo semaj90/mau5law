@@ -22,7 +22,7 @@ export const load: PageServerLoad = async () => {
     degradedCount: 0,
     unhealthyCount: 0,
     criticalPaths: [
-      {
+      {,
         name: 'RAG Pipeline',
         services: ['frontend', 'enhanced-rag', 'qdrant', 'postgres', 'ollama'],
         estimatedLatency: '150-300ms'

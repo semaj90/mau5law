@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       );
     }
-    console.log(`📄 Processing legal document: ${body.text.length} chars, type: ${body.documentType || 'general` }`);
+    console.log(`📄 Processing legal document: ${body.text.length} chars, type: ${body.documentType || 'general` }`);'`
 
     // Initialize headless processor if needed (use safe access)
     const stats = factory.getStats?.() ?? { isInitialized: false, hasDevice: false };
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (error: any) {
     const errInfo = getErrorInfo(error);
-    console.error('Headless processing error:', errInfo.message);
+    console.error('Headless processing error:', errInfo.message);'
     return json(
       {
         success: false,
@@ -344,7 +344,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (error: any) {
     const errInfo = getErrorInfo(error);
-    console.error('Batch processing error:', errInfo.message);
+    console.error('Batch processing error:', errInfo.message);'
     return json(
       {
         success: false,
@@ -368,7 +368,7 @@ export const GET: RequestHandler = async () => {
   return json({
     status: 'operational',
     capabilities: {
-      headlessWebGPU: stats.hasDevice,
+     , headlessWebGPU: stats.hasDevice,
       mipmapGeneration: true,
       lodCaching: true,
       offscreenRendering: true,
@@ -456,12 +456,12 @@ function generateRequestId(): string {
 }
 
 // New helper: safely extract message/name from unknown error without using `any`
-function getErrorInfo(error: any): { message: string;, name: string } {
+function getErrorInfo(error: any): { message: string; name: string } {
   if (error instanceof Error) {
     return { message: error.message, name: error.name };
   }
   if (typeof error === 'string') {
-    return { message: error, name: 'Error' };
+    return { message: error, name: 'Error` };'`
   }
   if (error && typeof error === 'object') {
     const maybe = error as { message?: any; name?: any };

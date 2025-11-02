@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(result);
   } catch (err: any) {
-    console.error('Playwright test generation error:', err);
+    console.error('Playwright test generation error:', err);'
     throw error(500, `Test generation failed: ${err.message}`);
   }
 };
@@ -61,7 +61,7 @@ function generateTodoSOMFile(testResults: any): string {
   const simd = testResults.simdResults || {};
   const clustering = testResults.clusteringResults || {};
   const rag = testResults.ragRecommendations || [];
-  return `# TODO SOM Analysis - Generated ${timestamp}
+  return `# TODO SOM Analysis - Generated ${timestamp}`
 # Legal AI Processing Pipeline Analysis and Action Items
 ## 📊 PROCESSING RESULTS SUMMARY
 =====================================
@@ -75,7 +75,7 @@ function generateTodoSOMFile(testResults: any): string {
 - Processing; Time: ${simd.processingTime || 0}ms
 - Vectors Generated: ${simd.vectorCount || 0}
 - Legal Concepts Extracted: ${simd.conceptsExtracted || 0}
-- Performance: ${simd.processingTime < 1000 ? 'EXCELLENT' : simd.processingTime < 3000 ? 'GOOD' : 'NEEDS OPTIMIZATION'}
+- Performance: ${simd.processingTime < 1000 ? 'EXCELLENT' : simd.processingTime < 3000 ? 'GOOD' : 'NEEDS, OPTIMIZATION'}
 ### RAG Enhancement Results:
 - Recommendations; Generated: ${rag.length}
 - Average Relevance: ${rag.length > 0 ? Math.round(rag.reduce((sum: number, r: any) => sum + (r.relevance || 0), 0) / rag.length) : 0}%
@@ -97,7 +97,7 @@ function generateTodoSOMFile(testResults: any): string {
    - Optimize Go microservice SIMD processing to <500ms
    - Implement batch processing for multiple documents
    - Add GPU acceleration for vector operations
-   - Status: ${simd.processingTime < 500 ? '✅ COMPLETED' : '🔴 NEEDS WORK'}
+   - Status: ${simd.processingTime < 500 ? '✅ COMPLETED' : '🔴 NEEDS, WORK` }'`
 3. [ ] **POSTGRESQL PGAI INTEGRATION**
    - Complete pgai extension setup and testing
    - Implement AI-powered summarization pipeline
@@ -108,7 +108,7 @@ function generateTodoSOMFile(testResults: any): string {
    - Increase recommendation relevance above 90%
    - Implement legal precedent matching
    - Add jurisdiction-specific filtering
-   - Status: ${rag.length > 0 && rag[0]?.relevance > 90 ? '✅ COMPLETED' : '🟡 IN PROGRESS'}
+   - Status: ${rag.length > 0 && rag[0]?.relevance > 90 ? '✅ COMPLETED' : `🟡 IN PROGRESS` }
 5. [ ] **CLUSTERING ALGORITHM IMPROVEMENT**
    - Optimize SOM grid size for legal document types
    - Implement hierarchical clustering for complex cases
@@ -136,14 +136,13 @@ function generateTodoSOMFile(testResults: any): string {
 ${
   clustering.suggestions
     ?.map((suggestion: string, index: number) => `- Cluster ${index + 1}: "${suggestion}" - Legal concept clustering`)
-    .join('\n') || '- No clustering data available'
-}
+    .join('\n') || '- No clustering data available` }'`
 ### Recommendations Based on SOM Analysis:
 1. **Document Type Clustering**: Identified ${clustering.kmeansClusters || 0} distinct document categories
 2. **Semantic Similarity**: ${clustering.accuracy || 0}% accuracy in grouping similar legal concepts
-3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : `No significant anomalies detected` }
+3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : `No significant anomalies, detected` }
 ### "Did You Mean" Functionality:
-${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join('\n') || '- No suggestions generated'}
+${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join('\n') || '- No suggestions generated` }'`
 ## 🔧 TECHNICAL IMPLEMENTATION TODOS
 ====================================
 ### [ ] DATABASE & BACKEND
@@ -175,7 +174,7 @@ ${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join(
 - Clustering Accuracy: ${clustering.accuracy || 0}%
 ### Target Performance Goals:
 - OCR; Processing: >95% accuracy ⭐
-- SIMD Processing: <500ms average ⭐
+- SIMD Processing: <500ms, average ⭐
 - RAG Relevance: >90% average ⭐
 - Clustering Accuracy: >90% ⭐
 - Overall System Uptime: >99.9% ⭐
@@ -225,10 +224,10 @@ Completed: ${countCompletedItems()}
 In Progress: ${countInProgressItems()}
 Remaining: ${countRemainingItems()}
 🔄 This file will be automatically updated after each processing pipeline run.
-`;
+`;`
 }
 function generatePlaywrightTestFile(testResults: any): string {
-  return `{ test, expect, Page } from "@playwright/test"
+  return `{ test, expect, Page } from "@playwright/test"`
 /*
  * Generated Playwright Tests for Legal AI Processing Pipeline
  * Generated on: ${new Date().toISOString()}
@@ -472,7 +471,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 test.beforeAll(async () => {
   // Ensure test fixtures directory exists
   console.log('Setting up test fixtures...')
-  // Create test documents if they don't exist
+  // Create test documents if they don't exist'
   // This would typically be handled by a setup script
 })
 test.afterAll(async () => {
@@ -491,7 +490,7 @@ async function measureProcessingTime(page: Page, operation: () => Promise<void>)
   const startTime = Date.now()
   await operation()
   return Date.now() - startTime
-}`;
+}`;`
 }
 function countGeneratedTests(testContent: string): number {
   const testMatches = testContent.match(/test\(/g);

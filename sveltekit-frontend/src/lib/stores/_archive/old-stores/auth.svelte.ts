@@ -6,7 +6,7 @@ import { goto } from '$app/navigation';
 import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
 
 // New: typed response and result shapes to avoid `any` casts
-type ResponseLike<T = unknown> = { ok: boolean;, json: () => Promise<T> };
+type ResponseLike<T = unknown> = { ok: boolean; json: () => Promise<T> };
 type AuthApiResult = { user?: User; error?: string };
 
 // Added: explicit operation result for auth flows
@@ -33,7 +33,7 @@ const orchestratorAdapter = {
     try {
       await fetch(path, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ body, opts }),
         credentials: `include` });
       return { ok: true };
@@ -122,14 +122,14 @@ export class AuthService {
         await orchestratorAdapter.makeRequest(
           '/api/analytics/session-restore',
           { userId: user!.id, timestamp: new Date().toISOString() },
-          { userId: user!.id, analyticsLevel: 'session' }
+          { userId: user!.id, analyticsLevel: 'session` }'`
         );
       } else {
         authState.user = null;
         authState.isAuthenticated = $state(false);
       }
     } catch (error: any) {
-      console.error('Auth initialization error:', error);
+      console.error('Auth initialization error:', error);'
       authState.error = 'Failed to initialize authentication';
       authState.user = null;
       authState.isAuthenticated = $state(false);
@@ -150,11 +150,10 @@ export class AuthService {
         ipInfo: await this.getClientInfo()
       };
       await orchestratorAdapter.makeRequest('/api/security/pre-login-analysis', securityContext, {
-        securityLevel: 'authentication'
-      });
+        securityLevel: `authentication` });
       const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ email, password }),
         credentials: `include` });
       const res = response as ResponseLike<AuthApiResult>;
@@ -177,22 +176,22 @@ export class AuthService {
         await orchestratorAdapter.makeRequest(
           '/api/security/failed-login',
           { ...securityContext, error: result.error },
-          { securityLevel: 'high' }
+          { securityLevel: 'high` }'`
         );
         return { success: false, error: result.error };
       }
     } catch (error: any) {
       const errorMessage = 'Network error during login';
       authState.error = errorMessage;
-      console.error('Login error:', error);
+      console.error('Login error:', error);'
       return { success: false, error: errorMessage };
     } finally {
       authState.loading = false;
     }
   }
   // Register new user
-  async register(userData: { email: string;, password: string;
-    firstName: string;
+  async register(userData: {, email: string;, password: string;
+   , firstName: string;
    , lastName: string;
   }): Promise<AuthOperationResult> {
     authState.loading = true;
@@ -205,11 +204,10 @@ export class AuthService {
         timestamp: new Date().toISOString()
       };
       await orchestratorAdapter.makeRequest('/api/analytics/registration-attempt', registrationContext, {
-        analyticsLevel: 'registration'
-      });
+        analyticsLevel: `registration` });
       const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(userData),
         credentials: `include` });
       const res = response as ResponseLike<AuthApiResult>;
@@ -232,7 +230,7 @@ export class AuthService {
     } catch (error: any) {
       const errorMessage = 'Network error during registration';
       authState.error = errorMessage;
-      console.error('Registration error:', error);
+      console.error('Registration error:', error);'
       return { success: false, error: errorMessage };
     } finally {
       authState.loading = false;
@@ -270,7 +268,7 @@ export class AuthService {
       // Redirect to login page
       await goto('/login');
     } catch (error: any) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error);'
       // Still clear state on error
       authState.user = null;
       authState.isAuthenticated = $state(false);
@@ -285,10 +283,9 @@ export class AuthService {
     try {
       const response = await fetch('/api/auth/profile', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(updates),
-        credentials: 'include'
-      });
+        credentials: `include` });
       const res = response as ResponseLike<AuthApiResult>;
       const result = await res.json();
       if (res.ok) {
@@ -310,7 +307,7 @@ export class AuthService {
     } catch (error: any) {
       const errorMessage = 'Failed to update profile';
       authState.error = errorMessage;
-      console.error('Profile update error:', error);
+      console.error('Profile update error:', error);'
       return { success: false, error: errorMessage };
     } finally {
       authState.loading = false;
@@ -390,7 +387,7 @@ export const setAuthContext = (): typeof authService => {
  * @throws Error if context not found
  */
 export const getAuthContext = (): typeof authService => {
-  const auth = getContext<typeof authService>(AUTH_CONTEXT_KEY);
+  const auth = getContext<typeof, authService>(AUTH_CONTEXT_KEY);
   if (!auth) {
     throw new Error(
       'Auth context not found. Make sure to call setAuthContext in your root layout.'

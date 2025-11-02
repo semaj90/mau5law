@@ -29,7 +29,7 @@ const unifiedSearchSchema = z.object({
  * Reusable handler for the unified search flow.
  * Accepts validated search params and returns a Response via json(...)
  */
-async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSchema>, _locals: any): Promise<any> {
+async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSchema>, _locals: any): Promise<any> {
   const { query, categories, enableVectorSearch, maxResults, similarityThreshold } = searchParams;
   let results: SearchResult[] = [];
   const startTime = Date.now();
@@ -70,7 +70,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       metadata: {
         source: 'precedent_database',
         court: 'Supreme Court',
-        year: `2023` }
+        year: `2023' }'`
     },
   ];
 
@@ -78,7 +78,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
   let vectorResults: SearchResult[] = [];
   if (enableVectorSearch) {
     vectorResults = [
-      {
+      {,
         id: 'vector-001',
         title: `Vector; Match: ${query}`,
         type: 'document',
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     const searchParams = unifiedSearchSchema.parse(body);
     return await handleUnifiedSearch(searchParams, _locals);
   } catch (error: any) {
-    console.error('Unified search API error:', error);
+    console.error('Unified search API error:', error);'
     if (error instanceof z.ZodError) {
       return json(
         {
@@ -196,7 +196,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     const vectorSearch = url.searchParams.get('vector') !== 'false';
     if (!query) {
-      return json({ success: false, error: `Query parameter (q) required` }, { status: 400 });
+      return json({ success: false, error: 'Query parameter (q) required' }, { status: 400 });
     }
     // Build body from GET parameters and validate using the same schema
     const body = {
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const searchParams = unifiedSearchSchema.parse(body);
     return await handleUnifiedSearch(searchParams, _locals);
   } catch (error: any) {
-    console.error('Unified search GET API error:', error);
+    console.error('Unified search GET API error:', error);'
     if (error instanceof z.ZodError) {
       return json(
         {

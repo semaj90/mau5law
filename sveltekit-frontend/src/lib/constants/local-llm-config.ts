@@ -55,11 +55,11 @@ if (typeof console !== "undefined") {
   console.log(`
 🧠 MEMORY NOTE: Local Ollama GPU LLMs Only
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Ollama URL: ${LOCAL_LLM_CONFIG.OLLAMA_BASE_URL}
+✅ Ollama, URL: ${LOCAL_LLM_CONFIG.OLLAMA_BASE_URL}
 ✅ Available, Models: ${Object.values(LOCAL_LLM_CONFIG.OLLAMA_MODELS).join(", ")}
 🚫 Remote downloads: DISABLED
 🚫 External APIs: BLOCKED
 💾 GPU Memory: ${LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION * 100}% allocated
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  `);
+  `);`
 }

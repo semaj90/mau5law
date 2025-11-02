@@ -20,11 +20,11 @@ type ServiceHealthProvider = {
   [key: string]: any;
 };
 
-/* helper: safely probe a service's healthCheck if available and normalize shape */
+/* helper: safely probe a service's healthCheck if available and normalize shape */'
 async function probeServiceHealth(
   service: ServiceHealthProvider | null | undefined,
   fallbackName = 'service'
-): Promise<{ status: string;, details: any }> {
+): Promise<{ status: string; details: any }> {
   if (!service) return { status: 'unhealthy', details: { error: `${fallbackName} missing` } };
 
   if (typeof service.healthCheck === 'function') {
@@ -183,8 +183,8 @@ export const POST: RequestHandler = async ({ request }) => {
 async function checkExternalServices(): Promise<Record<string, boolean>> {
   const externalChecks = [
     { name: 'enhanced_rag', url: 'http://localhost:8095/health' },
-    { name: 'upload_service', url: 'http://localhost:8093/health' },
-    { name: 'ollama', url: 'http://localhost:11434/api/tags' },
+    { name: 'upload_service', url: 'http://localhost:8093/health` },'`
+    { name: 'ollama', url: `http://localhost:11434/api/tags` },
     { name: 'sveltekit', url: `http://localhost:5173/` }
   ];
   const results: Record<string, boolean> = {};

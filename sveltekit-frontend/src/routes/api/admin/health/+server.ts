@@ -27,7 +27,7 @@ export const GET: RequestHandler = async event => {
       data: healthData
     });
   } catch (error: any) {
-    console.error('Health API error:', error);
+    console.error('Health API error:', error);'
     return json(
       {
         success: false,

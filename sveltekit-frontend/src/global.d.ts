@@ -49,7 +49,7 @@ declare module '$lib/*';
 export {};
 // Ambient declarations to help TypeScript treat Svelte components as constructors
 // This is a conservative fallback to reduce widespread: "instance vs constructor" type
-// errors during migration to Svelte 5. It's meant as a temporary compatibility shim.
+// errors during migration to Svelte 5. It's meant as a temporary compatibility shim.'
 
 declare module '*.svelte' {
   // Permissive fallback: treat any imported .svelte; as: 'any' to avoid
@@ -62,8 +62,8 @@ declare module '*.svelte' {
 declare module '*.svg';
 declare module '*.css';
 // Svelte 5 + SvelteKit global type declarations
-/// <reference types="svelte" />
-/// <reference types="vite/client" />
+/// <reference, types="svelte" />
+/// <reference, types="vite/client" />
 declare global {
   // WebGPU support (avoid conflict with @webgpu/types)
   interface Navigator {

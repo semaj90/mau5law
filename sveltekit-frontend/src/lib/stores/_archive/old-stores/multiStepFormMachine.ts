@@ -187,11 +187,11 @@ type GenEmbeddingsInput = { formType: FormType;, data: FormData;
 
 type Events =
   | { type: 'NEXT'; stepData?: StepData }
-  | { type: 'PREVIOUS' }
-  | { type: 'GOTO_STEP';, step: number }
+  | { type: `PREVIOUS` }
+  | { type: 'GOTO_STEP'; step: number }
   | { type: 'UPDATE_STEP_DATA'; data?: Partial<StepData> }
-  | { type: 'SET_FORM_TYPE';, formType: FormType }
-  | { type: 'SUBMIT' }
+  | { type: 'SET_FORM_TYPE'; formType: FormType }
+  | { type: `SUBMIT` }
   | { type: `RESET` };
 
 // --- Types (moved/ensured before machine usage) ---
@@ -269,7 +269,7 @@ async function generateEmbeddingsActor(input: GenEmbeddingsInput): Promise<any> 
 
     const response = await fetch('/api/embeddings/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , text: searchableContent,
         metadata: {
@@ -286,7 +286,7 @@ async function generateEmbeddingsActor(input: GenEmbeddingsInput): Promise<any> 
     return { success: true, embeddings };
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Embedding generation error:', message);
+    console.error('Embedding generation error:', message);'
     return { success: false, error: message };
   }
 }
@@ -296,7 +296,7 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
   id: 'multiStepForm',
   initial: 'editing',
   context: {
-    formType: 'case' as FormType,
+   , formType: 'case' as FormType,
     currentStep: 1,
     totalSteps: 4,
     formData: {} as FormData,
@@ -305,9 +305,8 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
     isValid: false,
     isSubmitting: false,
     submitResult: null as SubmitResult,
-    userId: ''
-  },
-  states: { editing: {, on: { NEXT: {, target: 'validating',
+    userId: `` },
+  states: {, editing: {, on: {, NEXT: {, target: 'validating',
           actions: assign({
            , stepData: (_ctx: MultiStepFormContext, event: Events) =>
               event.type === 'NEXT' && event.stepData ? event.stepData : _ctx.stepData
@@ -518,6 +517,6 @@ export function getFullSchema(formType: string) {
   }
 }
 // Export types for TypeScript
-export type CaseFormData = z.infer<typeof CaseFormSchema>;
-export type EvidenceFormData = z.infer<typeof EvidenceFormSchema>;
-export type CriminalFormData = z.infer<typeof CriminalFormSchema>;
+export type CaseFormData = z.infer<typeof, CaseFormSchema>;
+export type EvidenceFormData = z.infer<typeof, EvidenceFormSchema>;
+export type CriminalFormData = z.infer<typeof, CriminalFormSchema>;

@@ -25,7 +25,7 @@ class PerformanceMonitor {
     if (!v.length) return 0;
     return v.reduce((a, b) => a + b, 0) / v.length;
   }
-  getComparison(): { json: number; grpc: number;, improvement: number } {
+  getComparison(): { json: number; grpc: number; improvement: number } {
     const json = this.getAverageMetric('json_processing');
     const grpc = this.getAverageMetric('grpc_processing');
     const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
@@ -70,11 +70,11 @@ type GrpcStreamUpdate = {
 };
 
 type GrpcWritableStream = { write: (data: any) => void;, end: () => void;
-  on: (event: 'data' | 'error' | 'end'; handler: (payload?: any) => void) => void;
+  on: (event: 'data' | 'error' | 'end';, handler: (payload?: any) => void) => void;
 };
 
 type GrpcClientType = {
-  ScoreCase?: (req: any; cb: (err: any, res?: GrpcResponse) => void) => void;
+  ScoreCase?: (req: any;, cb: (err: any, res?: GrpcResponse) => void) => void;
   StreamScoringUpdates?: () => GrpcWritableStream | undefined;
   StreamCaseScoring?: () => GrpcWritableStream | undefined;
 };
@@ -126,7 +126,7 @@ function mapScoringResultToInsert(result: CaseScoringResult): { caseId: string;
     // convert Date to ISO string to satisfy drizzle insert typings
     createdAt: (result.scoringDate ?? new Date()).toISOString(),
     riskLevel: riskLevel,
-    // updatedAt left optional; if present elsewhere ensure it's set as ISO string
+    // updatedAt left optional; if present elsewhere ensure it's set as ISO string'
   };
 }
 
@@ -139,7 +139,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   private performanceMonitor = new PerformanceMonitor();
   private streamingSessions = new Map<string, unknown>();
   // Scoring weights (typed to ScoringCriteria keys)
-  private readonly CRITERIA_WEIGHTS: Record<keyof ScoringCriteria, number> = {
+  private readonly CRITERIA_WEIGHTS: Record<keyof, ScoringCriteria, number> = {
     evidence_strength: 0.25,
     witness_reliability: 0.2,
     legal_precedent: 0.2,
@@ -238,7 +238,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           max_tokens: 1000,
           use_cached_embeddings: true,
           enable_streaming: false,
-          compression: 'GZIP` },
+          compression: 'GZIP' },
         request_time: { seconds: Math.floor(Date.now() / 1000) },
         requester_id: 'system',
         priority: this.getPriority(request)
@@ -441,7 +441,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
             max_tokens: 1000,
             use_cached_embeddings: true,
             enable_streaming: false,
-            compression: 'GZIP` }
+            compression: 'GZIP' }
         };
         call.write(req);
       }
@@ -492,13 +492,13 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   ): Promise<string> {
     if (!compressedData) return '';
     try {
-      // If it's already a Buffer, decompress directly
+      // If it's already a Buffer, decompress directly'
       if (Buffer.isBuffer(compressedData)) {
         const decompressed = await gunzip(compressedData);
         return decompressed.toString('utf-8');
       }
 
-      // If it's a typed array (Uint8Array / ArrayBuffer view), convert to Buffer then decompress
+      // If it's a typed array (Uint8Array / ArrayBuffer view), convert to Buffer then decompress'
       if (typeof compressedData !== 'string' && (ArrayBuffer.isView(compressedData) || compressedData instanceof ArrayBuffer)) {
         const buf = Buffer.from(compressedData as Uint8Array);
         const decompressed = await gunzip(buf);
@@ -591,7 +591,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       logger.info('Performance Comparison:', {
         jsonAvg: `${comparison.json.toFixed(2)}ms`,
         grpcAvg: `${comparison.grpc.toFixed(2)}ms`,
-        improvement: `${comparison.improvement.toFixed(1)}%` });
+        improvement: `${comparison.improvement.toFixed(1)}%' });'`
       // Emit performance metrics for monitoring
       this.emit('performance-metrics', comparison);
     }
@@ -680,7 +680,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   private calculateWeightedScore(criteria: ScoringCriteria): number {
     let weightedSum = 0;
     let totalWeight = 0;
-    const keys = Object.keys(this.CRITERIA_WEIGHTS) as Array<keyof ScoringCriteria>;
+    const keys = Object.keys(this.CRITERIA_WEIGHTS) as Array<keyof, ScoringCriteria>;
     for (const k of keys) {
       const w = this.CRITERIA_WEIGHTS[k];
       const val = criteria[k];
@@ -707,10 +707,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     } else {
       recommendations.push('Weak case - recommend further investigation or declining prosecution');
     }
-    if (scores.evidence_strength < 0.6) recommendations.push('Strengthen evidence collection and chain of custody');
+    if (scores.evidence_strength < 0.6) recommendations.push('Strengthen evidence collection and chain of, custody');
     if (scores.witness_reliability < 0.6)
       recommendations.push('Assess witness credibility and consider additional witnesses');
-    if (scores.legal_precedent < 0.6) recommendations.push('Research additional supporting case law and precedents');
+    if (scores.legal_precedent < 0.6) recommendations.push('Research additional supporting case law and, precedents');
     return recommendations;
   }
   private calculateConfidence(scores: ScoringCriteria): number {
@@ -836,7 +836,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
       // Retry mechanism: up to 3 attempts with exponential backoff
       // --- changed code: ensure payload is treated as a concrete (non-optional) shape for TS overload resolution
-      type InsertPayload = ReturnType<typeof mapScoringResultToInsert>;
+      type InsertPayload = ReturnType<typeof, mapScoringResultToInsert>;
       let attempt = 0;
       const maxAttempts = 3;
       let lastError: any = null;

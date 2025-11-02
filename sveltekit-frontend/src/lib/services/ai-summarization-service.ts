@@ -76,7 +76,7 @@ interface ParsedAIResponse { summary: string;, keyPoints: string[];
   entities: LegalEntity[];
   keywords: string[];
   categories: string[];
-  sentiment?: { score: number;, label: 'positive' | 'negative' | 'neutral' };
+  sentiment?: { score: number; label: 'positive' | 'negative' | 'neutral' };
   confidence: number;
 }
 
@@ -128,7 +128,7 @@ class AISummarizationService {
       const summaryPrompt = this.buildSummaryPrompt(content.substring(0, 8000), opts);
       const summaryResponse = await ollamaCudaService.chatCompletion(
         [
-          {
+          {,
             role: 'system',
             content: 'You are a legal AI assistant specializing in document analysis and summarization.'
           },
@@ -166,7 +166,7 @@ class AISummarizationService {
       return result;
     } catch (error: any) {
       console.error('Document summarization failed:', error);
-      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : `Unknown error` }`);
+      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
   /**
@@ -198,7 +198,7 @@ class AISummarizationService {
         results.push({
           documentId: doc.id,
           success: false,
-          error: error instanceof Error ? error.message : `Unknown error` });
+          error: error instanceof Error ? error.message : `Unknown error' });'`
         totalFailures++;
       }
     }
@@ -263,7 +263,7 @@ class AISummarizationService {
         .where(eq(evidence.id, evidenceId));
       return result;
     } catch (error: any) {
-      console.error(`Failed to summarize evidence ${evidenceId}: ', error);
+      console.error(`Failed to summarize evidence ${evidenceId}: ', error);'`
       throw error;
     }
   }
@@ -338,7 +338,7 @@ class AISummarizationService {
     try {
       // Get document embedding
       const doc = await db
-        .select({ contentEmbedding: sql<number[]>`content_embedding` })
+        .select({ contentEmbedding: sql<number[]>`content_embedding' })'`
         .from(evidence)
         .where(eq(evidence.id, documentId))
         .limit(1);
@@ -353,7 +353,7 @@ class AISummarizationService {
           title: evidence.title,
           evidenceType: evidence.evidenceType,
           aiSummary: evidence.aiSummary,
-          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})` })
+          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})' })'`
         .from(evidence)
         .where(
           and(
@@ -364,9 +364,9 @@ class AISummarizationService {
         .orderBy(sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}) DESC`)
         .limit(limit);
       return similarDocs.map(
-        (doc: { id: string;, title: string;
-          evidenceType: string | null;
-          aiSummary: string | null;
+        (doc: {, id: string;, title: string;
+         , evidenceType: string | null;
+         , aiSummary: string | null;
          , similarity: number;
         }) => ({
           documentId: doc.id,
@@ -484,7 +484,7 @@ class AISummarizationService {
           embedding
         });
       } catch (error: any) {
-        console.warn(`Failed to generate embedding for chunk ${chunk.id}: ', error);
+        console.warn(`Failed to generate embedding for chunk ${chunk.id}: ', error);'`
         chunksWithEmbeddings.push(chunk);
       }
     }
@@ -528,16 +528,16 @@ class AISummarizationService {
       prompt += `Additionally, identify: ${requestedAnalysis.join(', ')}.\n\n`;
     }
     prompt += `Document content:\n${content}\n\n`;
-    prompt += `Provide your response as a JSON object with the following structure:
+    prompt += `Provide your response as a JSON object with the following structure:`
 {
   "summary": "Your summary here",
   "keyPoints": ["key point 1", "key point 2"],
   "entities": [{"name": "Entity Name", "type": "person|organization|location|other", "confidence": 0.9, "mentions": 3}],
   "keywords": ["keyword1", "keyword2"],
   "categories": ["category1", "category2"],
-  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : `` }
+  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : `' }'`
   "confidence": 0.85
-}`;
+}`;`
     return prompt;
   }
   private parseAIResponse(response: string): ParsedAIResponse {
@@ -584,7 +584,7 @@ class AISummarizationService {
     return Math.ceil(text.length / 4);
   }
   private getOverlapText(text: string, overlapLength: number): string {
-    if (text.length <= overlapLength) return text;
+    if (text.length <= overlapLength) return, text;
     // Try to find a sentence boundary for clean overlap
     const lastPart = text.substring(text.length - overlapLength);
     const sentenceMatch = lastPart.match(/[.!?]\s+(.*)$/);
@@ -602,7 +602,7 @@ class AISummarizationService {
   /**
    * Get cache statistics
    */
-  public getCacheStats(): { size: number;, keys: string[] } {
+  public getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
       keys: Array.from(this.cache.keys())

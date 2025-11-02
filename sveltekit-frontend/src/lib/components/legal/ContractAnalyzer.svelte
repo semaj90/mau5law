@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script, context="module" lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   // Move interfaces here so: 'export' modifiers are allowed
@@ -22,7 +22,7 @@
   }
 </script>
 
-<script lang="ts">
+<script, lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
   import {
     Card,
@@ -51,7 +51,7 @@
     riskScore: 6.5,
     lastModified: '2025-09-21T14:30:00Z',
     clauses: [
-      {
+      {,
         id: 'clause-1',
         type: 'termination',
         content: 'Either party may terminate this agreement with 30 days written notice...',
@@ -146,22 +146,22 @@
   }
 </script>
 
-<div class="contract-analyzer">
-  <!-- Contract Header -->
+<div, class="contract-analyzer">
+  <!-- Contract, Header -->
   <div
     class="card-wrapper"
     style="border: {contractBuilder?.styling?.borderWidth ?? '1px'} solid {contractBuilder?.styling?.colors?.primary}; border-radius: 8px; padding: 0.25rem;"
   >
     <Card>
       <CardHeader>
-        <CardTitle class="contract-title">
-          <div class="title-section">
-            <span class="contract-icon">📋</span>
-            <div class="title-text">
+        <CardTitle, class="contract-title">
+          <div, class="title-section">
+            <span, class="contract-icon">📋</span>
+            <div, class="title-text">
               <h2>{contractData.title}</h2>
-              <div class="contract-meta">
-                <span class="contract-type">{contractData.type.toUpperCase()}</span>
-                <span class="contract-status status-{contractData.status}">{contractData.status}</span>
+              <div, class="contract-meta">
+                <span, class="contract-type">{contractData.type.toUpperCase()}</span>
+                <span class="contract-status, status-{contractData.status}">{contractData.status}</span>
                 <span
                   class="risk-score"
                   style="color: {getRiskBadgeStyle(contractData.riskScore > 7 ? 'high' : 'medium').color}"
@@ -172,8 +172,8 @@
             </div>
           </div>
 
-          <div class="contract-actions">
-            <!-- use a native button for the analyze action to avoid component event typing issues -->
+          <div, class="contract-actions">
+            <!-- use a native button for the analyze action to avoid component event typing, issues -->
             <button
               class="ai-analyze-btn"
               onclick={() => void analyzeContract()}
@@ -185,12 +185,12 @@
               {#if isAnalyzing}🔄 Analyzing...{:else}🤖 AI Analyze{/if}
             </button>
 
-            <div class="export-dropdown">
-              <Button.Root class="export-btn">📤 Export</Button.Root>
-              <div class="export-menu">
-                <button onclick={() => exportContract('pdf')}>📄 PDF</button>
-                <button onclick={() => exportContract('docx')}>📝 DOCX</button>
-                <button onclick={() => exportContract('json')}>🔧 JSON</button>
+            <div, class="export-dropdown">
+              <Button.Root, class="export-btn">📤 Export</Button.Root>
+              <div, class="export-menu">
+                <button, onclick={() => exportContract('pdf')}>📄 PDF</button>
+                <button, onclick={() => exportContract('docx')}>📝 DOCX</button>
+                <button, onclick={() => exportContract('json')}>🔧 JSON</button>
               </div>
             </div>
           </div>
@@ -198,45 +198,45 @@
       </CardHeader>
 
       <CardContent>
-        <!-- Search and Filters -->
-        <div class="search-section">
-          <!-- replace custom Input bind with native input + on:input -->
+        <!-- Search and, Filters -->
+        <div, class="search-section">
+          <!-- replace custom Input bind with native, input + on:input -->
           <input
             class="clause-search"
             placeholder="Search clauses, terms, or clause types..."
             value={searchTerm}
             oninput={(e) => (searchTerm = (e.target as HTMLInputElement).value)}
           />
-          <div class="clause-stats">
-            <span class="stat-item">📄 {filteredClauses.length} clauses</span>
-            <span class="stat-item">🕒 Modified: {new Date(contractData.lastModified).toLocaleDateString()}</span>
+          <div, class="clause-stats">
+            <span, class="stat-item">📄 {filteredClauses.length} clauses</span>
+            <span, class="stat-item">🕒 Modified: {new Date(contractData.lastModified).toLocaleDateString()}</span>
           </div>
         </div>
 
-        <!-- Risk Overview -->
-        <div class="risk-overview">
+        <!-- Risk, Overview -->
+        <div, class="risk-overview">
           <h3>Risk Analysis Overview</h3>
-          <div class="risk-bars">
+          <div, class="risk-bars">
             {#each Array.isArray(['low', 'medium', 'high', 'critical']) ? ['low', 'medium', 'high', 'critical'] : [] as riskLevel}
               {@const count = contractData.clauses.filter(c => c.riskLevel === riskLevel).length}
-              <div class="risk-bar">
-                <span class="risk-label">{riskLevel.toUpperCase()}</span>
-                <div class="risk-track">
+              <div, class="risk-bar">
+                <span, class="risk-label">{riskLevel.toUpperCase()}</span>
+                <div, class="risk-track">
                   <div
                     class="risk-fill"
                     style="width: {(count / contractData.clauses.length) * 100}%; background: {getRiskBadgeStyle(riskLevel as keyof typeof riskStyles).color}"
                   ></div>
                 </div>
-                <span class="risk-count">{count}</span>
+                <span, class="risk-count">{count}</span>
               </div>
             {/each}
           </div>
         </div>
 
-        <!-- Contract Clauses -->
-        <div class="clauses-section">
+        <!-- Contract, Clauses -->
+        <div, class="clauses-section">
           <h3>Contract Clauses Analysis</h3>
-          <div class="clauses-grid">
+          <div, class="clauses-grid">
             {#each filteredClauses as clause (clause.id)}
               <div
                 class="clause-card {selectedClause === clause.id ? 'selected' : ''}"
@@ -253,35 +253,35 @@
                 in:scale={{ duration: 180 }}
                 style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
               >
-                <div class="clause-header">
-                  <div class="clause-type">
-                    <span class="clause-icon">{getClauseIcon(clause.type)}</span>
-                    <span class="clause-label">{clause.type.replace('_', ' ').toUpperCase()}</span>
+                <div, class="clause-header">
+                  <div, class="clause-type">
+                    <span, class="clause-icon">{getClauseIcon(clause.type)}</span>
+                    <span, class="clause-label">{clause.type.replace('_', ' ').toUpperCase()}</span>
                   </div>
-                  <div class="clause-risk"
+                  <div, class="clause-risk"
                      style="background: {getRiskBadgeStyle(clause.riskLevel).background}; color: {getRiskBadgeStyle(clause.riskLevel).color}; border: {getRiskBadgeStyle(clause.riskLevel).border};">
                     {clause.riskLevel}
                   </div>
                 </div>
 
-                <div class="clause-content">
-                  <p class="clause-text">{clause.content}</p>
+                <div, class="clause-content">
+                  <p, class="clause-text">{clause.content}</p>
 
-                  <div class="clause-metrics">
-                    <div class="confidence-display">
-                      <span class="confidence-label">AI Confidence:</span>
-                      <div class="confidence-bar">
+                  <div, class="clause-metrics">
+                    <div, class="confidence-display">
+                      <span, class="confidence-label">AI Confidence:</span>
+                      <div, class="confidence-bar">
                         <div
                           class="confidence-fill"
                           style="width: {clause.confidence * 100}%; background: {contractBuilder?.styling?.colors?.evidence ?? '#7c3aed'}"
                         ></div>
                       </div>
-                      <span class="confidence-value">{Math.round(clause.confidence * 100)}%</span>
+                      <span, class="confidence-value">{Math.round(clause.confidence * 100)}%</span>
                     </div>
                   </div>
 
                   {#if clause.recommendations && selectedClause === clause.id}
-                    <div class="recommendations" in:fly={{ y: 20, duration: 300 }}>
+                    <div, class="recommendations" in:fly={{ y: 20, duration: 300 }}>
                       <h4>🔍 AI Recommendations:</h4>
                       <ul>
                         {#each Array.isArray(clause.recommendations) ? clause.recommendations : [] as recommendation}
@@ -292,10 +292,10 @@
                 </div>
 
                 {#if selectedClause === clause.id}
-                  <div class="clause-actions" in:fade>
-                    <Button size="sm">✏️ Edit</Button>
-                    <Button size="sm" variant="outline">💬 Comment</Button>
-                    <Button size="sm" variant="outline">🔍 Deep Analysis</Button>
+                  <div, class="clause-actions" in:fade>
+                    <Button, size="sm">✏️ Edit</Button>
+                    <Button, size="sm" variant="outline">💬 Comment</Button>
+                    <Button, size="sm" variant="outline">🔍 Deep Analysis</Button>
                   {/if}
               </div>
             {/each}

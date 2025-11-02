@@ -19,7 +19,7 @@ export async function validateDatabaseOnStartup(): Promise<any> {
       FROM information_schema.tables
       WHERE table_schema = 'public'
       AND table_type = 'BASE TABLE'
-    `);
+    `);`
     console.log(`📋 Found ${tableCheck.rows[0].table_count} tables in database`);
     return true;
   } catch (error) {

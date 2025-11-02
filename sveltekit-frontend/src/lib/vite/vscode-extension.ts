@@ -108,7 +108,7 @@ export class VSCodeIntegration {
         message: `Vite: ${errorCount} error(s) detected`,
         type: 'error',
         actions: [
-          {
+          {,
             title: 'View Errors',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
@@ -123,7 +123,7 @@ export class VSCodeIntegration {
         message: `Vite: ${warningCount} warning(s) detected`,
         type: 'warning',
         actions: [
-          {
+          {,
             title: 'View Warnings',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
@@ -171,7 +171,7 @@ export class VSCodeIntegration {
       owner: 'vite-error-logger',
       fileLocation: ['relative', '${workspaceFolder}'],
       pattern: [
-        {
+        {,
           regexp: '^ERROR\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
           file: 1,
           line: 2,
@@ -199,7 +199,7 @@ export class VSCodeIntegration {
         'vite-diagnostics.json': 'json'
       },
       'json.schemas': [
-        {
+        {,
           fileMatch: ['vite-errors.json'],
           schema: {
             type: 'object',
@@ -220,8 +220,8 @@ export class VSCodeIntegration {
                     file: { type: 'string' },
                     line: { type: 'number' },
                     column: { type: 'number' },
-                    stack: { type: 'string' },
-                    suggestion: { type: 'string' }
+                    stack: { type: 'string` },'`
+                    suggestion: { type: `string` }
                   }
                 }
               }
@@ -289,8 +289,8 @@ export class ErrorNavigator {
 export class AutoFixSuggestions {
   static getSuggestions(
     error: any
-  ): Array<{ title: string;, command: string; args?: any[] }> {
-    const suggestions: Array<{ title: string;, command: string; args?: any[] }> = [];
+  ): Array<{ title: string; command: string; args?: any[] }> {
+    const suggestions: Array<{ title: string; command: string; args?: any[] }> = [];
 
     // Replace ad-hoc any casts with a small typed extractor
     const msg = AutoFixSuggestions.extractMessage(error);

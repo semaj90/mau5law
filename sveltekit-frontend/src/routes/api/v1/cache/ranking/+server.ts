@@ -95,8 +95,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'X-Cache-Status': 'hit',
         'X-Latency-Ms': latency.toString(),
         'X-Result-Count': results.length.toString(),
-        'Cache-Control': 'max-age=30, public'
-      }
+        'Cache-Control': `max-age=30, public` }
     });
   } catch (err) {
     const latency = performance.now() - startTime;
@@ -126,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(
         400,
         makeHttpErrorPayload({ message: 'Missing required, fields: query and results array',
-          code: 'INVALID_REQUEST_BODY` })
+          code: `INVALID_REQUEST_BODY` })
       );
     }
     // Validate results format
@@ -138,8 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
           400,
           makeHttpErrorPayload({
             message: `Invalid result at index ${index}: missing docId or score`,
-            code: 'INVALID_RESULT_FORMAT'
-          })
+            code: `INVALID_RESULT_FORMAT` })
         );
       }
       // Construct CanonicalResult with safe defaults and clamped score
@@ -212,7 +210,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         501,
         makeHttpErrorPayload({
           message: 'Single slot clearing not yet implemented',
-          code: 'NOT_IMPLEMENTED` })
+          code: `NOT_IMPLEMENTED` })
       );
     } else {
       // Clear entire cache

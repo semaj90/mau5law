@@ -98,9 +98,9 @@ const AVAILABLE_MODELS = [
 // typed adapter for external service client (avoid casting to `any`)
 type ProductionServiceClient = {
   getInstanceStatus?: (instanceId: string) => Promise<unknown>;
-  rebalance?: (opts: {, strategy: string }) => Promise<RebalanceResult>;
+  rebalance?: (opts: {;, strategy: string }) => Promise<RebalanceResult>;
   executeModelOperation?: (op: ModelOperation) => Promise<ModelOpResult>;
-  scaleCluster?: (opts: {, targetInstances: number; models: string[] }) => Promise<ScaleResult>;
+  scaleCluster?: (opts: {, targetInstances: number;, models: string[] }) => Promise<ScaleResult>;
   failover?: (opts: { instanceId?: string; reason?: string }) => Promise<FailoverResult>;
 };
 
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     switch (action) {
       case 'rebalance': {
-        const { strategy = 'least-loaded' } = body as { strategy?: string };
+        const { strategy = 'least-loaded` } = body as { strategy?: string };'`
         const result = await rebalanceCluster(strategy);
         return json({
           success: true,
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         );
     }
   } catch (error: any) {
-    console.error('Ollama Cluster Management error:', error);
+    console.error('Ollama Cluster Management error:', error);'
     return json(
       {
         success: false,
@@ -239,7 +239,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: `Instance not; found: ${instanceId}' },
+            error: `Instance not; found: ${instanceId}` },
           { status: 404 }
         );
       }
@@ -271,7 +271,7 @@ export const GET: RequestHandler = async ({ url }) => {
         rebalance: '/api/ollama/cluster?action=rebalance (POST)',
         model_operation: '/api/ollama/cluster?action=model-operation (POST)',
         scale: '/api/ollama/cluster?action=scale (POST)',
-        failover: '/api/ollama/cluster?action=failover (POST)',
+        failover: `/api/ollama/cluster?action=failover (POST)`,
         health_check: `/api/ollama/cluster?action=health-check (POST)` },
       timestamp: Date.now()
     });
@@ -290,7 +290,7 @@ export const GET: RequestHandler = async ({ url }) => {
 // Helper functions
 const USE_SERVICE_CLIENT = typeof productionServiceClient !== 'undefined' && productionServiceClient !== null;
 const CLUSTER_STATUS_CACHE_TTL = Number(import.meta.env.CLUSTER_STATUS_CACHE_TTL ?? 5000); // ms
-let clusterStatusCache: { ts: number;, data: ClusterStatus } | null = null;
+let clusterStatusCache: { ts: number; data: ClusterStatus } | null = null;
 
 async function getClusterStatus(detailed: boolean = false): Promise<ClusterStatus> {
   if (clusterStatusCache && Date.now() - clusterStatusCache.ts < CLUSTER_STATUS_CACHE_TTL) {
@@ -423,7 +423,7 @@ async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Pro
       } catch (err: any) {
         if (attempt === MAX_RETRIES) {
           console.error(
-            `Failed to fetch status for ${instanceId} after ${MAX_RETRIES + 1} attempts: ',
+            `Failed to fetch status for ${instanceId} after ${MAX_RETRIES + 1} attempts: ','`
             err instanceof Error ? err.message : String(err)
           );
           return {
@@ -552,7 +552,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
       baseResult = {
         removed: true,
         model: operation.model ?? 'unknown',
-        freedSpace: `${(Math.random() * 2 + 0.2).toFixed(2)}GB` };
+        freedSpace: '${(Math.random() * 2 + 0.2).toFixed(2)}GB' };
       break;
     case 'switch':
       baseResult = {
@@ -565,10 +565,10 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
       baseResult = {
         preloaded: true,
         model: operation.model ?? 'unknown',
-        memoryUsage: `${(Math.random() * 2 + 0.5).toFixed(2)}GB' };
+        memoryUsage: '${(Math.random() * 2 + 0.5).toFixed(2)}GB` };'`
       break;
     default:
-      baseResult = { success: false, reason: 'unknown operation' };
+      baseResult = { success: false, reason: `unknown operation` };
   }
 
   return {

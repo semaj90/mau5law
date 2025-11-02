@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown; action: ${action}' },
+            error: `Unknown; action: ${action}` },
           { status: 400 }
         );
     }

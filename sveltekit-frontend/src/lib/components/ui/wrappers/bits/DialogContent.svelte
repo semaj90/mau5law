@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import { onMount } from 'svelte';
   import { getBitsOverrides } from './bits-overrides';
@@ -25,6 +25,6 @@
     <slot />
   </DC>
 {:else}
-  <div class="dialog-content-fallback">
+  <div, class="dialog-content-fallback">
     <slot />
   {/if}

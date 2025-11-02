@@ -24,30 +24,30 @@ export interface AIComputationContext { userId: string;, sessionId: string;
     didYouMean: string[];
     othersSearched: string[];
   };
-  computationResults: ComputationResult[]; // <-- replaced any[] with ComputationResult[]
+  computationResults: ComputationResult[]; // <-- replaced any[] with, ComputationResult[]
   errorMessage?: string;
 }
 // Replace `any` with the concrete ComputationResult type
 export type AIComputationEvent =
-  | { type: 'START_COMPUTATION'; data: { input: number[]; shape: number[];, attentionWeights: number[] } }
+  | { type: 'START_COMPUTATION'; data: { input: number[]; shape: number[]; attentionWeights: number[] } }
   | { type: 'USER_ACTIVE' }
   | { type: 'USER_IDLE' }
-  | { type: 'COMPUTATION_COMPLETE';, result: ComputationResult } // <-- typed result
-  | { type: 'COMPUTATION_ERROR';, error: string }
+  | { type: 'COMPUTATION_COMPLETE'; result: ComputationResult } // <-- typed result
+  | { type: 'COMPUTATION_ERROR'; error: string }
   | { type: 'NETWORK_ONLINE' }
   | { type: 'NETWORK_OFFLINE' }
   | { type: 'RABBITMQ_CONNECTED' }
-  | { type: 'RABBITMQ_DISCONNECTED' }
-  | { type: 'PROCESS_QUEUE' }
-  | { type: 'GET_RECOMMENDATIONS';, context: string }
-  | { type: 'APPLY_RECOMMENDATION';, recommendation: DimensionalArray }
-  | { type: 'RESUME_FROM_IDLE' }
+  | { type: 'RABBITMQ_DISCONNECTED` }'`
+  | { type: `PROCESS_QUEUE` }
+  | { type: 'GET_RECOMMENDATIONS'; context: string }
+  | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray }
+  | { type: `RESUME_FROM_IDLE` }
   | { type: `PICK_UP_WHERE_LEFT_OFF` };
 // Async services for computations
 const perform3DComputation = fromPromise(
   async ({
     input
-  }: { input: { data: number[]; shape: number[]; attentionWeights: number[];, userId: string };
+  }: { input: { data: number[]; shape: number[]; attentionWeights: number[]; userId: string };
   }): Promise<ComputationResult> => {
     const { data, shape, attentionWeights, userId } = input;
     // Create dimensional array with kernel attention splicing
@@ -66,7 +66,7 @@ const perform3DComputation = fromPromise(
     };
   }
 );
-const getRecommendations = fromPromise(async ({ input }: { input: {, userId: string; context: string } }) => {
+const getRecommendations = fromPromise(async ({ input }: { input: {, userId: string;, context: string } }) => {
   const { userId, context } = input;
   return await dimensionalCache.getRecommendations(userId, context);
 });
@@ -116,30 +116,30 @@ function extractErrorMessageFromEvent(event: any): string {
 }
 export const aiComputationMachine = createMachine({
   id: 'aiComputation',
-  types: {} as { context: AIComputationContext;, events: AIComputationEvent;
+  types: {} as {, context: AIComputationContext;, events: AIComputationEvent;
   },
   initial: 'idle',
   context: {
-    userId: '',
+   , userId: '',
     sessionId: '',
     queuedComputations: [],
     idleTime: 0,
     isOnline: true,
     rabbitMQConnected: false,
     recommendations: {
-      similar: [],
+     , similar: [],
       suggestions: [],
       didYouMean: [],
       othersSearched: []
     },
     computationResults: []
   },
-  states: { idle: {, entry: assign({
+  states: {, idle: {, entry: assign({
        , idleTime: () => Date.now()
       }),
       on: {
         START_COMPUTATION: [
-          {
+          {,
             target: 'computing',
             guard: ({ context }) => context.isOnline
           },
@@ -152,8 +152,7 @@ export const aiComputationMachine = createMachine({
           target: 'userIdle'
         },
         GET_RECOMMENDATIONS: {
-          target: 'loadingRecommendations'
-        },
+          target: 'loadingRecommendations` },'`
         NETWORK_OFFLINE: { actions: assign({, isOnline: false
           })
         },
@@ -171,15 +170,13 @@ export const aiComputationMachine = createMachine({
           guard: ({ context }) => context.rabbitMQConnected
         }
       },
-      on: { USER_ACTIVE: {, target: 'idle'
-        },
+      on: { USER_ACTIVE: {, target: `idle` },
         RESUME_FROM_IDLE: {
-          target: 'resumingFromIdle'
-        },
+          target: `resumingFromIdle` },
         PICK_UP_WHERE_LEFT_OFF: {
           target: `resumingFromIdle` },
         NETWORK_ONLINE: [
-          {
+          {,
             target: 'processingQueue',
             guard: ({ context }) => context.queuedComputations.length > 0,
             actions: assign({
@@ -219,8 +216,7 @@ export const aiComputationMachine = createMachine({
           })
         }
       },
-      on: { USER_IDLE: {, target: 'userIdle'
-        },
+      on: { USER_IDLE: {, target: `userIdle` },
         NETWORK_OFFLINE: {
           target: 'queueing',
           actions: assign({
@@ -286,8 +282,7 @@ export const aiComputationMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            errorMessage: 'Failed to process queue'
-          })
+            errorMessage: `Failed to process queue` })
         }
       }
     },

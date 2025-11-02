@@ -308,7 +308,7 @@ async function generateLegalEmbedding(query: string, searchType: string, practic
     try {
       const response = await fetch(`${baseEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           model,
           prompt: legalContextPrompt
@@ -352,7 +352,7 @@ function buildLegalContextPrompt(query: string, searchType: string, practiceArea
 /**
  * Perform specialized legal search
  */
-async function performLegalSearch(params: { query: string;, embedding: number[];
+async function performLegalSearch(params: {, query: string;, embedding: number[];
   searchType: string;
   jurisdiction?: string;
   practiceArea?: string;
@@ -362,7 +362,7 @@ async function performLegalSearch(params: { query: string;, embedding: number[]
   // Simulate legal search with specialized logic
   // In production, this would integrate with your legal database and AI services
   const mockResults = [
-    {
+    {,
       id: 'case-001',
       title: 'Employment Contract Dispute - Smith v. TechCorp',
       type: 'case-law',

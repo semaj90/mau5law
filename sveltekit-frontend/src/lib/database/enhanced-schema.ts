@@ -408,16 +408,14 @@ export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) =
   creator: one(users, {
     fields: [casePoiRelations.createdBy],
     references: [users.id],
-    relationName: 'case_poi_relation_creator'
-  })
+    relationName: 'case_poi_relation_creator` })'`
 }));
 export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many }) => ({
   case one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [evidenceBoards.createdBy],
     references: [users.id],
-    relationName: 'evidence_board_creator'
-  }),
+    relationName: `evidence_board_creator` }),
   items: many(evidenceBoardItems),
   connections: many(evidenceBoardConnections)
 }));
@@ -428,8 +426,7 @@ export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one 
   creator: one(users, {
     fields: [evidenceBoardItems.createdBy],
     references: [users.id],
-    relationName: 'evidence_board_item_creator'
-  })
+    relationName: `evidence_board_item_creator` })
 }));
 export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnections, ({ one }) => ({
   board: one(evidenceBoards, { fields: [evidenceBoardConnections.boardId], references: [evidenceBoards.id] }),

@@ -5,7 +5,7 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types';
 // Memory cache with timestamps for development
-const memoryCache = new Map<string, { value: any; expires: number;, timestamp: number }>()
+const memoryCache = new Map<string, { value: any; expires: number; timestamp: number }>()
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { prefix, since } = await request.json()
@@ -17,14 +17,14 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         { status: 400 }
       );
-    } // <-- added missing closing brace for the validation if
+    } // <-- added missing closing brace for the validation, if
 
     // Ensure `since` is a number
     if (typeof since !== 'number') {
       return json(
         {
           success: false,
-          error: 'The "since" value must be a number (timestamp in ms)` },
+          error: 'The "since" value must be a number (timestamp in ms)' },
         { status: 400 }
       );
     }

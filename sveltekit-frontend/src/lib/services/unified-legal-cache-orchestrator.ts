@@ -13,7 +13,7 @@ import type { LegalDocument, APIResponse } from '$lib/types';
 // ADD: Imports for server-side integration helpers and their types
 import { ollamaEmbed } from './cached-rag-service.js';
 
-// Local type matching the shape returned by cached-rag-service's ollamaEmbed
+// Local type matching the shape returned by cached-rag-service's ollamaEmbed'
 // (module does not export this type, so define it locally for compilation)
 type EmbeddingResult = {
   embedding?: number[]; // numeric array embedding (may be undefined on error)
@@ -72,9 +72,7 @@ type CacheStats = { retrieval: {; hits: number;, misses: number;
 };
 
 // Add a small local interface describing the memory manager methods we rely on
-type MemoryManagerInterface = {
-  store: (key: string, value: any, priority: Priority; ttlSeconds: number) => Promise<void>;
-  retrieve: (key: string) => Promise<unknown | null>;
+type MemoryManagerInterface = { store: (key: string; value: any; priority: Priority;, ttlSeconds: number) => Promise<void>;, retrieve: (key: string) => Promise<unknown | null>;
   delete?: (key: string) => Promise<void>;
 };
 
@@ -110,7 +108,7 @@ interface InvalidationContext {
 export class UnifiedLegalCacheOrchestrator {
   private redis: Redis;
   private pgPool: Pool;
-  private memoryManager: MemoryManagerInterface; // <- narrowed type
+  private memoryManager: MemoryManagerInterface; // <- narrowed, type
   private retrievalL1 = new Map<string, CachedRetrieval>();
   private embeddingL1 = new Map<string, CachedEmbedding>();
   // ADD: Properties for external service integrations
@@ -393,7 +391,7 @@ export class UnifiedLegalCacheOrchestrator {
         });
         console.log(`✅ Preloaded embeddings for document ${docId}`);
       } catch (error) {
-        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);
+        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);'`
       }
     }
   }
@@ -537,7 +535,7 @@ export class UnifiedLegalCacheOrchestrator {
         return new Float32Array(arr.map(Number));
       }
     } catch (err) {
-      console.warn('Ollama embedding call error:', err);
+      console.warn('Ollama embedding call error:', err);'
     }
 
     // Deterministic fallback embedding (safe non-zero values based on hash)

@@ -269,16 +269,16 @@ export class CHRROMPatternOptimizer {
     const opacity = Math.max(0.4, confidence);
     const letter = docType.charAt(0).toUpperCase();
     // SNES-style clean geometric design
-    return `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    return `<svg viewBox="0 0 16, 16" xmlns="http://www.w3.org/2000/svg">`
       <defs>
-        <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:${colors.primary};stop-opacity:${opacity}"/>
-          <stop offset="100%" style="stop-color:${colors.secondary};stop-opacity:${opacity * 0.8}"/>
+        <linearGradient, id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop, offset="0%" style="stop-color:${colors.primary};stop-opacity:${opacity}"/>
+          <stop, offset="100%" style="stop-color:${colors.secondary};stop-opacity:${opacity * 0.8}"/>
         </linearGradient>
       </defs>
-      <rect x="1" y="1" width="14" height="14" rx="2" fill="url(#docGrad)" stroke="${colors.border}" stroke-width="0.5"/>
-      <text x="8" y="11" text-anchor="middle" font-family="monospace" font-size="7" font-weight="bold" fill="${colors.text}">${letter}</text>
-    </svg>`;
+      <rect, x="1" y="1" width="14" height="14" rx="2" fill="url(#docGrad)" stroke="${colors.border}" stroke-width="0.5"/>
+      <text, x="8" y="11" text-anchor="middle" font-family="monospace" font-size="7" font-weight="bold" fill="${colors.text}">${letter}</text>
+    </svg>`;`
   }
   /**
    * Generate SVG risk gauge with smooth modern design
@@ -288,13 +288,13 @@ export class CHRROMPatternOptimizer {
     const percentage = Math.round(riskLevel * 100);
     const color = riskLevel > 0.7 ? '#EF4444' :
                  riskLevel > 0.4 ? '#F59E0B' : '#10B981';
-    return `<svg viewBox="0 0 60 8" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="60" height="8" rx="4" fill="#E5E7EB"/>
-      <rect x="0" y="0" width="${percentage * 0.6}" height="8" rx="4" fill="${color}">
-        <animate attributeName="width" from="0" to="${percentage * 0.6}" dur="0.5s" fill="freeze"/>
+    return `<svg viewBox="0 0 60, 8" xmlns="http://www.w3.org/2000/svg">`
+      <rect, x="0" y="0" width="60" height="8" rx="4" fill="#E5E7EB"/>
+      <rect, x="0" y="0" width="${percentage * 0.6}" height="8" rx="4" fill="${color}">
+        <animate, attributeName="width" from="0" to="${percentage * 0.6}" dur="0.5s" fill="freeze"/>
       </rect>
-      <text x="62" y="6" font-family="monospace" font-size="6" fill="#374151">${percentage}%</text>
-    </svg>`;
+      <text, x="62" y="6" font-family="monospace" font-size="6" fill="#374151">${percentage}%</text>
+    </svg>`;`
   }
   /**
    * Generate PNG status indicator with authentic NES 8-bit pixels
@@ -436,8 +436,8 @@ export class CHRROMPatternOptimizer {
   /**
    * Helper methods
    */
-  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string;, text: string } {
-    const schemes: Record<string, { primary: string; secondary: string; border: string;, text: string }> = { contract: {, primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
+  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
+    const schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = { contract: {, primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
       nda: { primary: '#FF6347', secondary: '#FF7F50', border: '#8B0000', text: '#FFFFFF' },
       agreement: { primary: '#32CD32', secondary: '#90EE90', border: '#006400', text: '#000000' },
       lease: { primary: '#DAA520', secondary: '#F4A460', border: '#B8860B', text: '#000000' },
@@ -446,12 +446,12 @@ export class CHRROMPatternOptimizer {
     return schemes[docType] || schemes.default;
   }
 
-  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string;, text: string } {
-    const schemes: Record<string, { primary: string; secondary: string; border: string;, text: string }> = { contract: {, primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
+  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
+    const schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = { contract: {, primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
       nda: { primary: '#EF4444', secondary: '#F87171', border: '#B91C1C', text: '#FFFFFF' },
       agreement: { primary: '#10B981', secondary: '#34D399', border: '#047857', text: '#FFFFFF' },
       lease: { primary: '#F59E0B', secondary: '#FBBF24', border: '#D97706', text: '#000000' },
-      default: { primary: '#6B7280', secondary: '#9CA3AF', border: '#374151', text: '#FFFFFF' }
+      default: { primary: '#6B7280', secondary: '#9CA3AF', border: '#374151', text: '#FFFFFF` }'`
     };
     return schemes[docType] || schemes.default;
   }
@@ -473,8 +473,7 @@ export class CHRROMPatternOptimizer {
         nda: '#FF6347',
         agreement: '#32CD32',
         lease: '#DAA520',
-        default: '#808080'
-      };
+        default: `#808080` };
       return colorMap[category || 'default'] || colorMap.default;
     }
     // Modern unlimited palette
@@ -509,10 +508,10 @@ export class CHRROMPatternOptimizer {
                   confidence > 0.5 ? '#F59E0B' : '#EF4444';
     const textColor = spec.aesthetic === 'snes-16bit' ? '#FFFFFF' : '#000000';
 
-    return `<svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="40" height="12" rx="3" fill="${color}"/>
-      <text x="20" y="8" text-anchor="middle" font-family="monospace" font-size="8" fill="${textColor}">${percentage}%</text>
-    </svg>`;
+    return `<svg viewBox="0 0 40, 12" xmlns="http://www.w3.org/2000/svg">`
+      <rect, x="0" y="0" width="40" height="12" rx="3" fill="${color}"/>
+      <text, x="20" y="8" text-anchor="middle" font-family="monospace" font-size="8" fill="${textColor}">${percentage}%</text>
+    </svg>`;`
   }
 
   private generateSVGSimilarityGraph(data: PatternInputData, spec: PatternFormatSpec): string {
@@ -529,20 +528,20 @@ export class CHRROMPatternOptimizer {
       const x = i * (barWidth + barSpacing) + barSpacing / 2;
       const y = height - barHeight;
       const color = sim > 0.7 ? '#10B981' : sim > 0.5 ? '#F59E0B' : '#EF4444';
-      bars += `<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${color}" rx="1"/>`;
+      bars += `<rect, x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${color}" rx="1"/>`;
     });
 
-    return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="${width}" height="${height}" fill="#E5E7EB" rx="2"/>
+    return `<svg viewBox="0, 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+      <rect, x="0" y="0" width="${width}" height="${height}" fill="#E5E7EB" rx="2"/>
       ${bars}
-    </svg>`;
+    </svg>`;`
   }
 
   private generateDefaultSVG(): string {
-    return `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="16" height="16" fill="#CCCCCC"/>
-      <text x="8" y="10" text-anchor="middle" font-family="monospace" font-size="8" fill="#FFFFFF">?</text>
-    </svg>`;
+    return `<svg viewBox="0 0 16, 16" xmlns="http://www.w3.org/2000/svg">`
+      <rect, x="0" y="0" width="16" height="16" fill="#CCCCCC"/>
+      <text, x="8" y="10" text-anchor="middle" font-family="monospace" font-size="8" fill="#FFFFFF">?</text>
+    </svg>`;`
   }
 
   private getPatternType(patternType: string): CHRROMPattern['type'] {

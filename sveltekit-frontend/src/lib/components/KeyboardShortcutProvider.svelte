@@ -1,9 +1,9 @@
-<script lang="ts">
+<script, lang="ts">
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
-  // simple default stores - replace or extend with your app's store wiring
+  // simple default stores - replace or extend with your app's store wiring'
   export const shortcutCategories = writable([
-    {
+    {,
       id: 'general',
       name: 'General',
       shortcuts: [

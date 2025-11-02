@@ -93,7 +93,7 @@ interface EvidenceStoreState {
 
   // Filtering
   typeFilter: EvidenceType[];
-  dateRange?: { start: number;, end: number };
+  dateRange?: { start: number; end: number };
   searchQuery: string;
 
   // Metadata
@@ -259,7 +259,7 @@ function createEvidenceStore() {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/analyze`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, type: analysisType }),
           credentials: `include` });
 
@@ -390,7 +390,7 @@ function createEvidenceStore() {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(entry),
           credentials: `include` });
 
@@ -410,7 +410,7 @@ function createEvidenceStore() {
         }
         throw new Error('Failed to add custody entry');
       } catch (error) {
-        console.error('Chain of custody error:', error);
+        console.error('Chain of custody error:', error);'
         throw error;
       }
     },
@@ -437,7 +437,7 @@ function createEvidenceStore() {
           throw new Error('Failed to delete evidence');
         }
       } catch (error) {
-        console.error('Delete error:', error);
+        console.error('Delete error:', error);'
         throw error;
       }
     },

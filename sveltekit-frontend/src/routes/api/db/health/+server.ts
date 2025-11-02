@@ -9,7 +9,7 @@ import { dev } from '$app/environment';
 // Database connection for health check
 const connectionString =
   import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db` }`;
+  `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db` }`;'`
 export const GET: RequestHandler = async () => {
   let sql: postgres.Sql | null = null;
   try {
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async () => {
         extrelocatable
       FROM pg_extension
       WHERE extname = 'vector'
-    `;
+    `;`
     // Check if our user management tables exist
     const tablesCheck = await sql`
       SELECT table_name
@@ -37,14 +37,14 @@ export const GET: RequestHandler = async () => {
       WHERE table_schema = 'public'
       AND table_name IN ('users', 'sessions', 'user_profiles', 'user_activities')
       ORDER BY table_name
-    `;
+    `;`
     // Check vector operations capability (if tables exist)
     let vectorTest = null;
     if (tablesCheck.length > 0) {
       try {
         vectorTest = await sql`
           SELECT: '[1,0,1]'::vector <-> '[1,0,0]'::vector as cosine_distance
-        `;
+        `;`
       } catch (err: any) {
         console.warn('Vector test failed:', err.message);
         vectorTest = { error: err.message };
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async () => {
         success: true,
         message: isHealthy ? 'Database is healthy' : 'Database has issues',
         data: {
-          healthy: isHealthy,
+         , healthy: isHealthy,
           status: isHealthy ? 'healthy' : 'degraded',
           checks: health
         },
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async () => {
         status: isHealthy ? 200 : 503,
         headers: {
           'Content-Type': 'application/json',
-          ...(dev && { 'Access-Control-Allow-Origin': '*' })
+          ...(dev && { 'Access-Control-Allow-Origin': '*` })'`
         }
       }
     );
@@ -109,10 +109,10 @@ export const GET: RequestHandler = async () => {
         success: false,
         message: 'Database health check failed',
         data: {
-          healthy: false,
+         , healthy: false,
           status: 'unhealthy',
           error: {
-            message: err.message,
+           , message: err.message,
             code: err.code || 'DATABASE_ERROR',
             details: dev ? err.stack : undefined
           }
@@ -120,8 +120,7 @@ export const GET: RequestHandler = async () => {
         meta: {
          , timestamp: new Date().toISOString(),
           version: '1.0.0',
-          environment: dev ? 'development' : 'production'
-        }
+          environment: dev ? 'development' : `production` }
       },
       {
         status: 503,

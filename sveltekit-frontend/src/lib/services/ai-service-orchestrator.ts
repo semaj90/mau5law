@@ -19,7 +19,7 @@ import {
   getSvelte5Docs,
   getDrizzleOrmDocs,
   getTypeScriptDocs,
-  type LibraryDocsResponse // Assuming LibraryDocsResponse is { id: string;, content: string; }
+  type LibraryDocsResponse // Assuming LibraryDocsResponse is { id: string; content: string; }
 } from '$lib/mcp-context72-get-library-docs';
 import { AI_CONFIG, HEALTH_CONFIG } from '$lib/server/config';
 
@@ -67,7 +67,7 @@ export class AIServiceOrchestrator {
   private healthMonitor: HealthMonitor;
   private currentProvider: string = 'ollama';
   private mcpDocsCache: Map<string, LibraryDocsResponse> = new Map(); // Cache original LibraryDocsResponse
-  private circuitBreakerState: Map<string, { failures: number;, lastFailure: number }> = new Map();
+  private circuitBreakerState: Map<string, { failures: number; lastFailure: number }> = new Map();
 
   constructor() {
     this.healthMonitor = new HealthMonitor(this.providers);
@@ -143,7 +143,7 @@ export class AIServiceOrchestrator {
     this.currentProvider = this.selectOptimalProvider();
     console.log(`🎯 Active provider: ${this.currentProvider}`);
     console.log(`📚 Context7 MCP integration: ENABLED`);
-    console.log(`⚡ Gemma function calling: ${AI_CONFIG.functionCalling.enabled ? 'ENABLED' : `DISABLED` }`);
+    console.log(`⚡ Gemma function calling: ${AI_CONFIG.functionCalling.enabled ? 'ENABLED' : `DISABLED' }`);'`
   }
 
   /**
@@ -322,7 +322,7 @@ export class AIServiceOrchestrator {
         // Push enriched doc to the result array
         docs.push({ ...doc, libraryName: libraryId, id: doc.id || libraryId }); // Assuming doc has an: 'id' or use libraryId
       } catch (error: any) {
-        console.error(`❌ Failed to fetch MCP docs for ${libraryId}: ', (error as Error).message);
+        console.error(`❌ Failed to fetch MCP docs for ${libraryId}: ', (error as Error).message);'`
       }
     }
 
@@ -355,7 +355,7 @@ export class AIServiceOrchestrator {
           });
         }
       } catch (error: any) {
-        console.error(`❌ Failed to parse function call: ', (error as Error).message);
+        console.error(`❌ Failed to parse function call: ', (error as Error).message);'`
       }
     }
 
@@ -392,7 +392,7 @@ export class AIServiceOrchestrator {
       })),
       embedding: {
         model: 'embeddinggemma:latest',
-        provider: `ollama` }
+        provider: `ollama' }'`
     };
   }
 }

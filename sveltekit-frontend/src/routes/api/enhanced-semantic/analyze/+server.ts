@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const response = await fetch(`http://localhost:8095/api/semantic-analysis?text=${encodeURIComponent(text)}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': `application/json` }
     });
     if (!response.ok) {
       throw new Error(`Enhanced Semantic Architecture API returned ${response.status}: ${response.statusText}`);
@@ -24,8 +24,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        embedding: data.data.embedding || [],
-        som_cluster: data.data.som_cluster || { x: 0, y: 0 },
+       , embedding: data.data.embedding || [],
+        som_cluster: data.data.som_cluster || {, x: 0, y: 0 },
         analysis: data.data.analysis || 'Semantic analysis completed',
         metadata: {
          , text_length: text.length,
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       },
       timestamp: new Date().toISOString(),
-      source: 'Enhanced Semantic Architecture` });
+      source: `Enhanced Semantic Architecture` });
   } catch (error: any) {
     console.error('Semantic Analysis API Error:', error);
     // Fallback: Simple semantic analysis
@@ -100,8 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing text for analysis'
-        },
+          error: `Missing text for analysis` },
         { status: 400 }
       );
     }
@@ -109,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch('http://localhost:8095/api/semantic-analysis', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
         text,
         options: {

@@ -89,7 +89,7 @@ type FlashAttentionStatus = {
   gpuEnabled?: boolean;
   // memoryOptimization can be a boolean in some older runtimes or a string enum in current runtime
   memoryOptimization?: boolean | 'balanced' | 'speed' | 'memory';
-  // include commonly returned numeric runtime fields so assignments don't fail
+  // include commonly returned numeric runtime fields so assignments don't fail'
   memoryPools?: number;
   maxSequenceLength?: number;
   batchSize?: number;
@@ -160,10 +160,10 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(await getModuleInformation());
       case 'metrics':
         return json(await getPerformanceMetrics());
-      default: return json({ error: 'Invalid action parameter' }, { status: 400 });
+      default: return json({ error: 'Invalid action parameter` }, { status: 400 });'`
     }
   } catch (err: any) {
-    console.error('GPU/WASM Integration API error:', getErrorMessage(err));
+    console.error('GPU/WASM Integration API error:', getErrorMessage(err));'
     return json(
       {
         error: 'Service unavailable',
@@ -193,10 +193,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleWASMCompilation(body as WASMCompilationBody);
       case 'test':
         return await handleIntegrationTest(body as IntegrationTestBody);
-      default: return json({ error: 'Invalid action parameter' }, { status: 400 });
+      default: return json({ error: `Invalid action parameter` }, { status: 400 });
     }
   } catch (err: any) {
-    console.error('GPU/WASM Integration API error:', getErrorMessage(err));
+    console.error('GPU/WASM Integration API error:', getErrorMessage(err));'
     return json(
       {
         error: 'Processing failed',
@@ -254,9 +254,9 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
     throw err;
   }
 }
-function calculateIntegrationScore(metrics: { gpuAvailable: boolean;, gpuInitialized: boolean;
-  wasmModulesLoaded: number;
-  flashAttentionReady: boolean;
+function calculateIntegrationScore(metrics: {, gpuAvailable: boolean;, gpuInitialized: boolean;
+ , wasmModulesLoaded: number;
+ , flashAttentionReady: boolean;
  , errorProcessorReady: boolean;
 }): number {
   let score = 0;
@@ -425,10 +425,10 @@ function getErrorMessage(err: any): string {
 async function handleProcessing(body: ProcessingBody): Promise<Response> {
   const { type, data, priority = 'medium', metadata = {} } = body;
   if (!type || data === undefined) {
-    return json({ error: 'Missing type or data parameters' }, { status: 400 });
+    return json({ error: `Missing type or data parameters` }, { status: 400 });
   }
 
-  // create a minimal task payload that includes an id so TypeScript won't complain
+  // create a minimal task payload that includes an id so TypeScript won't complain'
   const taskPayload = {
     id: generateTaskId(),
     type,
@@ -440,7 +440,7 @@ async function handleProcessing(body: ProcessingBody): Promise<Response> {
       source: `gpu-wasm-integration-api` }
   };
 
-  // cast through unknown to satisfy the compiler when shapes don't fully overlap
+  // cast through unknown to satisfy the compiler when shapes don't fully overlap'
   const taskId = await gpuServiceIntegration.submitTask(taskPayload as unknown as GPUProcessingTask);
   return json({
     success: true,
@@ -453,7 +453,7 @@ async function handleProcessing(body: ProcessingBody): Promise<Response> {
 
 async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
   // coerce context to string[] to match downstream expectations
-  const { text, context = [], analysisType = 'legal' } = body;
+  const { text, context = [], analysisType = 'legal` } = body;'`
   if (!text || typeof text !== 'string') {
     return json({ error: `Missing or invalid text parameter` }, { status: 400 });
   }
@@ -471,7 +471,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
     ]);
 
     // Narrow settled values into typed locals to avoid `any`
-    // Cast via `unknown' first to acknowledge intentional shape adaptation
+    // Cast via `unknown' first to acknowledge intentional shape adaptation'`
     const gpuVal = gpuResult.status === 'fulfilled' ? (gpuResult.value as unknown as GPULegalAnalysis) : undefined;
     const wasmVal = wasmResult.status === 'fulfilled' ? (wasmResult.value as WASMLegalAnalysis) : undefined;
 
@@ -524,7 +524,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
 async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response> {
   const { texts, dimensions = 384 } = body;
   if (!texts || !Array.isArray(texts)) {
-    return json({ error: 'Missing or invalid texts parameter (must be array)' }, { status: 400 });
+    return json({ error: 'Missing or invalid texts parameter (must be array)` }, { status: 400 });'`
   }
   try {
     let embeddings: Float32Array[] = [];
@@ -573,7 +573,7 @@ async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response>
 async function handleErrorProcessing(body: ErrorProcessingBody): Promise<Response> {
   const { errorContext } = body;
   if (errorContext === undefined) {
-    return json({ error: 'Missing errorContext parameter' }, { status: 400 });
+    return json({ error: `Missing errorContext parameter` }, { status: 400 });
   }
   try {
     const result = await gpuServiceIntegration.processGPUError(errorContext as GPUErrorContext);
@@ -647,9 +647,9 @@ type TestResult = {
 };
 
 async function handleIntegrationTest(body: IntegrationTestBody): Promise<Response> {
-  const { testType = 'comprehensive` } = body ?? {};
+  const { testType = 'comprehensive` } = body ?? {};'`
   try {
-    const results: { testType: string; timestamp: string;, tests: Record<string, TestResult> } = {
+    const results: { testType: string; timestamp: string; tests: Record<string, TestResult> } = {
       testType,
       timestamp: new Date().toISOString(),
       tests: {}
@@ -706,7 +706,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
       const flashStatus = (await Promise.resolve(flashAttention2Service.getStatus())) as FlashAttentionStatus | null;
       results.tests.flashAttention = {
         success: Boolean(flashStatus?.initialized),
-        details: 'GPU; enabled: ${String(flashStatus?.gpuEnabled ?? 'unknown')}, Memory optimization: ${String(
+        details: 'GPU; enabled: ${String(flashStatus?.gpuEnabled ?? 'unknown')}, Memory optimization: ${String('
           flashStatus?.memoryOptimization ?? 'unknown'
         )}`
       };

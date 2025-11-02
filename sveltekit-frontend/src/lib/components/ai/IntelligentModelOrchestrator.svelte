@@ -2,7 +2,7 @@
   Intelligent Model Orchestrator Dashboard
   Real-time monitoring and control of the multi-model AI system
 -->
-<script lang="ts">
+<script, lang="ts">
 import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -111,7 +111,7 @@ import type { User } from '$lib/types';
         worker.postMessage({
           type: 'SMART_MODEL_SELECT',
           payload: {
-            query: queryInput
+            query: queryInput,
             userContext: { sessionId: 'demo' },
             intent: { category: 'general', confidence: 0.8 }
           }
@@ -175,18 +175,18 @@ import type { User } from '$lib/types';
     }
   }
 </script>
-<div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50 p-6">
+<div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50, p-6">
   <!-- Header -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">🧠 Intelligent Model Orchestrator</h1>
-    <p class="text-gray-600">
+  <div, class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900, mb-2">🧠 Intelligent Model Orchestrator</h1>
+    <p, class="text-gray-600">
       Multi-model AI system with auto-switching, predictive loading, and self-prompting intelligence
     </p>
   </div>
-  <!-- Query Interface -->
-  <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Query Interface</h2>
-    <div class="flex gap-4 mb-4">
+  <!-- Query, Interface -->
+  <div class="bg-white rounded-lg shadow-lg p-6, mb-8">
+    <h2 class="text-xl font-semibold text-gray-800, mb-4">Query Interface</h2>
+    <div class="flex gap-4, mb-4">
       <input
         bind:value={queryInput}
         onkeydown={e => e.key === 'Enter' && processQuery()}
@@ -200,202 +200,202 @@ import type { User } from '$lib/types';
         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {#if isProcessing}
-          <span class="animate-spin">⚙️</span> Processing...
+          <span, class="animate-spin">⚙️</span> Processing...
         {:else}
           🚀 Process
         {/if}
       </button>
     </div>
-    <!-- Query Results -->
+    <!-- Query, Results -->
     {#if $results}
-      <div class="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
-        <h3 class="text-lg font-medium text-gray-800 mb-3">🎯 Processing Results</h3>
+      <div class="mt-6 p-4 border border-gray-200 rounded-lg, bg-gray-50">
+        <h3 class="text-lg font-medium text-gray-800, mb-3">🎯 Processing Results</h3>
         {#if $results.error}
-          <div class="text-red-600">
+          <div, class="text-red-600">
             <strong>Error:</strong>
             {$results.error}
           </div>
         {:else}
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2, gap-4">
             <div>
-              <div class="text-sm text-gray-600">Selected Model:</div>
-              <div class="text-lg font-semibold text-blue-600">{$results.selectedModel}</div>
+              <div class="text-sm, text-gray-600">Selected Model:</div>
+              <div class="text-lg font-semibold, text-blue-600">{$results.selectedModel}</div>
             </div>
             <div>
-              <div class="text-sm text-gray-600">Estimated Latency:</div>
+              <div class="text-sm, text-gray-600">Estimated Latency:</div>
               <div
                 class="text-lg font-semibold {$results.estimatedLatency < 500 ? 'text-green-600' : 'text-yellow-600'}"
               >
                 {formatLatency($results.estimatedLatency)}
               </div>
             </div>
-            <div class="md:col-span-2">
-              <div class="text-sm text-gray-600">Preload Recommendations:</div>
-              <div class="flex gap-2 mt-1">
+            <div, class="md:col-span-2">
+              <div class="text-sm, text-gray-600">Preload Recommendations:</div>
+              <div class="flex gap-2, mt-1">
                 {#each Array.isArray($results.shouldPreload || []) ? $results.shouldPreload || [] : [] as model}
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">{model}</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded, text-sm">{model}</span>
                 {/each}
               </div>
             </div>
           {/if}
       {/if}
   </div>
-  <!-- System Status Dashboard -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <!-- Current Model Status -->
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">🤖 Current Model</h3>
+  <!-- System Status, Dashboard -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6, mb-8">
+    <!-- Current Model, Status -->
+    <div class="bg-white rounded-lg shadow, p-6">
+      <h3 class="text-lg font-semibold text-gray-800, mb-4">🤖 Current Model</h3>
       {#if $modelStatusDisplay.current}
-        <div class="space-y-3">
+        <div, class="space-y-3">
           <div>
-            <div class="text-sm text-gray-600">Active Model</div>
-            <div class="text-xl font-bold text-gray-900">{$modelStatusDisplay.current.name}</div>
-            <div class="text-sm text-gray-500">{$modelStatusDisplay.current.id}</div>
+            <div class="text-sm, text-gray-600">Active Model</div>
+            <div class="text-xl font-bold, text-gray-900">{$modelStatusDisplay.current.name}</div>
+            <div class="text-sm, text-gray-500">{$modelStatusDisplay.current.id}</div>
           </div>
-          <div class="grid grid-cols-2 gap-4 text-sm">
+          <div class="grid grid-cols-2 gap-4, text-sm">
             <div>
-              <div class="text-gray-600">Target Latency</div>
-              <div class="font-semibold">{formatLatency($modelStatusDisplay.current.targetLatency)}</div>
+              <div, class="text-gray-600">Target Latency</div>
+              <div, class="font-semibold">{formatLatency($modelStatusDisplay.current.targetLatency)}</div>
             </div>
             <div>
-              <div class="text-gray-600">Memory</div>
-              <div class="font-semibold">{formatMemorySize($modelStatusDisplay.current.memoryFootprint)}</div>
+              <div, class="text-gray-600">Memory</div>
+              <div, class="font-semibold">{formatMemorySize($modelStatusDisplay.current.memoryFootprint)}</div>
             </div>
           </div>
           <div>
-            <div class="text-gray-600">Capabilities</div>
-            <div class="flex flex-wrap gap-1 mt-1">
+            <div, class="text-gray-600">Capabilities</div>
+            <div class="flex flex-wrap gap-1, mt-1">
               {#each Array.isArray($modelStatusDisplay.current.capabilities) ? $modelStatusDisplay.current.capabilities : [] as capability}
-                <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                <span class="px-2 py-1 bg-green-100 text-green-800 rounded, text-xs">
                   {capability}
                 </span>
               {/each}
             </div>
           </div>
-          <div class="pt-2 border-t">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full {$modelStatusDisplay.isHealthy ? 'bg-green-500' : 'bg-red-500'}"></div>
-              <span class="text-sm {$modelStatusDisplay.isHealthy ? 'text-green-600' : 'text-red-600'}">
+          <div class="pt-2, border-t">
+            <div class="flex items-center, gap-2">
+              <div class="w-2 h-2, rounded-full {$modelStatusDisplay.isHealthy ? 'bg-green-500' : 'bg-red-500'}"></div>
+              <span, class="text-sm {$modelStatusDisplay.isHealthy ? 'text-green-600' : 'text-red-600'}">
                 {$modelStatusDisplay.isHealthy ? 'Healthy' : 'Issues Detected'}
               </span>
             </div>
           </div>
         </div>
       {:else}
-        <div class="text-gray-500">No model currently active{/if}
+        <div, class="text-gray-500">No model currently active{/if}
     </div>
-    <!-- Memory Optimization Status -->
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">🧠 Memory Status</h3>
+    <!-- Memory Optimization, Status -->
+    <div class="bg-white rounded-lg shadow, p-6">
+      <h3 class="text-lg font-semibold text-gray-800, mb-4">🧠 Memory Status</h3>
       {#if $memoryStatusDisplay}
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 gap-4 text-sm">
+        <div, class="space-y-4">
+          <div class="grid grid-cols-2 gap-4, text-sm">
             <div>
-              <div class="text-gray-600">Total Used</div>
-              <div class="font-semibold">{formatMemorySize($memoryStatusDisplay.totalUsed)}</div>
+              <div, class="text-gray-600">Total Used</div>
+              <div, class="font-semibold">{formatMemorySize($memoryStatusDisplay.totalUsed)}</div>
             </div>
             <div>
-              <div class="text-gray-600">Efficiency</div>
-              <div class="font-semibold text-green-600">
+              <div, class="text-gray-600">Efficiency</div>
+              <div class="font-semibold, text-green-600">
                 {($memoryStatusDisplay.efficiency * 100).toFixed(1)}%
               </div>
             </div>
           </div>
           <div>
-            <div class="text-gray-600 mb-2">Fragmentation</div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="text-gray-600, mb-2">Fragmentation</div>
+            <div class="w-full bg-gray-200 rounded-full, h-2">
               <div
-                class="bg-{$memoryStatusDisplay.fragmentation < 0.3 ? 'green' : 'orange'}-500 h-2 rounded-full"
+                class="bg-{$memoryStatusDisplay.fragmentation < 0.3 ? 'green' : 'orange'}-500 h-2, rounded-full"
                 style="width: {$memoryStatusDisplay.fragmentation * 100}%"
               ></div>
             </div>
-            <div class="text-xs text-gray-500 mt-1">
+            <div class="text-xs text-gray-500, mt-1">
               {($memoryStatusDisplay.fragmentation * 100).toFixed(1)}% fragmented
             </div>
           </div>
           <div>
-            <div class="text-gray-600 mb-2">Model Layout</div>
-            <div class="space-y-1">
+            <div class="text-gray-600, mb-2">Model Layout</div>
+            <div, class="space-y-1">
               {#each $memoryStatusDisplay.layout as [modelId, layout]}
-                <div class="flex justify-between text-xs">
-                  <span class="truncate">{modelId}</span>
-                  <span class="text-gray-500">{formatMemorySize(layout.size)}</span>
+                <div class="flex justify-between, text-xs">
+                  <span, class="truncate">{modelId}</span>
+                  <span, class="text-gray-500">{formatMemorySize(layout.size)}</span>
                 </div>
               {/each}
             </div>
           </div>
         </div>
       {:else}
-        <div class="text-gray-500">Memory data not available{/if}
+        <div, class="text-gray-500">Memory data not available{/if}
     </div>
-    <!-- Performance Metrics -->
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">📊 Performance</h3>
+    <!-- Performance, Metrics -->
+    <div class="bg-white rounded-lg shadow, p-6">
+      <h3 class="text-lg font-semibold text-gray-800, mb-4">📊 Performance</h3>
       {#if $systemStatus}
-        <div class="space-y-3 text-sm">
-          <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-3, text-sm">
+          <div class="grid grid-cols-2, gap-4">
             <div>
-              <div class="text-gray-600">Total Queries</div>
+              <div, class="text-gray-600">Total Queries</div>
               <div class="text-xl font-bold">{$systemStatus.summary?.totalQueries || 0}</div>
             </div>
             <div>
-              <div class="text-gray-600">Avg Latency</div>
+              <div, class="text-gray-600">Avg Latency</div>
               <div class="text-xl font-bold">{formatLatency($systemStatus.summary?.averageLatency || 0)}</div>
             </div>
           </div>
           <div>
-            <div class="text-gray-600 mb-1">Overall Satisfaction</div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="text-gray-600, mb-1">Overall Satisfaction</div>
+            <div class="w-full bg-gray-200 rounded-full, h-2">
               <div
                 class="bg-blue-500 h-2 rounded-full"
                 style="width: {($systemStatus.summary?.overallSatisfaction || 0) * 100}%"
               ></div>
             </div>
-            <div class="text-xs text-gray-500 mt-1">
+            <div class="text-xs text-gray-500, mt-1">
               {(($systemStatus.summary?.overallSatisfaction || 0) * 100).toFixed(1)}%
             </div>
           </div>
           <div>
-            <div class="text-gray-600">Active Models</div>
+            <div, class="text-gray-600">Active Models</div>
             <div class="text-lg font-semibold">{$systemStatus.summary?.activeModels || 0}</div>
           </div>
           <div>
-            <div class="text-gray-600">Cache Hit Rate</div>
-            <div class="text-lg font-semibold text-green-600">
+            <div, class="text-gray-600">Cache Hit Rate</div>
+            <div class="text-lg font-semibold, text-green-600">
               {(($systemStatus.summary?.cacheHitRate || 0) * 100).toFixed(1)}%
             </div>
           </div>
         </div>
       {:else}
-        <div class="text-gray-500">Loading performance data...{/if}
+        <div, class="text-gray-500">Loading performance data...{/if}
     </div>
   </div>
-  <!-- Self-Prompting Suggestions -->
-  <div class="bg-white rounded-lg shadow p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">💡 Self-Prompting Suggestions</h3>
+  <!-- Self-Prompting, Suggestions -->
+  <div class="bg-white rounded-lg shadow, p-6">
+    <h3 class="text-lg font-semibold text-gray-800, mb-4">💡 Self-Prompting Suggestions</h3>
     {#if $suggestionDisplay && $suggestionDisplay.length > 0}
-      <div class="space-y-4">
+      <div, class="space-y-4">
         {#each Array.isArray($suggestionDisplay) ? $suggestionDisplay : [] as suggestion}
-          <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-lg">{getCategoryIcon(suggestion.category)}</span>
-                  <span class="text-sm font-medium text-gray-700 capitalize">
+          <div class="border border-gray-200 rounded-lg p-4, hover:bg-gray-50">
+            <div class="flex items-start, justify-between">
+              <div, class="flex-1">
+                <div class="flex items-center gap-2, mb-2">
+                  <span, class="text-lg">{getCategoryIcon(suggestion.category)}</span>
+                  <span class="text-sm font-medium text-gray-700, capitalize">
                     {suggestion.category}
                   </span>
-                  <span class="text-xs px-2 py-1 bg-gray-100 rounded {getConfidenceColor(suggestion.confidence)}">
+                  <span class="text-xs px-2 py-1 bg-gray-100, rounded {getConfidenceColor(suggestion.confidence)}">
                     {(suggestion.confidence * 100).toFixed(0)}% confident
                   </span>
                 </div>
-                <p class="text-gray-800 mb-3">{suggestion.suggestion}</p>
-                <div class="flex items-center gap-4 text-xs text-gray-500">
+                <p class="text-gray-800, mb-3">{suggestion.suggestion}</p>
+                <div class="flex items-center gap-4 text-xs, text-gray-500">
                   <span>📱 {suggestion.modelRecommendation}</span>
                   <span>⚡ {formatLatency(suggestion.estimatedLatency)}</span>
                   <span>🎯 {(suggestion.contextRelevance * 100).toFixed(0)}% relevant</span>
                 </div>
               </div>
-              <div class="flex gap-2 ml-4">
+              <div class="flex gap-2, ml-4">
                 {#if !$userFeedback.has(suggestion.id)}
                   <button
                     onclick={() => acceptSuggestion(suggestion)}
@@ -424,33 +424,33 @@ import type { User } from '$lib/types';
         {/each}
       </div>
     {:else}
-      <div class="text-center py-8 text-gray-500">
-        <div class="text-4xl mb-2">🤔</div>
+      <div class="text-center py-8, text-gray-500">
+        <div class="text-4xl, mb-2">🤔</div>
         <p>No suggestions available. Try asking a question to see intelligent suggestions!</p>
       {/if}
   </div>
-  <!-- Model Performance Details -->
+  <!-- Model Performance, Details -->
   {#if $performanceMetrics && $performanceMetrics.length > 0}
-    <div class="mt-8 bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">🔍 Model Performance Details</h3>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-gray-50">
+    <div class="mt-8 bg-white rounded-lg shadow, p-6">
+      <h3 class="text-lg font-semibold text-gray-800, mb-4">🔍 Model Performance Details</h3>
+      <div, class="overflow-x-auto">
+        <table class="w-full, text-sm">
+          <thead, class="bg-gray-50">
             <tr>
-              <th class="px-4 py-2 text-left">Model ID</th>
-              <th class="px-4 py-2 text-center">Avg Latency</th>
-              <th class="px-4 py-2 text-center">Success Rate</th>
-              <th class="px-4 py-2 text-center">User Satisfaction</th>
-              <th class="px-4 py-2 text-center">Usage Count</th>
-              <th class="px-4 py-2 text-center">Last Used</th>
+              <th class="px-4 py-2, text-left">Model ID</th>
+              <th class="px-4 py-2, text-center">Avg Latency</th>
+              <th class="px-4 py-2, text-center">Success Rate</th>
+              <th class="px-4 py-2, text-center">User Satisfaction</th>
+              <th class="px-4 py-2, text-center">Usage Count</th>
+              <th class="px-4 py-2, text-center">Last Used</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
+          <tbody class="divide-y, divide-gray-200">
             {#each Array.isArray($performanceMetrics) ? $performanceMetrics : [] as metric}
-              <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2 font-medium">{metric.modelId}</td>
-                <td class="px-4 py-2 text-center">{formatLatency(metric.averageLatency)}</td>
-                <td class="px-4 py-2 text-center">
+              <tr, class="hover:bg-gray-50">
+                <td class="px-4 py-2, font-medium">{metric.modelId}</td>
+                <td class="px-4 py-2, text-center">{formatLatency(metric.averageLatency)}</td>
+                <td class="px-4 py-2, text-center">
                   <span
                     class="px-2 py-1 rounded text-xs" {metric.successRate > 0.8
                       ? 'bg-green-100 text-green-800'
@@ -461,9 +461,9 @@ import type { User } from '$lib/types';
                     {(metric.successRate * 100).toFixed(1)}%
                   </span>
                 </td>
-                <td class="px-4 py-2 text-center">{(metric.userSatisfaction * 100).toFixed(1)}%</td>
-                <td class="px-4 py-2 text-center">{metric.usageCount}</td>
-                <td class="px-4 py-2 text-center text-gray-500">
+                <td class="px-4 py-2, text-center">{(metric.userSatisfaction * 100).toFixed(1)}%</td>
+                <td class="px-4 py-2, text-center">{metric.usageCount}</td>
+                <td class="px-4 py-2 text-center, text-gray-500">
                   {new Date(metric.lastUsed).toLocaleTimeString()}
                 </td>
               </tr>

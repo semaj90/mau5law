@@ -266,7 +266,7 @@ export class ComprehensiveIntegration {
       console.log('✅ Case scored:', {
         caseId: caseData.id,
         score: (result as CaseScoringResult).score ?? null,
-        protocol: (result as CaseScoringResult).performanceMetrics?.protocol ?? 'JSON` });
+        protocol: (result as CaseScoringResult).performanceMetrics?.protocol ?? 'JSON' });
       return result;
     } catch (error: any) {
       console.error('❌ Case scoring failed:', error);

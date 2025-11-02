@@ -2,7 +2,7 @@
 Enhanced-Bits AlertDescription Component
 Description content for alerts with NES styling
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { cn } from '$lib/utils';
   interface AlertDescriptionProps {
@@ -23,7 +23,7 @@ Description content for alerts with NES styling
     )
   );
 </script>
-<div class={descriptionClasses}>
+<div, class={descriptionClasses}>
   {#if children}
     {@render children()}
   {/if}

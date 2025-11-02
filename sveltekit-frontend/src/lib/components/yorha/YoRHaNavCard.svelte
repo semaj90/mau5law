@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been declared;
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been, declared;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been declared -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been, declared -->
+<script, lang="ts">
   import { SvelteComponent } from 'svelte';
   import { goto } from '$app/navigation';
   // export props with safe defaults and concrete constructor typing for icon
@@ -32,18 +32,18 @@ https://svelte.dev/e/js_parse_error -->
   onkeydown={handleKey}
   data-path={path}
 >
-  <div class="yorha-nav-header">
+  <div, class="yorha-nav-header">
     {#if icon}
-      <svelte:component this={icon} size={28} />
+      <svelte:component, this={icon} size={28} />
     {/if}
     <h3>{title}</h3>
   </div>
   <p>{description}</p>
-  <div class="yorha-nav-footer">
+  <div, class="yorha-nav-footer">
     <span>{path}</span>
-    <!-- named slot: "trailing" - consumers can provide content via <slot name="trailing"> -->
-    <slot name="trailing" />
+    <!-- named slot: "trailing" - consumers can provide content, via <slot, name="trailing"> -->
+    <slot, name="trailing" />
   </div>
 </div>
-<!-- Styling inherits from parent page; only minimal overrides if needed -->
+<!-- Styling inherits from parent page; only minimal overrides if, needed -->
 <style></style>

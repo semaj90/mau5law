@@ -389,7 +389,7 @@ export class GPUErrorProcessor {
       let confidence = 0.5;
       if (errorContext.errorType === 'memory') {
         suggestion = 'Reduce batch size or enable memory optimizations.';
-        fixCode = `const config = { batchSize: 4, memoryOptimization: 'memory' };`;
+        fixCode = `const config = { batchSize: 4, memoryOptimization: 'memory` };`;'`
         confidence = 0.85;
       } else if (errorContext.errorType === 'compilation') {
         suggestion = 'Verify imports and TypeScript configuration.';

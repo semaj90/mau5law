@@ -16,7 +16,7 @@ interface AIConnectionResponse { success: boolean;, model: string;
   availableModels: string[];
   status: string;
   timestamp: string;
-  error?: string; // Include error for consistency with project's error handling pattern
+  error?: string; // Include error for consistency with project's error handling pattern'
 }
 
 async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, timeoutMs = 10000): Promise<Response> {
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'http://localhost:11434/api/generate',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({
             model,
             prompt: 'Test connection',
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('AI connection error:', err);
+    console.error('AI connection error:', err);'
     // If this is a SvelteKit HttpError rethrow it
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;

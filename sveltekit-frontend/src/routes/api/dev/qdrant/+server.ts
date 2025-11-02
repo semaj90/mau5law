@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { dev } from '$app/environment';
 import { db } from '$lib/server/db';
-import { embeddingCache as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
+import { embeddingCache, as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
 import { sql } from 'drizzle-orm';
 
 const QDRANT_URL = process.env.QDRANT_URL || import.meta.env.QDRANT_URL || '';
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
     let qdrantResult: any = null;
     if (QDRANT_URL) {
       try {
-        const qdrantBody: { vector: number[];, limit: number; filter?: {, must: Array<Record<string, unknown>> } } = {
+        const qdrantBody: { vector: number[]; limit: number; filter?: {, must: Array<Record<string, unknown>> } } = {
           vector: embedding,
           limit
         };
@@ -67,17 +67,17 @@ export const GET: RequestHandler = async ({ url }) => {
       let query = db
         .select({
           id: embeddingTable.id,
-          similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)' })
+          similarity: sql<number>`1 - (${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector)` })
         .from(embeddingTable)
         .orderBy(sql`${embeddingTable.embedding} <=> ${JSON.stringify(embedding)}::vector`)
         .limit(limit)
         .offset(offset);
       // Apply simple metadata filters when provided (string-match against metadata JSON text)
       if (caseId) {
-        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + caseId + '%' }`);
+        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + caseId + '%` }`);'`
       }
       if (tag) {
-        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + tag + '%' }`);
+        query = query.where(sql`${embeddingTable.metadata}::text LIKE ${'%' + tag + '%` }`);'`
       }
       const pgRows = await query;
       pgvectorResult = { rows: pgRows, page, limit };

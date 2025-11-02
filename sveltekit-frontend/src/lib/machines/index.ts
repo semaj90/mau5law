@@ -1,9 +1,9 @@
 // XState Machine Exports
 // Centralized export for all state machines
-export { default as documentUploadMachine } from './document-upload-machine';
-export { default as caseCreationMachine } from './case-creation-machine';
-export { default as searchMachine } from './search-machine';
-export { default as aiAnalysisMachine } from './ai-analysis-machine';
+export { default, as documentUploadMachine } from './document-upload-machine';
+export { default, as caseCreationMachine } from './case-creation-machine';
+export { default, as searchMachine } from './search-machine';
+export { default, as aiAnalysisMachine } from './ai-analysis-machine';
 // Re-export existing machines
 export { agentShellMachine } from './agentShellMachine';
 export { legalAIMachine } from './legalAIMachine';
@@ -11,8 +11,8 @@ export { authMachine } from './auth-machine';
 // export { uploadMachine } from './uploadMachine'; // disabled: uploadMachine file is intentionally disabled
 export { sessionMachine } from './sessionMachine';
 // AI Processing and Microservice machines
-export { default as aiProcessingMachine } from './ai-analysis-machine';
-export { default as goMicroserviceMachine } from './enhanced-legal-case-machine';
+export { default, as aiProcessingMachine } from './ai-analysis-machine';
+export { default, as goMicroserviceMachine } from './enhanced-legal-case-machine';
 // AI Task creators and utilities
 // Define specific data interfaces for each AI task type
 // These can be expanded with actual properties as needed.
@@ -30,11 +30,11 @@ export type AITaskPayload = AnalysisData | ProcessingData | SearchData;
 // Union type for the AI task types
 export type AITaskType = 'analysis' | 'processing' | 'search';
 // Generic AITask interface
-export interface AITask<T extends AITaskPayload = AITaskPayload> { id: string;, type: AITaskType;
+export interface AITask<T extends, AITaskPayload = AITaskPayload> { id: string;, type: AITaskType;
   data: T;
   timestamp: number;
 }
-export const createAITask = <T extends AITaskPayload>(type: AITaskType, data: T): AITask<T> => ({
+export const createAITask = <T extends, AITaskPayload>(type: AITaskType, data: T): AITask<T> => ({
   id: `${type}_${Date.now()}`,
   type,
   data,

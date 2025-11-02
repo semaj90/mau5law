@@ -26,24 +26,24 @@ function escapeLiteral(val: any): string {
 
   // Dates -> ISO string, quoted
   if (val instanceof Date) {
-    return `'${val.toISOString().replace(/'/g, "''")}'`;
+    return `'${val.toISOString().replace(/'/g, "''")}'`;'
   }
 
   // Objects -> stringify then quote
   if (typeof val === 'object') {
     try {
       const s = JSON.stringify(val);
-      return `'${s.replace(/'/g, "''")}'`;
+      return `'${s.replace(/'/g, "''")}'`;'
     } catch {
       // fallback to generic string conversion
       const s = String(val);
-      return `'${s.replace(/'/g, "''")}'`;
+      return `'${s.replace(/'/g, "''")}'`;'
     }
   }
 
   // Fallback: convert to string and escape single quotes
   const s = String(val);
-  return `'${s.replace(/'/g, "''")}'`;
+  return `'${s.replace(/'/g, "''")}'`;'
 }
 
 /**
@@ -55,7 +55,7 @@ function escapeJSON(obj: any): string {
   if (obj === undefined) return 'NULL';
   try {
     const json = JSON.stringify(obj ?? {});
-    return `'${json.replace(/'/g, "''")}'`;
+    return `'${json.replace(/'/g, "''")}'`;'
   } catch {
     // If stringify fails, store empty JSON object
     return `'{}'`;
@@ -109,7 +109,7 @@ export async function initializePgVector(): Promise<boolean> {
       RETURNS float AS $$
       SELECT 1 - (a <=> b);
       $$ LANGUAGE SQL IMMUTABLE STRICT;
-    `);
+    `);`
     // Create vector search function for chat messages (fixed syntax)
     await db.execute(`
       CREATE OR REPLACE FUNCTION search_similar_messages(
@@ -136,7 +136,7 @@ export async function initializePgVector(): Promise<boolean> {
       ORDER BY similarity DESC
       LIMIT result_limit;
       $$ LANGUAGE SQL STABLE;
-    `);
+    `);`
     // Create vector search function for evidence (fixed syntax)
     await db.execute(`
       CREATE OR REPLACE FUNCTION search_similar_evidence(
@@ -175,7 +175,7 @@ export async function initializePgVector(): Promise<boolean> {
       ORDER BY similarity DESC
       LIMIT result_limit;
       $$ LANGUAGE SQL STABLE;
-    `);
+    `);`
     console.log('✅ pgvector utilities initialized successfully');
     return true;
   } catch (error: any) {
@@ -210,7 +210,7 @@ export function vectorToArray(vectorString: string): number[] {
     return cleaned.split(',').map(val => parseFloat(val.trim()));
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.warn('Failed to parse vector string:', vectorString, 'error:', msg);
+    console.warn('Failed to parse vector string:', vectorString, 'error:', msg);'
     return [];
   }
 }
@@ -230,17 +230,17 @@ export async function searchSimilarMessages(
         ${threshold}::float,
         ${limit}::int
       );
-    `;
+    `;`
     const results = (await db.execute(sql)) as Array<Row>;
     return (results || []).map((row: Row) => ({
       id: asString(row.id),
       content: asString(row.content),
       similarity: asNumber(row.similarity),
       metadata: includeMetadata ? asObject(row.metadata) : undefined,
-      documentType: 'chat_message` }));
+      documentType: 'chat_message' }));
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error('Vector search for messages failed: `, msg);
+    console.error('Vector search for messages failed: `, msg);'`
     return [];
   }
 }
@@ -263,7 +263,7 @@ export async function searchSimilarEvidence(
         ${threshold}::float,
         ${limit}::int
       );
-    `;
+    `;`
     const results = (await db.execute(sql)) as Array<Row>;
     return (results || []).map((row: Row) => ({
       id: asString(row.id),
@@ -277,7 +277,7 @@ export async function searchSimilarEvidence(
             ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
           }
         : undefined,
-      documentType: 'evidence` }));
+      documentType: 'evidence' }));
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for evidence failed:', msg);
@@ -287,9 +287,9 @@ export async function searchSimilarEvidence(
 /**
  * Insert chat message with vector embedding
  */
-export async function insertChatMessageWithEmbedding(messageData: { id: string;, sessionId: string;
-  role: string;
-  content: string;
+export async function insertChatMessageWithEmbedding(messageData: {, id: string;, sessionId: string;
+ , role: string;
+ , content: string;
  , embedding: number[];
   metadata?: Record<string, unknown>;
 }): Promise<boolean> {
@@ -306,7 +306,7 @@ export async function insertChatMessageWithEmbedding(messageData: { id: string;
         ${vectorString}::vector,
         ${escapeJSON(messageData.metadata)}::jsonb
       );
-    `;
+    `;`
     await db.execute(sql);
     return true;
   } catch (error: any) {
@@ -338,7 +338,7 @@ export async function updateEvidenceEmbeddings(
       UPDATE evidence
       SET ${updates.join(', ')}
       WHERE id = ${escapeLiteral(evidenceId)}::uuid;
-    `;
+    `;`
     await db.execute(sql);
     return true;
   } catch (error: any) {
@@ -426,11 +426,11 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
       return {
         available: false,
         functions: [],
-        error: 'pgvector extension not installed` };
+        error: 'pgvector extension not installed' };
     }
 
     const functionsCheck = (await db.execute(
-      `
+      '
       SELECT routine_name
       FROM information_schema.routines
       WHERE routine_schema = 'public'
@@ -454,7 +454,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
     return {
       available: false,
       functions: [],
-      error: errMsg || 'Unknown error` };
+      error: errMsg || 'Unknown error' };
   }
 }
 // Initialize on import (only in non-production)

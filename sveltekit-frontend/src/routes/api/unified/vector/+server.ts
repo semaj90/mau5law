@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processing_time_ms: Date.now() - startTime
     });
   } catch (error) {
-    console.error('Unified vector API error:', error);
+    console.error('Unified vector API error:', error);'
     return json(
       {
         success: false,
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error) {
-    console.error('Unified vector status API error:', error);
+    console.error('Unified vector status API error:', error);'
     return json(
       {
         success: false,

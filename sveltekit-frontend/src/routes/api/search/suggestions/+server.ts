@@ -51,7 +51,7 @@ interface FallbackSuggestion { text: string;, category: string;
 }
 
 interface SuggestionItem {
-  text: string; // Changed from string | undefined to string, ensuring it's always a string
+  text: string; // Changed from string | undefined to string, ensuring it's always a string'
   category: string;
   score: number;
   trending: boolean;
@@ -105,7 +105,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/suggestions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
           query,
           category,
@@ -129,7 +129,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/trending`,
       {
         method: 'GET',
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       },
       [8095, 8096]
     )
@@ -145,7 +145,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/completions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , partial: partialQuery,
           category,
@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('Enhanced Legal AI Suggestions error:', error);
+    console.error('Enhanced Legal AI Suggestions error:', error);'
     // Fallback to basic suggestions if enhanced search fails
     const fallbackSuggestions = await getFallbackSuggestions(
       url.searchParams.get('category') || 'general', // Removed: 'query' parameter
@@ -255,7 +255,7 @@ export const GET: RequestHandler = async ({ url }) => {
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
         fallbackMode: true,
-        error: error instanceof Error ? error.message : `Unknown error` }
+        error: error instanceof Error ? error.message : `Unknown error' }'`
     });
   }
 };
@@ -269,7 +269,7 @@ async function processEnhancedSuggestions(
 ): Promise<SuggestionItem[]> {
   try {
     const allSuggestions = [
-      ...contextualSuggestions.map(s => ({
+      ...contextualSuggestions.map(s => ({,
         text: s.text || s.suggestion || '', // Ensure text is always a string
         category: s.category || category,
         score: s.relevanceScore || s.score || 0.8,

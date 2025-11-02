@@ -43,7 +43,7 @@ const BatchIngestRequestSchema = z.object({
   chunkOverlap: z.number().int().min(0).max(500).default(200)
 });
 
-type BatchIngestRequest = z.infer<typeof BatchIngestRequestSchema>;
+type BatchIngestRequest = z.infer<typeof, BatchIngestRequestSchema>;
 
 interface IngestResult { documentId: string;, filename: string;
   chunksCount: number;
@@ -189,15 +189,14 @@ async function storeDocument(
       stored: true
     };
   } catch (err) {
-    console.error(`Failed to store document ${filename}: ', err);
+    console.error(`Failed to store document ${filename}: ', err);'`
     return {
       documentId: 'error',
       filename,
       chunksCount: 0,
       embeddingsGenerated: 0,
       stored: false,
-      error: err instanceof Error ? err.message : 'Unknown error'
-    };
+      error: err instanceof Error ? err.message : 'Unknown error` };'`
   }
 }
 
@@ -238,8 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
         chunkSize: params.chunkSize,
         chunkOverlap: params.chunkOverlap,
         embeddingModel: 'embeddinggemma:latest',
-        indexType: 'pgvector (HNSW)'
-      }
+        indexType: `pgvector (HNSW)` }
     });
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -280,7 +278,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       ingestEndpoint: 'POST /api/rag/ingest',
       statistics: {
-        documentsInDatabase: docCount,
+       , documentsInDatabase: docCount,
         chunksInDatabase: chunkCount
       },
       capabilities: {
@@ -288,8 +286,7 @@ export const GET: RequestHandler = async () => {
         maxDocumentsPerBatch: 100,
         semanticChunking: true,
         embeddingGeneration: 'embeddinggemma:latest',
-        vectorStorage: 'pgvector (HNSW)'
-      }
+        vectorStorage: `pgvector (HNSW)` }
     });
   } catch (err) {
     return json(

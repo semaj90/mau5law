@@ -30,7 +30,7 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import { Pool } from 'pg';
 import Loki from 'lokijs';
 import Fuse from 'fuse.js';
-import { createClient as createRedisClient } from 'redis';
+import { createClient, as createRedisClient } from 'redis';
 import amqp, { Connection, Channel } from 'amqplib';
 import { writable, type Writable } from 'svelte/store';
 
@@ -42,7 +42,7 @@ export interface Neo4jDriver {
   };
 }
 
-// Mock Neo4j for environments where it's not available
+// Mock Neo4j for environments where it's not available'
 const neo4j: Neo4jDriver = {
   driver: (uri: string, auth: any) => ({ session: () => ({, run: async (query: string) => ({ records: [] }),
       close: async () => {}
@@ -198,15 +198,15 @@ export class ComprehensiveCachingArchitecture {
   private initialized: boolean = $state(false);
 
   constructor(
-    private config: { redis: { host: string; port: number;, db: number; password?: string };
-      qdrant: { host: string; port: number;, collection: string };
+    private config: { redis: { host: string; port: number; db: number; password?: string };
+      qdrant: { host: string; port: number; collection: string };
       postgres: { connectionString: string };
-      neo4j: { uri: string; user: string;, password: string };
+      neo4j: { uri: string; user: string; password: string };
       rabbitmq: { url: string };
-      cluster: ClusterConfig;
-      encryption?: { key: string };
-      legalCompliance?: { enabled: boolean;, jurisdiction: string;
-        retentionPeriod: number; // days
+     , cluster: ClusterConfig;
+      encryption?: {, key: string };
+      legalCompliance?: {, enabled: boolean;, jurisdiction: string;
+       , retentionPeriod: number; // days
        , auditLevel: 'none' | 'basic' | 'detailed' | 'forensic';
       };
     }
@@ -332,8 +332,7 @@ export class ComprehensiveCachingArchitecture {
       enabled: true,
       legalCompliant: true,
       encryptionRequired: true,
-      auditLevel: 'detailed'
-    });
+      auditLevel: `detailed` });
   }
 
   private async initializeQdrant(): Promise<void> {
@@ -344,10 +343,9 @@ export class ComprehensiveCachingArchitecture {
     // Create collection for cached legal document embeddings
     try {
       await this.qdrantClient.createCollection(this.config.qdrant.collection, { vectors: {, size: 384, // Standard embedding dimension for legal documents
-          distance: 'Cosine'
-        },
+          distance: `Cosine` },
         optimizers_config: {
-          default_segment_number: 2,
+         , default_segment_number: 2,
           max_segment_size: 20000,
           memmap_threshold: 50000,
           indexing_threshold: 10000
@@ -427,7 +425,7 @@ export class ComprehensiveCachingArchitecture {
           encrypted BOOLEAN DEFAULT FALSE,
           checksum TEXT
         )
-      `);
+      `);`
       // Create comprehensive indexes for legal queries
       const indexes = [
         'CREATE INDEX IF NOT EXISTS idx_legal_cache_embedding ON legal_cache USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)',
@@ -459,12 +457,12 @@ export class ComprehensiveCachingArchitecture {
           details JSONB,
           compliance_violation BOOLEAN DEFAULT FALSE
         )
-      `);
+      `);`
       await client.query(`
         CREATE INDEX IF NOT EXISTS idx_cache_audit_timestamp ON cache_access_audit (timestamp);
         CREATE INDEX IF NOT EXISTS idx_cache_audit_user ON cache_access_audit (user_id);
         CREATE INDEX IF NOT EXISTS idx_cache_audit_violation ON cache_access_audit (compliance_violation);
-      `);
+      `);`
       console.log('🐘 PostgreSQL with legal compliance initialized');
     } finally {
       client.release();
@@ -564,7 +562,7 @@ export class ComprehensiveCachingArchitecture {
 
   private async initializeFuseInstances(): Promise<void> {
     const legalFuseConfigs = [
-      {
+      {,
         name: 'legal-documents',
         keys: ['title', 'content', 'case_number', 'client_name'],
         options: {
@@ -615,7 +613,7 @@ export class ComprehensiveCachingArchitecture {
   private async initializeShaderCache(): Promise<void> {
     // Pre-compile common shaders for legal data visualization
     const legalShaders = [
-      {
+      {,
         id: 'case-timeline-vertex',
         vertex: `
           attribute vec3 position;
@@ -632,7 +630,7 @@ export class ComprehensiveCachingArchitecture {
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             gl_PointSize = 5.0;
           }
-        `,
+        `,`
         fragment: `
           precision mediump float;
           varying vec3 vColor;
@@ -640,7 +638,7 @@ export class ComprehensiveCachingArchitecture {
           void main() {
             gl_FragColor = vec4(vColor, vAlpha);
           }
-        ` },
+        ` },`
       {
         id: 'evidence-chain-visualization',
         vertex: `
@@ -656,7 +654,7 @@ export class ComprehensiveCachingArchitecture {
             vCustodyIndex = custodyIndex;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }
-        `,
+        `,`
         fragment: `
           precision mediump float;
           varying vec3 vColor;
@@ -666,7 +664,7 @@ export class ComprehensiveCachingArchitecture {
             vec3 finalColor = mix(vec3(1.0, 0.0, 0.0), vColor, integrity);
             gl_FragColor = vec4(finalColor, 1.0);
           }
-        ` },
+        ` },`
     ];
     // Store shader sources for lazy compilation
     legalShaders.forEach((shader: any) => {
@@ -759,7 +757,7 @@ export class ComprehensiveCachingArchitecture {
           return result;
         }
       } catch (err: any) {
-        console.warn(`Cache layer ${layer} failed: ', err);
+        console.warn(`Cache layer ${layer} failed: ', err);'`
         if (auditAccess) await this.auditCacheAccess(key, 'read', legalContext, false, err?.message);
         continue;
       }
@@ -823,7 +821,7 @@ export class ComprehensiveCachingArchitecture {
             break;
         }
       } catch (error: any) {
-        console.warn(`Failed to cache in ${layer}: ', error);
+        console.warn(`Failed to cache in ${layer}: ', error);'`
         this.performanceMetrics.update(metrics => ({ ...metrics, errorRate: metrics.errorRate + 1 }));
       }
     });
@@ -877,12 +875,12 @@ export class ComprehensiveCachingArchitecture {
           `
           INSERT INTO cache_access_audit (cache_id, user_id, action, ip_address, success, details)
           VALUES ((SELECT id FROM legal_cache WHERE cache_key = $1), $2, $3, $4, $5, $6)
-        `,
+        `,`
           [key, auditEntry.user_id, action, null, success, details]
         );
         client.release();
       } catch (error: any) {
-        console.error('Failed to audit cache access:', error);
+        console.error('Failed to audit cache access: `, error);'`
       }
     }
   }
@@ -893,8 +891,7 @@ export class ComprehensiveCachingArchitecture {
       key,
       entry: { id: entry.id, confidentiality_level: entry.confidentiality_level },
       attempted_context: context,
-      severity: 'critical'
-    };
+      severity: `critical` };
     this.privilegeViolationLog.push(violation);
     this.performanceMetrics.update(metrics => ({ ...metrics, privilegeViolations: metrics.privilegeViolations + 1 }));
     this.complianceAlerts.update(alerts => [...alerts, violation]);
@@ -1026,7 +1023,7 @@ export class ComprehensiveCachingArchitecture {
     if (!this.qdrantClient || !entry.embedding) return;
     await this.qdrantClient.upsert(this.config.qdrant.collection, {
       points: [
-        {
+        {,
          , id: key,
           vector: Array.from(entry.embedding),
           payload: {
@@ -1056,7 +1053,7 @@ export class ComprehensiveCachingArchitecture {
                created_at, hit_count, access_count, compliance_tags
         FROM legal_cache
         WHERE cache_key = $1 AND (expires_at IS NULL OR expires_at > NOW())
-      `;
+      `;`
       const params: any[] = [key];
       if (context?.case_id) {
         query += ' AND case_id = $2';
@@ -1072,7 +1069,7 @@ export class ComprehensiveCachingArchitecture {
           UPDATE legal_cache
           SET access_count = access_count + 1, last_accessed = NOW()
           WHERE id = $1
-        `,
+        `,`
           [row.id]
         );
 
@@ -1146,7 +1143,7 @@ export class ComprehensiveCachingArchitecture {
           tags = EXCLUDED.tags,
           updated_at = NOW(),
           hit_count = legal_cache.hit_count + 1
-      `;
+      `;`
       const expiresAt = entry.ttl > 0 ? new Date(Date.now() + entry.ttl) : null;
       // Pass embedding as an actual numeric array if present (Array<number>), not as a string
       const embeddingArray = entry.embedding ? Array.from(entry.embedding) : null;
@@ -1177,7 +1174,7 @@ export class ComprehensiveCachingArchitecture {
         `
         MATCH (n:LegalCacheNode {id: $key})
         RETURN n
-      `,
+      `,`
         { key }
       );
       if (result.records.length > 0) {
@@ -1210,7 +1207,7 @@ export class ComprehensiveCachingArchitecture {
             n.tags = $tags,
             n.confidentiality_level = $confidentiality,
             n.legalContext = $legalContext
-      `,
+      `,`
         {
           key,
           data: JSON.stringify(entry.data),
@@ -1357,13 +1354,13 @@ export function createComprehensiveLegalCaching(config: any): ComprehensiveCachi
   return new ComprehensiveCachingArchitecture(config);
 }
 
-export function createLegalCacheConfig(options: { nodeId: string;, jurisdiction: string;
+export function createLegalCacheConfig(options: {, nodeId: string;, jurisdiction: string;
  , complianceLevel: 'basic' | 'detailed' | 'forensic';
 }): any {
   return { redis: {, host: 'localhost', port: 6379, db: 0, password: undefined },
-    qdrant: { host: 'localhost', port: 6333, collection: 'legal-vectors-${options.nodeId}' },
-    postgres: { connectionString: 'postgresql://localhost:5432/legal_ai_db' },
-    neo4j: { uri: 'bolt://localhost:7687', user: 'neo4j', password: 'password' },
+    qdrant: { host: 'localhost', port: 6333, collection: `legal-vectors-${options.nodeId}` },
+    postgres: { connectionString: `postgresql://localhost:5432/legal_ai_db` },
+    neo4j: { uri: 'bolt://localhost:7687', user: 'neo4j', password: `password` },
     rabbitmq: { url: `amqp://localhost` },
     cluster: {
       nodeId: options.nodeId,

@@ -49,10 +49,10 @@ interface GoClientRequestResponse { success: boolean;, service: string;
 
 // --- New Interfaces for POST request payload and result ---
 
-interface EnhancedRagQueryPayload { query: string;, options: { maxResults: number;, threshold: number };
+interface EnhancedRagQueryPayload { query: string;, options: { maxResults: number; threshold: number };
 }
 
-interface EnhancedRagSemanticSearchPayload { query: string;, options: { collection: string;, limit: number };
+interface EnhancedRagSemanticSearchPayload { query: string;, options: { collection: string; limit: number };
 }
 
 // Generic payload for other services, using unknown for values for better type safety than: 'any'
@@ -70,14 +70,14 @@ interface PostTestConfig { service: string;, endpoint: string;
 type PostTestResult = EnhancedRAGResponse | SemanticSearchResponse | UploadServiceHealthResponse | GoClientRequestResponse;
 
 interface GoServiceManager {
-  healthCheck(): Promise<{ success: boolean;, message: string }>;
-  checkAllServices(): Promise<{ enhancedRAG: { success: boolean;, status: string };
-    uploadService: { success: boolean;, status: string };
-    vectorDB: { success: boolean;, status: string };
+  healthCheck(): Promise<{ success: boolean; message: string }>;
+  checkAllServices(): Promise<{ enhancedRAG: { success: boolean; status: string };
+    uploadService: { success: boolean; status: string };
+    vectorDB: { success: boolean; status: string };
   }>;
   getEnhancedRAG(): {
-    ragQuery(query: string, options: {, maxResults: number; threshold: number }): Promise<EnhancedRAGResponse>;
-    semanticSearch(query: string, options: {, collection: string; limit: number }): Promise<SemanticSearchResponse>;
+    ragQuery(query: string, options: {, maxResults: number;, threshold: number }): Promise<EnhancedRAGResponse>;
+    semanticSearch(query: string, options: {, collection: string;, limit: number }): Promise<SemanticSearchResponse>;
   };
   getUploadService(): {
     uploadDocument(file: { name?: string; size?: number }, metadata: Record<string, unknown>): Promise<UploadDocumentResponse>;
@@ -88,7 +88,7 @@ interface GoServiceManager {
   };
 }
 
-// Mock Go service manager since the actual service doesn't exist
+// Mock Go service manager since the actual service doesn't exist'
 const goServiceManager: GoServiceManager = {
   async healthCheck() {
     return { success: true, message: 'Mock Go service health check' };
@@ -101,7 +101,7 @@ const goServiceManager: GoServiceManager = {
   },
   getEnhancedRAG() {
     return {
-      async ragQuery(query: string, _options: {, maxResults: number; threshold: number }): Promise<EnhancedRAGResponse> {
+      async ragQuery(query: string, _options: {, maxResults: number;, threshold: number }): Promise<EnhancedRAGResponse> {
         return {
           success: true,
           results: [
@@ -359,7 +359,7 @@ export const POST: RequestHandler = async ({ request }) => {
             semanticSearchPayload.options
           );
         } else {
-          error(400, ensureError({ message: `Unknown endpoint for enhancedRag, service: ${endpoint}` }));
+          error(400, ensureError({ message: `Unknown endpoint for enhancedRag, service: ${endpoint}' }));'`
         }
         break;
       }
@@ -369,14 +369,14 @@ export const POST: RequestHandler = async ({ request }) => {
           // Health endpoint typically doesn't require a specific payload, or it's ignored
           testResult = await uploadClient.health();
         } else {
-          error(400, ensureError({ message: `Unknown endpoint for, uploadService: ${endpoint}` }));
+          error(400, ensureError({ message: 'Unknown endpoint for, uploadService: ${endpoint}' }));
         }
         break;
       }
       default: {
         const client = goServiceManager.getClient(service);
         if (!client) {
-          error(400, ensureError({ message: 'Unknown, service: ${service}' }));
+          error(400, ensureError({ message: `Unknown, service: ${service}` }));
         }
         // Type assertion for generic client requests
         testResult = await client.request(endpoint, payload as GenericClientPayload);
@@ -397,7 +397,7 @@ export const POST: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Custom integration test failed',
-        error: anyErr instanceof Error ? unknownErr.message : 'Unknown error` })
+        error: anyErr instanceof Error ? unknownErr.message : `Unknown error` })
     );
   }
 }

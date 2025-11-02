@@ -100,7 +100,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     try {
       const resp = await fetch(`${FASTAPI_LEGALBERT_URL}/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ text, options: analysisOptions })
       });
       if (resp.ok) {
@@ -126,7 +126,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     try {
       const ollamaResp = await fetch(`${OLLAMA_API_URL}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           model: 'gemma3:270m',
           prompt: `Analyze the following legal text; comprehensively:\n\n${text}`,
@@ -235,7 +235,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     return json(result);
   } catch (error: any) {
-    console.error('Deep analysis API error:', error);
+    console.error('Deep analysis API error:', error);'
     return json(
       {
         error: 'Analysis failed',
@@ -247,5 +247,5 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 };
 
-// ensure the wrapped handler satisfies SvelteKit's RequestHandler type
+// ensure the wrapped handler satisfies SvelteKit's RequestHandler type'
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler) as RequestHandler;

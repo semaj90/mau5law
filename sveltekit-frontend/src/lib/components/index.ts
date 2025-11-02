@@ -33,12 +33,12 @@ export {
   type ComponentLibrary,
   type SelectOption
 } from './ui';
-// export { SelectOption as EnhancedSelectOption } from './ui/enhanced-bits/index.js'; // Disabled: empty file
+// export { SelectOption, as EnhancedSelectOption } from './ui/enhanced-bits/index.js'; // Disabled: empty file
 export * from './ui/modern/index.js';
 // ===== FORM COMPONENTS =====
 // Selective form exports to avoid conflicts
-export { Form as ComponentForm, FormStandard as ComponentFormStandard } from './ui/form/index.js';
-export { Input as ComponentInput } from './ui/input/index.js';
+export { Form, as ComponentForm, FormStandard as ComponentFormStandard } from './ui/form/index.js';
+export { Input, as ComponentInput } from './ui/input/index.js';
 // Textarea export handled by base UI components
 // export * from './ui/textarea/index.js'
 export * from './ui/checkbox/index.js';
@@ -76,16 +76,16 @@ export * from './search/index.js';
 export * from './unified/index.js';
 // ===== BUSINESS LOGIC COMPONENTS =====
 // AI & Chat Components
-export { default as AIChat } from './AIChat.svelte.js';
-export { default as EnhancedLegalChat } from './EnhancedLegalChat.svelte.js';
-export { default as LLMAssistant } from './LLMAssistant.svelte.js';
+export { default, as AIChat } from './AIChat.svelte.js';
+export { default, as EnhancedLegalChat } from './EnhancedLegalChat.svelte.js';
+export { default, as LLMAssistant } from './LLMAssistant.svelte.js';
 export * from './ai/index.js';
 // Case Management
-export { default as CaseCard } from './+CaseCard.svelte.js';
-export { default as LegalCaseManager } from './LegalCaseManager.svelte.js';
+export { default, as CaseCard } from './+CaseCard.svelte.js';
+export { default, as LegalCaseManager } from './LegalCaseManager.svelte.js';
 export * from './cases/index.js';
 // Evidence & Legal
-export { default as EvidencePanel } from './EvidencePanel.svelte.js';
+export { default, as EvidencePanel } from './EvidencePanel.svelte.js';
 export * from './legal/index.js';
 export * from './evidence-editor/index.js';
 // Chat & Messaging
@@ -95,7 +95,7 @@ export * from './canvas/index.js';
 // Authentication
 export * from './auth/index.js';
 // Layout & Navigation
-export { default as NierNavigation } from './NierNavigation.svelte.js';
+export { default, as NierNavigation } from './NierNavigation.svelte.js';
 export * from './layout/index.js';
 // Realtime Components
 export * from './realtime/index.js';
@@ -106,10 +106,10 @@ export * from './detective/index.js';
 // Subcomponents
 export * from './subcomponents/index.js';
 // Utility Components
-export { default as LoadingSpinner } from './LoadingSpinner.svelte.js';
-export { default as Typewriter } from './Typewriter.svelte.js';
-export { default as KeyboardShortcutProvider } from './KeyboardShortcutProvider.svelte.js';
-export { default as HeadlessDemo } from './HeadlessDemo.svelte.js';
+export { default, as LoadingSpinner } from './LoadingSpinner.svelte.js';
+export { default, as Typewriter } from './Typewriter.svelte.js';
+export { default, as KeyboardShortcutProvider } from './KeyboardShortcutProvider.svelte.js';
+export { default, as HeadlessDemo } from './HeadlessDemo.svelte.js';
 // ===== COMPONENT METADATA =====
 export const COMPONENT_REGISTRY = {
   ui: 89,

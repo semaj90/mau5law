@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown; action: ${action}' },
+            error: 'Unknown; action: ${action}' },
           { status: 400 }
         );
     }
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'dimensional-cache',
       status: 'operational',
       stats: {
-        cacheSize: stats.size,
+       , cacheSize: stats.size,
         capacity: stats.capacity,
         hitRate: stats.hitRate,
         memoryUsage: stats.memoryUsage
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Embedding caching',
         'Attention weight storage',
         'Metadata association',
-        'Pattern-based clearing'
+        'Pattern-based clearing`'`
       ],
       timestamp: Date.now()
     })

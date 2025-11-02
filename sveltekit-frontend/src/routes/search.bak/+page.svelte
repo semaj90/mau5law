@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -31,98 +31,98 @@ import type { User } from '$lib/types';
   <title>Semantic Search - Legal AI Platform</title>
 </svelte:head>
 
-<div class="search-page">
+<div, class="search-page">
   <!-- Header -->
-  <header class="page-header">
-    <div class="header-content">
-      <h1 class="page-title">🔍 Semantic Search</h1>
-      <p class="page-subtitle">Ultra-fast legal document search powered by pgvector + Redis</p>
+  <header, class="page-header">
+    <div, class="header-content">
+      <h1, class="page-title">🔍 Semantic Search</h1>
+      <p, class="page-subtitle">Ultra-fast legal document search powered by pgvector + Redis</p>
     </div>
 
-    <nav class="header-nav">
-      <button onclick={() => goto('/dashboard')} class="nav-button">
+    <nav, class="header-nav">
+      <button, onclick={() => goto('/dashboard')} class="nav-button">
         ← Back to Dashboard
       </button>
       {#if userName}
-        <span class="user-info">👤 {userName}</span>
+        <span, class="user-info">👤 {userName}</span>
       {/if}
     </nav>
   </header>
 
-  <!-- Main Content -->
-  <main class="page-content">
+  <!-- Main, Content -->
+  <main, class="page-content">
     {#if isAuthenticated}
       <PgvectorSearchInterface />
 
-      <!-- Features Section -->
-      <section class="features-section">
-        <h2 class="section-title">⚡ Performance Features</h2>
+      <!-- Features, Section -->
+      <section, class="features-section">
+        <h2, class="section-title">⚡ Performance Features</h2>
 
-        <div class="features-grid">
-          <div class="feature-card">
+        <div, class="features-grid">
+          <div, class="feature-card">
             <h3>🚀 5-10x Faster</h3>
             <p>15-30ms search vs 100-150ms traditional methods</p>
           </div>
 
-          <div class="feature-card">
+          <div, class="feature-card">
             <h3>📦 Smart Caching</h3>
             <p>Redis caching for instant repeated searches</p>
           </div>
 
-          <div class="feature-card">
+          <div, class="feature-card">
             <h3>🎯 Semantic Understanding</h3>
             <p>pgvector embeddings understand legal meaning, not just keywords</p>
           </div>
 
-          <div class="feature-card">
+          <div, class="feature-card">
             <h3>⚖️ Legal Optimized</h3>
             <p>Trained on legal documents for precise relevance</p>
           </div>
 
-          <div class="feature-card">
+          <div, class="feature-card">
             <h3>📊 Real-time Metrics</h3>
             <p>See embedding and search performance times</p>
           </div>
 
-          <div class="feature-card">
+          <div, class="feature-card">
             <h3>🔧 Adjustable Threshold</h3>
             <p>Control similarity threshold for precision vs recall</p>
           </div>
         </div>
       </section>
 
-      <!-- How It Works -->
-      <section class="how-it-works">
-        <h2 class="section-title">⚙️ How It Works</h2>
+      <!-- How It, Works -->
+      <section, class="how-it-works">
+        <h2, class="section-title">⚙️ How It Works</h2>
 
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-content">
+        <div, class="steps">
+          <div, class="step">
+            <div, class="step-number">1</div>
+            <div, class="step-content">
               <h4>Query Embedding</h4>
               <p>Your search query is converted to a semantic embedding (384-dimensional vector)</p>
             </div>
           </div>
 
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
+          <div, class="step">
+            <div, class="step-number">2</div>
+            <div, class="step-content">
               <h4>Vector Search</h4>
               <p>pgvector finds similar documents using cosine distance (HNSW index)</p>
             </div>
           </div>
 
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
+          <div, class="step">
+            <div, class="step-number">3</div>
+            <div, class="step-content">
               <h4>Results Cache</h4>
               <p>Results are cached in Redis for 1 hour for instant future queries</p>
             </div>
           </div>
 
-          <div class="step">
-            <div class="step-number">4</div>
-            <div class="step-content">
+          <div, class="step">
+            <div, class="step-number">4</div>
+            <div, class="step-content">
               <h4>Similarity Scored</h4>
               <p>Each result shows similarity score (0-100%) for relevance</p>
             </div>
@@ -130,50 +130,50 @@ import type { User } from '$lib/types';
         </div>
       </section>
 
-      <!-- Tech Stack -->
-      <section class="tech-section">
-        <h2 class="section-title">🛠️ Technology Stack</h2>
+      <!-- Tech, Stack -->
+      <section, class="tech-section">
+        <h2, class="section-title">🛠️ Technology Stack</h2>
 
-        <div class="tech-grid">
-          <div class="tech-item">
-            <span class="tech-icon">🐘</span>
-            <span class="tech-name">PostgreSQL 17</span>
-            <span class="tech-detail">Primary database</span>
+        <div, class="tech-grid">
+          <div, class="tech-item">
+            <span, class="tech-icon">🐘</span>
+            <span, class="tech-name">PostgreSQL 17</span>
+            <span, class="tech-detail">Primary database</span>
           </div>
 
-          <div class="tech-item">
-            <span class="tech-icon">📦</span>
-            <span class="tech-name">pgvector 0.8.0</span>
-            <span class="tech-detail">Vector similarity search</span>
+          <div, class="tech-item">
+            <span, class="tech-icon">📦</span>
+            <span, class="tech-name">pgvector 0.8.0</span>
+            <span, class="tech-detail">Vector similarity search</span>
           </div>
 
-          <div class="tech-item">
-            <span class="tech-icon">⚡</span>
-            <span class="tech-name">Redis 7</span>
-            <span class="tech-detail">Result caching layer</span>
+          <div, class="tech-item">
+            <span, class="tech-icon">⚡</span>
+            <span, class="tech-name">Redis 7</span>
+            <span, class="tech-detail">Result caching layer</span>
           </div>
 
-          <div class="tech-item">
-            <span class="tech-icon">🤖</span>
-            <span class="tech-name">Ollama</span>
-            <span class="tech-detail">Local embeddings (Gemma)</span>
+          <div, class="tech-item">
+            <span, class="tech-icon">🤖</span>
+            <span, class="tech-name">Ollama</span>
+            <span, class="tech-detail">Local embeddings (Gemma)</span>
           </div>
 
-          <div class="tech-item">
-            <span class="tech-icon">🎨</span>
-            <span class="tech-name">Gemma 384-dim</span>
-            <span class="tech-detail">Embedding model</span>
+          <div, class="tech-item">
+            <span, class="tech-icon">🎨</span>
+            <span, class="tech-name">Gemma 384-dim</span>
+            <span, class="tech-detail">Embedding model</span>
           </div>
 
-          <div class="tech-item">
-            <span class="tech-icon">🏢</span>
-            <span class="tech-name">HNSW Indexing</span>
-            <span class="tech-detail">Fast approximate search</span>
+          <div, class="tech-item">
+            <span, class="tech-icon">🏢</span>
+            <span, class="tech-name">HNSW Indexing</span>
+            <span, class="tech-detail">Fast approximate search</span>
           </div>
         </div>
       </section>
     {:else}
-      <div class="loading">Loading...</div>
+      <div, class="loading">Loading...</div>
     {/if}
   </main>
 </div>

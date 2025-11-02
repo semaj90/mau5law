@@ -10,7 +10,7 @@ export type ParallelRequest = {
   userContext?: { userId?: string; sessionId?: string; caseId?: string; [k: string]: any };
 };
 
-export type OrchestrationError = { service: string;, message: string };
+export type OrchestrationError = { service: string; message: string };
 
 export type ParallelExecutionResult = {
   success: boolean;
@@ -20,8 +20,8 @@ export type ParallelExecutionResult = {
   cached?: boolean;
 };
 
-type CircuitBreakerState = { isOpen: boolean; failures: number;, lastFailure: Date };
-type PerformanceMetrics = { avgLatency: number; throughput: number;, errorRate: number };
+type CircuitBreakerState = { isOpen: boolean; failures: number; lastFailure: Date };
+type PerformanceMetrics = { avgLatency: number; throughput: number; errorRate: number };
 
 export class ParallelOrchestrationMaster {
   private circuitBreakers: Map<string, CircuitBreakerState> = new Map();
@@ -63,7 +63,7 @@ export class ParallelOrchestrationMaster {
       await this.prewarmCacheForRequest(request).catch(() => undefined);
 
       // Simulate parallel tasks with predictable stub results
-      const tasks: Promise<{ service: string;, result: any }>[] = [
+      const tasks: Promise<{ service: string; result: any }>[] = [
         this.simulateService('contextualMemoryChat', request),
         this.simulateService('multiEmbedding', request),
         this.simulateService('legalRAG', request),
@@ -142,7 +142,7 @@ export class ParallelOrchestrationMaster {
   private async simulateService(
     service: string,
     request: ParallelRequest
-  ): Promise<{ service: string;, result: any }> {
+  ): Promise<{ service: string; result: any }> {
     // Quick circuit-breaker check
     const cb = this.circuitBreakers.get(service);
     if (cb?.isOpen) {
@@ -188,7 +188,7 @@ export class ParallelOrchestrationMaster {
       const obj = reason as { message?: any; toString?: any };
       // Prefer explicit message property if available
       if (typeof obj.message === 'string') return obj.message;
-      // If an object's toString is a function, try calling it safely
+      // If an object's toString is a function, try calling it safely'
       if (typeof obj.toString === 'function') {
         try {
           const s = (obj.toString as () => unknown)();

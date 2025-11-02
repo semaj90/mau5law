@@ -36,7 +36,7 @@ export class RedisMetricsCache {
   private setTimes: number[] = [];
   private readonly MAX_TIMING_SAMPLES = 1000;
   // Key pattern tracking for insights
-  private keyPatterns: Map<string, { hits: number;, misses: number }> = new Map();
+  private keyPatterns: Map<string, { hits: number; misses: number }> = new Map();
   constructor(private url: string) {}
   /**
    * Connect to Redis
@@ -46,7 +46,7 @@ export class RedisMetricsCache {
     try {
       this.client = redis;
       this.client.on('error', (err) => {
-        console.error('Redis connection error:', err);
+        console.error('Redis connection error:', err);'
         this.metrics.errors++;
         this.isConnected = false;
       });
@@ -88,7 +88,7 @@ export class RedisMetricsCache {
     } catch (error) {
       this.metrics.errors++;
       this.metrics.misses++;
-      console.error(`Redis GET error for key ${key}: ', error);
+      console.error(`Redis GET error for key ${key}: ', error);'`
       return null;
     }
   }
@@ -128,7 +128,7 @@ export class RedisMetricsCache {
       return await this.client!.del(key);
     } catch (error) {
       this.metrics.errors++;
-      console.error(`Redis DEL error for key ${key}: ', error);
+      console.error(`Redis DEL error for key ${key}: ', error);'`
       return 0;
     }
   }
@@ -215,7 +215,7 @@ export class RedisMetricsCache {
       return values;
     } catch (error) {
       this.metrics.errors++;
-      console.error('Redis MGET error:', error);
+      console.error('Redis MGET error:', error);'
       return keys.map(() => null);
     }
   }
@@ -267,7 +267,7 @@ export class RedisMetricsCache {
   /**
    * Get key pattern statistics
    */
-  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number;, hitRate: number }> {
+  getKeyPatternStats(): Array<{ pattern: string; hits: number; misses: number; hitRate: number }> {
     return Array.from(this.keyPatterns.entries())
       .map(([pattern, stats]) => ({
         pattern,
@@ -292,7 +292,7 @@ export class RedisMetricsCache {
       },
       performance: {
         averageGetTime: metrics.averageGetTime.toFixed(2) + 'ms',
-        averageSetTime: metrics.averageSetTime.toFixed(2) + 'ms` },
+        averageSetTime: metrics.averageSetTime.toFixed(2) + 'ms` },'`
       topPatterns: patterns.slice(0, 10),
       recommendations: this.generateRecommendations(metrics, patterns)
     };
@@ -300,7 +300,7 @@ export class RedisMetricsCache {
   /**
    * Generate optimization recommendations
    */
-  private generateRecommendations(metrics: CacheMetrics, patterns: ReturnType<typeof this.getKeyPatternStats>): string[] {
+  private generateRecommendations(metrics: CacheMetrics, patterns: ReturnType<typeof, this.getKeyPatternStats>): string[] {
     const recommendations: string[] = [];
     // Low hit rate recommendation
     if (metrics.hitRate < 50) {

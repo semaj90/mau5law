@@ -148,7 +148,7 @@ export class LLVMWASMBridge {
       await this.loadModule(module);
       return module;
     } catch (error: any) {
-      console.error(`❌ Failed to compile module ${moduleId}: ', error);
+      console.error(`❌ Failed to compile module ${moduleId}: ', error);'`
       return null;
     }
   }
@@ -180,7 +180,7 @@ double get_processing_time() {
   // Mock timing
   return 42.5;
 }
-}`;
+}`;`
   }
   private generateFunctionForModule(baseName: string, moduleName: string): string {
     if (baseName === 'legal_text_processor') {
@@ -208,7 +208,7 @@ int32_t extractCitations(const char* text, int32_t length, char* citations, int3
   strncpy(citations, found_citations, citations_length);
   citations[citations_length] = '\\0';
   return citations_length;
-}`;
+}`;`
     }
     if (baseName === 'vector_engine') {
       return `
@@ -239,7 +239,7 @@ float calculateSimilarity(const float* vec1, const float* vec2, int32_t size) {
   }
   float magnitude = sqrtf(norm1) * sqrtf(norm2);
   return magnitude > 0.0f ? dot_product / magnitude : 0.0f;
-}`;
+}`;`
     }
     // Default function generation
     return `
@@ -254,7 +254,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   strncpy(output, result, result_length);
   output[result_length] = '\\0';
   return result_length;
-}`;
+}`;`
   }
   private async compileToWASM(
     sources: Array<{, name: string; content: string }>,
@@ -265,7 +265,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     const startTime = performance.now();
     try {
       console.log(`🔨 Compiling ${sources.length} source files to WebAssembly...`);
-      console.log(`📋 Options: ', options);
+      console.log(`📋 Options: ', options);'`
       // Simulate compilation delay
       await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
       // Generate a minimal but functional WASM binary
@@ -290,7 +290,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         memoryUsage: 0,
         optimizations: [],
         warnings: [],
-        error: error instanceof Error ? error.message : 'Unknown compilation error` };
+        error: error instanceof Error ? error.message : 'Unknown compilation error' };
     }
   }
   private generateMockWASMBinary(
@@ -300,7 +300,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     // Generate a minimal WASM binary that can be instantiated
     // This is a mock implementation - real WASM would be much more complex
     const wasmModule = new Uint8Array([
-      // WASM magic number
+      // WASM magic number,
       0x00,
       0x61,
       0x73,
@@ -391,7 +391,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       // Instantiate the WASM module
       const wasmModule = await WebAssembly.instantiate(module.compiledWasm, { env: {, memory: module.memory,
           abort: (msg: number, file: number, line: number, column: number) => {
-            console.error(`WASM abort in ${module.name}: ', { msg, file, line, column });
+            console.error(`WASM abort in ${module.name}: ', { msg, file, line, column });'`
           },
           console_log: (ptr: number) => {
             // Read string from WASM memory
@@ -416,7 +416,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       module.performance.loadTimeMs = performance.now() - startTime;
       console.log(`✅ Module ${module.name} loaded successfully`);
     } catch (error: any) {
-      console.error(`❌ Failed to load module ${module.name}: ', error);
+      console.error(`❌ Failed to load module ${module.name}: ', error);'`
       throw error;
     }
   }

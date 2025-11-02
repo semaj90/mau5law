@@ -225,7 +225,7 @@ export class HybridVectorSearchService {
           similarity: result.score,
           content: result.payload?.content || '',
           metadata: result.payload?.metadata || {},
-          document_type: result.payload?.document_type || 'unknown` }));
+          document_type: result.payload?.document_type || 'unknown' }));
       } catch (error) {
         console.warn('Qdrant search failed, falling back to pgvector:', error);
         // Fall through to pgvector

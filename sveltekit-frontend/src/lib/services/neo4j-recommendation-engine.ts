@@ -23,7 +23,7 @@ export class Neo4jRecommendationEngine {
     console.log('Generating mock recommendations for:', query.context);
     // Mock implementation for demonstration
     return [
-      {
+      {,
         title: 'Related Case Law Analysis',
         description: 'Identified three highly relevant precedents based on your query.',
         score: 0.92,

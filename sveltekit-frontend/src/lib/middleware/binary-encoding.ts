@@ -4,7 +4,7 @@
  * Optimized for shader caching, legal document processing, and high-performance data transfer
  */
 import * as CBOR from 'cbor';
-import { encode as msgpackEncode, decode as msgpackDecode } from '@msgpack/msgpack';
+import { encode, as msgpackEncode, decode as msgpackDecode } from '@msgpack/msgpack';
 import type { RequestEvent } from '@sveltejs/kit';
 
 // Add a narrow type for event.locals to avoid `any`
@@ -51,7 +51,7 @@ export interface BinaryStreamConfig { chunkSize: number;, compression: boolean;
 
 export class AdvancedBinaryEncodingService {
   private metrics: Map<string, EncodingMetrics> = new Map();
-  private cache: Map<string, { data: ArrayBuffer | string; format: EncodingFormat;, timestamp: number }> = new Map();
+  private cache: Map<string, { data: ArrayBuffer | string; format: EncodingFormat; timestamp: number }> = new Map();
   private defaultOptions: BinaryEncodingOptions = {
     format: undefined,
     compression: true,
@@ -113,7 +113,7 @@ export class AdvancedBinaryEncodingService {
     data: any,
     format?: EncodingFormat,
     context?: LegalWorkflowContext
-  ): Promise<{ encoded: ArrayBuffer | string; format: EncodingFormat; metrics: EncodingMetrics;, cacheKey: string }> {
+  ): Promise<{ encoded: ArrayBuffer | string; format: EncodingFormat; metrics: EncodingMetrics; cacheKey: string }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     const targetFormat = format || this.detectOptimalFormat(data, context);
     const originalSize = new TextEncoder().encode(JSON.stringify(data)).length;
@@ -190,7 +190,7 @@ export class AdvancedBinaryEncodingService {
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       if (this.options.fallback && targetFormat !== 'json') {
-        console.warn(`Encoding failed for ${targetFormat}, falling back to JSON: ', err);
+        console.warn(`Encoding failed for ${targetFormat}, falling back to JSON: ', err);'`
         return this.encode(data, 'json', context);
       }
       throw new Error(`Encoding failed: ${String(err.message ?? err)}`);
@@ -203,7 +203,7 @@ export class AdvancedBinaryEncodingService {
   async decode(
     data: ArrayBuffer | string,
     format: EncodingFormat
-  ): Promise<{ decoded: any;, metrics: EncodingMetrics }> {
+  ): Promise<{ decoded: any; metrics: EncodingMetrics }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let decoded: any;
     try {
@@ -255,7 +255,7 @@ export class AdvancedBinaryEncodingService {
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       if (this.options.fallback && format !== 'json') {
-        console.warn(`Decoding failed for ${format}, attempting JSON fallback: ', err);
+        console.warn(`Decoding failed for ${format}, attempting JSON fallback: ', err);'`
         return this.decode(data, 'json');
       }
       throw new Error(`Decoding failed: ${String(err.message ?? err)}`);
@@ -269,7 +269,7 @@ export class AdvancedBinaryEncodingService {
     data: AsyncIterable<unknown>,
     config: BinaryStreamConfig
   ): AsyncGenerator<
-    { chunk: ArrayBuffer | string; format: EncodingFormat; chunkIndex: number;, metrics: EncodingMetrics },
+    { chunk: ArrayBuffer | string; format: EncodingFormat; chunkIndex: number; metrics: EncodingMetrics },
     void,
     unknown
   > {

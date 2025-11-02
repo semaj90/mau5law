@@ -33,14 +33,14 @@ export const GET: RequestHandler = async () => {
           metrics: {
             attachedQueues: systemHealth.queueManager.attachedQueues,
             optimizationScore: `${systemHealth.queueManager.optimizationScore}%`,
-            autoScaling: systemHealth.queueManager.autoScalingActive ? 'active' : `inactive` }
+            autoScaling: systemHealth.queueManager.autoScalingActive ? 'active' : 'inactive' }
         },
         stateManager: {
           status: systemHealth.stateManager.isHealthy ? 'healthy' : 'unhealthy',
           metrics: {
             activeSubscriptions: systemHealth.stateManager.activeSubscriptions,
             stateConflicts: systemHealth.stateManager.stateConflicts,
-            syncLatency: `${systemHealth.stateManager.syncLatency}ms' }
+            syncLatency: '${systemHealth.stateManager.syncLatency}ms' }
         },
         integrations: { rabbitmq: {, status: 'connected',
             queues: [
@@ -86,8 +86,8 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'System health check failed',
         components: { orchestrator: {, status: 'unknown' },
-          queueManager: { status: 'unknown' },
-          stateManager: { status: 'unknown' }
+          queueManager: { status: 'unknown` },'`
+          stateManager: { status: `unknown` }
         }
       },
       {

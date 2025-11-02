@@ -10,7 +10,7 @@ export async function getConnection(): Promise<any> {
   console.log('🐰 Connecting to RabbitMQ:', rabbitmqUrl);
   connection = await amqp.connect(rabbitmqUrl);
   connection.on('error', (err) => {
-    console.error('❌ RabbitMQ connection error:', err);
+    console.error('❌ RabbitMQ connection error:', err);'
     connection = null;
     channel = null;
   });
@@ -28,7 +28,7 @@ export async function getChannel(): Promise<Channel> {
   // Set prefetch for better load balancing
   await channel.prefetch(1);
   channel.on('error', (err) => {
-    console.error('❌ RabbitMQ channel error:', err);
+    console.error('❌ RabbitMQ channel error:', err);'
     channel = null;
   });
   channel.on('close', () => {
@@ -51,12 +51,12 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
     if (!sent) {
       throw new Error('Message queue is full');
     }
-    console.log(`📤 Published to queue ${queueName}: ', {
+    console.log(`📤 Published to queue ${queueName}: ', {'`
       messageId: payload.sessionId || 'unknown',
       queueName
     });
   } catch (error: any) {
-    console.error(`❌ Failed to publish to queue ${queueName}: ', error);
+    console.error(`❌ Failed to publish to queue ${queueName}: ', error);'`
     throw error;
   }
 }
@@ -82,12 +82,12 @@ export async function consumeFromQueue(
           () => ch.nack(msg, false, false)
         );
       } catch (error: any) {
-        console.error(`❌ Error processing message from ${queueName}: ', error);
-        ch.nack(msg, false, false); // Don't requeue on parse errors
+        console.error(`❌ Error processing message from ${queueName}: ', error);'`
+        ch.nack(msg, false, false); // Don't requeue on parse errors'
       }
     });
   } catch (error: any) {
-    console.error(`❌ Failed to consume from queue ${queueName}: ', error);
+    console.error(`❌ Failed to consume from queue ${queueName}: ', error);'`
     throw error;
   }
 }
@@ -153,13 +153,11 @@ export async function healthCheck(): Promise<boolean> {
 // Queue constants
 export const QUEUES = { evidence: {, process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
-    response: 'evidence.response.queue'
-  },
+    response: 'evidence.response.queue` },'`
   ai: {
     analysis: 'ai.analysis.queue',
     embedding: 'ai.embedding.queue',
-    response: 'ai.response.queue'
-  },
+    response: `ai.response.queue` },
   notification: {
     email: '(notification as { email?: any; webhook?: any }).email.queue',
     webhook: `(notification as { email?: any; webhook?: any }).webhook.queue` }

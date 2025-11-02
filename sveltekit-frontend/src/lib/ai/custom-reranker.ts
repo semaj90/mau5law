@@ -139,7 +139,7 @@ export class LegalAIReranker {
     return boosts?.[actionType as keyof typeof boosts] || 0;
   }
   /**
-   * Recency scoring based on user's recent actions
+   * Recency scoring based on user's recent actions'
    */
   private calculateRecencyScore(result: RerankResult, recentActions: string[]): number {
     const resultAction = result.metadata?.lastAction as string;
@@ -237,7 +237,7 @@ export async function enhancedSearchWithNeo4j(
  */
 function calculatePathScore(result: RerankResult | ResultLike, neo4jContext: Neo4jPathContext): number {
   let pathScore = 0;
-  // Check if result relates to user's recent path
+  // Check if result relates to user's recent path'
   neo4jContext.userPath.forEach((pathNode, index) => {
     if (result.content?.includes(pathNode) || result.payload?.tags?.includes(pathNode)) {
       pathScore += (neo4jContext.userPath.length - index) / neo4jContext.userPath.length;
@@ -269,7 +269,7 @@ export async function enhancedSearch(
   return enhancedSearchWithNeo4j(query, userContext, undefined, limit);
 }
 // Export for use in components
-export { LegalAIReranker as default };
+export { LegalAIReranker, as default };
 import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from './types.js';
 import { dimensionalCache } from './dimensional-cache-engine';
 /**
@@ -283,7 +283,7 @@ export async function synthesizeMultiLLMOutput({
   uploadedFiles,
   mcpServers
 }: { llmOutputs: AIModelOutput[];, userHistory: UserHistory;
-  uploadedFiles: UploadedFile[];
+ , uploadedFiles: UploadedFile[];
  , mcpServers: MCPServerData[];
 }): Promise<SynthesisResult> {
   // 1. Cache and auto-encode all inputs for fast retrieval and training
@@ -319,7 +319,7 @@ export async function synthesizeMultiLLMOutput({
   const nextSteps = llmOutputs.flatMap(o => o.nextSteps || []);
   // 5. Generative autocomplete and self-prompting
   const generativeAutocomplete = `Auto-complete: ${thinkingTokens.slice(0, 200)}...`;
-  const selfPrompt = `AI Assistant: Based on the user's recent actions and feedback, the following next steps are recommended for the prosecutor: ${nextSteps.join(', ')}.`;
+  const selfPrompt = `AI Assistant: Based on the user's recent actions and feedback, the following next steps are recommended for the prosecutor: ${nextSteps.join(', ')}.`;'
   const result: SynthesisResult = {
     fixes,
     codeReview,
@@ -333,6 +333,6 @@ export async function synthesizeMultiLLMOutput({
   await dimensionalCache.cacheDimensionalArray(cacheKey, result, {
     userId: 'user-123',
     sessionId: 'session-456',
-    behaviorPattern: 'power_user` });
+    behaviorPattern: 'power_user' });
   return result;
 }

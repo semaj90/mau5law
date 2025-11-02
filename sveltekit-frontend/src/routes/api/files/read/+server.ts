@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     // Safe extraction of message from unknown
     const details = error instanceof Error ? error.message : String(error);
-    console.error('File read error:', details);
+    console.error('File read error:', details);'
     return json({ error: 'Failed to read file', details }, { status: 500 });
   }
 };

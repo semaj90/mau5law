@@ -24,9 +24,9 @@ const mockOllamaClient: OllamaClient = {
         resource_requirements: 0.7
       });
     } else if (prompt.includes('strategic recommendations')) {
-      return `1. Conduct further forensic analysis on digital evidence.
+      return `1. Conduct further forensic analysis on digital evidence.`
 2. Prepare witnesses for cross-examination by simulating tough questions.
-3. Explore plea bargain options while maintaining strong prosecution stance.`;
+3. Explore plea bargain options while maintaining strong prosecution stance.`;`
     } else if (prompt.includes('Summarize why this case received a score')) {
       return `The case received a high score due to strong evidence, clear legal precedents, and high public interest. Weaknesses include some witness reliability concerns.`;
     }
@@ -35,10 +35,10 @@ const mockOllamaClient: OllamaClient = {
 };
 export const ollamaService: OllamaClient = mockOllamaClient;
 // You might also have a function to summarize with Gemma specifically
-export async function summarizeWithGemma(params: {, query: string; context: string }): Promise<string> {
-  const prompt = `Based on the following context, summarize the answer to the query.
+export async function summarizeWithGemma(params: {, query: string;, context: string }): Promise<string> {
+  const prompt = `Based on the following context, summarize the answer to the query.`
 Query: ${params.query}
 Context: ${params.context}
-Summary: ';
+Summary: ';'
   return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3, max_tokens: 300 });
 }

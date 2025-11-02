@@ -48,8 +48,8 @@ export function generateEmbeddingHash(embedding: number[] | Float32Array): strin
 export class SemanticCache {
   /**
    * Attempts to retrieve a semantically similar response from the cache.
-   * @param query The user's query string.
-   * @param queryEmbedding The embedding of the user's query.
+   * @param query The user's query string.'
+   * @param queryEmbedding The embedding of the user's query.'
    * @param metadata Optional metadata for filtering cache entries.
    * @returns A cached response if a semantically similar entry is found, otherwise null.
    */
@@ -112,7 +112,7 @@ export class SemanticCache {
 		const MAX_KEYS_TO_CHECK = 200;
 		if (knownKeys.length > MAX_KEYS_TO_CHECK) knownKeys = knownKeys.slice(0, MAX_KEYS_TO_CHECK);
 
-		let bestMatch: { key: string;, similarity: number; entry?: SemanticCacheEntry } | null = null;
+		let bestMatch: { key: string; similarity: number; entry?: SemanticCacheEntry } | null = null;
 
 		for (const key of knownKeys) {
 			// Skip exact key if already handled
@@ -157,10 +157,10 @@ export class SemanticCache {
 	}
 
   /**
-   * Stores a query, its embedding, and the LLM's response in the semantic cache.
+   * Stores a query, its embedding, and the LLM's response in the semantic cache.'
    * @param query The original user query.
    * @param embedding The vector embedding of the query.
-   * @param response The LLM's generated response.
+   * @param response The LLM's generated response.'
    * @param _metadata Optional metadata to store with the cache entry.
    */
   async setSemanticResponse(

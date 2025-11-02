@@ -45,9 +45,9 @@ interface GPUProcessingContext { processingQueue: DocumentInput[];, activeProce
 // Events
 type GPUProcessingEvent =
   | { type: 'PROCESS_DOCUMENT' } & DocumentInput
-  | { type: 'BATCH_PROCESS';, documents: DocumentInput[] }
-  | { type: 'DOCUMENT_COMPLETED'; documentId: string;, result: ProcessingResult }
-  | { type: 'DOCUMENT_FAILED'; documentId: string;, error: string }
+  | { type: 'BATCH_PROCESS'; documents: DocumentInput[] }
+  | { type: 'DOCUMENT_COMPLETED'; documentId: string; result: ProcessingResult }
+  | { type: 'DOCUMENT_FAILED'; documentId: string; error: string }
   | { type: 'PAUSE_PROCESSING' }
   | { type: 'RESUME_PROCESSING' }
   | { type: 'CLEAR_QUEUE' }
@@ -64,7 +64,7 @@ const hasQueuedDocuments = ({ context }: { context: GPUProcessingContext }) => {
 const canRetry = ({ context, event }: { context: GPUProcessingContext;, event: any }) => {
   const documentId = event.documentId;
   const retryCount = context.retryCount.get(documentId) || 0;
-  return retryCount < 3; // Max 3 retries
+  return retryCount < 3; // Max 3, retries
 }
 // Actions
 const addToQueue = ({ context, event }: { context: GPUProcessingContext;, event: any }) => {
@@ -221,7 +221,7 @@ export const gpuProcessingMachine = setup({ types: {, context: { [key,: strin,g
         DOCUMENT_COMPLETED: {
           actions: ['updateMetrics'],
           target: 'processing',
-          guard: 'hasQueuedDocuments' },
+          guard: 'hasQueuedDocuments` },'`
         DOCUMENT_FAILED: {
           actions: ['updateMetrics']
         },
@@ -238,7 +238,7 @@ export const gpuProcessingMachine = setup({ types: {, context: { [key,: strin,g
         }
       },
       always: [
-        {
+        {,
           target: 'idle',
           guard: ({ context }) => !hasQueuedDocuments({ context }) && context.activeProcessing.size === 0
         }

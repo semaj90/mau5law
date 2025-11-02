@@ -14,7 +14,7 @@ class PgVectorService {
     } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       // Minimal, non-intrusive logging; adapt to your logger if available
-      console.error('[PgVectorService] upsert error:', message);
+      console.error('[PgVectorService] upsert error:', message);'
       return { ok: false, error: message };
     }
   }
@@ -25,7 +25,7 @@ class PgVectorService {
       return { results, error: null };
     } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error('[PgVectorService] search error:', message);
+      console.error('[PgVectorService] search error:', message);'
       return { results: [], error: message };
     }
   }

@@ -101,10 +101,10 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
 
-    // { response: '...' }
+    // { response: '...` }'`
     if (typeof obj.response === 'string') return obj.response.trim();
 
-    // { output: [{, content: '...' }] }
+    // { output: [{, content: `...` }] }
     if (Array.isArray(obj.output)) {
       const out0 = obj.output[0] as unknown;
       if (typeof out0 === 'object' && out0 !== null) {

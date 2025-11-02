@@ -35,10 +35,10 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       session,
-      message: 'Legal AI session created successfully` });
+      message: `Legal AI session created successfully' });'`
   } catch (error: any) {
     // Normalize error details without using `any`
-    console.error('[Legal AI] Session creation error:', error);
+    console.error('[Legal AI] Session creation error:', error);'
     let details: string;
     if (error instanceof Error) {
       details = error.message;
@@ -74,15 +74,14 @@ export const GET: RequestHandler = async () => {
       priority_level: 'number (1-10)',
       security_classification: 'SecurityLevel',
       related_cases: 'string[]',
-      key_entities: 'string[]'
-    },
+      key_entities: 'string[]' },
     session_statuses: ['ACTIVE', 'IDLE', 'PAUSED', 'TERMINATED', 'ERROR'],
     security_levels: ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'],
     endpoints: {
       create_session: 'POST /api/v1/legal/session/create',
       get_session: 'GET /api/v1/legal/session/{session_id}',
       update_session: 'PUT /api/v1/legal/session/{session_id}',
-      terminate_session: 'DELETE /api/v1/legal/session/{session_id}` },
+      terminate_session: `DELETE /api/v1/legal/session/{session_id}' },'`
     timestamp: new Date().toISOString()
   });
 };

@@ -72,7 +72,7 @@ type CacheHitData = { cachedData: RecommendationContext['recommendations'];, hi
   keys: string[];
   cacheHit: true;
 };
-type ProcessingResult = { recommendations: RecommendationContext['recommendations'];, metrics: { latency: number;, throughput: number; errorRate?: number };
+type ProcessingResult = { recommendations: RecommendationContext['recommendations'];, metrics: { latency: number; throughput: number; errorRate?: number };
 };
 // API Response Types
 type RoutingAnalysisResponse = { routingKeys: string[];, recommendedQueue: string;
@@ -87,7 +87,7 @@ type CacheCheckResponse = { cacheHit: boolean;, hitRate: number;
   keys?: string[];
   [key: string]: any;
 };
-type GenerateRecommendationsResponse = { recommendations: RecommendationContext['recommendations'];, metrics: { latency: number;, throughput: number; errorRate?: number };
+type GenerateRecommendationsResponse = { recommendations: RecommendationContext['recommendations'];, metrics: { latency: number; throughput: number; errorRate?: number };
   [key: string]: any;
 };
 type CacheStoreResponse = {
@@ -96,29 +96,29 @@ type CacheStoreResponse = {
 };
 // Events for recommendation routing
 type RecommendationEvent =
-  | { type: 'START_SESSION';, userId: string; caseId?: string }
-  | { type: 'ANALYZE_DOCUMENT'; documentId: string;, documentType: string }
-  | { type: 'REQUEST_RECOMMENDATIONS';, context: RecommendationRequestPayload }
-  | { type: 'ROUTE_TO_QUEUE'; priority: 'high' | 'standard' | 'background';, taskType: string }
-  | { type: 'RECOMMENDATIONS_RECEIVED';, recommendations: RecommendationContext['recommendations'] }
-  | { type: 'MODEL_SWITCHED';, newModel: string }
-  | { type: 'CACHE_HIT';, data: CacheHitData }
-  | { type: 'CACHE_MISS';, key: string }
-  | { type: 'PROCESSING_COMPLETE';, result: ProcessingResult }
-  | { type: 'ERROR_OCCURRED';, error: string }
-  | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'START_SESSION'; userId: string; caseId?: string }
+  | { type: 'ANALYZE_DOCUMENT'; documentId: string; documentType: string }
+  | { type: 'REQUEST_RECOMMENDATIONS'; context: RecommendationRequestPayload }
+  | { type: 'ROUTE_TO_QUEUE'; priority: 'high' | 'standard' | 'background'; taskType: string }
+  | { type: 'RECOMMENDATIONS_RECEIVED'; recommendations: RecommendationContext['recommendations'] }
+  | { type: 'MODEL_SWITCHED'; newModel: string }
+  | { type: 'CACHE_HIT'; data: CacheHitData }
+  | { type: 'CACHE_MISS'; key: string }
+  | { type: 'PROCESSING_COMPLETE'; result: ProcessingResult }
+  | { type: 'ERROR_OCCURRED'; error: string }
+  | { type: 'RETRY` }'`
+  | { type: `RESET` };
 // Smart routing recommendation engine with RabbitMQ
 export const recommendationRoutingMachine = setup({
-  types: {} as { context: RecommendationContext;, events: RecommendationEvent;
+  types: {} as {, context: RecommendationContext;, events: RecommendationEvent;
   },
   actors: {
     // Analyze routing requirements based on document type and system load
-    analyzeRoutingRequirements: fromPromise(
+   , analyzeRoutingRequirements: fromPromise(
       async ({
         input
-      }: { input: {, sessionId: string;
-          userId: string;
+      }: {, input: {, sessionId: string;
+         , userId: string;
           caseId?: string;
           currentDocument?: RecommendationContext['currentDocument'];
          , processingMetrics: RecommendationContext['processingMetrics'];
@@ -146,7 +146,7 @@ export const recommendationRoutingMachine = setup({
       async ({
         input
       }: { input: {, exchange: string;
-          routingKey: string;
+         , routingKey: string;
          , message: Record<string, unknown>;
         };
       }) => {
@@ -183,7 +183,7 @@ export const recommendationRoutingMachine = setup({
         const { cacheKeys } = input;
         const response = await fetch('/api/cache/check', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({
            , keys: cacheKeys,
             operation: 'mget', // Multi-get for efficiency
@@ -207,8 +207,7 @@ export const recommendationRoutingMachine = setup({
         return {
           served: true,
           timestamp: new Date().toISOString(),
-          source: 'cache'
-        };
+          source: `cache` };
       }
     ),
     // Generate new recommendations using AI models
@@ -216,11 +215,11 @@ export const recommendationRoutingMachine = setup({
       async ({
         input
       }: { input: {, sessionId: string;
-          userId: string;
+         , userId: string;
           caseId?: string;
           document?: RecommendationContext['currentDocument'];
-          model: string;
-          messageId: string;
+         , model: string;
+         , messageId: string;
          , queue: string;
         };
       }) => {
@@ -256,7 +255,7 @@ export const recommendationRoutingMachine = setup({
       async ({
         input
       }: { input: {, recommendations: RecommendationContext['recommendations'];
-          cacheKeys: string[];
+         , cacheKeys: string[];
          , ttl: number;
         };
       }) => {
@@ -288,25 +287,25 @@ export const recommendationRoutingMachine = setup({
       exchange: 'legal-ai-exchange',
       routingKeys: [],
       queues: {
-        highPriority: 'legal.priority.high',
+       , highPriority: 'legal.priority.high',
         standardPriority: 'legal.priority.standard',
         backgroundProcessing: 'legal.background',
         aiAnalysis: 'legal.ai.analysis',
         recommendations: `legal.recommendations` }
     },
     recommendations: {
-      legal: [],
+     , legal: [],
       documents: [],
       actions: [],
       risks: []
     },
     aiModels: {
-      primary: 'gemma3:legal-latest',
+     , primary: 'gemma3:legal-latest',
       fallback: ['ollama:latest', 'openai:gpt-4'],
       confidence: 0
     },
     processingMetrics: {
-      averageLatency: 0,
+     , averageLatency: 0,
       queueDepth: 0,
       throughput: 0,
       errorRate: 0
@@ -399,7 +398,7 @@ export const recommendationRoutingMachine = setup({
             onError: {
               target: '#recommendation-routing.error',
               actions: assign({
-                error: ({ event }) => `RabbitMQ routing failed: ${(event.error as Error)?.message}' })
+                error: ({ event }) => `RabbitMQ routing failed: ${(event.error as Error)?.message}' })'`
             }
           }
         },
@@ -412,7 +411,7 @@ export const recommendationRoutingMachine = setup({
               cacheKeys: generateCacheKeys(context)
             }),
             onDone: [
-              {
+              {,
                 target: 'serving_cached_recommendations',
                 // @ts-expect-error - Temporary workaround: event.output type needs full actor definition refinement; guard: ({ event }) => (event.output as CacheCheckResponse).cacheHit,
                 actions: assign({
@@ -461,7 +460,7 @@ export const recommendationRoutingMachine = setup({
               document: context.currentDocument,
               model: context.aiModels.currentModel || '',
               messageId: context.rabbitMQRouting.messageId || '',
-              queue: context.rabbitMQRouting.currentQueue || '` }),
+              queue: context.rabbitMQRouting.currentQueue || '` }),'`
             onDone: {
               target: 'caching_results',
               actions: assign({
@@ -561,7 +560,7 @@ function determinePriority(documentType?: string): 'high' | 'standard' | 'backgr
   }
 }
 function generateCacheKeys(context: RecommendationContext): string[] {
-  const base = `rec:${context.userId}:${context.caseId || 'global` }`;
+  const base = `rec:${context.userId}:${context.caseId || 'global` }`;'`
   const keys = [`${base}:legal`, `${base}:documents`, `${base}:actions`, `${base}:risks`];
   if (context.currentDocument?.id) {
     keys.push(`${base}:doc:${context.currentDocument.id}`);
@@ -569,8 +568,8 @@ function generateCacheKeys(context: RecommendationContext): string[] {
   return keys;
 }
 // Types
-export type RecommendationState = StateFrom<typeof recommendationRoutingMachine>;
-export type RecommendationActor = Actor<typeof recommendationRoutingMachine>;
+export type RecommendationState = StateFrom<typeof, recommendationRoutingMachine>;
+export type RecommendationActor = Actor<typeof, recommendationRoutingMachine>;
 // Store integration
 import { createActor } from 'xstate';
 function createRecommendationStore() {

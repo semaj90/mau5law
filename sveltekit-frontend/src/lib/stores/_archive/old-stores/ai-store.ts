@@ -153,7 +153,7 @@ function createPersistedStore<T>(key: string, defaultValue: T, reviver?: (this: 
         const parsed = JSON.parse(stored, jsonReviver);
         set(parsed);
       } catch (error: any) {
-        console.warn(`Failed to parse stored ${key}: ', error);
+        console.warn(`Failed to parse stored ${key}: ', error);'`
         // Keep default value on parse error
       }
     }
@@ -215,13 +215,13 @@ export const aiStore = {
       // Check local model availability
       const localHealthCheck = await fetch('/api/ai/health/local', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json` }'`
       });
       const localHealth = await localHealthCheck.json();
       // Check cloud model availability
       const cloudHealthCheck = await fetch('/api/ai/health/cloud', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': `application/json` }
       });
       const cloudHealth = await cloudHealthCheck.json();
       aiStatus.update(state => ({
@@ -243,12 +243,11 @@ export const aiStore = {
         lastHealthCheck: Date.now()
       }));
     } catch (error: any) {
-      console.error('AI initialization failed:', error);
+      console.error('AI initialization failed: `, error);'`
       aiStatus.update(state => ({
         ...state,
         isInitializing: false,
-        error: error instanceof Error ? error.message : 'Failed to initialize AI system'
-      }));
+        error: error instanceof Error ? error.message : `Failed to initialize AI system` }));
     }
   },
   // Send message to AI
@@ -316,7 +315,7 @@ export const aiStore = {
       aiStatus.update(state => ({ ...state, isLoading: false }));
       return aiResponse;
     } catch (error: any) {
-      console.error('AI message failed:', error);
+      console.error('AI message failed: `, error);'`
       aiStatus.update(state => ({
         ...state,
         isLoading: false,
@@ -370,7 +369,7 @@ export const aiStore = {
         timestamp: Date.now(),
         metadata: {
           messageCount: conversation.messages.length,
-          lastModel: conversation.messages[conversation.messages.length - 1]?.metadata?.model || 'unknown` }
+          lastModel: conversation.messages[conversation.messages.length - 1]?.metadata?.model || 'unknown` }'`
       };
       const newHistory = [newConversation, ...history];
       // Limit history length
@@ -400,5 +399,5 @@ if (browser) {
   }, 100);
 }
 // Export store subscriptions for reactive UI
-export { aiConversation as conversation, aiSettings as settings, aiStatus as status };
+export { aiConversation, as conversation, aiSettings as settings, aiStatus as status };
 export default aiStore;

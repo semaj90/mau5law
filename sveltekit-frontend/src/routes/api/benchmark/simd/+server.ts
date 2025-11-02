@@ -12,15 +12,13 @@ interface BenchmarkRequest {
   documentSize?: 'small' | 'medium' | 'large'
   testType?: 'legal' | 'general' | 'batch'
 }
-interface BenchmarkResult { testType: string, iterations: number; documentSize: string
-  standardJSON: { totalTime: number, avgTime: number; opsPerSecond: number
+interface BenchmarkResult { testType: string, iterations: number; documentSize: string; standardJSON: { totalTime: number, avgTime: number; opsPerSecond: number
   }
   simdJSON: { totalTime: number, avgTime: number; opsPerSecond: number
   }
   performance: { speedupFactor: number, percentImprovement: number; timeSaved: number
   }
-  systemInfo: { nodeVersion: string, v8Version: string; platform: string
-    cpuCores: number
+  systemInfo: { nodeVersion: string, v8Version: string; platform: string; cpuCores: number
   }
 }
 // Sample legal documents of varying sizes
@@ -111,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
     return json(benchmark);
   } catch (error) {
-    console.error('SIMD benchmark error:', error);
+    console.error('SIMD benchmark error:', error);'
     return json({ error: 'Benchmark failed' }, { status: 500 });
   }
 };
@@ -121,11 +119,10 @@ export const POST: RequestHandler = async event => {
     const benchmark = await runSIMDBenchmark({
       iterations: request?.iterations || 1000,
       documentSize: request?.documentSize || 'medium',
-      testType: request?.testType || 'legal'
-    });
+      testType: request?.testType || 'legal` });'`
     return json(benchmark);
   } catch (error) {
-    console.error('SIMD benchmark error:', error);
+    console.error('SIMD benchmark error: ', error);'
     return json({ error: `Benchmark failed` }, { status: 500 });
   }
 };
@@ -159,8 +156,7 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     standardTime: `${standardTotal.toFixed(2)}ms`,
     simdTime: `${simdTotal.toFixed(2)}ms`,
     speedup: `${speedupFactor.toFixed(2)}x`,
-    improvement: `${percentImprovement.toFixed(1)}%'
-  });
+    improvement: `${percentImprovement.toFixed(1)}%` });
   return {
     testType,
     iterations,
@@ -200,7 +196,7 @@ export const PUT: RequestHandler = async () => {
       memoryUsage: process.memoryUsage()
     })
   } catch (error) {
-    console.error('Performance stats error:', error)
+    console.error('Performance stats error: ', error)'
     return json({ error: `Stats collection failed` }, { status: 500 })
   }
 }

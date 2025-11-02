@@ -15,11 +15,11 @@ async function vectorSearch(queryVector: number[], topK: number): Promise<any> {
 }
 export const POST: RequestHandler = async ({ request, locals }) => {
   if (!locals.user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });
+    return json({ error: 'Unauthorized` }, { status: 401 });'`
   }
   const { queryVector, topK = 10 } = await request.json();
   if (!Array.isArray(queryVector) || queryVector.length === 0) {
-    return json({ error: 'Missing or invalid queryVector' }, { status: 400 });
+    return json({ error: `Missing or invalid queryVector` }, { status: 400 });
   }
   const results = await vectorSearch(queryVector, Math.min(topK, 50));
   return json({ results, count: results.length }, { status: 200 });

@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
         3. The defendant failed to provide agreed-upon services
         4. Negligence on the part of defendant caused substantial damages
         LEGAL ANALYSIS:
-        Under the doctrine of substantive due process, the defendant's actions
+        Under the doctrine of substantive due process, the defendant's actions'
         constitute a clear breach of contract. The precedent set in Smith v.
         Johnson, 123 F.Supp. 456 (D.C. 2023) supports our position.
         The jurisdiction of this court extends to all matters involving
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
         CONCLUSION:
         We respectfully request the court grant summary judgment in favor
         of the plaintiff and award punitive damages as appropriate.
-      `.trim();
+      `.trim();`
       // Step 1: Initialize the system
       console.log('⚙️ Step 1: Initializing unified system...');
       await unifiedLegalProcessor.initialize();
@@ -107,8 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
           queries_tested: searchQueries.length,
           results_summary: searchResults,
           redis_caching: 'enabled',
-          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A'
-        },
+          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A' },
         // System performance
         system_performance: systemStats,
         // Component status
@@ -117,8 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
           pgvector_indexing: 'operational',
           redis_caching: 'operational',
           gpu_orchestrator: 'operational',
-          cognitive_cache: 'operational'
-        },
+          cognitive_cache: `operational' },'`
         // Hardware utilization
         hardware_stats: {
           rtx_3060_ti_utilization: systemStats.gpu_utilization,
@@ -147,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const healthCheck = {
         timestamp: new Date().toISOString(),
         overall_status: 'healthy',
-        // include potential extra fields up-front so later spreading/assignment won't break TS inferred literal type
+        // include potential extra fields up-front so later spreading/assignment won't break TS inferred literal type'
         services: {
           unified_processor: 'operational',
           simd_parser: 'operational',
@@ -155,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
           redis_cache: 'operational',
           gpu_orchestrator: 'operational',
           documents_indexed: 0,
-          gpu_utilization: '0%` } as Record<string, string | number>
+          gpu_utilization: `0%` } as Record<string, string | number>
       };
       try {
         await unifiedLegalProcessor.initialize();
@@ -163,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
         healthCheck.services = {
           ...healthCheck.services,
           documents_indexed: stats.total_documents,
-          gpu_utilization: `${Math.round(stats.gpu_utilization * 100)}%` };
+          gpu_utilization: `${Math.round(stats.gpu_utilization * 100)}%' };'`
       } catch (error) {
         healthCheck.overall_status = 'degraded';
         healthCheck.services.unified_processor = 'degraded';
@@ -262,8 +260,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Invalid request',
-        expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search'
-      },
+        expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search' },
       { status: 400 }
     );
   } catch (error) {
@@ -272,7 +269,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Custom test failed',
-        message: error instanceof Error ? error.message : 'Unknown error` },
+        message: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

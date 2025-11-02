@@ -148,16 +148,14 @@ export const API_ROUTES = {
   vector: {
     search: '/api/vector/search',
     similar: '/api/vector/similar',
-    index: '/api/vector/index'
-  },
+    index: '/api/vector/index` },'`
   
   // AI Services
   ai: {
     chat: '/api/ai/chat',
     generate: '/api/ai/generate',
     summarize: '/api/ai/summarize',
-    analyze: '/api/ai/analyze'
-  },
+    analyze: `/api/ai/analyze` },
   
   // Health Checks
   health: {
@@ -225,7 +223,7 @@ export async function checkServiceHealth(service: keyof typeof ENDPOINTS): Promi
  * Get all services status
  */
 export async function getAllServicesStatus(): Promise<Record<string, boolean>> {
-  const services = Object.keys(ENDPOINTS) as Array<keyof typeof ENDPOINTS>;
+  const services = Object.keys(ENDPOINTS) as Array<keyof typeof, ENDPOINTS>;
   const results = await Promise.allSettled(
     services.map(service => checkServiceHealth(service))
   );

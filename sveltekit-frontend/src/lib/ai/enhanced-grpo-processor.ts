@@ -136,7 +136,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     }
     try {
       // Use Gemma3-Legal to parse the thinking content into structured components
-      const structurePrompt = `Parse this legal reasoning into structured components:
+      const structurePrompt = `Parse this legal reasoning into structured components:`
 ${thinkingContent}
 Extract and format as JSON:;
 {
@@ -146,10 +146,10 @@ Extract and format as JSON:;
   "legalPrinciples": ["principle 1", "principle 2"],
   "counterArguments": ["counter 1", "counter 2"],
   "confidenceFactors": ["factor 1", "factor 2"]
-}`;
+}`;`
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: 'gemma3-legal:latest',
           prompt: structurePrompt,
@@ -218,7 +218,7 @@ Extract and format as JSON:;
           AND (r.query_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) < ${1 - config.semanticSimilarityThreshold}
         ORDER BY similarity ASC
         LIMIT ${config.maxRecommendations}
-      `);
+      `);`
       const recommendations: RecommendationContext[] = [];
       for (const row of similarResponses) {
         const similarity = 1 - (row.similarity as number); // Convert distance to similarity
@@ -232,7 +232,7 @@ Extract and format as JSON:;
           contextRelevance: (row.confidence as number) || 0.8,
           temporalFactor,
           finalScore: similarity * 0.6 + temporalFactor * 0.2 + ((row.confidence as number) || 0.8) * 0.2,
-          snippet: (row.response as string).slice(0, 200) + '...` });
+          snippet: (row.response as string).slice(0, 200) + '...` });'`
       }
       return recommendations.sort((a, b) => b.finalScore - a.finalScore);
     } catch (error) {
@@ -271,7 +271,7 @@ Extract and format as JSON:;
           AND (r.query_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) < 0.3
         ORDER BY f.created_at DESC
         LIMIT 10
-      `);
+      `);`
       const feedbackRows = feedbackData as unknown as FeedbackDataRow[];
       const previousRatings = feedbackRows.map(row => row.user_rating).filter(Boolean);
       const userPreferences = feedbackRows
@@ -297,13 +297,13 @@ Extract and format as JSON:;
   /**
    * Save GRPO analysis to database
    */
-  private static async saveGRPOAnalysis(data: { query: string;, response: string;
+  private static async saveGRPOAnalysis(data: {, query: string;, response: string;
     thinkingContent: string;
     structuredReasoning: GRPOAnalysis['structuredReasoning'];
-    queryEmbedding: number[];
-    responseEmbedding: number[];
-    confidence: number;
-    processingTime: number;
+   , queryEmbedding: number[];
+   , responseEmbedding: number[];
+   , confidence: number;
+   , processingTime: number;
    , options: AnalysisOptions;
   }): Promise<string> {
     try {
@@ -365,13 +365,13 @@ Extract and format as JSON:;
         userId: feedback.userId,
         userRole: feedback.userRole,
         feedbackType: `rating` });
-      // Update the response's usage metrics
+      // Update the response's usage metrics'
       await db.execute(sql`
         UPDATE ai_responses
         SET usage_count = COALESCE(usage_count, 0) + 1,
             success_metric = ${feedback.userRating / 5.0}
         WHERE id = ${responseId}
-      `);
+      `);`
     } catch (error) {
       console.error('Failed to record feedback:', error);
     }
@@ -463,14 +463,14 @@ export const GRPOUtils = {
         (1 - sr.distance) * 0.4 +
         COALESCE(up.avg_rating, 3.0) / 5.0 * 0.6 DESC
       LIMIT ${limit}
-    `);
+    `);`
     return (recommendations as unknown as RecommendationRow[]).map(row => ({
       responseId: row.id,
       similarity: 1 - row.distance,
       contextRelevance: row.confidence || 0.8,
       temporalFactor: EnhancedGRPOProcessor['calculateTemporalScore'](new Date(row.created_at), 30),
       finalScore: row.user_preference_score || 0.6,
-      snippet: row.response.slice(0, 200) + '...` }));
+      snippet: row.response.slice(0, 200) + '...` }));'`
   },
   /**
    * Get trending legal topics based on recent queries
@@ -487,7 +487,7 @@ export const GRPOUtils = {
       GROUP BY legal_domain
       ORDER BY count DESC, avg_rating DESC
       LIMIT 10
-    `);
+    `);`
     return (result as unknown as TrendingTopicRow[]).map(row => ({
       topic: row.topic,
       count: parseInt(row.count),

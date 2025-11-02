@@ -76,7 +76,7 @@ export interface RAGQueryOptions {
   caseType?: string;
   documentType?: string;
   requirePrecedent?: boolean;
-  timeRange?: { start: Date;, end: Date };
+  timeRange?: { start: Date; end: Date };
   riskThreshold?: number;
   limit?: number;
   threshold?: number;
@@ -86,7 +86,7 @@ export interface RAGQueryOptions {
   filters?: {
     entityTypes?: string[];
     legalCategories?: string[];
-    dateRange?: { start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
     confidenceThreshold?: number;
   };
 }
@@ -97,7 +97,7 @@ export interface RAGQueryOptions {
 export interface RAGQueryResponse { query: string;, results: RAGSearchResult[];
   totalFound: number;
   semanticExpansions?: string[];
-  mcpDocsUsed?: Array<{ libraryName: string;, content: string }>;
+  mcpDocsUsed?: Array<{ libraryName: string; content: string }>;
   processingTime: number;
   timestamp: Date;
   cacheHit?: boolean;
@@ -200,7 +200,7 @@ export class UnifiedRAGService {
 
     // Step 1: MCP Context7 documentation enrichment (if enabled)
     let enhancedQuery = options.query;
-    let mcpDocsUsed: Array<{ libraryName: string;, content: string }> = [];
+    let mcpDocsUsed: Array<{ libraryName: string; content: string }> = [];
 
     if (options.useMCPDocs && options.requiredLibraries && options.requiredLibraries.length > 0 && this.mcpHealthy) {
       try {
@@ -356,7 +356,7 @@ export class UnifiedRAGService {
       WHERE (embedding <=> ${JSON.stringify(embedding)}::vector) < (1 - ${threshold})
       ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
       LIMIT ${limit}
-    `;
+    `;`
 
     return results.map((row: any) => ({ document: {, id: row.id,
         content: row.content,
@@ -436,7 +436,7 @@ export class UnifiedRAGService {
         embedding = EXCLUDED.embedding,
         metadata = EXCLUDED.metadata,
         updated_at = CURRENT_TIMESTAMP
-    `;
+    `;`
   }
 
   /**
@@ -450,9 +450,9 @@ export class UnifiedRAGService {
         'api-key': this.qdrantApiKey
       },
       body: JSON.stringify({
-        points: [
-          {
-            id: doc.id,
+       , points: [
+          {,
+           , id: doc.id,
             vector: doc.embedding,
             payload: {
              , content: doc.content,
@@ -694,7 +694,7 @@ export class UnifiedRAGService {
   /**
    * Fetch MCP Context7 documentation
    */
-  private async fetchMCPDocs(libraries: string[]): Promise<Array<{ libraryName: string;, content: string }>> {
+  private async fetchMCPDocs(libraries: string[]): Promise<Array<{ libraryName: string; content: string }>> {
     try {
       const response = await fetch(`${this.mcpUrl}/mcp/docs`, {
         method: 'POST',

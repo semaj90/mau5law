@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Document } from '$lib/types';
 	import { onMount } from 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
@@ -82,70 +82,70 @@ import type { Document } from '$lib/types';
 	}
 </script>
 
-<div class="ai-dashboard-container">
-	<header class="header flex flex-col">
-		<h1 class="title">AI Dashboard</h1>
-		<p class="subtitle">Cluster overview · quick actions · service health</p>
+<div, class="ai-dashboard-container">
+	<header class="header flex, flex-col">
+		<h1, class="title">AI Dashboard</h1>
+		<p, class="subtitle">Cluster overview · quick actions · service health</p>
 	</header>
 
-	<main class="grid">
+	<main, class="grid">
 		<section>
 			<Card>
 				<CardHeader>
 					<CardTitle>Overview</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<p class="muted">A concise view of critical AI services and quick workflows.</p>
+					<p, class="muted">A concise view of critical AI services and quick workflows.</p>
 
-					<div class="status-list" aria-live="polite">
-						<div class="status-row">
-							<div class="status-item">
-								<div class="label">GPU</div>
-								<div class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'Accelerated' : 'Unavailable'}</div>
+					<div, class="status-list" aria-live="polite">
+						<div, class="status-row">
+							<div, class="status-item">
+								<div, class="label">GPU</div>
+								<div, class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'Accelerated' : 'Unavailable'}</div>
 							</div>
-							<div class="status-item">
-								<div class="label">Ollama</div>
-								<div class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'Healthy' : 'Offline'}</div>
+							<div, class="status-item">
+								<div, class="label">Ollama</div>
+								<div, class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'Healthy' : 'Offline'}</div>
 							</div>
-							<div class="status-item">
-								<div class="label">Enhanced RAG</div>
-								<div class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'Running' : 'Idle'}</div>
+							<div, class="status-item">
+								<div, class="label">Enhanced RAG</div>
+								<div, class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'Running' : 'Idle'}</div>
 							</div>
 						</div>
 
-						<div class="status-row">
-							<div class="status-item">
-								<div class="label">Postgres (pgvector)</div>
-								<div class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'Connected' : 'Disconnected'}</div>
+						<div, class="status-row">
+							<div, class="status-item">
+								<div, class="label">Postgres (pgvector)</div>
+								<div, class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'Connected' : 'Disconnected'}</div>
 							</div>
-							<div class="status-item">
-								<div class="label">Neo4j</div>
-								<div class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'Active' : 'Inactive'}</div>
+							<div, class="status-item">
+								<div, class="label">Neo4j</div>
+								<div, class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'Active' : 'Inactive'}</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="actions">
-						<Button onclick={checkSystemStatus} disabled={loading} aria-busy={loading}>
+					<div, class="actions">
+						<Button, onclick={checkSystemStatus} disabled={loading} aria-busy={loading}>
 							{loading ? 'Checking...' : 'Run Health Check'}
 						</Button>
-						<Button variant="secondary" onclick={openAssistant}>Open Assistant</Button>
-						<Button variant="ghost" onclick={handleUpload}>Upload Document</Button>
+						<Button, variant="secondary" onclick={openAssistant}>Open Assistant</Button>
+						<Button, variant="ghost" onclick={handleUpload}>Upload Document</Button>
 					</div>
 
 					{#if error}
-						<div role="alert" class="error">{error}</div>
+						<div, role="alert" class="error">{error}</div>
 					{/if}
 				</CardContent>
 			</Card.Root>
 
-			<!-- Future: metrics, recent jobs, ingestion status -->
-			<Card.Root class="mt">
+			<!-- Future: metrics, recent jobs, ingestion, status -->
+			<Card.Root, class="mt">
 				<CardHeader>
 					<CardTitle>Quick Insights</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<ul class="insights">
+					<ul, class="insights">
 						<li>Recent ingestion 3 documents (last 24h)</li>
 						<li>Vector DB: 12,312 vectors · top similarity cache hit 82%</li>
 						<li>Pending OCR jobs: 1 · GPU queue depth: low</li>
@@ -160,40 +160,40 @@ import type { Document } from '$lib/types';
 					<CardTitle>Health Matrix</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<table class="health-table" aria-label="Service health matrix">
+					<table class="health-table" aria-label="Service health, matrix">
 						<thead>
 							<tr><th>Service</th><th>Status</th></tr>
 						</thead>
 						<tbody>
-							<tr><td>GPU Orchestrator</td><td><span class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Ollama</td><td><span class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Enhanced RAG</td><td><span class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Postgres</td><td><span class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Neo4j</td><td><span class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'OK' : 'Down'}</span></td></tr>
+							<tr><td>GPU Orchestrator</td><td><span, class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'OK' : 'Down'}</span></td></tr>
+							<tr><td>Ollama</td><td><span, class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'OK' : 'Down'}</span></td></tr>
+							<tr><td>Enhanced RAG</td><td><span, class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'OK' : 'Down'}</span></td></tr>
+							<tr><td>Postgres</td><td><span, class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'OK' : 'Down'}</span></td></tr>
+							<tr><td>Neo4j</td><td><span, class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'OK' : 'Down'}</span></td></tr>
 						</tbody>
 					</table>
 				</CardContent>
 			</Card>
 
-			<Card.Root class="mt">
+			<Card.Root, class="mt">
 				<CardHeader>
 					<CardTitle>Support</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<p class="muted">Need immediate help? Check service logs or run the health check. For deeper issues, open the diagnostics dashboard.</p>
-					<div class="actions">
-						<Button variant="secondary" onclick={() => pushToast('Diagnostics opened (stub)', 'info')}>Open Diagnostics</Button>
-						<Button variant="ghost" onclick={() => pushToast('Logs tail started (stub)', 'info')}>Tail Logs</Button>
+					<p, class="muted">Need immediate help? Check service logs or run the health check. For deeper issues, open the diagnostics dashboard.</p>
+					<div, class="actions">
+						<Button, variant="secondary" onclick={() => pushToast('Diagnostics opened (stub)', 'info')}>Open Diagnostics</Button>
+						<Button, variant="ghost" onclick={() => pushToast('Logs tail started (stub)', 'info')}>Tail Logs</Button>
 					</div>
 				</CardContent>
 			</Card>
 		</aside>
 	</main>
 
-	<!-- Toast container -->
-	<div class="toasts" aria-live="polite" aria-atomic="true">
+	<!-- Toast, container -->
+	<div, class="toasts" aria-live="polite" aria-atomic="true">
 		{#each toasts as t (t.id)}
-			<div class="toast {t.type}">
+			<div, class="toast {t.type}">
 				{t.message}
 			</div>
 		{/each}

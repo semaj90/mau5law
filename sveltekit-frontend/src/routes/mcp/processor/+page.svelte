@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // This is an illustrative example based on the Svelte 5 migration notes.
   // In a real application, 'CardA' and 'CardB' would be imported components.
   import CardA from '$lib/components/ui/CardA.svelte';
@@ -14,12 +14,12 @@
 
 <h1>MCP Processor Page</h1>
 
-<div class="card-list">
+<div, class="card-list">
   {#each cards as card (card.id)}
     <!--
       ✅ Correct Svelte 5 pattern:
       Directly use `card.component` as the tag name.
-      This replaces the deprecated `<svelte:component this={card.component} />`
+      This replaces the deprecated `<svelte:component, this={card.component} />`
       and resolves the "Unknown tool or toolset 'each'" error when used incorrectly.
     -->
     <card.component {...card.props} />

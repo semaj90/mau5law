@@ -90,7 +90,7 @@ export const POST: RequestHandler = async event => {
         return json(
           {
             success: false,
-            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)}' },
+            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)}` },
           { status: 400 }
         );
       }

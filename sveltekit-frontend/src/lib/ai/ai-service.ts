@@ -59,7 +59,7 @@ class AIService {
           evidenceIds,
           maxTokens: options.maxTokens || 2048,
           temperature: options.temperature || 0.7,
-          stream: false, // For now, we'll use non-streaming
+          stream: false, // For now, we'll use non-streaming'
         })
       });
       if (!response.ok) {
@@ -97,7 +97,7 @@ class AIService {
       // Add error message to store
       aiAssistant.addMessage(caseId, {
         role: 'system',
-        content: `Error: ${errorMessage}` });
+        content: `Error: ${errorMessage}' });'`
       aiAssistant.setError(errorMessage);
       throw error;
     } finally {
@@ -105,10 +105,10 @@ class AIService {
     }
   }
   private buildEnhancedPrompt(_options: {
-    prompt: string;
+   , prompt: string;
     caseContext?: CaseAIContext;
-    evidenceIds: string[];
-    context: string;
+   , evidenceIds: string[];
+   , context: string;
    , includeHistory: boolean;
   }): string {
     const { prompt, caseContext, evidenceIds, context, includeHistory } = options;
@@ -258,7 +258,7 @@ export async function sendToAI(caseId: string, prompt: string, evidenceIds?: str
     caseId,
     prompt,
     evidenceIds,
-    context: 'general` });
+    context: 'general' });
 }
 export async function analyzeEvidence(
   caseId: string,

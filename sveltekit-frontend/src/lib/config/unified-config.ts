@@ -364,7 +364,7 @@ class ConfigManager {
     }
     return { ...this.config }
   }
-  public get<T extends keyof UnifiedConfig>(section: T): UnifiedConfig[T] {
+  public get<T extends keyof, UnifiedConfig>(section: T): UnifiedConfig[T] {
     if (!this.config) {
       throw new Error('Configuration not initialized');
     }
@@ -464,7 +464,7 @@ export const config = new ConfigManager();
 export function getConfig(): UnifiedConfig {
   return config.getConfig();
 }
-export function getConfigSection<T extends keyof UnifiedConfig>(section: T): UnifiedConfig[T] {
+export function getConfigSection<T extends keyof, UnifiedConfig>(section: T): UnifiedConfig[T] {
   return config.get(section);
 }
 export function isWindows(): boolean {

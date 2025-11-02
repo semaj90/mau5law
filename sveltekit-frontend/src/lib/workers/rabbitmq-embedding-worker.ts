@@ -205,13 +205,13 @@ class RabbitMQEmbeddingWorker {
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (batchError) {
-          console.error(`❌ Batch ${batchNumber} failed: ', batchError);
+          console.error(`❌ Batch ${batchNumber} failed: ', batchError);'`
           // Add failure entries for the entire batch
           results.push(
             ...batch.map(entity => ({
               success: false,
               entity_id: entity.entity_id,
-              error: 'Batch processing failed` }))
+              error: 'Batch processing failed' }))
           );
         }
       }
@@ -221,7 +221,7 @@ class RabbitMQEmbeddingWorker {
       this.failedJobs += failCount;
       const processingTime = Date.now() - startTime;
       console.log(
-        `📊 Bulk job ${message.id} completed: ${successCount}/${results.length} successful in ${processingTime}ms`
+        `📊 Bulk job ${message.id} completed: ${successCount}/${results.length} successful in ${processingTime}ms'`
       );
       return {
         success: successCount > 0,
@@ -236,7 +236,7 @@ class RabbitMQEmbeddingWorker {
       };
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      console.error(`❌ Bulk embedding job ${message.id} failed in ${processingTime}ms: ', error);
+      console.error('❌ Bulk embedding job ${message.id} failed in ${processingTime}ms: ', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -248,7 +248,7 @@ class RabbitMQEmbeddingWorker {
    * Process document embedding
    */
   private async processDocumentEmbedding(payload: EmbeddingJobPayload): Promise<any> {
-    const { entity_id, text_content, embedding_type = 'content` } = payload;
+    const { entity_id, text_content, embedding_type = 'content' } = payload;
     // Get document from database if text not provided
     let textToEmbed = text_content;
     let documentData: any = null;
@@ -280,7 +280,7 @@ class RabbitMQEmbeddingWorker {
     const columnMap = {
       content: 'embedding',
       title: 'title_embedding',
-      summary: 'summary_embedding` };
+      summary: 'summary_embedding' };
     const column = columnMap[embedding_type];
     if (column) {
       updateData[column] = sql`${JSON.stringify(embedding)}::vector`;
@@ -398,7 +398,7 @@ class RabbitMQEmbeddingWorker {
     const [updatedChunk] = await db
       .update(document_chunks)
       .set({
-        embedding: sql`${JSON.stringify(embedding)}::vector` })
+        embedding: sql`${JSON.stringify(embedding)}::vector' })'`
       .where(eq(document_chunks.id, entity_id))
       .returning();
     console.log(`✨ Generated chunk embedding for ${entity_id} (${embedding.length}D)`);
@@ -413,7 +413,7 @@ class RabbitMQEmbeddingWorker {
   /**
    * Process individual entity embedding (for bulk jobs)
    */
-  private async processEntityEmbedding(entity: { entity_type: 'document' | 'case' | 'chunk';, entity_id: string;
+  private async processEntityEmbedding(entity: {, entity_type: 'document' | 'case' | 'chunk';, entity_id: string;
    , text_content: string;
     embedding_type?: 'content' | 'title' | 'summary';
   }): Promise<any> {
@@ -422,7 +422,7 @@ class RabbitMQEmbeddingWorker {
         entity_type: entity.entity_type,
         entity_id: entity.entity_id,
         text_content: entity.text_content,
-        embedding_type: entity.embedding_type || 'content` };
+        embedding_type: entity.embedding_type || 'content' };
       let result: any;
       switch (entity.entity_type) {
         case 'document':

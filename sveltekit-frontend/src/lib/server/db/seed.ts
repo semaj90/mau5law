@@ -15,7 +15,7 @@ async function seed(): Promise<any> {
     const passwordHash = await bcrypt.hash('password123', 12);
     const demoPasswordHash = await bcrypt.hash('demo123', 12);
     const seedUsers = [
-      {
+      {,
         email: 'demo@legal-ai.local',
         name: 'Demo User',
         firstName: 'Demo',
@@ -85,7 +85,7 @@ async function seed(): Promise<any> {
     console.log('\n[seed] Database seed completed successfully.');
     console.log(
       [
-        'Summary: `,
+        'Summary: `,'`
         `  users: ${insertedUsers.length}`,
         '',
         'Login Credentials:',
@@ -104,7 +104,7 @@ async function seed(): Promise<any> {
     const insertedCases = await db
       .insert(cases)
       .values([
-        {
+        {,
           title: 'Financial Fraud Investigation',
           description:
             'Complex financial fraud case involving multiple entities and cryptocurrency transactions.',
@@ -121,7 +121,7 @@ async function seed(): Promise<any> {
       .returning();
     console.log('[seed] Creating sample evidence...');
     await db.insert(evidence).values([
-      {
+      {,
         caseId: insertedCases[0].id,
         title: 'Bank Transaction Records',
         description: 'Suspicious transaction patterns showing structured deposits.',
@@ -134,7 +134,7 @@ async function seed(): Promise<any> {
       },
     ]);
   } catch (error) {
-    console.error('[seed] fatal error:', error);
+    console.error('[seed] fatal error:', error);'
     throw error;
   } finally {
     await pool.end();

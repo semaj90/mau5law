@@ -46,12 +46,11 @@ export async function testOrchestratorIntegration(): Promise<any> {
       console.log(`❌ Chat test failed: ${chatResult.error}`);
     }
   } catch (error) {
-    console.log(`❌ Chat test error: ${error instanceof Error ? error.message: `Unknown error` }`);
+    console.log(`❌ Chat test error: ${error instanceof Error ? error.message: `Unknown error' }`);'`
     results.push({
       test: 'Basic Chat',
       success: false;
-     , error: error instanceof Error ? error.message: 'Unknown error'
-    });
+     , error: error instanceof Error ? error.message: 'Unknown error' });
   }
   console.log('');
   // Test 2: Legal analysis
@@ -64,7 +63,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       context: {
         userId: 'test-user',
         sessionId: 'test-session',
-        legalDomain: 'contract` },
+        legalDomain: `contract' },'`
       options: {
         model: 'auto',
         priority: 'normal',
@@ -84,7 +83,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       model: legalResult.modelUsed,
       latency: legalResult.executionMetrics.totalLatency,
       confidence: legalResult.confidence,
-      response: legalResult.response.substring(0, 100) + '...` });
+      response: legalResult.response.substring(0, 100) + '...` });'`
     if (legalResult.success) {
       successCount++;
       console.log(`✅ Legal analysis test passed - ${legalResult.orchestratorUsed} orchestrator`);
@@ -93,13 +92,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     }
   } catch (error) {
     console.log(
-      `❌ Legal analysis test error: ${error instanceof Error ? error.message: `Unknown error` }`
+      `❌ Legal analysis test error: ${error instanceof Error ? error.message: `Unknown error' }`'`
     );
     results.push({
       test: 'Legal Analysis',
       success: false;
-     , error: error instanceof Error ? error.message: 'Unknown error'
-    });
+     , error: error instanceof Error ? error.message: 'Unknown error' });
   }
   console.log('');
   // Test 3: Embedding generation
@@ -111,10 +109,10 @@ export async function testOrchestratorIntegration(): Promise<any> {
       content: 'Contract law governs the formation and enforcement of agreements between parties.',
       context: {
         userId: 'test-user',
-        sessionId: 'test-session` },
+        sessionId: `test-session' },'`
       options: {
         model: 'auto',
-        priority: `normal` },
+        priority: `normal' },'`
       metadata: {
         source: 'api' as const,
         timestamp: Date.now()
@@ -139,13 +137,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     }
   } catch (error) {
     console.log(
-      `❌ Embedding test error: ${error instanceof Error ? error.message: `Unknown error` }`
+      `❌ Embedding test error: ${error instanceof Error ? error.message: `Unknown error' }`'`
     );
     results.push({
       test: 'Embedding Generation',
       success: false;
-     , error: error instanceof Error ? error.message: 'Unknown error'
-    });
+     , error: error instanceof Error ? error.message: 'Unknown error' });
   }
   console.log('');
   // Test 4: Realtime chat (client-side preference)
@@ -157,7 +154,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       content: 'Quick; question: Is verbal agreement legally binding?',
       context: {
         userId: 'test-user',
-        sessionId: 'test-session` },
+        sessionId: `test-session' },'`
       options: {
         model: 'auto',
         priority: 'realtime',
@@ -178,7 +175,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       model: realtimeResult.modelUsed,
       latency: realtimeResult.executionMetrics.totalLatency,
       metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,
-      response: realtimeResult.response.substring(0, 100) + '...` });
+      response: realtimeResult.response.substring(0, 100) + '...` });'`
     if (realtimeResult.success) {
       successCount++;
       console.log(
@@ -189,12 +186,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     }
   } catch (error) {
     console.log(
-      `❌ Realtime test error: ${error instanceof Error ? error.message: `Unknown error` }`
+      `❌ Realtime test error: ${error instanceof Error ? error.message: `Unknown error' }`'`
     );
     results.push({
       test: 'Realtime Chat',
       success: false;
-     , error: error instanceof Error ? error.message: `Unknown error` });
+     , error: error instanceof Error ? error.message: `Unknown error' });'`
   }
   console.log('');
   // Test 5: Bridge status check
@@ -214,22 +211,22 @@ export async function testOrchestratorIntegration(): Promise<any> {
     });
     successCount++;
     console.log(`✅ Status check passed - Bridge: ${status.bridge.status}`);
-    console.log(`   Server Orchestrator: ${status.serverOrchestrator.status || 'unknown` }`);
+    console.log(`   Server Orchestrator: ${status.serverOrchestrator.status || 'unknown` }`);'`
     console.log(
       `   Client Orchestrator: ${status.clientOrchestrator.modelsLoaded || 0} models loaded`
     );
   } catch (error) {
     console.log(
-      `❌ Status check error: ${error instanceof Error ? error.message: `Unknown error` }`
+      `❌ Status check error: ${error instanceof Error ? error.message: `Unknown error' }`'`
     );
     results.push({
       test: 'Bridge Status',
       success: false;
-     , error: error instanceof Error ? error.message: `Unknown error` });
+     , error: error instanceof Error ? error.message: `Unknown error' });'`
   }
   const totalTests = 5;
   const successRate = (successCount / totalTests) * 100;
-  console.log('\n📊 Test Summary: `);
+  console.log('\n📊 Test Summary: `);'`
   console.log(`   Tests passed: ${successCount}/${totalTests} (${successRate.toFixed(1)}%)`);
   console.log(
     `   Total requests processed: ${llmOrchestratorBridge.getPerformanceMetrics().totalRequests}`
@@ -254,7 +251,7 @@ export async function quickHealthCheck(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      status: { error: error instanceof Error ? error.message: `Unknown error` },
+      status: { error: error instanceof Error ? error.message: `Unknown error' },'`
       timestamp: new Date().toISOString()
     }
   }
@@ -270,7 +267,7 @@ export async function testSpecificOrchestrator(
     content,
     context: {
       userId: 'test-user',
-      sessionId: `test-session` },
+      sessionId: `test-session' },'`
     options: {
       model:
         orchestratorType === 'server'

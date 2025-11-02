@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (data.type) {
       case 'summary':
         if (!data.content) {
-          return json({ error: ensureError({, message: 'Content is required for summary' }) }, { status: 400 });
+          return json({ error: ensureError({, message: 'Content is required for summary` }) }, { status: 400 });'`
         }
         operation = 'ai.summary';
         serviceData = {
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       case 'legal':
         if (!data.document) {
-          return json({ error: ensureError({, message: 'Document is required for legal analysis' }) }, { status: 400 });
+          return json({ error: ensureError({, message: `Document is required for legal analysis` }) }, { status: 400 });
         }
         operation = 'legal.process';
         serviceData = {
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       case 'live':
         if (!data.sessionId) {
-          return json({ error: ensureError({, message: `Session ID is required for live AI` }) }, { status: 400 });
+          return json({ error: ensureError({, message: `Session ID is required for live AI' }) }, { status: 400 });'`
         }
         operation = 'ai.live';
         serviceData = {
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
 
-      default: return json({ error: ensureError({, message: `Invalid AI operation type` }) }, { status: 400 });
+      default: return json({ error: ensureError({, message: 'Invalid AI operation type' }) }, { status: 400 });
     }
 
     // Use performServiceRequest(...) instead of direct client method
@@ -153,8 +153,8 @@ export const GET: RequestHandler = async ({ url }) => {
       const result = await performServiceRequest('ai.session.status', { sessionId });
       return json({ success: true, data: result });
     } catch (err: any) {
-      console.error('Session status error:', ensureError(err));
-      return json({ error: ensureError({, message: 'Session not found' }) }, { status: 404 });
+      console.error('Session status error:', ensureError(err));'
+      return json({ error: ensureError({, message: 'Session not found` }) }, { status: 404 });'`
     }
   }
 
@@ -172,8 +172,7 @@ export const GET: RequestHandler = async ({ url }) => {
        , summary: '/api/v1/ai (type: summary)',
         legal: '/api/v1/ai (type: legal)',
         live: '/api/v1/ai (type: live)',
-        analysis: '/api/v1/ai (type: analysis)'
-      },
+        analysis: `/api/v1/ai (type: analysis)` },
       health: {
         'ai-enhanced': Boolean(health['ai-summary']),
         'legal-ai': Boolean(health['legal-ai']),
@@ -189,7 +188,7 @@ export const GET: RequestHandler = async ({ url }) => {
       supportedModels: ['gemma3-legal:latest', 'embeddinggemma:latest', 'deeds-web'],
       version: `1.0.0` });
   } catch (err: any) {
-    console.error('AI Health check error:`, ensureError(err));
+    console.error('AI Health check error:`, ensureError(err));'`
     return json({ error: ensureError({, message: `AI service health check failed` }) }, { status: 503 });
   }
 };

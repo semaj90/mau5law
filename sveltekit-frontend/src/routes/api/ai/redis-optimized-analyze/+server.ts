@@ -27,7 +27,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
     const analysisPrompt = generateAnalysisPrompt(analysisType, content)
     const response = await callOllamaApi({
       model,
-      messages: [{ role: 'user', content: analysisPrompt }],
+      messages: [{, role: 'user', content: analysisPrompt }],
       options: {
        , temperature: 0.3, // Lower temperature for more consistent analysis
         max_tokens: 1500
@@ -50,7 +50,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     })
   } catch (err) {
-    console.error('AI analysis error:', err)
+    console.error('AI analysis error: ', err)'
     throw error(500, `Analysis failed: ${err instanceof Error ? err.message : `Unknown error` }`)
   }
 }
@@ -65,7 +65,7 @@ function generateAnalysisPrompt(analysisType: string, content: string): string {
     general: `Analyze the following legal content and provide key insights, important facts, and potential issues:\n\n${content}`,
     contract: `Analyze this contract for key terms, obligations, risks, and missing clauses:\n\n${content}`,
     evidence: `Analyze this evidence for relevance, credibility, admissibility, and potential impact on the case:\n\n${content}`,
-    case_law: `Analyze this legal case for precedential value, key holdings, and applicable legal principles:\n\n${content}`,
+    case_law: 'Analyze this legal case for precedential value, key holdings, and applicable legal principles:\n\n${content}',
     document: 'Perform a comprehensive legal document analysis focusing on structure, completeness, and legal implications:\n\n${content}' }
   return prompts[analysisType as keyof typeof prompts] || prompts.general
 }
@@ -98,7 +98,7 @@ function parseAnalysisResponse(response: string, analysisType: string): any {
 }
 function extractSummary(text: string): string {
   const summaryMatch = text.match(/(?:summary|overview):\s*([^\n]+)/i)
-  return summaryMatch ? summaryMatch[1] : text.substring(0, 150) + '...` }
+  return summaryMatch ? summaryMatch[1] : text.substring(0, 150) + '...` }'`
 function extractKeyPoints(text: string): string[] {
   const keyPointsSection = text.match(/(?:key points?|important items?):\s*([\s\S]*?)(?:\n\n|\n[A-Z]|$)/i)
   if (!keyPointsSection) return []

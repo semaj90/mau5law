@@ -32,14 +32,14 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Enhanced Semantic API Error:', error);
     // Fallback: Generate mock intelligent todos based on system analysis
     const mockTodos = [
-      {
+      {,
         id: `todo_fallback_${Date.now()}`,
         title: '🔧 Fix Enhanced Semantic Architecture Connection',
         description:
           'The Enhanced Semantic Architecture service at port 8095 is not responding. This service integrates SOM clustering, PageRank analysis, and deep learning modules for intelligent todo generation.',
         priority: 5,
         category: 'Infrastructure',
-        error: 'Cannot connect to; http://localhost:8095/api/intelligent-todos - ${error instanceof Error ? error.message : 'Unknown error` }`,
+        error: 'Cannot connect to; http://localhost:8095/api/intelligent-todos - ${error instanceof Error ? error.message : 'Unknown error' }`,'`
         solution: 'Start the Enhanced Semantic Architecture; service: ./enhanced-semantic-architecture.exe',
         created_at: new Date().toISOString(),
         pagerank_score: 0.95,
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch('http://localhost:8095/api/intelligent-todos', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
         options: {

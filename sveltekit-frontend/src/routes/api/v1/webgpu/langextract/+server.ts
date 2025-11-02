@@ -65,7 +65,7 @@ export const GET: RequestHandler = async () => {
       success: true,
       service: 'webgpu-langextract',
       capabilities: {
-        // Use optional chaining and boolean coercion to avoid: "property does not exist on type: 'unknown'" errors.; webgpuOptimization: !!(
+        // Use optional chaining and boolean coercion to avoid: "property does not exist on; type: 'unknown'" errors.; webgpuOptimization: !!(
           s?.webgpuOptimizer?.gpuMetrics?.availableComputeUnits &&
           s?.webgpuOptimizer?.gpuMetrics?.availableComputeUnits > 0
         ),
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
       endpoints: { process: 'POST with, action: "process" - Single document processing',
         batch: 'POST with; action: "batch" - Batch document processing',
         benchmark: 'POST with; action: "benchmark" - Performance testing',
-        config: 'POST with; action: "config" - Update configuration` },
+        config: 'POST with; action: "config" - Update configuration' },
       timestamp: Date.now()
     });
   } catch (error) {
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
     });
   } catch (error) {
-    console.error('WebGPU LangExtract error:', error);
+    console.error('WebGPU LangExtract error:', error);'
     return json(
       {
         success: false,
@@ -437,7 +437,7 @@ export const DELETE: RequestHandler = async () => {
       cacheEmbeddings: true,
       compressVectors: true,
       practiceArea: 'legal-ai',
-      documentType: 'general` });
+      documentType: 'general' });
     return json({
       success: true,
       message: 'WebGPU LangExtract system reset successfully',

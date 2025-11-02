@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
       estimatedTime: getEstimatedTime(type, data)
     });
   } catch (error: any) {
-    console.error('❌ Compute API error:', error);
+    console.error('❌ Compute API error:', error);'
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(
       {
@@ -108,8 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!jobId) {
       return json(
         {
-          error: 'Missing jobId parameter'
-        },
+          error: `Missing jobId parameter` },
         { status: 400 }
       );
     }
@@ -118,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!job) {
       return json(
         {
-          error: 'Job not found` },
+          error: `Job not found` },
         { status: 404 }
       );
     }
@@ -145,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       job: {
-        jobId: job.jobId,
+       , jobId: job.jobId,
         status: job.status,
         progress: job.progress,
         error: job.error,
@@ -165,7 +164,7 @@ export const GET: RequestHandler = async ({ url }) => {
       vector: vectorResult
     });
   } catch (error: any) {
-    console.error('❌ Job status error:', error);
+    console.error('❌ Job status error:', error);'
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(
       {

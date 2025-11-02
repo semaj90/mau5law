@@ -33,22 +33,22 @@ export interface EvidenceProcessingContext {
   streamingUpdates: Array<any>;
 // Events for the evidence processing machine
 export type EvidenceProcessingEvent =
-  | { type: 'UPLOAD_FILE'; file: File;, evidenceId: string }
-  | { type: 'CONFIGURE_NEURAL_SPRITE';, config: GlyphRequest['neural_sprite_config'] }
+  | { type: 'UPLOAD_FILE'; file: File; evidenceId: string }
+  | { type: 'CONFIGURE_NEURAL_SPRITE'; config: GlyphRequest['neural_sprite_config'] }
   | { type: 'START_ANALYSIS' }
-  | { type: 'ANALYSIS_PROGRESS'; progress: number;, message: string }
-  | { type: 'ANALYSIS_SUCCESS';, results: EvidenceProcessingContext['analysisResults'] }
-  | { type: 'ANALYSIS_ERROR';, error: string }
+  | { type: 'ANALYSIS_PROGRESS'; progress: number; message: string }
+  | { type: 'ANALYSIS_SUCCESS'; results: EvidenceProcessingContext['analysisResults'] }
+  | { type: 'ANALYSIS_ERROR'; error: string }
   | { type: 'START_GLYPH_GENERATION' }
-  | { type: 'GLYPH_PROGRESS'; progress: number;, message: string }
-  | { type: 'GLYPH_SUCCESS';, result: GlyphResponse }
-  | { type: 'GLYPH_ERROR';, error: string }
+  | { type: 'GLYPH_PROGRESS'; progress: number; message: string }
+  | { type: 'GLYPH_SUCCESS'; result: GlyphResponse }
+  | { type: 'GLYPH_ERROR'; error: string }
   | { type: 'START_PNG_EMBEDDING' }
-  | { type: 'PNG_EMBEDDING_SUCCESS'; enhancedPngUrl: string;, metadata: LegalAIMetadata }
-  | { type: 'PNG_EMBEDDING_ERROR';, error: string }
+  | { type: 'PNG_EMBEDDING_SUCCESS'; enhancedPngUrl: string; metadata: LegalAIMetadata }
+  | { type: 'PNG_EMBEDDING_ERROR'; error: string }
   | { type: 'START_MINIO_STORAGE' }
-  | { type: 'STORAGE_SUCCESS'; artifactId: string;, storageUrl: string }
-  | { type: 'STORAGE_ERROR';, error: string }
+  | { type: 'STORAGE_SUCCESS'; artifactId: string; storageUrl: string }
+  | { type: 'STORAGE_ERROR'; error: string }
   | { type: 'RETRY_CURRENT_STEP' }
   | { type: 'CANCEL_PROCESSING' }
   | { type: 'RESET' }
@@ -61,7 +61,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: {, file: File }
     }, 1000);
   });
 });
-const analyzeEvidenceService = fromPromise(async ({ input }: { input: {, file: File; evidenceId: string }
+const analyzeEvidenceService = fromPromise(async ({ input }: { input: {, file: File;, evidenceId: string }
 }) => {
   // Simulate AI analysis with streaming updates
   return new Promise((resolve) => {
@@ -80,12 +80,12 @@ const analyzeEvidenceService = fromPromise(async ({ input }: { input: {, file: F
     }, 2500);
   });
 });
-const generateGlyphService = fromPromise(async ({ input }: { input: {, analysisResults: any; evidenceId: string; neuralSpriteConfig?: any }
+const generateGlyphService = fromPromise(async ({ input }: { input: {, analysisResults: any;, evidenceId: string; neuralSpriteConfig?: any }
 }) => {
   // Call glyph generation API
   const response = await fetch('/api/glyph/generate', {
     method: 'POST',
-    headers: { 'Content-Type': `application/json` },
+    headers: { 'Content-Type': `application/json' },'`
     body: JSON.stringify({,
       evidence_id: input.evidenceId,
       prompt: `Legal evidence; visualization: ${input.analysisResults.summary}`,
@@ -211,7 +211,7 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: `cancelled` }
+          CANCEL_PROCESSING: `cancelled' }'`
       },
       analyzing: { invoke: {, src: analyzeEvidenceService; input: ({ context }) => ({
             file: context.file!,
@@ -286,7 +286,7 @@ export const evidenceProcessingMachine = createMachine();
               })
             })
           },
-          CANCEL_PROCESSING: `cancelled` }
+          CANCEL_PROCESSING: `cancelled' }'`
       },
       generatingGlyph: { invoke: {, src: generateGlyphService; input: ({ context }) => ({
             analysisResults: context.analysisResults!,
@@ -352,7 +352,7 @@ export const evidenceProcessingMachine = createMachine();
               ]
             })
           },
-          CANCEL_PROCESSING: `cancelled` }
+          CANCEL_PROCESSING: `cancelled' }'`
       },
       embeddingPNG: { invoke: {, src: embedPNGService; input: ({ context }) => ({
             glyphResult: context.glyphGeneration!.result!,
@@ -407,7 +407,7 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: `cancelled` }
+          CANCEL_PROCESSING: `cancelled' }'`
       },
       storingInMinIO: { invoke: {, src: storeInMinIOService; input: ({ context }) => ({
             enhancedPngUrl: context.portableArtifact!.enhancedPngUrl,
@@ -473,7 +473,7 @@ export const evidenceProcessingMachine = createMachine();
           RESET: 'idle';
         }
       },
-      cancelled: { on: {, RESET: `idle` }
+      cancelled: { on: {, RESET: `idle' }'`
       }
     }
   }

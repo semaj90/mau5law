@@ -1,5 +1,5 @@
 import type { User } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 /**
  * XState Svelte Store Integration
  * Provides reactive Svelte stores for XState machines with persistence and devtools
@@ -116,7 +116,7 @@ class XStateStoreManager {
   /**
    * Initialize the application machine and store
    */
-  public initializeApp(): { appStore: Readable<unknown>;, appActor: ActorRefFrom<typeof appMachine>;
+  public initializeApp(): { appStore: Readable<unknown>;, appActor: ActorRefFrom<typeof, appMachine>;
     send: (_event: AppEvents) => void;
     selectors: typeof appSelectors;
   } {
@@ -172,7 +172,7 @@ class XStateStoreManager {
   /**
    * Initialize the legal case machine and store
    */
-  public initializeLegalCase(): { legalCaseStore: Readable<unknown>;, legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
+  public initializeLegalCase(): { legalCaseStore: Readable<unknown>;, legalCaseActor: ActorRefFrom<typeof, legalCaseMachine>;
     send: (_event: any) => void;
     selectors: typeof legalCaseSelectors;
   } {
@@ -435,8 +435,8 @@ export function initializeStores(config?: XStateStoreConfig) {
   }
 }
 // Type exports for better TypeScript support
-export type XStateStores = ReturnType<typeof initializeStores>;
-export type AppStoreState = ReturnType<typeof appSelectors.getCurrentUser>;
+export type XStateStores = ReturnType<typeof, initializeStores>;
+export type AppStoreState = ReturnType<typeof, appSelectors.getCurrentUser>;
 // Hook for Svelte components
 export function useXStateStore() {
   return initializeStores();

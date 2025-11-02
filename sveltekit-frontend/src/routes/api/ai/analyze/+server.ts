@@ -48,12 +48,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown` },
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown' },
       body: JSON.stringify(validatedData.data)
     });
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('QUIC server legal analysis error:', errorData);
+      console.error('QUIC server legal analysis error:', errorData);'
       throw error(response.status, `Legal analysis failed: ${errorData}`);
     }
     const result = await response.json();
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       }
     });
   } catch (err) {
-    console.error('Legal AI analysis error:', err);
+    console.error('Legal AI analysis error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err;
     }
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     // Get analysis result from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/legal/result?job_id=${jobId}`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}` }
+        'Authorization': `Bearer ${sessionId}' }'`
     });
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve analysis result');
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       completed_at: result.completed_at
     });
   } catch (err) {
-    console.error('Analysis result retrieval error:', err);
+    console.error('Analysis result retrieval error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err;
     }

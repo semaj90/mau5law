@@ -144,15 +144,14 @@ function createSearchStore() {
 
         const response = await fetch('/api/search', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             query,
             mode,
             scope,
             filters: {}
           }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         const searchTime = performance.now() - startTime;
 
@@ -189,7 +188,7 @@ function createSearchStore() {
       try {
         const response = await fetch('/api/search/vector', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ embedding, threshold }),
           credentials: `include` });
 
@@ -208,7 +207,7 @@ function createSearchStore() {
           return results;
         }
       } catch (error) {
-        console.error('Vector search error:', error);
+        console.error('Vector search error:', error);'
         update(s => ({ ...s, isSearching: false }));
       }
 
@@ -366,7 +365,7 @@ function createSearchStore() {
       try {
         const response = await fetch('/api/search/export', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
            , results: state.results,
             format
@@ -383,7 +382,7 @@ function createSearchStore() {
           URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Export error:', error);
+        console.error('Export error: ', error);'
       }
     },
 
@@ -429,7 +428,7 @@ function createSearchStore() {
       if (filters.caseIds?.length) labels.push(`cases: ${filters.caseIds.length}`);
       if (filters.entityTypes?.length) labels.push(`types: ${filters.entityTypes.length}`);
       if (filters.tags?.length) labels.push(`tags: ${filters.tags.length}`);
-      if (filters.priority) labels.push(`priority: ${filters.priority}`);
+      if (filters.priority) labels.push('priority: ${filters.priority}');
       return labels;
     }
   };

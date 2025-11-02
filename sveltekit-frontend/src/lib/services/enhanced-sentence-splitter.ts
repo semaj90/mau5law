@@ -21,7 +21,7 @@ export class EnhancedSentenceSplitter {
   private mergeThreshold: number;
   private streamBufferSize: number;
   private customAbbreviations: Set<string>;
-  private abbreviationRegexes: { abbr: string;, regex: RegExp }[];
+  private abbreviationRegexes: { abbr: string; regex: RegExp }[];
   private headingPatterns: RegExp[];
 
   // Common legal and business abbreviations

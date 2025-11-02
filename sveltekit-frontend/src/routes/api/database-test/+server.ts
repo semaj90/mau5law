@@ -14,7 +14,7 @@ export const GET: RequestHandler = async () => {
         SELECT extname, extversion
         FROM pg_extension
         WHERE extname = 'vector'
-      `);
+      `);`
       results.pgvector = {
         installed: vectorCheck.length > 0,
         version: vectorCheck[0]?.extversion || null
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async () => {
         FROM information_schema.tables
         WHERE table_schema = 'public'
         ORDER BY table_name
-      `);
+      `);`
       results.tables = tables;
     } catch (error: any) {
       results.tables = { error: error.message };
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async () => {
         WHERE table_schema = 'public'
         AND table_name IN ('users', 'cases', 'evidence', 'document_chunks')
         ORDER BY table_name, ordinal_position
-      `);
+      `);`
       results.schemas = schemas;
     } catch (error: any) {
       results.schemas = { error: error.message };
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async () => {
         FROM pg_stats
         WHERE schemaname = 'public'
         LIMIT 10
-      `);
+      `);`
       results.stats = simpleQuery;
     } catch (error: any) {
       results.stats = { error: error.message };
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async () => {
     try {
       const vectorTest = await db.execute(sql`
         SELECT: '[1,2,3]'::vector as test_vector
-      `);
+      `);`
       results.vectorOperations = {
         success: true,
         testVector: vectorTest[0]?.test_vector
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { query } = await request.json();
     if (!query) {
-      return json({ error: 'No query provided' }, { status: 400 });
+      return json({ error: 'No query provided` }, { status: 400 });'`
     }
     // Execute custom query (with safety restrictions)
     const result = await db.execute(sql.raw(query));

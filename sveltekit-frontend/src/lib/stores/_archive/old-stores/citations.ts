@@ -25,7 +25,7 @@ function generateId(): string {
     // Use a runtime check and a safe cast to a typed shape that may include randomUUID
     const cryptoWithUUID = maybeCrypto as Crypto & { randomUUID?: () => string };
     if (typeof cryptoWithUUID.randomUUID === 'function') {
-      // safe to call since the typeof check guarantees it's a function
+      // safe to call since the typeof check guarantees it's a function'
       return cryptoWithUUID.randomUUID();
     }
   }
@@ -185,7 +185,7 @@ const sampleCitations: Citation[] = [
     id: '2',
     title: 'Federal Rules of Evidence Rule 404',
     content:
-      "Evidence of a person's character or character trait is not admissible to prove that on a particular occasion the person acted in accordance with the character or trait.",
+      "Evidence of a person's character or character trait is not admissible to prove that on a particular occasion the person acted in accordance with the character or trait.",'
     source: 'Fed. R. Evid. 404',
     type: 'statute',
     tags: ['evidence', 'character evidence', 'federal rules'],

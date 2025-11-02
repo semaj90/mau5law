@@ -98,7 +98,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('Document drafting API error:', error);
+    console.error('Document drafting API error:', error);'
     const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error';
     return json(
       {
@@ -135,7 +135,7 @@ async function generateDraftingAssistance(request: DocumentDraftingRequest): Pro
 function getDocumentStructure(documentType: string, _jurisdiction: string) {
   const commonStructures = {
     contract: [
-      {
+      {,
         section: 'Title and Parties',
         description: 'Document title and identification of all parties',
         required: true,
@@ -185,7 +185,7 @@ function getDocumentStructure(documentType: string, _jurisdiction: string) {
       },
     ],
     motion: [
-      {
+      {,
         section: 'Caption',
         description: 'Court identification and case information',
         required: true,
@@ -217,7 +217,7 @@ function getDocumentStructure(documentType: string, _jurisdiction: string) {
       },
     ],
     brief: [
-      {
+      {,
         section: 'Table of Contents',
         description: 'Document outline with page numbers',
         required: true,
@@ -412,12 +412,12 @@ async function generateAIContentSuggestions(
   request: DocumentDraftingRequest,
   assistance: DraftingAssistance
 ): Promise<string> {
-  const prompt = `Generate specific content suggestions for a ${request.documentType} involving:; Parties: ${request.parties.map(p => `${p.name} (${p.role})`).join(', ')}
+  const prompt = `Generate specific content suggestions for a ${request.documentType} involving:; Parties: ${request.parties.map(p => `${p.name} (${p.role})`).join(', ')}`
 Jurisdiction: ${request.jurisdiction}
 Complexity: ${request.complexity}
 Key considerations:
 ${assistance.legalConsiderations.join('\n')}
-Provide specific language suggestions and alternatives for key sections: ';
+Provide specific language suggestions and alternatives for key sections: ';'
   try {
     // Synthesize input and process the assistant query using the constructed prompt
     // Pass the prompt into the helper functions so the constructed prompt is actually used
@@ -427,7 +427,7 @@ Provide specific language suggestions and alternatives for key sections: ';
     return typeof aiResult === 'string' ? aiResult : JSON.stringify(aiResult);
   } catch (error: any) {
     console.warn('AI content suggestions failed:', error);
-    return `Content Suggestions for ${request.documentType}:
+    return `Content Suggestions for ${request.documentType}:`
 Key Language Recommendations:
 • Use clear, unambiguous terms throughout
 • Define technical or legal terms in a definitions section
@@ -435,7 +435,7 @@ Key Language Recommendations:
 • Consider alternative dispute resolution mechanisms
 For ${request.parties.length} parties: Ensure balanced obligations and mutual considerations.
 Jurisdiction (${request.jurisdiction}): Review applicable local law requirements.
-Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.' }`;
+Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.` }`;'
   }
 }
 async function generateComplianceAnalysis(request: DocumentDraftingRequest): Promise<string> {

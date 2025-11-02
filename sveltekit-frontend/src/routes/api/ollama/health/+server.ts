@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
     const response = await fetch(`${ollamaBaseUrl}/api/tags`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': 'application/json' }
     });
     if (response.ok) {
       const data = await response.json();

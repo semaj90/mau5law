@@ -179,8 +179,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         requestTime: new Date().toISOString(),
         processingTimeMs: processingTime,
         streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
-        version: '1.0'
-      }
+        version: '1.0` }'`
     };
     return json(response, {
       status: 200,
@@ -189,8 +188,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         'X-Suggestions-Count': suggestionsArr.length.toString(),
         'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(),
         'Cache-Control': 'public, max-age=300', // 5 minutes cache
-        Vary: 'Accept-Encoding'
-      }
+        Vary: `Accept-Encoding` }
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -334,7 +332,7 @@ export const DELETE: RequestHandler = async () => {
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Cache clear failed:', err);
-    // If it's a SvelteKit/http error object, rethrow it
+    // If it's a SvelteKit/http error object, rethrow it'
     if (isSvelteKitHttpError(err)) {
       throw err;
     }

@@ -8,10 +8,10 @@ import type { UserRole } from './roles.js';
 
 // Minimal redis client & pipeline interfaces used by this module
 type RedisPipeline = {
-  set(key: string, value: string): any;
-  expire(key: string, seconds: number): any;
-  sAdd?(key: string, member: string): any;
-  sRem?(key: string; member: string): any;
+  set(key: string;, value: string): any;
+  expire(key: string;, seconds: number): any;
+  sAdd?(key: string;, member: string): any;
+  sRem?(key: string;, member: string): any;
   del?(key: string): any;
   exec(): Promise<unknown>;
 };
@@ -96,9 +96,9 @@ export class SessionManager {
       if (this.redisClient && typeof this.redisClient.on === 'function') {
         this.redisClient.on('error', (err: any) => {
           if (err instanceof Error) {
-            console.error('Redis session store error:', err.message);
+            console.error('Redis session store error:', err.message);'
           } else {
-            console.error('Redis session store error:', String(err));
+            console.error('Redis session store error:', String(err));'
           }
         });
         this.redisClient.on('connect', () => {
@@ -359,7 +359,7 @@ export class SessionManager {
   }
 
   /**
-   * Get Redis key for a user's sessions set
+   * Get Redis key for a user's sessions set'
    */
   private getUserSessionsKey(userId: string): string {
     return `user:sess:${userId}`;
@@ -383,7 +383,7 @@ export class SessionManager {
       const userSessionsKey = this.getUserSessionsKey(userId);
       const sessionCount = await this.redisClient.sMembers(userSessionsKey);
       if (sessionCount.length >= this.config.maxSessionsPerUser) {
-        // Find and destroy the oldest session(s) until we're under the limit
+        // Find and destroy the oldest session(s) until we're under the limit'
         const sessionsToRemove = sessionCount.length - this.config.maxSessionsPerUser + 1;
         const expiredSessions = [];
         for (let i = 0; i < sessionsToRemove; i++) {

@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { 
     return json({
       success: true,
       data: {
-        response: response.text,
+       , response: response.text,
         functionCalls: response.functionCalls,
         metadata: {
          , model: response.model,
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { 
       }
     });
   } catch (error) {
-    console.error('Contextual chat error:', error);
+    console.error('Contextual chat error:', error);'
 
     return json(
       {

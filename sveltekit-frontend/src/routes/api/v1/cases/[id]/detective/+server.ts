@@ -61,13 +61,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const updatedCase = await casesService.getById(caseId);
     // Log detective mode change for audit trail
     console.log(
-      `Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${
-        getUserId(locals) ?? 'unknown` }`
+      `Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${`
+        getUserId(locals) ?? 'unknown` }`'
     );
     return json({
       success: true,
       data: {
-        case: updatedCase, // <-- fixed: added missing comma; detectiveMode: {
+        case: updatedCase, // <-- fixed: added missing, comma; detectiveMode: {
           enabled,
           toggledAt: new Date().toISOString(),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
@@ -78,8 +78,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         userId: getUserId(locals),
         caseId,
         timestamp: new Date().toISOString(),
-        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated'
-      }
+        action: enabled ? 'detective_mode_activated' : `detective_mode_deactivated` }
     });
   } catch (err: any) {
     console.error('Error toggling detective mode:', err);

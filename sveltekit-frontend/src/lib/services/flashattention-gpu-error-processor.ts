@@ -113,14 +113,14 @@ export class FlashAttentionGPUErrorProcessor {
           memory_usage_mb: await this.getMemoryUsage(),
           tokens_per_second: this.calculateTokensPerSecond(fixes.length, processingTime)
         },
-        status: 'completed` };
+        status: `completed` };
       console.log(`⚡ Batch ${batchId} completed in ${processingTime.toFixed(2)}ms`);
       console.log(
         `🎯 Generated ${fixes.length} fixes with ${(result as { performance?: any; path?: any; content?: any; response?: any; fixes?: any }).performance.tokens_per_second.toFixed(1)} tokens/sec`
       );
       return result;
     } catch (error: any) {
-      console.error(`❌ Error processing batch ${batchId}: ', error);
+      console.error(`❌ Error processing batch ${batchId}: `, error);
       return {
         batchId,
         fixes: [],
@@ -130,7 +130,7 @@ export class FlashAttentionGPUErrorProcessor {
           memory_usage_mb: 0,
           tokens_per_second: 0
         },
-        status: 'failed` };
+        status: `failed` };
     }
   }
   private categorizeErrors(errors: TypeScriptError[]): TypeScriptError[] {
@@ -187,7 +187,7 @@ export class FlashAttentionGPUErrorProcessor {
   private async generateErrorFix(error: TypeScriptError, _batchId: string): Promise<ErrorFix | null> {
     const contextResults = await concurrentSearch.search({
       query: `${error.code} ${error.message} ${error.category}`,
-      filters: { language: ['typescript', 'svelte'] },
+      filters: {, language: ['typescript', 'svelte'] },
       options: {, threshold: 0.4, maxResults: 5 }
     });
     const contextText = contextResults.map(result => `File: ${result.path}\n${result.content}`).join('\n\n');
@@ -197,7 +197,7 @@ export class FlashAttentionGPUErrorProcessor {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest',
+       , model: 'gemma3-legal:latest',
         prompt,
         stream: false,
         options: {
@@ -235,19 +235,19 @@ export class FlashAttentionGPUErrorProcessor {
       syntax: `Fix this syntax error. Check for missing semicolons, brackets, or quotes.`,
       binding: `Fix this Svelte binding error. Use proper event binding syntax.`,
       unknown: `Analyze and fix this error based on the context provided.` };
-    return `You are an expert TypeScript and Svelte developer. Fix this error:; Error: ${error.code} - ${error.message}
+    return `You are an expert TypeScript and Svelte developer. Fix this error:; Error: ${error.code} - ${error.message}`
 File: ${error.file}:${error.line}:${error.column}
 Category: ${error.category}
 ${categoryPrompts[error.category]}
 Context from similar files:
 ${context}
-Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;
+Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;`
   }
   private parseFixResponse(error: TypeScriptError, response: string): ErrorFix {
     // Normalize response: strip fenced code blocks and leading/trailing whitespace
     let fixedCode = response
-      .replace(/```[a-zA-Z0-9-]*\n?/g, '')
-      .replace(/```/g, '')
+      .replace(/```[a-zA-Z0-9-]*\n?/g, '')`
+      .replace(/```/g, '')`
       .trim();
 
     // If the assistant returned commentary lines before the code, try to find the first code-like line
@@ -470,8 +470,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
         line: 1,
         column: 5,
         severity: 'error',
-        category: 'type'
-      },
+        category: `type` },
       {
         code: 'TS2307',
         message: "Cannot find; module: 'nonexistent'",
@@ -479,7 +478,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
         line: 2,
         column: 1,
         severity: 'error',
-        category: 'import` },
+        category: `import` }
     ];
     const startTime = performance.now();
     const result = await this.processErrors(testErrors);
@@ -500,7 +499,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
       gpu_utilization: (result as { performance?: any; path?: any; content?: any; response?: any; fixes?: any })
         .performance.gpu_utilization
     };
-    console.log('📊 FlashAttention2 Benchmark Results: `);
+    console.log('📊 FlashAttention2 Benchmark Results: `);'`
     console.log(`   - Processing Speed: ${benchmarkResults.processing_speed.toFixed(1)} tokens/sec`);
     console.log(`   - Memory Efficiency: ${(benchmarkResults.memory_efficiency * 100).toFixed(1)}%`);
     console.log(`   - Accuracy Score: ${(benchmarkResults.accuracy_score * 100).toFixed(1)}%`);

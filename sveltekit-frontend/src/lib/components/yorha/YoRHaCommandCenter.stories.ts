@@ -21,7 +21,7 @@ const meta = {
   }
 } satisfies Meta<YoRHaCommandCenter>;
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof, meta>;
 // Default story with baseline system data
 export const Default: Story = { args: {, systemData: {
       activeCases: 12,

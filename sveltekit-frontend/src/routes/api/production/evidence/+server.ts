@@ -38,7 +38,7 @@ const mockEvidenceData: EvidenceItem[] = [
     extracted_text:
       'This is a test document for the evidence processing pipeline. It contains legal information about contract terms and conditions. The document includes important clauses about liability, indemnification, and dispute resolution.',
     smart_detection_results: [
-      {
+      {,
         detection_type: 'legal_entity',
         detected_value: 'liability',
         confidence_score: 0.95,
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       data: paginatedEvidence,
       pagination: {
-        total: filteredEvidence.length,
+       , total: filteredEvidence.length,
         limit,
         offset,
         has_more: offset + limit < filteredEvidence.length
@@ -175,11 +175,11 @@ export const POST: RequestHandler = async ({ request }) => {
           newEvidence.updated_at = new Date().toISOString();
           // Add mock smart detection results
           newEvidence.smart_detection_results = [
-            {
+            {,
               detection_type: 'legal_entity',
               detected_value: 'contract',
               confidence_score: 0.92,
-              context: 'contract terms and conditions` },
+              context: 'contract terms and conditions' }
           ];
         }, 1000);
       }, 500);

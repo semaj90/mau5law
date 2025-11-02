@@ -1,21 +1,21 @@
 import { createMachine, assign, fromPromise } from 'xstate';
-interface AIProcessingContext { task: { id: string; type: string;, payload: any } | null;
+interface AIProcessingContext { task: { id: string; type: string; payload: any } | null;
   result: any | null;
   error: string | null;
 }
 type AIProcessingEvent =
-  | { type: 'START_PROCESSING'; task: { id: string; type: string;, payload: any } }
-  | { type: 'PROCESSING_SUCCESS';, result: any }
-  | { type: 'PROCESSING_FAILURE';, error: string };
+  | { type: 'START_PROCESSING'; task: { id: string; type: string; payload: any } }
+  | { type: 'PROCESSING_SUCCESS'; result: any }
+  | { type: 'PROCESSING_FAILURE'; error: string };
 export const aiProcessingMachine = createMachine<AIProcessingContext, AIProcessingEvent>({
   id: 'aiProcessing',
   context: {
-    task: null,
+   , task: null,
     result: null,
     error: null
   },
   initial: 'idle',
-  states: { idle: {, on: { START_PROCESSING: {, target: 'processing',
+  states: {, idle: {, on: {, START_PROCESSING: {, target: 'processing',
           actions: assign({
            , task: ({ event }) => event.task,
             result: null,

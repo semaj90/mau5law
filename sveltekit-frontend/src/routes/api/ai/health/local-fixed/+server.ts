@@ -12,8 +12,8 @@ type HealthResult = { success: boolean;, message: string;
 
 type GenerationResponse = { response?: string | string[] | null };
 type GenerationResult =
-  | { success: true; provider: string; model: string; response: string | string[] | null;, executionTime: number }
-  | { success: false; provider: string; error: string;, executionTime: number; troubleshooting?: string[] };
+  | { success: true; provider: string; model: string; response: string | string[] | null; executionTime: number }
+  | { success: false; provider: string; error: string; executionTime: number; troubleshooting?: string[] };
 
 // Updated: Test Ollama connection directly
 async function testOllamaConnection(): Promise<HealthResult> {
@@ -43,10 +43,10 @@ async function testOllamaConnection(): Promise<HealthResult> {
 
     return {
       success: true,
-      message: `Ollama is running but model list unavailable` };
+      message: 'Ollama is running but model list unavailable' };
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: 'Ollama connection; failed: ${msg}' };
+    return { success: false, message: 'Ollama connection; failed: ${msg}` };'`
   }
 }
 
@@ -59,9 +59,9 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
     });
 
     if (response.ok) {
-      return { success: true, message: 'llama.cpp server is running' };
+      return { success: true, message: `llama.cpp server is running' };'`
     } else {
-      return { success: false, message: `llama.cpp server not responding properly` };
+      return { success: false, message: 'llama.cpp server not responding properly' };
     }
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         available: false,
         error: msg,
-        services: { ollama: {, available: false },
+        services: {, ollama: {, available: false },
           llamaCpp: {, available: false }
         }
       },
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async () => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { prompt = 'What are the key elements of a valid contract?', service = 'auto' } = body ?? {};
+    const { prompt = 'What are the key elements of a valid contract?', service = 'auto` } = body ?? {};'`
     const startTime = Date.now();
     let result: GenerationResult = {
       success: false,
@@ -186,9 +186,9 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         const response = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            model: 'gemma3-legal',
+           , model: 'gemma3-legal',
             prompt,
             stream: false,
             options: {
@@ -214,7 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              model: 'gemma2:2b',
+             , model: 'gemma2:2b',
               prompt,
               stream: false,
               options: {

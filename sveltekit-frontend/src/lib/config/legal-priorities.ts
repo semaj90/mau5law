@@ -93,7 +93,7 @@ export const COMPLEXITY_MULTIPLIERS: Record<ComplexityLevel, number> = {
 }
 /**
  * NES Memory Bank Configuration
- * Mimics Nintendo's memory architecture for legal document management
+ * Mimics Nintendo's memory architecture for legal document management'
  */
 export const NES_MEMORY_MAP = {
   // L1 Cache - Ultra-fast GPU memory (1MB)

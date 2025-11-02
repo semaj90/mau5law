@@ -29,11 +29,11 @@ export const GET: RequestHandler = async ({ url }) => {
       query
     });
   } catch (error) {
-    console.error('Legal precedents API error:', error);
+    console.error('Legal precedents API error:', error);'
     // Return mock precedents data
     const query = url.searchParams.get('query') || '';
     const mockPrecedents = [
-      {
+      {,
         id: 'mock-precedent-001',
         caseTitle: 'Mock vs. TechCorp Employment Dispute',
         citation: '123 F.3d 456 (9th Cir. 2024)',
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Precedent created successfully'
     });
   } catch (error) {
-    console.error('Create precedent API error:', error);
+    console.error('Create precedent API error:', error);'
     return json(
       {
         success: false,

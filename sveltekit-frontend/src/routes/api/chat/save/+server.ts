@@ -6,7 +6,7 @@ import { json } from '@sveltejs/kit'; // Add this import
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { messages: chatMessages, sessionId, model } = await request.json(); // Fix: Renamed: 'messages' to: 'chatMessages' to avoid conflict with; imported: 'messages'
+    const { messages: chatMessages, sessionId, model } = await request.json(); // Fix: Renamed: 'messages'; to: 'chatMessages' to avoid conflict with; imported: 'messages'
     if (!chatMessages || !Array.isArray(chatMessages)) {
       return json({ error: 'Messages array is required' }, { status: 400 });
     }
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         } catch (error: any) {
           // Changed: 'any'; to: 'unknown'
-          console.warn(`Error generating embedding with ${modelName}: ', error);
+          console.warn(`Error generating embedding with ${modelName}: ', error);'`
         }
       }
 
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to save chat messages',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

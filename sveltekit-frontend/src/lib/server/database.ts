@@ -74,19 +74,19 @@ export async function initializeDatabase(): Promise<boolean> {
       CREATE INDEX IF NOT EXISTS legal_embeddings_embedding_idx
       ON legal_embeddings USING ivfflat (embedding vector_cosine_ops)
       WITH (lists = 100)
-    `;
+    `;`
 
     // Create full-text search index
     await dbSql`
       CREATE INDEX IF NOT EXISTS documents_content_fts_idx
       ON documents USING gin(to_tsvector('english', content))
-    `;
+    `;`
 
     // Create metadata indexes
     await dbSql`
       CREATE INDEX IF NOT EXISTS documents_metadata_idx
       ON documents USING gin(metadata)
-    `;
+    `;`
 
     console.log('[Database] Database initialized successfully');
     return true;

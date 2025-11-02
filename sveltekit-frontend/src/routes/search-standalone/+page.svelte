@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import SearchBox from '$lib/components/ui/SearchBox.svelte';
@@ -66,20 +66,20 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Legal AI Search - Deeds Platform</title>
-  <meta name="description" content="Search legal documents using AI-powered semantic search" />
+  <meta name="description" content="Search legal documents using AI-powered semantic, search" />
 </svelte:head>
-<div class="search-page">
-  <header class="search-header">
-    <div class="nes-container is-rounded header-content">
-      <h1 class="page-title">
-        <i class="nes-icon trophy"></i>
+<div, class="search-page">
+  <header, class="search-header">
+    <div class="nes-container is-rounded, header-content">
+      <h1, class="page-title">
+        <i class="nes-icon, trophy"></i>
         Legal AI Search
       </h1>
-      <p class="page-subtitle">Semantic search powered by vector embeddings and GPU acceleration</p>
+      <p, class="page-subtitle">Semantic search powered by vector embeddings and GPU acceleration</p>
     </div>
   </header>
-  <main class="search-main">
-    <section class="search-section">
+  <main, class="search-main">
+    <section, class="search-section">
       <SearchBox
         placeholder="Search contracts, evidence, briefs, citations..."
         onResults={handleSearchResults}
@@ -87,51 +87,51 @@ import type { Document } from '$lib/types';
       />
     </section>
     {#if searchResults.length > 0}
-      <section class="results-section">
-        <div class="nes-container is-rounded">
-          <h2 class="results-title">
-            <i class="nes-icon star"></i>
+      <section, class="results-section">
+        <div class="nes-container, is-rounded">
+          <h2, class="results-title">
+            <i class="nes-icon, star"></i>
             Search Results ({searchResults.length})
           </h2>
-          <div class="results-grid">
+          <div, class="results-grid">
             {#each searchResults as result, index}
-              <div class="nes-container result-card">
-                <div class="result-header">
-                  <h3 class="result-title">
+              <div class="nes-container, result-card">
+                <div, class="result-header">
+                  <h3, class="result-title">
                     {result.title || `Document ${index + 1}`}
                   </h3>
                   {#if result.similarity}
-                    <div class="similarity-badge">
+                    <div, class="similarity-badge">
                       {getScorePercent(result.similarity)}%
                     </div>
                   {/if}
                 </div>
                 {#if result.content}
-                  <p class="result-content">
+                  <p, class="result-content">
                     {result.content.substring(0, 200)}...
                   </p>
                 {/if}
                 {#if result.metadata}
-                  <div class="metadata-tags">
+                  <div, class="metadata-tags">
                     {#if result.metadata.caseId}
-                      <span class="nes-badge">
-                        <span class="is-primary">case {result.metadata.caseId}</span>
+                      <span, class="nes-badge">
+                        <span, class="is-primary">case {result.metadata.caseId}</span>
                       </span>
                     {/if}
                     {#if result.metadata.documentType}
-                      <span class="nes-badge">
-                        <span class="is-success">{result.metadata.documentType}</span>
+                      <span, class="nes-badge">
+                        <span, class="is-success">{result.metadata.documentType}</span>
                       </span>
                     {/if}
                     {#if result.metadata.priority}
-                      <span class="nes-badge">
-                        <span class="is-warning">{result.metadata.priority}</span>
+                      <span, class="nes-badge">
+                        <span, class="is-warning">{result.metadata.priority}</span>
                       </span>
                     {/if}
                   </div>
                 {/if}
-                <div class="result-actions">
-                  <Button onclick={() => viewDocument(result)} variant="primary" size="sm"> View </Button>
+                <div, class="result-actions">
+                  <Button, onclick={() => viewDocument(result)} variant="primary" size="sm"> View </Button>
                   <Button
                     onclick={() => analyzeDocument(result)}
                     variant="success"
@@ -148,32 +148,32 @@ import type { Document } from '$lib/types';
       </section>
     {/if}
     {#if selectedDocument}
-      <section class="document-viewer">
-        <div class="nes-container is-rounded document-modal">
-          <div class="modal-header">
-            <h3 class="modal-title">
-              <i class="nes-icon heart"></i>
+      <section, class="document-viewer">
+        <div class="nes-container is-rounded, document-modal">
+          <div, class="modal-header">
+            <h3, class="modal-title">
+              <i class="nes-icon, heart"></i>
               {selectedDocument.title || 'Document Viewer'}
             </h3>
-            <div class="close-btn">
-              <Button onclick={closeDocument} variant="error" size="sm"> × </Button>
+            <div, class="close-btn">
+              <Button, onclick={closeDocument} variant="error" size="sm"> × </Button>
             </div>
           </div>
-          <div class="modal-content">
+          <div, class="modal-content">
             {#if selectedDocument.content}
-              <div class="document-content">
+              <div, class="document-content">
                 <h4>Content Preview:</h4>
-                <div class="content-text">
+                <div, class="content-text">
                   {selectedDocument.content}
                 </div>
               </div>
             {/if}
             {#if selectedDocument.metadata}
-              <div class="document-metadata">
+              <div, class="document-metadata">
                 <h4>Metadata:</h4>
-                <div class="metadata-grid">
+                <div, class="metadata-grid">
                   {#each Object.entries(selectedDocument.metadata) as [key, value]}
-                    <div class="metadata-item">
+                    <div, class="metadata-item">
                       <strong>{key}:</strong>
                       <span>{typeof value === 'object' ? JSON.stringify(value) : value}</span>
                     </div>
@@ -182,7 +182,7 @@ import type { Document } from '$lib/types';
               </div>
             {/if}
             {#if selectedDocument.embedding}
-              <div class="embedding-info">
+              <div, class="embedding-info">
                 <h4>Vector Information</h4>
                 <p>Embedding dimensions: {selectedDocument.embedding.length || 'N/A'}</p>
                 <p>Vector magnitude: {selectedDocument.vectorMagnitude || 'N/A'}</p>
@@ -193,19 +193,19 @@ import type { Document } from '$lib/types';
       </section>
     {/if}
   </main>
-  <footer class="search-footer">
-    <div class="nes-container footer-content">
-      <p class="footer-text">
-        <i class="nes-icon coin"></i>
+  <footer, class="search-footer">
+    <div class="nes-container, footer-content">
+      <p, class="footer-text">
+        <i class="nes-icon, coin"></i>
         Powered by Legal AI Platform • Vector Search • GPU Acceleration
       </p>
-      <div class="footer-stats">
-        <span class="stat">
-          <i class="nes-icon trophy"></i>
+      <div, class="footer-stats">
+        <span, class="stat">
+          <i class="nes-icon, trophy"></i>
           {searchResults.length} Results
         </span>
-        <span class="stat">
-          <i class="nes-icon star"></i>
+        <span, class="stat">
+          <i class="nes-icon, star"></i>
           Real-time Search
         </span>
       </div>

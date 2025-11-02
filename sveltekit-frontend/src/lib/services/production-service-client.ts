@@ -154,15 +154,14 @@ class ProductionServiceClient {
         data: result as FileUploadResult, // Type assertion for the specific result
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: '/api/upload'
-      };
+        service: '/api/upload' };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         protocol: 'http',
         latency: Date.now() - startTime,
-        service: '/api/upload` };
+        service: `/api/upload' };'`
     }
   }
 

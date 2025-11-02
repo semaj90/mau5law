@@ -27,7 +27,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const limit = parseInt(url.searchParams.get('limit') || '10')
     // Mock recent documents data - in production this would query the database
     const recentDocuments = [
-      {
+      {,
         id: 'doc_recent_001',
         template: 'Motion to Suppress Evidence',
         category: 'litigation',

@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { normalizePerformanceProfile, clampMemoryMB } from '$lib/gpu/types';
 // Raw environment (unvalidated)
 const RAW_ENV = {

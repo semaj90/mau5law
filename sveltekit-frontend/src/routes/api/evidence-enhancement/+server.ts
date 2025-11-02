@@ -1,5 +1,5 @@
 import type { Case } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
@@ -11,14 +11,14 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 import postgres from 'postgres';
 import { z } from 'zod';
 // Configuration
-const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test` }' },
+const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' }' },
   redis: {
     url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
   },
   ollama: {
     url: ENV_CONFIG.OLLAMA_URL,
     model: import.meta.env.LLM_MODEL || 'gemma3-legal:latest',
-    embeddingModel: 'nomic-embed-text` },
+    embeddingModel: 'nomic-embed-text' },
   enhancement: {
     minConfidence: 0.6,
     maxSuggestions: 10,
@@ -128,7 +128,7 @@ type ProsecutionInsights = { strengths: string[];, weaknesses: string[];
 
 // Add a minimal Redis-like client type to avoid `any` while remaining flexible
 type RedisLike = {
-  setex?: (key: string, seconds: number; value: string) => Promise<unknown> | unknown;
+  setex?: (key: string; seconds: number;, value: string) => Promise<unknown> | unknown;
   set?: (...args: any[]) => Promise<unknown> | unknown;
   // allow index signature for other methods used elsewhere if needed
   [key: string]: any;
@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
     await cacheEnhancementResults(validatedRequest.evidence_text, validatedResponse);
     return json(validatedResponse);
   } catch (err: any) {
-    console.error('❌ Evidence enhancement error:', err);
+    console.error('❌ Evidence enhancement error:', err);'
     if (err instanceof z.ZodError) {
       return json(
         {
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
 async function analyzeEvidence(evidenceText: string, evidenceType: string): Promise<AnalysisResult> {
   try {
     // Use LLM to analyze the evidence
-    const analysisPrompt = `You are a legal evidence analyst. Analyze the following ${evidenceType} evidence and provide a structured assessment.
+    const analysisPrompt = `You are a legal evidence analyst. Analyze the following ${evidenceType} evidence and provide a structured assessment.`
 Evidence Text:
 ${evidenceText}
 Analyze and respond with ONLY a JSON object in this format:
@@ -289,7 +289,7 @@ Consider:
 - How clear and compelling is this evidence?
 - What is its potential value for prosecution?
 - How legally relevant is this evidence?
-- Rate the overall quality and reliability`;
+- Rate the overall quality and reliability`;`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
@@ -342,7 +342,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
                 )
             ORDER BY spr.avg_prosecution_score DESC, spr.frequency DESC
             LIMIT 20
-        `,
+        `,`
       [evidenceText, evidenceText.split(' ').slice(0, 10).join(' ')]
     );
 
@@ -384,10 +384,10 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
     if (caseContext?.charges) {
       for (const charge of caseContext.charges) {
         labels.push({
-          label: 'Supports '${charge}' charge`,
+          label: 'Supports '${charge}' charge`,'`
           confidence: 0.8,
           category: 'charge_support',
-          justification: 'Evidence directly relates to stated charges` });
+          justification: `Evidence directly relates to stated charges` });
       }
     }
     return labels.slice(0, CONFIG.enhancement.maxSuggestions);
@@ -398,9 +398,9 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
 }
 async function extractEntities(evidenceText: string): Promise<Entity[]> {
   try {
-    const entityPrompt = `Extract legal entities from this text. Respond with ONLY a JSON array in this format:
+    const entityPrompt = `Extract legal entities from this text. Respond with ONLY a JSON array in this format:`
 [
-  {
+  {,
     "entity": "entity name",
     "type": "PERSON|ORGANIZATION|LOCATION|DATE|STATUTE|CASE_NUMBER|AMOUNT",
     "confidence": 0.0-1.0,
@@ -408,7 +408,7 @@ async function extractEntities(evidenceText: string): Promise<Entity[]> {
   }
 ]
 Text to analyze:
-${evidenceText}`;
+${evidenceText}`;`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
@@ -471,7 +471,7 @@ function getContext(text: string, entity: string): string {
 async function findSimilarEvidence(evidenceText: string, caseContext?: CaseContext): Promise<SimilarEvidenceItem[]> {
   const db = getDB();
   try {
-    // --- CHANGED: use generateEmbedding so it's not an unused function ---
+    // --- CHANGED: use generateEmbedding so it's not an unused function ---'
     try {
       const emb = await generateEmbedding(evidenceText);
       console.debug('generateEmbedding produced vector length:', Array.isArray(emb) ? emb.length : 'invalid');
@@ -498,7 +498,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
                 AND prosecution_strength_score >= 60
             ORDER BY prosecution_strength_score DESC
             LIMIT 20
-        `,
+        `,`
       [caseContext?.jurisdiction ?? null]
     );
 
@@ -532,7 +532,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
             const parsed = JSON.parse(rawPhrases);
             phrases = Array.isArray(parsed) ? parsed : [];
           } catch {
-            // fallback: attempt simple split by comma if it's a plain string
+            // fallback: attempt simple split by comma if it's a plain string'
             phrases = rawPhrases
               .split(',')
               .map(p => p.trim())
@@ -550,13 +550,13 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
     }
     return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5);
   } catch (error: any) {
-    console.error('Similar evidence search failed: `, error);
+    console.error('Similar evidence search failed: `, error);'`
     return [];
   }
 }
 async function analyzeProsecutionValue(evidenceText: string, caseContext?: CaseContext): Promise<ProsecutionInsights> {
   try {
-    const analysisPrompt = `As a prosecution strategist, analyze this evidence for its prosecution value:; Evidence:
+    const analysisPrompt = `As a prosecution strategist, analyze this evidence for its prosecution value:; Evidence:`
 ${evidenceText}
 ${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : `` }
 Respond with ONLY a JSON object:
@@ -570,7 +570,7 @@ Focus on:
 - What makes this evidence strong for prosecution?
 - What potential weaknesses should be addressed?
 - Strategic recommendations for using this evidence
-- How well does this align with legal precedents?`;
+- How well does this align with legal precedents?`;`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
@@ -696,14 +696,14 @@ export const GET: RequestHandler = async () => {
                 COUNT(DISTINCT jurisdiction) as jurisdictions_covered,
                 COUNT(DISTINCT case_type) as case_types_covered
             FROM legal_documents_processed
-        `);
+        `);`
     const phrasesStats = await db.query(`
             SELECT
                 COUNT(*) as total_phrases,
                 COUNT(CASE WHEN avg_prosecution_score >= 70 THEN 1 END) as high_value_phrases,
                 AVG(frequency) as avg_phrase_frequency
             FROM semantic_phrases_ranking
-        `);
+        `);`
 
     // --- CHANGED: gently narrow the unknown rows and coerce numeric values ---
     type StatsRow = {
@@ -736,7 +736,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'operational',
       dataset_stats: {
-        total_documents: totalDocuments,
+       , total_documents: totalDocuments,
         average_prosecution_score: averageProsecutionScore,
         jurisdictions_covered: jurisdictionsCovered,
         case_types_covered: caseTypesCovered
@@ -755,7 +755,7 @@ export const GET: RequestHandler = async () => {
       ]
     });
   } catch (err: any) {
-    console.error('Enhancement stats error:', err);
+    console.error('Enhancement stats error:', err);'
     throw error(500, 'Unable to fetch enhancement statistics');
   }
 };

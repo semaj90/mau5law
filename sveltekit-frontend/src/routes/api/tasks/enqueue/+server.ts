@@ -11,7 +11,8 @@ export const POST: RequestHandler = async ({ request }) => {
       createdAt: Date.now()
     };
     return new Response(JSON.stringify({ success: true, task }), { status: 202 });
-  } catch (e: any) {
-    return new Response(JSON.stringify({ success: false, message: e.message }), { status: 400 });
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
+    return new Response(JSON.stringify({ success: false, message: errorMessage }), { status: 400 });
   }
 };

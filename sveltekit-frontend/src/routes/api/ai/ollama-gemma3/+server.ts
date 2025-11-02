@@ -55,7 +55,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
               }
             })();
 
-    console.error('Ollama Gemma3 error:', message);
+    console.error('Ollama Gemma3 error:', message);'
     return json({ error: 'Failed to call Ollama Gemma3', details: message }, { status: 500 });
   }
 };

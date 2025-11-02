@@ -102,7 +102,7 @@ async function ensureQdrantCollection(
           distance
         },
         optimizers_config: {
-          default_segment_number: 2,
+         , default_segment_number: 2,
           memmap_threshold: 20000,
           indexing_threshold: 20000
         },
@@ -115,7 +115,7 @@ async function ensureQdrantCollection(
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
     }
   } catch (error) {
-    console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', error);
+    console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', error);'`
     throw error;
   }
 }
@@ -152,17 +152,17 @@ async function hybridVectorSearch(
           AND processing_status = 'completed'
         ORDER BY content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit}
-      `;
+      `;`
       postgresqlTime = Date.now() - pgStart;
       for (const row of pgResults as any[]) {
         results.push({
           id: row.id,
           score: row.similarity,
           document: row as DocumentMetadata,
-          source: 'postgresql` });
+          source: 'postgresql' });
       }
     } catch (error) {
-      console.error('PostgreSQL vector search error:', error);
+      console.error('PostgreSQL vector search error:', error);'
     }
   }
 
@@ -205,12 +205,12 @@ async function hybridVectorSearch(
               id: idStr,
               score: result.score,
               document,
-              source: 'qdrant` });
+              source: 'qdrant' });
           }
         }
       }
     } catch (error) {
-      console.error('Qdrant vector search error:', error);
+      console.error('Qdrant vector search error:', error);'
     }
   }
 

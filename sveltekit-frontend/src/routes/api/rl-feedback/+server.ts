@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         typeof estimateNextTrainingTime === 'function' ? estimateNextTrainingTime(feedbackCount) : null
     });
   } catch (error) {
-    console.error('❌ RL Feedback API error:', error);
+    console.error('❌ RL Feedback API error:', error);'
     return json({ error: 'Failed to process feedback' }, { status: 500 });
   }
 };
@@ -264,13 +264,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         next_training_eta: trainingStats.next_training_eta
       },
       context_switching: {
-        switching_latency: switchingStats.switchingLatency,
+       , switching_latency: switchingStats.switchingLatency,
         active_models: switchingStats.activeModels,
         total_switches: switchingStats.totalSwitches,
         average_cost: switchingStats.averageSwitchingCost
       },
       prediction: {
-        success_rate: predictionStats.success_rate,
+       , success_rate: predictionStats.success_rate,
         average_confidence: predictionStats.average_confidence,
         cache_improvements: predictionStats.cache_improvements
       },
@@ -282,8 +282,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       }
     });
   } catch (error) {
-    console.error('❌ RL Stats API error:', error);
-    return json({ error: `Failed to retrieve statistics` }, { status: 500 });
+    console.error('❌ RL Stats API error: ', error);'
+    return json({ error: 'Failed to retrieve statistics` }, { status: 500 });'`
   }
 };
 // ===============================
@@ -484,7 +484,7 @@ async function triggerDomainSpecificDistillation(domain: string, userId: string)
     // Update user that specialized model is being created
     await notifyUserOfDistillation(userId, domain, distillationConfig.targetModelName);
   } catch (error) {
-    console.error(`❌ Distillation failed for domain ${domain}: ', error);
+    console.error(`❌ Distillation failed for domain ${domain}: ', error);'`
   }
 }
 /**

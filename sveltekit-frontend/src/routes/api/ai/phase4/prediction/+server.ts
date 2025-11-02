@@ -26,11 +26,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('Prediction API error:', error);
+    console.error('Prediction API error:', error);'
     return json(
       {
         error: 'Failed to generate case prediction',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ready: await startupFlagService.isReady(),
           criticalServices: Object.entries(summary.services)
             .filter(([, service]) => !service.isOptional)
-            .reduce<Record<string, { status: string;, health: string; startupTime?: number }>>(
+            .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(
               (acc, [name, service]) => {
                 acc[name] = {
                   status: service.status,
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error) {
-    console.error('Startup API error:', error);
+    console.error('Startup API error:', error);'
     return json(
       {
         error: 'Failed to get startup status',
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
     }
   } catch (error) {
-    console.error('Startup control error:', error);
+    console.error('Startup control error:', error);'
     return json(
       {
         error: 'Failed to control startup monitoring',

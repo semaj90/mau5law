@@ -37,7 +37,10 @@ export class SIMDStringOps {
     const citations: string[] = [];
     // Common legal citation patterns
     const patterns = [
-      '\\d+ U\\.S\\. \\d+', // Supreme Court: '\\d+ F\\.\\d+d \\d+', // Federal courts: '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter: '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition
+      '\\d+ U\\.S\\. \\d+', // Supreme Court
+      '\\d+ F\\.\\d+d \\d+', // Federal courts
+      '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter
+      '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition'
     ];
     for (const pattern of patterns) {
       const matches = SIMDStringOps.findPatternMatches(text, pattern);
@@ -47,19 +50,19 @@ export class SIMDStringOps {
   }
   // Helper function for pattern matching
   private static findPatternMatches(text: string, pattern: string): string[] {
-  // Simplified regex-like matching with SIMD acceleration
-  const matches: string[] = [];
+    // Simplified regex-like matching with SIMD acceleration
+    const matches: string[] = [];
     // Use regex for pattern matching (would be SIMD in actual WASM)
     try {
-    const regex = new RegExp(pattern, 'g');
-    let match: RegExpExecArray | null;
-    while ((match = regex.exec(text)) !== null) {
-      matches.push(match[0]);
+      const regex = new RegExp(pattern, 'g');
+      let match: RegExpExecArray | null;
+      while ((match = regex.exec(text)) !== null) {
+        matches.push(match[0]);
+      }
+    } catch (error) {
+      // Fallback for invalid regex patterns
+      console.warn('Invalid regex pattern:', pattern);
     }
-  } catch (error) {
-    // Fallback for invalid regex patterns
-    console.warn('Invalid regex pattern:', pattern);
-  }
     return matches;
   }
 }
@@ -96,17 +99,17 @@ export class SIMDJSONParser {
   }
   // SIMD-optimized string field extraction
   private static extractStringField(json: string, fieldName: string): string {
-    const startPattern = `"${fieldName}":"`;
+    const startPattern = `"${fieldName}":"`;"
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return '';
     const valueStart = startIndex + startPattern.length;
-    const valueEnd = json.indexOf('"', valueStart);
+    const valueEnd = json.indexOf('"', valueStart);"
     if (valueEnd === -1) return '';
     return json.substring(valueStart, valueEnd);
   }
   // SIMD-optimized number field extraction
   private static extractNumberField(json: string, fieldName: string): number {
-    const startPattern = `"${fieldName}": ';
+    const startPattern = `"${fieldName}": ';'`
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return 0.0;
     let valueStart = startIndex + startPattern.length;
@@ -172,7 +175,7 @@ export function deallocateMemory(ptr: number): void {
 }
 // Performance benchmarking
 export const benchmarkSIMDParsing = (iterations: number): number => {
-  const sampleJSON = `{
+  const sampleJSON = `{`
     "id": "legal-doc-001",
     "title": "Contract Analysis - Consideration Requirements",
     "content": "This document analyzes the essential elements of contract formation under common law, focusing on the requirement of consideration...",
@@ -182,7 +185,7 @@ export const benchmarkSIMDParsing = (iterations: number): number => {
       "jurisdiction": "federal",
       "practice_areas": ["contract_law", "commercial_litigation"]
     }
-  }`;
+  }`;`
   const jsonBytes = new TextEncoder().encode(sampleJSON);
   const startTime = Date.now();
   for (let i = 0; i < iterations; i++) {

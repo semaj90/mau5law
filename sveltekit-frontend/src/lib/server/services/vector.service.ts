@@ -59,10 +59,10 @@ export class VectorOperationsService {
    * - Batch processing for multiple texts
    *
    * WIRING:
-   * ```typescript;
+   * ```typescript;`
    * const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
    *   method: 'POST',
-   *   headers: { 'Content-Type': `application/json` },
+   *   headers: { 'Content-Type': `application/json' },'`
    *   body: JSON.stringify({, model: EMBEDDING_MODEL, prompt: text )})
    * });
    * ```
@@ -72,10 +72,10 @@ export class VectorOperationsService {
     const ollamaUrl = getOllamaEndpoint();
 
     if (!text || text.trim().length === 0) {
-      return { embedding: [], success: false, error: `Input text cannot be empty` };
+      return { embedding: [], success: false, error: 'Input text cannot be empty' };
     }
 
-    const cacheKey = `langcache:embedding:${model}:${await hashText(text)}';
+    const cacheKey = 'langcache:embedding:${model}:${await hashText(text)}';
     try {
       const cachedEmbedding = await redisClient.get(cacheKey);
       if (cachedEmbedding) {
@@ -83,12 +83,12 @@ export class VectorOperationsService {
         return {
           embedding: JSON.parse(cachedEmbedding),
           success: true,
-          model: model + ' (cached)` };
+          model: model + ' (cached)' };
       }
 
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ model, prompt: text })
       });
 
@@ -130,7 +130,7 @@ export class VectorOperationsService {
       return {
         embedding: [],
         success: false,
-        error: error instanceof Error ? error.message : `Unknown error` };
+        error: error instanceof Error ? error.message : `Unknown error' };'`
     }
   }
   /**
@@ -145,13 +145,13 @@ export class VectorOperationsService {
    * - Caching for popular queries
    *
    * WIRING:
-   * ```typescript
+   * ```typescript`
    * const queryEmbedding = await this.generateEmbedding(query);
    * return await db.select({
    *   id: documentEmbeddings.id,
    *   content: documentEmbeddings.chunkText,
-   *   similarity: sql<number>`1 - (${documentEmbeddings.embedding} <=> ARRAY[${sql.raw()
-   *     queryEmbedding.embedding.join(')')
+   *   similarity: sql<number>`1 - (${documentEmbeddings.embedding} <=> ARRAY[${sql.raw()`
+   *     queryEmbedding.embedding.join(')'),
    *   )}]: vector)`
    * }).from(documentEmbeddings).orderBy(similarity).limit(options.limit || 10);
    * ```
@@ -193,7 +193,7 @@ export class VectorOperationsService {
         metadata: row.metadata || {}
       }));
     } catch (error: unknown) {
-      console.error('Vector search error:', error);
+      console.error('Vector search error:', error);'
       return [];
     }
   }
@@ -209,7 +209,7 @@ export class VectorOperationsService {
    * - Update existing embeddings when content changes
    *
    * WIRING:
-   * ```typescript;
+   * ```typescript;`
    * await db.insert(documentEmbeddings).values({
    *   id: uuid(),
    *   documentId,
@@ -244,7 +244,7 @@ export class VectorOperationsService {
       });
       return true;
     } catch (error: unknown) {
-      console.error('Store embedding error:', error);
+      console.error('Store embedding error:', error);'
       return false;
     }
   }
@@ -272,7 +272,7 @@ export class VectorOperationsService {
   ): Promise<string> {
     console.warn('storeDocument is a stub - implement with full document storage');
     // In a real implementation, this would store the document content and then generate/store its embedding.
-    // For now, we'll just generate and store an embedding.
+    // For now, we'll just generate and store an embedding.'
     const embeddingResult = await this.generateEmbedding(content);
     if (embeddingResult.success && embeddingResult.embedding) {
       await this.storeDocumentEmbedding(documentId, content, embeddingResult.embedding, { ...metadata, documentType });
@@ -286,7 +286,7 @@ export class VectorOperationsService {
   static async analyzeDocument(documentId: string, analysisType: string): Promise<any> {
     // Corrected parameter syntax
     console.warn('analyzeDocument is a stub - implement with full document analysis');
-    return { documentId, analysisType, result: `mock_analysis_result` };
+    return { documentId, analysisType, result: `mock_analysis_result' };'`
   }
   /**
    * TODO: IMPLEMENT SIMILAR DOCUMENT SEARCH
@@ -297,7 +297,7 @@ export class VectorOperationsService {
     console.warn('findSimilarDocuments is a stub - implement with full similarity search');
     // In a real implementation, this would fetch the embedding of the given documentId
     // and then use it to search for similar documents.
-    // For now, we'll return a mock.
+    // For now, we'll return a mock.'
     return [];
   }
   // 🚀 ADDITIONAL METHODS TO IMPLEMENT

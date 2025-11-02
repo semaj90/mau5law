@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
     onFileSelected?: (files: File[]) => void;
@@ -41,7 +41,7 @@
     dragActive = true;
   }
 </script>
-<!-- new: click opens dialog; keyboard opens dialog; region is focusable -->
+<!-- new: click opens dialog; keyboard opens dialog; region is, focusable -->
 <div
   class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors"
   class:border-blue-500={dragActive}
@@ -57,12 +57,12 @@
   aria-label="File upload drop zone"
   aria-describedby="upload-help"
 >
-  <input bind:this={fileInput} type="file" {accept} {multiple} onchange={handleFileSelect} class="hidden" />
-  <div class="space-y-4">
-    <div class="text-4xl">📁</div>
+  <input, bind:this={fileInput} type="file" {accept} {multiple} onchange={handleFileSelect} class="hidden" />
+  <div, class="space-y-4">
+    <div, class="text-4xl">📁</div>
     <div>
-      <p id="upload-help" class="text-lg font-medium">Drop files here or click to browse</p>
-      <p class="text-sm text-gray-500">Supports all file types</p>
+      <p id="upload-help" class="text-lg, font-medium">Drop files here or click to browse</p>
+      <p class="text-sm, text-gray-500">Supports all file types</p>
     </div>
     <button
       onclick={() => fileInput?.click()}

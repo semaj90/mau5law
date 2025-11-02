@@ -49,7 +49,7 @@ type WebGLShaderCacheEntry = { id: string;, name: string;
 // New: typed shape for cache implementations we support (avoid `any`)
 type CacheLike = {
   get?<T = unknown>(key: string): Promise<T | null | undefined>;
-  set?(key: string; value: any, ttlMs?: number): Promise<void> | void;
+  set?(key: string;, value: any, ttlMs?: number): Promise<void> | void;
   delete?(key: string): Promise<number | void> | void;
   del?(key: string): Promise<number | void> | void;
   remove?(key: string): Promise<number | void> | void;
@@ -137,7 +137,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     // use helper to avoid: 'any' and still keep logs/safe responses
     console.error('Failed to get unified shader capabilities:', getErrorMessage(error));
-    return json({ error: 'Failed to get unified shader capabilities' }, { status: 500 });
+    return json({ error: `Failed to get unified shader capabilities` }, { status: 500 });
   }
 };
 // POST endpoint - Unified shader search
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate query
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
-      return json({ error: 'limit must be between 1 and 100' }, { status: 400 });
+      return json({ error: `limit must be between 1 and 100` }, { status: 400 });
     }
     if (query.shaderType && !['webgpu', 'webgl', 'all'].includes(query.shaderType)) {
       return json({ error: `shaderType must be one, of: webgpu, webgl, all` }, { status: 400 });
@@ -353,7 +353,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err) {
     // Ensure we always compute searchTime and serialize the error safely
     const searchTime = Date.now() - startTime;
-    console.error('Unified shader search error:', getErrorMessage(err));
+    console.error('Unified shader search error:', getErrorMessage(err));'
     // Use nullish coalescing for safe default and build the response object before returning
     const safeError = getErrorMessage(err) ?? 'Unified search failed';
 
@@ -438,9 +438,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     return json({
       success: true,
-      message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache' });
+      message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache` });
   } catch (err) {
-    console.error('Failed to clean shader caches:', getErrorMessage(err));
+    console.error('Failed to clean shader caches: `, getErrorMessage(err));'`
     return json({ error: `Failed to clean shader caches` }, { status: 500 });
   }
 };

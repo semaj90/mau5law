@@ -70,7 +70,7 @@ class EmbeddingCacheService {
       await this.updateStats('embeddings', 'store');
       console.log(`🔗 Cached embedding for text (${text.length} chars, ${embedding.length} dims)`);
     } catch (error) {
-      console.warn('Embedding cache error:', error);
+      console.warn('Embedding cache error:', error);'
     }
   }
 
@@ -110,7 +110,7 @@ class EmbeddingCacheService {
       await this.updateStats('embeddings', 'miss');
       return null;
     } catch (error) {
-      console.warn('Embedding retrieval error:', error);
+      console.warn('Embedding retrieval error:', error);'
       await this.updateStats('embeddings', 'error');
       return null;
     }
@@ -139,7 +139,7 @@ class EmbeddingCacheService {
       await this.updateStats('queries', 'store');
       console.log(`📊 Cached query results (${results.length} items, TTL: ${ttl}s)`);
     } catch (error) {
-      console.warn('Query cache error:', error);
+      console.warn('Query cache error:', error);'
     }
   }
 
@@ -160,7 +160,7 @@ class EmbeddingCacheService {
       await this.updateStats('queries', 'miss');
       return null;
     } catch (error) {
-      console.warn('Query retrieval error:', error);
+      console.warn('Query retrieval error:', error);'
       await this.updateStats('queries', 'error');
       return null;
     }
@@ -182,14 +182,14 @@ class EmbeddingCacheService {
       );
       await this.updateStats('sessions', 'store');
     } catch (error) {
-      console.warn('Session cache error:', error);
+      console.warn('Session cache error:', error);'
     }
   }
 
   /**
    * Batch cache multiple embeddings efficiently
    */
-  async batchCacheEmbeddings(items: Array<{, text: string; embedding: number[]; model?: string }>): Promise<void> {
+  async batchCacheEmbeddings(items: Array<{, text: string;, embedding: number[]; model?: string }>): Promise<void> {
     if (!redisService.isHealthy() || !items || items.length === 0) return;
     try {
       // Use individual Redis operations for compatibility
@@ -212,7 +212,7 @@ class EmbeddingCacheService {
       console.log(`📦 Batch cached ${cached} embeddings`);
       await this.updateStats('embeddings', 'batch_store', cached);
     } catch (error) {
-      console.warn('Batch cache error:', error);
+      console.warn('Batch cache error:', error);'
     }
   }
 
@@ -242,7 +242,7 @@ class EmbeddingCacheService {
       }
       console.log(`🗑️ Invalidated ${totalDeleted} cache entries`);
     } catch (error) {
-      console.warn('Cache invalidation error:', error);
+      console.warn('Cache invalidation error:', error);'
     }
   }
 
@@ -272,7 +272,7 @@ class EmbeddingCacheService {
         }
       };
     } catch (error) {
-      console.warn('Stats retrieval error:', error);
+      console.warn('Stats retrieval error:', error);'
       return defaultStats;
     }
   }
@@ -323,7 +323,7 @@ class EmbeddingCacheService {
       await redisService.set(hotKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
       console.log(`🔥 Promoted to hot cache: ${entry.text.substring(0, 50)}...`);
     } catch (error) {
-      console.warn('Hot cache promotion error:', error);
+      console.warn('Hot cache promotion error:', error);'
     }
   }
 
@@ -381,7 +381,7 @@ class EmbeddingCacheService {
       const field = `${prefix}_${operation}`;
       await redisService.hincrby(`${this.STATS_PREFIX}all`, field, count);
     } catch (error) {
-      console.warn('Stats update error:', error);
+      console.warn('Stats update error:', error);'
     }
   }
 }

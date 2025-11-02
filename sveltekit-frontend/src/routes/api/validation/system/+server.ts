@@ -148,8 +148,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             {
               success: false,
               error: 'No validation report available. Run validation first.',
-              suggestion: 'Use ?action=validate to generate a report'
-            },
+              suggestion: 'Use ?action=validate to generate a report` },'`
             { status: 404 }
           );
         }
@@ -161,8 +160,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           meta: {
            , reportAge: Math.floor(reportAge / 1000),
             isStale,
-            endpoint: 'cached_report'
-          }
+            endpoint: `cached_report` }
         });
       }
       case 'status': {
@@ -442,7 +440,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     validationInProgress = false;
   }
 };
-async function runMemoryBenchmark(): Promise<{ score: number; details: { allocatedMB: number;, rating: string } }> {
+async function runMemoryBenchmark(): Promise<{ score: number; details: { allocatedMB: number; rating: string } }> {
   const before = process.memoryUsage();
   const testData = new Array(100000).fill(0).map((_, i) => ({ id: i, value: Math.random() }));
   // Use data to avoid optimization
@@ -455,11 +453,10 @@ async function runMemoryBenchmark(): Promise<{ score: number; details: { allocat
     score,
     details: {
       allocatedMB: Math.max(0, Math.round(allocatedMB * 100) / 100),
-      rating: allocatedMB < 5 ? 'excellent' : allocatedMB < 20 ? 'good' : 'fair'
-    }
+      rating: allocatedMB < 5 ? 'excellent' : allocatedMB < 20 ? 'good' : 'fair` }'`
   };
 }
-async function runDiskIOBenchmark(): Promise<{ score: number; details: { durationMs: number;, rating: string } }> {
+async function runDiskIOBenchmark(): Promise<{ score: number; details: { durationMs: number; rating: string } }> {
   const startTime = Date.now();
   // Simulate disk I/O operations
   await new Promise(resolve => setTimeout(resolve, Math.random() * 50 + 10));
@@ -469,11 +466,10 @@ async function runDiskIOBenchmark(): Promise<{ score: number; details: { duratio
     score,
     details: {
       durationMs: duration,
-      rating: duration < 20 ? 'excellent' : duration < 60 ? 'good' : 'fair'
-    }
+      rating: duration < 20 ? 'excellent' : duration < 60 ? 'good' : `fair` }
   };
 }
-async function runNetworkBenchmark(): Promise<{ score: number; details: { latencyMs: number;, rating: string } }> {
+async function runNetworkBenchmark(): Promise<{ score: number; details: { latencyMs: number; rating: string } }> {
   const startTime = Date.now();
   // Simulate network latency
   await new Promise(resolve => setTimeout(resolve, Math.random() * 30 + 5));

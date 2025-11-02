@@ -41,7 +41,7 @@ Context:
 - User Expertise: ${context.userAnalytics?.caseContext?.expertise || 'associate'}
 - Practice Area: ${legalContext?.practiceArea || 'General'}
 - Urgency: ${legalContext?.urgency || 'medium'}
-File Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` }
+File Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` }'`
 Generate 2-4 relevant prompts based on the timing phase:; For: "before-upload": Focus on preparation, organization, and potential issues
 For: "during-upload": Focus on monitoring, insights, and real-time guidance
 For: "after-upload": Focus on next steps, analysis results, and recommendations
@@ -49,7 +49,7 @@ Each prompt should be actionable and specific to legal workflows.
 Respond in JSON format:
 {
   "prompts": [
-    {
+    {,
       "id": "unique-id",
       "content": "Specific, actionable prompt text",
       "category": "optimization|guidance|insight|warning|recommendation",
@@ -58,13 +58,13 @@ Respond in JSON format:
       "actionable": boolean: "legalSpecific": boolean
     }
   ]
-}`;
+}`;`
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: model,
+       , model: model,
         prompt: promptGenerationPrompt,
         format: 'json',
         stream: false,
@@ -92,7 +92,7 @@ Respond in JSON format:
       id: prompt.id || `${timing}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` }));
     return json({ prompts });
   } catch (error) {
-    console.error('Prompt generation error:', error);
+    console.error('Prompt generation error:', error);'
     // Return fallback prompts
     const fallbackPrompts = generateFallbackPrompts(
       request.body?.timing || 'before-upload',

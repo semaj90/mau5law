@@ -10,7 +10,7 @@ const orchestrator = new ServiceOrchestrator();
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as OrchestrationRequest;
-    console.log(`🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all' } services`);
+    console.log(`🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all` } services`);'`
     let result;
     switch (body.action) {
       case 'start':

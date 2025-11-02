@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!id || !wgsl || !config) {
       return json(
-        { error: `Missing required, fields: id, wgsl, config` },
+        { error: 'Missing required, fields: id, wgsl, config` },'`
         { status: 400 }
       );
     }
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
         cacheHit: false,
         usageCount: 0,
         averageExecutionTime: 0,
-        description: description || `WebGPU ${config.type} shader`,
+        description: description || `WebGPU ${config.type} shader','`
         operation: operation || config.type,
         tags: tags || [config.type, 'webgpu']
       }
@@ -113,10 +113,10 @@ export const DELETE: RequestHandler = async ({ url }) => {
       // Delete specific shader
       const shader = await cache.get<CompiledShader>(`webgpu_shader:${shaderId}`);
       if (!shader) {
-        return json({ error: `Shader not found` }, { status: 404 });
+        return json({ error: 'Shader not found` }, { status: 404 });'`
       }
       // Remove from cache
-      await cache.delete(`webgpu_shader:${shaderId}');
+      await cache.delete(`webgpu_shader:${shaderId}');'`
       // Update index
       const index = (await cache.get<string[]>('webgpu_shader_index')) || [];
       const newIndex = index.filter(id => id !== shaderId);
@@ -135,9 +135,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
       await cache.delete('webgpu_shader_index');
       return json({
         success: true,
-        message: `Cleared ${index.length} shaders from cache' });
+        message: 'Cleared ${index.length} shaders from cache' });
     }
   } catch (error: any) {
-    return json({ error: `Failed to delete shaders` }, { status: 500 });
+    return json({ error: 'Failed to delete shaders` }, { status: 500 });'`
   }
 };

@@ -15,7 +15,7 @@ export async function POST(): Promise<any> {
       FROM information_schema.columns
       WHERE table_name = 'users' AND table_schema = 'public'
       ORDER BY ordinal_position
-    `);
+    `);`
     return json({
       success: true,
       message: 'Schema fixed successfully',

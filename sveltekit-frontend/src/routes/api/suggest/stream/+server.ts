@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { console as _console } from 'node:console';
+import { console, as _console } from 'node:console';
 import { searchDatabase, searchWithFuzzy, type Suggestion } from '$routes/api/suggest/+server';
 import { redis } from '$lib/server/cache/redis.js';
 
@@ -14,9 +14,9 @@ async function* rerankSuggestionsStream(
   const chunkSize = 3;
   for (let i = 0; i < suggestions.length; i += chunkSize) {
     const chunk = suggestions.slice(i, i + chunkSize);
-    const prompt = `Query: "${query}"\nRate each candidate 0–1:\n${chunk
+    const prompt = `Query: "${query}"\nRate each candidate 0–1:\n${chunk`
       .map((s, idx) => `${idx + 1}. ${s.label} — ${s.description}`)
-      .join('\n')}\nReturn JSON { "<label>": score }`;
+      .join('\n')}\nReturn JSON { "<label>": score }`;`
 
     let aiResp: Record<string, number> | null = null;
     try {
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const limit = Number(url.searchParams.get('limit')) || 10;
   const context = url.searchParams.get('context') ?? 'GENERAL';
 
-  if (query.length < 2) return new Response('Query too short', { status: 400 });
+  if (query.length < 2) return new Response('Query too, short', { status: 400 });
 
   const cacheKey = `stream-rerank:${context}:${query}`;
   try {
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          'X-Cache-Hit': 'true' }
+          'X-Cache-Hit': 'true` }'`
       });
     }
   } catch (e) {
@@ -107,6 +107,6 @@ export const GET: RequestHandler = async ({ url }) => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive' }
+      Connection: 'keep-alive` }'`
   });
 };

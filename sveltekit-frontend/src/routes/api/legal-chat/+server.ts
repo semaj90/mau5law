@@ -59,7 +59,7 @@ interface ChatRequest { sessionId: string;, message: string;
   maxHistoryContext?: number;
 }
 interface ChatResponse { response: string;, sessionId: string;
-  sources?: RagSource[]; // <- replaced any[] with RagSource[]
+  sources?: RagSource[]; // <- replaced any[] with, RagSource[]
   confidence?: number;
   processing_time: number;
   cache_stats?: Record<string, unknown>;
@@ -92,7 +92,7 @@ type CachedVectorSearchLike = {
   searchSimilarEvidence?: (query: string, caseId?: string, opts?: Record<string, unknown>) => Promise<SearchResult[]>;
 };
 
-type EmbeddingStats = { hitRate: number; totalRequests: number;, modelUsage: Record<string, number> };
+type EmbeddingStats = { hitRate: number; totalRequests: number; modelUsage: Record<string, number> };
 type EmbeddingServiceLike = {
   getStats?: () => EmbeddingStats;
   // other methods omitted
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🎮 Retrieved ${chatHistory.length} messages from history`);
 
     // Step 3: Perform RAG search if enabled
-    let ragSources: RagSource[] = []; // <- typed instead of any[]
+    let ragSources: RagSource[] = []; // <- typed instead of, any[]
     let ragContext = '';
     if (useRAG && message.length > 10) {
       try {
@@ -232,17 +232,17 @@ export const POST: RequestHandler = async ({ request }) => {
           console.log(`🎮 RAG search found ${searchResults.length} relevant documents`);
         }
       } catch (ragError) {
-        console.warn('🎮 RAG search failed, continuing without context: `, ragError);
+        console.warn('🎮 RAG search failed, continuing without context: `, ragError);'`
       }
     }
 
     // Step 4: Build conversation context for AI
-    const systemPrompt = `You are a legal AI assistant specialized in ${legalCategory} law.
+    const systemPrompt = `You are a legal AI assistant specialized in ${legalCategory} law.`
     ${practiceArea ? `Your practice area focus is ${practiceArea}.` : `` }
     ${caseId ? `You are currently working on case ${caseId}.` : `` }
     Provide accurate, helpful legal information while noting that this is not legal advice.
     Use the provided context and conversation history to give informed responses.
-    ${ragContext ? `\nRelevant legal context:\n${ragContext}` : `' }`;
+    ${ragContext ? `\nRelevant legal context:\n${ragContext}` : `` }`;`
 
     // Step 5: Build conversation messages for Ollama
     const conversationMessages = [
@@ -268,7 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     // normalize response to expected shape
     const normalizedContent = extractAIMessageContent(rawAiResponse);
-    // Use normalized content directly; ensure it's present
+    // Use normalized content directly; ensure it's present'
     if (!normalizedContent) {
       console.error('🎮 AI model returned an unrecognized shape:', rawAiResponse);
       throw error(500, 'Invalid response from AI model');
@@ -307,7 +307,7 @@ export const POST: RequestHandler = async ({ request }) => {
       cacheHitRate: 0,
       totalMessages: 0,
       avgResponseTime: 0
-    }) as { cacheHitRate: number; totalMessages: number;, avgResponseTime: number };
+    }) as { cacheHitRate: number; totalMessages: number; avgResponseTime: number };
 
     const vectorSearchStats = (cachedVectorSearch as CachedVectorSearchLike).getStats?.() ?? {
       hitRate: 0,
@@ -363,16 +363,16 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (err) {
-    console.error('🎮 Legal chat API error:', err);
+    console.error('🎮 Legal chat API error:', err);'
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error' }`);
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 // Add/update typed surface for the legalChatMemory service to include delete methods
 type LegalChatMemoryLike = {
-  addMessageToHistory?: (
+  addMessageToHistory?: (;
     sessionId: string; message: ChatMessage,
     context?: Partial<ConversationContext>
   ) => Promise<void> | void;
@@ -420,11 +420,11 @@ export const GET: RequestHandler = async ({ url }) => {
       stats: memory.getStats?.() ?? {}
     });
   } catch (err) {
-    console.error('🎮 Chat history retrieval error:', err);
+    console.error('🎮 Chat history retrieval error:', err);'
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
-    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : `Unknown error' }`);
+    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 /**
@@ -485,11 +485,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
       keys_cleared: cleared ? keys : []
     });
   } catch (err) {
-    console.error('🎮 Chat history clear error:', err);
+    console.error('🎮 Chat history clear error:', err);'
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
-    throw error(500, `History clear failed: ${err instanceof Error ? err.message : `Unknown error' }`);
+    throw error(500, `History clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
 
@@ -609,6 +609,6 @@ function extractAIMessageContent(resp: any): string | null {
     }
   }
 
-  // fallback: couldn't extract
+  // fallback: couldn't extract'
   return null;
 }

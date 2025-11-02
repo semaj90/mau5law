@@ -230,7 +230,7 @@ export class EnhancedContext7Service {
       });
 
       if (!res.ok) {
-        const bodyText = await res.text().catch(() => `<no body>`);
+        const bodyText = await res.text().catch(() => `<no, body>`);
         throw new Error(`Context7 MCP error ${res.status}: ${bodyText}`);
       }
 
@@ -241,7 +241,7 @@ export class EnhancedContext7Service {
       return await res.text();
     } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
-      console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error: ', message);
+      console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error: ', message);'`
       // forward typed args to simulation helper(s)
       return await this.simulateMCPCall(toolName, args ?? {});
     } finally {
@@ -295,7 +295,7 @@ export class EnhancedContext7Service {
         liability: normalizeCompliance(
           this.extractValue(text, 'Liability Assessment', 'Standard Processing'),
           'Standard Processing'
-        ) as: 'High Priority Review Needed' | 'Standard Processing` },
+        ) as: 'High Priority Review Needed' | 'Standard Processing` },'`
       recommendedActions: this.extractList(text, 'Recommended Actions'),
       integrationNotes: this.extractList(text, 'Integration Notes')
     };
@@ -438,9 +438,9 @@ export class EnhancedContext7Service {
     const hasLiability = content.toLowerCase().includes('liability');
     const riskScore = hasLiability ? 85 : 35;
     return {
-      text: '# Legal Document Analysis
+      text: '# Legal Document Analysis'
 ## Risk Assessment
-- **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium'}
+- **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium` }'`
 - **Risk Score**: ${riskScore}/100
 ## Key Findings
 - Contract terms identified
@@ -462,7 +462,7 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language` 
     const regulations = Array.isArray(args?.regulations) ? (args.regulations as unknown[]) : [];
     const score = Math.min(100, evidence.length * 10 + 50);
     return {
-      text: `# Compliance Report
+      text: `# Compliance Report`
 ## Executive Summary
 - **Evidence Items Analyzed**: ${evidence.length}
 - **Applicable Regulations**: ${regulations.length}
@@ -472,17 +472,16 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language` 
 
   private simulateLegalPrecedents(_: Record<string, unknown>): any {
     return {
-      text: `# Legal Precedent Analysis
+      text: `# Legal Precedent Analysis`
 ### Sample v. Case (2023)
 - **Relevance Score**: 85%
 - **Jurisdiction**: federal
-- **Summary**: Relevant legal precedent for contract disputes`
-    };
+- **Summary**: Relevant legal precedent for contract disputes` };`
   }
 
   private simulateLegalEntities(_: Record<string, unknown>): any {
     return {
-      text: `# Legal Entity Extraction
+      text: `# Legal Entity Extraction`
 ### Parties (2)
 - John Smith
 - ABC Corporation
@@ -491,7 +490,7 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language` 
 ### Monetary Amounts (1)
 - $50,000
 ### Legal Clauses (1)
-- Section 3.1` };
+- Section 3.1` };`
   }
 
   // add small helper for safe coercion if needed elsewhere

@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 // Local LLM Configuration for Ollama and llama.cpp integration
 // Manages local model paths and configurations for the legal AI assistant
 import { existsSync } from "fs";
@@ -27,7 +27,7 @@ export const LOCAL_LLM_PATHS = {
   // Local Gemma3 Q4_K_M model
   gemmaModel: {
     path: join(projectRoot, 'gemma3Q4_K_M', 'mohf16-Q4_K_M.gguf'),
-    name: 'gemma3-legal:latest', // Use the custom model we'll create
+    name: 'gemma3-legal:latest', // Use the custom model we'll create'
     ollamaModel: 'gemma3-legal:latest', // Custom Ollama model name
     fallbackModel: 'gemma3-legal:latest', // Fallback to existing model
     format: 'gguf',
@@ -157,7 +157,7 @@ export async function loadGemmaModel(): Promise<any> {
     // First, create a Modelfile for the GGUF model
     const modelfilePath = join(process.cwd(), "Modelfile.gemma3");
     const { writeFileSync } = await import("fs");
-    const modelfileContent = `FROM ${LOCAL_LLM_PATHS.gemmaModel.path}
+    const modelfileContent = `FROM ${LOCAL_LLM_PATHS.gemmaModel.path}`
 # Set parameters for Q4_K_M quantization
 PARAMETER temperature 0.1
 PARAMETER top_p 0.9
@@ -165,13 +165,13 @@ PARAMETER top_k 40
 PARAMETER repeat_penalty 1.05
 PARAMETER num_ctx 8192
 # Gemma3 template format
-TEMPLATE: """<start_of_turn>user
+TEMPLATE: """<start_of_turn>user"
 {{ .Prompt }}<end_of_turn>
 <start_of_turn>model
 {{ .Response }}<end_of_turn>"""
 # Set system message for legal AI
 SYSTEM: """You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance. Always cite relevant statutes, case law, and legal precedents. Maintain professional standards and clearly state when information is insufficient for definitive legal advice."""
-`;
+`;`
     writeFileSync(modelfilePath, modelfileContent);
     // Import the model into Ollama
     const { spawn } = await import("child_process");

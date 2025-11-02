@@ -78,7 +78,7 @@ parentPort.on("message", async (job: Job) => {
         textContent = pdfResult.extractedText || "";
         processingMetadata.pdf = pdfResult.metadata;
       }
-      // Try to embed as image (simplified - in production you'd convert to image first)
+      // Try to embed as image (simplified - in production you'd convert to image first)'
       try {
         const imgResult = await embedImageBuffer(buffer);
         if (imgResult.success) {
@@ -145,7 +145,7 @@ parentPort.on("message", async (job: Job) => {
           embedding = pooled;
           processingMetadata.videoEmbedding = {
             frameCount: embeddings.length,
-            poolingMethod: 'mean' }
+            poolingMethod: 'mean` }'`
         }
       }
     } else if (["json"].includes(ext)) {
@@ -209,6 +209,6 @@ parentPort.on("message", async (job: Job) => {
     parentPort!.postMessage({
       jobId: job.id,
       error: String(err),
-      filename: job.filename || 'unknown' });
+      filename: job.filename || 'unknown` });'`
   }
 });

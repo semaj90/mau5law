@@ -97,7 +97,7 @@ class EnhancedAuthStore {
   get userInitials() {
     if (!this._state.user) return 'GU';
     const { firstName, lastName } = this._state.user;
-    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || '` }`.toUpperCase();
+    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || '` }`.toUpperCase();'`
   }
   get isAdmin() {
     return this._state.user?.role === 'admin';
@@ -151,7 +151,7 @@ class EnhancedAuthStore {
       }
     } catch (error: any) {
       this._error = 'Network error. Please try again.';
-      console.error('Login error:', error);
+      console.error('Login error:', error);'
       return { success: false, error: this._error };
     } finally {
       this._state.isLoading = false;
@@ -190,7 +190,7 @@ class EnhancedAuthStore {
       }
     } catch (error: any) {
       this._error = 'Network error. Please try again.';
-      console.error('Registration error:', error);
+      console.error('Registration error:', error);'
       return { success: false, error: this._error };
     } finally {
       this._state.isLoading = false;
@@ -211,7 +211,7 @@ class EnhancedAuthStore {
         });
       }
     } catch (error: any) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error);'
     } finally {
       this.clearAuthState();
       await goto('/');
@@ -234,7 +234,7 @@ class EnhancedAuthStore {
       }
       return result;
     } catch (error: any) {
-      console.error('Email verification error:', error);
+      console.error('Email verification error:', error);'
       return { success: false, error: 'Verification failed' };
     }
   }
@@ -249,7 +249,7 @@ class EnhancedAuthStore {
       });
       return await response.json();
     } catch (error: any) {
-      console.error('Password reset request error:', error);
+      console.error('Password reset request error:', error);'
       return { success: false, error: 'Request failed' };
     }
   }
@@ -269,7 +269,7 @@ class EnhancedAuthStore {
       }
       return result;
     } catch (error: any) {
-      console.error('Password reset error:', error);
+      console.error('Password reset error:', error);'
       return { success: false, error: 'Reset failed' };
     }
   }
@@ -291,7 +291,7 @@ class EnhancedAuthStore {
       }
       return result;
     } catch (error: any) {
-      console.error('Profile update error:', error);
+      console.error('Profile update error:', error);'
       return { success: false, error: 'Update failed' };
     }
   }
@@ -303,14 +303,13 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        },
+          'Content-Type': `application/json` },
         body: JSON.stringify({ currentPassword, newPassword })
       });
       return await response.json();
     } catch (error: any) {
-      console.error('Password change error:', error);
-      return { success: false, error: 'Password change failed' };
+      console.error('Password change error: ', error);'
+      return { success: false, error: `Password change failed` };
     }
   }
   // Security and session management
@@ -332,7 +331,7 @@ class EnhancedAuthStore {
       this.clearAuthState();
       return false;
     } catch (error: any) {
-      console.error('Session refresh error:', error);
+      console.error('Session refresh error:', error);'
       this.clearAuthState();
       return false;
     }
@@ -356,7 +355,7 @@ class EnhancedAuthStore {
         return await response.json();
       }
     } catch (error: any) {
-      console.error('Security summary error:', error);
+      console.error('Security summary error:', error);'
     }
     return null;
   }
@@ -388,7 +387,7 @@ class EnhancedAuthStore {
         this.clearAuthState();
       }
     } catch (error: any) {
-      console.error('Auth initialization error:', error);
+      console.error('Auth initialization error:', error);'
       this.clearAuthState();
     } finally {
       this._state.isLoading = false;

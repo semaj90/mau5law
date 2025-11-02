@@ -40,8 +40,8 @@ export const adminPool = new Pool({
   connectionTimeoutMillis: 5000
 });
 // Drizzle instances
-export const db: PostgresJsDatabase<typeof schema> = drizzle(appPool, { schema });
-export const adminDb: PostgresJsDatabase<typeof schema> = drizzle(adminPool, { schema });
+export const db: PostgresJsDatabase<typeof, schema> = drizzle(appPool, { schema });
+export const adminDb: PostgresJsDatabase<typeof, schema> = drizzle(adminPool, { schema });
 // Connection info for logging
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password

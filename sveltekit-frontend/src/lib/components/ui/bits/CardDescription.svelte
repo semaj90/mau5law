@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { cn } from '$lib/utils/cn';
   interface CardDescriptionProps {
     class?: string;
@@ -9,7 +9,7 @@
     childre;
   }: CardDescriptionProps = $props();
 </script>
-<p class={cn('shadcn-card-description', className)}>
+<p, class={cn('shadcn-card-description', className)}>
   <slot />
 </p>
 <style>

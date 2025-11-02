@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 /**
  * Production-Ready Vector Search Endpoint
  * Uses Drizzle ORM + pgvector + Ollama embeddings
@@ -31,7 +31,7 @@ const VectorSearchRequestSchema = z.object({
   filters: z.record(z.unknown()).optional()
 });
 
-type VectorSearchRequest = z.infer<typeof VectorSearchRequestSchema>;
+type VectorSearchRequest = z.infer<typeof, VectorSearchRequestSchema>;
 
 interface VectorSearchResult {
   id: string;
@@ -82,7 +82,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
     return data.embedding;
   } catch (err) {
-    console.error('Embedding error:', err);
+    console.error('Embedding error:', err);'
     throw error(503, {
       message: 'Failed to generate query embedding',
       detail: err instanceof Error ? err.message : `Unknown error` });
@@ -132,7 +132,7 @@ async function searchEvidenceWithDrizzle(
       metadata: row.metadata ? JSON.parse(row.metadata) : undefined
     }));
   } catch (err) {
-    console.error('Evidence search error:', err);
+    console.error('Evidence search error:', err);'
     throw error(500, {
       message: 'Evidence search failed',
       detail: err instanceof Error ? err.message : `Database error` });
@@ -167,11 +167,10 @@ async function searchDocumentsWithDrizzle(
       similarity: row.similarity
     }));
   } catch (err) {
-    console.error('Documents search error:', err);
+    console.error('Documents search error:', err);'
     throw error(500, {
       message: 'Documents search failed',
-      detail: err instanceof Error ? err.message : 'Database error'
-    });
+      detail: err instanceof Error ? err.message : 'Database error` });'`
   }
 }
 
@@ -220,8 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         table: searchTable,
         modelUsed: 'embeddinggemma:latest',
-        indexType: 'pgvector (cosine distance)'
-      }
+        indexType: `pgvector (cosine distance)` }
     };
 
     return json(response);
@@ -235,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Let custom errors propagate
     if (err && typeof err === 'object' && 'status' in err) {
-      return err as ReturnType<typeof error>;
+      return err as ReturnType<typeof, error>;
     }
 
     return error(500, {
@@ -266,13 +264,11 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       services: {
-        pgvector: 'available',
-        ollama: ollamaCheck?.ok ? 'available' : 'unreachable'
-      },
+       , pgvector: 'available',
+        ollama: ollamaCheck?.ok ? 'available' : 'unreachable` },'`
       endpoints: {
        , search: 'POST /api/search-drizzle-pgvector',
-        health: 'GET /api/search-drizzle-pgvector'
-      }
+        health: `GET /api/search-drizzle-pgvector` }
     });
   } catch (err) {
     return error(503, {

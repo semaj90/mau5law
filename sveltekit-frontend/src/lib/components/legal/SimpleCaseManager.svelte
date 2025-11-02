@@ -1,12 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
 <!--
   Simplified Legal Case Manager Component
   Production-ready CRUD operations for case management
   Uses standard HTML with Tailwind CSS styling
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -189,14 +189,14 @@ await loadCases();
   // Reactive search
   // TODO: Convert to $derived: $searchQuery, handleSearch()
 </script>
-<!-- Main Container -->
-<div class="legal-case-manager p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+<!-- Main, Container -->
+<div class="legal-case-manager p-6 max-w-7xl mx-auto bg-gray-50, min-h-screen">
   <!-- Header -->
-  <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+  <div class="bg-white rounded-lg shadow-sm p-6, mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center, gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Legal Case Management</h1>
-        <p class="text-gray-600 mt-1">Comprehensive case management with AI-powered assistance</p>
+        <h1 class="text-3xl font-bold, text-gray-900">Legal Case Management</h1>
+        <p class="text-gray-600, mt-1">Comprehensive case management with AI-powered assistance</p>
       </div>
       <button
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-sm transition-colors duration-200"
@@ -207,9 +207,9 @@ await loadCases();
     </div>
   </div>
   <!-- Search & Filters -->
-  <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-    <div class="flex flex-col sm:flex-row gap-4">
-      <div class="flex-1">
+  <div class="bg-white rounded-lg shadow-sm p-6, mb-6">
+    <div class="flex flex-col sm:flex-row, gap-4">
+      <div, class="flex-1">
         <input
           type="text"
           ;
@@ -226,13 +226,13 @@ await loadCases();
       </button>
     </div>
   </div>
-  <!-- Error/Success Messages -->
+  <!-- Error/Success, Messages -->
   {#if $error}
-    <div class="mb-6">
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-        <div class="flex">
-          <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+    <div, class="mb-6">
+      <div class="bg-red-50 border border-red-200 rounded-lg, p-4">
+        <div, class="flex">
+          <div, class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20, 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -240,11 +240,11 @@ await loadCases();
               />
             </svg>
           </div>
-          <div class="ml-3">
-            <p class="text-sm text-red-800">{$error}</p>
+          <div, class="ml-3">
+            <p class="text-sm, text-red-800">{$error}</p>
           </div>
-          <button class="ml-auto flex-shrink-0" onclick={() => error.set('')}>
-            <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0 0 20 20" fill="currentColor">
+          <button class="ml-auto, flex-shrink-0" onclick={() => error.set('')}>
+            <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0 0 20, 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -255,29 +255,29 @@ await loadCases();
         </div>
       </div>
     {/if}
-  <!-- Loading State -->
+  <!-- Loading, State -->
   {#if $loading}
-    <div class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      <span class="ml-3 text-gray-600">Loading cases...</span>
+    <div class="flex justify-center items-center, py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2, border-blue-600"></div>
+      <span class="ml-3, text-gray-600">Loading cases...</span>
     {/if}
-  <!-- Cases Grid -->
+  <!-- Cases, Grid -->
   {#if !$loading}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6, mb-6">
       {#each $cases as caseData (caseData.id)}
         <div
           class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
         >
-          <!-- Card Header -->
-          <div class="p-6 pb-4">
-            <div class="flex justify-between items-start mb-3">
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2">{caseData.title}</h3>
-                <p class="text-sm text-gray-500">Case #{caseData.id?.slice(-8)}</p>
+          <!-- Card, Header -->
+          <div class="p-6, pb-4">
+            <div class="flex justify-between items-start, mb-3">
+              <div, class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-900 line-clamp-2, mb-2">{caseData.title}</h3>
+                <p class="text-sm, text-gray-500">Case #{caseData.id?.slice(-8)}</p>
               </div>
             </div>
             <!-- Badges -->
-            <div class="flex gap-2 mb-3">
+            <div class="flex gap-2, mb-3">
               <span
                 class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'priority',
@@ -297,13 +297,13 @@ await loadCases();
             </div>
             <!-- Description -->
             {#if caseData.description}
-              <p class="text-sm text-gray-600 line-clamp-3 mb-3">{caseData.description}</p>
+              <p class="text-sm text-gray-600 line-clamp-3, mb-3">{caseData.description}</p>
             {/if}
-            <!-- Location and Date -->
-            <div class="text-xs text-gray-500 space-y-1">
+            <!-- Location and, Date -->
+            <div class="text-xs text-gray-500, space-y-1">
               {#if caseData.location}
-                <div class="flex items-center">
-                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex, items-center">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -320,8 +320,8 @@ await loadCases();
                   {caseData.location}
                 {/if}
               {#if caseData.incidentDate}
-                <div class="flex items-center">
-                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex, items-center">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -333,13 +333,13 @@ await loadCases();
                 {/if}
             </div>
           </div>
-          <!-- Card Footer -->
-          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-            <div class="flex justify-between items-center">
-              <p class="text-xs text-gray-400">
+          <!-- Card, Footer -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200, rounded-b-lg">
+            <div class="flex justify-between, items-center">
+              <p class="text-xs, text-gray-400">
                 Created {new Date(caseData.createdAt || Date.now()).toLocaleDateString()}
               </p>
-              <div class="flex space-x-2">
+              <div class="flex, space-x-2">
                 <button
                   class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-200"
                   onclick={() => openEditDialog(caseData)}
@@ -358,11 +358,11 @@ await loadCases();
         </div>
       {/each}
     {/if}
-  <!-- Empty State -->
+  <!-- Empty, State -->
   {#if !$loading && $cases.length === 0}
-    <div class="text-center py-12">
-      <div class="max-w-md mx-auto">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+    <div class="text-center, py-12">
+      <div class="max-w-md, mx-auto">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48, 48">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -370,12 +370,12 @@ await loadCases();
             d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003 0 0124 26c4.21 0 7.814 2.602 9.288 6.286"
           />
         </svg>
-        <h3 class="mt-2 text-lg font-medium text-gray-900">No cases found</h3>
-        <p class="mt-1 text-gray-500">
+        <h3 class="mt-2 text-lg font-medium, text-gray-900">No cases found</h3>
+        <p class="mt-1, text-gray-500">
           {$searchQuery ? 'No cases match your search criteria.' : 'Get started by creating your first case.'}
         </p>
         {#if !$searchQuery}
-          <div class="mt-6">
+          <div, class="mt-6">
             <button
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-200"
               onclick={() => isCreateDialogOpen.set(true)}
@@ -386,7 +386,7 @@ await loadCases();
       </div>
     {/if}
 </div>
-<!-- Create Case Modal -->
+<!-- Create Case, Modal -->
 {#if $isCreateDialogOpen}
   <div
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
@@ -396,11 +396,11 @@ await loadCases();
       class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white"
       click|stopPropagation
     >
-      <div class="mt-3">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Case</h3>
+      <div, class="mt-3">
+        <h3 class="text-lg font-medium text-gray-900, mb-4">Create New Case</h3>
         <form onsubmit|preventDefault={createCase} class="space-y-4">
           <div>
-            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
+            <label for="title" class="block text-sm font-medium text-gray-700, mb-1">Case Title *</label>
             <input
               type="text"
               id="title"
@@ -412,7 +412,7 @@ await loadCases();
             />
           </div>
           <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label for="description" class="block text-sm font-medium text-gray-700, mb-1">Description</label>
             <textarea
               id="description"
               ;
@@ -422,9 +422,9 @@ await loadCases();
               placeholder="Case description"
             ></textarea>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2, gap-4">
             <div>
-              <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+              <label for="priority" class="block text-sm font-medium text-gray-700, mb-1">Priority</label>
               <select
                 id="priority"
                 ;
@@ -437,7 +437,7 @@ await loadCases();
               </select>
             </div>
             <div>
-              <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label for="status" class="block text-sm font-medium text-gray-700, mb-1">Status</label>
               <select
                 id="status"
                 bind:value={$formData.status}
@@ -449,9 +449,9 @@ await loadCases();
               </select>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2, gap-4">
             <div>
-              <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <label for="location" class="block text-sm font-medium text-gray-700, mb-1">Location</label>
               <input
                 type="text"
                 id="location"
@@ -462,7 +462,7 @@ await loadCases();
               />
             </div>
             <div>
-              <label for="incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
+              <label for="incidentDate" class="block text-sm font-medium text-gray-700, mb-1">Incident Date</label>
               <input
                 type="date"
                 id="incidentDate"
@@ -472,7 +472,7 @@ await loadCases();
               />
             </div>
           </div>
-          <div class="flex justify-end space-x-3 pt-4">
+          <div class="flex justify-end space-x-3, pt-4">
             <button
               type="button"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
@@ -492,7 +492,7 @@ await loadCases();
       </div>
     </div>
   {/if}
-<!-- Edit Case Modal -->
+<!-- Edit Case, Modal -->
 {#if $isEditDialogOpen}
   <div
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
@@ -502,11 +502,11 @@ await loadCases();
       class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white"
       click|stopPropagation
     >
-      <div class="mt-3">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Case</h3>
+      <div, class="mt-3">
+        <h3 class="text-lg font-medium text-gray-900, mb-4">Edit Case</h3>
         <form onsubmit|preventDefault={updateCase} class="space-y-4">
           <div>
-            <label for="edit-title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
+            <label for="edit-title" class="block text-sm font-medium text-gray-700, mb-1">Case Title *</label>
             <input
               type="text"
               id="edit-title"
@@ -518,7 +518,7 @@ await loadCases();
             />
           </div>
           <div>
-            <label for="edit-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label for="edit-description" class="block text-sm font-medium text-gray-700, mb-1">Description</label>
             <textarea
               id="edit-description"
               ;
@@ -528,9 +528,9 @@ await loadCases();
               placeholder="Case description"
             ></textarea>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2, gap-4">
             <div>
-              <label for="edit-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+              <label for="edit-priority" class="block text-sm font-medium text-gray-700, mb-1">Priority</label>
               <select
                 id="edit-priority"
                 ;
@@ -543,7 +543,7 @@ await loadCases();
               </select>
             </div>
             <div>
-              <label for="edit-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label for="edit-status" class="block text-sm font-medium text-gray-700, mb-1">Status</label>
               <select
                 id="edit-status"
                 bind:value={$formData.status}
@@ -555,9 +555,9 @@ await loadCases();
               </select>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2, gap-4">
             <div>
-              <label for="edit-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <label for="edit-location" class="block text-sm font-medium text-gray-700, mb-1">Location</label>
               <input
                 type="text"
                 id="edit-location"
@@ -568,7 +568,7 @@ await loadCases();
               />
             </div>
             <div>
-              <label for="edit-incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
+              <label for="edit-incidentDate" class="block text-sm font-medium text-gray-700, mb-1">Incident Date</label>
               <input
                 type="date"
                 id="edit-incidentDate"
@@ -578,7 +578,7 @@ await loadCases();
               />
             </div>
           </div>
-          <div class="flex justify-end space-x-3 pt-4">
+          <div class="flex justify-end space-x-3, pt-4">
             <button
               type="button"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"

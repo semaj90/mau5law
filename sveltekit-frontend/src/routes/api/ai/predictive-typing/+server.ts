@@ -52,7 +52,7 @@ interface AnalyticsPerformance {
 }
 
 interface AnalyticsResult {
-  predicted_queries?: Array<{ query: string;, confidence: number; predicted_intent?: string }>;
+  predicted_queries?: Array<{ query: string; confidence: number; predicted_intent?: string }>;
   predicted_intent?: string;
   user_intent_analysis?: { primary_intent?: string; confidence?: number };
   semantic_topology?: { nearby_clusters?: Array<{ cluster_id: string; predicted_relevance?: number }> };
@@ -202,7 +202,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           intent: prediction.predicted_intent,
           topology_score: Math.random() * 0.3 + 0.7, // Would extract from topology data
           source: 'predictive',
-          reasoning: 'Predictive analytics suggests this based on ${prediction.predicted_intent ?? 'intent` }` });
+          reasoning: 'Predictive analytics suggests this based on ${prediction.predicted_intent ?? 'intent' }` });'`
       }
     }
     // Add query completion suggestions
@@ -213,7 +213,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         intent: completion.predicted_intent,
         topology_score: completion.topology_support,
         source: 'predictive' as const,
-        reasoning: `Query completion based on contextual patterns' });
+        reasoning: `Query completion based on contextual patterns` });
     }
     // Add glyph-based suggestions if available
     if (glyphContext.length > 0) {
@@ -266,7 +266,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('Predictive typing API error:', msg);
+    console.error('Predictive typing API error:', msg);'
     const errorResponse: PredictiveTypingResponse = {
       success: false,
       suggestions: [],
@@ -288,8 +288,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         lod_cache_size: 0,
         analytics_accuracy: 0,
         user_satisfaction_score: 0,
-        machine_state: 'error'
-      },
+        machine_state: 'error` },'`
       error: msg
     };
     return json(errorResponse, { status: 500 });
@@ -307,25 +306,25 @@ const originalGETHandler: RequestHandler = async () => {
       success: true,
       service: 'predictive-typing-api',
       capabilities: {
-        lod_caching: true,
+       , lod_caching: true,
         topology_analytics: true,
         glyph_compression: true,
         real_time_learning: true,
         vector_metadata_encoding: true,
         xstate_coordination: true
       },
-      performance_stats: { lod_cache: {, total_entries: lodStats.total_entries,
+      performance_stats: {, lod_cache: {, total_entries: lodStats.total_entries,
           cache_hit_rate: lodStats.cache_hit_rate,
           average_compression_ratio: lodStats.average_compression_ratio
         },
         predictive_analytics: {
-          total_predictions: analyticsStats.total_predictions,
+         , total_predictions: analyticsStats.total_predictions,
           successful_predictions: analyticsStats.successful_predictions,
           average_confidence: analyticsStats.average_confidence,
           topology_accuracy: analyticsStats.topology_accuracy
         },
         vector_encoding: {
-          total_encoded_entries: encoderStats.total_encoded_entries,
+         , total_encoded_entries: encoderStats.total_encoded_entries,
           cache_utilization: encoderStats.cache_utilization
         }
       },
@@ -404,7 +403,7 @@ const originalDELETEHandler: RequestHandler = async () => {
 // Helper functions (typed)
 function extractSuggestionFromGlyph(glyph: Glyph, query: string): Suggestion | null {
   const summary = glyph.semantic_summary ?? '';
-  if (summary.length < query.length + 2) return null;
+  if (summary.length < query.length + 2) return, null;
   return {
     text: summary.slice(0, Math.min(50, summary.length)),
     confidence: (glyph.contextual_weight as number) ?? 0.5,

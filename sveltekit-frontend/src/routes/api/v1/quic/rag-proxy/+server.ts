@@ -115,11 +115,11 @@ export const GET: RequestHandler = async ({ url }) => {
       status: proxyStatus,
       protocol: proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
-        quic: RAG_QUIC_CONFIG.primaryPort,
+       , quic: RAG_QUIC_CONFIG.primaryPort,
         fallback: RAG_QUIC_CONFIG.fallbackPort
       },
       backends: {
-        uploadService: 'http://localhost:8093',
+       , uploadService: 'http://localhost:8093',
         enhancedRAG: 'http://localhost:8094'
       },
       features: [
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error(400, ensureError({ message: 'Max results must be between 1 and 100' })); // Added: '))'
     }
     if (ragRequest.threshold && (ragRequest.threshold < 0 || ragRequest.threshold > 1)) {
-      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added: '))' }
+      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added: '))` }'`
     // Placeholder: Enhanced RAG go client is not available; use HTTP path or future client
     // Prepare request payload for Go service
     const requestPayload = {
@@ -180,8 +180,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       meta: {
         requestId: crypto.randomUUID(),
         timestamp: Date.now(),
-        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2'
-      }
+        protocol: useHttp3 ? 'HTTP/3' : `HTTP/2` }
     };
     // Generate ETag for caching
     const requestHash = await generateRequestHash(JSON.stringify(requestPayload)); // Added: ')'
@@ -253,11 +252,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         executionTimeMs: ragResponse.executionTime,
         confidence: ragResponse.confidence,
         cached: ragResponse.cached,
-        model: ragResponse?.model || 'unknown'
-      }
+        model: ragResponse?.model || 'unknown` }'`
     });
   } catch (err: any) {
-    console.error('RAG QUIC Proxy error:', err);
+    console.error('RAG QUIC Proxy error:', err);'
     error(500, err instanceof Error ? err.message : 'RAG operation failed');
   }
 };
@@ -270,7 +268,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     // Validate document
     if (!document.id || !document.content) {
-      error(400, ensureError({ message: 'Document ID and content are required' })); // Added: `))` }
+      error(400, ensureError({ message: `Document ID and content are required` })); // Added: `))` }
     const targetUrl = useHttp3
       ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/documents`
       : `${RAG_QUIC_CONFIG.fallbackUrl}/api/rag/documents`;
@@ -288,18 +286,17 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: 'Document '${document.id}' updated in RAG index`,
+      message: 'Document '${document.id}' updated in RAG index`,'`
       result,
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('RAG document update error:', err);
+    console.error('RAG document update error:', err);'
     error(
       500,
       ensureError({
         message: 'Document update failed',
-        error: err instanceof Error ? err.message : 'Unknown error'
-      })
+        error: err instanceof Error ? err.message : `Unknown error` })
     );
   }
 };
@@ -311,7 +308,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const documentId = url.searchParams.get('documentId');
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     if (!documentId) {
-      error(400, ensureError({ message: 'Document ID is required' })); // Added: `))` }
+      error(400, ensureError({ message: `Document ID is required` })); // Added: `))` }
     const targetUrl = useHttp3
       ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/documents/${documentId}`
       : `${RAG_QUIC_CONFIG.fallbackUrl}/api/rag/documents/${documentId}`;
@@ -327,12 +324,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: 'Document '${documentId}' removed from RAG index`,
+      message: 'Document '${documentId}' removed from RAG index`,'`
       result,
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('RAG document deletion error:', err);
+    console.error('RAG document deletion error:', err);'
     error(
       500,
       ensureError({

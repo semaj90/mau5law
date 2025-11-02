@@ -1,5 +1,5 @@
-<!-- AI Chat Input Component -->
-<script lang="ts">
+<!-- AI Chat Input, Component -->
+<script, lang="ts">
 import type { Message } from '$lib/types';
   import { debounce } from '$lib/utils/debounce';
   import { browser } from '$app/environment';
@@ -88,8 +88,8 @@ import type { Message } from '$lib/types';
   const isNearLimit = $derived(characterCount > maxLength * 0.8);
   const isAtLimit = $derived(characterCount >= maxLength);
 </script>
-<div class="chat-input-wrapper" class:multiline={isMultiline}>
-  <div class="input-container">
+<div, class="chat-input-wrapper" class:multiline={isMultiline}>
+  <div, class="input-container">
     <textarea
       bind:this={textarea}
       bind:value
@@ -108,9 +108,9 @@ import type { Message } from '$lib/types';
       aria-label="Message input"
       spellcheck="true"
     ></textarea>
-    <div class="input-actions">
+    <div, class="input-actions">
       {#if characterCount > 0}
-        <span class="character-count" class:near-limit={isNearLimit} class:at-limit={isAtLimit}>
+        <span, class="character-count" class:near-limit={isNearLimit} class:at-limit={isAtLimit}>
           {characterCount}/{maxLength}
         </span>
       {/if}
@@ -132,15 +132,15 @@ import type { Message } from '$lib/types';
           stroke-width="2"
           aria-hidden="true"
         >
-          <line x1="22" y1="2" x2="11" y2="13" />
-          <polygon points="22,2 15,22 11,13 2,9" />
+          <line, x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22,2 15,22 11,13, 2,9" />
         </svg>
       </button>
     </div>
   </div>
   {#if isMultiline}
-    <div class="input-hint">
-      <span class="hint-text">
+    <div, class="input-hint">
+      <span, class="hint-text">
         <kbd>Shift + Enter</kbd> for new line, <kbd>Enter</kbd> to send
       </span>
     {/if}

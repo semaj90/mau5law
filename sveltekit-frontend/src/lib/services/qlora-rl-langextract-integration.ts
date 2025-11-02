@@ -43,51 +43,44 @@ interface RLActionSelection { action: number, temperature: number; maxTokens: 
 }
 type RLWorkerOutboundMessage =
   | { type: 'initialized' }
-  | { type: 'actionSelected';, data: RLActionSelection }
+  | { type: 'actionSelected'; data: RLActionSelection }
 // Trainer worker message types
-interface TrainingProgress { progress: { currentEpoch: number; totalEpochs: number; loss: number;, accuracy: number }
+interface TrainingProgress { progress: { currentEpoch: number; totalEpochs: number; loss: number; accuracy: number }
 }
 interface TrainingCompleted { finalLoss: number, finalAccuracy: number
-  trainingTime?: number
+  trainingTime?: number;
   modelData: string;
 }
 interface TrainingError { error: string }
-interface RLUpdate { action: string; reward: number;, qValue: number }
+interface RLUpdate { action: string; reward: number; qValue: number }
 type TrainerMessage =
-  | { type: 'training_progress';, data: TrainingProgress }
-  | { type: 'training_completed';, data: TrainingCompleted }
-  | { type: 'training_error';, data: TrainingError }
-  | { type: 'reinforcement_update';, data: RLUpdate }
-export interface RLGuidedExtraction { documentId: string, extractionStrategy: 'aggressive' | 'conservative' | 'balanced' | 'adaptive'; temperature: number
-  maxTokens: number; explorationBonus: number
-  confidenceThreshold: number; qloraFineTuningEnabled: boolean
+  | { type: 'training_progress'; data: TrainingProgress }
+  | { type: 'training_completed'; data: TrainingCompleted }
+  | { type: 'training_error'; data: TrainingError }
+  | { type: 'reinforcement_update'; data: RLUpdate }
+export interface RLGuidedExtraction { documentId: string, extractionStrategy: 'aggressive' | 'conservative' | 'balanced' | 'adaptive'; temperature: number; maxTokens: number; explorationBonus: number; confidenceThreshold: number; qloraFineTuningEnabled: boolean
 }
 export interface LegalExtractionExample { input: string, output: Record<string, JsonValue>
-  metadata: { documentType: string, difficulty: number; jurisdiction: string
-    reward: number;
+  metadata: { documentType: string, difficulty: number; jurisdiction: string; reward: number;
     userFeedback?: { quality: number }
   }
 }
-export interface QLorATrainingJob { jobId: string, trainingData: LegalExtractionExample[]; baseModel: string
-  loraConfig: { r: number, alpha: number; dropout: number
-    targetModules: string[];
+export interface QLorATrainingJob { jobId: string, trainingData: LegalExtractionExample[]; baseModel: string; loraConfig: { r: number, alpha: number; dropout: number; targetModules: string[];
   }
-  quantization: { bits: 4 | 8, useDoubleBits: boolean; quantType: 'fp4' | 'nf4` }
+  quantization: { bits: 4 | 8, useDoubleBits: boolean; quantType: 'fp4' | 'nf4` }'`
   status: 'pending' | 'training' | 'completed' | 'failed',
   epochs: number; batchSize: number
 }
-export interface NeuralSpriteLegalProcessing { spriteId: string, patternBuffer: ArrayBuffer; vertexBuffer: Float32Array
-  embeddingVector: Float32Array; nametablePosition: number
-  attributeData: number;
+export interface NeuralSpriteLegalProcessing { spriteId: string, patternBuffer: ArrayBuffer; vertexBuffer: Float32Array; embeddingVector: Float32Array; nametablePosition: number; attributeData: number;
 }
 
 // Add a typed interface for SOM cache implementations to avoid `any` casts
 type SOMCacheLike = {
-  storeVector?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
-  addVector?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
-  put?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  storeVector?: (id: string;, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  addVector?: (id: string;, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  put?: (id: string;, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
   // typed fallback name used by some implementations
-  store?: (id: string; vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  store?: (id: string;, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
   getStats?: () => unknown
 }
 
@@ -114,7 +107,7 @@ export class QLorARLLangExtractOrchestrator {
     this.qloraTrainingQueue = new Map()
     this.extractionHistory = new Map()
     this.rlAgent = null
-    this.initializeRLAgent().catch((err) => console.error('RL agent init error:', err))
+    this.initializeRLAgent().catch((err) => console.error('RL agent init error:', err))'
     console.log('🧬 QLoRA+RL+LangExtract orchestrator initialized')
   }
   private async initializeRLAgent(): Promise<void> {
@@ -142,7 +135,7 @@ export class QLorARLLangExtractOrchestrator {
   }
   async processLegalDocument(document: LegalDocument,
     extractionSchema: Record<string, unknown>,
-    userFeedback?: { quality: number; usefulness: number;, accuracy: number }
+    userFeedback?: { quality: number; usefulness: number; accuracy: number }
   ): Promise<{
     extractedData: Record<string, JsonValue>
     rlGuidance: RLGuidedExtraction; neuralSprite: NeuralSpriteLegalProcessing
@@ -340,14 +333,14 @@ export class QLorARLLangExtractOrchestrator {
   private async calculateAdaptiveLoRAConfig(
     documentType: string,
     trainingData: LegalExtractionExample[],
-  ): Promise<{ rank: number; alpha: number; dropout: number; modules: string[]; epochs: number;, batchSize: number }> {
+  ): Promise<{ rank: number; alpha: number; dropout: number; modules: string[]; epochs: number; batchSize: number }> {
     if (trainingData.length === 0) {
       return { rank: 16, alpha: 32, dropout: 0.05, modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'], epochs: 3, batchSize: 4 }
     }
     const avgDifficulty = trainingData.reduce((sum, ex) => sum + ex.metadata.difficulty, 0) / trainingData.length
     const avgReward = trainingData.reduce((sum, ex) => sum + ex.metadata.reward, 0) / trainingData.length
     const dataSize = trainingData.length
-  const config: { rank: number; alpha: number; dropout: number; modules: string[]; epochs: number;, batchSize: number } = { rank: 16, alpha: 32, dropout: 0.05, modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'], epochs: 3, batchSize: 4 }
+  const config: { rank: number; alpha: number; dropout: number; modules: string[]; epochs: number; batchSize: number } = { rank: 16, alpha: 32, dropout: 0.05, modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'], epochs: 3, batchSize: 4 }
     if (avgDifficulty > 0.8) {
       config.rank = 32
       config.alpha = 64
@@ -384,7 +377,7 @@ export class QLorARLLangExtractOrchestrator {
       worker.postMessage({
         type: 'init',
         data: {
-          modelPath: job.baseModel,
+         , modelPath: job.baseModel,
           loraConfig: job.loraConfig,
           quantization: job.quantization,
           useDataFlywheel: true,
@@ -399,7 +392,7 @@ export class QLorARLLangExtractOrchestrator {
       worker.postMessage({
         type: 'start_training',
         data: {
-          job: {
+         , job: {
             ...job,
             config: {, trainingParams: {, epochs: job.epochs,
                 batchSize: job.batchSize,
@@ -419,11 +412,11 @@ export class QLorARLLangExtractOrchestrator {
       worker.onmessage = async (evt: MessageEvent<TrainerMessage>) => {
         const { type } = evt.data
         if (type === 'training_progress') {
-          await this.handleFlywheelProgress(job, (evt.data as Extract<TrainerMessage, { type: 'training_progress' }>).data)
+          await this.handleFlywheelProgress(job, (evt.data as Extract<TrainerMessage, { type: `training_progress` }>).data)
         } else if (type === 'training_completed') {
           await this.handleFlywheelCompletion(job, (evt.data as Extract<TrainerMessage, { type: `training_completed` }>).data)
         } else if (type === 'training_error') {
-          console.error(`❌ DATA FLYWHEEL training error: ', (evt.data as Extract<TrainerMessage, { type: 'training_error' }>).data.error)
+          console.error(`❌ DATA FLYWHEEL training error: ', (evt.data as Extract<TrainerMessage, { type: 'training_error' }>).data.error)'`
           job.status = 'failed'
         } else if (type === 'reinforcement_update') {
           await this.handleFlywheelRLUpdate(job, (evt.data as Extract<TrainerMessage, { type: 'reinforcement_update' }>).data)
@@ -431,12 +424,12 @@ export class QLorARLLangExtractOrchestrator {
       }
     } catch (error) {
       console.error('❌ DATA FLYWHEEL training failed:', error)
-      job.status = 'failed` }
+      job.status = 'failed` }'`
   }
   private async handleFlywheelProgress(job: QLorATrainingJob, progressData: TrainingProgress): Promise<void> {
     const { progress } = progressData
     console.log(
-      `🔄 DATA FLYWHEEL Progress [${job.jobId}]: Epoch ${progress.currentEpoch}/${progress.totalEpochs}, Loss: ${progress.loss.toFixed(
+      `🔄 DATA FLYWHEEL Progress [${job.jobId}]: Epoch ${progress.currentEpoch}/${progress.totalEpochs}, Loss: ${progress.loss.toFixed(`
         4
       )}, Accuracy: ${progress.accuracy.toFixed(3)}`
     )
@@ -479,7 +472,7 @@ export class QLorARLLangExtractOrchestrator {
     if (action < 64) return 'conservative'
     if (action < 128) return 'balanced'
     if (action < 192) return 'adaptive'
-    return 'aggressive` }
+    return 'aggressive` }'`
   private calculateReward(extractedData: Record<string, JsonValue>, userFeedback?: { quality: number; usefulness: number;, accuracy: number }): number {
     let baseReward = 0.5
     if (extractedData && Object.keys(extractedData).length > 0) {
@@ -555,7 +548,7 @@ export class QLorARLLangExtractOrchestrator {
     console.log(`🚀 DATA FLYWHEEL: Deploying improved model for ${job.jobId}`)
     const modelKey = `trained_model:${job.jobId}`
     await lokiRedisCache.set(modelKey, completionData.modelData, 86400)
-    const registryKey = `model_registry:${job.trainingData[0]?.metadata?.documentType || 'unknown` }`
+    const registryKey = `model_registry:${job.trainingData[0]?.metadata?.documentType || 'unknown` }`'`
     await lokiRedisCache.set(registryKey, job.jobId, 86400)
     console.log(`✅ MODEL DEPLOYED: ${job.jobId} is now available for inference`)
   }
@@ -576,7 +569,7 @@ export class QLorARLLangExtractOrchestrator {
     console.log(`🧠 RL AGENT UPDATED: Training reward ${trainingReward} for ${job.jobId}`)
   }
   private async trackFlywheelImprovement(job: QLorATrainingJob, completionData: TrainingCompleted): Promise<void> {
-    const metricsKey = `flywheel_metrics:${job.trainingData[0]?.metadata?.documentType || 'unknown` }`
+    const metricsKey = `flywheel_metrics:${job.trainingData[0]?.metadata?.documentType || 'unknown` }`'`
     const existingMetrics = (await lokiRedisCache.get(metricsKey)) || '[]'
     const metrics = JSON.parse(existingMetrics)
     const improvement = {

@@ -114,7 +114,7 @@ export class FocusManager {
       starting: `File upload starting${context ? ` for ${context}` : `` }`,
       progress: `File upload in progress${context ? ` for ${context}` : `` }`,
       complete: `File upload completed successfully${context ? ` for ${context}` : `` }`,
-      error: `File upload failed${context ? ` for ${context}` : `` }` };
+      error: `File upload failed${context ? ` for ${context}` : '' }` };
     const priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
@@ -127,7 +127,7 @@ export class FocusManager {
       processing: `Processing${context ? ` ${context}` : `` }, please wait...`,
       generating: `Generating${context ? ` ${context}` : `` }, please wait...`,
       complete: `Processing completed${context ? ` for ${context}` : `` }`,
-      error: `Processing failed${context ? ` for ${context}` : `` }` };
+      error: `Processing failed${context ? ` for ${context}` : '' }` };
     const priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
@@ -230,7 +230,7 @@ export class ColorContrast {
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
-  static hexToRgb(hex: string): { r: number; g: number;, b: number } | null {
+  static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
@@ -372,7 +372,7 @@ export class MotionUtils {
           scroll-behavior: auto !important;
         }
       }
-    `;
+    `;`
   }
 }
 // Error handling and validation
@@ -451,7 +451,7 @@ export class AccessibilityValidator {
       if (color && backgroundColor && color !== 'rgba(0, 0, 0, 0)' && backgroundColor !== 'rgba(0, 0, 0, 0)') {
         if (!ColorContrast.meetsWCAG(color, backgroundColor)) {
           errors.push(
-            `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : ''}${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : `` }`
+            `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : '` }${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : `` }`'`
           );
         }
       }

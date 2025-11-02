@@ -5,7 +5,7 @@ import db from '$lib/server/db/index'; // Changed to default import
 import type { RequestHandler } from './$types.js';
 import { QdrantClient } from '@qdrant/qdrant-js';
 import { eq } from 'drizzle-orm';
-import { env } from '$env/static/private'; // Import env from SvelteKit's static private env
+import { env } from '$env/static/private'; // Import env from SvelteKit's static private env'
 // Environment variables fallback
 const QDRANT_URL = env.QDRANT_URL || 'http://localhost:6333';
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || 'http://localhost:8000';
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
         'prosecutor_text_fragments', // Fixed: Removed extra closing parenthesis, added comma
         {
           vector: queryEmbedding, // Fixed: Added comma; limit: 3,
-          filter: { must: [{, key: 'caseId', match: {, value: caseId } }] },
+          filter: {, must: [{, key: 'caseId', match: {, value: caseId } }] },
           with_payload: true
         }
       );
@@ -65,8 +65,8 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 				Case Title: ${currentCase.title}
 				Case Description: ${currentCase.description}
 				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None'}
-				Relevant Fragments: ${relevantFragments || 'None` }
-			`.trim();
+				Relevant Fragments: ${relevantFragments || 'None` }'`
+			`.trim();`
       const prompt = `
 				Analyze the following query in the context of a legal case. Provide a brief analysis.
 				CONTEXT:
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 				---
 				USER QUERY: "${queryText}"
 				BRIEF ANALYSIS:
-			`.trim();
+			`.trim();`
       const analysisResponse = await fetch(`${NLP_SERVICE_URL}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
@@ -100,18 +100,18 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const basicContext = `
 				Case Title: ${currentCase.title}
 				Case Description: ${currentCase.description}
-				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None` }
-			`.trim();
+				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None` }'`
+			`.trim();`
       return json({
         success: true,
-        analysis: 'Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,
+        analysis: 'Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,`
         source: 'Fallback Analysis',
         context: basicContext
       });
     }
   } catch (error: any) {
     // Fixed: Changed error type to unknown for better safety
-    console.error('Error in analysis endpoint:', error);
+    console.error('Error in analysis endpoint: `, error);'`
     return json({ error: `Failed to perform analysis` }, { status: 500 });
   }
 };

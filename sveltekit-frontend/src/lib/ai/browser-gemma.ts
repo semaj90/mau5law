@@ -108,7 +108,7 @@ export class BrowserGemma {
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.` } = options;
+      systemPrompt = 'You are a helpful legal AI assistant.` } = options;'`
     try {
       const startTime = performance.now();
       // Format prompt with system instruction (Gemma format)
@@ -148,7 +148,7 @@ export class BrowserGemma {
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.` } = options;
+      systemPrompt = 'You are a helpful legal AI assistant.` } = options;'`
     const formattedPrompt = `<bos><start_of_turn>user\n${systemPrompt}\n\n${prompt}<end_of_turn>\n<start_of_turn>model\n`;
     let tokenCount = 0;
     try {
@@ -168,7 +168,7 @@ export class BrowserGemma {
         streamer,
         return_full_text: false
       });
-      // Note: Transformer.js doesn't support true streaming yet
+      // Note: Transformer.js doesn't support true streaming yet'
       // This will return the full response, but we can chunk it
       const fullText = output[0].generated_text.trim();
       const words = fullText.split(' ');
@@ -226,7 +226,7 @@ export class BrowserGemma {
       });
       return output[0].generated_text.trim();
     } catch (error) {
-      console.error('❌ [Gemma Browser] Chat failed:', error);
+      console.error('❌ [Gemma Browser] Chat failed: `, error);'`
       throw error;
     }
   }
@@ -247,7 +247,7 @@ export class BrowserGemma {
   }
   async extractLegalEntities(
     text: string
-  ): Promise<{ parties: string[]; dates: string[];, locations: string[] }> {
+  ): Promise<{ parties: string[]; dates: string[]; locations: string[] }> {
     const response = await this.generate(
       `Extract legal entities from this text. Return as JSON with keys: parties, dates, locations.\n\nText: ${text}`,
       {
@@ -263,14 +263,13 @@ export class BrowserGemma {
   }
   async analyzeLegalRisk(
     caseDescription: string
-  ): Promise<{ riskLevel: 'low' | 'medium' | 'high';, analysis: string }> {
+  ): Promise<{ riskLevel: 'low' | 'medium' | 'high'; analysis: string }> {
     const response = await this.generate(
       `Analyze the legal risk for this case. Return JSON with: "riskLevel" (low/medium/high); and: "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
       {
         maxTokens: 150,
         temperature: 0.2,
-        systemPrompt: 'You are a legal risk analysis AI. Be objective and factual.'
-      }
+        systemPrompt: `You are a legal risk analysis AI. Be objective and factual.` }
     );
     try {
       return JSON.parse(response);
@@ -312,7 +311,7 @@ export const browserGemma = new BrowserGemma();
  * USAGE EXAMPLES:
  *
  * // In a Svelte component:
- * <script lang="ts">
+ * <script, lang="ts">
  *   import { browserGemma } from '$lib/ai/browser-gemma';
  *   import { onMount } from 'svelte';
  *

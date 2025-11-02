@@ -56,11 +56,11 @@ interface SearchResult { id: string;, type: string;
 }
 interface SearchResponse { results: SearchResult[];, totalCount: number;
   searchTime: number;
-  facets: { types: Array<{ name: string;, count: number }>;
-    fileTypes: Array<{ name: string;, count: number }>;
-    cases: Array<{ id: string; title: string;, count: number }>;
-    tags: Array<{ name: string;, count: number }>;
-    dateRanges: Array<{ range: string;, count: number }>;
+  facets: { types: Array<{ name: string; count: number }>;
+    fileTypes: Array<{ name: string; count: number }>;
+    cases: Array<{ id: string; title: string; count: number }>;
+    tags: Array<{ name: string; count: number }>;
+    dateRanges: Array<{ range: string; count: number }>;
   };
   suggestions?: string[];
   pagination: { page: number;, pageSize: number;
@@ -204,8 +204,8 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       }
     });
   } catch (err) {
-    console.error('Search error:', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('Search error: ', err);'
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
   }
 };
 
@@ -231,7 +231,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
 
   // File type filters
   if (filters?.fileTypes && filters.fileTypes.length > 0) {
-    conditions.push(or(...filters.fileTypes.map(type => sql`${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%` }`)));
+    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%` }`)));
   }
 
   // Case filters
@@ -356,7 +356,7 @@ async function processSearchResult(item: Record<string, unknown>, filters: Searc
     fileName: String(item['fileName'] ?? item['file_name'] ?? ''),
     fileType: String(item['fileType'] ?? item['file_type'] ?? 'unknown'),
     fileSize: Number(item['fileSize'] ?? item['file_size'] ?? 0),
-    url: '/api/files/evidence/${String(item['id'] ?? '')}`,
+    url: '/api/files/evidence/${String(item['id'] ?? '')}`,'`
     thumbnailUrl: generateThumbnailUrl(
       String(item['filePath'] ?? item['file_path'] ?? ''),
       String(item['fileType'] ?? item['file_type'] ?? '')
@@ -508,7 +508,7 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
       ]
     };
   } catch (error) {
-    console.error('Facet generation error:', error);
+    console.error('Facet generation error:', error);'
     return {
       types: [],
       fileTypes: [],
@@ -558,7 +558,7 @@ async function getCaseFacets(): Promise<any> {
       count: Number(c.count || 0)
     }));
   } catch (error) {
-    console.error('getCaseFacets error:', error);
+    console.error('getCaseFacets error:', error);'
     return [];
   }
 }
@@ -613,8 +613,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     'application/pdf': '/icons/pdf-thumbnail.svg',
     'video/': '/icons/video-thumbnail.svg',
     'audio/': '/icons/audio-thumbnail.svg',
-    'document': '/icons/document-thumbnail.svg'
-  };
+    'document': `/icons/document-thumbnail.svg` };
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
   }
@@ -650,7 +649,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     // Avoid casting to any, call POST directly
     return await POST({ request, locals: _locals });
   } catch (err) {
-    console.error('GET search error:', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('GET search error: ', err);'
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error` }');
   }
 };

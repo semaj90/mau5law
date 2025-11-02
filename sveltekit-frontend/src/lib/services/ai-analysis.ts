@@ -23,7 +23,7 @@ export class AIAnalysisService {
       }
       return await response.json();
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('AI Analysis error:', error);
+      console.error('AI Analysis error:', error);'
       // Fallback analysis for development
       return {
         summary: `Analysis of ${file.name} (${file.type})`,
@@ -53,7 +53,7 @@ export class AIAnalysisService {
       const response = await fetch('/api/ai/analyze-text', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({ text })
       });
       if (!response.ok) {
@@ -61,7 +61,7 @@ export class AIAnalysisService {
       }
       return await response.json();
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Text Analysis error:', error);
+      console.error('Text Analysis error:', error);'
       // Fallback analysis for development
       return {
         summary: `Text analysis of ${text.length} characters`,

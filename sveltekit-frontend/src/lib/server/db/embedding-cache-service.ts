@@ -17,7 +17,7 @@ async function getDb(): Promise<DbClient> {
 	return _db;
 }
 
-// --- CHANGED: add a DB-level row type that matches Drizzle's returned shape ---
+// --- CHANGED: add a DB-level row type that matches Drizzle's returned shape ---'
 // DB stores the packed embedding as a string (base64 or similar), so the: 'embedding' column is string|null.
 export interface EmbeddingCacheDbRow {
   id?: number | string;
@@ -48,7 +48,7 @@ export interface UpsertEmbeddingOptions { model: string;, textHash: string;
 export async function upsertEmbedding(
   opts: UpsertEmbeddingOptions
 ): Promise<{ created?: boolean; updated?: boolean; method: string; scale?: number | null }> {
-  const { model, textHash, embedding, packMethod = 'int8-symmetric' } = opts;
+  const { model, textHash, embedding, packMethod = 'int8-symmetric` } = opts;'`
   const db = await getDb();
 
   // packEmbedding returns { b64, scale, method }
@@ -80,7 +80,7 @@ export async function upsertEmbedding(
         ...(typeof model !== 'undefined' && model !== null ? { model } : {}),
         ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {})
       };
-      // Drizzle's .set accepts an object where omitted keys are left unchanged.
+      // Drizzle's .set accepts an object where omitted keys are left unchanged.'
       await db.update(embeddingCache).set(updatePayload).where(eq(embeddingCache.textHash, textHash));
       return { updated: true, method: method ?? 'unknown', scale: normalizedScale };
     } else {
@@ -111,7 +111,7 @@ export async function getEmbedding(textHash: string): Promise<EmbeddingCacheRow 
   const dbRow = rows[0];
   if (!dbRow) return null;
 
-  // Map DB row to service row. We don't attempt to unpack the packed string here
+  // Map DB row to service row. We don't attempt to unpack the packed string here'
   // (unpack function may not exist). Expose packedEmbedding and leave raw embedding null.
   const serviceRow: EmbeddingCacheRow = {
     id: dbRow.id,

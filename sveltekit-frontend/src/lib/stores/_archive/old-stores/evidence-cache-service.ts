@@ -134,10 +134,10 @@ class EvidenceAnalysisCacheService {
    */
   async cacheCaseAnalysisSummary(
     caseId: string,
-    summary: { evidenceCount: number;, analysisTypes: string[];
-      overallConfidence: number;
-      keyFindings: string[];
-      recommendations: string[];
+    summary: {, evidenceCount: number;, analysisTypes: string[];
+     , overallConfidence: number;
+     , keyFindings: string[];
+     , recommendations: string[];
      , processingTime: number;
     }
   ): Promise<void> {

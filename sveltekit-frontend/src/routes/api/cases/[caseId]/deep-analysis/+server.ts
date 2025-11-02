@@ -37,7 +37,7 @@ type QdrantSearchHit = {
 };
 type CaseActivityRow = { title?: string; [k: string]: any };
 type EvidenceRow = { fileName?: string; title?: string; [k: string]: any };
-type LLMResponse = { source: string; data: any;, ok: boolean };
+type LLMResponse = { source: string; data: any; ok: boolean };
 
 // small helper to centralize Ollama endpoint
 function getOllamaEndpoint(): string {
@@ -66,7 +66,7 @@ function extractTextFromLLM(data: any): string | null {
   // Ollama/local responses: common keys
   if (typeof data?.text === 'string') return data.text;
   if (typeof data?.response === 'string') return data.response;
-  // try to stringify if it's a simple object with useful fields
+  // try to stringify if it's a simple object with useful fields'
   try {
     const firstText = Object.values(data).find(v => typeof v === 'string');
     if (typeof firstText === 'string') return firstText;
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       try {
         const ollamaEmbed = await fetch(`${getOllamaEndpoint()}/embed`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ text: queryText, model: `embeddinggemma` })
         });
         if (!ollamaEmbed.ok) throw new Error('Ollama embed failed');
@@ -144,13 +144,13 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       qdrantClient.search('prosecutor_text_fragments', {
         vector: queryEmbedding,
         limit: 3,
-        filter: { must: [{, key: 'caseId', match: {, value: caseId } }] },
+        filter: {, must: [{, key: 'caseId', match: {, value: caseId } }] },
         with_payload: true
       }),
       qdrantClient.search('prosecutor_evidence', {
         vector: queryEmbedding,
         limit: 3,
-        filter: { must: [{, key: 'caseId', match: {, value: caseId } }] },
+        filter: {, must: [{, key: 'caseId', match: {, value: caseId } }] },
         with_payload: true
       }),
     ];
@@ -192,8 +192,8 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
                 .join(', ') || 'None'
             }
             Relevant Case Fragments: ${relevantFragments || 'None'}
-            Relevant Evidence Summaries: ${relevantEvidenceSummaries || 'None` }
-        `.trim();
+            Relevant Evidence Summaries: ${relevantEvidenceSummaries || 'None` }'`
+        `.trim();`
     const basePrompt = `
             Analyze the following query in the context of a legal case. Provide actionable insights and recommendations.
             CONTEXT:
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
             ---
             USER QUERY: "${queryText}"
             ANALYSIS:
-        `.trim();
+        `.trim();`
     // Define a GBNF grammar to force the local LLM to return a specific JSON structure.
     // This grammar defines an object with a "summary" (string) and "recommendations" (array of strings).
     const jsonGrammar = String.raw`
@@ -211,12 +211,12 @@ object ::= "{" ws ( string ":" ws value ("," ws string ":" ws value)* )? "}"
 array  ::= "[" ws ( value ("," ws value)* )? "]"
 value  ::= object | array | string | number | "true" | "false" | "null"
 string ::= "\"" (
-  [^"\\] |
+  [^"\\] |"
   "\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F])
 )* "\""
 number ::= ("-")? ([0-9] | [1-9] [0-9]*) ("." [0-9]+)? ([eE] [-+]? [0-9]+)?
 ws ::= ([ \t\n]*)
-`.trim();
+`.trim();`
     // --- MULTI-LLM INFERENCE (OpenAI, Gemini, Claude, local Ollama) ---
     const promises: Promise<LLMResponse>[] = [];
 
@@ -244,9 +244,9 @@ ws ::= ([ \t\n]*)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${OPENAI_API_KEY}` },
+            Authorization: 'Bearer ${OPENAI_API_KEY}' },
           body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
+           , model: 'gpt-3.5-turbo',
             messages: [{, role: 'user', content: basePrompt }],
             max_tokens: 512
           })
@@ -264,7 +264,7 @@ ws ::= ([ \t\n]*)
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${GEMINI_API_KEY}' },
+            Authorization: `Bearer ${GEMINI_API_KEY}` },
           body: JSON.stringify({, prompt: {, text: basePrompt },
             maxOutputTokens: 512
           })
@@ -312,7 +312,7 @@ ws ::= ([ \t\n]*)
           };
         } else {
           const detail = (value.data as { detail?: any })?.detail;
-          analysisResults[value.source] = { error: typeof detail === 'string' ? detail : 'API Error' };
+          analysisResults[value.source] = { error: typeof detail === 'string' ? detail : `API Error` };
         }
       } else {
         // network / fetch failure
@@ -322,7 +322,7 @@ ws ::= ([ \t\n]*)
 
     return json({ success: true, analysisResults });
   } catch (error: any) {
-    console.error('Error in deep analysis endpoint:', error);
+    console.error('Error in deep analysis endpoint: `, error);'`
     return json({ error: `Failed to perform deep analysis` }, { status: 500 });
   }
 };

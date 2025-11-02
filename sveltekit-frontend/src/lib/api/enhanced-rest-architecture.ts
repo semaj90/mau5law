@@ -70,7 +70,7 @@ export class EnhancedRESTClient {
   async post<T, U = unknown>(endpoint: string, data: U): Promise<APIResponse<T>> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify(data)
     });
     return response.json();

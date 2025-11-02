@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     // Parse request body
     const body = await request.json();
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .where(eq(citations.id, citationId))
         .limit(1)) as unknown as CitationRecord[];
       if (!dbCitation) {
-        return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+        return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
       }
       citation = dbCitation;
       // Use the strongly-typed citation object to obtain citation text
@@ -130,10 +130,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       data: {
-        verification: verificationResult,
+       , verification: verificationResult,
         citation: citation
           ? {
-              id: citation.id,
+             , id: citation.id,
               title: citation.title,
               citation: citation.citation
             }
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         action: `citation_verified` }
     });
   } catch (err: any) {
-    console.error('Citation verification error:', err);
+    console.error('Citation verification error:', err);'
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -229,7 +229,7 @@ async function performCitationVerification(
     verification.warnings = generateVerificationWarnings(verification);
     return verification;
   } catch (error) {
-    console.error('Verification process error:', error);
+    console.error('Verification process error:', error);'
     return {
       ...verification,
       error: 'Verification process failed',
@@ -284,18 +284,18 @@ async function validateCitationFormat(citationText: string): Promise<FormatValid
 /*
  * Verify with legal databases (mock implementation)
  */
-async function verifyWithLegalDatabases(citationText: string): Promise<{ sources: Array<{ database: string; confidence: number; url: string | null;, verified: boolean }>;
+async function verifyWithLegalDatabases(citationText: string): Promise<{ sources: Array<{ database: string; confidence: number; url: string | null; verified: boolean }>;
   confidence: number;
-  accessibility: { isAccessible: boolean; availableDatabases: number;, totalChecked: number };
+  accessibility: { isAccessible: boolean; availableDatabases: number; totalChecked: number };
 }> {
   // Use LEGAL_DATABASES to avoid unused variable lint/type issues and provide realistic totalChecked
   try {
-    console.debug(`verifyWithLegalDatabases: checking citation; snippet: "${String(citationText).substring(0, 120)}"`);
+    console.debug(`verifyWithLegalDatabases: checking citation;, snippet: "${String(citationText).substring(0, 120)}"`);
     const totalDatabases = Object.keys(LEGAL_DATABASES).length;
 
     // Mock verification results - in production, would call actual legal APIs
-    const mockResults: Record<string, { found: boolean; confidence: number;, url: string | null }> = { westlaw: {, found: true, confidence: 0.92, url: 'https://westlaw.com/result/...' },
-      lexis: { found: true, confidence: 0.89, url: 'https://lexisnexis.com/result/...' },
+    const mockResults: Record<string, { found: boolean; confidence: number; url: string | null }> = { westlaw: {, found: true, confidence: 0.92, url: `https://westlaw.com/result/...` },
+      lexis: { found: true, confidence: 0.89, url: `https://lexisnexis.com/result/...` },
       justia: { found: true, confidence: 0.85, url: `https://justia.com/result/...` },
       courtlistener: { found: false, confidence: 0, url: null }
     };
@@ -323,7 +323,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<{ sources
       }
     };
   } catch (err) {
-    console.error('verifyWithLegalDatabases error:', err);
+    console.error('verifyWithLegalDatabases error:', err);'
     // Return a typed fallback consistent with the declared return type
     return {
       sources: [],
@@ -357,7 +357,7 @@ async function verifyContentAccuracy(
 ): Promise<ContentAccuracyResult> {
   // Use inputs for light-weight checks / logging to provide realistic mock behavior
   console.debug(
-    `verifyContentAccuracy: checking snippet="${String(citationText).substring(0, 120)}" existingCitationId=${existingCitation?.id ?? 'none` }`
+    `verifyContentAccuracy: checking snippet="${String(citationText).substring(0, 120)}" existingCitationId=${existingCitation?.id ?? 'none` }`'`
   );
 
   // Mocked base score; slightly adjust if an existing citation record is provided

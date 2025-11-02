@@ -241,7 +241,7 @@ function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
     return 'legal_analysis'
   }
   // Default to chat
-  return 'chat` }
+  return 'chat` }'`
 function formatResponse(result: any, originalRequest: any, startTime: number) {
   const baseResponse = {
     success: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success,
@@ -318,7 +318,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
 function generateRequestId(): string {
   return `unified_${Date.now()}_${Math.random().toString(36).substring(2, 9)}` }
 function generateSessionId(): string {
-  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}' }
+  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}` }
 // OPTIONS handler for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {

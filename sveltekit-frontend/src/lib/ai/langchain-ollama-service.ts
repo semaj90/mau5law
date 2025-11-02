@@ -4,7 +4,7 @@ import { ChatOllama } from '@langchain/ollama';
 import { OllamaEmbeddings } from '@langchain/ollama';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { Document as LangChainDocument } from 'langchain/document';
+import { Document, as LangChainDocument } from 'langchain/document';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
@@ -111,7 +111,7 @@ export class LangChainOllamaService {
             }
           })
       );
-      // Create vector store if it doesn't exist
+      // Create vector store if it doesn't exist'
       if (!this.vectorStore) {
         this.vectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
       } else {
@@ -225,7 +225,7 @@ export class LangChainOllamaService {
   }
   private createLegalPrompt(question: string, documents: LangChainDocument[]): string {
     const context = documents.map(doc => `[Source: ${doc.metadata.chunkId}]\n${doc.pageContent}`).join('\n\n');
-    return `You are a legal AI assistant specializing in document analysis and legal research.
+    return `You are a legal AI assistant specializing in document analysis and legal research.`
 Use the provided context to answer the question accurately and professionally.
 Context:
 ${context}
@@ -233,10 +233,10 @@ Question: ${question}
 Instructions:
 - Provide a comprehensive, accurate answer based on the context
 - Cite specific sources using [Source: ID] format
-- If the context doesn't contain sufficient information, state this clearly
+- If the context doesn't contain sufficient information, state this clearly'
 - Use legal terminology appropriately
 - Structure your response clearly with bullet points or numbered lists when appropriate
-Answer:`;
+Answer:`;`
   }
   private calculateConfidence(documents: LangChainDocument[], question: string): number {
     if (documents.length === 0) return 0.1;

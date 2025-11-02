@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { speak } from './speak';
   let isSupported = $state<boolean>(false);
   let isListening = $state<boolean>(false);
@@ -20,7 +20,7 @@
     if ('maxAlternatives' in recognition) recognition.maxAlternatives = 1;
     recognition.onstart = () => {
       isListening = true;
-      speak("I'm listening. You can ask me legal questions or give voice commands.");
+      speak("I'm listening. You can ask me legal questions or give voice commands.");'
     };
     recognition.onresult = (ev: any) => {
       let interim = '';

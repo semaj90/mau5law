@@ -47,7 +47,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
     });
   } catch (error: any) {
     // Changed type from any to unknown
-    console.error('AI suggestion error:', error);
+    console.error('AI suggestion error:', error);'
     return json({ error: error instanceof Error ? error.message : 'An unknown error occurred' }, { status: 500 }); // Safely access error message
   }
 };
@@ -76,7 +76,7 @@ async function generateAIResponse(
     return structuredResponse;
   } catch (error: any) {
     // Changed type from any to unknown
-    console.error('Ollama integration error:', error);
+    console.error('Ollama integration error:', error);'
     // Fallback to mock response if Ollama fails
     return generateMockResponse(prompt, vibe, context);
   }
@@ -94,13 +94,13 @@ function createSystemPrompt(vibe: string, context?: any): string {
     context === 'canvas'
       ? ' You are specifically helping with an interactive case canvas where users can visualize evidence, timelines, and case relationships.'
       : '';
-  return `${basePrompt} ${vibeInstructions[vibe as keyof typeof vibeInstructions] || vibeInstructions.professional}${contextInstruction}
+  return `${basePrompt} ${vibeInstructions[vibe as keyof typeof vibeInstructions] || vibeInstructions.professional}${contextInstruction}`
 When responding:
 1. Provide actionable insights
 2. Suggest specific next steps
 3. Focus on legal case management context
 4. Be helpful and constructive
-Format your response as clear, professional advice.`;
+Format your response as clear, professional advice.`;`
 }
 function getTemperatureForVibe(vibe: string): number {
   const temperatureMap = {
@@ -204,14 +204,12 @@ async function generateMockResponse(
     },
     creative: {
       prefix: 'Looking at this from a fresh perspective,',
-      style: 'innovative and exploratory'
-    },
+      style: 'innovative and exploratory` },'`
     analytical: {
       prefix: 'From a systematic examination of the evidence,',
-      style: 'logical and methodical'
-    },
+      style: `logical and methodical` },
     collaborative: {
-      prefix: "Building on the team's previous work,",
+      prefix: "Building on the team's previous work,",'
       style: `inclusive and building` }
   };
   const currentVibe = vibeResponses[vibe as keyof typeof vibeResponses] || vibeResponses.professional;
@@ -222,7 +220,7 @@ async function generateMockResponse(
       'I recommend focusing on the documentary evidence patterns that show consistency in the timeline. Consider cross-referencing witness statements with physical evidence locations.';
   } else if (prompt.toLowerCase().includes('timeline')) {
     responseText +=
-      "The chronological sequence suggests three key phases. I'd suggest creating visual markers for each phase to highlight the progression of events.";
+      "The chronological sequence suggests three key phases. I'd suggest creating visual markers for each phase to highlight the progression of events.";'
   } else if (prompt.toLowerCase().includes('witness')) {
     responseText +=
       'The witness testimony reveals interesting correlations. Consider mapping their locations and perspectives to identify potential blind spots or confirmatory evidence.';
@@ -243,10 +241,10 @@ async function generateMockResponse(
   ];
   // Generate actionable items
   const actions = [
-    {
+    {,
       type: 'highlight',
       text: 'Mark key evidence for review',
-      data: { priority: 'high' }
+      data: { priority: `high` }
     },
     {
       type: 'annotation',

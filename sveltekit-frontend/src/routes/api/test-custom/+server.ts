@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ request }) => {
         result: result
       });
     } catch (error: any) {
-      console.error('Custom adapter error:', error.message);
+      console.error('Custom adapter error:', error.message);'
       console.error('Custom adapter query:', error.query);
       return json(
         {

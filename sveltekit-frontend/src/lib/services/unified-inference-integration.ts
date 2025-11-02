@@ -44,7 +44,7 @@ interface QuicCacheEntry {
 }
 
 // Add typed contracts for the webasm service and result
-type WasmPayload = { model: string;, input: Float32Array; batchSize?: number; [key: string]: any };
+type WasmPayload = { model: string; input: Float32Array; batchSize?: number; [key: string]: any };
 
 interface WebAsmResult {
   output?: Float32Array | number[];
@@ -169,7 +169,7 @@ export class UnifiedInferenceEngine {
       tensor_id: '${request.caseId || 'case` }_${Date.now()}`,
       parent_ids: [request.documentId || ''],
       num_slices: 3,
-      cluster: request.priority === 'high` };
+      cluster: request.priority === 'high` };'`
     const response = await fetch(`${this.fastApiEndpoint}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -193,8 +193,7 @@ export class UnifiedInferenceEngine {
       metadata: {
         model: data.metadata?.model ?? 'embeddinggemma:latest',
         confidence: Number(data.confidence ?? 0.9),
-        source: 'computed'
-      }
+        source: `computed` }
     };
   }
   /**
@@ -393,7 +392,7 @@ export class UnifiedInferenceEngine {
             continue;
         }
       } catch (error) {
-        console.warn(`⚠️ Fallback ${engine} also failed: ', error);
+        console.warn(`⚠️ Fallback ${engine} also failed: ', error);'`
       }
     }
     throw new Error('All inference engines failed');
@@ -403,7 +402,7 @@ export class UnifiedInferenceEngine {
    */
   private generateCacheKey(request: UnifiedInferenceRequest): string {
     const textHash = this.hashString(request.text);
-    return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;
+    return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;'`
   }
   private selectGemmaModel(operation: string): string {
     switch (operation) {

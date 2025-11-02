@@ -33,7 +33,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Legal AI analysis error:', error);
+    console.error('Legal AI analysis error:', error);'
     return json(
       {
         success: false,

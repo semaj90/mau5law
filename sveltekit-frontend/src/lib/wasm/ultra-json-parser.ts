@@ -115,7 +115,7 @@ export class UltraJSONParser {
       sharedArrayBuffer: false,
       atomics: false,
       bigInt64Array: false,
-      supportLevel: 'none` };
+      supportLevel: 'none' };
     if (browser) {
       // call async initializer without awaiting in ctor; explicit void to acknowledge the promise
       void this.initialize();
@@ -264,7 +264,7 @@ export class UltraJSONParser {
       if (opts.cacheKey && this.performanceCache.has(opts.cacheKey)) {
         const cached = this.performanceCache.get(opts.cacheKey)!;
         // use cached var (was unused) to provide diagnostic info
-        console.log(`Using cached parse metrics for ${opts.cacheKey}: ', cached);
+        console.log(`Using cached parse metrics for ${opts.cacheKey}: ', cached);'`
         // we still need to actually parse the payload (metrics only cached)
         return JSON.parse(jsonString) as T;
       }
@@ -314,7 +314,7 @@ export class UltraJSONParser {
    * Select optimal parsing strategy based on data and capabilities
    */
   private selectParsingStrategy(dataSize: number, options: ParseOptions): string {
-    // Small data (< 1KB) - use native JSON for minimal overhead
+    // Small data (< 1KB) - use native JSON for minimal, overhead
     if (dataSize < 1024) {
       return 'native';
     }
@@ -534,14 +534,14 @@ export class UltraJSONParser {
    */
   private async nesBridgeStringify(obj: unknown, options: StringifyOptions): Promise<string> {
     // Changed obj from any to unknown
-    console.log('<� Using NES bridge stringification...');
+    console.log('<� Using NES bridge, stringification...');
     if (this.config.enableNESBridge) {
       try {
         if (this.isLegalDocument(obj)) {
           const document = obj as LegalDocument;
           const flatBuffer = await nesGPUBridge.createFlatBufferFromDocument(document);
           // Assuming nesGPUBridge can convert FlatBuffer back to a JSON string or an object that can be stringified
-          // For now, we'll stringify the original object as a fallback within the NES bridge context
+          // For now, we'll stringify the original object as a fallback within the NES bridge context'
           return JSON.stringify(nesGPUBridge.parseFlatBufferToDocument(flatBuffer), null, options.space);
         }
       } catch (error) {
@@ -642,7 +642,7 @@ export class UltraJSONParser {
       recommendedSettings: {
         enableBrowserSIMD: this.capabilities.wasmSIMD,
         enableWebGPUAcceleration: this.capabilities.webgpuCompute,
-        bulkProcessingMode: this.capabilities.supportLevel === 'optimal` }
+        bulkProcessingMode: this.capabilities.supportLevel === 'optimal' }
     };
   }
   /**

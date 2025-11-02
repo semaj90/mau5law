@@ -23,9 +23,9 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
     const response = await callOllamaApi({
       model,
       messages: [
-        {
-          role: 'system',
-          content: `You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.` },
+        {,
+         , role: 'system',
+          content: `You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.' },'`
         {
           role: 'user',
           content: message
@@ -49,8 +49,8 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
-    console.error('AI chat error:', err);
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('AI chat error:', err);'
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 /**

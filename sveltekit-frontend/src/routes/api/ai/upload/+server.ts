@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
     region: 'us-east-1',
     credentials: {
      , accessKeyId: CONFIG.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin',
-      secretAccessKey: CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin` },
+      secretAccessKey: CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin` },'`
     forcePathStyle: true
   });
 
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         Bucket: CONFIG.MINIO_BUCKET || process.env.MINIO_BUCKET || 'legal-documents',
         Key: key,
         Body: buffer,
-        ContentType: file.type || 'application/octet-stream` })
+        ContentType: file.type || 'application/octet-stream` })'`
     );
 
     // Persist metadata in Postgres via Drizzle (adjust column names to your schema)
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: { 'Content-Type': `application/json` }
     });
   } catch (err) {
-    console.error('Upload failed: `, err);
+    console.error('Upload failed: `, err);'`
     return new Response(JSON.stringify({ success: false, error: `Upload failed` }), { status: 500 });
   }
 };

@@ -1,11 +1,11 @@
 // Note: langextract package may not be available; provide a mock fallback that
-// routes to the local Ollama server's generate API.
+// routes to the local Ollama server's generate API.'
 // import langextract from 'langextract'
 // Interface for a minimal langextract-like client
 export interface LangExtract {
-  extract(_options: { text_or_documents: string;, prompt_description: string;
-    examples: Array<unknown>;
-    model_id: string;
+  extract(_options: {, text_or_documents: string;, prompt_description: string;
+   , examples: Array<unknown>;
+   , model_id: string;
    , model_url: string;
   }): Promise<unknown>;
 }
@@ -114,7 +114,7 @@ export class LangExtractOllamaService {
         extraction_type: request.extractionType
       };
     } catch (error) {
-      console.error('LangExtract processing error:', error);
+      console.error('LangExtract processing error:', error);'
       throw new Error(`LangExtract processing failed: ${String(error)}`);
     }
   }
@@ -179,7 +179,7 @@ export class LangExtractOllamaService {
         const result = await this.extractLegalEntities(request);
         results.push(result);
       } catch (error) {
-        console.error(`Batch extraction failed for ${request.documentType}: ', error);
+        console.error(`Batch extraction failed for ${request.documentType}: ', error);'`
         results.push({
           extracted_data: null,
           confidence: 0,
@@ -241,8 +241,7 @@ export class LangExtractOllamaService {
         key_terms: 'Extract key legal arguments, precedents, and persuasive points.',
         obligations: 'Extract any legal obligations or standards discussed in this brief.',
         risks: 'Identify potential weaknesses in the legal arguments presented.',
-        dates: 'Extract all relevant dates and deadlines mentioned in this brief.'
-      }
+        dates: `Extract all relevant dates and deadlines mentioned in this brief.` }
     };
     return (
       basePrompts[request.documentType][request.extractionType] ||
@@ -253,7 +252,7 @@ export class LangExtractOllamaService {
   private getLegalExamples(documentType: string, extractionType: string): Array<unknown> {
     const examples: Record<string, Array<unknown>> = {
       contract_entities: [
-        {
+        {,
           input:
             'This Agreement is entered into on January 15, 2024, between ABC Corp., a Delaware corporation, and XYZ LLC, a California limited liability company.',
           output: {
@@ -264,7 +263,7 @@ export class LangExtractOllamaService {
         },
       ],
       case_law_entities: [
-        {
+        {,
           input:
             'In Smith v. Jones, 123 F.3d 456 (9th Cir. 2023), the court held that contracts must be interpreted in favor of the non-drafting party.',
           output: {

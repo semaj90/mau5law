@@ -44,8 +44,7 @@ export class BrowserEmbeddings {
       try {
         this.embedder = await pipeline('feature-extraction', this.modelName, {
           device: this.device,
-          dtype: this.device === 'webgpu' ? 'fp32' : 'fp16'
-        });
+          dtype: this.device === 'webgpu' ? 'fp32' : 'fp16` });'`
       } catch (gpuError) {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
@@ -114,7 +113,7 @@ export class BrowserEmbeddings {
     query: string,
     documents: Array<{, text: string; metadata?: any }>,
     topK: number = 5
-  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
+  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
     const queryEmbedding = await this.embed(query) as number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts) as number[][];
@@ -160,7 +159,7 @@ export const browserEmbeddings = new BrowserEmbeddings();
  * USAGE EXAMPLES:
  *
  * // In a Svelte component:
- * <script lang="ts">
+ * <script, lang="ts">
  *   import { browserEmbeddings } from '$lib/ai/browser-embeddings';
  *   import { onMount } from 'svelte';
  *

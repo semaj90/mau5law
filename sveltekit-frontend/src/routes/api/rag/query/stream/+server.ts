@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Step 1: Initialize RAG processing
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'status',
                 message: 'Initializing RAG query processing...',
                 progress: 10
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Step 2: Vector similarity search
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'status',
                 message: 'Performing vector similarity search...',
                 progress: 30
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Step 3: Document retrieval
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'status',
                 message: 'Retrieving relevant documents...',
                 progress: 50
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Step 4: Context augmentation
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'status',
                 message: 'Augmenting context with retrieved documents...',
                 progress: 70
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Step 5: LLM inference
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'status',
                 message: 'Generating AI response...',
                 progress: 90
@@ -70,14 +70,14 @@ export const POST: RequestHandler = async ({ request }) => {
           );
 
           // Simulate AI response streaming (in production, this would stream from Ollama/LLM)
-          const aiResponse = `Based on the legal documents analyzed, here's the comprehensive answer to your query: "${query}"\n\nKey findings:\n• Relevant case law precedents identified\n• Contract clauses analyzed for compliance\n• Risk assessment completed\n• Recommendations provided\n\nThis analysis is based on ${Math.floor(Math.random() * 50) + 10} relevant documents from your legal corpus.`;
+          const aiResponse = `Based on the legal documents analyzed, here's the comprehensive answer to your query: "${query}"\n\nKey findings:\n• Relevant case law precedents identified\n• Contract clauses analyzed for compliance\n• Risk assessment completed\n• Recommendations provided\n\nThis analysis is based on ${Math.floor(Math.random() * 50) + 10} relevant documents from your legal corpus.`;'
 
           // Stream the AI response word by word
           const words = aiResponse.split(' ');
           for (let i = 0; i < words.length; i++) {
             controller.enqueue(
               new TextEncoder().encode(
-                `data: ${JSON.stringify({
+                `data: ${JSON.stringify({`
                  , type: 'response',
                   content: words[i] + ' ',
                   isComplete: i === words.length - 1,
@@ -92,8 +92,8 @@ export const POST: RequestHandler = async ({ request }) => {
           // Final completion message
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
-                type: 'complete',
+              `data: ${JSON.stringify({`
+               , type: 'complete',
                 message: 'RAG query processing completed successfully',
                 progress: 100,
                 metadata: {
@@ -109,9 +109,9 @@ export const POST: RequestHandler = async ({ request }) => {
         } catch (error) {
           controller.enqueue(
             new TextEncoder().encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                 type: 'error',
-                message: 'RAG processing; error: ${error instanceof Error ? error.message : `Unknown error` }`,
+                message: `RAG processing; error: ${error instanceof Error ? error.message : `Unknown error' }`,'`
                 error: true
               })}\n\n`
             )
@@ -127,16 +127,14 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      }
+        'Access-Control-Allow-Headers': 'Content-Type' }
     });
   } catch (error) {
-    console.error('RAG stream error:', error);
+    console.error('RAG stream error:', error);'
     return json(
       {
         error: 'Failed to process RAG query stream',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+        details: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }
@@ -148,6 +146,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': `Content-Type` }
+      'Access-Control-Allow-Headers': `Content-Type' }'`
   });
 };

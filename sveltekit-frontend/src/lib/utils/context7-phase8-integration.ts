@@ -109,7 +109,7 @@ export class Context7Phase8Integrator {
       return this.rerankRecommendations(recommendations, query);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Context7 Phase 8 integration error:', msg);
+      console.error('Context7 Phase 8 integration error:', msg);'
       return this.getFallbackRecommendations(query);
     }
   }
@@ -204,10 +204,9 @@ export class Context7Phase8Integrator {
 >
   <FileUploadIcon />
   <p>Drag evidence files here or click to browse</p>
-</div>`,
+</div>`,`
           dependencies: ['@uppy/core', '@uppy/drag-drop'],
-          timeEstimate: '1-2 hours'
-        },
+          timeEstimate: `1-2 hours` },
         benefits: ['Faster evidence upload', 'Better user experience', 'Reduced form abandonment'],
         risks: ['Browser compatibility'],
         relatedStates: ['evidenceUpload']
@@ -253,13 +252,13 @@ export class Context7Phase8Integrator {
         context7Source: 'matrix-performance',
         aiConfidence: 82,
         implementation: {
-          component: 'MatrixLODSystem',
-          code: '
+         , component: 'MatrixLODSystem',
+          code: `
 // Enhanced LOD with adaptive quality
-const adaptiveLOD = { low: {, vertexCount: 100, shaderComplexity: 'basic' },
-  mid: { vertexCount: 500, shaderComplexity: 'standard' },
+const adaptiveLOD = {, low: {, vertexCount: 100, shaderComplexity: `basic` },
+  mid: {, vertexCount: 500, shaderComplexity: `standard` },
   high: {, vertexCount: 1000, shaderComplexity: `advanced` }
-}`,
+}`,`
           timeEstimate: `4-6 hours` },
         benefits: ['60% performance improvement', 'Smoother animations', 'Better mobile experience'],
         risks: ['Visual quality trade-offs'],
@@ -398,7 +397,7 @@ const adaptiveLOD = { low: {, vertexCount: 100, shaderComplexity: 'basic' },
   }
   private getFallbackRecommendations(query: Context7Phase8Query): Phase8Recommendation[] {
     return [
-      {
+      {,
         id: 'fallback-1',
         type: 'ui-optimization',
         priority: 'medium',

@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ params }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Job status error:', error);
+    console.error('Job status error:', error);'
     return json(
       {
         success: false,
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Job action error:', error);
+    console.error('Job action error:', error);'
     return json(
       {
         success: false,

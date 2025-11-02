@@ -14,7 +14,7 @@ interface SimpleRedis {
   isOpen: boolean;
 }
 
-function createClient(_config: {, url: string; password: string }): SimpleRedis {
+function createClient(_config: {, url: string;, password: string }): SimpleRedis {
   return {
     isOpen: false,
     async connect() { this.isOpen = true; },
@@ -76,7 +76,7 @@ class EvidenceWebSocketServer {
       };
 
       this.clients.set(ws, client);
-      console.log(`[WS] 🔌 Client connected (userId: ${userId || 'anonymous' })`);
+      console.log(`[WS] 🔌 Client connected (userId: ${userId || 'anonymous` })`);'`
 
       // Send welcome message
       this.sendToClient(ws, {
@@ -91,17 +91,17 @@ class EvidenceWebSocketServer {
           const message = JSON.parse(data.toString());
           await this.handleClientMessage(ws, message);
         } catch (error) {
-          console.error('[WS] ❌ Message parse error:', error);
+          console.error('[WS] ❌ Message parse error:', error);'
         }
       });
 
       ws.on('close', () => {
-        console.log(`[WS] 🔌 Client disconnected (userId: ${userId || 'anonymous' })`);
+        console.log(`[WS] 🔌 Client disconnected (userId: ${userId || 'anonymous` })`);'`
         this.clients.delete(ws);
       });
 
       ws.on('error', (error) => {
-        console.error('[WS] ❌ WebSocket error:', error);
+        console.error('[WS] ❌ WebSocket error:', error);'
         this.clients.delete(ws);
       });
     });
@@ -251,7 +251,7 @@ class EvidenceWebSocketServer {
         try {
           messages.push(JSON.parse(cached));
         } catch (error) {
-          console.error('[WS] ❌ Cache parse error:', error);
+          console.error('[WS] ❌ Cache parse error:', error);'
         }
       }
     }

@@ -241,7 +241,7 @@ export function safeGet<T>(obj: any, path: string, defaultValue: T): T {
     return defaultValue;
   }
 }
-export function hasProperty<K extends string>(
+export function hasProperty<K extends, string>(
   obj: any;
  , prop: K;
 ): obj is Record<K, unknown> {

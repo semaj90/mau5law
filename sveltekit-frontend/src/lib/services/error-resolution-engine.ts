@@ -124,7 +124,7 @@ export class ErrorResolutionEngine {
       description: 'Service connection timeout detected',
       autoFixable: true,
       recoveryActions: [
-        {
+        {,
           type: 'wait',
           target: 'system',
           parameters: { duration: 5000 },
@@ -151,7 +151,7 @@ export class ErrorResolutionEngine {
       description: 'Service not accepting connections',
       autoFixable: true,
       recoveryActions: [
-        {
+        {,
           type: 'restart',
           target: 'service',
           parameters: { graceful: true, waitMs: 10000 },
@@ -171,7 +171,7 @@ export class ErrorResolutionEngine {
       description: 'Service running out of memory',
       autoFixable: true,
       recoveryActions: [
-        {
+        {,
           type: 'cleanup',
           target: 'service',
           parameters: { caches: true, tempFiles: true },
@@ -199,7 +199,7 @@ export class ErrorResolutionEngine {
       description: 'CUDA/GPU processing error',
       autoFixable: true,
       recoveryActions: [
-        {
+        {,
           type: 'cleanup',
           target: 'gpu',
           parameters: { resetContext: true, clearMemory: true },
@@ -227,7 +227,7 @@ export class ErrorResolutionEngine {
       description: 'Required dependency service unavailable',
       autoFixable: false,
       recoveryActions: [
-        {
+        {,
           type: 'wait',
           target: 'dependency',
           parameters: { checkInterval: 10000, maxWait: 300000 },
@@ -247,7 +247,7 @@ export class ErrorResolutionEngine {
       description: 'Service response time degraded',
       autoFixable: true,
       recoveryActions: [
-        {
+        {,
           type: 'scale',
           target: 'service',
           parameters: { instances: 2, loadBalance: true },
@@ -261,8 +261,7 @@ export class ErrorResolutionEngine {
           parameters: { caches: false, connections: true },
           timeout: 20000,
           retries: 1,
-          description: 'Clear connection pools'
-        },
+          description: `Clear connection pools` }
       ]
     },
     // Configuration Errors
@@ -275,13 +274,13 @@ export class ErrorResolutionEngine {
       description: 'Service configuration error',
       autoFixable: false,
       recoveryActions: [
-        {
+        {,
           type: 'configure',
           target: 'service',
           parameters: { useDefaults: true, backup: true },
           timeout: 30000,
           retries: 1,
-          description: 'Restore default configuration` },
+          description: `Restore default configuration` }
       ]
     },
   ];
@@ -432,7 +431,7 @@ export class ErrorResolutionEngine {
       }
       this.processedErrors.set(analysis.id, analysis);
     } catch (error: any) {
-      console.error(`Error during recovery for ${analysis.id}: ', this.formatError(error));
+      console.error(`Error during recovery for ${analysis.id}: ', this.formatError(error));'`
       analysis.autoFixAttempted = true;
       this.processedErrors.set(analysis.id, analysis);
       this.updateRecoveryStats('unresolved');
@@ -548,7 +547,7 @@ export class ErrorResolutionEngine {
         default: return false;
       }
     } catch (err: any) {
-      console.error(`Error executing recovery action ${action.type} for ${analysis.id}: ', this.formatError(err));
+      console.error(`Error executing recovery action ${action.type} for ${analysis.id}: ', this.formatError(err));'`
       return false;
     }
   }

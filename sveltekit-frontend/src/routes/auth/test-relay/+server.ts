@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
       }
     );
   } catch (error: any) {
-    console.error('Test relay error:', error);
+    console.error('Test relay error:', error);'
     return new Response(
       JSON.stringify({ error: 'Test, failed: ' + (error instanceof Error ? error.message : 'Unknown error')
       }),

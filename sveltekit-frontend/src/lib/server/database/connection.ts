@@ -42,7 +42,7 @@ export class VectorSearchManager {
       WHERE 1 - (embedding <=> $1::vector) > $2
       ORDER BY embedding <=> $1::vector
       LIMIT $3
-    `;
+    `;`
     return await client.unsafe(query, [`[${queryEmbedding.join(',')}]`, threshold, limit]);
   }
   // Chat history semantic search for contextual prompting
@@ -56,7 +56,7 @@ export class VectorSearchManager {
       AND 1 - (content_embedding <=> $1::vector) > 0.6
       ORDER BY content_embedding <=> $1::vector
       LIMIT $3
-    `;
+    `;`
     return await client.unsafe(query, [`[${userEmbedding.join(',')}]`, userId, limit]);
   }
   // Cache vector similarity calculations for performance
@@ -133,7 +133,7 @@ export class QueryCacheManager {
   }
   async invalidate(pattern: string) {
     // Invalidate cache entries matching pattern
-    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%` }`);
+    await db.delete(queryCacheTable).where(sql`cache_key LIKE ${`%${pattern}%' }`);'`
   }
 }
 // Analytics tracking
@@ -168,7 +168,7 @@ export class AnalyticsManager {
       WHERE created_at >= $1
       GROUP BY event_type
       ORDER BY total_events DESC
-    `;
+    `;`
     return await client.unsafe(query, [since]);
   }
 }
@@ -183,7 +183,7 @@ export async function checkDatabaseHealth(): Promise<any> {
     // Check pgvector extension
     const extensions = await client`
       SELECT extname FROM pg_extension WHERE extname = 'vector'
-    `;
+    `;`
     return {
       connected: true,
       pgvector: extensions.length > 0,

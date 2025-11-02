@@ -4,9 +4,9 @@
  * 37 Go binaries orchestrated for maximum performance
  */
 export enum ServiceTier {
-  ULTRA_FAST = 'quic', // < 5ms latency
-  HIGH_PERF = 'grpc', // < 15ms latency
-  STANDARD = 'http', // < 50ms latency
+  ULTRA_FAST = 'quic', // < 5ms, latency
+  HIGH_PERF = 'grpc', // < 15ms, latency
+  STANDARD = 'http', // < 50ms, latency
   REALTIME = 'websocket', // Event-driven
 }
 
@@ -36,7 +36,7 @@ export interface ServiceRouting {
 export class ProductionServiceClient {
   private endpoints: ServiceEndpoints;
   private routing: ServiceRouting;
-  private healthCache: Map<string, { healthy: boolean;, lastCheck: number }>;
+  private healthCache: Map<string, { healthy: boolean; lastCheck: number }>;
 
   constructor() {
     this.endpoints = { http: {, enhancedRAG: 'http://localhost:8094',
@@ -276,7 +276,7 @@ export class ProductionServiceClient {
       { name: 'upload-service', url: `${this.endpoints.http.uploadService}/health` },
       { name: 'ai-summary', url: `${this.endpoints.http.aiSummary}/health` },
       { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health` },
-      { name: 'legal-ai', url: `${this.endpoints.http.legalAI}/health` },
+      { name: 'legal-ai', url: '${this.endpoints.http.legalAI}/health' },
       { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health' }
     ];
 
@@ -305,12 +305,12 @@ export class ProductionServiceClient {
    * Get service performance metrics
    */
   async getPerformanceMetrics(): Promise<
-    Array<{ tier: ServiceTier; avgLatency: number; successRate: number;, endpoint: string }>
+    Array<{ tier: ServiceTier; avgLatency: number; successRate: number; endpoint: string }>
   > {
     return [
       { tier: ServiceTier.ULTRA_FAST, avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy' },
-      { tier: ServiceTier.HIGH_PERF, avgLatency: 15, successRate: 0.98, endpoint: 'grpc-server' },
-      { tier: ServiceTier.STANDARD, avgLatency: 45, successRate: 0.97, endpoint: 'enhanced-rag' },
+      { tier: ServiceTier.HIGH_PERF, avgLatency: 15, successRate: 0.98, endpoint: `grpc-server` },
+      { tier: ServiceTier.STANDARD, avgLatency: 45, successRate: 0.97, endpoint: `enhanced-rag` },
       { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: `live-agent` }
     ];
   }

@@ -7,7 +7,7 @@ import crypto from 'crypto';
  * Handles file upload, validation, processing, and search indexing
  */
 import { createMachine, assign, fromPromise } from 'xstate';
-// TODO: Fix import - // Orphaned; content: import {  import type { EvidenceProcessingContext } from './evidenceProcessingMachine.js'
+// TODO: Fix import - // Orphaned; content: import { import, type { EvidenceProcessingContext } from './evidenceProcessingMachine.js'
 // Types for document upload
 export interface DocumentUploadContext {
   // File information
@@ -53,9 +53,9 @@ export type DocumentUploadEvent =
   | { type: 'RETRY_UPLOAD' }
   | { type: 'CANCEL_UPLOAD' }
   | { type: 'START_PROCESSING' }
-  | { type: 'PROCESSING_UPDATE'; progress: number;, stage: string }
+  | { type: 'PROCESSING_UPDATE'; progress: number; stage: string }
   | { type: 'PROCESSING_COMPLETE' }
-  | { type: 'PROCESSING_FAILED';, error: string }
+  | { type: 'PROCESSING_FAILED'; error: string }
   | { type: 'FORCE_COMPLETE' }
   | { type: 'RESET' };
 // Configuration constants
@@ -124,7 +124,7 @@ const calculateFileHashService = fromPromise(async ({ input }: { input: Document
   }
 
   const hashBuffer = await subtle.digest('SHA-256', buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer)); // <-- fixed: added closing parenthesis
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // <-- fixed: added closing, parenthesis
   const hashHex = hashArray.map((b: number) => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 });
@@ -178,7 +178,7 @@ const extractTextService = fromPromise(async ({ input }: { input: DocumentUpload
     extractedText = await input.file.text();
   } else if (input.file.type === 'application/pdf') {
     // For PDF files, you would use a library like pdf-parse
-    // For now, we'll simulate this
+    // For now, we'll simulate this'
     extractedText = `[Extracted PDF content from ${input.filename}]`;
   } else if (input.file.type.startsWith('image/')) {
     // For images, you would use OCR
@@ -194,7 +194,7 @@ export const documentUploadMachine = createMachine({
   id: 'documentUpload',
   initial: 'idle',
   context: {
-    filename: '',
+   , filename: '',
     fileSize: 0,
     mimeType: '',
     caseId: '',
@@ -207,7 +207,7 @@ export const documentUploadMachine = createMachine({
     retryCount: 0,
     maxRetries: 3
   },
-  states: { idle: {, on: { SELECT_FILE: {, target: 'fileSelected',
+  states: {, idle: {, on: {, SELECT_FILE: {, target: 'fileSelected',
           actions: assign({
            , file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
@@ -226,11 +226,11 @@ export const documentUploadMachine = createMachine({
         }
       }
     },
-    fileSelected: { always: {, target: 'validating` }
+    fileSelected: { always: {, target: `validating` }
     },
-    validating: { invoke: {, src: validateFileService, // <-- fixed: use comma not semicolon; input: ({ context }) => context,
+    validating: { invoke: {, src: validateFileService, // <-- fixed: use comma not, semicolon; input: ({ context }) => context,
         onDone: [
-          {
+          {,
             target: 'calculatingHash',
             guard: ({ event }) => event.output.valid,
             actions: assign({
@@ -267,7 +267,7 @@ export const documentUploadMachine = createMachine({
             error: undefined
           })
         },
-        RESET: 'idle` }
+        RESET: `idle` }
     },
     calculatingHash: { invoke: {, src: calculateFileHashService, // <-- fixed: comma; input: ({ context }) => context,
         onDone: {
@@ -293,7 +293,7 @@ export const documentUploadMachine = createMachine({
         onError: {
           target: 'uploadReady', // Continue without extracted text
           actions: assign({
-            error: ({ event }) => `Text extraction failed: ${event.error}' })
+            error: ({ event }) => `Text extraction failed: ${event.error}` })
         }
       }
     },
@@ -313,7 +313,7 @@ export const documentUploadMachine = createMachine({
             error: undefined
           })
         },
-        RESET: 'idle` }
+        RESET: `idle` }
     },
     uploading: { invoke: {, src: uploadFileService, // <-- fixed: comma; input: ({ context }) => context,
         onDone: {
@@ -329,7 +329,7 @@ export const documentUploadMachine = createMachine({
         onError: {
           target: 'uploadError',
           actions: assign({
-            error: ({ event }) => `Upload failed: ${event.error}' })
+            error: ({ event }) => `Upload failed: ${event.error}' })'`
         }
       },
       on: {
@@ -337,7 +337,7 @@ export const documentUploadMachine = createMachine({
       }
     },
     uploadError: { on: {, RETRY_UPLOAD: [
-          {
+          {,
             target: 'uploading',
             guard: ({ context }) => context.retryCount < context.maxRetries,
             actions: assign({
@@ -383,7 +383,7 @@ export const documentUploadMachine = createMachine({
     },
     processing: {
       // This state would spawn the evidence processing machine as a child
-      // For now, we'll simulate the processing steps
+      // For now, we'll simulate the processing steps'
       initial: 'analyzing',
       states: { analyzing: {, after: {
             2000: 'embedding'
@@ -435,18 +435,17 @@ export const documentUploadMachine = createMachine({
             error: ({ event }) => event.error
           })
         },
-        CANCEL_UPLOAD: 'cancelled'
-      }
+        CANCEL_UPLOAD: `cancelled` }
     },
     processingError: { on: {, RETRY_UPLOAD: {
           target: 'processing',
           actions: assign({
-            error: undefined, // <-- fixed: add missing comma; retryCount: ({ context }) => context.retryCount + 1
+            error: undefined, // <-- fixed: add missing, comma; retryCount: ({ context }) => context.retryCount + 1
           })
         },
         FORCE_COMPLETE: 'completed',
         CANCEL_UPLOAD: 'cancelled',
-        RESET: 'idle` }
+        RESET: `idle` }
     },
     completed: {
       type: 'final',
@@ -504,4 +503,4 @@ export const getUploadMetrics = (state: any) => {
 };
 // Export types
 export type DocumentUploadMachine = typeof documentUploadMachine;
-export type DocumentUploadState = Parameters<typeof documentUploadMachine.transition>[0];
+export type DocumentUploadState = Parameters<typeof, documentUploadMachine.transition>[0];

@@ -45,9 +45,9 @@ export const similarCasesResponseSchema = z.object({
 export const healthResponseSchema = z.object({
   status: z.enum(['healthy','degraded','unhealthy']).default('healthy')
 });
-export type VectorSearchRequest = z.infer<typeof vectorSearchRequestSchema>;
-export type VectorSearchResponse = z.infer<typeof vectorSearchResponseSchema>;
-export type RAGRequest = z.infer<typeof ragRequestSchema>;
-export type RAGResponse = z.infer<typeof ragResponseSchema>;
-export type SimilarCasesRequest = z.infer<typeof similarCasesRequestSchema>;
-export type SimilarCasesResponse = z.infer<typeof similarCasesResponseSchema>;
+export type VectorSearchRequest = z.infer<typeof, vectorSearchRequestSchema>;
+export type VectorSearchResponse = z.infer<typeof, vectorSearchResponseSchema>;
+export type RAGRequest = z.infer<typeof, ragRequestSchema>;
+export type RAGResponse = z.infer<typeof, ragResponseSchema>;
+export type SimilarCasesRequest = z.infer<typeof, similarCasesRequestSchema>;
+export type SimilarCasesResponse = z.infer<typeof, similarCasesResponseSchema>;

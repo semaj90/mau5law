@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
-import { DbCaseOperations as CaseOperations } from '$lib/server/db/enhanced-operations';
-import { redis as sharedRedis } from '$lib/server/redis-client';
+import { DbCaseOperations, as CaseOperations } from '$lib/server/db/enhanced-operations';
+import { redis, as sharedRedis } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types';
 import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
 import { json } from '@sveltejs/kit';
@@ -40,7 +40,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       // Resolve runtime Redis config: prefer metaEnv (Vite), fall back to process.env
       const resolvedRedisUrl = metaEnv.REDIS_URL || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
       const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD;
-      console.log('DEBUG: Resolved Redis; URL:', resolvedRedisUrl);
+      console.log('DEBUG: Resolved Redis;, URL:', resolvedRedisUrl);
       console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
 
       // 'sharedRedis' may not have precise typings for createClient in our environment;
@@ -51,18 +51,18 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
         throw new Error('redis.createClient is not available in this environment');
       }
 
-      // Safe to call createClient now that we've checked its existence
+      // Safe to call createClient now that we've checked its existence'
       const clientConfig: Record<string, unknown> = {
         url: resolvedRedisUrl,
         socket: { connectTimeout: 5000 }
       };
-      // Only add password if it's explicitly set (avoid sending undefined)
+      // Only add password if it's explicitly set (avoid sending undefined)'
       if (resolvedRedisPassword) {
         clientConfig.password = resolvedRedisPassword;
       }
 
-      // Create client and assert it's the same shape as sharedRedis.createClient at runtime
-      redisClient = (maybeCreateClient as (cfg?: any) => ReturnType<typeof sharedRedis.createClient>)(clientConfig);
+      // Create client and assert it's the same shape as sharedRedis.createClient at runtime'
+      redisClient = (maybeCreateClient as (cfg?: any) => ReturnType<typeof, sharedRedis.createClient>)(clientConfig);
 
       // Suppress auth warnings during connection
       const errorHandler = (err: any) => {
@@ -79,7 +79,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
         }
         // Only warn about critical errors, not auth errors (expected in dev without password)
         if (!errMsg.includes('AUTH') && !errMsg.includes('NOAUTH')) {
-          console.warn('Redis error:', errMsg);
+          console.warn('Redis error:', errMsg);'
         }
       };
       redisClient.on?.('error', errorHandler);
@@ -97,7 +97,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
 // Worker trigger function
 async function triggerWorkerProcessing(
   caseId: string,
-  options: { priority: string; caseType: string; userId: string;, trigger: string; metadata?: Record<string, unknown> }
+  options: { priority: string; caseType: string; userId: string; trigger: string; metadata?: Record<string, unknown> }
 ): Promise<boolean> {
   const redis = await getRedisClient();
   if (!redis) return false; // silently skip if unavailable in dev
@@ -125,8 +125,7 @@ async function triggerWorkerProcessing(
   const streamName = 'autotag:requests';
 
   // Define minimal interface describing the xAdd method we expect
-  type RedisStreamClient = {
-    xAdd: (stream: string, id: string; message: Record<string, string>) => Promise<string>;
+  type RedisStreamClient = { xAdd: (stream: string; id: string;, message: Record<string, string>) => Promise<string>;
   };
 
   // Narrow the client safely (avoid 'any') and verify method exists at runtime
@@ -141,7 +140,7 @@ async function triggerWorkerProcessing(
     console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`);
     return true;
   } catch (e) {
-    console.warn(`⚠️ Failed to enqueue worker event for case ${caseId}: ', e);
+    console.warn(`⚠️ Failed to enqueue worker event for case ${caseId}: ', e);'`
     return false;
   }
 }
@@ -174,7 +173,7 @@ const createCaseSchema = z.object({
 
 // Define a type for the *output* of the schema after defaults are applied.
 // This ensures: 'priority'; and: 'status' are non-optional for downstream use,
-// as Zod's .default() guarantees their presence at runtime.
+// as Zod's .default() guarantees their presence at runtime.'
 type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & { priority: CasePriority;, status: CaseStatus;
 };
 
@@ -239,7 +238,7 @@ export const GET: RequestHandler = async event => {
           : undefined,
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
-      useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false` };
+      useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false` };'`
     // Validate search parameters
     try {
       const validatedParams = searchCasesSchema.parse(searchParams);
@@ -248,7 +247,7 @@ export const GET: RequestHandler = async event => {
 
       // Ensure dateRange matches the exact shape expected by CaseOperations.search:
       // the search API requires both start and end when dateRange is provided.
-      let dateRangeForSearch: { start: Date;, end: Date } | undefined = undefined;
+      let dateRangeForSearch: { start: Date; end: Date } | undefined = undefined;
       if (validatedParams.dateRange && validatedParams.dateRange.start && validatedParams.dateRange.end) {
         dateRangeForSearch = {
           start: validatedParams.dateRange.start,
@@ -317,11 +316,11 @@ export const POST: RequestHandler = async event => {
     if (!user) throw CommonErrors.Unauthorized('User authentication required');
     // Parse and validate request body
     const caseData = await parseRequestBody(request, createCaseSchema);
-    // Cast the parsed data to the refined type, as Zod's default() ensures these are present at runtime.
+    // Cast the parsed data to the refined type, as Zod's default() ensures these are present at runtime.'
     const validatedCaseData: CreateCaseValidatedData = caseData as CreateCaseValidatedData;
     try {
       // --- Added: derive the exact payload type expected by CaseOperations.create
-      type CreateCasePayload = Parameters<typeof CaseOperations.create>[0];
+      type CreateCasePayload = Parameters<typeof, CaseOperations.create>[0];
 
       // Runtime guard to make TS narrow the type and to fail-fast if something unexpected happened.
       if (!validatedCaseData.title || validatedCaseData.title.trim() === '') {
@@ -411,8 +410,7 @@ export const PUT: RequestHandler = async event => {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id);
       return {
         case updatedCase,
-        message: 'Case updated successfully'
-      };
+        message: 'Case updated successfully` };'`
     } catch (error: any) {
       if (error instanceof Error && error.message.includes('not found')) {
         throw CommonErrors.NotFound('Case');
@@ -430,8 +428,7 @@ export const OPTIONS: RequestHandler = async () => {
   const headers = new Headers({
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-  });
+    'Access-Control-Allow-Headers': `Content-Type, Authorization` });
 
   // 204 No Content for preflight
   return new Response(null, { status: 204, headers });
@@ -441,7 +438,7 @@ export const OPTIONS: RequestHandler = async () => {
 // Replace: 'https://your-frontend-domain.com' with your actual production domain.
 
 /*
-  Try to use the project's Drizzle client & schema. If those are missing in some env,
+  Try to use the project's Drizzle client & schema. If those are missing in some env,'
   the catch blocks return safe defaults so frontend continues to work.
 */
 export const drizzleGET: RequestHandler = async () => {

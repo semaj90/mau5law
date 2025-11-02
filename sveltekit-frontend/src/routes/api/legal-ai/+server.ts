@@ -18,9 +18,9 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Store the query in PostgreSQL (use raw SQL to avoid depending on schema exports)
     const insertedQuery = await db.execute(sql`
       INSERT INTO legal_queries (prompt, context, timestamp, status, user_ip)
-      VALUES (${prompt}, ${context || null}, ${new Date()}, 'processing', ${request.headers.get('x-forwarded-for') || 'unknown` })
+      VALUES (${prompt}, ${context || null}, ${new Date()}, 'processing', ${request.headers.get('x-forwarded-for') || 'unknown` })'`
       RETURNING *
-    `);
+    `);`
     const query = Array.isArray(insertedQuery) && insertedQuery.length > 0 ? insertedQuery[0] : insertedQuery;
     console.log(
       `🔍 Processing legal query ${String((query as Record<string, unknown>).id)}: "${prompt.substring(0, 50)}..."`
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             WHERE embedding IS NOT NULL
             ORDER BY embedding <-> ${prompt_embedding}
             LIMIT 5
-          `);
+          `);`
           console.log(`📚 Found ${Array.isArray(similar_documents) ? similar_documents.length : 0} similar documents`);
         } catch (vector_error) {
           console.warn('Vector search failed:', vector_error);
@@ -79,14 +79,14 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             status = 'completed',
             similar_docs_count = ${Array.isArray(similar_documents) ? similar_documents.length : 0}
         WHERE id = ${String((query as Record<string, unknown>).id)}
-      `);
+      `);`
       // Store embedding for future similarity searches
       try {
         const query_embedding = await generateEmbedding(prompt);
         await db.execute(sql`
           INSERT INTO embeddings (query_id, embedding, created_at)
           VALUES (${String((query as Record<string, unknown>).id)}, ${query_embedding}, ${new Date()})
-        `);
+        `);`
       } catch (embedding_error) {
         console.warn('Failed to store embedding:', embedding_error);
         // Non-critical error, continue
@@ -106,14 +106,14 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         }
       });
     } catch (inference_error) {
-      console.error('Inference error:', inference_error);
+      console.error('Inference error:', inference_error);'
       // Update query with error status
       await db.execute(sql`
         UPDATE legal_queries
         SET status = 'failed',
             error_message = ${String(inference_error)}
         WHERE id = ${String((query as Record<string, unknown>).id)}
-      `);
+      `);`
       return json(
         {
           success: false,
@@ -124,11 +124,11 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       );
     }
   } catch (error) {
-    console.error('Legal AI API error:', error);
+    console.error('Legal AI API error: ', error);'
     return json(
       {
         success: false,
-        error: `Internal server error` },
+        error: 'Internal server error` },'`
       { status: 500 }
     );
   }
@@ -142,11 +142,11 @@ export const GET: RequestHandler = async ({ url: _url }) => {
     const queries = await db.execute(sql`
       SELECT id, prompt, response, status, model_used, tokens_used, inference_time, timestamp, similar_docs_count
       FROM legal_queries
-      ${status ? sql`WHERE status = ${status}` : sql``}
+      ${status ? sql`WHERE status = ${status}` : sql`` }
       ORDER BY timestamp DESC
       LIMIT ${limit}
       OFFSET ${offset}
-    `);
+    `);`
     const totalCountRaw = await db.execute(
       sql`SELECT count(*)::bigint as total FROM legal_queries ${status ? sql`WHERE status = ${status}` : sql`` }`
     );
@@ -163,12 +163,11 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       }
     });
   } catch (error) {
-    console.error('Failed to fetch queries:', error);
+    console.error('Failed to fetch queries: `, error);'`
     return json(
       {
         success: false,
-        error: 'Failed to fetch queries'
-      },
+        error: 'Failed to fetch queries' },
       { status: 500 }
     );
   }
@@ -196,7 +195,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!query_text) {
       return json({
         success: false,
-        error: `Query text is required` }, { status: 400 })
+        error: 'Query text is required` }, { status: 400 })'`
     }
     // Generate embedding for search query
     const query_embedding = await generateEmbedding(query_text)
@@ -213,7 +212,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       WHERE embedding IS NOT NULL
       ORDER BY embedding <-> ${query_embedding}
       LIMIT ${limit}
-    ')
+    ')'
     return json({
       success: true,
       query: query_text,
@@ -221,9 +220,9 @@ export const PUT: RequestHandler = async ({ request }) => {
       count: similar_documents.length
     })
   } catch (error) {
-    console.error('Vector search error:', error)
+    console.error('Vector search error: ', error)'
     return json({
       success: false,
-      error: `Vector search failed` }, { status: 500 })
+      error: 'Vector search failed` }, { status: 500 })'`
   }
 }

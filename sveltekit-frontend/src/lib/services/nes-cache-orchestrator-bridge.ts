@@ -30,7 +30,7 @@ export class NESCacheOrchestrator {
     this.sprites.delete(key);
   }
 
-  async getMemoryStats(): Promise<{ cacheHitRate: number; totalItems: number;, totalMemory: number }> {
+  async getMemoryStats(): Promise<{ cacheHitRate: number; totalItems: number; totalMemory: number }> {
     return {
       cacheHitRate: 0.9,
       totalItems: this.sprites.size,

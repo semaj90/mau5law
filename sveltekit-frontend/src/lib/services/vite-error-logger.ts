@@ -170,14 +170,14 @@ class ViteErrorLogger {
       url: window.location.href,
       viewport: `${window.innerWidth}x${window.innerHeight}`,
       svelte_version: '5.x', // Your Svelte version
-      app_context: 'legal-ai-platform` };
+      app_context: `legal-ai-platform` };
     // Generate embedding-friendly text
     const embeddingText = this.generateEmbeddingText(errorLog);
     try {
       const response = await fetch(`${this.serverUrl}/api/vite/error`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
           ...errorLog,
           embedding_text: embeddingText
@@ -198,9 +198,9 @@ class ViteErrorLogger {
   }
   // Generate text suitable for embedding
   private generateEmbeddingText(errorLog: ViteErrorLog): string {
-    return `${errorLog.type} error in ${errorLog.file || 'unknown file'}: ${errorLog.message}.
+    return `${errorLog.type} error in ${errorLog.file || 'unknown file'}: ${errorLog.message}.`
 Context: SvelteKit legal AI platform, Svelte 5, ${errorLog.context?.url || 'unknown URL'}.
-Stack: ${errorLog.stack || 'No stack trace` }`;
+Stack: ${errorLog.stack || 'No stack trace` }`;'
   }
   // Flush queued errors when connection is restored
   private flushErrorQueue() {
@@ -309,7 +309,7 @@ export function logComponentError(
       context: {
         component,
         ...context,
-        source: 'svelte-action` }
+        source: `svelte-action` }
     });
   };
   // Catch component errors

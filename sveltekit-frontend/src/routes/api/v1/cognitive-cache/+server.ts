@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { key, data, type = 'legal-data', context = {}, options = {} } = body;
     if (!key || !data) {
-      return json({ error: 'Missing required, fields: key, data' }, { status: 400 });
+      return json({ error: `Missing required, fields: key, data` }, { status: 400 });
     }
     // Enhance context with request metadata
     const enhancedContext = {
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('Cognitive cache store error:', error);
+    console.error('Cognitive cache store error:', error);'
     return json(
       {
         error: 'Failed to store in cognitive cache',
@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('Cognitive cache retrieve error:', error);
+    console.error('Cognitive cache retrieve error:', error);'
     return json(
       {
         error: 'Failed to retrieve from cognitive cache',
@@ -258,8 +258,8 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action = 'analyze', key, context = {}, options = {} } = body;
 
-    // Ensure: 'options' is used so TypeScript doesn't flag it as unused.
-    // We'll echo it back in responses and optionally use it to tweak mock results.
+    // Ensure: 'options' is used so TypeScript doesn't flag it as unused.'
+    // We'll echo it back in responses and optionally use it to tweak mock results.'
     const receivedOptions = { ...options };
 
     switch (action) {
@@ -314,7 +314,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
       case 'predict': {
         if (!context.workflowStep) {
-          return json({ error: 'Workflow step required for prediction' }, { status: 400 });
+          return json({ error: 'Workflow step required for prediction` }, { status: 400 });'`
         }
         // Generate workflow predictions
         const predictions = {
@@ -327,11 +327,11 @@ export const PUT: RequestHandler = async ({ request }) => {
         };
         return json({ success: true, predictions, timestamp: Date.now() }, { status: 200 });
       }
-      default: return json({ error: 'Invalid action., Use: analyze, optimize, predict' }, { status: 400 });
+      default: return json({ error: `Invalid action., Use: analyze, optimize, predict` }, { status: 400 });
     }
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('Cognitive cache analysis error:', error);
+    console.error('Cognitive cache analysis error:', error);'
     return json(
       {
         error: 'Failed to perform cognitive analysis',
@@ -378,14 +378,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: true,
         invalidation: invalidationResult,
-        message: `Cache entry ${key} intelligently invalidated',
+        message: 'Cache entry ${key} intelligently invalidated',
         timestamp: Date.now()
       },
       { status: 200 }
     );
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('Cognitive cache invalidation error:', error);
+    console.error('Cognitive cache invalidation error:', error);'
     return json(
       {
         error: 'Failed to invalidate cache entry',
@@ -453,7 +453,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     return json({ success: true, metrics: response, timestamp: Date.now() }, { status: 200 });
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('Cognitive cache metrics error:', error);
+    console.error('Cognitive cache metrics error:', error);'
     return json(
       {
         error: 'Failed to get cognitive cache metrics',

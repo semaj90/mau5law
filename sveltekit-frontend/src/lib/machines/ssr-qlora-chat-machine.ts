@@ -47,24 +47,24 @@ export interface PerformanceMetrics { averageResponseTime: number;, cacheHitRat
 }
 // Events
 export type ChatEvent =
-  | { type: 'INITIALIZE'; userId: string;, sessionId: string }
-  | { type: 'CONTEXT_LOADED';, context: any }
-  | { type: 'SEND_MESSAGE';, message: ChatMessage }
-  | { type: 'MESSAGE_SENT';, messageId: string }
-  | { type: 'STREAM_STARTED';, messageId: string }
-  | { type: 'STREAM_CHUNK'; chunk: string;, messageId: string }
-  | { type: 'STREAM_COMPLETE';, messageId: string }
-  | { type: 'INSTANT_RESPONSE'; response: string;, messageId: string }
-  | { type: 'CACHE_HIT'; response: string; similarity: number;, messageId: string }
-  | { type: 'QLORA_RESPONSE'; response: string; jobId?: string;, messageId: string }
-  | { type: 'GEMMA3_RESPONSE'; response: string;, messageId: string }
-  | { type: 'NEURAL_SPRITE_GENERATED'; sprite: any;, messageId: string }
-  | { type: 'FEEDBACK_PROVIDED'; messageId: string;, feedback: number }
-  | { type: 'ERROR';, error: string; messageId?: string }
+  | { type: 'INITIALIZE'; userId: string; sessionId: string }
+  | { type: 'CONTEXT_LOADED'; context: any }
+  | { type: 'SEND_MESSAGE'; message: ChatMessage }
+  | { type: 'MESSAGE_SENT'; messageId: string }
+  | { type: 'STREAM_STARTED'; messageId: string }
+  | { type: 'STREAM_CHUNK'; chunk: string; messageId: string }
+  | { type: 'STREAM_COMPLETE'; messageId: string }
+  | { type: 'INSTANT_RESPONSE'; response: string; messageId: string }
+  | { type: 'CACHE_HIT'; response: string; similarity: number; messageId: string }
+  | { type: 'QLORA_RESPONSE'; response: string; jobId?: string; messageId: string }
+  | { type: 'GEMMA3_RESPONSE'; response: string; messageId: string }
+  | { type: 'NEURAL_SPRITE_GENERATED'; sprite: any; messageId: string }
+  | { type: 'FEEDBACK_PROVIDED'; messageId: string; feedback: number }
+  | { type: 'ERROR'; error: string; messageId?: string }
   | { type: 'CLEAR_CHAT' }
-  | { type: 'RETRY_MESSAGE';, messageId: string }
-  | { type: 'UPDATE_DICTIONARY';, updates: Partial<UserDictionary> }
-  | { type: 'SYSTEM_STATUS_UPDATED';, status: Partial<SystemStatus> }
+  | { type: 'RETRY_MESSAGE'; messageId: string }
+  | { type: 'UPDATE_DICTIONARY'; updates: Partial<UserDictionary> }
+  | { type: 'SYSTEM_STATUS_UPDATED'; status: Partial<SystemStatus> }
 /**
  * SSR QLoRA Chat Machine
  * Orchestrates the complete chat experience with multiple AI backends
@@ -145,7 +145,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       initial: 'determiningMode',
       states: { determiningMode: {, entry: ['analyzeMessage'],
           always: [
-            {
+            {,
               guard: 'hasInstantResponse',
               target: 'instantResponse'
             },
@@ -239,21 +239,21 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     },
     error: {
       entry: ['logError'],
-      on: { RETRY_MESSAGE: {, actions: ['clearError'],
+      on: {, RETRY_MESSAGE: {, actions: ['clearError'],
           target: 'processing'
         },
         CLEAR_CHAT: {
-          actions: ['clearMessages', 'clearError'],
+         , actions: ['clearMessages', 'clearError'],
           target: 'idle'
         },
         INITIALIZE: {
-          actions: ['clearError'],
+         , actions: ['clearError'],
           target: 'loading'
         }
       }
     }
   },
-  on: { FEEDBACK_PROVIDED: {, actions: ['recordFeedback', 'triggerLearning']
+  on: {, FEEDBACK_PROVIDED: {, actions: ['recordFeedback', 'triggerLearning']
     }
   }
 }, {
@@ -526,12 +526,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       errorMessage: (_, event) => event.type === 'ERROR' ? event.error: undefined
     }),
     setTimeoutError: assign({
-      errorMessage: 'System initialization timed out' }),
+      errorMessage: 'System initialization timed out` }),'`
     clearError: assign({
       errorMessage: undefined
     }),
     logError: (context) => {
-      console.error('❌ Chat machine error:', context.errorMessage);
+      console.error('❌ Chat machine error:', context.errorMessage);'
     }
   },
   // Guards
@@ -564,5 +564,5 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
 });
 // Export types for use in components
 export type SSRQloraChatMachine = typeof ssrQloraChatMachine;
-export type SSRQloraChatState = ReturnType<typeof ssrQloraChatMachine.getInitialState>;
+export type SSRQloraChatState = ReturnType<typeof, ssrQloraChatMachine.getInitialState>;
 export type SSRQloraChatService = ActorRefFrom<SSRQloraChatMachine>;

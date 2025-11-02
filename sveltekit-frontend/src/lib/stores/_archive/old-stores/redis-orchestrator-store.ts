@@ -42,7 +42,7 @@ export const isRedisHealthy = writable<boolean>(true);
 export const queuedTasks = writable<Map<string, QueuedTask>>(new Map());
 // Fixed: processingTimes typed as array of entries
 export const cacheHitRate = writable<number>(0);
-export const processingTimes = writable<Array<{ endpoint: string; time: number;, timestamp: string }>>([]);
+export const processingTimes = writable<Array<{ endpoint: string; time: number; timestamp: string }>>([]);
 // Derived stores for computed values
 export const averageProcessingTime = derived(processingTimes, $times => {
   if ($times.length === 0) return 0;
@@ -66,7 +66,7 @@ export const memoryPressure = derived(redisStats, $stats => {
  */
 export class RedisOrchestratorClient {
   private static instance: RedisOrchestratorClient;
-  // Use ReturnType<typeof setInterval> to match the runtime return type (number in browser, Timer in Node).
+  // Use ReturnType<typeof, setInterval> to match the runtime return type (number in browser, Timer in Node).
   private pollInterval: ReturnType<typeof setInterval> | null = null;
   private baseUrl = '/api/redis-orchestrator';
   static getInstance(): RedisOrchestratorClient {
@@ -207,7 +207,7 @@ export class RedisOrchestratorClient {
       const response = await fetch(`${this.baseUrl}/tasks`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({
           taskType,
           query,
@@ -277,7 +277,7 @@ export class RedisOrchestratorClient {
     }
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
-        method: 'DELETE` });
+        method: 'DELETE' });
       return response.ok;
     } catch (error) {
       console.error('🎮 Cache clear failed:', error);

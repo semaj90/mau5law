@@ -28,7 +28,7 @@ interface QueryBuilder<T = unknown> {
   ): Promise<T[] | TResult>;
 }
 
-type MinimalDrizzleDB = { select: <T = unknown>(sel?: any) => QueryBuilder<T>;, insert: (table: any) => { values: (v: any) => {;, returning: (sel: any) => Promise<unknown[]> } };
+type MinimalDrizzleDB = { select: <T = unknown>(sel?: any) => QueryBuilder<T>;, insert: (table: any) => { values: (v: any) => {; returning: (sel: any) => Promise<unknown[]> } };
   update: (table: any) => { set: (u: any) => {, where: (cond?: any) => {, returning: (sel: any) => Promise<unknown[]> } };
   };
 };
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const status = url.searchParams.get('status');
     const priority = url.searchParams.get('priority');
     // Build query conditions
-    const conditions: ReturnType<typeof eq>[] = [];
+    const conditions: ReturnType<typeof, eq>[] = [];
     if (status) conditions.push(eq(cases.status, status));
     if (priority) conditions.push(eq(cases.priority, priority));
     // Query cases with optional filters
@@ -81,12 +81,11 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     });
   } catch (err: any) {
     const e = ensureError(err);
-    console.error('Error fetching cases:', e);
+    console.error('Error fetching cases: `, e);'`
     return error(
       500,
       ensureError({
-        message: 'Failed to fetch cases'
-      })
+        message: `Failed to fetch cases` })
     );
   }
 };
@@ -99,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       return error(
         400,
         ensureError({
-          message: 'Title and description are required` })
+          message: `Title and description are required` })
       );
     }
     // Get current user (from auth or default). Prefixed with $ because unused vars are allowed only with $ prefix in this repo.
@@ -233,8 +232,7 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
       return error(
         404,
         ensureError({
-          message: 'Case not found'
-        })
+          message: `Case not found` })
       );
     }
     // Soft delete by updating status
@@ -247,15 +245,14 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
       .where(eq(cases.id, caseId));
     return json({
       success: true,
-      message: 'Case deleted successfully'
-    });
+      message: `Case deleted successfully` });
   } catch (err: any) {
     const e = ensureError(err);
-    console.error('Error deleting case:', e);
+    console.error('Error deleting case: `, e);'`
     return error(
       500,
       ensureError({
-        message: 'Failed to delete case` })
+        message: `Failed to delete case` })
     );
   }
 };

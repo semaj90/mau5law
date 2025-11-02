@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-/// <reference types="node" />
+/// <reference, types="node" />
 /**
  * 🧠 RabbitMQ Worker for Legal AI Document Processing
  * Integrates SvelteKit with Go Legal AI Server + shared Redis
@@ -86,7 +86,7 @@ export async function createLegalAIWorker(): Promise<any> {
       ch.ack(msg);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
-      console.error(`❌ Job failed: ${jobId}: ', errMsg);
+      console.error(`❌ Job failed: ${jobId}: ', errMsg);'`
 
       const attempts = Number(msg?.properties?.headers?.attempts ?? 0);
       const max = Number(msg?.properties?.headers?.maxAttempts ?? 3);
@@ -128,7 +128,7 @@ export async function addLegalAIJob(
   const payload = { ...jobData, jobId };
 
   // typed headers object
-  const headers: { attempts: number;, maxAttempts: number } = {
+  const headers: { attempts: number; maxAttempts: number } = {
     attempts: 0,
     maxAttempts: options?.attempts ?? 3
   };
@@ -137,7 +137,7 @@ export async function addLegalAIJob(
   const properties: {
     persistent: boolean;
     priority?: number;
-    headers: { attempts: number;, maxAttempts: number } | Record<string, unknown>;
+    headers: { attempts: number; maxAttempts: number } | Record<string, unknown>;
     expiration?: string;
   } = {
     persistent: true,
@@ -191,7 +191,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
   console.log(`🔄 Sending ${jobData.documentId} to Go server for processing...`);
   const response = await fetch(`${GO_SERVER_URL}/process-document`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(300_000)
   });
@@ -227,7 +227,7 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
       "ai_processing_metadata" = $4,
       "updated_at" = NOW()
     WHERE: "id" = $1
-  `;
+  `;`
   try {
     // if your db client uses a different execute signature, adjust accordingly
     // Some db client typings expose execute(sql: string) only; narrow with an intermediate cast
@@ -239,7 +239,7 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
     ]);
     console.log(`✅ Evidence record ${documentId} updated.`);
   } catch (e) {
-    console.error(`❌ Failed updating evidence ${documentId}: ', e);
+    console.error(`❌ Failed updating evidence ${documentId}: ', e);'`
     throw e;
   }
 }

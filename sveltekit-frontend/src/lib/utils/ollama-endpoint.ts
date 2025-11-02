@@ -29,7 +29,7 @@ export function getOllamaBaseUrl(): string {
   const g = globalThis as unknown as { OLLAMA_ENDPOINT?: string } | undefined;
   if (g && typeof g.OLLAMA_ENDPOINT === 'string') return g.OLLAMA_ENDPOINT.replace(/\/$/, '');
 
-  // As a last resort, use the config helper's default which centralizes the fallback
+  // As a last resort, use the config helper's default which centralizes the fallback'
   return getOllamaBaseUrlFromConfig();
 }
 

@@ -104,13 +104,13 @@ export const selfPromptingMachine = createMachine(
     id: 'legalAISelfPrompting',
     initial: 'initializing',
     context: {
-      userHistory: [],
+     , userHistory: [],
       activeSession: null,
       pendingTasks: [],
       completedTasks: [],
       errorTasks: [],
       performanceMetrics: {
-        averageResponseTime: 0,
+       , averageResponseTime: 0,
         successRate: 0.95,
         cacheHitRate: 0.8,
         gpuUtilization: 0
@@ -120,7 +120,7 @@ export const selfPromptingMachine = createMachine(
       reconnectAttempts: 0,
       lastHeartbeat: 0
     } as SelfPromptingContext,
-    states: { initializing: {, invoke: {
+    states: {, initializing: {, invoke: {
          , id: 'initializeRabbitMQ',
           src: fromPromise(async () => {
             return await RabbitMQXStateIntegration.initialize();
@@ -177,7 +177,7 @@ export const selfPromptingMachine = createMachine(
               onDone: {
                 target: 'idle',
                 actions: [
-                  assign({
+                  assign({,
                     completedTasks: (context: SelfPromptingContext, event: any) => [
                       ...context.completedTasks.slice(-50),
                       {
@@ -194,7 +194,7 @@ export const selfPromptingMachine = createMachine(
               onError: {
                 target: 'idle',
                 actions: [
-                  assign({
+                  assign({,
                     errorTasks: (context: SelfPromptingContext, event: any) => [
                       ...context.errorTasks.slice(-20),
                       {
@@ -222,7 +222,7 @@ export const selfPromptingMachine = createMachine(
               onDone: {
                 target: 'idle',
                 actions: [
-                  assign({
+                  assign({,
                     pendingTasks: (context: SelfPromptingContext, event: any) => [
                       ...context.pendingTasks,
                       ...(event.data?.recommendedActions ?? []),
@@ -303,10 +303,10 @@ export const selfPromptingMachine = createMachine(
         }
       },
       logError: ({ context, event }: any) => {
-        console.error('❌ Legal AI task error:', event);
+        console.error('❌ Legal AI task error:', event);'
       },
       logSelfPromptError: ({ context, event }: any) => {
-        console.error('❌ Self-prompting error:', event);
+        console.error('❌ Self-prompting error:', event);'
       },
       logConnectionError: ({ context }: any) => {
         console.error('❌ RabbitMQ connection error, attempt:', context.reconnectAttempts);
@@ -351,7 +351,7 @@ export class RabbitMQXStateIntegration {
         // Defensive: support multiple export shapes for stompjs
         const createClientOptions = (opts: any) => opts;
         const clientOptions = {
-          brokerURL: '${this.config.ssl ? 'wss' : 'ws' }://${this.config.host}:${this.config.port}/ws`,
+          brokerURL: '${this.config.ssl ? 'wss' : 'ws' }://${this.config.host}:${this.config.port}/ws`,'`
           connectHeaders: {
             login: this.config.username,
             passcode: this.config.password,
@@ -380,7 +380,7 @@ export class RabbitMQXStateIntegration {
               this.isInitialized = true; // ensure publishMessage will work after connect
               Promise.resolve()
                 .then(() => this.setupQueues())
-                .catch(e => console.error('setupQueues error:', e))
+                .catch(e => console.error('setupQueues error:', e))'
                 .finally(() => resolve({ connection: this.connection, isConnected: true }));
             };
             const onStompErrorHandler = (frame: any) => {
@@ -398,8 +398,8 @@ export class RabbitMQXStateIntegration {
               } catch (e) {
                 frameMessage = 'error extracting frame message';
               }
-              console.error('❌ RabbitMQ STOMP error:', frame);
-              reject(new Error(`STOMP error: ${frameMessage ?? 'unknown` }`));
+              console.error('❌ RabbitMQ STOMP error:', frame);'
+              reject(new Error(`STOMP error: ${frameMessage ?? 'unknown` }`));'`
             };
             const onWebSocketCloseHandler = (evt: CloseEvent | Event) => {
               // CloseEvent provides code/reason; other Event shapes may be used by some clients
@@ -443,7 +443,7 @@ export class RabbitMQXStateIntegration {
             } else if (typeof client.connect === 'function') {
               client.connect();
             } else {
-              // If there's no explicit activation method, resolve immediately but keep connection reference
+              // If there's no explicit activation method, resolve immediately but keep connection reference'
               this.connection = client;
               this.isInitialized = true;
               resolve({ connection: this.connection, isConnected: true });
@@ -541,7 +541,7 @@ export class RabbitMQXStateIntegration {
    * Publish legal AI message
    */
   static async publishMessage(message: Omit<LegalAIMessage, 'id' | 'timestamp'>): Promise<void> {
-    // allow publishing if connection/channel exists even if isInitialized wasn't toggled
+    // allow publishing if connection/channel exists even if isInitialized wasn't toggled'
     if (!this.isInitialized && !this.channel && !this.connection) {
       throw new Error('RabbitMQ not initialized');
     }
@@ -827,7 +827,7 @@ export class RabbitMQXStateIntegration {
           contextLength: payload.contextLength || 4096,
           enableGPU: payload.enableGPU !== false,
           batchSize: payload.batchSize || 4,
-          quantization: (payload.quantization as string) || 'q4_0` },
+          quantization: (payload.quantization as string) || 'q4_0` },'`
         activeRequests: new Map<string, unknown>(),
         results: new Map<string, unknown>(),
         performanceMetrics: {
@@ -907,8 +907,7 @@ export class RabbitMQXStateIntegration {
         contextLength: (payload as any)?.contextLength || 4096,
         enableGPU: (payload as any)?.enableGPU !== false,
         batchSize: (payload as any)?.batchSize || 4,
-        quantization: (payload as any)?.quantization || 'q4_0'
-      };
+        quantization: (payload as any)?.quantization || 'q4_0` };'`
       const result = await WASMInferenceRAGService.initialize?.(config);
       return {
         status: 'loaded',
@@ -1043,7 +1042,7 @@ export class RabbitMQXStateIntegration {
       const healthStatus =
         typeof WASMInferenceRAGService.getHealthStatus === 'function'
           ? WASMInferenceRAGService.getHealthStatus()
-          : { status: 'unknown' };
+          : { status: `unknown` };
       return {
         status: 'health_check_completed',
         timestamp: Date.now(),
@@ -1106,7 +1105,7 @@ export class RabbitMQXStateIntegration {
     return `legal-ai-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
   private static handleMessage(message: LegalAIMessage, queueName: string): void {
-    console.log(`📨 Received message from ${queueName}: ', message?.type);
+    console.log(`📨 Received message from ${queueName}: ', message?.type);'`
     // Optional integration hook: if an XState dispatcher was attached globally, call it
     try {
       const dispatcher = (globalThis as any).__LEGAL_AI_XSTATE_DISPATCHER;
@@ -1173,7 +1172,7 @@ export class RabbitMQXStateIntegration {
    */
   private static countConcurrentWasmRequests(history: any[]): number {
     const wasmRequests = history.filter(h => h.action === 'wasm_inference');
-    if (wasmRequests.length <= 1) return 0;
+    if (wasmRequests.length <= 1) return, 0;
     // Find overlapping time windows (simplified heuristic)
     let maxConcurrent = 0;
     const timeWindow = 5000; // 5 seconds

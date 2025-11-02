@@ -30,28 +30,28 @@ export interface UploadContext {
 }
 // Event types
 type UploadEvent =
-  | { type: 'UPLOAD_FILES'; files: File[];, caseId: string }
-  | { type: 'PRESIGN_SUCCESS'; uploadId: string; presignedUrls: string[];, metadata: any }
-  | { type: 'PRESIGN_FAILED';, error: string }
-  | { type: 'CHUNK_UPLOADED';, chunkIndex: number }
+  | { type: 'UPLOAD_FILES'; files: File[]; caseId: string }
+  | { type: 'PRESIGN_SUCCESS'; uploadId: string; presignedUrls: string[]; metadata: any }
+  | { type: 'PRESIGN_FAILED'; error: string }
+  | { type: 'CHUNK_UPLOADED'; chunkIndex: number }
   | { type: 'UPLOAD_COMPLETE' }
-  | { type: 'UPLOAD_FAILED';, error: string }
-  | { type: 'PROCESSING_STARTED'; stage: string;, jobId: string }
-  | { type: 'PROCESSING_PROGRESS'; stage: string;, progress: number }
-  | { type: 'PROCESSING_COMPLETE'; stage: string;, result: any }
-  | { type: 'PROCESSING_FAILED'; stage: string;, error: string }
-  | { type: 'INDEXING_COMPLETE';, result: any }
+  | { type: 'UPLOAD_FAILED'; error: string }
+  | { type: 'PROCESSING_STARTED'; stage: string; jobId: string }
+  | { type: 'PROCESSING_PROGRESS'; stage: string; progress: number }
+  | { type: 'PROCESSING_COMPLETE'; stage: string; result: any }
+  | { type: 'PROCESSING_FAILED'; stage: string; error: string }
+  | { type: 'INDEXING_COMPLETE'; result: any }
   | { type: 'RETRY' }
   | { type: 'RESET' };
 // Upload and processing state machine
 export const uploadMachine = createMachine(
   {
     id: 'upload',
-    types: {} as { context: UploadContext;, events: UploadEvent;
+    types: {} as {, context: UploadContext;, events: UploadEvent;
     },
     initial: 'idle',
     context: {
-      caseId: '',
+     , caseId: '',
       files: [],
       presignedUrls: [],
       uploadedChunks: 0,
@@ -60,7 +60,7 @@ export const uploadMachine = createMachine(
       jobIds: {},
       results: {}
     },
-    states: { idle: {, on: { UPLOAD_FILES: {, target: 'requesting_presign',
+    states: {, idle: {, on: {, UPLOAD_FILES: {, target: 'requesting_presign',
             actions: assign({
              , files: ({ event }) => event.files,
               caseId: ({ event }) => event.caseId,
@@ -146,7 +146,7 @@ export const uploadMachine = createMachine(
               onError: {
                 target: '#upload.error',
                 actions: assign({
-                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'extraction',
@@ -178,7 +178,7 @@ export const uploadMachine = createMachine(
               onError: {
                 target: '#upload.error',
                 actions: assign({
-                  error: ({ event }) => `Embedding failed: ${(event.error as Error)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `Embedding failed: ${(event.error as Error)?.message || 'Unknown error` }` })'`
               }
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'embedding',
@@ -211,7 +211,7 @@ export const uploadMachine = createMachine(
                 target: '#upload.error',
                 actions: assign({
                   error: ({ event }) =>
-                    `Tensor processing failed: ${(event.error as Error)?.message || 'Unknown error` }` })
+                    `Tensor processing failed: ${(event.error as Error)?.message || 'Unknown error` }` })'`
               }
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'tensor',
@@ -244,7 +244,7 @@ export const uploadMachine = createMachine(
               onError: {
                 target: '#upload.error',
                 actions: assign({
-                  error: ({ event }) => `Indexing failed: ${(event.error as Error)?.message || 'Unknown error` }' })
+                  error: ({ event }) => `Indexing failed: ${(event.error as Error)?.message || 'Unknown error' }' })'`
               }
             },
             on: { PROCESSING_PROGRESS: {, guard: ({ event }) => event.stage === 'indexing',
@@ -255,12 +255,10 @@ export const uploadMachine = createMachine(
             }
           },
           complete: {
-            type: 'final'
-          }
+            type: 'final` }'`
         },
         onDone: {
-          target: 'completed'
-        }
+          target: `completed` }
       },
       completed: {
         type: 'final',
@@ -300,7 +298,7 @@ export const uploadMachine = createMachine(
   {
     actors: {
       // Presigned URL request actor
-      requestPresignedUrls: fromPromise(async ({ input }: { input: {, files: File[]; caseId: string } }) => {
+      requestPresignedUrls: fromPromise(async ({ input }: {, input: {, files: File[];, caseId: string } }) => {
         const { files, caseId } = input;
         const file = files[0]; // Handle single file for now
         const chunkSize = 10 * 1024 * 1024; // 10MB chunks
@@ -341,7 +339,7 @@ export const uploadMachine = createMachine(
             if (!response.ok) {
               throw new Error(`Chunk ${index} upload failed: ${response.statusText}`);
             }
-            // Note: XState v5 fromPromise actors don't support sendBack
+            // Note: XState v5 fromPromise actors don't support sendBack'
             return response.headers.get('ETag');
           });
           const etags = await Promise.all(uploadPromises);
@@ -381,7 +379,7 @@ export const uploadMachine = createMachine(
         }
       ),
       // Embedding generation actor
-      generateEmbeddings: fromPromise(async ({ input }: { input: {, uploadId: string; extractedText: string } }) => {
+      generateEmbeddings: fromPromise(async ({ input }: {, input: {, uploadId: string;, extractedText: string } }) => {
         const { uploadId, extractedText } = input;
         const response = await fetch('/api/processing/embed', {
           method: 'POST',
@@ -397,7 +395,7 @@ export const uploadMachine = createMachine(
         return await response.json();
       }),
       // Tensor processing actor
-      processTensorData: fromPromise(async ({ input }: { input: {, uploadId: string; embeddings: number[][] } }) => {
+      processTensorData: fromPromise(async ({ input }: {, input: {, uploadId: string;, embeddings: number[][] } }) => {
         const { uploadId, embeddings } = input;
         // Convert embeddings to 4D tensor format
         const tensorData = embeddings.flat();
@@ -409,7 +407,7 @@ export const uploadMachine = createMachine(
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            job_id: `tensor-${uploadId}`,
+           , job_id: `tensor-${uploadId}`,
             upload_id: uploadId,
             tensor_tile: {
              , tile_id: `${uploadId}-main`,
@@ -428,12 +426,12 @@ export const uploadMachine = createMachine(
       indexVectors: fromPromise(
         async ({
           input
-        }: { input: { uploadId: string; embeddings: number[][];, metadata: UploadContext['metadata'] };
+        }: { input: { uploadId: string; embeddings: number[][]; metadata: UploadContext['metadata'] };
         }) => {
           const { uploadId, embeddings, metadata } = input;
           const response = await fetch('/api/processing/index', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
               uploadId,
               embeddings,
@@ -450,8 +448,8 @@ export const uploadMachine = createMachine(
   }
 );
 // Types for Svelte components
-export type UploadState = StateFrom<typeof uploadMachine>;
-export type UploadActor = ReturnType<typeof createActor<typeof uploadMachine>>;
+export type UploadState = StateFrom<typeof, uploadMachine>;
+export type UploadActor = ReturnType<typeof, createActor<typeof, uploadMachine>>;
 // Svelte store integration
 function createUploadStore() {
   const actor = createActor(uploadMachine);

@@ -39,7 +39,7 @@ export class GlobalLokiStore {
     this.redis = redisClient || undefined;
     if (this.redis) {
       try {
-        // Create subscriber connection (Redis clients can't pub/sub on same connection)
+        // Create subscriber connection (Redis clients can't pub/sub on same connection)'
         this.subscriber = (this.redis as any).duplicate ? (this.redis as any).duplicate() : undefined;
         if (this.subscriber && typeof (this.subscriber as any).connect === 'function') {
           try {

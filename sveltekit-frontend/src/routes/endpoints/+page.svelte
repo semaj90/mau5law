@@ -1,15 +1,15 @@
-<script lang="ts">
+<script, lang="ts">
   let { data }: { data: any } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] }
 </script>
 
-<div class="endpoints-page">
+<div, class="endpoints-page">
   <h1 class="page-title">Endpoints & Status</h1>
-  <div class="endpoint-list">
+  <div, class="endpoint-list">
     {#each Array.isArray(data.endpoints) ? data.endpoints : [] as ep}
-      <div class="endpoint-card {ep.healthy ? 'ok' : 'fail'}">
+      <div, class="endpoint-card {ep.healthy ? 'ok' : 'fail'}">
         <h2>{ep.name}</h2>
-        <p class="path">{ep.path}</p>
-        <p class="status">
+        <p, class="path">{ep.path}</p>
+        <p, class="status">
           {ep.healthy ? '✅ Healthy' : '❌ Down'}
           {ep.message ? `(${ep.message})` : ''}
         </p>

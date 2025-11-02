@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (err: any) {
     console.error('🎮 Redis orchestrator status check failed:', err);
-    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 /**
@@ -95,10 +95,10 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         : null,
       orchestrated: false,
-      processing_pipeline: cached ? 'L1_CACHE' : `CACHE_MISS` });
+      processing_pipeline: cached ? 'L1_CACHE' : `CACHE_MISS' });'`
   } catch (err: any) {
     console.error('🎮 Redis orchestrator processing failed:', err);
-    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 /**
@@ -132,7 +132,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     // Changed: 'err'; to: 'err: any' for type safety
     console.error('🎮 Cache clear failed:', err);
-    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 // handleTaskQuery removed for brevity and to resolve errors. Re-implement as needed.

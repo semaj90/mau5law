@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Development interface layout with debugging-focused styling
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
@@ -23,17 +23,17 @@
 
 <svelte:head>
   <title>Dev Tools | YoRHa Legal AI</title>
-  <meta name="description" content="Development tools, testing, and debugging interface" />
+  <meta name="description" content="Development tools, testing, and debugging, interface" />
 </svelte:head>
 
-<div class="dev-layout">
+<div, class="dev-layout">
   <NavBar {user} {sidebarOpen} onToggleSidebar={toggleSidebar} />
-  <div class="dev-content">
-    <aside class="dev-sidebar">
+  <div, class="dev-content">
+    <aside, class="dev-sidebar">
       <Sidebar {user} open={sidebarOpen} theme={consolePalette} />
     </aside>
-    <main class="dev-main">
-      <div class="dev-main-content"> <!-- New wrapper div -->
+    <main, class="dev-main">
+      <div, class="dev-main-content"> <!-- New wrapper, div -->
         {@render children()}
       </div>
     </main>

@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { getCachedPattern } from '$lib/services/chr-rom-precomputation-service';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
 
       // Try CHR-ROM (fast in-memory GPU-backed store)
       // Defensive runtime access: nesGPUBridge may not declare `getCHRROMPattern` on its TS type.
-      // Cast to any, verify it's a function, and support sync or async results.
+      // Cast to any, verify it's a function, and support sync or async results.'
       const _getCHRROMPattern = (nesGPUBridge as any).getCHRROMPattern;
       let chrRomPattern: any = undefined;
       if (typeof _getCHRROMPattern === 'function') {
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       showLoadingTooltip(target);
       const apiResponse = await fetch(`${fallbackApiEndpoint}/${encodeURIComponent(elementId)}`);
-      if (!apiResponse.ok) throw new Error('API error: ' + apiResponse.status);
+      if (!apiResponse.ok) throw new Error('API error: ' + apiResponse.status);'
       const data = await apiResponse.json();
       const responseTime = performance.now() - startTime;
       const html = generateTooltipHTML(data);
@@ -195,11 +195,11 @@ https://svelte.dev/e/js_parse_error -->
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip';
     tooltip.innerHTML = `
-      <div class="loading-content">
-        <div class="loading-spinner" aria-hidden="true"></div>
+      <div, class="loading-content">
+        <div, class="loading-spinner" aria-hidden="true"></div>
         <div>Loading…</div>
       </div>
-    `;
+    `;`
     document.body.appendChild(tooltip);
     positionTooltip(tooltip, target);
     requestAnimationFrame(() => tooltip.classList.add('visible'));
@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
     hideTooltip();
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip';
-    tooltip.innerHTML = `<div class="error-content">⚠️ Failed to load</div>`;
+    tooltip.innerHTML = `<div, class="error-content">⚠️ Failed to load</div>`;
     document.body.appendChild(tooltip);
     positionTooltip(tooltip, target);
     requestAnimationFrame(() => tooltip.classList.add('visible'));
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
         compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
         bankId: 1
       };
-      // nesGPUBridge's exported type may not declare storeCHRROMPattern.
+      // nesGPUBridge's exported type may not declare storeCHRROMPattern.'
       // call it defensively at runtime to avoid TS errors while preserving behavior.
       const storeFn = (nesGPUBridge as any).storeCHRROMPattern;
       if (typeof storeFn === 'function') {
@@ -308,13 +308,13 @@ https://svelte.dev/e/js_parse_error -->
       return `
         <div>
           ${title ? `<h4>${escapeHtml(String(title))}</h4>` : ''}
-          <div class="metadata">
+          <div, class="metadata">
             ${data.source ? `<span>${escapeHtml(String(data.source))}</span>` : ''}
             ${data.updatedAt ? `<span>${escapeHtml(String(data.updatedAt))}</span>` : ''}
           </div>
           <p>${escapeHtml(String(snippet))}</p>
         </div>
-      `;
+      `;`
     } catch {
       return `<div><pre>${escapeHtml(String(data)).slice(0,300)}</pre></div>`;
     }
@@ -325,8 +325,8 @@ https://svelte.dev/e/js_parse_error -->
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+      .replaceAll('"', '&quot;')"
+      .replaceAll("'", '&#039;');'
   }
 
   function updateStats(responseTime: number) {
@@ -361,16 +361,16 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<!-- Debug Panel -->
+<!-- Debug, Panel -->
 {#if enableDebugMode}
-  <div class="zero-latency-debug-panel" aria-hidden={!enableDebugMode}>
+  <div, class="zero-latency-debug-panel" aria-hidden={!enableDebugMode}>
     <h4>⚡ Zero-Latency Stats</h4>
-    <div class="debug-stats">
-      <div class="stat"><span class="label">Total Interactions:</span><span class="value">{interactionStats.totalInteractions}</span></div>
-      <div class="stat"><span class="label">Cache Hits:</span><span class="value cache-hits">{interactionStats.cacheHits}</span></div>
-      <div class="stat"><span class="label">Zero-Latency Hits:</span><span class="value zero-latency">{interactionStats.zeroLatencyHits}</span></div>
-      <div class="stat"><span class="label">Average Response:</span><span class="value">{interactionStats.averageResponseTime.toFixed(2)}ms</span></div>
-      <div class="stat"><span class="label">Hit Rate:</span><span class="value">{interactionStats.totalInteractions > 0 ? ((interactionStats.cacheHits / interactionStats.totalInteractions) * 100).toFixed(1) : 0}%</span></div>
+    <div, class="debug-stats">
+      <div, class="stat"><span, class="label">Total Interactions:</span><span, class="value">{interactionStats.totalInteractions}</span></div>
+      <div, class="stat"><span, class="label">Cache Hits:</span><span class="value, cache-hits">{interactionStats.cacheHits}</span></div>
+      <div, class="stat"><span, class="label">Zero-Latency Hits:</span><span class="value, zero-latency">{interactionStats.zeroLatencyHits}</span></div>
+      <div, class="stat"><span, class="label">Average Response:</span><span, class="value">{interactionStats.averageResponseTime.toFixed(2)}ms</span></div>
+      <div, class="stat"><span, class="label">Hit Rate:</span><span, class="value">{interactionStats.totalInteractions > 0 ? ((interactionStats.cacheHits / interactionStats.totalInteractions) * 100).toFixed(1) : 0}%</span></div>
     </div>
   {/if}
 

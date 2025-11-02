@@ -198,7 +198,7 @@ export const chatActions = {
       const updatedMessages = [...state.messages, message];
       state.currentConversation!.messages = updatedMessages;
       state.currentConversation!.updated = new Date();
-      // Update title if it's the first user message
+      // Update title if it's the first user message'
       if (role === "user" && updatedMessages.filter((m) => m.role === "user").length === 1) {
         state.currentConversation!.title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
       }
@@ -467,7 +467,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
       });
     }
   } catch (error: any) {
-    console.error("Streaming error:", error);
+    console.error("Streaming error:", error);"
     chatStore.update((state) => ({
       ...state,
       error: error instanceof Error ? error : new Error("Streaming failed")

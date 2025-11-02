@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import {
     Slider, // Correct named import for Slider
     SliderRange,
@@ -33,7 +33,7 @@
   <SliderTrack
     class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary"
   >
-    <SliderRange class="absolute h-full bg-primary" />
+    <SliderRange class="absolute h-full, bg-primary" />
   </SliderTrack>
   {#each value as _, i}
     <SliderThumb

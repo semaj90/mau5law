@@ -21,7 +21,7 @@ type StoredDocument = { id: string;, embedding: number[];
 };
 
 export type AnalysisResult =
-  | { analysis: any; type: string;, timestamp: string }
+  | { analysis: any; type: string; timestamp: string }
   | { analysis: string; error?: string };
 
 // Add a lightweight in-memory store used by the stubbed redisVectorService
@@ -78,7 +78,7 @@ export class VectorService {
       const model = options.model || this.embeddingModel;
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           model,
           prompt: content
@@ -105,7 +105,7 @@ export class VectorService {
   static async generateEmbeddingWithMetadata(
     content: string,
     options: EmbeddingOptions = {}
-  ): Promise<{ embedding: number[];, model: string }> {
+  ): Promise<{ embedding: number[]; model: string }> {
     const embedding = await this.generateEmbedding(content, options);
     return {
       embedding,
@@ -156,7 +156,7 @@ export class VectorService {
   /**
    * Store chat embedding
    */
-  static async storeChatEmbedding(data: { conversationId: string;, messageId: string;
+  static async storeChatEmbedding(data: {, conversationId: string;, messageId: string;
    , content: string;
     userId?: string;
     role?: string;
@@ -217,7 +217,7 @@ export class VectorService {
     documentType: string,
     text: string,
     metadata: Metadata = {}
-  ): Promise<{ id: string;, type: string }> {
+  ): Promise<{ id: string; type: string }> {
     const embedding = await this.generateEmbedding(text);
     await redisVectorService.storeDocument({
       id: `doc:${documentId}`,
@@ -239,9 +239,9 @@ export class VectorService {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-          model: 'gemma3-legal',
+         , model: 'gemma3-legal',
           prompt: `Analyze this document for ${analysisType}:\n\n${text}\n\nProvide a structured, analysis:`,
           stream: false
         })
@@ -320,7 +320,7 @@ export class VectorService {
   static async getUserEmbeddings(
     userId: string
   ): Promise<
-    Array<{ userId: string; content?: string;, embedding: number[]; metadata?: Metadata; createdAt?: any }>
+    Array<{ userId: string; content?: string; embedding: number[]; metadata?: Metadata; createdAt?: any }>
   > {
     const results = await redisVectorService.searchSimilar(new Array(384).fill(0), {
       topK: 100,

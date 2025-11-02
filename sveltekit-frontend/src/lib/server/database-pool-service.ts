@@ -23,7 +23,7 @@ interface CachedQuery { sql: string;, params: any[];
 }
 class DatabasePoolService {
   // fixed generic syntax for Map types
-  private pools: Map<string, ReturnType<typeof postgres>> = new Map();
+  private pools: Map<string, ReturnType<typeof, postgres>> = new Map();
   private drizzleInstances: Map<string, PostgresJsDatabase<any>> = new Map();
   // keep an in-memory index only — do NOT store large results here to avoid memory bloat
   private queryCacheIndex: Map<string, Omit<CachedQuery, 'result'>> = new Map();
@@ -82,7 +82,7 @@ class DatabasePoolService {
   /**
    * Get or create a connection pool for a specific context
    */
-  async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres>> {
+  async getPool(context: string = 'default'): Promise<ReturnType<typeof, postgres>> {
     const poolKey = `${context}:${this.config.database}`;
     if (this.pools.has(poolKey)) {
       const pool = this.pools.get(poolKey)!;
@@ -100,7 +100,7 @@ class DatabasePoolService {
       ssl: this.config.ssl,
       timeout: this.config.connect_timeout * 1000,
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development` } as any);
+      debug: process.env.NODE_ENV === 'development' } as any);
     this.pools.set(poolKey, pool);
     await this.recordConnectionStats(context, 'created');
     console.log(`🔗 Database pool created for context: ${context} (size: ${dynamicConfig.max ?? this.config.max})`);
@@ -194,7 +194,7 @@ class DatabasePoolService {
         console.log(`🗑️ Invalidated ${keys.length} cached queries`);
       }
     } catch (error) {
-      console.warn('Cache invalidation error:', (error as Error).message);
+      console.warn('Cache invalidation error:', (error as Error).message);'
     }
   }
 
@@ -304,7 +304,7 @@ class DatabasePoolService {
         results[key] = true;
       } catch (error) {
         results[key] = false;
-        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);
+        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);'`
       }
     }
     return results;
@@ -325,7 +325,7 @@ class DatabasePoolService {
     };
     for (const [key /*, pool*/] of this.pools) {
       (stats.pools as Record<string, any>)[key] = {
-        status: 'active` };
+        status: 'active' };
     }
     return stats;
   }

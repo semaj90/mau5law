@@ -42,7 +42,7 @@ export interface RAGQuery {
   filters?: {
     documentType?: string;
     jurisdiction?: string;
-    dateRange?: { start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
   };
   limit?: number;
   threshold?: number;
@@ -311,7 +311,7 @@ export interface FormField { name: string;, type: 'text' | 'email' | 'password'
     minLength?: number;
     maxLength?: number;
   };
-  options?: { value: string;, label: string }[];
+  options?: { value: string; label: string }[];
 }
 export interface FormSchema {
   fields: FormField[];

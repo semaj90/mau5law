@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('❌ Full-text search failed:', error);
+    console.error('❌ Full-text search failed: `, error);'`
     return json({ error: `Full-text search failed` }, { status: 500 });
   }
 };
@@ -105,7 +105,7 @@ async function searchPostgreSQL(
   console.log('🐘 Searching PostgreSQL with Drizzle ORM...');
   try {
     // Build WHERE conditions
-    type WhereCondition = ReturnType<typeof sql>;
+    type WhereCondition = ReturnType<typeof, sql>;
     const whereConditions: WhereCondition[] = [];
     if (filters?.practiceArea) {
       whereConditions.push(sql`legal_documents.practice_area = ${filters.practiceArea}`);
@@ -120,7 +120,7 @@ async function searchPostgreSQL(
       whereConditions.push(
         and(
           sql`legal_documents.created_at >= ${new Date(filters.dateRange.start)}`,
-          sql`legal_documents.created_at <= ${new Date(filters.dateRange.end)}`
+          sql`legal_documents.created_at <= ${new, Date(filters.dateRange.end)}`
         )
       );
     }
@@ -130,7 +130,7 @@ async function searchPostgreSQL(
 
     switch (searchMode) {
       case 'advanced':
-        // Use PostgreSQL's full-text search with ranking - reference DB columns via sql fragments
+        // Use PostgreSQL's full-text search with ranking - reference DB columns via sql fragments'
         searchResults = await db
           .select({
             id: legalDocuments.id,
@@ -206,24 +206,24 @@ async function searchPostgreSQL(
             caseId: sql<string>`COALESCE(legalDocuments.case_id, '')`.as('caseId'),
             uploadDate: sql<Date>`legal_documents.created_at`.as('uploadDate'),
             metadata: sql<string>`COALESCE(legal_documents.metadata::text, '')`.as('metadata'),
-            rank: sql<number>`CASE
+            rank: sql<number>`CASE`
               WHEN legal_documents.title ILIKE ${'%' + query + '%'} THEN 1.0
-              WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%` } THEN 0.5
+              WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%` } THEN 0.5'`
               ELSE 0.1
-            END`.as('rank'),
+            END`.as('rank'),`
             headline: sql<string>`COALESCE(legal_documents.extracted_text, '')`.as('headline')
           })
           .from(legalDocuments)
           .where(
             and(
-              sql`(legal_documents.title ILIKE ${'%' + query + '%'} OR legal_documents.extracted_text ILIKE ${'%' + query + '%` })`,
+              sql`(legal_documents.title ILIKE ${'%' + query + '%'} OR legal_documents.extracted_text ILIKE ${'%' + query + '%` })`,'`
               ...whereConditions
             )
           )
           .orderBy(
-            sql`CASE
+            sql`CASE`
             WHEN legal_documents.title ILIKE ${'%' + query + '%'} THEN 1.0
-            WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%` } THEN 0.5
+            WHEN legal_documents.extracted_text ILIKE ${'%' + query + '%` } THEN 0.5'`
             ELSE 0.1
           END DESC`
           )
@@ -259,7 +259,7 @@ async function searchPostgreSQL(
     console.error('PostgreSQL search failed:', error);
     // Fallback mock data for development
     return [
-      {
+      {,
         id: 'pg_ft_001',
         title: 'Legal Contract Analysis - Full Text Match',
         content: 'This legal document contains relevant information matching your search query',
@@ -291,14 +291,14 @@ async function searchLokiLogs(
     // In production, this would query actual Loki.js instance
     // For now, return mock log search results
     const mockLogResults = [
-      {
+      {,
         timestamp: new Date().toISOString(),
         level: 'info',
         message: `Document processing completed for; query: ${query}`,
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: filters?.caseId || 'case_log_001` },
+          case_id: filters?.caseId || 'case_log_001` },'`
         metadata: {
           processing_time: '2.3s',
           document_count: 1,
@@ -312,7 +312,7 @@ async function searchLokiLogs(
         labels: {
           job: 'legal-platform',
           service: 'search-engine',
-          case_id: filters?.caseId || 'case_log_002` },
+          case_id: filters?.caseId || 'case_log_002` },'`
         metadata: {
           search_time: '5.7s',
           result_count: 0,

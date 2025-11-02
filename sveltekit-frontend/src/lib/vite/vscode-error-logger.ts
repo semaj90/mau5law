@@ -198,7 +198,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
     }
   };
 }
-export const defaultVSCodeErrorConfig: VSCodeErrorLoggerOptions & { maxEntries: number;, enabled: boolean } = {
+export const defaultVSCodeErrorConfig: VSCodeErrorLoggerOptions & { maxEntries: number; enabled: boolean } = {
   enabled: true,
   logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
   maxEntries: 1000,

@@ -90,7 +90,7 @@ class EnhancedCachingRevolutionaryBridge {
     hybridQueries: 0,
     totalQueries: 0,
     averageResponseTime: 0,
-    bestStrategy: 'adaptive'; as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };
+    bestStrategy: 'adaptive'; as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };'`
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -164,9 +164,9 @@ class EnhancedCachingRevolutionaryBridge {
         cached?: boolean;
         processingTime?: number;
       };
-      console.log(`🚀 Unified query completed in ${stats.totalResponseTime?.toFixed?.(2) ?? 'N/A` }ms`);
+      console.log(`🚀 Unified query completed in ${stats.totalResponseTime?.toFixed?.(2) ?? 'N/A` }ms`);'`
       console.log(
-        `📊 Cache hit rate: ${stats.cacheHitRate?.toFixed?.(2) ?? 'N/A'}%, Source: ${stats.cacheSource ?? 'unknown` }`
+        `📊 Cache hit rate: ${stats.cacheHitRate?.toFixed?.(2) ?? 'N/A'}%, Source: ${stats.cacheSource ?? 'unknown` }`'`
       );
       return result;
     } catch (error) {
@@ -397,8 +397,7 @@ class EnhancedCachingRevolutionaryBridge {
       hybridQueries: 0,
       totalQueries: 0,
       averageResponseTime: 0,
-      bestStrategy: 'adaptive'
-    };
+      bestStrategy: 'adaptive` };'`
   }
 
   // --- Health Check and Metrics for Bridge ---
@@ -416,8 +415,7 @@ class EnhancedCachingRevolutionaryBridge {
       memoryPalace: memoryPalaceAnalytics,
       chrRomPatternCache: {
         size: patternCacheSize,
-        status: patternCacheSize > 0 ? 'active' : 'idle'
-      },
+        status: patternCacheSize > 0 ? 'active' : `idle` },
       status: redisStatus.local && redisStatus.redis && memoryPalaceAnalytics ? 'healthy' : `degraded` };
   }
 }

@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Embedding generation error:', err);
+    console.error('Embedding generation error:', err);'
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Embedding generation failed' : 'Internal server error',
@@ -87,8 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true'
-      }
+        'X-Error': 'true` }'`
     });
   }
 };
@@ -155,7 +154,7 @@ export const GET: RequestHandler = async () => {
     );
   } catch (error) {
     const processingTime = performance.now() - startTime;
-    console.error('Embeddings status error:', error);
+    console.error('Embeddings status error:', error);'
 
     return json(
       {
@@ -168,8 +167,7 @@ export const GET: RequestHandler = async () => {
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-Error': 'true'
-        }
+          'X-Error': 'true` }'`
       }
     );
   }
@@ -206,7 +204,7 @@ async function generateEmbedding(text: string, model: string, retries: number = 
 
       return data.embedding;
     } catch (fetchError: any) {
-      console.error(`🔴 Embedding attempt ${attempt}/${retries} failed: ', fetchError.message);
+      console.error(`🔴 Embedding attempt ${attempt}/${retries} failed: ', fetchError.message);'`
 
       if (attempt === retries) {
         // Final attempt failed - check for specific fallback strategies

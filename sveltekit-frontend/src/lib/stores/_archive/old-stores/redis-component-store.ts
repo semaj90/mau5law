@@ -49,13 +49,13 @@ class RedisComponentStore {
         store.set(cachedValue);
       }
     });
-    // Override store's set method to update cache
+    // Override store's set method to update cache'
     const originalSet = store.set;
     store.set = (_value: T) => {
       originalSet(value);
       this.saveToCache(fullKey, value, options);
     };
-    // Override store's update method to update cache
+    // Override store's update method to update cache'
     const originalUpdate = store.update;
     store.update = (updater: (_value: T) => T) => {
       originalUpdate(currentValue => {
@@ -150,7 +150,7 @@ class RedisComponentStore {
           return state.data;
         }
       } catch (error) {
-        console.warn(`⚠️ Failed to load from Redis cache for key ${key}: ', error);
+        console.warn(`⚠️ Failed to load from Redis cache for key ${key}: ', error);'`
       }
     }
     return fallback;

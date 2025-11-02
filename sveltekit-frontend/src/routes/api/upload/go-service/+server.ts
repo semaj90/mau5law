@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
-      console.error('❌ Go service error:', response.status, response.statusText, errorText);
+      console.error('❌ Go service error:', response.status, response.statusText, errorText);'
       throw error(response.status, `Upload service error: ${response.statusText}`);
     }
     const result = await response.json().catch(() => ({}));

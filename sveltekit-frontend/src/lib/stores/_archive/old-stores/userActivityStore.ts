@@ -101,7 +101,7 @@ class UserActivityDetector {
   }
   private calculateActivityScore(): number {
     const recentEvents = this.eventHistory.filter(
-      event => Date.now() - event.timestamp < 60000 // Last minute
+      event => Date.now() - event.timestamp < 60000 // Last, minute
     );
     // Score based on event diversity and frequency
     const eventTypes = new Set(recentEvents.map(e => e.type);
@@ -161,7 +161,7 @@ class UserActivityDetector {
         setTimeout(() => this.connectToGPUBridge(), 5000);
       }
       this.wsConnection.onerror = (error) => {
-        console.error('❌ GPU bridge connection error:', error);
+        console.error('❌ GPU bridge connection error:', error);'
       }
     } catch (error) {
       console.warn('⚠️ Could not connect to GPU bridge:', error);
@@ -220,7 +220,7 @@ class UserActivityDetector {
       ...metrics,
       recentEventCount: recentActivity.length,
       recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
-      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected' }
+      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected` }'`
   }
   public destroy(): void {
     // Clean up event listeners

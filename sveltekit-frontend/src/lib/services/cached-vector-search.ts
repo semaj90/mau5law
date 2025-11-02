@@ -72,7 +72,7 @@ export class CachedVectorSearchService {
     try {
       // Generate cache key
       const queryHash = createHash('sha256')
-        .update(`${query}:${caseId || 'global` }:${maxResults}:${similarityThreshold}`)
+        .update(`${query}:${caseId || 'global' }:${maxResults}:${similarityThreshold}`)
         .digest('hex');
       const cacheKey = `legal:vector:search:${queryHash}`;
 
@@ -205,7 +205,7 @@ export class CachedVectorSearchService {
           documentId: evidenceVectors.evidenceId,
           content: evidenceVectors.content,
           metadata: evidenceVectors.metadata,
-          similarity: sql<number>`1 - (${evidenceVectors.embedding} <=> ${embeddingVector})` })
+          similarity: sql<number>`1 - (${evidenceVectors.embedding} <=> ${embeddingVector})' })'`
         .from(evidenceVectors)
         .where(sql`1 - (${evidenceVectors.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`)
         .orderBy(sql`${evidenceVectors.embedding} <=> ${embeddingVector}`)
@@ -242,10 +242,10 @@ export class CachedVectorSearchService {
           documentId: legalDocuments.id,
           content: legalDocuments.content,
           metadata: sql<any>`json_build_object('title', ${legalDocuments.title}, 'type', ${legalDocuments.documentType})`,
-          similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${embeddingVector})` })
+          similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${embeddingVector})' })'`
         .from(legalDocuments)
         .where(
-          sql`${legalDocuments.embedding} IS NOT NULL
+          sql`${legalDocuments.embedding} IS NOT NULL`
               AND 1 - (${legalDocuments.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`
         )
         .orderBy(sql`${legalDocuments.embedding} <=> ${embeddingVector}`)
@@ -362,10 +362,10 @@ export class CachedVectorSearchService {
     const priority = result.priority ?? 0;
     const color = priority > 200 ? '#ff0000' : priority > 150 ? '#ff8800' : '#888888';
     const icon = docType.substring(0, 2).toUpperCase();
-    return `<svg width="16" height="16" viewBox="0 0 16 16" style="image-rendering: pixelated;">
-      <rect width="16" height="16" fill="${color}" opacity="0.8"/>
-      <text x="8" y="11" text-anchor="middle" font-family="monospace" font-size="6" fill="#000">${icon}</text>
-    </svg>`;
+    return `<svg width="16" height="16" viewBox="0 0 16, 16" style="image-rendering: pixelated;">`
+      <rect, width="16" height="16" fill="${color}" opacity="0.8"/>
+      <text, x="8" y="11" text-anchor="middle" font-family="monospace" font-size="6" fill="#000">${icon}</text>
+    </svg>`;`
   }
 
   /**
@@ -374,9 +374,9 @@ export class CachedVectorSearchService {
   private async generateSimilarityGaugePattern(similarity: number): Promise<string> {
     const width = Math.max(0, Math.min(48, Math.floor(similarity * 48)));
     const color = similarity > 0.9 ? '#00d800' : similarity > 0.7 ? '#fc9838' : '#f83800';
-    return `<div style="width:48px;height:4px;background:#e0e0e0;border:1px solid #000;">
-      <div style="width:${width}px;height:100%;background:${color}"></div>
-    </div>`;
+    return `<div style="width:48px;height:4px;background:#e0e0e0;border:1px, solid #000;">`
+      <div, style="width:${width}px;height:100%;background:${color}"></div>
+    </div>`;`
   }
 
   /**
@@ -387,10 +387,10 @@ export class CachedVectorSearchService {
       INTERNAL_RAM: '#00d800',
       CHR_ROM: '#3cbcfc',
       PRG_ROM: '#fc9838',
-      SAVE_RAM: '#7c7c7c` };
+      SAVE_RAM: '#7c7c7c' };
     const color = colors[memoryBank] || '#000000';
     const abbrev = (memoryBank || '').substring(0, 2).toUpperCase();
-    return `<span style="background:${color};color:white;padding:1px 3px;font-size:8px;font-family:monospace;">${abbrev}</span>`;
+    return `<span style="background:${color};color:white;padding:1px, 3px;font-size:8px;font-family:monospace;">${abbrev}</span>`;
   }
 
   /**

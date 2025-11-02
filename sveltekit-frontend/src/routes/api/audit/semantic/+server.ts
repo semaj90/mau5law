@@ -90,7 +90,7 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
       const trigger: AgentTrigger = {
         todoId: result.todoId, // Removed any cast
         action: action,
-        status: `pending` };
+        status: `pending' };'`
       // Trigger agent using the real Context7 orchestrator
       try {
         const completedTrigger: AgentTrigger = await context7AgentOrchestrator.triggerAgent(trigger); // Explicitly type completedTrigger
@@ -100,7 +100,7 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
         const snippet =
           completedTrigger && completedTrigger.result ? String(completedTrigger.result).slice(0, 100) : undefined; // Removed any cast
         console.log(
-          `[Real Agent Trigger] Completed ${action} for ${result.todoId}: ',
+          `[Real Agent Trigger] Completed ${action} for ${result.todoId}: ','`
           snippet ? snippet + '...' : '<no-result>'
         ); // Removed any cast
       } catch (error: any) {
@@ -116,7 +116,7 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Parse query and component from request
-    const { query = 'Context7 pipeline audit', component = 'sveltekit` } = await request.json();
+    const { query = 'Context7 pipeline audit', component = 'sveltekit' } = await request.json();
     console.log(`[Real Semantic Audit] Starting audit for component: ${component}, query: ${query}`);
     // Step 1: Run real Context7 semantic search
     const rawSearchResults = await performContext7Search({
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       }
     );
   } catch (error: any) {
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       }
     );
   }

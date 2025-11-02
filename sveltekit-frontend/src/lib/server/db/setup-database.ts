@@ -34,7 +34,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           access_count INTEGER DEFAULT 1
         )
-      `);
+      `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS vector_metadata (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
@@ -45,7 +45,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       steps.push({ step: 'Create vector tables', success: true });
     } catch (error: any) {
       steps.push({ step: 'Create vector tables', success: false, error: error.message });
@@ -68,7 +68,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS document_relationships (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
@@ -79,7 +79,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           UNIQUE(from_document_id, to_document_id, relationship_type)
         )
-      `);
+      `);`
       steps.push({ step: 'Create legal document tables', success: true });
     } catch (error: any) {
       steps.push({ step: 'Create legal document tables', success: false, error: error.message });
@@ -100,7 +100,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           generation_time_ms INTEGER,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS som_clusters (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
@@ -114,7 +114,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       steps.push({ step: 'Create glyph and visualization tables', success: true });
     } catch (error: any) {
       steps.push({ step: 'Create glyph and visualization tables', success: false, error: error.message });
@@ -136,7 +136,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           feedback_score INTEGER CHECK (feedback_score IN (-1, 0, 1)),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS recommendation_patterns (
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
@@ -147,7 +147,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           success_rating DECIMAL(3,2) DEFAULT 0.5,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       steps.push({ step: 'Create user and session tables', success: true });
     } catch (error: any) {
       steps.push({ step: 'Create user and session tables', success: false, error: error.message });
@@ -167,7 +167,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           error_count INTEGER DEFAULT 0,
           recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `);`
       steps.push({ step: 'Create performance monitoring tables', success: true });
     } catch (error: any) {
       steps.push({ step: 'Create performance monitoring tables', success: false, error: error.message });
@@ -180,38 +180,38 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
         CREATE INDEX IF NOT EXISTS idx_embedding_cache_vector
         ON embedding_cache USING ivfflat (embedding vector_cosine_ops)
         WITH (lists = 100)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_vector
         ON legal_documents USING ivfflat (embedding vector_cosine_ops)
         WITH (lists = 100)
-      `);
+      `);`
       // Text search indexes
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_content_gin
         ON legal_documents USING gin (to_tsvector('english', content)); -- Fixed: added missing ')'
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_metadata_gin
         ON legal_documents USING gin (metadata)
-      `);
+      `);`
       // Performance indexes
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_embedding_cache_hash
         ON embedding_cache (text_hash)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_vector_metadata_document_id
         ON vector_metadata (document_id)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id
         ON user_sessions (user_id, created_at)
-      `);
+      `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_system_performance_component
         ON system_performance (component_name, recorded_at)
-      `);
+      `);`
       steps.push({ step: 'Create database indexes', success: true });
     } catch (error: any) {
       steps.push({ step: 'Create database indexes', success: false, error: error.message });
@@ -236,7 +236,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
            'STATUTE',
            '{"jurisdiction": "Canada", "section": "12", "last_amended": "2023"}'::jsonb)
         ON CONFLICT (id) DO NOTHING
-      `);
+      `);`
       // Insert sample document relationships
       await db.execute(sql`
         INSERT INTO document_relationships (from_document_id, to_document_id, relationship_type, weight)
@@ -245,7 +245,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           ('sample_case_1', 'sample_statute_1', 'cites', 0.9),
           ('sample_contract_1', 'sample_statute_1', 'supports', 0.7)
         ON CONFLICT (from_document_id, to_document_id, relationship_type) DO NOTHING
-      `);
+      `);`
       steps.push({ step: 'Insert sample data', success: true });
     } catch (error: any) {
       steps.push({ step: 'Insert sample data', success: false, error: error.message });
@@ -274,23 +274,23 @@ export async function checkDatabaseHealth(): Promise<any> {
     const tablesResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM information_schema.tables
       WHERE table_name IN ('legal_documents', 'embedding_cache', 'vector_metadata', 'som_clusters')
-    `);
+    `);`
     const tablesExist = Number(tablesResult.rows[0].count) >= 4;
     // Check if vector extension is enabled
     const extensionsResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM pg_extension WHERE extname = 'vector'
-    `);
+    `);`
     const extensionsEnabled = Number(extensionsResult.rows[0].count) > 0;
     // Check if indexes exist
     const indexesResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM pg_indexes
       WHERE indexname LIKE 'idx_%' AND tablename LIKE '%legal_documents%' OR tablename LIKE '%embedding_cache%' -- Fixed: removed ':'
-    `);
+    `);`
     const indexesReady = Number(indexesResult.rows[0].count) > 0;
     // Check if sample data exists
     const sampleDataResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE 'sample_%' -- Fixed: removed ':'
-    `);
+    `);`
     const sampleDataPresent = Number(sampleDataResult.rows[0].count) > 0;
     return {
       connected,

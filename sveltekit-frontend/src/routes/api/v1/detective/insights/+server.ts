@@ -177,7 +177,7 @@ async function generateDetectiveInsights(
     }
     return insights;
   } catch (e: any) {
-    console.error('Insight generation error:', e);
+    console.error('Insight generation error:', e);'
     const details = e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
     return {
       ...insights,
@@ -206,7 +206,7 @@ async function generateSummaryInsights(_caseData: any, evidence: EvidenceItem[])
 // changed: evidence is unused -> rename to _evidence
 async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unknown[]> {
   return [
-    {
+    {,
       type: 'temporal',
       description: 'Evidence clustering suggests coordinated activity',
       strength: 'high',
@@ -265,7 +265,7 @@ async function generateRecommendationInsights(
   depth: DepthType
 ): Promise<unknown[]> {
   const recommendations = [
-    {
+    {,
       priority: 'high',
       category: 'evidence',
       action: 'Collect additional corroborating evidence',
@@ -333,7 +333,7 @@ async function generateTimelineInsights(evidence: EvidenceItem[]): Promise<unkno
     totalEvents: evidence.length,
     timespan: '30 days', // Would calculate from actual timestamps
     keyPeriods: [
-      {
+      {,
         start: '2024-01-01',
         end: '2024-01-07',
         significance: 'Initial activity period',
@@ -347,12 +347,11 @@ async function generateTimelineInsights(evidence: EvidenceItem[]): Promise<unkno
       },
     ],
     gaps: [
-      {
+      {,
         start: '2024-01-08',
         end: '2024-01-14',
         significance: 'Suspicious quiet period',
-        recommendation: 'Investigate activities during this timeframe'
-      },
+        recommendation: `Investigate activities during this timeframe` }
     ]
   };
 }

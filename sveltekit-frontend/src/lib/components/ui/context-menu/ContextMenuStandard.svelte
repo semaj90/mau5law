@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import BitsUI from 'bits-ui';
   // Support both shapes: BitsUI.ContextMenu.{Root, Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
@@ -72,7 +72,7 @@
   }
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
-<ContextMenuRoot bind:open {...restProps}>
+<ContextMenuRoot, bind:open {...restProps}>
   <ContextMenuTrigger>
     {@render trigger()}
   </ContextMenuTrigger>
@@ -82,14 +82,14 @@
         {#if item.type === 'separator'}
           <ContextMenuSeparator />
         {:else if item.type === 'checkbox'}
-          <ContextMenuCheckboxItem value={item.value} disabled={item.disabled} select={item.onSelect}>
+          <ContextMenuCheckboxItem, value={item.value} disabled={item.disabled} select={item.onSelect}>
             {#snippet children({ checked })}
               {#if checked}✓{/if}
               {item.label}
             {/snippet}
           </ContextMenuCheckboxItem>
         {:else if item.type === 'radio'}
-          <ContextMenuRadioItem value={item.value} disabled={item.disabled} select={item.onSelect}>
+          <ContextMenuRadioItem, value={item.value} disabled={item.disabled} select={item.onSelect}>
             {#snippet children({ checked })}
               {#if checked}●{/if}
               {item.label}
@@ -101,7 +101,7 @@
             <ContextMenuPortal>
               <ContextMenuSubContent>
                 {#each Array.isArray(item.items) ? item.items : [] as subItem}
-                  <ContextMenuItem textValue={subItem.label} disabled={subItem.disabled} select={subItem.onSelect}>
+                  <ContextMenuItem, textValue={subItem.label} disabled={subItem.disabled} select={subItem.onSelect}>
                     {subItem.label}
                   </ContextMenuItem>
                 {/each}
@@ -109,7 +109,7 @@
             </ContextMenuPortal>
           </ContextMenuSub>
         {:else}
-          <ContextMenuItem textValue={item.label} disabled={item.disabled} select={item.onSelect}>
+          <ContextMenuItem, textValue={item.label} disabled={item.disabled} select={item.onSelect}>
             {item.label}
           </ContextMenuItem>
         {/if}

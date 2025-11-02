@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
           messageCount: 0,
           isActive: true
         },
-        // createdAt and updatedAt have defaultNow() so they're auto-populated
+        // createdAt and updatedAt have defaultNow() so they're auto-populated'
       })
       .returning();
     return json({

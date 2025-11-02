@@ -19,7 +19,7 @@ export interface CacheEntry { key: string;, value: any;
     lastAccess: number;
     predictionConfidence: number;
     neuralPriority: number;
-    spatialLocation?: { x: number;, y: number };
+    spatialLocation?: { x: number; y: number };
     semanticTags: string[];
     compressionRatio: number;
     parentKey?: string;
@@ -29,7 +29,7 @@ export interface CacheEntry { key: string;, value: any;
   size: number;
 }
 
-export interface SpatialIndex { bounds: { minX: number; maxX: number; minY: number;, maxY: number };
+export interface SpatialIndex { bounds: { minX: number; maxX: number; minY: number; maxY: number };
   quadrants: Map<string, string[]>; // quadrant -> cache keys
   resolution: number;
 }
@@ -68,7 +68,7 @@ export class HierarchicalCacheIndex {
    */
   private initializeCacheLevels(): void {
     this.levels = [
-      // L1: CHR-ROM Ultra-Fast Cache (WebGPU VRAM)
+      // L1: CHR-ROM Ultra-Fast Cache (WebGPU VRAM),
       {
         name: 'CHR_ROM_L1',
         maxSize: 50, // 50 most critical assets
@@ -158,7 +158,7 @@ export class HierarchicalCacheIndex {
   async get(
     key: string,
     context?: {
-      spatialHint?: { x: number;, y: number };
+      spatialHint?: { x: number; y: number };
       semanticHint?: string[];
       temporalHint?: number;
       predictionContext?: any;
@@ -264,7 +264,7 @@ export class HierarchicalCacheIndex {
   /**
    * Calculate spatial priority based on SOM neighborhood
    */
-  private calculateSpatialPriority(location: {, x: number; y: number }): number {
+  private calculateSpatialPriority(location: {, x: number;, y: number }): number {
     // Higher priority for central SOM locations (more connections)
     const centerX = 50; // Assume 100x100 SOM grid
     const centerY = 50;
@@ -366,7 +366,7 @@ export class HierarchicalCacheIndex {
   /**
    * Get spatial quadrant for location
    */
-  private getQuadrant(location: {, x: number; y: number }): string {
+  private getQuadrant(location: {, x: number;, y: number }): string {
     const qx = Math.floor(location.x / this.spatialIndex.resolution);
     const qy = Math.floor(location.y / this.spatialIndex.resolution);
     return `${qx},${qy}`;
@@ -482,7 +482,7 @@ export class HierarchicalCacheIndex {
   /**
    * Predict spatial neighbors using SOM topology
    */
-  private async predictSpatialNeighbors(location: {, x: number; y: number }): Promise<string[]> {
+  private async predictSpatialNeighbors(location: {, x: number;, y: number }): Promise<string[]> {
     const quadrant = this.getQuadrant(location);
     const neighbors: string[] = [];
     // Get neighboring quadrants
@@ -579,7 +579,7 @@ export class HierarchicalCacheIndex {
             });
           }
         } catch (error) {
-          console.warn(`Prefetch failed for ${key}: ', error);
+          console.warn(`Prefetch failed for ${key}: ', error);'`
         }
       }
     }
@@ -598,7 +598,7 @@ export class HierarchicalCacheIndex {
       generated: true,
       timestamp: Date.now(),
       context: context || {},
-      source: 'hierarchical_cache_fallback` };
+      source: 'hierarchical_cache_fallback` };'`
   }
   /**
    * Check if cache entry is expired

@@ -25,13 +25,9 @@ import { instantSearchEngine } from '$lib/services/instant-search-engine.js'
 type DocType = 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent' | string
 type RiskLevel = 'low' | 'medium' | 'high' | 'critical'
 
-type LegalDocument = { id: string, type: DocType; size: number
-  priority: number; riskLevel: RiskLevel
-  confidenceLevel: number; metadata: { title: string; description: string; keywords: string[], jurisdiction: string
+type LegalDocument = { id: string; type: DocType; size: number; priority: number; riskLevel: RiskLevel; confidenceLevel: number; metadata: { title: string; description: string; keywords: string[]; jurisdiction: string
   }
-  cacheTimestamp: number; accessCount: number
-  lastAccessed: number; cacheLocation: 'loki' | string
-  compressed: boolean; syncStatus: 'synced' | string
+  cacheTimestamp: number; accessCount: number; lastAccessed: number; cacheLocation: 'loki' | string; compressed: boolean; syncStatus: 'synced' | string
 }
 
 type SearchResult = {
@@ -84,8 +80,7 @@ function getErrorMessage(err: any): string {
   try {
     return String(err)
   } catch {
-    return 'Unknown error'
-  }
+    return 'Unknown error` }'`
 }
 
 // Small runtime helpers to handle library surface differences and avoid compile/runtime errors
@@ -96,7 +91,7 @@ async function removeLokiDocument(id: string): Promise<void> {
   } else if (typeof lokiCache.deleteDocument === 'function') {
     await lokiCache.deleteDocument(id)
   } else {
-    // best-effort: if there's no method, ignore (test cleanup best-effort)
+    // best-effort: if there's no method, ignore (test cleanup best-effort)'
   }
 }
 
@@ -212,8 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
             title: 'Test Legal Document',
             description: 'Integration test document for Loki-Redis cache',
             keywords: ['test', 'integration', 'legal'],
-            jurisdiction: 'Test'
-          },
+            jurisdiction: `Test` },
           cacheTimestamp: Date.now(),
           accessCount: 1,
           lastAccessed: Date.now(),
@@ -405,7 +399,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Clear all caches
         await safeClearSearchCache();
         if (typeof lokiCache.clear === 'function') await lokiCache.clear();
-        return json({ success: true, message: 'All caches cleared' });
+        return json({ success: true, message: 'All caches cleared` });'`
       }
       case 'populate-test-data': {
         // Add test data for demo
@@ -413,7 +407,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const testData = await populateTestData(count);
         return json({ success: true, testData });
       }
-      default: return json({ success: false, error: 'Unknown action' }, { status: 400 });
+      default: return json({ success: false, error: `Unknown action` }, { status: 400 });
     }
   } catch (err: any) {
     const msg = getErrorMessage(err);
@@ -473,7 +467,7 @@ async function runPerformanceBenchmark(options?: { iterations?: number; queries?
   return results;
 }
 
-async function populateTestData(count: number): Promise<{ documentsCreated: number;, documentIds: string[] }> {
+async function populateTestData(count: number): Promise<{ documentsCreated: number; documentIds: string[] }> {
   const testDocuments: string[] = [];
   const types = ['contract', 'evidence', 'brief', 'citation'] as const;
   const riskLevels = ['low', 'medium', 'high', 'critical'] as const;

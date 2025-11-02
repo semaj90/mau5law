@@ -13,8 +13,8 @@
  * Ensures app works with fully linked and wired API endpoints
  */
 import { ollamaCudaService } from './ollama-cuda-service.js';
-import { gemma3LegalService as ollamaGemma3Service } from './ollama-gemma3-service.js';
-import { ollamaCluster as ollamaClusterService } from './ollamaClusterService.js';
+import { gemma3LegalService, as ollamaGemma3Service } from './ollama-gemma3-service.js';
+import { ollamaCluster, as ollamaClusterService } from './ollamaClusterService.js';
 import { ollamaChatStream } from './ollamaChatStream.js';
 import { comprehensiveCachingService } from './comprehensive-caching-service.js';
 
@@ -435,8 +435,7 @@ class ComprehensiveOllamaSummarizer {
       content,
       keyPoints: this.extractKeyPoints(content),
       legalAnalysis: this.extractLegalAnalysis(content),
-      model: 'cuda-accelerated'
-    };
+      model: 'cuda-accelerated` };'`
   }
 
   private async generateWithLangChainService(request: ComprehensiveSummaryRequest) {
@@ -450,8 +449,7 @@ class ComprehensiveOllamaSummarizer {
       content: answer,
       keyPoints: this.extractKeyPoints(answer),
       legalAnalysis: this.extractLegalAnalysis(answer),
-      model: 'langchain-ollama'
-    };
+      model: `langchain-ollama` };
   }
 
   private async generateWithBasicService(request: ComprehensiveSummaryRequest) {
@@ -500,7 +498,7 @@ class ComprehensiveOllamaSummarizer {
           keyPoints: this.extractKeyPoints(partialContent),
           confidence: this.calculatePartialConfidence(partialContent),
           processingTime: Date.now() - startTime,
-          model: chunk?.model || 'streaming` };
+          model: chunk?.model || 'streaming` };'`
       }
 
       const metadata = this.extractMetadata(request.content);

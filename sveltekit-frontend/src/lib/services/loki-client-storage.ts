@@ -75,7 +75,7 @@ export class LokiClientStorage {
         autosaveInterval: this.config.autosaveInterval,
         autoloadCallback: (err) => {
           if (err) {
-            console.error('LokiJS autoload error:', err);
+            console.error('LokiJS autoload error:', err);'
             reject(err);
           } else {
             this._ensureCollections();
@@ -90,7 +90,7 @@ export class LokiClientStorage {
         throttledSaves: true, // Enable throttled saves for better performance
       });
 
-      // If autoload is explicitly false, or if it's a new database, ensure collections are still created
+      // If autoload is explicitly false, or if it's a new database, ensure collections are still created'
       if (!this.config.autoload && this.db && !this.db.collections.length) {
         this._ensureCollections();
         this.isInitialized = true;
@@ -129,7 +129,7 @@ export class LokiClientStorage {
   }
 
   // Insert document into collection
-  async insert<T extends LokiDocument>(collectionName: string, document: T): Promise<T> {
+  async insert<T extends, LokiDocument>(collectionName: string, document: T): Promise<T> {
     // Use generic T
     await this.ensureInitialized();
     const collection = this.getCollection<T>(collectionName); // Use generic T
@@ -151,7 +151,7 @@ export class LokiClientStorage {
   }
 
   // Update document in collection
-  async update<T extends LokiDocument>(collectionName: string, document: T): Promise<T> {
+  async update<T extends, LokiDocument>(collectionName: string, document: T): Promise<T> {
     // Use generic T
     await this.ensureInitialized();
     const collection = this.getCollection<T>(collectionName); // Use generic T
@@ -189,7 +189,7 @@ export class LokiClientStorage {
   }
 
   // Find documents with query
-  find<T extends LokiDocument>(collectionName: string, query: Loki.Query<T> = {}): T[] {
+  find<T extends, LokiDocument>(collectionName: string, query: Loki.Query<T> = {}): T[] {
     // Use explicit import for Query
     const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) return [];
@@ -205,7 +205,7 @@ export class LokiClientStorage {
   }
 
   // Advanced querying with chaining
-  chain<T extends LokiDocument>(collectionName: string): Loki.Chain<T> {
+  chain<T extends, LokiDocument>(collectionName: string): Loki.Chain<T> {
     // Use explicit import for Chain
     const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) throw new Error(`Collection ${collectionName} not found`);
@@ -282,7 +282,7 @@ export class LokiClientStorage {
   }
 
   // Queue operation for server sync
-  private queueForSync<T extends LokiDocument>(
+  private queueForSync<T extends, LokiDocument>(
     operation: SyncOperation['operation'],
     collectionName: string,
     document: T
@@ -303,13 +303,13 @@ export class LokiClientStorage {
   // Get statistics about local data
   getStats(): {
     // Specific return type
-    collections: { [key: string]: { document_count: number;, unsynced_count: number } };
+    collections: { [key: string]: { document_count: number; unsynced_count: number } };
     total_documents: number;
     unsynced_operations: number;
     database_size: number;
   } {
     const stats = {
-      collections: {} as { [key: string]: { document_count: number;, unsynced_count: number } }, // Corrected object initialization
+      collections: {} as { [key: string]: { document_count: number; unsynced_count: number } }, // Corrected object initialization
       total_documents: 0,
       unsynced_operations: this.syncQueue.length,
       database_size: 0
@@ -352,7 +352,7 @@ export class LokiClientStorage {
 
       let matches: LokiDocument[] = [];
       if (useFullText && typeof collection.fullTextSearch === 'function') {
-        // Use Loki's built-in full-text search if available and indexed
+        // Use Loki's built-in full-text search if available and indexed'
         const ftsResults = collection.fullTextSearch(query);
         matches = ftsResults.map((r: {, doc: LokiDocument }) => r.doc); // Explicitly type: `r` } else {
         // Fallback to regex search

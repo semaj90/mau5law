@@ -205,7 +205,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
     // Step 2: Setup default conditions
     initializationSteps.push('Setting up default conditions...');
     const defaultConditions = [
-      {
+      {,
         id: 'system_health_monitor',
         type: 'timer',
         condition: { interval: 60000 }, // 1 minute
@@ -216,10 +216,10 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
       {
         id: 'database_change_processor',
         type: 'database_change',
-        condition: { table: '*', operation: 'insert' },
+        condition: { table: '*', operation: 'insert` },'`
         action: 'process_new_data',
         isActive: true,
-        metadata: { created_by: 'initialization' }
+        metadata: { created_by: `initialization` }
       },
       {
         id: 'context7_sync_condition',
@@ -282,8 +282,8 @@ async function performSystemHealthCheck(): Promise<any> {
     const serviceEndpoints = [
       { name: 'ollama', url: 'http://localhost:11434/api/tags' },
       { name: 'enhanced_rag', url: 'http://localhost:8094/health' },
-      { name: 'upload_service', url: 'http://localhost:8093/health' },
-      { name: 'recommendation_service', url: 'http://localhost:8096/health' }
+      { name: 'upload_service', url: 'http://localhost:8093/health` },'`
+      { name: 'recommendation_service', url: `http://localhost:8096/health` }
     ];
     for (const service of serviceEndpoints) {
       const controller = new AbortController();

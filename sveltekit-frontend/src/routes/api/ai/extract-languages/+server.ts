@@ -7,7 +7,7 @@ import { ensureError } from '$lib/utils/ensure-error';
  * Uses embeddinggemma:latest for language detection in legal documents
  *
  * Architecture:
- * - Primary:; embeddinggemma:latest (621MB) via Ollama
+ * -; Primary:; embeddinggemma:latest (621MB) via Ollama
  * - Future: TensorRT-LLM engine via Triton Inference Server
  * - Supports multi-language legal documents
  */
@@ -56,18 +56,18 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, 'Text is required for language extraction');
     }
 
-    // Sample text if too long (language detection doesn't need full document)
+    // Sample text if too long (language detection doesn't need full document)'
     const sampleText = text.length > maxSampleLength ? text.substring(0, maxSampleLength) : text;
 
     // Prompt for language detection
-    const prompt = `Analyze this text and identify all languages present. Return ONLY a JSON array of language names (e.g., ["English", "Spanish"]).
+    const prompt = `Analyze this text and identify all languages present. Return ONLY a JSON array of language names (e.g., ["English", "Spanish"]).`
 
 Common legal languages: ${LEGAL_LANGUAGES.join(', ')}
 
 Text to analyze:
 ${sampleText}
 
-JSON array of detected languages:`;
+JSON array of detected languages:`;`
 
     // Call Ollama API
     const startTime = Date.now();
@@ -107,7 +107,7 @@ JSON array of detected languages:`;
 			} else {
 				// Fallback: parse comma-separated list
 				languages = responseText
-					.replace(/["\[\]]/g, '')
+					.replace(/["\[\]]/g, '')"
 					.split(',')
 					.map((lang) => lang.trim())
 					.filter((lang) => lang.length > 0);
@@ -144,7 +144,7 @@ JSON array of detected languages:`;
 			}
 		});
 	} catch (err: any) {
-		console.error('Language extraction error:', err);
+		console.error('Language extraction error:', err);'
 		const e = ensureError(err);
 
 		// Handle specific error types
@@ -188,10 +188,9 @@ export const GET: RequestHandler = async () => {
 			success: true,
 			status: 'healthy',
 			model: {
-				name: DEFAULT_MODEL,
+			, name: DEFAULT_MODEL,
 				available: hasEmbeddingGemma,
-				size: '621MB'
-			},
+				size: '621MB` },'`
 			supportedLanguages: LEGAL_LANGUAGES,
 			endpoint: OLLAMA_BASE_URL,
 			features: ['multi-language-detection', 'legal-terminology-support'],

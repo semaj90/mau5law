@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(result);
   } catch (err: any) {
-    console.error('Enhanced RAG processing error:', err);
+    console.error('Enhanced RAG processing error:', err);'
     const message = err instanceof Error ? err.message : String(err);
     throw error(500, `Enhanced RAG processing failed: ${message}`);
   }
@@ -340,8 +340,8 @@ function extractKeyTopics(text: string): string[] {
     { pattern: /employment|labor/gi, topic: 'Employment Law' },
     { pattern: /corporate|shareholder|board/gi, topic: 'Corporate Law' },
     { pattern: /real estate|property|land/gi, topic: 'Real Estate Law' },
-    { pattern: /criminal|prosecution|defendant/gi, topic: 'Criminal Law' },
-    { pattern: /family|divorce|custody/gi, topic: 'Family Law' }
+    { pattern: /criminal|prosecution|defendant/gi, topic: 'Criminal Law` },'`
+    { pattern: /family|divorce|custody/gi, topic: `Family Law` }
   ];
   topicPatterns.forEach(({ pattern, topic }) => {
     if (pattern.test(text)) {
@@ -494,8 +494,8 @@ function analyzePrecedents(citations: string[]): PrecedentAnalysisItem[] {
 }
 function generateCompletenessRecommendations(_analysis: SemanticAnalysis): CompletenessRecommendationItem[] {
   return [
-    { suggestion: 'Add more supporting citations', priority: 'high' },
-    { suggestion: 'Expand factual background', priority: 'medium' },
+    { suggestion: 'Add more supporting citations', priority: 'high` },'`
+    { suggestion: 'Expand factual background', priority: `medium` },
     { suggestion: 'Include counter-arguments', priority: `low` }
   ];
 }

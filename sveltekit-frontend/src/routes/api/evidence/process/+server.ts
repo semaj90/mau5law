@@ -130,7 +130,7 @@ class EvidenceProcessingService {
     return EvidenceProcessingService.instance;
   }
   // Return a typed shape instead of any
-  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string;, jobId: string }> {
+  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string; jobId: string }> {
     const sessionId = randomUUID();
     const jobId = randomUUID();
     const processingResult: ProcessingResult = {
@@ -150,7 +150,7 @@ class EvidenceProcessingService {
     this.processingJobs.set(jobId, processingResult);
     // Background processing (non-blocking)
     this.processEvidence(sessionId, jobId, request).catch((err: any) => {
-      console.error('Processing background error:', err);
+      console.error('Processing background error:', err);'
       const r = this.processingJobs.get(jobId);
       if (r) {
         r.status = 'error';
@@ -211,7 +211,7 @@ class EvidenceProcessingService {
             stepResult = { error: e instanceof Error ? e.message : String(e) };
           }
         } else {
-          stepResult = { error: 'unknown_step' };
+          stepResult = { error: `unknown_step` };
         }
         results[step] = stepResult;
         result.stepProgress = 100;
@@ -250,7 +250,7 @@ class EvidenceProcessingService {
   private async generateEmbedding(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<EmbeddingResult> {
     // Use real Ollama embeddings (embeddinggemma:latest)
     const { generateEmbedding } = await import('$lib/server/services');
-    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();
+    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();'`
     const embedding = await generateEmbedding(text, evidenceData.id);
     return { embedding, model: 'embeddinggemma:latest', dimensions: embedding.length };
   }
@@ -280,7 +280,7 @@ class EvidenceProcessingService {
     _options?: ProcessingOptions
   ): Promise<EntityExtractionResult> {
     await new Promise(r => setTimeout(r, 60));
-    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`;
+    const text = `${evidenceData.title || ''} ${evidenceData.description || '` }`;'`
     return { entities: text ? [{, text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: `stub` };
   }
   private async findSimilarEvidence(
@@ -289,19 +289,19 @@ class EvidenceProcessingService {
   ): Promise<SimilarEvidenceResult> {
     // Use real vector search (Qdrant + pgvector)
     const { searchSimilarDocuments } = await import('$lib/server/services');
-    const query = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();
+    const query = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();'`
     const results = await searchSimilarDocuments(query, 5);
 
     return { similarEvidence: results.map((r: any) => ({, id: r.id,
         score: r.score || r.similarity,
-        snippet: r.payload?.title || '` })),
+        snippet: r.payload?.title || '` })),'`
       totalFound: results.length
     };
   }
   private async indexEvidence(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<IndexResult> {
     // Index in both Qdrant and PostgreSQL + pgvector
     const { indexDocument } = await import('$lib/server/services');
-    const content = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();
+    const content = `${evidenceData.title || ''} ${evidenceData.description || '` }`.trim();'`
 
     await indexDocument({
       id: evidenceData.id,
@@ -390,7 +390,7 @@ export const POST: RequestHandler = async ({ request }) => {
       options: processingRequest.options
     });
   } catch (err: any) {
-    console.error('POST processing error:', err);
+    console.error('POST processing error:', err);'
     const message = err instanceof Error ? err.message : 'Processing request failed';
     return json({ error: message }, { status: 500 });
   }
@@ -408,8 +408,8 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     return json(status);
   } catch (err: any) {
-    console.error('GET status error:', err);
-    return json({ error: 'Failed to get status' }, { status: 500 });
+    console.error('GET status error:', err);'
+    return json({ error: `Failed to get status` }, { status: 500 });
   }
 };
 // DELETE endpoint: cancel job
@@ -417,16 +417,15 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
     if (!jobId) {
-      return json({ error: 'jobId is required' }, { status: 400 });
+      return json({ error: `jobId is required` }, { status: 400 });
     }
     const cancelled = processingService.cancelProcessing(jobId);
     return json({
       cancelled,
       jobId,
-      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable'
-    });
+      message: cancelled ? 'Processing cancelled' : `Job not found or not cancellable` });
   } catch (err: any) {
-    console.error('DELETE error:', err);
+    console.error('DELETE error: ', err);'
     return json({ error: `Failed to cancel processing` }, { status: 500 });
   }
 };

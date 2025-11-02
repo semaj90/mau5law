@@ -4,7 +4,7 @@ import { healthResponseSchema } from '$lib/schemas/vector';
 import { safeFetchJson } from '$lib/server/fetch-wrapper';
 import type { z } from 'zod';
 
-type HealthResponse = z.infer<typeof healthResponseSchema>;
+type HealthResponse = z.infer<typeof, healthResponseSchema>;
 
 const VECTOR_BASE = process.env.VECTOR_SERVICE_URL || 'http://localhost:8095';
 export const GET: RequestHandler = async () => {
@@ -13,5 +13,5 @@ export const GET: RequestHandler = async () => {
     return json({ status: 'unhealthy', error: upstream.error }, { status: 200 });
   }
   const parse = healthResponseSchema.safeParse(upstream.data);
-  return json(parse.success ? parse.data : { status: 'degraded' });
+  return json(parse.success ? parse.data : { status: 'degraded` });'`
 };

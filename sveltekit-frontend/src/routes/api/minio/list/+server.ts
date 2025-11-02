@@ -2,7 +2,7 @@
 // Lists objects in MinIO bucket with optional filtering
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { Client as MinIOClient } from 'minio';
+import { Client, as MinIOClient } from 'minio';
 import type { RequestHandler } from './$types';
 interface MinIOObject { name: string;, etag: string;
   size: number;
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
           const stat = await minioClient.statObject(bucketName, obj.name);
           obj.metadata = stat.metaData;
         } catch (err) {
-          console.warn(`Could not get metadata for ${obj.name}: ', err);
+          console.warn(`Could not get metadata for ${obj.name}: ', err);'`
         }
       }
     }
@@ -92,11 +92,11 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('MinIO list error:', error);
+    console.error('MinIO list error:', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'List operation failed` },
+        error: error instanceof Error ? error.message : 'List operation failed' },
       { status: 500 }
     );
   }

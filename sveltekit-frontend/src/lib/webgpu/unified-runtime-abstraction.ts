@@ -1,7 +1,7 @@
 /**
  * Unified Runtime Abstraction for Multi-Path AI Inference
  * Automatically routes between WebGPU, WASM SIMD, and WebGL2 based on capability detection
- * Integrates with Dawn (Chromium's WebGPU backend) for automatic driver layer selection
+ * Integrates with Dawn (Chromium's WebGPU backend) for automatic driver layer selection'
  */
 // Environment detection - fallback for testing
 const browser = typeof window !== 'undefined';
@@ -88,7 +88,7 @@ export class UnifiedRuntimeAbstraction {
     }
   }
   /**
-   * Initialize all runtime capabilities with Dawn's automatic driver selection
+   * Initialize all runtime capabilities with Dawn's automatic driver selection'
    */
   async initialize(): Promise<boolean> {
     if (!browser) {
@@ -100,7 +100,7 @@ export class UnifiedRuntimeAbstraction {
     }
     try {
       console.log('[Runtime] Initializing unified runtime abstraction...');
-      // Initialize WebGPU with Dawn's automatic driver selection
+      // Initialize WebGPU with Dawn's automatic driver selection'
       await this.initializeWebGPU();
       // Initialize WebGL2 fallback
       await this.initializeWebGL2();
@@ -124,7 +124,7 @@ export class UnifiedRuntimeAbstraction {
     }
   }
   /**
-   * Initialize WebGPU with Dawn's automatic driver layer selection
+   * Initialize WebGPU with Dawn's automatic driver layer selection'
    */
   private async initializeWebGPU(): Promise<void> {
     try {
@@ -265,7 +265,7 @@ export class UnifiedRuntimeAbstraction {
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
         }
-        console.log('[Runtime] CHR-ROM cache available: `, {
+        console.log('[Runtime] CHR-ROM cache available: `, {'`
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
           avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms` });
@@ -359,13 +359,13 @@ export class UnifiedRuntimeAbstraction {
       }
       return result;
     } catch (error) {
-      console.error(`[Runtime] ${runtime} execution failed: ', error);
+      console.error(`[Runtime] ${runtime} execution failed: ', error);'`
       // Try fallback runtime
       return this.executeFallback(request, runtime);
     }
   }
   /**
-   * Execute using WebGPU with Dawn's optimized backend
+   * Execute using WebGPU with Dawn's optimized backend'
    */
   private async executeWebGPU(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.webgpuDevice) {
@@ -416,7 +416,7 @@ export class UnifiedRuntimeAbstraction {
     return this.executeTensorRT(request);
   }
   /**
-   * Execute using TensorRT (for gemma3-legal:latest and; gemma3:9b)
+   * Execute using TensorRT (for gemma3-legal:latest and;, gemma3:9b)
    */
   private async executeTensorRT(request: InferenceRequest): Promise<InferenceResponse> {
     const response = await fetch(`${this.tensorRTEndpoint}/generate`, {
@@ -428,7 +428,7 @@ export class UnifiedRuntimeAbstraction {
         max_tokens: request.maxTokens || 2048,
         temperature: request.temperature || 0.7,
         use_tensor_cores: true,
-        optimize_for_legal: request.model === 'gemma3-legal:latest` })
+        optimize_for_legal: request.model === 'gemma3-legal:latest` })'`
     });
     if (!response.ok) {
       throw new Error(`TensorRT execution failed: ${response.statusText}`);
@@ -464,7 +464,7 @@ export class UnifiedRuntimeAbstraction {
             return await this.executeTensorRT(request);
         }
       } catch (error) {
-        console.warn(`[Runtime] Fallback ${runtime} failed: ', error);
+        console.warn(`[Runtime] Fallback ${runtime} failed: ', error);'`
         continue;
       }
     }
@@ -506,12 +506,11 @@ export class UnifiedRuntimeAbstraction {
       const cacheKey = request.cacheKey || this.generateCacheKey(request);
       const response = await fetch('/api/cache', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({,
           action: 'get',
           key: cacheKey,
-          pattern_type: 'ai_response'
-        }),
+          pattern_type: `ai_response` }),
         signal: AbortSignal.timeout(100) // Fast cache check
       });
       if (response.ok) {
@@ -569,7 +568,7 @@ export class UnifiedRuntimeAbstraction {
    */
   private generateCacheKey(request: InferenceRequest): string {
     const promptHash = this.simpleHash(request.prompt);
-    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;
+    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;'`
   }
   /**
    * Simple hash function for cache keys

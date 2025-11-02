@@ -56,7 +56,7 @@ export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?:
     return { data, success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'JSON parsing failed';
-    console.error('JSON parsing error:', error);
+    console.error('JSON parsing error:', error);'
     return {
       data: fallback,
       error: errorMessage,
@@ -69,7 +69,7 @@ export function createErrorBoundary() {
   let errorMessage = $state<string>('');
   let hasError = $state<boolean>(false);
   function captureError(error: Error, context?: string) {
-    console.error(`Error${context ? ` in ${context}` : '' }: ', error);
+    console.error(`Error${context ? ` in ${context}` : '` }: ', error);
     errorMessage = error.message;
     hasError = true;
   }
@@ -77,7 +77,7 @@ export function createErrorBoundary() {
     errorMessage = '';
     hasError = false;
   }
-  function withErrorBoundary<T extends (...args: readonly unknown[]) => unknown>(fn: T, context?: string): T {
+  function withErrorBoundary<T extends (...args: readonly, unknown[]) => unknown>(fn: T, context?: string): T {
     const wrapper = (...args: Parameters<T>): ReturnType<T> => {
       try {
         const result = fn(...args);

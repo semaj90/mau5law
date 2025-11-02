@@ -118,11 +118,11 @@ export interface AIResponse { response: string;, confidence: number;
 }
 
 export type ContextItem =
-  | { type: 'evidence'; id: string;, data: EvidenceTimelineEntry }
-  | { type: 'document'; id: string;, data: DocumentMemory }
-  | { type: 'insight'; id: string;, data: ContextualInsight }
-  | { type: 'person'; id: string;, data: Person }
-  | { type: 'issue'; id: string;, data: LegalIssue };
+  | { type: 'evidence'; id: string; data: EvidenceTimelineEntry }
+  | { type: 'document'; id: string; data: DocumentMemory }
+  | { type: 'insight'; id: string; data: ContextualInsight }
+  | { type: 'person'; id: string; data: Person }
+  | { type: 'issue'; id: string; data: LegalIssue };
 
 // Exported union for memory visualization options used by context-aware-ai-memory.ts
 export type MemoryVisualization = 'memory_palace' | 'inventory_system' | 'skill_tree' | 'character_sheet';

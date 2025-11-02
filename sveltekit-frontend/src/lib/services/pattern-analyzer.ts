@@ -73,7 +73,7 @@ interface MultimodalPatternResult { id: number;, source: string | null;
     ocrText?: string;
     audioLength?: number;
     frameCount?: number;
-    imageSize?: { width: number;, height: number }
+    imageSize?: { width: number; height: number }
   }
 }
 interface EnhancedPatternAnalyzerOptions {
@@ -84,7 +84,7 @@ interface EnhancedPatternAnalyzerOptions {
   clusterResults?: boolean; // Apply k-means clustering to results
   crossModalSearch?: boolean; // Enable cross-modal similarity search
   contentTypes?: string[]; // Filter by content types
-  timeRange?: { start: Date;, end: Date } // Time range filter
+  timeRange?: { start: Date; end: Date } // Time range filter
   minConfidence?: number; // Minimum similarity confidence
   useWorkerPool?: boolean; // Use worker pool for processing
   useIndexedDB?: boolean; // Use IndexedDB for offline caching
@@ -98,7 +98,7 @@ interface EnhancedPatternAnalyzerOptions {
 const patternAnalysisMachine = createMachine({
   id: 'patternAnalysis',
   context: {
-    userId: null as string | null,
+   , userId: null as string | null,
     queryContent: null as string | Buffer | null,
     options: {} as EnhancedPatternAnalyzerOptions,
     queryEmbedding: null as number[] | null,
@@ -109,7 +109,7 @@ const patternAnalysisMachine = createMachine({
     error: null as Error | null
   },
   initial: 'idle',
-  states: { idle: {, on: { START: 'generating_embedding' }
+  states: {, idle: {, on: {, START: 'generating_embedding' }
     },
     generating_embedding: {, invoke: {, src: fromPromise(async ({ input }: any) => {
           if (!input.queryContent) {
@@ -117,7 +117,7 @@ const patternAnalysisMachine = createMachine({
               SELECT content FROM user_documents
               WHERE user_id = ${input.userId}
               ORDER BY created_at DESC LIMIT 10
-            `);
+            `);`
             const textSnippet = recentDocs.map((d: any) => d.content).join('\n\n');
             return await embedText(textSnippet);
           }
@@ -144,7 +144,7 @@ const patternAnalysisMachine = createMachine({
             WHERE user_id = ${input.userId} AND embedding IS NOT NULL
             ORDER BY distance ASC
             LIMIT ${input.options.k || 10}
-          `);
+          `);`
           return results.map((doc: any) => ({
             id: doc.id,
             source: doc.source,
@@ -212,8 +212,8 @@ const patternAnalysisMachine = createMachine({
         }
       }
     },
-    complete: { type: 'final' },
-    failed: { type: 'final' }
+    complete: { type: 'final` },'`
+    failed: { type: `final` }
   }
 });
 
@@ -496,7 +496,7 @@ export class PatternAnalyzer {
       // Initialize query embedding
       let queryEmbedding: number[] | null = null;
 
-      // 1) Load user's recent documents (simple query - adjust as needed)
+      // 1) Load user's recent documents (simple query - adjust as needed)'
       const whereClauses: string[] = [`user_id = ${sql.raw(userId)}`];
       if (contentTypes.length > 0) {
         // content type safe list handled via interpolation below
@@ -515,7 +515,7 @@ export class PatternAnalyzer {
         ${contentTypeClause}
         ORDER BY created_at DESC
         LIMIT 500
-      `);
+      `);`
 
       if (!recentDocs || recentDocs.length === 0) {
         return [];
@@ -557,7 +557,7 @@ export class PatternAnalyzer {
             ${contentTypes.length > 0 ? sql`AND content_type = ANY(${contentTypes})` : sql`` }
           ORDER BY distance ASC
           LIMIT ${k * 2}
-        `);
+        `);`
 
         results = (res || [])
           .filter((doc: any) => {
@@ -617,7 +617,7 @@ export class PatternAnalyzer {
 
       return results;
     } catch (error: any) {
-      console.error('Error in getUserPatterns:', error);
+      console.error('Error in getUserPatterns: `, error);'`
       throw new Error(`Pattern analysis failed: ${error instanceof Error ? error.message : `Unknown error` }`);
     }
   }
@@ -665,7 +665,7 @@ export class PatternAnalyzer {
           AND content_type = ANY(${Array.from(crossModalTypes)})
         ORDER BY distance ASC
         LIMIT ${Math.max(1, Math.floor(k / 2))}
-      `);
+      `);`
 
       return (rows || []).map((doc: any) => {
         const metadata = doc.metadata ? (typeof doc.metadata === 'string' ? JSON.parse(doc.metadata) : doc.metadata) : {};
@@ -683,7 +683,7 @@ export class PatternAnalyzer {
         } as MultimodalPatternResult;
       });
     } catch (error) {
-      console.error('Cross-modal search error:', error);
+      console.error('Cross-modal search error:', error);'
       return [];
     }
   }

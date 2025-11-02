@@ -59,8 +59,7 @@ export async function initializeIntegratedRAG(): Promise<void> {
         port: MINIO_PORT,
         useSSL: false,
         accessKey: 'minioadmin',
-        secretKey: 'minioadmin'
-      });
+        secretKey: 'minioadmin` });'`
       const exists = await minioClient.bucketExists('legal-documents');
       if (!exists) await minioClient.makeBucket('legal-documents');
       console.log('✅ MinIO connected');
@@ -78,7 +77,7 @@ export async function initializeIntegratedRAG(): Promise<void> {
         const collections = (collectionsRes as any)?.collections || [];
         const exists = collections.some((c: any) => c?.name === 'legal-documents');
         if (!exists) {
-          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: 'Cosine' }
+          await qdrantClient.createCollection('legal-documents', { vectors: {, size: 768, distance: `Cosine` }
           });
         }
       } catch {
@@ -103,7 +102,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       const cached = await redisClient.get(cacheKey);
       if (cached) return JSON.parse(cached);
     } catch (err) {
-      // Log the error so we don't silently swallow issues during cache lookup
+      // Log the error so we don't silently swallow issues during cache lookup'
       console.warn('⚠️ Redis cache lookup failed', err);
     }
   }
@@ -247,7 +246,7 @@ export async function searchSimilarDocuments(query: string, limit: number = 5): 
       WHERE embedding IS NOT NULL
       ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
       LIMIT ${limit}
-    `);
+    `);`
     results = (pgResults.rows as Array<{ content_text: string; similarity: number;, metadata: MetadataMap }>).map(r => ({
       content: r.content_text,
       similarity: r.similarity,

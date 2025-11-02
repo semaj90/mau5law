@@ -2,36 +2,36 @@
 import { writable, derived } from 'svelte/store'
 import { browser } from '$app/environment'
 
-type Alert = { id: string; severity: 'low'|'medium'|'high'|'critical'; message: string; timestamp: number;, component: string }
+type Alert = { id: string; severity: 'low'|'medium'|'high'|'critical'; message: string; timestamp: number; component: string }
 
-export interface AIMetrics { documentsProcessed: number; averageProcessingTime: number;, totalProcessingTime: number;, embeddingsGenerated: number; averageEmbeddingTime: number; embeddingDimensions: number;
+export interface AIMetrics { documentsProcessed: number; averageProcessingTime: number; totalProcessingTime: number;, embeddingsGenerated: number; averageEmbeddingTime: number; embeddingDimensions: number;
   totalQueries: number; averageQueryTime: number; averageConfidence: number;
   processingErrors: number; embeddingErrors: number; queryErrors: number; errorRate: number;
   modelUsage: Record<string, number>;
-  processingTimeHistory: Array<{ timestamp: number;, value: number }>;
-  confidenceHistory: Array<{ timestamp: number;, value: number }>;
-  throughputHistory: Array<{ timestamp: number;, value: number }>;
+  processingTimeHistory: Array<{ timestamp: number; value: number }>;
+  confidenceHistory: Array<{ timestamp: number; value: number }>;
+  throughputHistory: Array<{ timestamp: number; value: number }>;
 }
 
 export interface QueueMetrics {
-  queues: Record<string, { waiting: number; active: number; completed: number; failed: number; delayed: number; throughput: number;, averageProcessingTime: number }>;
+  queues: Record<string, { waiting: number; active: number; completed: number; failed: number; delayed: number; throughput: number; averageProcessingTime: number }>;
   totalJobs: number; totalCompleted: number; totalFailed: number; overallThroughput: number; healthScore: number;
-  throughputHistory: Array<{ timestamp: number;, value: number }>;
-  failureRateHistory: Array<{ timestamp: number;, value: number }>;
+  throughputHistory: Array<{ timestamp: number; value: number }>;
+  failureRateHistory: Array<{ timestamp: number; value: number }>;
 }
 
-export interface CacheMetrics { hitRate: number; missRate: number; evictionRate: number;, averageAccessTime: number;, totalEntries: number; totalSize: number; memoryUsage: number;
-  layerStats: { memory: { entries: number; size: number;, hitRate: number }; persistent: { entries: number; size: number;, hitRate: number }; search: { entries: number;, queries: number } };
-  hitRateHistory: Array<{ timestamp: number;, value: number }>; memoryUsageHistory: Array<{ timestamp: number;, value: number }>;
+export interface CacheMetrics { hitRate: number; missRate: number; evictionRate: number; averageAccessTime: number;, totalEntries: number; totalSize: number; memoryUsage: number;
+  layerStats: { memory: { entries: number; size: number; hitRate: number }; persistent: { entries: number; size: number; hitRate: number }; search: { entries: number; queries: number } };
+  hitRateHistory: Array<{ timestamp: number; value: number }>; memoryUsageHistory: Array<{ timestamp: number; value: number }>;
 }
 
-export interface SystemMetrics { healthScore: number;, uptime: number;, components: { ollama: { status: 'healthy'|'degraded'|'unhealthy';, responseTime: number }; database: { status: 'healthy'|'degraded'|'unhealthy';, responseTime: number }; cache: { status: 'healthy'|'degraded'|'unhealthy';, responseTime: number }; queues: { status: 'healthy'|'degraded'|'unhealthy';, responseTime: number } };
-  memory: { used: number; total: number;, percentage: number }; cpu: { usage: number };
+export interface SystemMetrics { healthScore: number; uptime: number;, components: { ollama: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; database: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; cache: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; queues: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number } };
+  memory: { used: number; total: number; percentage: number }; cpu: { usage: number };
   networkLatency: number; networkThroughput: number; responseTime: number; throughput: number; errorRate: number;
   activeAlerts: Alert[];
 }
 
-export interface PerformanceSnapshot { timestamp: number; ai: AIMetrics; queues: QueueMetrics; cache: CacheMetrics;, system: SystemMetrics }
+export interface PerformanceSnapshot { timestamp: number; ai: AIMetrics; queues: QueueMetrics; cache: CacheMetrics; system: SystemMetrics }
 
 class PerformanceMonitor {
   private metricsHistory: PerformanceSnapshot[] = []
@@ -119,7 +119,7 @@ class PerformanceMonitor {
       if (c.responseTime > this.alertThresholds.responseTime) alerts.push({ id: `component-${name}-slow`, severity: 'medium', message: `${name} component response time is high (${c.responseTime}ms)`, timestamp: ts, component: name })
     })
     if (metrics.memory.percentage > this.alertThresholds.memoryUsage) alerts.push({ id: 'memory-high', severity: 'high', message: `Memory usage is high (${Math.round(metrics.memory.percentage*100)}%)`, timestamp: ts, component: `system` })
-    if (metrics.errorRate > this.alertThresholds.errorRate) alerts.push({ id: 'error-rate-high', severity: 'high', message: `Error rate is high (${Math.round(metrics.errorRate*100)}%)`, timestamp: ts, component: 'system' })
+    if (metrics.errorRate > this.alertThresholds.errorRate) alerts.push({ id: 'error-rate-high', severity: 'high', message: `Error rate is high (${Math.round(metrics.errorRate*100)}%)`, timestamp: ts, component: `system` })
     return alerts
   }
 
@@ -140,7 +140,7 @@ export const formatMetricValue = (value: number, type: 'time'|'percentage'|'coun
     case 'time': return value < 1000 ? `${Math.round(value)}ms` : `${(value/1000).toFixed(1)}s`
     case 'percentage': return `${Math.round(value*100)}%`
     case 'count': return value.toLocaleString()
-    case 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}' }
+    case 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}' }'`
     default: return value.toString()
   }
 }
@@ -160,6 +160,6 @@ export const getAlertSeverityColor = (severity: Alert['severity']): string => {
     case 'medium': return 'text-yellow-500'
     case 'high': return 'text-orange-500'
     case 'critical': return 'text-red-500'
-    default: return 'text-gray-500` }
+    default: return 'text-gray-500` }'`
 }
 

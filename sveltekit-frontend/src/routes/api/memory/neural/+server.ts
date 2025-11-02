@@ -164,7 +164,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       case 'predict': {
         const startTime = Date.now();
         // Call the optional method via the loose ManagerLike shape to avoid TS errors
-        // Provide a safe fallback if the concrete manager doesn't implement prediction
+        // Provide a safe fallback if the concrete manager doesn't implement prediction'
         const prediction = (await mm.predictMemoryUsage?.(horizon)) ?? {
           error: 'predictMemoryUsage not implemented on this manager',
           horizon
@@ -192,7 +192,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
       case 'status': {
         // call via the loose shape (mm) using optional chaining; provide a fallback if not implemented
-        const status = (await mm.generatePerformanceReport?.()) ?? { summary: 'performance report unavailable' };
+        const status = (await mm.generatePerformanceReport?.()) ?? { summary: 'performance report unavailable` };'`
         const systemInfo = await getSystemInfo();
         return json({
           success: true,
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         });
       }
       case 'report': {
-        const report = (await mm.generatePerformanceReport?.()) ?? { summary: 'performance report unavailable' };
+        const report = (await mm.generatePerformanceReport?.()) ?? { summary: `performance report unavailable` };
         const detailedMetrics = await getDetailedMetrics(manager);
         return json({
           success: true,
@@ -231,8 +231,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
           {
             headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate'
-            }
+              'Cache-Control': `no-cache, no-store, must-revalidate` }
           }
         );
       }
@@ -240,9 +239,9 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     }
   } catch (error: any) {
     if (error instanceof Error) {
-      console.error('Neural memory API error:', error);
+      console.error('Neural memory API error:', error);'
     } else {
-      console.error('Neural memory API error:', String(error));
+      console.error('Neural memory API error:', String(error));'
     }
     return json(
       {
@@ -284,7 +283,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     switch (action) {
       case 'adjust_lod': {
         if (typeof memoryPressure !== 'number' || memoryPressure < 0 || memoryPressure > 1) {
-          return json({ success: false, error: 'memoryPressure must be between 0 and 1' }, { status: 400 });
+          return json({ success: false, error: 'memoryPressure must be between 0 and 1` }, { status: 400 });'`
         }
         const startTime = Date.now();
         const oldLOD = mm.currentLOD;
@@ -321,7 +320,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
       case 'configure': {
         if (!config || typeof config !== 'object') {
-          return json({ success: false, error: 'Configuration object required' }, { status: 400 });
+          return json({ success: false, error: `Configuration object required` }, { status: 400 });
         }
         const result = await updateManagerConfiguration(manager, config);
         return json({ success: true, message: 'Configuration updated', data: result });
@@ -342,9 +341,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
   } catch (error: any) {
     if (error instanceof Error) {
-      console.error('Neural memory POST error:', error);
+      console.error('Neural memory POST error:', error);'
     } else {
-      console.error('Neural memory POST error:', String(error));
+      console.error('Neural memory POST error:', String(error));'
     }
     return json(
       {

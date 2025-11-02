@@ -8,14 +8,14 @@ const authMachine = createMachine({
   id: 'authMachine',
   initial: 'idle',
   context: {
-    user: undefined,
+   , user: undefined,
     authToken: undefined,
     error: undefined,
     retryCount: 0,
     performanceMetrics: undefined
   },
-  states: { idle: {, on: {
-        LOGIN: 'authenticating'
+  states: {, idle: {, on: {
+       , LOGIN: 'authenticating'
       }
     },
     authenticating: {, invoke: {, src: fromPromise(async ({ input }) => {
@@ -138,7 +138,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         const startTime = performance.now();
         authActor.send({
           type: 'LOGIN',
-          credentials: {, email: `test${i}@example.com`, password: 'password` }
+          credentials: {, email: `test${i}@example.com`, password: `password` }
         });
         await new Promise(resolve => setTimeout(resolve, 100);
         const duration = performance.now() - startTime;
@@ -226,7 +226,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate token refresh failure
-      authActor.send({ type: 'TOKEN_EXPIRED' });
+      authActor.send({ type: `TOKEN_EXPIRED` });
       await new Promise(resolve => setTimeout(resolve, 100);
       const finalSnapshot = authActor.getSnapshot();
       expect(finalSnapshot.value).toBe('idle');
@@ -258,7 +258,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       authActor.start();
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'password` }
+        credentials: {, email: 'test@example.com', password: `password` }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect(sessionMachineHandler).toHaveBeenCalledWith('USER_AUTHENTICATED',
@@ -281,7 +281,7 @@ describe('Phase 5-7 Performance Benchmarks', () => {
   it('should establish HTTP baseline for gRPC comparison', () => {
     const stats = perf.getStats('xstate-v5-login-success');
     if (stats) {
-      console.log('\n📊 Authentication Performance Stats (HTTP Baseline): `);
+      console.log('\n📊 Authentication Performance Stats (HTTP Baseline): `);'`
       console.log(`   Average: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);

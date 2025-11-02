@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         results: results,
         query: {
-          embeddingDimensions: embedding.length,
+         , embeddingDimensions: embedding.length,
           threshold: threshold,
           limit: limit,
           excludeId: excludeId
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Similar evidence search error:', err);
+    console.error('Similar evidence search error:', err);'
 
     // Handle specific PostgreSQL errors
     let errorMessage = 'Similar evidence search failed';
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }
+        'X-Error': 'true' }
     });
   }
 };

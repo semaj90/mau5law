@@ -2,7 +2,7 @@
   Enhanced Bits - Form Grid
   Responsive form layout component
 -->
-<script lang="ts">
+<script, lang="ts">
   interface Props {
     columns?: number;
     gap?: string;
@@ -10,7 +10,7 @@
   }
   let { columns = 2, gap = '16px', children }: Props = $props();
 </script>
-<div class="form-grid" style="--columns: {columns} --gap: {gap}">
+<div, class="form-grid" style="--columns: {columns} --gap: {gap}">
   <slot />
 </div>
 <style>

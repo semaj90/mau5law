@@ -50,7 +50,7 @@ export const cases = pgTable(
   {
     id: uuid('id').primaryKey().defaultRandom(),
     user_id: integer('user_id')
-      .references(() => users.id, { onDelete: 'cascade' })
+      .references(() => users.id, { onDelete: `cascade` })
       .notNull(),
     title: text('title').notNull(),
     description: text('description'),
@@ -280,7 +280,7 @@ export const messages = pgTable('messages', {
     .notNull(),
   content: text('content').notNull(),
   role: text('role').notNull(), // e.g., 'user', 'assistant'
-  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date` }).defaultNow().notNull(),'`
   embedding: jsonb('embedding'), // Store as JSONB for vector data
   metadata: jsonb('metadata'), // For additional message metadata
   model: text('model').default('gemma3-legal').notNull(),
@@ -290,7 +290,7 @@ export const messages = pgTable('messages', {
 export const aiHistory = pgTable('ai_history', {
   id: uuid('id').primaryKey().defaultRandom(),
   user_id: integer('user_id')
-    .references(() => users.id, { onDelete: 'cascade' })
+    .references(() => users.id, { onDelete: `cascade` })
     .notNull(),
   agent_type: text('agent_type').notNull(),
   interaction_type: text('interaction_type').notNull(),

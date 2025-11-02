@@ -47,13 +47,13 @@ export const GET: RequestHandler = async () => {
       { status: statusCode }
     );
   } catch (err: any) {
-    console.error('Health check error:', err);
+    console.error('Health check error:', err);'
 
     return json(
       {
         status: 'unavailable',
         timestamp: new Date().toISOString(),
-        error: err.message || 'Health check failed' },
+        error: err.message || 'Health check failed` },'`
       { status: 503 }
     );
   }

@@ -2,7 +2,7 @@
 Enhanced-Bits Label Component
 NES-styled label with legal AI theming
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
@@ -33,12 +33,12 @@ NES-styled label with legal AI theming
     )
   );
 </script>
-<label for={htmlFor} class={labelClasses}>
+<label, for={htmlFor} class={labelClasses}>
   {#if children}
     {@render children()}
   {/if}
   {#if required}
-    <span class="text-red-500 ml-1" aria-label="required">*</span>
+    <span class="text-red-500, ml-1" aria-label="required">*</span>
   {/if}
 </label>
 <style>

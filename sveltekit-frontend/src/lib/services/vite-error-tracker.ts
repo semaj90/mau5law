@@ -63,9 +63,9 @@ export interface ErrorTrackingStats {
   /** Error count by source */
   bySource: Record<string, number>;
   /** Top 10 error codes */
-  topErrorCodes: Array<{ code: string;, count: number }>;
+  topErrorCodes: Array<{ code: string; count: number }>;
   /** Top 10 affected files */
-  topFiles: Array<{ path: string;, count: number }>;
+  topFiles: Array<{ path: string; count: number }>;
   /** Average resolution time (ms) */
   avgResolutionTimeMs: number;
   /** Last monitoring timestamp */
@@ -95,7 +95,7 @@ export interface ErrorEvolution {
  * stores in dual databases (pgvector + Qdrant), and tracks evolution.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const tracker = new ViteErrorTracker();
  * await tracker.initialize();
  *
@@ -125,7 +125,7 @@ export class ViteErrorTracker {
       enablePgvector: config.enablePgvector ?? true,
       embeddingUrl: config.embeddingUrl ?? 'http://localhost:11434',
       embeddingModel: config.embeddingModel ?? 'embeddinggemma:latest',
-      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast` };
+      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast' };
   }
 
   /**
@@ -301,7 +301,7 @@ export class ViteErrorTracker {
 
         const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
            , model: this.config.embeddingModel,
             prompt: text
@@ -607,7 +607,7 @@ export class ViteErrorTracker {
       const text = `${sample[0].errorCode}: ${sample[0].message}`;
       const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: this.config.embeddingModel,
           prompt: text

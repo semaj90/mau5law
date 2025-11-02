@@ -122,11 +122,10 @@ export const POST: RequestHandler = async ({ request }) => {
         : null,
       // Service information
       service: 'yorha-enhanced-rag-api',
-      version: '4.0.0'
-    };
+      version: `4.0.0` };
     return json(yorhaResponse);
   } catch (err: any) {
-    console.error('YoRHa Enhanced RAG error:', err);
+    console.error('YoRHa Enhanced RAG error:', err);'
     return json(
       {
         success: false,
@@ -138,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
         yorhaMetadata: {
           systemStatus: 'ERROR',
           errorCode: 'ERR_ANALYSIS_FAILED',
-          processingNode: 'YORHA-LEGAL-AI-001` }
+          processingNode: `YORHA-LEGAL-AI-001` }
       },
       { status: 500 }
     );
@@ -212,7 +211,7 @@ async function performYoRHaAnalysis(
       source: 'database',
       yorha_type: 'DATABASE_RECORD',
       yorha_confidence: (r.confidenceScore ?? 0.7) as number,
-      content: r.content ?? r.description ?? r.title ?? '` })),
+      content: r.content ?? r.description ?? r.title ?? '` }))'`
   ];
   // Apply YoRHa-specific scoring and analysis
   return allResults
@@ -365,10 +364,10 @@ function extractNumberField(obj: any, keys: string[], fallback: number): number 
   // handle null/undefined quickly
   if (obj == null) return fallback;
 
-  // if it's already a number
+  // if it's already a number'
   if (typeof obj === 'number' && Number.isFinite(obj)) return obj;
 
-  // if it's a numeric string
+  // if it's a numeric string'
   if (typeof obj === 'string') {
     const parsed = Number(obj);
     return Number.isFinite(parsed) ? parsed : fallback;

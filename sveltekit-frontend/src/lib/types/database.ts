@@ -46,7 +46,7 @@ export interface DBCase { id: string;, title: string;
 
 export interface CaseMetadata {
   jurisdiction?: string;
-  parties?: Array<{ role: string; name: string;, type: string }>;
+  parties?: Array<{ role: string; name: string; type: string }>;
   courtLevel?: 'district' | 'appellate' | 'supreme';
   caseNumber?: string;
   datesFiled?: string[];
@@ -230,7 +230,7 @@ export interface VectorSearchQueryResult {
 // BATCH OPERATION TYPES
 // ============================================================================
 
-export interface BatchQueryResult<T> { success: boolean;, results: Array<{ id: string;, success: boolean; data?: T; error?: string }>;
+export interface BatchQueryResult<T> { success: boolean;, results: Array<{ id: string; success: boolean; data?: T; error?: string }>;
   successCount: number;
   failureCount: number;
   error?: string;

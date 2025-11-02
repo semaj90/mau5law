@@ -182,7 +182,7 @@ export const getUser = () => sessionStore.state.user;
 export const getIsAuthenticated = () => sessionStore.state.isAuthenticated;
 export const getIsLoading = () => sessionStore.state.isLoading;
 // Utility functions for upload operations
-export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;, uploaderEmail: string | null } => {
+export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; uploaderEmail: string | null } => {
   const currentUser = sessionStore.getCurrentUser();
   if (currentUser?.id) {
     return {

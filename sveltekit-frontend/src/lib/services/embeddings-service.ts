@@ -43,9 +43,9 @@ export class EmbeddingsService {
           for (let i = 0; i < arr.length; i++) {
             hex.push(('0' + arr[i].toString(16)).slice(-2));
           }
-          return `${hex.slice(0, 4).join('')}${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex
+          return `${hex.slice(0, 4).join('')}${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex`
             .slice(8, 10)
-            .join('')}-${hex.slice(10, 12).join('')}-${hex.slice(12, 16).join('')}`;
+            .join('')}-${hex.slice(10, 12).join('')}-${hex.slice(12, 16).join('')}`;`
         }
       }
     } catch (_err) {
@@ -72,7 +72,7 @@ export class EmbeddingsService {
       // Create worker pool
       for (let i = 0; i < this.maxWorkers; i++) {
         const worker = new Worker(new URL('../workers/embeddings-worker.ts', import.meta.url), {
-          type: 'module` });
+          type: 'module' });
         worker.addEventListener('message', this.handleWorkerMessage.bind(this));
         worker.addEventListener('error', this.handleWorkerError.bind(this));
         this.workers.push(worker);
@@ -114,7 +114,7 @@ export class EmbeddingsService {
   }
 
   private handleWorkerError(event: ErrorEvent) {
-    console.error('❌ Worker error:', event.message || (event.error as unknown) || event);
+    console.error('❌ Worker error:', event.message || (event.error as unknown) || event);'
   }
 
   // Generic sendWorkerMessage: returns Promise<T> so callers can specify expected type

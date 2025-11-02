@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('❌ Hybrid pipeline error:', error);
+    console.error('❌ Hybrid pipeline error:', error);'
     return json(
       {
         error: 'Pipeline execution failed',
@@ -68,14 +68,14 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     if (!documents || !Array.isArray(documents) || !query) {
       return json(
-        { error: 'Missing required, fields: documents (array), query' },
+        { error: 'Missing required, fields: documents (array), query` },'`
         { status: 400 }
       );
     }
 
     console.log(`📨 PUT /api/rag/hybrid-pipeline/direct`);
     console.log(`   Documents: ${documents.length}`);
-    console.log(`   Query: ${query}');
+    console.log('   Query: ${query}');
 
     const result = await hybridBridge.processDirectDocuments(
       documents as RAGDocument[],
@@ -95,7 +95,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('❌ Direct processing error:', error);
+    console.error('❌ Direct processing error:', error);'
     return json(
       {
         error: 'Direct processing failed',
@@ -116,12 +116,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
 
     if (!query) {
-      return json({ error: 'Missing query, parameter: q' }, { status: 400 });
+      return json({ error: 'Missing query, parameter: q` }, { status: 400 });'`
     }
 
     console.log(`📨 GET /api/rag/hybrid-pipeline/search`);
     console.log(`   Query: ${query}`);
-    console.log(`   Limit: ${limit}');
+    console.log('   Limit: ${limit}');
 
     const results = await hybridBridge.searchKnowledgeBase(query, limit);
 
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error: any) {
-    console.error('❌ Search error:', error);
+    console.error('❌ Search error:', error);'
     return json(
       {
         error: 'Search failed',
@@ -160,7 +160,7 @@ export const PATCH: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('❌ Status error:', error);
+    console.error('❌ Status error:', error);'
     return json(
       {
         error: 'Status check failed',

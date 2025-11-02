@@ -39,7 +39,7 @@ export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
+    .references(() => users.id, { onDelete: 'cascade` }),'`
   expiresAt: timestamp('expires_at', { withTimezone: true, mode: `date` }).notNull(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
@@ -144,7 +144,7 @@ export const searchIndex = pgTable('search_index', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
-// Relations for type safety - use drizzle `relations()` helpers so codegen isn't
+// Relations for type safety - use drizzle `relations()` helpers so codegen isn't'
 // required for basic type relationships. These exports keep $inferSelect typings
 // unaffected while providing strongly-typed relationship helpers.
 export const usersRelations = relations(users, ({ many }) => ({

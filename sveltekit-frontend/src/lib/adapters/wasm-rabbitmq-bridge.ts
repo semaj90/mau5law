@@ -46,7 +46,7 @@ export function createWASMHandler(
       const simdEnhancedMessage = enhanceRabbitMQMessage(message);
       // Check if message requires WASM acceleration
       if (shouldUseWASM(simdEnhancedMessage) && wasmReady && wasmModule) {
-        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown` }`);
+        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown' }`);
         // Enhance message with WASM capabilities
         const enhancedMessage = await enhanceMessageWithWASM(simdEnhancedMessage, wasmOperations);
         // Process with WASM-enhanced context
@@ -59,7 +59,7 @@ export function createWASMHandler(
         return await baseHandler(message, originalMessage);
       }
     } catch (error) {
-      console.error('❌ WASM-accelerated handler error:', error);
+      console.error('❌ WASM-accelerated handler error:', error);'
       // Fallback to base handler on WASM errors
       return await baseHandler(message, originalMessage);
     }
@@ -257,7 +257,7 @@ export async function computeVectorSimilarityWASM(
           ...message,
           embeddings: message.embeddings,
           wasmAccelerated: true,
-          stage: 'ready_for_storage` });
+          stage: 'ready_for_storage' });
       }
     },
     { batchNormalization: true }
@@ -266,7 +266,7 @@ export async function computeVectorSimilarityWASM(
   // WASM Similarity Search Handler
   const similarityHandler = createWASMHandler(
     async (message: any) => {
-      console.log(`🔍 WASM-accelerated similarity search: ${message.queryId || 'unknown` }`);
+      console.log(`🔍 WASM-accelerated similarity search: ${message.queryId || 'unknown' }`);
       if (message.queryVector && message.candidateVectors) {
         const similarities = await computeVectorSimilarityWASM(
           message.queryVector,

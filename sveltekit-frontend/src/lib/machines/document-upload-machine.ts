@@ -22,7 +22,7 @@ export interface DocumentUploadContext { files: File[];, uploadProgress: number
   processingProgress: number;
   validationErrors: Record<string, string[]>;
   uploadedFiles: UploadedFile[]; // replaced `any[]` with UploadedFile[]
-  aiResults: { processedFiles: AIProcessingResult[];, summary: ProcessingSummary } | null; // replaced `any`
+  aiResults: { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null; // replaced `any`
   error: string | null;
   retryCount: number;
 }
@@ -31,9 +31,9 @@ export interface DocumentUploadContext { files: File[];, uploadProgress: number
 // Helper functions below extract data from XState invoke events, ensuring type safety without polluting the event union.
 // The underscore prefix avoids unused variable linter errors.
 type DocUploadEvent =
-  | { type: 'SELECT_FILES';, files: File[] }
-  | { type: 'SUBMIT' }
-  | { type: 'RETRY' }
+  | { type: 'SELECT_FILES'; files: File[] }
+  | { type: `SUBMIT` }
+  | { type: `RETRY` }
   | { type: `RESET` };
 // Internal XState events are handled by helpers and not included here.
 // --- New: helper extractors / guards (avoid `any`) ---
@@ -79,21 +79,21 @@ function extractUploadedFilesFromInvoke(evt: any): UploadedFile[] {
 }
 function extractAIResultsFromInvoke(
   evt: any
-): { processedFiles: AIProcessingResult[];, summary: ProcessingSummary } | null {
+): { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.output) as unknown;
   if (typeof maybe === 'object' && maybe !== null) {
     const m = asRecord(maybe);
     if ('processedFiles' in m && 'summary' in m) {
-      return maybe as { processedFiles: AIProcessingResult[];, summary: ProcessingSummary };
+      return maybe as { processedFiles: AIProcessingResult[]; summary: ProcessingSummary };
     }
   }
   return null;
 }
 // Create a typed compatibility wrapper for createMachine to avoid using `any` in the cast
 const createMachineCompat = createMachine as unknown as (
-  config: Parameters<typeof createMachine>[0]
-) => ReturnType<typeof createMachine>;
+  config: Parameters<typeof, createMachine>[0]
+) => ReturnType<typeof, createMachine>;
 // --- Change: avoid generic arity mismatch with XState v5 by casting createMachine ---
 // Explicitly type context and event for stricter type safety
 export const documentUploadMachine = createMachineCompat({
@@ -106,11 +106,11 @@ export const documentUploadMachine = createMachineCompat({
     processingProgress: 0,
     validationErrors: {} as Record<string, string[]>,
     uploadedFiles: [] as UploadedFile[],
-    aiResults: null as { processedFiles: AIProcessingResult[];, summary: ProcessingSummary } | null,
+    aiResults: null as {, processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null,
     error: null,
     retryCount: 0
   },
-  states: { idle: {, on: {, SELECT_FILES: {, target: 'validating',
+  states: {, idle: {, on: {, SELECT_FILES: {, target: 'validating',
           actions: assign({
             // safe, discriminated check
             files: ({ event, context }) => (isSelectFilesEvent(event) ? event.files : context.files),
@@ -156,7 +156,7 @@ export const documentUploadMachine = createMachineCompat({
           actions: assign({
             // use extractor for invoked validation errors
             validationErrors: ({ event }) => extractValidationErrorsFromInvoke(event) ?? {},
-            error: () => 'File validation failed` })
+            error: () => 'File validation failed` })'`
         }
       }
     },
@@ -221,7 +221,7 @@ export const documentUploadMachine = createMachineCompat({
           })
         },
         onError: [
-          {
+          {,
             guard: ({ context }) => context.retryCount < 3,
             target: 'retrying',
             actions: assign({
@@ -231,8 +231,7 @@ export const documentUploadMachine = createMachineCompat({
           {
             target: 'failed',
             actions: assign({
-              error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed after retries'
-            })
+              error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Upload failed after retries` })'`
           },
         ]
       }
@@ -249,8 +248,7 @@ export const documentUploadMachine = createMachineCompat({
             const response = await fetch('/api/ai/process-document', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
-              },
+                'Content-Type': `application/json` },
               body: JSON.stringify({
                , fileId: file.id,
                 analysisType: `full` })
@@ -284,15 +282,13 @@ export const documentUploadMachine = createMachineCompat({
         onError: {
           target: 'failed',
           actions: assign({
-            error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Processing failed'
-          })
+            error: ({ event }) => extractErrorMessageFromInvoke(event) ?? 'Processing failed` })'`
         }
       }
     },
     retrying: {
       after: {
-        2000: 'uploading'
-      },
+        2000: `uploading` },
       on: {
         RETRY: `uploading` }
     },

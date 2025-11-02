@@ -52,7 +52,7 @@ class MinIOStorageService {
   }
 
   /**
-   * Create bucket if it doesn't exist
+   * Create bucket if it doesn't exist'
    */
   async ensureBucket(bucketName: string, region?: string): Promise<void> {
     const exists = await this.client.bucketExists(bucketName);
@@ -204,11 +204,11 @@ class MinIOStorageService {
     bucketName: string,
     prefix?: string,
     recursive: boolean = false
-  ): Promise<Array<{ name: string; size: number; etag: string;, lastModified: Date }>> {
+  ): Promise<Array<{ name: string; size: number; etag: string; lastModified: Date }>> {
     const stream = this.client.listObjects(bucketName, prefix, recursive);
 
     return new Promise((resolve, reject) => {
-      const objects: Array<{ name: string; size: number; etag: string;, lastModified: Date }> = [];
+      const objects: Array<{ name: string; size: number; etag: string; lastModified: Date }> = [];
 
       stream.on('data', (obj) => {
         if (obj.name) {
@@ -306,7 +306,7 @@ class MinIOStorageService {
         buckets: buckets.map(b => b.name)
       };
     } catch (error) {
-      return { status: 'unavailable' };
+      return { status: 'unavailable` };'`
     }
   }
 }

@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ locals }) => {
   return json({
     message: 'User creation endpoint',
     usage: {
-      method: 'POST',
+     , method: 'POST',
       endpoint: '/api/users/create',
       body: {
        , email: 'user@example.com',
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ locals }) => {
       }
     },
     examples: [
-      {
+      {,
         description: 'Create a prosecutor',
         body: {
           email: 'prosecutor@example.com',

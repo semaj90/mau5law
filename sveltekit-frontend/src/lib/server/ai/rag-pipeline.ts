@@ -118,8 +118,8 @@ const embeddings = new OllamaEmbeddingsClient({
   baseUrl: OLLAMA_BASE_URL,
   model: EMBEDDING_MODEL,
   requestOptions: {
-    useMMap: true,
-    // Use singular: 'numThread' internally; wrapper maps to Ollama's num_thread.
+   , useMMap: true,
+    // Use singular: 'numThread' internally; wrapper maps to Ollama's num_thread.'
    , numThread: 8
   }
 });
@@ -169,8 +169,8 @@ export class LegalRAGPipeline {
     this.initialized = true;
   }
   // === DOCUMENT INGESTION ===
-  async ingestLegalDocument(params: { title: string;, content: string;
-    documentType: string;
+  async ingestLegalDocument(params: {, title: string;, content: string;
+   , documentType: string;
     metadata?: { [key: string]: any };
     caseId?: string;
    , userId: string;
@@ -246,7 +246,7 @@ export class LegalRAGPipeline {
         processingTime
       };
     } catch (error: any) {
-      console.error('[RAG] Ingestion error:', error);
+      console.error('[RAG] Ingestion error:', error);'
       throw error;
     }
   }
@@ -276,7 +276,7 @@ export class LegalRAGPipeline {
           ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit * 2}
-      `;
+      `;`
       const keywordResults = await sql`
         SELECT
           dc.id,
@@ -291,7 +291,7 @@ export class LegalRAGPipeline {
           ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
         ORDER BY text_rank DESC
         LIMIT ${limit}
-      `;
+      `;`
       // --- typed result merging (replaces previous any usage) ---
       type VectorRow = { id: string | number;, content: string;
         metadata?: Record<string, unknown> | null;
@@ -359,13 +359,13 @@ export class LegalRAGPipeline {
       );
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
-      console.error('[RAG] Search error:', err);
+      console.error('[RAG] Search error:', err);'
       throw err;
     }
   }
   // === QUESTION ANSWERING ===
   async answerLegalQuestion(params: {
-    question: string;
+   , question: string;
     caseId?: string;
    , userId: string;
     conversationContext?: string;
@@ -382,7 +382,7 @@ export class LegalRAGPipeline {
       if (relevantDocs.length === 0) {
         return {
           answer:
-            "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
+            "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",'
           sources: [],
           confidence: 0
         };
@@ -392,15 +392,14 @@ export class LegalRAGPipeline {
       const promptTemplate = PromptTemplate.fromTemplate(`
 You are a legal AI assistant with expertise in legal analysis. Answer the question based ONLY on the provided context.
 ${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : `` }
-Legal Context:
-{context}
-Question: {question}, Instructions:
+Legal, Context:
+{context}, Question: {question}, Instructions:
 1. Provide a clear, accurate answer based on the context
 2. Cite specific sources using [Source N] notation
 3. Identify any legal principles or precedents mentioned
 4. Note any important caveats or limitations
-5. If the context doesn't fully answer the question, clearly state what information is missing
-Answer: ');
+5. If the context doesn't fully answer the question, clearly state what information is missing'
+Answer: ');'
       // Format prompt and call LLM directly (simpler and avoids malformed RunnableSequence usage)
       const promptText = await promptTemplate.format({ context, question });
       const llmResult = await (llm as any).call(promptText);
@@ -435,7 +434,7 @@ Answer: ');
         processingTime: Date.now() - startTime
       };
     } catch (error: any) {
-      console.error('[RAG] QA error:', error);
+      console.error('[RAG] QA error:', error);'
       await db.insert(schema.userAiQueries).values({
         userId,
         caseId,
@@ -480,7 +479,7 @@ Provide your analysis in the following format:
 - Points for negotiation
 - Additional clauses to consider
 Provide specific clause references where applicable.
-    `);
+    `);`
     const chain = RunnableSequence.from([contractPrompt, llm, new StringOutputParser()]);
     const chainResult = await chain.invoke({ contract: contractText });
     const analysis = typeof chainResult === 'string' ? chainResult : chainResult.parse || '';
@@ -493,12 +492,12 @@ Provide specific clause references where applicable.
       SELECT id, title, description, COALESCE(summary, '') AS summary
       FROM evidence
       WHERE id = ANY(${evidenceIds})
-    `;
+    `;`
     // Build formatted evidence blocks for the prompt
     const formattedEvidence = evidenceRecords.map(
-      (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}):
+      (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}):`
 ${e.description ?? ''}
-${e.summary ?? '` }`
+${e.summary ?? '` }`'
     );
     const correlationPrompt = PromptTemplate.fromTemplate(`
 As a legal analyst, examine the relationships between these pieces of evidence:
@@ -529,7 +528,7 @@ Provide a comprehensive analysis covering:
 - Further investigation required
 - Strategic considerations
 Analysis:
-    `);
+    `);`
     const chain = RunnableSequence.from([correlationPrompt, llm, new StringOutputParser()]);
     return await chain.invoke({});
   }
@@ -588,7 +587,7 @@ Document excerpt:
 {content}
 Return ONLY a JSON array of tags with confidence scores (0-1):
 [{"tag": "contract law", "confidence": 0.95}, ...]
-    `);
+    `);`
     const chain = RunnableSequence.from([tagPrompt, llm, new StringOutputParser()]);
     try {
       const chainResult = await chain.invoke({
@@ -602,7 +601,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       }
       return [];
     } catch (error: any) {
-      console.error('[RAG] Auto-tagging error:', error);
+      console.error('[RAG] Auto-tagging error:', error);'
       return [];
     }
   }
@@ -674,7 +673,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     try {
       await sql.end();
     } catch {
-      // ignore if postgres client doesn't expose end
+      // ignore if postgres client doesn't expose end'
     }
   }
 }

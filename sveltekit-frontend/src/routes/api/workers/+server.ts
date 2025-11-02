@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Define interfaces for the worker and service
-interface DocumentProcessingWorker { getStats: () => { isRunning: boolean; processedCount: number; failedCount: number;, successRate: number };
+interface DocumentProcessingWorker { getStats: () => { isRunning: boolean; processedCount: number; failedCount: number; successRate: number };
   start: () => Promise<void>;
   stop: () => Promise<void>;
 }
@@ -33,7 +33,7 @@ interface QueueHealthDetail { name: string;, status: 'healthy' | 'degraded' | '
 
 interface RabbitMQService {
   getQueueStats: () => Promise<Record<string, QueueDetailStats>>;
-  healthCheck: () => Promise<{ healthy: boolean;, queues: QueueHealthDetail[] }>;
+  healthCheck: () => Promise<{ healthy: boolean; queues: QueueHealthDetail[] }>;
 }
 
 // Import worker and services with error handling
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           status: health.healthy && stats.isRunning ? 'healthy' : 'unhealthy',
           worker: {
-            running: stats.isRunning,
+           , running: stats.isRunning,
             processed: stats.processedCount,
             failed: stats.failedCount,
             successRate: stats.successRate
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Worker API error:', msg);
+    console.error('Worker API error:', msg);'
     return json(
       {
         error: 'Failed to get worker status',
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Worker control error:', msg);
+    console.error('Worker control error:', msg);'
     return json(
       {
         error: 'Failed to control worker',

@@ -52,7 +52,7 @@ export function slideInFromBottom(node: Element, params: { duration?: number; de
       return `
         transform: translateY(${(1 - eased) * 20}px);
         opacity: ${eased}
-      `;
+      `;`
     }
   };
 }
@@ -66,7 +66,7 @@ export function scaleIn(node: Element, params: { duration?: number; start?: numb
       return `
         transform: scale(${scale});
         opacity: ${eased}
-      `;
+      `;`
     }
   };
 }

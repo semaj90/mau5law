@@ -471,7 +471,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         '/models/legal-embeddings.bin'
       ];
       resources.forEach(resource => {
-        fetch(resource, { cache: 'force-cache' }).catch(() => {});
+        fetch(resource, { cache: 'force-cache` }).catch(() => {});'`
       });
     }
   }

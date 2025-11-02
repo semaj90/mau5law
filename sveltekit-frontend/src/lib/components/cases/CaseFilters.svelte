@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Case } from '$lib/types/api';
   import { Input } from '$lib/components/ui/input/Input.svelte';
@@ -84,38 +84,38 @@
     });
   });
 </script>
-<div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border">
-  <div class="flex items-center gap-2 flex-1 min-w-[200px]">
-    <Search class="w-4 h-4 text-gray-500" />
+<div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm, border">
+  <div class="flex items-center gap-2 flex-1, min-w-[200px]">
+    <Search class="w-4 h-4, text-gray-500" />
     <Input;
       bind:value={searchQuery}
       placeholder="Search cases..."
       class="flex-1"
     />
   </div>
-  <div class="flex items-center gap-2">
-    <Filter class="w-4 h-4 text-gray-500" />
-    <Select.Root bind:value={statusFilter}>
-      <Select.Trigger class="w-[140px]">
-        <Select.Value placeholder="Status" />
+  <div class="flex items-center, gap-2">
+    <Filter class="w-4 h-4, text-gray-500" />
+    <Select.Root, bind:value={statusFilter}>
+      <Select.Trigger, class="w-[140px]">
+        <Select.Value, placeholder="Status" />
       </Select.Trigger>
       <Select.Content>
-        <Select.Item value="all">All Statuses</Select.Item>
-        <Select.Item value="active">Active</Select.Item>
-        <Select.Item value="pending">Pending</Select.Item>
-        <Select.Item value="closed">Closed</Select.Item>
+        <Select.Item, value="all">All Statuses</Select.Item>
+        <Select.Item, value="active">Active</Select.Item>
+        <Select.Item, value="pending">Pending</Select.Item>
+        <Select.Item, value="closed">Closed</Select.Item>
       </Select.Content>
     </Select.Root>
   </div>
-  <div class="flex items-center gap-2">
-    <Select.Root bind:value={sortBy}>
-      <Select.Trigger class="w-[130px]">
-        <Select.Value placeholder="Sort by" />
+  <div class="flex items-center, gap-2">
+    <Select.Root, bind:value={sortBy}>
+      <Select.Trigger, class="w-[130px]">
+        <Select.Value placeholder="Sort, by" />
       </Select.Trigger>
       <Select.Content>
-        <Select.Item value="createdAt">Created Date</Select.Item>
-        <Select.Item value="title">Title</Select.Item>
-        <Select.Item value="status">Status</Select.Item>
+        <Select.Item, value="createdAt">Created Date</Select.Item>
+        <Select.Item, value="title">Title</Select.Item>
+        <Select.Item, value="status">Status</Select.Item>
       </Select.Content>
     </Select.Root>
   </div>
@@ -126,10 +126,10 @@
     onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
   >
     {#if sortOrder === 'asc'}
-      <SortAsc class="w-4 h-4 mr-2" />
+      <SortAsc class="w-4 h-4, mr-2" />
       Ascending
     {:else}
-      <SortDesc class="w-4 h-4 mr-2" />
+      <SortDesc class="w-4 h-4, mr-2" />
       Descending
     {/if}
 </div>

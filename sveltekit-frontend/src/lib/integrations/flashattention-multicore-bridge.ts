@@ -5,8 +5,8 @@ import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './com
  */
 import { getContext7MulticoreService } from './context7-multicore.js';
 import { flashAttention2Service, type LegalContextAnalysis } from '$lib/services/flashattention2-rtx3060.js';
-// Define MulticoreSystemStatus locally as it's not exported from its module
-interface MulticoreSystemStatus { workers: Array<{ id: string; status: string;, tasks: number }>; // Minimal definition based on usage
+// Define MulticoreSystemStatus locally as it's not exported from its module'
+interface MulticoreSystemStatus { workers: Array<{ id: string; status: string; tasks: number }>; // Minimal definition based on usage
   // Add other properties if known from context7-multicore.js
 }
 // Local ProcessingTask shape (matches usage in this module)
@@ -69,7 +69,7 @@ export interface FlashAttentionMulticoreResponse {
   performanceOptimizations: string[];
 }
 /**
- * Represents the structured output from the multicore service's error analysis.
+ * Represents the structured output from the multicore service's error analysis.'
  */
 export interface MulticoreErrorAnalysisResult {
   recommendations?: string[];
@@ -93,7 +93,7 @@ export interface ErrorAnalysisWithAttention { errorPatterns: MulticoreErrorAnaly
  * Bridge service connecting FlashAttention2 GPU processing with Context7 multicore analysis
  */
 export class FlashAttentionMulticoreBridge {
-  private multicoreService: ReturnType<typeof getContext7MulticoreService>;
+  private multicoreService: ReturnType<typeof, getContext7MulticoreService>;
   private isInitialized = $state(false);
   private performanceMetrics: Map<string, number> = new Map();
   constructor() {
@@ -261,7 +261,7 @@ export class FlashAttentionMulticoreBridge {
         context: 'Error analysis with FlashAttention2 integration',
         errorType: 'compilation_errors',
         codeSnippet: JSON.stringify(request.options.errorData).substring(0, 1000),
-        priority: request.options?.priority || 'high` });
+        priority: request.options?.priority || 'high` });'`
       tasks.push(errorTask);
     }
     return tasks;

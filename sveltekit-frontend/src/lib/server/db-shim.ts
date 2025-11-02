@@ -2,7 +2,7 @@ import postgres from 'postgres';
 // Use process.env to avoid requiring SvelteKit-specific env imports in utility module
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
-const sql: ReturnType<typeof postgres> = postgres(connectionString, {
+const sql: ReturnType<typeof, postgres> = postgres(connectionString, {
   max: 5,
   idle_timeout: 10,
   debug: process.env.NODE_ENV === 'development'
@@ -34,7 +34,7 @@ async function runQuery(
   const text = typeof textOrConfig === 'string' ? textOrConfig : textOrConfig.text;
   const values = typeof textOrConfig === 'string' ? params : textOrConfig.values;
 
-  // Execute query using postgres-js's `unsafe` method for raw SQL
+  // Execute query using postgres-js's `unsafe` method for raw SQL'
   // postgres-js can return multiple shapes; allow unknown and normalize below
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const resultRaw = await sql.unsafe(text, values as unknown as any[]);

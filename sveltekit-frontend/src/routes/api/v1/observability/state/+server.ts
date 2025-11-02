@@ -33,7 +33,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch(error: any){
-    console.error('[observability-state] GET error:', error)
+    console.error('[observability-state] GET error:', error)'
     return json({ ok: false, error: error.message }, { status: 500 })
   }
 }
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
-    console.error('[observability-state] POST error:', error)
+    console.error('[observability-state] POST error:', error)'
     return json({ error: 'Failed to update observability state' }, { status: 500 })
   }
 }

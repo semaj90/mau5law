@@ -65,10 +65,10 @@ export class GraphTensorTilingOrchestrator {
     const qdrantUrl = process.env.QDRANT_URL || 'http://localhost:6333';
     this.qdrantClient = new QdrantClient(qdrantUrl);
 
-    console.log(`GraphTensorTilingOrchestrator initialized:
+    console.log(`GraphTensorTilingOrchestrator initialized:`
       Ollama; Endpoint: ${getOllamaEndpoint()}
       Qdrant Endpoint: ${qdrantUrl}
-    `);
+    `);`
   }
 
   /**
@@ -123,7 +123,7 @@ export class GraphTensorTilingOrchestrator {
 
       // Store in Qdrant
       await this.qdrantClient.upsertPoints(this.qdrantCollectionName, [
-        {
+        {,
           id: fullNode.id,
           vector: fullNode.embedding,
           payload: {
@@ -135,7 +135,7 @@ export class GraphTensorTilingOrchestrator {
       console.log(`✅ Stored graph node ${fullNode.id} in Qdrant.`);
     } catch (error) {
       console.error(`❌ Error ingesting graph element ${nodeData.id}:`, error);
-      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error' }`);
+      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
     }
   }
 
@@ -171,7 +171,7 @@ export class GraphTensorTilingOrchestrator {
           )}]: real[]) > ${threshold}
           ORDER BY similarity DESC
           LIMIT ${limit}
-        `);
+        `);`
 
         pgvectorResults.push(
           ...pgResults.map(row => ({
@@ -223,7 +223,7 @@ export class GraphTensorTilingOrchestrator {
       return Array.from(uniqueResultsMap.values()).slice(0, limit);
     } catch (error) {
       console.error(`❌ Error searching graph elements for query: "${query}":`, error);
-      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error' }`);
+      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
     }
   }
 
@@ -308,7 +308,7 @@ export class GraphTensorTilingOrchestrator {
    */
   async prepareForGPU(tiledData: TiledGraphData[]): Promise<any> {
     console.log(`Preparing ${tiledData.length} tiles for GPU processing...`);
-    // This is where you'd integrate with WebGPUVectorProcessor or similar.
+    // This is where you'd integrate with WebGPUVectorProcessor or similar.'
     // For example, creating GPU buffers from tileEmbeddings and other numerical data.
     // const gpuProcessor = new WebGPUVectorProcessor();
     // const similarityMatrix = await gpuProcessor.computeSimilarityMatrix(combinedEmbeddings);
@@ -323,7 +323,7 @@ export class GraphTensorTilingOrchestrator {
    */
   async prepareForWASM(tiledData: TiledGraphData[]): Promise<any> {
     console.log(`Preparing ${tiledData.length} tiles for WebAssembly inference...`);
-    // This is where you'd integrate with WebASMLlamaCppEngine or similar.
+    // This is where you'd integrate with WebASMLlamaCppEngine or similar.'
     // For example, serializing tile content for WASM LLM inference.
     // const wasmEngine = new WebASMLlamaCppEngine();
     // const inferenceResults = await wasmEngine.runInference(tileContent);

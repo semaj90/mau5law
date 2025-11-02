@@ -131,7 +131,7 @@ export class SIMDVectorJsonParser {
    */
   private initializeParseWorkers(): void {
     // Workers would be initialized here in production
-    // For now, we'll simulate with sync processing
+    // For now, we'll simulate with sync processing'
     console.log(`👷 Initialized ${this.config.parallelParsers} SIMD parse workers`);
   }
   /**
@@ -210,7 +210,7 @@ export class SIMDVectorJsonParser {
         }
         simdOperations++;
       } catch (error) {
-        console.warn(`⚠️ Failed to parse vector at index ${i}: ', error);
+        console.warn(`⚠️ Failed to parse vector at index ${i}: ', error);'`
         // Continue with null vector or default
       }
     }

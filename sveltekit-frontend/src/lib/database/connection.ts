@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres, { type ParameterOrJSON } from 'postgres';
 import * as schema from './schema.js';
@@ -115,14 +115,14 @@ export async function vectorSimilaritySearch(
 ): Promise<DBResult> {
   try {
     const tableName = table === 'documents' ? 'documents' : 'search_index';
-    // Use pgvector's cosine distance operator and cast param as ::vector
+    // Use pgvector's cosine distance operator and cast param as ::vector'
     const query = `
       SELECT *, 1 - (embedding <=> $1::vector) AS similarity
       FROM ${tableName}
       WHERE 1 - (embedding <=> $1::vector) > $2
       ORDER BY embedding <=> $1::vector
       LIMIT $3
-    `;
+    `;`
     // pass embedding as a vector literal string
     const params: ParamList = [`[${queryEmbedding.join(',')}]`, threshold, limit];
     // use helper to avoid TS spreading errors
@@ -171,7 +171,7 @@ export async function hybridSemanticSearch(
       // cast caseId to uuid for safe comparisons
       params.push(caseId);
       const idx = params.length;
-      whereClauses.push(`(
+      whereClauses.push(`(`
         (si.entity_type = 'case' AND si.entity_id = $${idx}::uuid) OR
         (si.entity_type = 'document' AND EXISTS (
           SELECT 1 FROM documents d WHERE d.id = si.entity_id AND d.case_id = $${idx}::uuid
@@ -179,7 +179,7 @@ export async function hybridSemanticSearch(
         (si.entity_type = 'evidence' AND EXISTS (
           SELECT 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${idx}::uuid
         ))
-      )`);
+      )`);`
     }
 
     // push limit as last param
@@ -192,8 +192,7 @@ export async function hybridSemanticSearch(
         si.*,
         1 - (si.embedding <=> $1::vector) AS similarity,
         CASE si.entity_type
-          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title
-          WHEN: 'case' THEN c.title
+          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title; WHEN: 'case' THEN c.title
           ELSE si.metadata->>'title'
         END AS entity_title
       FROM search_index si
@@ -203,7 +202,7 @@ export async function hybridSemanticSearch(
       WHERE ${whereClause}
       ORDER BY si.embedding <=> $1::vector
       LIMIT $${limitPlaceholderIndex}
-    `;
+    `;`
     const result = await unsafeQuery<DBRow>(searchQuery, params);
     const count = Array.isArray(result) ? result.length : 0;
     return {
@@ -233,7 +232,7 @@ export async function initializeDatabase(): Promise<DBResult> {
     await unsafeQuery('CREATE EXTENSION IF NOT EXISTS vector;');
     console.log('✅ Database extensions created');
     // Run migrations would go here
-    // await migrate(db, { migrationsFolder: './drizzle' })
+    // await migrate(db, { migrationsFolder: './drizzle` })'`
     const health = await testDatabaseConnection();
     if (health.success) {
       console.log('✅ Database initialization complete');
@@ -243,7 +242,7 @@ export async function initializeDatabase(): Promise<DBResult> {
     }
     return health;
   } catch (error: any) {
-    console.error('❌ Database initialization error:', error);
+    console.error('❌ Database initialization error:', error);'
     return {
       success: false,
       message: `Initialization; failed: ${getErrorMessage(error)}`,

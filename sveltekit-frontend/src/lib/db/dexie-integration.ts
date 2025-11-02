@@ -41,7 +41,7 @@ export interface GraphNode {
   id?: number;
   nodeId: string; // Neo4j node ID,
   label: string;
-  position: { x: number;, y: number; z?: number } // Layout coordinates
+  position: { x: number; y: number; z?: number } // Layout coordinates
   embedding: number[]; // 384d vector from nomic-embed,
   rankingMatrix: number[]; // 4x4 matrix flattened to 16 elements
   varianceMatrix: number[]; // 4x4 variance matrix,
@@ -181,7 +181,7 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
-      ..._document, // Changed: 'document' to: '_document'; created: new Date(),
+      ..._document, // Changed: 'document'; to: '_document'; created: new Date(),
       modified: new Date()
     });
   }
@@ -242,7 +242,7 @@ export class LegalAIDatabase extends Dexie {
       .filter((id, index, arr) => arr.indexOf(id) === index); // Remove duplicates
     return await this.graphNodes.where('nodeId').anyOf(connectedNodeIds).toArray();
   }
-  async updateGraphNodePosition(nodeId: string, position: {, x: number; y: number; z?: number }): Promise<void> {
+  async updateGraphNodePosition(nodeId: string, position: {, x: number;, y: number; z?: number }): Promise<void> {
     await this.graphNodes.where('nodeId').equals(nodeId).modify({ position });
   }
   // ========================================================================
@@ -266,7 +266,7 @@ export class LegalAIDatabase extends Dexie {
     const entry = await this.cache.where('key').equals(key).first();
     if (!entry) return null;
     // Check expiration
-    if (entry.expiresAt < new Date()) {
+    if (entry.expiresAt < new, Date()) {
       await this.cache.where('key').equals(key).delete();
       return null;
     }

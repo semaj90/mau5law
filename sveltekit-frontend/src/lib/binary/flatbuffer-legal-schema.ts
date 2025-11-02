@@ -512,4 +512,4 @@ export class LegalDocumentBinarySerializer {
   }
 }
 // Export for use in other modules
-export { LegalDocumentBinarySerializer as BinarySerializer }
+export { LegalDocumentBinarySerializer, as BinarySerializer }

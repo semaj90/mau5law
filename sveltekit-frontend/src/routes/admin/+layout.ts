@@ -35,7 +35,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     if (error && typeof (error as any).status === 'number') {
       throw error;
     }
-    console.error('Admin layout load error:', error);
+    console.error('Admin layout load error:', error);'
     throw redirect(302, '/login');
   }
 };

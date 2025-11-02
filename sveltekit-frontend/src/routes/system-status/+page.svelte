@@ -1,334 +1,52 @@
-<script lang="ts">
-import type { User } from '$lib/types';
-  import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
-  import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
-  // Svelte 5 runes
-  let systemStatus = $state<Record<string, any>>({});
-  let authStatus = $state<any>(null);
-  type TestResult = {
-    success?: boolean;
-    error?: string;
-    data?: any;
-    status?: number;
-    timestamp?: string | number | Date | undefined;
-    endpoint?: string;
-  };
-  // typed testResults to avoid unknown/indexing issues
-  let testResults = $state<Record<string, TestResult>>({});
-  let isRunning = $state<boolean>(false);
-
-  // helper to safely format unknown timestamps (prevents TS Date overload issues)
-  function formatTimestamp(ts: any): string {
-    try {
-      if (!ts) return '';
-      // Accept ISO string, number, or Date
-      const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as any) : ts instanceof Date ? ts : new Date(String(ts));
-      if (isNaN(d.getTime())) return '';
-      return d.toLocaleString();
-    } catch {
-      return '';
-    }
-  }
-  type TestConfig = {
-    name: string;
-    endpoint: string;
-    method?: 'GET' | 'POST';
-    body?: any;
-    description: string;
-  };
-  const tests: TestConfig[] = [
-    {
-      name: 'Authentication Debug',
-      endpoint: '/api/auth/debug',
-      description: 'Check authentication status and development flags',
-    },
-    {
-      name: 'Development Auth Creation',
-      endpoint: '/api/dev-auth?seed=true',
-      description: 'Create development session with sample data',
-    },
-    {
-      name: 'Enhanced RAG Health',
-      endpoint: 'http://localhost:8094/health',
-      description: 'Go microservice health check',
-    },
-    {
-      name: 'Upload Service Health',
-      endpoint: 'http://localhost:8093/health',
-      description: 'File upload service health',
-    },
-    {
-      name: 'Ollama API',
-      endpoint: 'http://localhost:11434/api/tags',
-      description: 'AI model availability',
-    },
-    {
-      name: 'SSE Chat API',
-      endpoint: '/api/ai/chat-sse',
-      method: 'POST',
-      body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' },
-      description: 'Server-Sent Events streaming test',
-    }
-  ];
-  async function runTest(test: TestConfig): Promise<any> {
-    try {
-      const options: RequestInit = {
-        method: test.method || 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      }
-      if (test.body) {
-        options.body = JSON.stringify(test.body);
-      }
-      const response = await fetch(test.endpoint, options);
-      let data: any;
-      try {
-        data = await response.json();
-      } catch {
-        data = await response.text();
-      }
-      testResults[test.name] = {
-        success: response.ok,
-        status: response.status,
-        data,
-        endpoint: test.endpoint,
-        timestamp: new Date().toISOString(),
-      } as any;
-    } catch (error) {
-      testResults[test.name] = {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        endpoint: test.endpoint,
-        timestamp: new Date().toISOString(),
-      } as any;
-    }
-    // Trigger reactivity
-    testResults = { ...testResults }
-  }
-  async function runAllTests(): Promise<any> {
-    isRunning = true;
-    testResults = {}
-    for (const test of tests) {
-      await runTest(test);
-      await new Promise(resolve => setTimeout(resolve, 300));
-    }
-    isRunning = false;
-  }
-  async function checkAuthStatus(): Promise<any> {
-    try {
-      const response = await fetch('/api/auth/me');
-      authStatus = await response.json();
-    } catch (error) {
-      console.error('Auth status check failed:', error);
-    }
-  }
-  async function createDevSession(): Promise<any> {
-    try {
-      const response = await fetch('/api/dev-auth?seed=true');
-      const result = await response.json();
-      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
-        await checkAuthStatus();
-      }
-      return result;
-    } catch (error) {
-      console.error('Dev session creation failed:', error);
-    }
-  }
-  async function clearSession(): Promise<any> {
-    try {
-      const response = await fetch('/api/dev-auth', { method: 'DELETE' });
-      const result = await response.json();
-      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
-        await checkAuthStatus();
-      }
-      return result;
-    } catch (error) {
-      console.error('Session clear failed:', error);
-    }
-  }
-  $effect(() => {
-    checkAuthStatus();
-    runAllTests();
-  });
-</script>
-
-<EvidenceBoardLayout
-  title="SYSTEM STATUS MONITOR"
+<script, lang="ts">
+import type { User } from '$lib/types'; import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte'; import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte'; // Svelte 5 runes let systemStatus = $state<Record<string, any>>({}); let authStatus = $state<any>(null); type TestResult = { success?: boolean; error?: string; data?: any; status?: number; timestamp?: string | number | Date | undefined; endpoint?: string; }; // typed testResults to avoid unknown/indexing issues let testResults = $state<Record<string, TestResult>>({}); let isRunning = $state<boolean>(false); // helper to safely format unknown timestamps (prevents TS Date overload issues) function formatTimestamp(ts: any): string { try { if (!ts) return ''; // Accept ISO string, number, or Date const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as any): ts instanceof Date ? ts: new Date(String(ts)); if (isNaN(d.getTime())) return ''; return d.toLocaleString(); } catch { return ''; }
+  } type TestConfig = { name: string; endpoint: string; method?: 'GET' | 'POST'; body?: any; description: string; }; const tests: TestConfig[] = [ {
+      name: 'Authentication Debug', endpoint: '/api/auth/debug', description: 'Check authentication status and development flags'
+    }, {
+      name: 'Development Auth Creation', endpoint: '/api/dev-auth?seed=true', description: 'Create development session with sample data'
+    }, {
+      name: 'Enhanced RAG Health', endpoint: 'http://localhost:8094/health', description: 'Go microservice health check'
+    }, {
+      name: 'Upload Service Health', endpoint: 'http://localhost:8093/health', description: 'File upload service health'
+    }, {
+      name: 'Ollama API', endpoint: 'http://localhost:11434/api/tags', description: 'AI model availability'
+    }, {
+      name: 'SSE Chat API', endpoint: '/api/ai/chat-sse', method: 'POST', body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' }, description: 'Server-Sent Events streaming test'
+    } ]; async function runTest(test: TestConfig): Promise<any> { try { const options: RequestInit = { method: test.method || 'GET', headers: { 'Content-Type': 'application/json' } }
+      if (test.body) { options.body = JSON.stringify(test.body); }
+      const response = await fetch(test.endpoint, options); let data: any; try { data = await response.json(); } catch { data = await response.text(); }
+      testResults[test.name] = { success: response.ok, status: response.status, data, endpoint: test.endpoint, timestamp: new Date().toISOString() } as any; } catch (error) { testResults[test.name] = { success: false, error: error instanceof Error ? error.message: 'Unknown error', endpoint: test.endpoint, timestamp: new Date().toISOString() } as any; }
+    // Trigger reactivity testResults = { ...testResults } }
+  async function runAllTests(): Promise<any> { isRunning = true; testResults = {} for (const test of tests) { await runTest(test); await new Promise(resolve => setTimeout(resolve, 300)); }
+    isRunning = false; }
+  async function checkAuthStatus(): Promise<any> { try { const response = await fetch('/api/auth/me'); authStatus = await response.json(); } catch (error) { console.error('Auth status check failed:', error); }
+  } async function createDevSession(): Promise<any> { try { const response = await fetch('/api/dev-auth?seed=true'); const result = await response.json(); if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) { await checkAuthStatus(); }
+      return result; } catch (error) { console.error('Dev session creation failed:', error); }
+  } async function clearSession(): Promise<any> { try { const response = await fetch('/api/dev-auth', { method: 'DELETE' }); const result = await response.json(); if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) { await checkAuthStatus(); }
+      return result; } catch (error) { console.error('Session clear failed:', error); }
+  } $effect(() => { checkAuthStatus(); runAllTests(); }); </script> <EvidenceBoardLayout title="SYSTEM STATUS MONITOR"
   caseInfo="DEVELOPMENT ENVIRONMENT HEALTH CHECK"
-  demoMode={true}
->
-  <svelte:fragment slot="rightPanel">
-     <!-- Authentication Status Panel -->
-     <div class="nes-container is-rounded evidence-panel mb-4">
-       <h3 class="nes-text is-primary mb-3">🔐 Authentication Status</h3>
-       {#if authStatus}
-         <div class="space-y-2">
-           <EvidenceCard
-             title="Auth Status"
-             description={authStatus.hasUser ? 'Authenticated' : 'Not Authenticated'}
-             status={authStatus.hasUser ? 'active' : 'pending'}
-             type="auth"
-             connections={1}
-           >
-             <!-- intentionally empty children to satisfy EvidenceCard typing -->
-           </EvidenceCard>
-           {#if authStatus.user}
-             <div class="text-xs text-gray-600 p-2 nes-container is-rounded bg-blue-50">
-               User ID: {authStatus.user.id.substring(0, 8)}...
-             </div>
-           {/if}
-         </div>
-       {:else}
-         <p class="nes-text text-xs">Loading authentication status...</p>
-       {/if}
-     </div>
-     <!-- Quick Actions Panel -->
-     <div class="nes-container is-rounded evidence-panel">
-       <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
-       <div class="space-y-2">
-         <button class="nes-btn is-primary w-full text-xs" onclick={runAllTests} disabled={isRunning}>
-           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
-         </button>
-         <button class="nes-btn is-success w-full text-xs" onclick={createDevSession}> 🔑 Create Dev Session </button>
-         <button class="nes-btn is-normal w-full text-xs" onclick={checkAuthStatus}> 👤 Check Auth Status </button>
-         <button class="nes-btn is-error w-full text-xs" onclick={clearSession}> 🚪 Clear Session </button>
-       </div>
-     </div>
-  </svelte:fragment>
-  <!-- Main System Tests Content -->
-  <main class="space-y-6">
-    <!-- System Tests Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {#each Array.isArray(tests) ? tests : [] as test}
-        {@const result = testResults[test.name]}
-        <EvidenceCard
-          title={test.name}
-          description={test.description}
-          status={result?.success ? 'active' : result ? 'pending' : 'pending'}
-          type="system"
-          connections={result?.status || 0}
-        >
-          <div class="nes-container is-rounded bg-gray-50 p-3">
-            <div class="text-xs mb-2">
-              <strong class="nes-text is-primary">{test.method || 'GET'}</strong>
-              {test.endpoint}
-            </div>
-            {#if result}
-              <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                  <span class="nes-text">Status:</span>
-                  <span
-                    class="nes-text {result?.success ? 'is-success' : 'is-error'}"
-                  >
-                    {result?.success ? '✅ PASS' : '❌ FAIL'}
-                  </span>
-                </div>
-                {#if result?.error}
-                  <div class="nes-container is-rounded bg-red-50 p-2">
-                    <p class="text-xs text-red-700">Error: {result.error}</p>
-                  </div>
-                {/if}
-                {#if result?.data && result?.success && typeof result.data === 'object'}
-                  <div class="nes-container is-rounded bg-green-50 p-2">
-                    <p class="text-xs text-green-700">✅ Response received</p>
-                  </div>
-                {/if}
-                <p class="text-xs text-gray-500">{formatTimestamp(result?.timestamp)}</p>
-              </div>
-            {:else}
-              <p class="nes-text text-xs">⏳ Waiting for test...</p>
-            {/if}
-          </div>
-        </EvidenceCard>
-      {/each}
-    </div>
-    <!-- Available Endpoints Grid -->
-    <div class="nes-container is-rounded evidence-panel">
-      <h3 class="nes-text is-success mb-4">🌐 Available Endpoints & Demos</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <EvidenceCard
-          title="🎨 Frontend Demos"
+  demoMode={ true } >
+  <svelte:fragment, slot="rightPanel"> <!-- Authentication Status, Panel --> <div class="nes-container is-rounded evidence-panel, mb-4"> <h3 class="nes-text is-primary, mb-3">🔐 Authentication Status</h3> {#if authStatus} <div, class="space-y-2"> <EvidenceCard title="Auth Status"
+             description={authStatus.hasUser ? 'Authenticated': 'Not Authenticated'} status={authStatus.hasUser ? 'active': 'pending'} type="auth"
+             connections={ 1 } >
+             <!-- intentionally empty children to satisfy EvidenceCard, typing --> </EvidenceCard> {#if authStatus.user} <div class="text-xs text-gray-600 p-2 nes-container is-rounded, bg-blue-50"> User ID: {authStatus.user.id.substring(0, 8)}... </div> {/if} </div> {:else} <p class="nes-text, text-xs">Loading authentication status...</p> {/if} </div> <!-- Quick Actions, Panel --> <div class="nes-container is-rounded, evidence-panel"> <h3 class="nes-text is-warning, mb-3">🚀 Quick Actions</h3> <div, class="space-y-2"> <button class="nes-btn is-primary w-full, text-xs" onclick={ runAllTests } disabled={ isRunning }> {isRunning ? '⏳ Running...': '🔄 Run All Tests'} </button> <button class="nes-btn is-success w-full, text-xs" onclick={ createDevSession }> 🔑 Create Dev Session </button> <button class="nes-btn is-normal w-full, text-xs" onclick={ checkAuthStatus }> 👤 Check Auth Status </button> <button class="nes-btn is-error w-full, text-xs" onclick={ clearSession }> 🚪 Clear Session </button> </div> </div> </svelte:fragment> <!-- Main System Tests, Content --> <main, class="space-y-6"> <!-- System Tests, Grid --> <div class="grid grid-cols-1 lg:grid-cols-2, gap-4"> {#each Array.isArray(tests) ? tests: [] as test} {@const result = testResults[test.name]} <EvidenceCard title={test.name} description={test.description} status={result?.success ? 'active': result ? 'pending': 'pending'} type="system"
+          connections={result?.status || 0} >
+          <div class="nes-container is-rounded bg-gray-50, p-3"> <div class="text-xs, mb-2"> <strong class="nes-text is-primary">{test.method || 'GET'}</strong> {test.endpoint} </div> {#if result} <div, class="space-y-2"> <div class="flex justify-between, items-center"> <span, class="nes-text">Status:</span> <span class="nes-text {result?.success ? 'is-success': 'is-error'}"
+                  > {result?.success ? '✅ PASS': '❌ FAIL'} </span> </div> {#if result?.error} <div class="nes-container is-rounded bg-red-50, p-2"> <p class="text-xs, text-red-700">Error: {result.error}</p> </div> {/if} {#if result?.data && result?.success && typeof result.data === 'object'} <div class="nes-container is-rounded bg-green-50, p-2"> <p class="text-xs, text-green-700">✅ Response received</p> </div> {/if} <p class="text-xs, text-gray-500">{formatTimestamp(result?.timestamp)}</p> </div> {:else} <p class="nes-text, text-xs">⏳ Waiting for test...</p> {/if} </div> </EvidenceCard> {/each} </div> <!-- Available Endpoints, Grid --> <div class="nes-container is-rounded, evidence-panel"> <h3 class="nes-text is-success mb-4">🌐 Available Endpoints & Demos</h3> <div class="grid grid-cols-1 md:grid-cols-3 gap-4, mb-6"> <EvidenceCard title="🎨 Frontend Demos"
           description="Interactive web interface demos"
           status="active"
           type="frontend"
-          connections={4}
-        >
-          <div class="space-y-1 text-xs">
-            <a href="/dev-demo" class="nes-text is-primary block">• Development Demo</a>
-            <a href="/ai-assistant" class="nes-text is-primary block">• AI Assistant (SSE)</a>
-            <a href="/test-ai-assistant" class="nes-text is-primary block">• Integration Tests</a>
-            <a href="/system-status" class="nes-text is-primary block">• System Status</a>
-          </div>
-        </EvidenceCard>
-        <EvidenceCard
-          title="🔗 API Endpoints"
+          connections={ 4 } >
+          <div class="space-y-1, text-xs"> <a href="/dev-demo" class="nes-text is-primary, block">• Development Demo</a> <a href="/ai-assistant" class="nes-text is-primary, block">• AI Assistant (SSE)</a> <a href="/test-ai-assistant" class="nes-text is-primary, block">• Integration Tests</a> <a href="/system-status" class="nes-text is-primary, block">• System Status</a> </div> </EvidenceCard> <EvidenceCard title="🔗 API Endpoints"
           description="REST API service endpoints"
           status="active"
           type="api"
-          connections={4}
-        >
-          <div class="space-y-1 text-xs">
-            <code class="nes-text is-success block">/api/auth/debug</code>
-            <code class="nes-text is-success block">/api/dev-auth</code>
-            <code class="nes-text is-success block">/api/cases</code>
-            <code class="nes-text is-success block">/api/ai/chat-sse</code>
-          </div>
-        </EvidenceCard>
-        <EvidenceCard
-          title="⚡ Go Services"
+          connections={ 4 } >
+          <div class="space-y-1, text-xs"> <code class="nes-text is-success, block">/api/auth/debug</code> <code class="nes-text is-success, block">/api/dev-auth</code> <code class="nes-text is-success, block">/api/cases</code> <code class="nes-text is-success, block">/api/ai/chat-sse</code> </div> </EvidenceCard> <EvidenceCard title="⚡ Go Services"
           description="Microservice backend ports"
           status="active"
           type="service"
-          connections={4}
-        >
-          <div class="space-y-1 text-xs">
-            <code class="nes-text is-warning block">:8094 Enhanced RAG</code>
-            <code class="nes-text is-warning block">:8093 Upload Service</code>
-            <code class="nes-text is-warning block">:11434 Ollama API</code>
-            <code class="nes-text is-warning block">:5432 PostgreSQL</code>
-          </div>
-        </EvidenceCard>
-      </div>
-      <!-- Current Status Summary -->
-      <div class="nes-container is-rounded bg-yellow-50 p-4">
-        <h4 class="nes-text is-warning mb-3">🎯 Current Status Summary</h4>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="text-xs">
-            <span class="nes-text font-bold">Development Server:</span>
-            <p class="text-yellow-700">http://localhost:5176</p>
-          </div>
-          <div class="text-xs">
-            <span class="nes-text font-bold">Authentication</span>
-            <p class="text-yellow-700">DEV_BYPASS_AUTH enabled</p>
-          </div>
-          <div class="text-xs">
-            <span class="nes-text font-bold">Database:</span>
-            <p class="text-yellow-700">35 tables ready</p>
-          </div>
-          <div class="text-xs">
-            <span class="nes-text font-bold">AI Models:</span>
-            <p class="text-yellow-700">gemma3-legal + nomic-embed</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</EvidenceBoardLayout>
-          </div>
-          <div class="text-xs">
-            <span class="nes-text font-bold">Authentication</span>
-            <p class="text-yellow-700">DEV_BYPASS_AUTH enabled</p>
-          </div>
-          <div class="text-xs">
-            <span class="nes-text font-bold">Database:</span>
-            <p class="text-yellow-700">35 tables ready</p>
-          </div>
-          <div class="text-xs">
-            <span class="nes-text font-bold">AI Models:</span>
-            <p class="text-yellow-700">gemma3-legal + nomic-embed</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</EvidenceBoardLayout>
+          connections={ 4 } >
+          <div class="space-y-1, text-xs"> <code class="nes-text is-warning, block">:8094 Enhanced RAG</code> <code class="nes-text is-warning, block">:8093 Upload Service</code> <code class="nes-text is-warning, block">:11434 Ollama API</code> <code class="nes-text is-warning, block">:5432 PostgreSQL</code> </div> </EvidenceCard> </div> <!-- Current Status, Summary --> <div class="nes-container is-rounded bg-yellow-50, p-4"> <h4 class="nes-text is-warning, mb-3">🎯 Current Status Summary</h4> <div class="grid grid-cols-2 md:grid-cols-4, gap-4"> <div, class="text-xs"> <span class="nes-text, font-bold">Development Server:</span> <p, class="text-yellow-700">http://localhost:5176</p> </div> <div, class="text-xs"> <span class="nes-text, font-bold">Authentication</span> <p, class="text-yellow-700">DEV_BYPASS_AUTH enabled</p> </div> <div, class="text-xs"> <span class="nes-text, font-bold">Database:</span> <p, class="text-yellow-700">35 tables ready</p> </div> <div, class="text-xs"> <span class="nes-text, font-bold">AI Models:</span> <p, class="text-yellow-700">gemma3-legal + nomic-embed</p> </div> </div> </div> </div> </main> </EvidenceBoardLayout> </div> <div, class="text-xs"> <span class="nes-text, font-bold">Authentication</span> <p, class="text-yellow-700">DEV_BYPASS_AUTH enabled</p> </div> <div, class="text-xs"> <span class="nes-text, font-bold">Database:</span> <p, class="text-yellow-700">35 tables ready</p> </div> <div, class="text-xs"> <span class="nes-text, font-bold">AI Models:</span> <p, class="text-yellow-700">gemma3-legal + nomic-embed</p> </div> </div> </div> </div> </main> </EvidenceBoardLayout>
 

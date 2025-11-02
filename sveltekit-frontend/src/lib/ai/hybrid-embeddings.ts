@@ -108,8 +108,7 @@ export class HybridEmbeddings {
           embedding: embedding as number[],
           strategy: 'ollama',
           duration: performance.now() - startTime,
-          model: 'embeddinggemma:latest'
-        };
+          model: 'embeddinggemma:latest` };'`
       } catch (error) {
         if (strategy === 'ollama') throw error;
       }
@@ -120,8 +119,7 @@ export class HybridEmbeddings {
       embedding: embedding as number[],
       strategy: 'browser',
       duration: performance.now() - startTime,
-      model: 'Xenova/all-MiniLM-L6-v2'
-    };
+      model: `Xenova/all-MiniLM-L6-v2` };
   }
   /**
    * Embed using Ollama via API proxy
@@ -195,7 +193,7 @@ export class HybridEmbeddings {
     documents: Array<{, text: string; metadata?: any }>,
     topK: number = 5,
     options: HybridEmbeddingOptions = {}
-  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
+  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
     const queryEmbedding = await this.embed(query, options) as number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts, options) as number[][];
@@ -252,7 +250,7 @@ export const hybridEmbeddings = new HybridEmbeddings();
  * USAGE EXAMPLES:
  *
  * // In a Svelte component:
- * <script lang="ts">
+ * <script, lang="ts">
  *   import { hybridEmbeddings } from '$lib/ai/hybrid-embeddings';
  *   import { onMount } from 'svelte';
  *

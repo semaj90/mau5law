@@ -7,10 +7,10 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
   try {
     // Quick access links for major legal resources
     const quickLinks = [
-      {
+      {,
         id: 'ca-civil-code',
         title: 'California Civil Code',
-        description: "California's comprehensive civil laws covering contracts, property, and personal rights",
+        description: "California's comprehensive civil laws covering contracts, property, and personal rights",'
         jurisdiction: 'california',
         category: 'civil',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Civil+Code',
@@ -20,7 +20,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
       {
         id: 'ca-penal-code',
         title: 'California Penal Code',
-        description: "California's criminal laws, penalties, and criminal procedures",
+        description: "California's criminal laws, penalties, and criminal procedures",'
         jurisdiction: 'california',
         category: 'criminal',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Penal+Code',

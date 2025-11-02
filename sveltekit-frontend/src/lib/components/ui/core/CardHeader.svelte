@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     class?: string;
@@ -7,7 +7,7 @@
   let { class: className = '', children }: Props = $props();
   let classes = $derived(className);
 </script>
-<div class="{classes} space-y-4">
+<div, class="{classes} space-y-4">
   {#if children}
     {@render children()}
   {/if}

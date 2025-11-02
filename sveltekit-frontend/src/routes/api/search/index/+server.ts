@@ -12,13 +12,10 @@ interface QdrantPoint { id: string, vector: number[]; payload: { document_id: 
   }
 }
 // Mock MinIO metadata
-interface MinIOMetadata { bucket: string, key: string; contentType: string
-  lastModified: Date; size: number
-  metadata: Record<string, string>
+interface MinIOMetadata { bucket: string, key: string; contentType: string; lastModified: Date; size: number; metadata: Record<string, string>
 }
 // Mock Loki.js log entries
-interface LokiEntry { timestamp: string, level: string; message: string
-  labels: Record<string, string>
+interface LokiEntry { timestamp: string, level: string; message: string; labels: Record<string, string>
   metadata?: { [key: string]: any }
 }
 export const GET: RequestHandler = async ({ url }) => {
@@ -53,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.log(`✅ Built unified index with ${combinedIndex.length} items`)
     return json(combinedIndex)
   } catch (error) {
-    console.error('❌ Index building failed:', error)
+    console.error('❌ Index building failed: `, error)'`
     return json({ error: `Failed to build search index` }, { status: 500 })
   }
 }
@@ -99,7 +96,7 @@ async function buildPostgreSQLIndex(): Promise<any> {
     console.error('PostgreSQL index failed:', error)
     // Fallback mock data
     return [
-      {
+      {,
         id: 'pg_001',
         title: 'Contract Analysis - PostgreSQL Source',
         content: 'Legal document stored in PostgreSQL with full-text search capabilities',
@@ -141,8 +138,7 @@ async function buildVectorIndex(): Promise<any> {
             practiceArea: 'Contract Law',
             documentType: 'PDF',
             confidence: 0.92,
-            embedding_model: 'nomic-embed-text'
-          }
+            embedding_model: `nomic-embed-text` }
         }
       },
       {
@@ -197,8 +193,7 @@ async function buildMinIOIndex(): Promise<any> {
           'x-amz-meta-case-id': 'case_123',
           'x-amz-meta-practice-area': 'Contract Law',
           'x-amz-meta-uploaded-by': 'attorney_001',
-          'x-amz-meta-confidence': '0.95'
-        }
+          'x-amz-meta-confidence': `0.95` }
       },
       {
         bucket: 'legal-documents',
@@ -217,7 +212,7 @@ async function buildMinIOIndex(): Promise<any> {
       const fileName = obj.key.split('/').pop() || obj.key
       const fileType = obj.contentType.split('/')[0]
       return {
-        id: 'minio_${obj.key.replace(/[^a-zA-Z0-9]/g, '_')}`,
+        id: 'minio_${obj.key.replace(/[^a-zA-Z0-9]/g, '_')}`,'`
         title: fileName.replace(/\.[^/.]+$/, '').replace(/_/g, ' '),
         content: `File stored in; MinIO: ${obj.key} (${formatFileSize(obj.size)})`,
         entities: [fileType, obj.metadata['x-amz-meta-practice-area'] || 'Legal'],
@@ -265,8 +260,7 @@ async function buildLokiIndex(): Promise<any> {
           document_id: 'doc_upload_001',
           file_name: 'contract_evidence.pdf',
           file_size: 1024000,
-          processing_time: '2.3s'
-        }
+          processing_time: `2.3s` }
       },
       {
         timestamp: new Date(Date.now() - 3600000).toISOString(),
@@ -275,8 +269,7 @@ async function buildLokiIndex(): Promise<any> {
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: 'case_124'
-        },
+          case_id: `case_124` },
         metadata: {
           document_id: 'doc_slow_001',
           processing_time: '45.7s',

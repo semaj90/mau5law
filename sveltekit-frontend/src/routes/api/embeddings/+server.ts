@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({
        , model: embeddingModel,
         prompt: text
@@ -35,21 +35,21 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Ollama embedding API error: ', errorData);
-      return json({ success: false, error: `Failed to get embeddings from; Ollama: ${errorData.error}` }, { status: response.status });
+      console.error('Ollama embedding API error: ', errorData);'
+      return json({ success: false, error: 'Failed to get embeddings from;, Ollama: ${errorData.error}' }, { status: response.status });
     }
 
     const data: EmbeddingResponse = await response.json();
 
     // For known models like: 'embeddinggemma:latest', we can explicitly set the dimension.
-    // This can be made more dynamic if Ollama's API provides it directly or via model info.
+    // This can be made more dynamic if Ollama's API provides it directly or via model info.'
     if (embeddingModel === 'embeddinggemma:latest' && data.embedding) {
       data.embeddingDimension = 384; // embeddinggemma:latest typically produces 384-dimensional embeddings
     }
 
     return json({ success: true, data });
   } catch (error) {
-    console.error('Error in /api/embeddings:`, error);
+    console.error('Error in /api/embeddings: ', error);
     return json({ success: false, error: `Internal server error` }, { status: 500 });
   }
 };

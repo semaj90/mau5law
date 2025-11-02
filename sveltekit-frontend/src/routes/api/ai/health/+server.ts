@@ -12,7 +12,7 @@ const ollamaService = {
       const res = await fetch(`${ollamaUrl}/api/version`, { signal: AbortSignal.timeout(5000) });
       return res.ok;
     } catch (err: any) {
-      // log safely even when err isn't an Error
+      // log safely even when err isn't an Error'
       logger?.warn?.('Ollama health check failed', String(err));
       return false;
     }
@@ -94,6 +94,6 @@ export const GET: RequestHandler = withErrorHandling(async event => {
     message:
       overallStatus === 'healthy'
         ? `All systems operational (${availableModels.length} models available)`
-        : 'Ollama service not available` };
+        : 'Ollama service not available' };
   return apiSuccess(healthData, undefined, requestId);
 });

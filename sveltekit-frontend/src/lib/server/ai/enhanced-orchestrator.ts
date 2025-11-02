@@ -85,7 +85,7 @@ function getServicePortWithFallback(serviceName: string, fallbackPort: number): 
 // ===== SERVICE CONFIGURATION =====
 const services = { neo4j: {, uri: process.env.NEO4J_URI || 'bolt://neo4j:7687', // Docker service name fallback
     user: process.env.NEO4J_USER || 'neo4j',
-    password: process.env.NEO4J_PASSWORD || 'password` },
+    password: process.env.NEO4J_PASSWORD || 'password` },'`
   goMicroservice: {
     // Prioritize explicit env var, then Docker service name + port, then localhost + port
     enhancedRAG:
@@ -100,7 +100,7 @@ const services = { neo4j: {, uri: process.env.NEO4J_URI || 'bolt://neo4j:7687',
       process.env.BINARY_VECTOR_ENGINE_URL ||
       `http://binary-vector-engine:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
     quicServer:
-      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}' },
+      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}' },'`
   ollama: {
     baseUrl: getOllamaEndpoint(), // Use the centralized helper
     models: {
@@ -150,7 +150,7 @@ try {
   redis = null;
 }
 // --- runtime-safe fetch helper (works in Node without global fetch) ---
-async function getFetch(): Promise<typeof fetch> {
+async function getFetch(): Promise<typeof, fetch> {
   if (typeof fetch !== 'undefined') return fetch;
   try {
     const mod = await import('node-fetch');
@@ -265,8 +265,7 @@ export class EnhancedAISynthesisOrchestrator {
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.legal,
         temperature: 0.3,
-        format: 'json'
-      } as any);
+        format: 'json` } as any);'`
       this.embeddings = new OllamaEmbeddings({
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.embedding
@@ -278,8 +277,7 @@ export class EnhancedAISynthesisOrchestrator {
           url: services.neo4j.uri,
           username: services.neo4j.user,
           password: services.neo4j.password,
-          indexName: 'legal_documents'
-        });
+          indexName: `legal_documents` });
       } catch (e: unknown) {
         this.neo4jStore = null;
         logger.warn('[Orchestrator] Neo4j init failed:', e);
@@ -300,8 +298,7 @@ export class EnhancedAISynthesisOrchestrator {
            , idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata'
-          },
+            metadataColumnName: `metadata` },
           distanceStrategy: `cosine` });
       } catch (e: unknown) {
         this.pgVectorStore = null;
@@ -313,19 +310,19 @@ export class EnhancedAISynthesisOrchestrator {
           CREATE INDEX IF NOT EXISTS idx_legal_documents_embedding
           ON legal_documents USING ivfflat (embedding vector_cosine_ops)
           WITH (lists = 100);
-        `;
+        `;`
       } catch (e: unknown) {
         logger.debug('[Orchestrator] ensure index failed', e);
       }
       this.initialized = true;
       logger.info('[Orchestrator] Initialized');
     } catch (err: unknown) {
-      logger.error('[Orchestrator] Initialization error:', err);
+      logger.error('[Orchestrator] Initialization error:', err);'
       throw err;
     }
   }
   // --- Small helper wrappers around external pieces ---
-  private async checkCache(query: string): Promise<{ hit: boolean; data?: unknown; source?: 'redis' | 'db` }> {
+  private async checkCache(query: string): Promise<{ hit: boolean; data?: unknown; source?: 'redis' | 'db` }> {'`
     const key = generateCacheKey(query);
     if (redis) {
       try {
@@ -473,9 +470,9 @@ export class EnhancedAISynthesisOrchestrator {
     }
     return null;
   }
-  private async rankWithCrossEncoder(context: { query: string;, neo4jResults: unknown[];
-    pgVectorResults: unknown[];
-    ragResults: {, documents: unknown[] };
+  private async rankWithCrossEncoder(context: {, query: string;, neo4jResults: unknown[];
+   , pgVectorResults: unknown[];
+   , ragResults: {, documents: unknown[] };
   }) {
     const all = [
       ...(context.neo4jResults || []),
@@ -499,7 +496,7 @@ export class EnhancedAISynthesisOrchestrator {
     const sorted = ranked.sort((a, b) => (b.crossEncoderScore || 0) - (a.crossEncoderScore || 0));
     return applyMMR(sorted as MMRDocument[], 0.7);
   }
-  private async enhanceWithContext7(context: {, query: string; legalBertAnalysis: LegalBertAnalysis | null }) {
+  private async enhanceWithContext7(context: {, query: string;, legalBertAnalysis: LegalBertAnalysis | null }) {
     try {
       const fetchImpl = await getFetch();
       const response = await fetchImpl(`${services.context7}/api/query`, {
@@ -525,7 +522,7 @@ export class EnhancedAISynthesisOrchestrator {
       const fetchImpl = await getFetch();
       const gpuResp = await fetchImpl(`${services.goMicroservice.gpuOrchestrator}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , model: 'gemma3-legal:latest',
           prompt,
@@ -566,8 +563,8 @@ export class EnhancedAISynthesisOrchestrator {
     return AIAssistantInputSynthesizer.synthesizeInput({
       query: input.query,
       context: {
-        legalBertAnalysis: input.legalBertAnalysis,
-        userId: input.userId || 'default` },
+       , legalBertAnalysis: input.legalBertAnalysis,
+        userId: input.userId || 'default` },'`
       options: {
        , enableMMR: true,
         enableCrossEncoder: true,
@@ -768,19 +765,19 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
       .map(mapFn ?? ((x: T) => String(x)))
       .filter(Boolean)
       .join(', ');
-  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.; QUERY: ${String(input?.query ?? '')}
-`;
+  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.; QUERY: ${String(input?.query ?? '')}`
+`;`
   if (input?.legalBertAnalysis) {
     const entitiesStr = safeJoin<LegalBertEntity>(input.legalBertAnalysis.entities, e => e?.text ?? '');
     const conceptsStr = safeJoin<LegalBertConcept>(input.legalBertAnalysis.concepts, c => c?.concept ?? '');
     const complexity = input.legalBertAnalysis?.complexity?.legalComplexity ?? 0;
     const jurisdiction = input.legalBertAnalysis?.jurisdiction ?? 'General';
-    prompt += `LEGAL ANALYSIS:
+    prompt += `LEGAL ANALYSIS:`
 - Identified; Entities: ${entitiesStr}
 - Legal Concepts: ${conceptsStr}
 - Complexity Score: ${complexity}
 - Jurisdiction: ${jurisdiction}
-`;
+`;`
   }
   if (Array.isArray(input?.rankedResults) && input.rankedResults.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:\n`;
@@ -811,7 +808,7 @@ INSTRUCTIONS:
 5. Recommend next steps or actions if appropriate
 6. Distinguish between legal information and legal advice
 7. Format the response as a single JSON object. The JSON must have keys: "summary" (string), "analysis" (string), "detailed_discussion" (string), "recommendations" (array of strings), "caveats" (array of strings), "confidence_score" (integer from 0 to 100), and "sources_cited" (array of objects, each with "title" and "relevance" properties).
-RESPONSE:`;
+RESPONSE:`;`
   return prompt;
 }
 // Export singleton instance

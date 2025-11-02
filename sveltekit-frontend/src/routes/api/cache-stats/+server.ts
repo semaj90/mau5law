@@ -45,13 +45,12 @@ export const GET: RequestHandler = async () => {
                 ? 'good'
                 : embeddingHitRate > 30
                   ? 'fair'
-                  : 'poor` },
+                  : `poor' },'`
         queries: {
           ...cacheStats.queries,
           hitRate: `${queryHitRate}%`,
           efficiency:
-            queryHitRate > 70 ? 'excellent' : queryHitRate > 50 ? 'good' : queryHitRate > 30 ? 'fair' : 'poor'
-        },
+            queryHitRate > 70 ? 'excellent' : queryHitRate > 50 ? 'good' : queryHitRate > 30 ? 'fair' : 'poor' },
         sessions: cacheStats.sessions
       },
       performance: {
@@ -68,13 +67,13 @@ export const GET: RequestHandler = async () => {
     };
     return json(response);
   } catch (error) {
-    console.error('Cache stats error:', error);
+    console.error('Cache stats error:', error);'
     return json(
       {
         timestamp: new Date().toISOString(),
         status: 'error',
         error: 'Failed to retrieve cache statistics',
-        message: error instanceof Error ? error.message : 'Unknown error` },
+        message: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

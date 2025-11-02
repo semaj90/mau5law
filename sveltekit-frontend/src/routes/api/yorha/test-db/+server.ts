@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const connectionTest = await db.execute(sql`SELECT version(), current_database(), current_user`);
         results.results.connection = {
           database: connectionTest[0],
-          status: 'connected` };
+          status: `connected` };
         break;
       case 'test-pgvector':
         // Test pgvector extension
@@ -37,8 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
           results.results.pgvector = {
             installed: false,
             error: error.message,
-            status: 'error'
-          };
+            status: `error` };
         }
         break;
       case 'test-json':
@@ -53,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
             testRun: true,
             timestamp: new Date(),
             version: '4.0.0',
-            system: 'yorha-legal-ai` }
+            system: `yorha-legal-ai` }
         };
         const insertResult = await db
           .insert(legalDocuments)
@@ -81,11 +80,11 @@ export const POST: RequestHandler = async ({ request }) => {
             jsonb_array_length(topics) as topic_count
           FROM legal_documents
           WHERE id = ${insertResult[0].id}
-        `);
+        `);`
         results.results.json = {
           inserted: insertResult[0],
           jsonQuery: jsonTest[0],
-          status: 'success` };
+          status: `success` };
         break;
       case 'test-vector':
         // Test vector operations (if available)
@@ -115,17 +114,16 @@ export const POST: RequestHandler = async ({ request }) => {
             WHERE embedding IS NOT NULL
             ORDER BY similarity DESC
             LIMIT 3
-          `);
+          `);`
           results.results.vector = {
             inserted: vectorInsert[0],
             similarities: similarityTest,
             vectorLength: testVector.length,
-            status: 'success'
-          };
+            status: `success` };
         } catch (error: any) {
           results.results.vector = {
             error: error.message,
-            status: 'error` };
+            status: `error` };
         }
         break;
       case 'test-full-stack':
@@ -161,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
             AVG(jsonb_array_length(keywords)) as avg_keywords,
             MAX(created_at) as latest_doc
           FROM legal_documents
-        `);
+        `);`
         // 4. Search functionality test
         const searchTest = await db.execute(sql`
           SELECT id, title, document_type
@@ -172,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
             OR keywords @> '["test"]'
           ORDER BY created_at DESC
           LIMIT 5
-        `);
+        `);`
         fullStackResults.json = {
           document: jsonDoc[0],
           analytics: complexQuery[0],
@@ -184,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const perfEnd = Date.now();
         fullStackResults.performance = {
           queryTime: perfEnd - perfStart,
-          status: perfEnd - perfStart < 100 ? 'excellent' : 'acceptable` };
+          status: perfEnd - perfStart < 100 ? 'excellent' : `acceptable` };
         results.results.fullStack = fullStackResults;
         break;
       case 'cleanup':
@@ -194,10 +192,10 @@ export const POST: RequestHandler = async ({ request }) => {
           WHERE title LIKE: '%Test%'
           OR document_type = 'test'
           OR document_type = 'integration-test'
-        `);
+        `);`
         results.results.cleanup = {
           deletedRows: (cleanupResult as any)?.rowCount ?? (Array.isArray(cleanupResult) ? cleanupResult.length : 0),
-          status: 'completed` };
+          status: `completed` };
         break;
       default:
         results.success = $state(false);
@@ -205,13 +203,13 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json(results);
   } catch (error: any) {
-    console.error('YoRHa DB test error:', error);
+    console.error('YoRHa DB test error:', error);'
     return json(
       {
         success: false,
         error: error.message || 'Database test failed',
         timestamp: new Date(),
-        service: 'yorha-db-test` },
+        service: `yorha-db-test` },
       { status: 500 }
     );
   }
@@ -225,26 +223,25 @@ export const GET: RequestHandler = async () => {
         current_database() as database,
         current_user as user,
         NOW() as timestamp
-    `);
+    `);`
     const tableCheck = await db.execute(sql`
       SELECT
         COUNT(*) as document_count
       FROM legal_documents
-    `);
+    `);`
     return json({
       success: true,
       status: 'healthy',
       database: healthCheck[0],
       statistics: tableCheck[0],
       availableTests: ['test-connection', 'test-pgvector', 'test-json', 'test-vector', 'test-full-stack', 'cleanup'],
-      service: 'yorha-db-test'
-    });
+      service: `yorha-db-test` });
   } catch (error: any) {
     return json(
       {
         success: false,
         error: error.message || 'Health check failed',
-        service: 'yorha-db-test` },
+        service: `yorha-db-test` },
       { status: 500 }
     );
   }

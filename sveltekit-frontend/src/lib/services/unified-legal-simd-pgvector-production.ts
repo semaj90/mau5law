@@ -202,7 +202,7 @@ export class UnifiedLegalSIMDPGVector {
 			await this.qdrant.createCollection?.('legal_documents', 768);
 			console.log('✅ Qdrant collection ready');
 		} catch (error) {
-			// Collection might already exist, that's okay
+			// Collection might already exist, that's okay'
 			console.log('💡 Qdrant collection already exists or unavailable');
 		}
 	}
@@ -220,25 +220,25 @@ export class UnifiedLegalSIMDPGVector {
         ON legal_documents
         USING hnsw (embedding vector_cosine_ops)
         WITH (m = 16, ef_construction = 64);
-      `);
+      `);`
 
 			// Create GIN index for JSONB metadata
 			await this.pgvector.query(`
         CREATE INDEX IF NOT EXISTS legal_documents_metadata_idx
         ON legal_documents
         USING gin (metadata jsonb_path_ops);
-      `);
+      `);`
 
 			// Create B-tree indexes for common queries
 			await this.pgvector.query(`
         CREATE INDEX IF NOT EXISTS legal_documents_type_idx
         ON legal_documents (document_type);
-      `);
+      `);`
 
 			await this.pgvector.query(`
         CREATE INDEX IF NOT EXISTS legal_documents_jurisdiction_idx
         ON legal_documents (jurisdiction);
-      `);
+      `);`
 
 			console.log('✅ Database indexes created');
 		} catch (error) {
@@ -440,7 +440,7 @@ export class UnifiedLegalSIMDPGVector {
 
 		// Index in PostgreSQL with pgvector
 		await this.pgvector.insert('legal_documents', [
-			{
+			{,
 				id: document.id,
 				vector: embedding.contentEmbedding,
 				metadata: {
@@ -473,7 +473,7 @@ export class UnifiedLegalSIMDPGVector {
 
 		// Try Qdrant first (faster)
 		try {
-			const qdrantResults = await this.qdrant.search<{ title: string;, documentType: string }>(
+			const qdrantResults = await this.qdrant.search<{ title: string; documentType: string }>(
 				'legal_documents',
 				queryEmbedding,
 				limit

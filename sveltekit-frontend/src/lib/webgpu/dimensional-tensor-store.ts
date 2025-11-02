@@ -364,7 +364,7 @@ export class DimensionalTensorStore {
     }
     const timeSinceAccess = Date.now() - metadata.lastAccessed;
     // Cache if accessed recently or frequently
-    return timeSinceAccess < 30000; // 30 seconds
+    return timeSinceAccess < 30000; // 30, seconds
   }
   /**
    * Save texture data to CPU cache
@@ -425,7 +425,7 @@ export class DimensionalTensorStore {
     const lodLevel = parseInt(match[2], 10);
 
     // Since we are caching the whole texture, 'index' might not be applicable.
-    // We'll use 0 as a placeholder. The key for retrieval is textureKey.
+    // We'll use 0 as a placeholder. The key for retrieval is textureKey.'
     const slice: TensorSlice = {
       axis,
       index: 0, // Placeholder, as we cache the whole texture atlas
@@ -460,7 +460,7 @@ export class DimensionalTensorStore {
   }
 
   // Helper: defensively read texture dimensions (avoids; using: 'any' casts)
-  private getTextureDimensions(texture: GPUTexture): { width: number;, height: number } {
+  private getTextureDimensions(texture: GPUTexture): { width: number; height: number } {
     const width =
       (texture as unknown as { width?: number }).width ?? Math.max(1, Math.floor(Math.sqrt(this.dimensions.documents)));
     const height =
@@ -484,7 +484,7 @@ export class DimensionalTensorStore {
     const bindGroup = this.device.createBindGroup({
       layout,
       entries: [
-        {
+        {,
          , binding: 0,
           resource: texture.createView()
         },
@@ -591,7 +591,7 @@ class CompressionPipeline {
         let quantized = floor(value * params.x) / params.x;
         outputData[index] = quantized;
       }
-    `;
+    `;`
     const shaderModule = this.device.createShaderModule({
       code: compressShaderCode
     });
@@ -599,7 +599,7 @@ class CompressionPipeline {
       layout: 'auto',
       compute: {
        , module: shaderModule,
-        entryPoint: 'compress` }
+        entryPoint: 'compress' }
     });
   }
   /**

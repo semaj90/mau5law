@@ -111,7 +111,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     } catch {
       // continue to Go fallback
     }
-    // Quaternary fallback: Go tensor bridge (mock-capable) when others aren't available
+    // Quaternary fallback: Go tensor bridge (mock-capable) when others aren't available'
     try {
       const goReq = {
         operation: 'vectorize',
@@ -140,7 +140,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       { status: 502 }
     );
   } catch (e: any) {
-    return json({ error: e?.message || 'Tensor error` }, { status: 500 });
+    return json({ error: e?.message || 'Tensor error` }, { status: 500 });'`
   }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

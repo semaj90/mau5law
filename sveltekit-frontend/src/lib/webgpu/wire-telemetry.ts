@@ -27,7 +27,7 @@ export function wireWebGPUToTelemetry(opts?: { clientUrl?: string }) {
             note: 'webgpu-telemetry'
           });
         }
-        // if client was created, we don't stop it here; consumer can manage lifecycle
+        // if client was created, we don't stop it here; consumer can manage lifecycle'
       } catch (e) {
         // ignore wiring failures
         // eslint-disable-next-line no-console

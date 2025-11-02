@@ -35,7 +35,7 @@ export interface UserHistoryEntry { id: string;, userId: string;
     userFeedback?: 'positive' | 'negative' | 'neutral';
     confidence?: number;
   };
-  environment: { page: string;, viewport: { width: number;, height: number };
+  environment: { page: string;, viewport: { width: number; height: number };
     userAgent: string;
     timestamp: number;
   };
@@ -55,7 +55,7 @@ export interface UserAnalyticsProfile { userId: string;, createdAt: number;
     commonWorkflows: Array<Record<string, unknown>>;
     documentPreferences: {
       types: Record<string, number>;
-      complexityRange: { min: number; max: number;, preferred: number };
+      complexityRange: { min: number; max: number; preferred: number };
       averageProcessingTime: Record<string, number>;
     };
     searchPatterns: { commonTerms: string[]; // tightened, queryComplexity: number;
@@ -68,7 +68,7 @@ export interface UserAnalyticsProfile { userId: string;, createdAt: number;
     learningVelocity: number;
     expertiseLevel: 'novice' | 'intermediate' | 'advanced' | 'expert';
   };
-  reinforcement: { rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number;, averageReward: number }>;
+  reinforcement: { rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
     explorationTendency: number;
     adaptationRate: number;
     convergenceMetrics: { stability: number;, consistency: number;
@@ -272,7 +272,7 @@ export class UserAnalyticsRLIntegration {
       });
     } catch (error) {
       console.error('Failed to initialize workers:', error);
-      // if worker init fails, ensure flag reflects that we're not processing
+      // if worker init fails, ensure flag reflects that we're not processing'
       this.isProcessing = $state(false);
     }
   }
@@ -435,7 +435,7 @@ export class UserAnalyticsRLIntegration {
     if (recOrch.updateDetectiveContext) {
       recOrch.updateDetectiveContext({ lastAnalysis: `RL, update: ${actionKey} -> ${reward.toFixed(3)}`,
         timeInMode: Date.now() - this.startTime,
-        encodedState: state, // include state so it's actually used by the orchestrator
+        encodedState: state, // include state so it's actually used by the orchestrator'
       } as Record<string, unknown>);
     }
   }
@@ -484,7 +484,7 @@ export class UserAnalyticsRLIntegration {
     this.cacheWorker.postMessage({
       type: 'update_cache',
       data: {
-        actionId: action.id,
+       , actionId: action.id,
         actionType: action.action.type,
         success: action.outcome.success,
         duration: action.outcome.duration,
@@ -566,7 +566,7 @@ export class UserAnalyticsRLIntegration {
           id: nodeId,
           type: action.action.type,
           properties: {
-            target: action.action.target,
+           , target: action.action.target,
             frequency: 1,
             avgDuration: action.outcome.duration,
             successRate: action.outcome.success ? 1 : 0,
@@ -773,7 +773,7 @@ export class UserAnalyticsRLIntegration {
         averageTaskDuration: 5000,
         accuracyRate: 0.5,
         learningVelocity: 0.5,
-        expertiseLevel: 'novice` },
+        expertiseLevel: 'novice` },'`
       reinforcement: {
         rewardHistory: [],
         actionPreferences: {},
@@ -875,7 +875,7 @@ export class UserAnalyticsRLIntegration {
     console.log('Providing optimization tips for:', nodeId);
   }
   private executeNextAction(action: string) {
-    console.log('Executing suggested next action: `, action);
+    console.log('Executing suggested next action: `, action);'`
   }
   // Getters for stores
   private getUserHistory(): UserHistoryEntry[] {

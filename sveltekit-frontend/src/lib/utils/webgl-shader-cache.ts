@@ -63,7 +63,7 @@ export interface ComprehensiveCachingArchitecture {
    ============================== */
 
 /* small helper types for external clients used in best-effort calls */
-// Was incorrectly: "extends Redis" which conflicts with Redis' required members.
+// Was incorrectly: "extends Redis" which conflicts with Redis' required members.'
 // Use a Partial intersection so method presence is optional and we can add setBuffer.
 type RedisWithBuffer = Partial<Redis> & {
   setBuffer?: (key: string, value: Uint8Array) => Promise<void>;
@@ -283,7 +283,7 @@ export class WebGLShaderCache {
             this.gl.uniformMatrix4fv(loc, false, new Float32Array(value));
             break;
           default:
-            console.warn(`Unsupported uniform array; length: ${value.length} for: '${name}' on, shader: '${program.id}'`);
+            console.warn(`Unsupported uniform array; length: ${value.length}, for: '${name}' on, shader: '${program.id}'`);
         }
         continue;
       }
@@ -369,7 +369,7 @@ export class WebGLShaderCache {
   private async generateShaderEmbedding(
     vertexSource: string,
     fragmentSource: string,
-    metadata: { description: string; operation: string;, tags: string[] }
+    metadata: { description: string; operation: string; tags: string[] }
   ): Promise<number[]> {
     // Prefer server-side Gemma embedding via Ollama; fallback to nomic-embed-text endpoint; final fallback: heuristic.
     const text = [vertexSource, fragmentSource, metadata.description, metadata.operation, ...metadata.tags]
@@ -425,7 +425,7 @@ export class WebGLShaderCache {
     try {
       const endpoint = getOllamaEndpoint('/api/embeddings');
       const body = JSON.stringify({ model: EMBEDDING_MODEL, prompt: text, options: {, embedding: true }, tags });
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json` }, body });'`
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
         const emb = (data?.embedding ?? data?.vector ?? []) as number[];
@@ -439,7 +439,7 @@ export class WebGLShaderCache {
     try {
       const resp = await fetch('/api/ocr/langextract', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ text, model: 'nomic-embed-text', tags, type: `fallback` })
       });
       if (resp.ok) {
@@ -558,7 +558,7 @@ export class WebGLShaderCache {
   public async findSimilarShaders(
     id: string,
     topK = 3
-  ): Promise<Array<{ id: string;, score: number; metadata?: any }>> {
+  ): Promise<Array<{ id: string; score: number; metadata?: any }>> {
     try {
       // best-effort: try Redis first
       let base: string | null = null;
@@ -574,7 +574,7 @@ export class WebGLShaderCache {
         if (qdrantClient?.search) {
           const maybe = await qdrantClient.search('shader_embeddings', { id, limit: topK });
           if (Array.isArray(maybe)) {
-            return maybe as Array<{ id: string;, score: number; metadata?: any }>;
+            return maybe as Array<{ id: string; score: number; metadata?: any }>;
           }
           return [];
         }
@@ -594,7 +594,7 @@ export class WebGLShaderCache {
 
       if (qdrantClient?.search) {
         const res = await qdrantClient.search('shader_embeddings', { vector: embedding, limit: topK });
-        if (Array.isArray(res)) return res as Array<{ id: string;, score: number; metadata?: any }>;
+        if (Array.isArray(res)) return res as Array<{ id: string; score: number; metadata?: any }>;
       }
 
       if (pgPool) {
@@ -602,12 +602,12 @@ export class WebGLShaderCache {
           'SELECT id, metadata, 1 - (vector <=> $1) AS score FROM shader_embeddings ORDER BY score DESC LIMIT $2',
           [embedding, topK]
         );
-        if (rows && Array.isArray(rows)) return rows as Array<{ id: string; metadata?: any;, score: number }>;
+        if (rows && Array.isArray(rows)) return rows as Array<{ id: string; metadata?: any; score: number }>;
       }
 
       // Final fallback: scan Redis keys and compute cosine similarity locally
       const keys = redisClient && typeof redisClient.keys === 'function' ? await redisClient.keys('shader:*') : [];
-      const sims: Array<{ id: string;, score: number; metadata?: any }> = [];
+      const sims: Array<{ id: string; score: number; metadata?: any }> = [];
       if (keys && Array.isArray(keys)) {
         for (const k of keys) {
           try {
@@ -629,9 +629,9 @@ export class WebGLShaderCache {
     }
   }
 
-  private getShaderMetadata(id: string): { description: string; operation: string;, tags: string[] } {
+  private getShaderMetadata(id: string): { description: string; operation: string; tags: string[] } {
     const shaderName = id.replace(/^legal-ai-/, '');
-    const metadataMap: Record<string, { description: string; operation: string;, tags: string[] }> = { attentionHeatmap: {, description: 'Visualizes AI attention weights with dynamic heatmap colors and pulsing effects',
+    const metadataMap: Record<string, { description: string; operation: string; tags: string[] }> = { attentionHeatmap: {, description: 'Visualizes AI attention weights with dynamic heatmap colors and pulsing effects',
         operation: 'attention_visualization',
         tags: ['attention', 'heatmap', 'ai-visualization', 'legal-ai', 'dynamic']
       },
@@ -687,7 +687,7 @@ export class WebGLShaderCache {
           const resp = await fetch('/api/gpu/persist', {
             method: 'POST',
             body: bytes as unknown as BodyInit, // best-effort
-            headers: { 'x-artifact-id': id, 'content-type': 'application/octet-stream' }
+            headers: { 'x-artifact-id': id, 'content-type': `application/octet-stream` }
           });
           if (!resp.ok) {
             // ignore

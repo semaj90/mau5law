@@ -83,7 +83,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
     development: {
       isDev: process.env.NODE_ENV === 'development',
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
-      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true' },
+      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true` },'`
     readonly minioEndpoint: import.meta.env.VITE_MINIO_ENDPOINT || 'http://localhost:9000',
     readonly minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
     readonly minioSecretKey: import.meta.env.VITE_MINIO_SECRET_KEY || 'minio123',
@@ -94,7 +94,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
 /**
  * Get Ollama configuration with runtime detection
  */
-export function getOllamaConfig(): { baseUrl: string;, port: number } {
+export function getOllamaConfig(): { baseUrl: string; port: number } {
   // Check environment variables
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
   if (envUrl) {

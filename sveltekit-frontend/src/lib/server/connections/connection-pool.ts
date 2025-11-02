@@ -193,7 +193,7 @@ export async function ensureRabbitConnection(): Promise<Connection> {
 		});
 		// Handle connection errors
 		rabbitConnectionInstance.on('error', (err) => {
-			console.error('RabbitMQ connection error:', err);
+			console.error('RabbitMQ connection error:', err);'
 			rabbitConnectionInstance = null;
 			rabbitChannelInstance = null;
 		});
@@ -223,7 +223,7 @@ export async function ensureRabbitChannel(): Promise<Channel> {
 	rabbitChannelInstance = await connection.createChannel();
 	// Handle channel errors
 	rabbitChannelInstance.on('error', (err) => {
-		console.error('RabbitMQ channel error:', err);
+		console.error('RabbitMQ channel error:', err);'
 		rabbitChannelInstance = null;
 	});
 	rabbitChannelInstance.on('close', () => {

@@ -23,7 +23,7 @@ class StubCacheService {
     this.cache.clear();
     return true;
   }
-  async getStats(): Promise<{ requests: number; hits: number; misses: number;, errors: number }> {
+  async getStats(): Promise<{ requests: number; hits: number; misses: number; errors: number }> {
     return {
       requests: 0,
       hits: 0,

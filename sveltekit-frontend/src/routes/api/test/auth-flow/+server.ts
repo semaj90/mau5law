@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
   };
   try {
     const body = await request.json();
-    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com` } = body;
+    const { includeAI = true, includeGPU = true, testUser = 'admin@prosecutor.com` } = body;'`
     // Test 1: Authentication System
     const authResult = await testAuthenticationSystem(testUser);
     testSuite.results.push(authResult);
@@ -148,7 +148,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
     // Test login endpoint
     const loginResponse = await fetch('http://localhost:5173/api/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
        , email: testUser,
         password: `password` })

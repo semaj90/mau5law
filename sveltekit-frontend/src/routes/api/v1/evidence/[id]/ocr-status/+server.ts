@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Evidence OCR status error:', err);
+    console.error('Evidence OCR status error:', err);'
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Status check failed' : 'Internal server error',
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }
+        'X-Error': 'true' }
     });
   }
 };

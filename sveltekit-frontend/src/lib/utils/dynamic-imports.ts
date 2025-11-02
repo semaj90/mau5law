@@ -84,7 +84,7 @@ export class ComponentLoader {
       })
       .catch(error => {
         this.loadingPromises.delete(key);
-        console.error(`Failed to load component ${key}: ', error);
+        console.error(`Failed to load component ${key}: ', error);'`
         throw error;
       });
     this.loadingPromises.set(key, loadingPromise);
@@ -142,7 +142,7 @@ export const preloadStrategies = {
   },
   // Preload based on route
   async forRoute(routeId: string) {
-    const routeComponentMap: Record<string, Array<{ key: string;, loader: () => Promise<unknown> }>> = {
+    const routeComponentMap: Record<string, Array<{ key: string; loader: () => Promise<unknown> }>> = {
       '/detective': [
         { key: 'detectives', loader: loadAIComponents.detectives },
         { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas }

@@ -22,7 +22,7 @@ export const load: PageServerLoad = async () => {
   // You could return data here to be used by the +page.svelte
   return {
     // Example: initialSystemStatus: await getSystemStatus(ollamaUrl, qdrantUrl),
-    // For this specific page, we don't have initial data to load,
+    // For this specific page, we don't have initial data to load,'
     // as the search is triggered by user interaction.
     // But this demonstrates the pattern for server-side env var access.
     serverConfig: {

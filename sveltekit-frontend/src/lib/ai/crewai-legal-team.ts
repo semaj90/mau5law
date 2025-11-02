@@ -52,8 +52,8 @@ class CrewAILegalTeam {
       memorySystem: true,
       maxIterations: 3,
       members: [
-        {
-          id: 'lead_investigator',
+        {,
+         , id: 'lead_investigator',
           name: 'Lead Case Investigator',
           role: 'Lead Investigator',
           goal: 'Thoroughly investigate case facts and coordinate evidence gathering',
@@ -90,7 +90,7 @@ class CrewAILegalTeam {
         },
       ],
       tasks: [
-        {
+        {,
          , id: 'initial_case_review',
           description: 'Conduct comprehensive initial case review and evidence inventory',
           expectedOutput: 'Detailed case summary with evidence catalog and initial assessment',
@@ -130,8 +130,8 @@ class CrewAILegalTeam {
       memorySystem: true,
       maxIterations: 2,
       members: [
-        {
-          id: 'trial_attorney',
+        {,
+         , id: 'trial_attorney',
           name: 'Lead Trial Attorney',
           role: 'Trial Strategist',
           goal: 'Develop comprehensive trial strategy and coordinate team efforts',
@@ -168,7 +168,7 @@ class CrewAILegalTeam {
         },
       ],
       tasks: [
-        {
+        {,
          , id: 'trial_strategy',
           description: 'Develop comprehensive trial strategy based on case evidence and research',
           expectedOutput: 'Detailed trial strategy document with timeline and key arguments',
@@ -208,8 +208,8 @@ class CrewAILegalTeam {
       memorySystem: true,
       maxIterations: 4,
       members: [
-        {
-          id: 'appellate_attorney',
+        {,
+         , id: 'appellate_attorney',
           name: 'Appellate Attorney',
           role: 'Appeal Specialist',
           goal: 'Analyze case for potential appeal issues and develop response strategies',
@@ -234,7 +234,7 @@ class CrewAILegalTeam {
         },
       ],
       tasks: [
-        {
+        {,
          , id: 'appeal_vulnerability_analysis',
           description: 'Analyze case for potential appeal vulnerabilities and issues',
           expectedOutput: 'Appeal vulnerability report with risk assessment and mitigation strategies',
@@ -282,7 +282,7 @@ class CrewAILegalTeam {
       return result;
     } catch (error: any) {
       this.activeWorkflows.delete(workflowId);
-      console.error(`Workflow ${workflowId} failed: ', error);
+      console.error(`Workflow ${workflowId} failed: ', error);'`
       throw error;
     }
   }
@@ -322,7 +322,7 @@ class CrewAILegalTeam {
         recommendations: [...new Set(recommendations)], // Remove duplicates
       };
     } catch (error: any) {
-      console.error(`Crew workflow failed: ', error);
+      console.error(`Crew workflow failed: ', error);'`
       return {
         status: 'failed',
         results,
@@ -459,9 +459,9 @@ class CrewAILegalTeam {
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-          model: 'gemma3-legal',
+         , model: 'gemma3-legal',
           prompt,
           stream: false,
           options: {
@@ -484,7 +484,7 @@ class CrewAILegalTeam {
     }
   }
   private buildAgentPrompt(agent: CrewMember, task: Task, context: { [key: string]: any }): string {
-    return `You are ${agent.name}, a ${agent.role}.
+    return `You are ${agent.name}, a ${agent.role}.`
 GOAL: ${agent.goal}
 BACKSTORY: ${agent.backstory}
 CURRENT TASK: ${task.description}
@@ -493,14 +493,14 @@ CONTEXT:
 ${JSON.stringify(context, null, 2)}
 AVAILABLE TOOLS: ${agent.tools.join(', ')}
 Please complete this task according to your role and expertise. Provide detailed, actionable output that meets the expected deliverable. Be thorough but concise.
-Your response: ';
+Your response: ';'
   }
   private async synthesizeResults(
     crew: CrewConfig,
     results: WorkflowResult['results'],
     context: { [key: string]: any }
   ): Promise<string> {
-    const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:; CREW: ${crew.name}
+    const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:; CREW: ${crew.name}`
 CONTEXT: ${JSON.stringify(context, null, 2)}
 TEAM OUTPUTS:
 ${results
@@ -518,13 +518,13 @@ Please provide a comprehensive synthesis that:
 3. Provides clear recommendations
 4. Highlights any concerns or risks
 5. Suggests next steps
-Final synthesis:`;
+Final synthesis:`;`
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-          model: 'gemma3-legal',
+         , model: 'gemma3-legal',
           prompt: synthesisPrompt,
           stream: false,
           options: {
@@ -565,7 +565,7 @@ Final synthesis:`;
     return sorted;
   }
   private async buildConsensus(agentOutputs: Array<any>, task: Task, context: { [key: string]: any }): Promise<string> {
-    const consensusPrompt = `Build consensus from the following agent outputs for task: ${task.description}
+    const consensusPrompt = `Build consensus from the following agent outputs for task: ${task.description}`
 AGENT OUTPUTS:
 ${agentOutputs
   .map(
@@ -581,13 +581,13 @@ Please create a consensus output that:
 2. Resolves any conflicts or contradictions
 3. Maintains high quality and accuracy
 4. Reflects the collective expertise
-Consensus output:`;
+Consensus output:`;`
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-          model: 'gemma3-legal',
+         , model: 'gemma3-legal',
           prompt: consensusPrompt,
           stream: false,
           options: {
@@ -665,7 +665,7 @@ Consensus output:`;
   }
   async cancelWorkflow(workflowId: string): Promise<boolean> {
     if (this.activeWorkflows.has(workflowId)) {
-      // Note: In a real implementation, you'd need proper cancellation logic
+      // Note: In a real implementation, you'd need proper cancellation logic'
       this.activeWorkflows.delete(workflowId);
       return true;
     }

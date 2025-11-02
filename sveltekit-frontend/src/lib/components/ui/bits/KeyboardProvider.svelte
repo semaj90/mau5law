@@ -1,6 +1,6 @@
-<!-- Enhanced Bits UI: Keyboard Mapping Provider -->
-<!-- Global keyboard shortcut management for the entire application -->
-<script lang="ts">
+<!-- Enhanced Bits UI: Keyboard Mapping, Provider -->
+<!-- Global keyboard shortcut management for the entire, application -->
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { setContext, onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
@@ -103,9 +103,9 @@
     return unsubscrib;
   });
 </script>
-<!-- Global Keyboard Event Listener -->
-<svelte:window onshow-keyboard-help={handleHelpShortcut} />
-<!-- Keyboard Mapping System -->
+<!-- Global Keyboard Event, Listener -->
+<svelte:window, onshow-keyboard-help={handleHelpShortcut} />
+<!-- Keyboard Mapping, System -->
 <KeyboardMapping
   bind:this={keyboardMappingRef}
   shortcuts={currentShortcuts}
@@ -114,17 +114,17 @@
   on shortcutExecuted;
   onshortcutBlocked
 />
-<!-- Help Panel -->
+<!-- Help, Panel -->
 {#if enableHelpPanel}
   <KeyboardHelp
     shortcuts={currentShortcuts}
     bind:open={helpOpen}
   />
 {/if}
-<!-- Slot for application content -->
+<!-- Slot for application, content -->
 <slot />
-<!-- Expose context for TypeScript -->
-<script lang="ts" generics="T">
+<!-- Expose context for, TypeScript -->
+<script, lang="ts" generics="T">
   // Export context type for external use
   export type { KeyboardContext }
   // Helper function to get keyboard context

@@ -9,7 +9,7 @@ export interface ModalConfig {
   props?: Props;
   title?: string;
   closable?: boolean;
-  persistent?: boolean; // Don't close on outside click
+  persistent?: boolean; // Don't close on outside click'
   onClose?: (...args: any[]) => void;
   onConfirm?: (...args: any[]) => void;
   size?: 'sm' | 'md' | 'lg' | string; // added optional size
@@ -101,7 +101,7 @@ function createModalStore() {
         onClose: _options.onCancel
       });
     },
-    alert: (_options: {, title: string; message: string; buttonText?: string; onClose?: () => void }) => {
+    alert: (_options: {, title: string;, message: string; buttonText?: string; onClose?: () => void }) => {
       return store.open({
         title: _options.title,
         component: 'AlertModal', // This would be a built-in component
@@ -129,7 +129,7 @@ function createModalStore() {
           placeholder: _options.placeholder,
           defaultValue: _options.defaultValue,
           confirmText: _options.confirmText || 'OK',
-          cancelText: _options.cancelText || 'Cancel` },
+          cancelText: _options.cancelText || 'Cancel` },'`
         size: 'sm',
         onConfirm: _options.onConfirm,
         onClose: _options.onCancel

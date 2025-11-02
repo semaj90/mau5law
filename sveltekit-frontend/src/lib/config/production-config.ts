@@ -211,7 +211,7 @@ if (validationErrors.length > 0) {
     throw new Error(`Invalid production configuration: ${validationErrors.join(', ')}`);
   }
 }
-console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development' } configuration`);
+console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development` } configuration`);'`
 console.log(
   `📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`
 );

@@ -60,7 +60,7 @@ class JobStateMachine {
   async startJob(id: string) {
     if (this.running.size >= this.concurrency) return null;
     this.running.add(id);
-    return this.store.setJob({ id, state: 'running' });
+    return this.store.setJob({ id, state: `running` });
   }
   async completeJob(id: string) {
     this.running.delete(id);

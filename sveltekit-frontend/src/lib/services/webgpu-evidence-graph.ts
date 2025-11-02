@@ -55,7 +55,7 @@ export class WebGPUEvidenceGraph {
       output.pointSize = input.size * (1.0 / max(0.0001, -viewPos.z));
       return output;
     }
-  `;
+  `;`
   private fragmentShader = `
     struct FragmentInput {
       @location(0) color : vec4<f32>;
@@ -66,7 +66,7 @@ export class WebGPUEvidenceGraph {
       // Very simple passthrough fragment shader
       return input.color;
     }
-  `;
+  `;`
   // Edge shader for connection lines (simplified)
   private edgeVertexShader = `
     struct Uniforms {
@@ -99,7 +99,7 @@ export class WebGPUEvidenceGraph {
       output.t = t;
       return output;
     }
-  `;
+  `;`
   async initialize(canvas: HTMLCanvasElement): Promise<void> {
     this.canvas = canvas;
     // Check WebGPU support
@@ -140,10 +140,10 @@ export class WebGPUEvidenceGraph {
     this.pipeline = this.device.createRenderPipeline({
       layout: 'auto',
       vertex: {
-        module: vertexModule,
+       , module: vertexModule,
         entryPoint: 'main',
         buffers: [
-          {
+          {,
            , arrayStride: 32, // 3 floats position (12) + 4 floats color (16) + 1 float size (4) = 32
             attributes: [
               { shaderLocation: 0, offset: 0, format: 'float32x3' },
@@ -164,8 +164,7 @@ export class WebGPUEvidenceGraph {
       depthStencil: {
         format: 'depth24plus',
         depthWriteEnabled: true,
-        depthCompare: 'less'
-      }
+        depthCompare: 'less` }'`
     });
   }
   private createBuffers(): void {
@@ -179,7 +178,7 @@ export class WebGPUEvidenceGraph {
     this.bindGroup = this.device.createBindGroup({
       layout: this.pipeline!.getBindGroupLayout(0),
       entries: [
-        {
+        {,
           binding: 0,
           resource: {
             buffer: this.uniformBuffer!
@@ -289,12 +288,11 @@ export class WebGPUEvidenceGraph {
     });
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [
-        {
+        {,
           view: this.context.getCurrentTexture().createView(),
           clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: 'store'
-        },
+          storeOp: `store` }
       ],
       depthStencilAttachment: {
         view: depthTexture.createView(),

@@ -46,14 +46,14 @@ export function fadeParams(duration = 200, delay = 0): TransitionParams {
 	return { duration, delay, easing: defaultTransition.easing };
 }
 
-// Respect user's reduced-motion preference
+// Respect user's reduced-motion preference'
 export function prefersReducedMotion(): boolean {
 	if (typeof window === 'undefined') return false;
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 // Wrap params to return motion-safe values (duration = 0 when user prefers reduced motion)
-export function motionSafeParams<T extends TransitionParams>(params: T): T {
+export function motionSafeParams<T extends, TransitionParams>(params: T): T {
 	if (prefersReducedMotion()) {
 		return { ...params, duration: 0 } as T;
 	}

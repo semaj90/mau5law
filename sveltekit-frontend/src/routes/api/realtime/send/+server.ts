@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const text = await res.text().catch(() => '');
     return new Response(text, { status: res.status, headers: { 'Content-Type': 'text/plain' } });
   } catch (err) {
-    console.error('realtime/send proxy error:', err);
-    return json({ ok: false, error: `proxy_failed` }, { status: 500 });
+    console.error('realtime/send proxy error: ', err);'
+    return json({ ok: false, error: 'proxy_failed` }, { status: 500 });'`
   }
 };

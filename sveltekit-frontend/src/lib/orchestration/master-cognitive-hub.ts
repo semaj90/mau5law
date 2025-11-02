@@ -485,16 +485,16 @@ export class MasterCognitiveHub {
     } catch (error: any) {
       // Narrow unknown to Error for safe logging, fallback to String() for other types
       if (error instanceof Error) {
-        console.error('⚠️ System initialization error:', error.message, error);
+        console.error('⚠️ System initialization error:', error.message, error);'
       } else {
-        console.error('⚠️ System initialization error:', String(error));
+        console.error('⚠️ System initialization error:', String(error));'
       }
       this.activatePhoenixMode(); // Auto-recovery
     }
   }
   private async warmupCache(): Promise<void> {
     // Warm up the reinforcement learning cache with strategic data
-    type WarmupItem = { key: string;, value: Record<string, unknown> };
+    type WarmupItem = { key: string; value: Record<string, unknown> };
     const warmupData: WarmupItem[], = [
       { key: 'system_initialization', value: { status: 'complete', timestamp: Date.now() } },
       { key: 'cognitive_patterns', value: { learning: true, adaptation: 'active' } },
@@ -562,7 +562,7 @@ export class MasterCognitiveHub {
       routing: cognitiveRoutingOrchestrator.getLearningState().memoryState.episodicMemorySize / 200,
       caching: reinforcementLearningCache.getLearningState().cacheSize / 10000,
       gpu: physicsAwareGPUOrchestrator.getCognitiveState?.()?.learningRate || 0,
-      matrix: 0.5, // Default adaptation rate since getMetrics doesn't exist
+      matrix: 0.5, // Default adaptation rate since getMetrics doesn't exist'
     };
     // Base intelligence from individual systems
     this.state.intelligence.collective =
@@ -865,7 +865,7 @@ export class MasterCognitiveHub {
             priority: request.priority ?? 5,
             constraints: request.context?.constraints as Record<string, unknown> | undefined
           })) as GPUWorkloadResult;
-          insights.push(`GPU workload queued: ${gpuResult?.workloadId ?? 'unknown' }`);
+          insights.push(`GPU workload queued: ${gpuResult?.workloadId ?? 'unknown` }`);'`
         } else {
           insights.push('GPU orchestrator unavailable; skipped GPU work.');
         }
@@ -1012,7 +1012,7 @@ type $EmergentBehavior = { detected: boolean;, type: string;
   details?: Record<string, unknown>;
 };
 
-type ProcessingRequest<Data = unknown, Context extends Record<string, unknown> = Record<string, unknown>> = {
+type ProcessingRequest<Data = unknown, Context extends, Record<string, unknown> = Record<string, unknown>> = {
   type: 'search' | 'analyze' | 'generate' | 'optimize' | 'transcend';
   data?: Data;
   context?: Context;

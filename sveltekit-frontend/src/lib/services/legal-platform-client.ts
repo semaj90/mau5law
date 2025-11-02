@@ -176,7 +176,7 @@ class LegalPlatformClient {
         await handleNetworkError?.(err, {
           ...context,
           endpoint: fullUrl,
-          action: `${method} ${endpoint}` });
+          action: '${method} ${endpoint}' });
       } else if (err instanceof Error) {
         await handleApiError?.(err, fullUrl, {
           ...context,
@@ -190,7 +190,7 @@ class LegalPlatformClient {
       }
       return {
         success: false,
-        error: msg || 'Unknown error` };
+        error: msg || 'Unknown error` };'`
     }
   }
 
@@ -323,8 +323,7 @@ class LegalPlatformClient {
   async healthCheck(): Promise<ApiResponse<unknown>> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
-        method: 'OPTIONS'
-      });
+        method: `OPTIONS` });
       const json = await response.json();
       return json as ApiResponse<unknown>;
     } catch (error: any) {

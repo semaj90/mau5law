@@ -77,7 +77,7 @@ export class MCPGraphReader {
   /**
    * Helper to combine sql fragments with AND
    */
-  private static combineAnd(fragments: ReturnType<typeof sql>[]) {
+  private static combineAnd(fragments: ReturnType<typeof, sql>[]) {
     if (!fragments.length) return undefined;
     return fragments.reduce((acc, frag) => sql`${acc} AND ${frag}`);
   }
@@ -85,8 +85,8 @@ export class MCPGraphReader {
   /**
    * Read case nodes
    */
-  private static async readCaseNodes(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[] }> {
-    const whereFragments: ReturnType<typeof sql>[] = [];
+  private static async readCaseNodes(query: GraphQuery): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
+    const whereFragments: ReturnType<typeof, sql>[] = [];
     if (query.userId) {
       whereFragments.push(sql`${cases.createdBy} = ${query.userId}`);
     }
@@ -120,7 +120,7 @@ export class MCPGraphReader {
         type: 'case',
         label: c.title,
         data: {
-          title: c.title,
+         , title: c.title,
           description: c.description,
           status: c.status,
           priority: c.priority,
@@ -154,8 +154,8 @@ export class MCPGraphReader {
    */
   private static async readEvidenceNodes(
     query: GraphQuery
-  ): Promise<{ nodes: GraphNode[];, relations: GraphRelation[] }> {
-    const whereFragments: ReturnType<typeof sql>[] = [];
+  ): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
+    const whereFragments: ReturnType<typeof, sql>[] = [];
     if (query.userId) {
       whereFragments.push(sql`${evidence.uploadedBy} = ${query.userId}`);
     }
@@ -191,7 +191,7 @@ export class MCPGraphReader {
         type: 'evidence',
         label: e.title,
         data: {
-          title: e.title,
+         , title: e.title,
           description: e.description,
           evidenceType: e.evidenceType,
           filePath: e.fileUrl,
@@ -218,7 +218,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 9,
-          metadata: {, relationship: 'evidence_in_case' }
+          metadata: {, relationship: `evidence_in_case` }
         })),
       ...evidenceData
         .filter(item => !!item.creator)
@@ -231,16 +231,16 @@ export class MCPGraphReader {
         })),
     ];
 
-    // <-- FIX: return nodes and relations
+    // <-- FIX: return nodes and, relations
     return { nodes, relations };
   }
 
   /**
    * Read report nodes
    */
-  private static async readReportNodes(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[] }> {
+  private static async readReportNodes(query: GraphQuery): Promise<{ nodes: GraphNode[]; relations: GraphRelation[] }> {
     // Build where fragments like other readers
-    const whereFragments: ReturnType<typeof sql>[] = [];
+    const whereFragments: ReturnType<typeof, sql>[] = [];
     if (query.userId) {
       // assume reports.createdBy column
       whereFragments.push(sql`${reports.createdBy} = ${query.userId}`);
@@ -278,7 +278,7 @@ export class MCPGraphReader {
         type: 'report',
         label: r.title,
         data: {
-          title: r.title,
+         , title: r.title,
           content: r.content,
           reportType: r.reportType,
           status: r.status,
@@ -303,7 +303,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 8,
-          metadata: {, relationship: 'report_for_case' }
+          metadata: {, relationship: 'report_for_case` }'`
         })),
       ...reportData
         .filter(item => !!item.creator)
@@ -312,7 +312,7 @@ export class MCPGraphReader {
           to: item.report.id,
           type: 'generated_from' as const,
           weight: 7,
-          metadata: {, relationship: 'report_generator' }
+          metadata: {, relationship: `report_generator` }
         })),
     ];
 
@@ -323,7 +323,7 @@ export class MCPGraphReader {
    * Main read graph method
    */
   static async readGraph(query: GraphQuery): Promise<{ nodes: GraphNode[];, relations: GraphRelation[];
-    metadata: { totalNodes: number; queryTime: number;, mcpSource: string };
+    metadata: { totalNodes: number; queryTime: number; mcpSource: string };
   }> {
     const startTime = Date.now();
     const nodes: GraphNode[] = [];
@@ -353,7 +353,7 @@ export class MCPGraphReader {
           mcpSource: `drizzle-postgres-graph-reader` }
       };
     } catch (error: any) {
-      console.error('Graph reading error:', error);
+      console.error('Graph reading error:', error);'
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Failed to read graph: ${message}`);
     }

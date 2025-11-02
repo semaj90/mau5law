@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { Select } from 'bits-ui';
   interface Props {
     value?: string;
@@ -7,7 +7,7 @@
   }
   let { value = $bindable(), onValueChange, children, ...restProps }: Props = $props();
 </script>
-<Select.Root bind:value {onValueChange} {...restProps}>
+<Select.Root, bind:value {onValueChange} {...restProps}>
   <slot />
 </Select.Root>
 ;

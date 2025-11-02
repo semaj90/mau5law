@@ -22,7 +22,7 @@ export function createMachine(config: MachineConfig, options?: MachineOptions): 
  * assign shim: accepts an updater that uses generics so the type parameters are used.
  * The returned value is the updater itself so code using assign(...) compiles.
  */
-export function assign<TContext extends AnyObject = AnyObject, TEvent = unknown>(
+export function assign<TContext extends, AnyObject = AnyObject, TEvent = unknown>(
 	updater: (context: TContext, event: TEvent) => Partial<TContext> | void
 ): (context: TContext, event: TEvent) => Partial<TContext> | void {
 	// return the updater with a specific function type instead of `any`
@@ -33,7 +33,7 @@ export function assign<TContext extends AnyObject = AnyObject, TEvent = unknown>
  * fromPromise shim: no-op passthrough for invoked promise sources used in the project.
  * Accepts an async function and returns it unchanged so invoke-src usage compiles.
  */
-export function fromPromise<T = unknown, TArgs extends unknown[] = unknown[]>(
+export function fromPromise<T = unknown, TArgs extends, unknown[] = unknown[]>(
 	fn: (...args: TArgs) => Promise<T>
 ): (...args: TArgs) => Promise<T> {
 	// return the exact function type passed in

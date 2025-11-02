@@ -84,7 +84,7 @@ interface EmbeddingApiResponse {
   // Add other metadata if needed
 }
 
-// Define LegalEmbeddingQuery here as it's used in API requests
+// Define LegalEmbeddingQuery here as it's used in API requests'
 export interface LegalEmbeddingQuery {
   text: string;
   practiceArea?: string;
@@ -169,7 +169,7 @@ export class EnhancedEmbeddingService {
         // Fallback to adapter for testing/development without full backend
         const result = await this.adapter.embed(text);
         embedding = (result as EmbeddingResult).vector;
-        cacheHit = false; // Adapter doesn't use cache in this context
+        cacheHit = false; // Adapter doesn't use cache in this context'
       }
 
       return {
@@ -238,7 +238,7 @@ export class EnhancedEmbeddingService {
 
         const response = await fetch(apiEndpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify(requestBody)
         });
 
@@ -246,7 +246,7 @@ export class EnhancedEmbeddingService {
           throw new Error(`Failed to get batch embeddings from server: ${response.status} ${response.statusText}`);
         }
 
-        const result: { embeddings: number[][];, cacheHits: boolean[] } = await response.json();
+        const result: { embeddings: number[][]; cacheHits: boolean[] } = await response.json();
         embeddings = result.embeddings.map(arr => new Float32Array(arr));
         // TODO: Use result.cacheHits to populate individual cacheHit metadata
       } else {
@@ -375,7 +375,7 @@ export class EnhancedEmbeddingService {
     try {
       const response = await fetch('/api/workers/embedding?action=queue-job', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , entity_type: entityType,
           entity_id: entityId,
@@ -399,7 +399,7 @@ export class EnhancedEmbeddingService {
       return {
         jobId: 'failed',
         queued: false,
-        message: error instanceof Error ? error.message : 'Unknown error' };
+        message: error instanceof Error ? error.message : 'Unknown error` };'`
     }
   }
   /**
@@ -443,7 +443,7 @@ export class EnhancedEmbeddingService {
       status,
       infrastructure,
       stats: {
-        totalEmbeddings: 0, // TODO: Get from API response; cacheHitRate: 0,    // TODO: Get from API response; averageProcessingTime: 0 // TODO: Get from API response
+        totalEmbeddings: 0, // TODO: Get from API response; cacheHitRate: 0,    // TODO: Get from API response; averageProcessingTime: 0 //; TODO: Get from API response
       },
       capabilities
     };

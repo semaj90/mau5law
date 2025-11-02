@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		reqBody = (await request.json()) as CaseScoringRequest;
 	} catch (e) {
-		return json({ error: 'invalid_json' }, { status: 400 });
+		return json({ error: `invalid_json` }, { status: 400 });
 	}
 
 	if (!reqBody?.caseId) return json({ error: `caseId required` }, { status: 400 });
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		async start(controller) {
 			const emit = (event: string, payload: any) => {
 				controller.enqueue(`event: ${event}\n`);
-				controller.enqueue(`data: ${JSON.stringify(payload)}\n\n');
+				controller.enqueue('data: ${JSON.stringify(payload)}\n\n');
 			};
 
 			emit('progress', { stage: 'started', message: 'Initializing scoring pipeline' });
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				const rawAgentResult = await runLegalCaseScoringAgent(agentPayload);
 				const agentResult = rawAgentResult as unknown as CaseScoringResult;
 				await cognitiveCache.set(cacheKey, agentResult, { ttl: CACHE_TTL_SECONDS });
-				emit('progress', { stage: 'agentic_done', message: 'Agentic scoring finished' });
+				emit('progress', { stage: 'agentic_done', message: 'Agentic scoring finished` });'`
 				emit('done', agentResult);
 				controller.close();
 				return;
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 			// Fallback: deterministic service
 			try {
-				emit('progress', { stage: 'service_start', message: 'Running deterministic scorer' });
+				emit('progress', { stage: 'service_start', message: `Running deterministic scorer` });
 				const startTime = Date.now();
 				const serviceResult: CaseScoringResult = await caseScoringService.scoreCase(reqBody as ServiceCaseScoringRequest);
 				const duration = Date.now() - startTime;

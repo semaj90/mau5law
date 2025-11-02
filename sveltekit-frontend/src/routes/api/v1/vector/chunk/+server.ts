@@ -129,19 +129,19 @@ export const POST: RequestHandler = async ({ request }) => {
         usedCUDA: useCUDA
       },
       embeddings: generateEmbeddings ? embeddings : undefined,
-      documentMetadata, // <-- include metadata in response so it's used
+      documentMetadata, // <-- include metadata in response so it's, used'
     };
     return json(response);
   } catch (err) {
-    console.error('Chunking API error:', err);
-    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
+    console.error('Chunking API error:', err);'
+    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
   }
 };
 async function performSemanticChunking(
   text: string,
-  options: { chunkSize: number;, chunkOverlap: number;
-    minChunkSize: number;
-    maxChunkSize: number;
+  options: {, chunkSize: number;, chunkOverlap: number;
+   , minChunkSize: number;
+   , maxChunkSize: number;
    , extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
@@ -180,7 +180,7 @@ async function performSemanticChunking(
     // Add current sentence
     currentChunk = tentativeChunk;
     currentSentences.push(sentence);
-    // If we've reached target chunk size, look for semantic boundary
+    // If we've reached target chunk size, look for semantic boundary'
     if (currentChunk.length >= chunkSize && i < sentences.length - 1) {
       const currentEmbedding = sentenceEmbeddings[i];
       const nextEmbedding = sentenceEmbeddings[i + 1];
@@ -219,9 +219,9 @@ async function performSemanticChunking(
 }
 async function performParagraphAwareChunking(
   text: string,
-  options: { chunkSize: number;, chunkOverlap: number;
-    minChunkSize: number;
-    maxChunkSize: number;
+  options: {, chunkSize: number;, chunkOverlap: number;
+   , minChunkSize: number;
+   , maxChunkSize: number;
    , extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
@@ -284,7 +284,7 @@ async function performParagraphAwareChunking(
 }
 async function performBasicChunking(
   text: string,
-  options: { chunkSize: number;, chunkOverlap: number;
+  options: {, chunkSize: number;, chunkOverlap: number;
    , extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
@@ -348,7 +348,7 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
     };
     const response = await fetch(cudaUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
@@ -364,7 +364,7 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
     for (const text of texts) {
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ model, prompt: text })
       });
       if (!response.ok) {
@@ -464,7 +464,7 @@ export const GET: RequestHandler = async () => {
   return json({
     status: 'healthy',
     features: {
-      basicChunking: true,
+     , basicChunking: true,
       paragraphAware: true,
       semanticChunking: true,
       metadataExtraction: true,

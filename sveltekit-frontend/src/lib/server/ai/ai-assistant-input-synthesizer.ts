@@ -46,7 +46,7 @@ const legalBERT = { analyze: (_text: string) => Promise.resolve({, confidence: 0
       confidence: 0.8,
       categories: [],
       summary: {
-        abstractive: 'Generated summary',
+       , abstractive: 'Generated summary',
         extractive: 'Key extracted content',
         keyPoints: ['Key point 1', 'Key point 2']
       },
@@ -164,7 +164,7 @@ export interface RetrievalOptions {
 /**
  * Internal retrieval result structure used before further processing/ranking.
  */
-interface RetrievalResult { sources: SourceItem[];, summary: { abstractive: string; extractive: string[];, keyPoints: string[] };
+interface RetrievalResult { sources: SourceItem[];, summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
   totalSources: number;
   searchStrategies: string[];
 }
@@ -523,7 +523,7 @@ export class AIAssistantInputSynthesizer {
       }
       // Strategy 3: Context-based retrieval from provided documents
       if (context?.documents?.length) {
-        // For context documents, we'll assume they are highly relevant if provided
+        // For context documents, we'll assume they are highly relevant if provided'
         // and assign a high relevance score. A more advanced approach would embed them
         // and perform a Qdrant search or use embedTextServer.
         for (const doc of context.documents) {
@@ -678,11 +678,11 @@ export class AIAssistantInputSynthesizer {
 
   // === HELPER METHODS (Consolidated and Deduplicated) ===
   private async verifyComponents(): Promise<void> {
-    const checks: Array<{ name: string;, check: () => Promise<unknown> }> = [
+    const checks: Array<{ name: string; check: () => Promise<unknown> }> = [
       { name: 'LegalBERT', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'RAG Pipeline', check: () => Promise.resolve({ status: 'healthy' }) },
-      { name: 'Legal Search', check: () => Promise.resolve({ status: 'healthy' }) },
-      { name: 'Redis', check: () => redis.ping().then(() => ({ status: 'healthy' })) },
+      { name: 'Legal Search', check: () => Promise.resolve({ status: 'healthy` }) },'`
+      { name: 'Redis', check: () => redis.ping().then(() => ({ status: `healthy` })) },
       {
         name: 'Qdrant',
         check: () =>
@@ -760,7 +760,7 @@ export class AIAssistantInputSynthesizer {
   private async generateComprehensiveSummary(
     sources: SourceItem[],
     processedQuery: SynthesizedOutput['processedQuery']
-  ): Promise<{ abstractive: string; extractive: string[];, keyPoints: string[] }> {
+  ): Promise<{ abstractive: string; extractive: string[]; keyPoints: string[] }> {
     if (sources.length === 0) {
       return { abstractive: 'No relevant information found.', extractive: [], keyPoints: [] };
     }
@@ -792,9 +792,9 @@ export class AIAssistantInputSynthesizer {
     const extractiveSummary = topSentences.join(' ');
 
     // Simulate an abstractive summary by creating a structured overview.
-    const abstractive = `Based on the retrieved documents regarding: "${
+    const abstractive = `Based on the retrieved documents regarding: "${"`
       processedQuery.original
-    }", the key points are: ${keyPoints.map(p => `\n- ${p}`).join('')}`;
+    }", the key points are: ${keyPoints.map(p => `\n- ${p}`).join('')}`;"`
 
     return {
       abstractive: abstractive.length > 150 ? abstractive : extractiveSummary,
@@ -861,7 +861,7 @@ export class AIAssistantInputSynthesizer {
 
   private assessSourceAuthority(retrievedContext: SynthesizedOutput['retrievedContext']): number {
     if (!retrievedContext?.sources?.length) return 0.0;
-    // heuristic: if titles contain: "Report" or: "Opinion"; or: "Statute" bump authority
+    // heuristic: if titles; contain: "Report"; or: "Opinion"; or: "Statute" bump authority
     const score =
       retrievedContext.sources.reduce((acc, s) => {
         const t = (s.title ?? '').toLowerCase();
@@ -916,11 +916,11 @@ export class AIAssistantInputSynthesizer {
 
   private generateRecommendations(metrics: QualityMetrics): string[] {
     const recs: string[] = [];
-    if (metrics.contextRelevance < 0.6) recs.push('Broaden retrieval strategies or increase maxSources.');
-    if (metrics.sourceAuthority < 0.6) recs.push('Prefer authoritative sources (statutes, opinions).');
-    if (metrics.conceptCoverage < 0.6) recs.push('Include additional legal concepts or documents.');
+    if (metrics.contextRelevance < 0.6) recs.push('Broaden retrieval strategies or increase, maxSources.');
+    if (metrics.sourceAuthority < 0.6) recs.push('Prefer authoritative, sources (statutes, opinions).');
+    if (metrics.conceptCoverage < 0.6) recs.push('Include additional legal concepts or, documents.');
     return recs;
   }
 
-  // Removed calculateCosineSimilarity as it's now handled by ai-utils or embedding service
+  // Removed calculateCosineSimilarity as it's now handled by ai-utils or embedding service'
 } // end of class AIAssistantInputSynthesizer

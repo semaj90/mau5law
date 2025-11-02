@@ -2,7 +2,7 @@
 // Verifies MinIO connectivity and bucket status
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { Client as MinIOClient } from 'minio';
+import { Client, as MinIOClient } from 'minio';
 import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async () => {
   try {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async () => {
         name: bucketName,
         exists: bucketExists,
         region,
-        objectCount: objectCount > 0 ? `${objectCount}+` : '0` },
+        objectCount: objectCount > 0 ? `${objectCount}+` : '0' },
       timestamp: new Date().toISOString(),
       connectivity: {
         read: true,

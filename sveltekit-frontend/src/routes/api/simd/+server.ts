@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json({ error: 'Invalid operation' }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('SIMD API error:', error);
+    console.error('SIMD API error:', error);'
     return json(
       {
         error: 'SIMD processing failed',

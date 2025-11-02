@@ -44,7 +44,7 @@ export const dockerEnv = {
 
 console.log('🌐 Unified Docker Environment:', dockerEnv);
 
-import { orchestrator as enhancedOrchestrator } from './enhanced-orchestrator.js';
+import { orchestrator, as enhancedOrchestrator } from './enhanced-orchestrator.js';
 import { unifiedClientLLMOrchestrator } from '$lib/ai/unified-client-llm-orchestrator.js';
 import { mcpMultiCore } from '$lib/server/mcp/multi-core-integration.js';
 import type { MCPTask } from '$lib/server/mcp/multi-core-integration.js';
@@ -205,7 +205,7 @@ export class LLMOrchestratorBridge {
       logger.info(`[LLM Bridge] Request ${requestId} completed in ${totalLatency.toFixed(2)}ms`);
       return result;
     } catch (error) {
-      logger.error(`[LLM Bridge] Request ${requestId} failed: ', error);
+      logger.error(`[LLM Bridge] Request ${requestId} failed: ', error);'`
       return {
         success: false,
         response: 'Failed to process request',
@@ -252,7 +252,7 @@ export class LLMOrchestratorBridge {
       (request.options?.priority === 'high' ||
         request.type === 'document_processing' ||
         (request.type === 'embedding' && request.content.length > 1000) ||
-        mcpMetrics.totalLoad < mcpMetrics.totalCapacity * 0.7) // MCP not overloaded
+        mcpMetrics.totalLoad < mcpMetrics.totalCapacity * 0.7) // MCP not, overloaded
     ) {
       return {
         orchestrator: 'mcp',
@@ -283,7 +283,7 @@ export class LLMOrchestratorBridge {
           request.content.includes('statute');
         return {
           orchestrator: isComplex ? 'server' : 'client',
-          reasoning: 'Legal analysis; complexity: ${isComplex ? 'high' : `low` }`,
+          reasoning: 'Legal analysis; complexity: ${isComplex ? 'high' : `low` }`,'`
           confidence: 0.8
         };
       }
@@ -671,7 +671,7 @@ export class LLMOrchestratorBridge {
             : 0,
         averageLatency: this.performanceMetrics.averageLatency
       },
-      serverOrchestrator: serverHealthy ? await enhancedOrchestrator.health() : { status: 'offline' },
+      serverOrchestrator: serverHealthy ? await enhancedOrchestrator.health() : { status: `offline` },
       clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: `offline` }
     };
   }

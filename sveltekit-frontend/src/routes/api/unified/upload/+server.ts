@@ -57,10 +57,10 @@ export const POST: RequestHandler = async ({ request }) => {
           type: file.type
         });
       } catch (fileError) {
-        console.error(`Error processing file ${file.name}: ', fileError)
+        console.error(`Error processing file ${file.name}: ', fileError)'`
         results.push({
           fileName: file.name,
-          error: fileError instanceof Error ? fileError.message: 'Unknown error' })
+          error: fileError instanceof Error ? fileError.message: 'Unknown error` })'`
       }
     }
     return json({
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
       failed: results.filter(item => item.error)
     });
   } catch (error) {
-    console.error('Unified upload error:', error)
+    console.error('Unified upload error:', error)'
     return json(
       {
         error: 'Upload failed',

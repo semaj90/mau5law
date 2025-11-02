@@ -99,15 +99,15 @@ type RagContext = { query: string;, sources: RAGSource[];
   error: string | null;
 };
 
-type RagEvent = { type: 'QUERY';, query: string } | { type: 'RETRY' } | { type: 'RESET' };
+type RagEvent = { type: 'QUERY'; query: string } | { type: 'RETRY' } | { type: 'RESET' };
 
 // Add a minimal interface for ollamaService to satisfy TypeScript
 interface OllamaService {
-  generate(options: { model: string;, prompt: string;
+  generate(options: {, model: string;, prompt: string;
    , format: string;
     stream?: boolean;
   }): Promise<{ response?: string; output?: string; [key: string]: any }>;
-  embed(options: {, model: string; text: string }): Promise<number[]>;
+  embed(options: {, model: string;, text: string }): Promise<number[]>;
 }
 
 export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
@@ -115,13 +115,13 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
     id: 'ragPipeline',
     initial: 'idle',
     context: {
-      query: '',
+     , query: '',
       sources: [] as RAGSource[],
       answer: '',
       confidence: 0,
       error: null
     },
-    states: { idle: {, on: { QUERY: {, target: 'retrieving',
+    states: {, idle: {, on: {, QUERY: {, target: 'retrieving',
             actions: assign({
              , query: (_, event) => event.query, // event type inferred from RagEvent
               sources: () => [] as RAGSource[],
@@ -264,7 +264,7 @@ type Cluster = { clusterId: number;, items: ClusterItem[];
 // Define the EnhancedRAGPipeline class
 export class EnhancedRAGPipeline {
   private fuseIndex: Fuse<SearchDoc> | undefined;
-  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string;, sourceIds: string[]; [key: string]: any }>();
+  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string; sourceIds: string[]; [key: string]: any }>();
   private TRITON_CHECK_TTL_MS = 30_000; // Time-to-live for Triton health check cache (default: 30 seconds).
 
   // Triton / TensorRT configuration constants.
@@ -436,11 +436,11 @@ export class EnhancedRAGPipeline {
       .map(s => `[${s.type.toUpperCase()}] ${s.title}\n${String(s.content ?? '').substring(0, 500)}...\n`)
       .join('\n');
 
-    const prompt = `You are a legal AI assistant. Use the following sources to answer:
+    const prompt = `You are a legal AI assistant. Use the following sources to answer:`
  ; Query: ${query}
   Context:
   ${context}
-  Return JSON with: answer, confidence, reasoning, suggestedActions.`;
+  Return JSON with: answer, confidence, reasoning, suggestedActions.`;`
 
     try {
       let responseText: string | null = null;
@@ -475,7 +475,7 @@ export class EnhancedRAGPipeline {
           const ollamaApiUrl = getOllamaEndpoint();
           const r = await fetch(`${ollamaApiUrl}/api/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': `application/json` },
+            headers: { 'Content-Type': `application/json' },'`
             body: JSON.stringify({
              , model: 'gemma3-legal:latest',
               prompt,
@@ -559,7 +559,7 @@ export class EnhancedRAGPipeline {
           title: `Memory: ${key}`,
           content: JSON.stringify(value),
           relevance: 0.6,
-          type: `document` });
+          type: `document' });'`
       }
     }
     return results;
@@ -659,7 +659,7 @@ export class EnhancedRAGPipeline {
    * Returns embedding array or [] on failure.
    */
   public async tritonInferEmbedding(text: string): Promise<number[]> {
-    // avoid hitting Triton if it's not available
+    // avoid hitting Triton if it's not available'
     if (!(await this.isTritonReady())) return [];
     try {
       const model = this.TRITON_EMBED_MODEL;
@@ -667,7 +667,7 @@ export class EnhancedRAGPipeline {
 
       const payload = {
         inputs: [
-          {
+          {,
             name: 'TEXT_INPUT',
             shape: [1],
             datatype: 'BYTES',
@@ -680,7 +680,7 @@ export class EnhancedRAGPipeline {
       const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -707,7 +707,7 @@ export class EnhancedRAGPipeline {
 
       return [];
     } catch (err) {
-      console.debug('tritonInferEmbedding error:', err);
+      console.debug('tritonInferEmbedding error:', err);'
       return [];
     }
   }
@@ -730,7 +730,7 @@ export class EnhancedRAGPipeline {
 
       const payload = {
         inputs: [
-          {
+          {,
             name: 'EMBEDDINGS',
             shape: dims,
             datatype: 'FP32',
@@ -749,7 +749,7 @@ export class EnhancedRAGPipeline {
       const timer = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -784,7 +784,7 @@ export class EnhancedRAGPipeline {
 
       return clusters;
     } catch (err) {
-      console.debug('tritonCluster error:', err);
+      console.debug('tritonCluster error:', err);'
       return [];
     }
   }
@@ -800,7 +800,7 @@ export class EnhancedRAGPipeline {
 
       const payload = {
         inputs: [
-          {
+          {,
             name: 'PROMPT',
             shape: [1],
             datatype: 'BYTES',
@@ -816,7 +816,7 @@ export class EnhancedRAGPipeline {
       const timer = setTimeout(() => controller.abort(), 10_000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -830,7 +830,7 @@ export class EnhancedRAGPipeline {
       const output = json.outputs?.[0]?.data?.[0] ?? null;
       return typeof output === 'string' ? output : null;
     } catch (err) {
-      console.debug('tritonGenerate error:', err);
+      console.debug('tritonGenerate error:', err);'
       return null;
     }
   }
@@ -862,7 +862,7 @@ export class EnhancedRAGPipeline {
       const ollamaApiUrl = getOllamaEndpoint(); // Use the imported utility
       const r = await fetch(`${ollamaApiUrl}/api/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, model: 'embeddinggemma:latest', text }), // Changed model
       });
       if (r.ok) {
@@ -884,7 +884,7 @@ export class EnhancedRAGPipeline {
     if (!embeddings?.length || !embeddings[0]?.length) {
       // one cluster with everything as a fallback
       return [
-        {
+        {,
           clusterId: 0,
           items: embeddings.map((emb, i) => ({ document: documents[i], embedding: emb, clusterId: 0 }))
         },

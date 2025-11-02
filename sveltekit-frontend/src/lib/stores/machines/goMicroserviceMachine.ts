@@ -8,7 +8,7 @@ import { createMachine, assign, fromPromise } from 'xstate';
 import type { GoMicroserviceContext, GoServiceRequest, GoServiceResponse } from './types.js';
 const DEFAULT_TIMEOUT = 30_000; // 30s
 const HEALTH_CHECK_INTERVAL = 60_000; // 60s
-interface MakeRequestEvent { type: 'MAKE_REQUEST';, request: GoServiceRequest }
+interface MakeRequestEvent { type: 'MAKE_REQUEST'; request: GoServiceRequest }
 interface HealthCheckEvent { type: 'HEALTH_CHECK' }
 interface ConnectEvent { type: 'CONNECT'; endpoint?: string }
 interface DisconnectEvent { type: 'DISCONNECT' }
@@ -56,7 +56,7 @@ export const goMicroserviceMachine = createMachine({
           actions: assign((_, e: any) => ({ connectionStatus: 'error' as any, error: e.error?.message })
         }
       },
-      on: { DISCONNECT: {, target: 'disconnected' } }
+      on: { DISCONNECT: {, target: 'disconnected` } }'`
     },
     disconnected: { entry: assign(() => ({, connectionStatus: 'disconnected' as any })),
       on: { CONNECT: {, target: 'connecting', actions: assign((c: any, e: any) => ({ endpoint: e.endpoint || c.endpoint })) } }
@@ -65,14 +65,14 @@ export const goMicroserviceMachine = createMachine({
       entry: 'startHealthCheckTimer',
       exit: 'stopHealthCheckTimer',
       initial: 'idle',
-      states: { idle: {, on: { MAKE_REQUEST: {, target: 'requesting' },
-            HEALTH_CHECK: { target: 'healthChecking' },
+      states: { idle: {, on: { MAKE_REQUEST: {, target: `requesting` },
+            HEALTH_CHECK: { target: `healthChecking` },
             DISCONNECT: { target: `#goMicroservice.disconnected` }
           }
         },
         requesting: { invoke: {, id: 'doRequest',
             src: fromPromise(async ({ input }) => {
-              const { request, endpoint } = input as { request: GoServiceRequest;, endpoint: string }
+              const { request, endpoint } = input as { request: GoServiceRequest; endpoint: string }
               if (!request) throw new Error('No request provided');
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
@@ -127,7 +127,7 @@ export const goMicroserviceMachine = createMachine({
       }
     },
     error: { after: { 4000: {, target: 'connecting' } },
-      on: { CONNECT: {, target: 'connecting' }, DISCONNECT: { target: 'disconnected' } }
+      on: { CONNECT: {, target: 'connecting` }, DISCONNECT: { target: `disconnected` } }'`
     }
   }
 }, { actions: {, startHealthCheckTimer: () => { },
@@ -139,7 +139,7 @@ export const goMicroserviceServices = {
   parseJSON: (data: any, options?: { parallel?: boolean; chunkSize?: number }) => ({
     type: 'MAKE_REQUEST' as const,
     request: {
-      method: 'POST' as const,
+     , method: 'POST' as const,
       path: '/parse',
       body: {
         data,
@@ -155,7 +155,7 @@ export const goMicroserviceServices = {
   trainSOM: (vectors: number[][], labels: string[], options?: { width?: number; height?: number; iterations?: number; learningRate?: number }) => ({
     type: 'MAKE_REQUEST' as const,
     request: {
-      method: 'POST' as const,
+     , method: 'POST' as const,
       path: '/train-som',
       body: {
         vectors,

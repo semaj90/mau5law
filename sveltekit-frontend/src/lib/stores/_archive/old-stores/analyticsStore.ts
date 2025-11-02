@@ -1,7 +1,7 @@
 // Svelte store for analytics events (frontend)
 import { writable } from 'svelte/store';
 import { EventEmitter } from 'events';
-// TODO: Fix import - // Orphaned; content: import {  export const analyticsEvents = writable([])
+// TODO: Fix import - // Orphaned; content: import { export, const analyticsEvents = writable([])
 export function logAnalyticsEvent(event) {
   analyticsEvents.update(events => [...events, event]);
   // Optionally POST to backend

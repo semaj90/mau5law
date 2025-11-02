@@ -105,7 +105,7 @@ export const mockServices: LegalAIServiceMap = {
   }),
   // Vector search services
   searchSimilarCases,: vi.fn().mockResolvedValue([
-    {
+    {,
       caseId: 'case-1',
       similarity: 0.92,
       title: 'People v. Smith - Similar Criminal Defense Case',
@@ -141,7 +141,7 @@ export const mockServices: LegalAIServiceMap = {
   }),
   detectPatterns: vi.fn().mockResolvedValue({,
     patterns: [
-      {
+      {,
        , type: 'TEMPORAL_INCONSISTENCY',
         confidence: 0.84,
         description: 'Timeline discrepancy between witness statements',

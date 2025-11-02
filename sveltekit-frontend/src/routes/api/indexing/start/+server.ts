@@ -24,7 +24,7 @@ export async function POST({ request }): Promise<any> {
         { status: 200 }
       );
     } else {
-      console.error('Go microservice returned an error:', goResponse.data);
+      console.error('Go microservice returned an error:', goResponse.data);'
       return json(
         { status: 'error', message: 'Go microservice failed to process files', details: goResponse.data },
         { status: goResponse.status }

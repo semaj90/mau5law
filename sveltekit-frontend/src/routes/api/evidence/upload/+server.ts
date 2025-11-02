@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         aiSummary,
         aiAnalysis: {},
         chainOfCustody: [
-          {
+          {,
            , action: 'uploaded',
             timestamp: new Date().toISOString(),
             userId,
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           console.warn('[Evidence Upload] Qdrant indexing failed - will retry in background');
         }
       } catch (qdrantError) {
-        console.warn('[Evidence Upload] Qdrant error:', qdrantError);
+        console.warn('[Evidence Upload] Qdrant error:', qdrantError);'
         // Continue - vector search will be available after background reindexing
       }
     }
@@ -242,8 +242,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         uploadedAt: evidenceRecord.uploadedAt,
         hasEmbedding: embeddingVector.length > 0
       },
-      message: 'Evidence uploaded and indexed successfully'
-    });
+      message: 'Evidence uploaded and indexed successfully` });'`
   } catch (err: any) {
     console.error('[Evidence Upload] Error:', err);
     console.error('[Evidence Upload] Stack:', err.stack);
@@ -267,7 +266,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const evidenceId = url.searchParams.get('id');
 
     if (!evidenceId) {
-      return json({ error: 'Evidence ID required' }, { status: 400 });
+      return json({ error: `Evidence ID required` }, { status: 400 });
     }
 
     const evidenceRecord = await db.query.evidence.findFirst({

@@ -69,7 +69,7 @@ class WebGPUAccelerator {
         }
         result[0] = similarity;
       }
-    ' };
+    ' };'
 
   async initialize(): Promise<WebGPUCapabilities> {
     if (this.initialized && this.capabilities) return this.capabilities;
@@ -78,7 +78,7 @@ class WebGPUAccelerator {
       const gpu = (navigator as any).gpu;
       if (!gpu) throw new Error('WebGPU not supported in this browser');
 
-      const adapter = await gpu.requestAdapter({ powerPreference: `high-performance` });
+      const adapter = await gpu.requestAdapter({ powerPreference: 'high-performance' });
       if (!adapter) throw new Error('No WebGPU adapter available');
 
       const device = await adapter.requestDevice({});
@@ -182,25 +182,25 @@ class WebGPUAccelerator {
     const shader = this.computeShaders.get('vectorSimilarity')!;
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
-        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+        {, binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
         // result buffer is writable by the shader
-        { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+        { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `storage` } },
         // params are provided as a uniform
-        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform' } }
+        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `uniform` } }
       ]
     });
 
     const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: shader, entryPoint: `main` }
+      compute: { module: shader, entryPoint: `main' }'`
     });
 
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        { binding: 0, resource: { buffer: aBuf } },
-        { binding: 1, resource: { buffer: bBuf } },
-        { binding: 2, resource: { buffer: resultBuf } },
+        {, binding: 0, resource: {, buffer: aBuf } },
+        { binding: 1, resource: {, buffer: bBuf } },
+        { binding: 2, resource: {, buffer: resultBuf } },
         { binding: 3, resource: {, buffer: paramsBuf } }
       ]
     });

@@ -216,7 +216,7 @@ export const GET: RequestHandler = async ({ url }) => {
            , timestamp: new Date().toISOString(),
             processingTimeMs: Date.now() - started
           }
-        } satisfies APIResponse<typeof data>);
+        } satisfies APIResponse<typeof, data>);
       }
     }
   } catch (err: any) {
@@ -226,7 +226,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
+         , code: 'INTERNAL_ERROR',
           message: dev ? e.message : 'Service temporarily unavailable'
         },
         metadata: {
@@ -296,7 +296,7 @@ async function handleHealthCheck(): Promise<Response> {
      , timestamp: new Date().toISOString(),
       processingTimeMs: Date.now() - started
     }
-  } satisfies APIResponse<typeof data>);
+  } satisfies APIResponse<typeof, data>);
 }
 
 /*
@@ -328,7 +328,7 @@ async function handleServiceDiscovery(): Promise<Response> {
     success: true,
     data,
     metadata: {, timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
-  } satisfies APIResponse<typeof data>);
+  } satisfies APIResponse<typeof, data>);
 }
 /*
  * Performance metrics endpoint
@@ -345,20 +345,19 @@ async function handleMetrics(): Promise<Response> {
       cpu: '45%',
       memory: '6.2GB / 16GB',
       gpu: '87% (RTX 3060 Ti)',
-      storage: '125GB / 500GB'
-    },
+      storage: `125GB / 500GB` },
     protocols: {
-      QUIC: '< 5ms avg',
-      gRPC: '< 15ms avg',
-      HTTP: '< 50ms avg',
-      WebSocket: '< 1ms latency` },
+      QUIC: '< 5ms, avg',
+      gRPC: '< 15ms, avg',
+      HTTP: '< 50ms, avg',
+      WebSocket: `< 1ms, latency` },
     timestamp: new Date().toISOString()
   };
   return json({
     success: true,
     data,
     metadata: {, timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
-  } satisfies APIResponse<typeof data>);
+  } satisfies APIResponse<typeof, data>);
 }
 /*
  * Cluster status with Windows-native process monitoring
@@ -383,7 +382,7 @@ async function handleClusterStatus(): Promise<Response> {
     success: true,
     data,
     metadata: {, timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
-  } satisfies APIResponse<typeof data>);
+  } satisfies APIResponse<typeof, data>);
 }
 /*
  * Helper function to determine service protocols

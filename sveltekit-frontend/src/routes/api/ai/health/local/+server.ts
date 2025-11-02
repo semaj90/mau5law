@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import { ollamaService } from '$lib/services/ollama-service';
 
 // New/updated types
-type HealthCheckResult = { success: boolean;, message: string; models?: string[] };
+type HealthCheckResult = { success: boolean; message: string; models?: string[] };
 type ServiceCheckSummary = { available: boolean; models?: string[]; gemmaModel?: string; error?: string };
 type GenerationResult = { success: boolean;, provider: string;
   model?: string;
@@ -78,12 +78,12 @@ async function testLlamaCppConnection(): Promise<HealthCheckResult> {
       signal: AbortSignal.timeout(5000)
     });
     if (response.ok) {
-      return { success: true, message: 'llama.cpp server is running' };
+      return { success: true, message: `llama.cpp server is running' };'`
     }
-    return { success: false, message: `llama.cpp server not responding properly` };
+    return { success: false, message: 'llama.cpp server not responding properly' };
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: 'llama.cpp connection; failed: ${msg}' };
+    return { success: false, message: 'llama.cpp connection; failed: ${msg}` };'`
   }
 }
 
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         available: false,
         error: msg,
-        services: { ollama: {, available: false },
+        services: {, ollama: {, available: false },
           llamaCpp: {, available: false }
         }
       },
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const service = typeof body?.service === 'string' ? body.service : 'auto';
     const startTime = Date.now();
 
-    let result: GenerationResult = { success: false, provider: 'none' };
+    let result: GenerationResult = { success: false, provider: `none` };
 
     if (service === 'ollama' || service === 'auto') {
       const primaryBody = {

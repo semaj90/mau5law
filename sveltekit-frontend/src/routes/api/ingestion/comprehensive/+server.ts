@@ -9,7 +9,7 @@ import { ingestionService } from '$lib/server/workflows/ingestion-service.js'
 // Define types for job details
 interface JobDetails { id: string;, status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'retrying' | 'paused';
   progress: number; // 0-100
-  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'; createdAt: string; // ISO date string
+  metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'; createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   error?: string;
   // Add other relevant job properties as needed by ingestionService
@@ -17,7 +17,7 @@ interface JobDetails { id: string;, status: 'pending' | 'running' | 'completed'
 
 // Define types for workflow details (simplified XState representation)
 interface WorkflowState {
-  state: string | Record<string, string>; // Changed: 'value' to: 'state' to match ingestionService output; context: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
+  state: string | Record<string, string>; // Changed: 'value'; to: 'state' to match ingestionService output; context: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
   history?: string[]; // Optional history of states
   // Add other relevant XState properties as needed by ingestionService
 }
@@ -47,14 +47,14 @@ interface IngestionDashboardData {
 
 // Define types for POST request body actions using a discriminated union
 type PostAction =
-  | { action: 'submit_document'; documentId: string;, chunks: string[]; metadata?: Record<string, unknown> } // Changed: 'unknown[]'; to: 'string[]'
-  | { action: 'get_job';, jobId: string }
+  | { action: 'submit_document'; documentId: string; chunks: string[]; metadata?: Record<string, unknown> } // Changed: 'unknown[]'; to: 'string[]'
+  | { action: 'get_job'; jobId: string }
   | { action: 'get_dashboard' }
-  | { action: 'retry_job';, jobId: string }
-  | { action: 'cancel_job';, jobId: string }
+  | { action: 'retry_job'; jobId: string }
+  | { action: 'cancel_job'; jobId: string }
   | { action: 'pause_processing' }
   | { action: 'resume_processing' }
-  | { action: 'set_concurrency';, concurrency: number }
+  | { action: 'set_concurrency'; concurrency: number }
   | { action: 'clear_completed' }
   | { action: 'reset_stats' };
 
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action, ...params } = data; // params will be correctly typed based on action
     switch (action) {
       case 'submit_document': {
-        // params is now { documentId: string;, chunks: any[]; metadata?: Record<string, any> }
+        // params is now { documentId: string; chunks: any[]; metadata?: Record<string, any> }
         const { documentId, chunks, metadata } = params as Extract<PostAction, { action: 'submit_document' }>;
         // Validate input
         if (!documentId || !chunks || !Array.isArray(chunks)) {
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
           jobId: result.jobId,
           queuePosition: result.queuePosition,
           estimatedTime: result.estimatedTime,
-          trackingUrl: `/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}' });
+          trackingUrl: '/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}' });
       }
       case 'get_job': {
         // params is now { jobId: string }
@@ -240,17 +240,17 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           success: true,
-          message: result.message || 'Stats reset successfully` });
+          message: result.message || 'Stats reset successfully' });
       }
       default: return json(
           {
             success: false,
-            error: `Unknown; action: ${action}' },
+            error: `Unknown; action: ${action}` },
           { status: 400 }
         );
     }
   } catch (error) {
-    console.error('❌ Ingestion API error:', error);
+    console.error('❌ Ingestion API error:', error);'
     return json(
       {
         success: false,
@@ -272,7 +272,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 307,
         headers: {
           'Location': '/api/ingestion/comprehensive',
-          'Content-Type': 'application/json` }
+          'Content-Type`: `application/json` }'`
       });
     }
     if (action === 'get_dashboard') {
@@ -287,7 +287,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       api: {
-        name: 'Comprehensive Ingestion API',
+       , name: 'Comprehensive Ingestion API',
         version: '1.0.0',
         description: 'XState + LokiJS + RabbitMQ + Drizzle ORM integration',
         endpoints: {
@@ -310,7 +310,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error) {
-    console.error('❌ Ingestion API GET error:', error);
+    console.error('❌ Ingestion API GET error:', error);'
     return json(
       {
         success: false,
@@ -340,7 +340,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error('❌ Ingestion API PATCH error:', error);
+    console.error('❌ Ingestion API PATCH error:', error);'
     return json(
       {
         success: false,

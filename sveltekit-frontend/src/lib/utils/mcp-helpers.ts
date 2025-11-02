@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 // Removed unused fs import to satisfy lint/tsc.
 
 // Define minimal interfaces for services we call so we avoid `any`.
@@ -76,7 +76,7 @@ const agentRegistry: Record<string, (prompt: string, context?: any) => Promise<A
       const msg = err instanceof Error ? err.message : String(err);
       return {
         agent: 'autogen',
-        result: `AutoGen agent; error: ${msg}' };
+        result: `AutoGen agent; error: ${msg}` };
     }
   },
   crewai: async (prompt, _context) => {
@@ -168,7 +168,7 @@ const agentRegistry: Record<string, (prompt: string, context?: any) => Promise<A
     } catch (_err: any) {
       return {
         agent: 'rag',
-        result: `RAG agent (mock): Enhanced retrieval; for: "${prompt}" - would provide context-aware document analysis' };
+        result: `RAG agent (mock): Enhanced retrieval; for: "${prompt}" - would provide context-aware document analysis` };
     }
   }
 };
@@ -233,11 +233,11 @@ export async function copilotOrchestrator(
   // Step 8: Rank and Suggest Best Practices
   results.bestPractices = await mcpSuggestBestPractices(results);
   // Step 9: Compose self-prompt for Copilot/agentic action
-  results.selfPrompt = `Given the following results, what is the best next action?\n\n${JSON.stringify(
+  results.selfPrompt = `Given the following results, what is the best next action?\n\n${JSON.stringify(`
     results,
     null,
     2
-  )}\n\nPrompt: ${prompt}';
+  )}\n\nPrompt: ${prompt}';'
   return results;
 }
 /**
@@ -566,12 +566,10 @@ export const commonMCPQueries = {
   }),
   ragComponentIntegration: (): MCPToolRequest => ({
     tool: 'rag-integration-guide',
-    integrationType: 'component-integration'
-  }),
+    integrationType: 'component-integration` }),'`
   ragSearchUI: (): MCPToolRequest => ({
     tool: 'rag-integration-guide',
-    integrationType: 'search-ui'
-  }),
+    integrationType: `search-ui` }),
   ragDocumentUpload: (): MCPToolRequest => ({
     tool: 'rag-integration-guide',
     integrationType: `document-upload` })
@@ -673,7 +671,7 @@ export async function semanticSearch(query: string): Promise<unknown[]> {
     return data?.results ?? [];
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('semanticSearch error:', msg);
+    console.error('semanticSearch error:', msg);'
     return [{ error: msg } as unknown];
   }
 }
@@ -681,10 +679,10 @@ export async function semanticSearch(query: string): Promise<unknown[]> {
 export async function mcpMemoryReadGraph(): Promise<unknown[]> {
   try {
     return [
-      {
+      {,
         node: 'legal-workflow-memory',
         relations: ['case-evidence', 'document-analysis'],
-        value: `Context7 memory graph integration ready` },
+        value: `Context7 memory graph integration ready` }
     ];
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -824,7 +822,7 @@ export async function mcpSuggestBestPractices(results: any): Promise<AutoMCPSugg
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [
-      {
+      {,
         type: 'alternative',
         original: 'mcpSuggestBestPractices failed',
         suggested: 'Check MCP connectivity and input results',

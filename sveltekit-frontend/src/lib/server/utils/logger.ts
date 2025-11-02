@@ -88,7 +88,7 @@ class Logger {
       for (const log of logs) {
         try {
           await db.execute(
-            sql`INSERT INTO system_logs (
+            sql`INSERT INTO system_logs (`
               timestamp,
               level,
               message,
@@ -123,7 +123,7 @@ class Logger {
   }
   private async writeToFile(logs: LogEntry[]): Promise<void> {
     // File logging implementation would go here
-    // For now, we'll skip file logging in the browser environment
+    // For now, we'll skip file logging in the browser environment'
     if (typeof window !== 'undefined') {
       return;
     }
@@ -282,12 +282,12 @@ class Logger {
         this.fatal(message, component, error, { ...metadata, conversationId })
     }
   }
-  // Create system logs table if it doesn't exist
+  // Create system logs table if it doesn't exist'
   async initializeLogTable(): Promise<void> {
     try {
       const { db, sql } = await import('$lib/server/db');
       await db.execute(
-        sql`CREATE TABLE IF NOT EXISTS system_logs (
+        sql`CREATE TABLE IF NOT EXISTS system_logs (`
           id SERIAL PRIMARY KEY,
           timestamp TIMESTAMP NOT NULL,
           level INTEGER NOT NULL,
@@ -304,19 +304,19 @@ class Logger {
       );
       // Create indexes for better query performance
       await db.execute(
-        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_timestamp
+        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_timestamp`
         ON system_logs (timestamp)`
       );
       await db.execute(
-        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_level
+        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_level`
         ON system_logs (level)`
       );
       await db.execute(
-        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_component
+        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_component`
         ON system_logs (component)`
       );
       await db.execute(
-        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_conversation
+        sql`CREATE INDEX IF NOT EXISTS idx_system_logs_conversation`
         ON system_logs (conversation_id)`
       );
       console.log('System logs table initialized successfully');

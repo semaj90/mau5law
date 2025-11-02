@@ -161,7 +161,7 @@ class ContextualMemoryChatService {
           response_time_ms: performance.now() - startTime,
           cached: false,
           quantized: !!llmResponse.quantized,
-          model_used: llmResponse?.model || 'unknown` }
+          model_used: llmResponse?.model || 'unknown` }'`
       };
       await this.updateChatHistory(userId, sessionId, [userMsg, assistantMsg]);
 
@@ -175,7 +175,7 @@ class ContextualMemoryChatService {
       };
     } catch (error) {
       this.isProcessing.set(false);
-      console.error('Contextual chat error:', error);
+      console.error('Contextual chat error:', error);'
       throw error;
     }
   }
@@ -195,7 +195,7 @@ class ContextualMemoryChatService {
     // Get recent messages from current session
     const recentMessages = await this.getRecentSessionMessages(sessionId, maxContext);
 
-    // Get semantically similar messages from user's history
+    // Get semantically similar messages from user's history'
     const semanticallySimilar = options.useSemanticSimilarity
       ? await this.getSemanticallySimilarMessages(currentQuery, userId, 3)
       : [];
@@ -253,7 +253,7 @@ class ContextualMemoryChatService {
     // Add similar historical context
     if (similar.length > 0) {
       prompt += '[SIMILAR_PAST_CONVERSATIONS: ';
-      similar.forEach(msg => {
+      similar.forEach(msg => {,
         if (msg.role === 'user') {
           prompt += `User previously asked: "${msg.content}" `;
         } else {
@@ -266,7 +266,7 @@ class ContextualMemoryChatService {
     // Add recent conversation context
     if (recent.length > 0) {
       prompt += '[RECENT_CONVERSATION: ';
-      recent.forEach(msg => {
+      recent.forEach(msg => {,
         prompt += `${msg.role}: ${msg.content} `;
       });
       prompt += '] ';
@@ -286,7 +286,7 @@ class ContextualMemoryChatService {
     try {
       const payload = {
         messages: [
-          {
+          {,
             role: 'user',
             content: contextualPrompt.enhancedPrompt
           },
@@ -310,10 +310,9 @@ class ContextualMemoryChatService {
         response: (data?.choices?.[0]?.message?.content as string) ?? 'No response generated',
         confidence: data?.confidence,
         quantized: data?.quantized ?? null,
-        model: data?.model ?? 'unknown'
-      };
+        model: data?.model ?? 'unknown` };'`
     } catch (error) {
-      console.warn('sendToLLM failed, returning fallback:', error);
+      console.warn('sendToLLM failed, returning fallback: `, error);'`
       return { response: `The assistant is temporarily unavailable. Please try again later.` };
     }
   }
@@ -411,7 +410,7 @@ class ContextualMemoryChatService {
     try {
       const resp = await fetch('/api/rag/context', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ query, userId, limit: 5 })
       });
       if (!resp.ok) return [];

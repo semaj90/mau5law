@@ -171,7 +171,7 @@ export class UnifiedServiceOrchestrator {
         llamaOllama: 'online',
         nesGPUBridge: 'online',
         postgres: 'online',
-        redis: `online` },
+        redis: `online' },'`
       performance: {
         averageLatency: 0,
         throughput: 0,
@@ -274,7 +274,7 @@ export class UnifiedServiceOrchestrator {
         width: 32,
         height: 32,
         data: new Uint8ClampedArray(32 * 32 * 4),
-        format: `RGBA` };
+        format: `RGBA' };'`
       const result = await this.nesGPUBridge.canvasStateToTensor(testCanvas);
       return Boolean((result as any)?.data && (result as any).data.length > 0);
     } catch {
@@ -443,7 +443,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { document, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -497,7 +497,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { input, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -520,7 +520,7 @@ export class UnifiedServiceOrchestrator {
         servicesUsed.push('llamaOllama');
         const inputArray = Array.from(input).slice(0, 100); // Limit for prompt
         const llama = this.llamaService as unknown as ILlamaService;
-        const result = await (llama.createCompletion?.({ prompt: 'Perform neural inference on this, data: [${inputArray.join(',')}]`,
+        const result = await (llama.createCompletion?.({ prompt: 'Perform neural inference on this, data: [${inputArray.join(',')}]`,'`
           maxTokens: options?.maxTokens ?? 512,
           temperature: options?.temperature ?? 0.1,
           stream: false
@@ -538,7 +538,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { canvasState, options: $options } = task.data;
     // Primary: NES GPU Bridge
     if (this.isServiceHealthy('nesGPUBridge')) {
@@ -571,7 +571,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: any; success: boolean; servicesUsed: string[];, fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { operation, data, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -630,7 +630,7 @@ export class UnifiedServiceOrchestrator {
       latency,
       throughput: latency > 0 ? 1000 / latency : 0,
       resourceUsage: error
-    } as { timestamp: Date; latency: number; throughput: number;, resourceUsage: number };
+    } as { timestamp: Date; latency: number; throughput: number; resourceUsage: number };
     this.performanceMetrics.push(metric);
     // Keep only recent metrics
     const cutoff = Date.now() - this.config.monitoring.metricsRetentionPeriod;

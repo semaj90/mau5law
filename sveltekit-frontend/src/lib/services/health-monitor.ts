@@ -4,7 +4,7 @@ import type { AIProvider } from './types/ai-provider';
 
 export class HealthMonitor {
   private providers: Map<string, AIProvider>;
-  private healthStatus: Map<string, { healthy: boolean;, latency: number | null }> = new Map();
+  private healthStatus: Map<string, { healthy: boolean; latency: number | null }> = new Map();
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private checkInterval = 30000; // 30 seconds
 

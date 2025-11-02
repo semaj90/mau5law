@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { Server } from 'socket.io';
 import { dev } from '$app/environment';
 import { createRedisInstance } from '$lib/server/redis';
@@ -72,7 +72,7 @@ function initializeWebSocket() {
     // Handle attention tracking
     socket.on(
       'user-attention',
-      (data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }) => {
+      (data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';, timestamp: string; metadata?: any }) => {
         // Track user attention for AI context switching
         trackUserAttention(socket.id, data);
       }
@@ -146,7 +146,7 @@ function setupRedisSubscriptions() {
               timestamp: new Date().toISOString()
             });
           }
-        } else if (chan.startsWith('error:')) {
+        } else if (chan.startsWith('error:')) {'
           metrics.errorMessages++;
           const uploadId = chan.split(':')[1] ?? '';
           if (server) {
@@ -192,7 +192,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
     // Analyze query for legal context
     const contextResponse = await fetch('http://localhost:8080/api/context/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         query,
         socketId,
@@ -262,7 +262,7 @@ export function _broadcastSearchResults(searchId: string, results: any) {
 }
 // HTTP handler for WebSocket endpoint
 export const GET: RequestHandler = async ({ url: _url }) => {
-  // ensure websocket server initialized (don't keep unused local)
+  // ensure websocket server initialized (don't keep unused local)'
   initializeWebSocket();
   // Return WebSocket connection info
   return new Response(
@@ -278,7 +278,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       ]
     }),
     {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json` }'`
     }
   );
 };

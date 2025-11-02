@@ -106,7 +106,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
     channel_max: 100
   },
   exchanges: [
-    {
+    {,
       name: EXCHANGES.LEGAL_AI_MAIN,
       type: 'topic',
       options: {
@@ -118,19 +118,19 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       name: EXCHANGES.LEGAL_AI_DLX,
       type: 'direct',
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false
       }
     },
   ],
   queues: [
-    // Document processing queues
+    // Document processing queues,
     {
-      name: QUEUES.DOCUMENT_EMBEDDING,
+     , name: QUEUES.DOCUMENT_EMBEDDING,
       routingKey: ROUTING_KEYS.GENERATE_EMBEDDING,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 600000, // 10 minutes
         maxLength: 1000,
@@ -143,7 +143,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.VECTOR_INDEX_UPDATE,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 500,
@@ -333,7 +333,7 @@ export const getRabbitMQConnectionURL = (): string => {
   const config = getRabbitMQConfig();
   const { protocol, hostname, port, username, password, vhost } = config.connection;
   const encodedVhost = encodeURIComponent(vhost);
-  return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : '' }`;
+  return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : '` }`;'`
 };
 // Health check configuration
 export const HEALTH_CHECK = {

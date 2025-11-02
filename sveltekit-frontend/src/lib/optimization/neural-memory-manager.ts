@@ -193,7 +193,7 @@ export class NeuralMemoryManager extends EventEmitter {
    */
   private initializeMemoryPools(): void {
     const poolConfigs = [
-      {
+      {,
         id: 'json_pool',
         type: 'high' as const,
         size: this.currentLOD.memoryLimit * 0.3,
@@ -306,7 +306,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private async kMeansCluster(
     points: number[][],
     k: number
-  ): Promise<Array<{ centroid: number[];, points: number[][] }>> {
+  ): Promise<Array<{ centroid: number[]; points: number[][] }>> {
     if (!points || points.length === 0) return [];
     const dimensions = points[0].length;
     // Initialize centroids by sampling
@@ -315,7 +315,7 @@ export class NeuralMemoryManager extends EventEmitter {
       centroids.push(Array.from({ length: dimensions }, () => Math.random() * (Math.max(...points.flat()) || 1)));
     }
     for (let iteration = 0; iteration < 50; iteration++) {
-      const clusters: Array<{ centroid: number[];, points: number[][] }> = Array.from({ length: k }, () => ({
+      const clusters: Array<{ centroid: number[]; points: number[][] }> = Array.from({ length: k }, () => ({
         centroid: [],
         points: [] as number[][]
       }));
@@ -389,7 +389,7 @@ export class NeuralMemoryManager extends EventEmitter {
       }
       console.log('✅ Neural network training completed');
     } catch (err: any) {
-      console.error('❌ Neural training error:', err instanceof Error ? err : String(err));
+      console.error('❌ Neural training error:', err instanceof Error ? err : String(err));'
     } finally {
       this.isTraining = false;
     }
@@ -508,9 +508,9 @@ export class NeuralMemoryManager extends EventEmitter {
   private calculateOptimalCompression(memoryUsage: number): number {
     return Math.min(0.9, Math.max(0.1, memoryUsage / this.currentLOD.memoryLimit));
   }
-  private prepareTrainingData(): Array<{ input: number[];, target: number[] }> {
+  private prepareTrainingData(): Array<{ input: number[]; target: number[] }> {
     // Build simple supervised samples from usageHistory: predict normalized usage next step
-    const samples: Array<{ input: number[];, target: number[] }> = [];
+    const samples: Array<{ input: number[]; target: number[] }> = [];
     const recent = this.usageHistory.slice(-50);
     for (let i = 0; i < recent.length - 1; i++) {
       const cur = recent[i];
@@ -585,7 +585,7 @@ export class NeuralMemoryManager extends EventEmitter {
   }
   private generateOptimizations(expectedUsage: number): Optimization[] {
     return [
-      {
+      {,
         type: 'compress',
         priority: expectedUsage > this.currentLOD.memoryLimit * 0.8 ? 3 : 1,
         estimatedSavings: expectedUsage * 0.2

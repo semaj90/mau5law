@@ -117,16 +117,16 @@ class EnhancedLokiDB {
         transforms: {
           byCaseHighConfidence: [
             { type: 'find', value: { caseId: {, $aeq: '[%lktxp]caseId' } } },
-            { type: 'find', value: { confidence: {, $gte: 0.8 } } },
+            { type: 'find', value: {, confidence: {, $gte: 0.8 } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
           recentProcessed: [
-            { type: 'find', value: { processingStatus: 'complete' } },
+            {, type: 'find', value: {, processingStatus: 'complete' } },
             { type: 'simplesort', property: 'updatedAt', desc: true },
             { type: 'limit', value: 50 }
           ],
           needsProcessing: [
-            { type: 'find', value: {, processingStatus: {, $in: ['pending', 'error'] } } },
+            {, type: 'find', value: {, processingStatus: {, $in: ['pending', 'error'] } } },
             { type: 'simplesort', property: 'createdAt', desc: false }
           ]
         },
@@ -138,12 +138,12 @@ class EnhancedLokiDB {
       this.db.addCollection('aiAnalysis', {
         indices: ['evidenceId', 'analysisType', 'model', 'confidence', 'timestamp'],
         transforms: {
-          highConfidenceAnalysis: [
-            { type: 'find', value: { confidence: {, $gte: 0.9 } } },
+         , highConfidenceAnalysis: [
+            {, type: 'find', value: {, confidence: {, $gte: 0.9 } } },
             { type: 'simplesort', property: 'timestamp', desc: true }
           ],
           byModel: [
-            { type: 'find', value: {, model: {, $aeq: '[%lktxp]model' } } },
+            {, type: 'find', value: {, model: {, $aeq: '[%lktxp]model' } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ]
         },
@@ -155,7 +155,7 @@ class EnhancedLokiDB {
       this.db.addCollection('embeddings', {
         indices: ['contentHash', 'model', 'type', 'dimension'],
         unique: ['contentHash'],
-        transforms: { byModel: [{, type: 'find', value: { model: {, $aeq: '[%lktxp]model' } } }],
+        transforms: {, byModel: [{, type: 'find', value: {, model: {, $aeq: '[%lktxp]model' } } }],
           recentEmbeddings: [
             {, type: 'simplesort', property: 'createdAt', desc: true },
             { type: 'limit', value: 100 }
@@ -170,14 +170,14 @@ class EnhancedLokiDB {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
         transforms: {
           strongRelationships: [
-            { type: 'find', value: { strength: {, $gte: 0.7 } } },
+            { type: 'find', value: {, strength: {, $gte: 0.7 } } },
             { type: 'simplesort', property: 'strength', desc: true }
           ],
           byType: [
-            { type: 'find', value: { type: {, $aeq: '[%lktxp]type' } } },
+            {, type: 'find', value: {, type: {, $aeq: '[%lktxp]type' } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
-          bidirectional: [{ type: 'find', value: {, bidirectional: true } }]
+          bidirectional: [{, type: 'find', value: {, bidirectional: true } }]
         }
       });
     // Vector similarity matches cache
@@ -186,8 +186,8 @@ class EnhancedLokiDB {
       this.db.addCollection('vectorMatches', {
         indices: ['queryHash', 'targetId', 'similarity', 'timestamp'],
         transforms: {
-          highSimilarity: [
-            { type: 'find', value: { similarity: {, $gte: 0.8 } } },
+         , highSimilarity: [
+            {, type: 'find', value: {, similarity: {, $gte: 0.8 } } },
             { type: 'simplesort', property: 'similarity', desc: true }
           ],
           recentMatches: [
@@ -203,12 +203,12 @@ class EnhancedLokiDB {
       this.db.addCollection('streamingResults', {
         indices: ['type', 'status', 'priority', 'timestamp'],
         transforms: {
-          pending: [
-            { type: 'find', value: { status: 'pending' } },
+         , pending: [
+            {, type: 'find', value: {, status: 'pending' } },
             { type: 'simplesort', property: 'priority', desc: true }
           ],
           completed: [
-            { type: 'find', value: {, status: 'completed' } },
+            {, type: 'find', value: {, status: 'completed' } },
             { type: 'simplesort', property: 'timestamp', desc: true }
           ]
         },
@@ -545,7 +545,7 @@ class EnhancedLokiDB {
             openSSE(urlIdx + 1);
           }
         } catch (e) {
-          console.warn(`Failed to open SSE ${url}: ', e);
+          console.warn(`Failed to open SSE ${url}: ', e);'`
           openSSE(urlIdx + 1);
         }
       }
@@ -577,7 +577,7 @@ class EnhancedLokiDB {
     try {
       const swPath = '/service-worker.js';
       try {
-        const head = await fetch(swPath, { method: 'HEAD' });
+        const head = await fetch(swPath, { method: 'HEAD` });'`
         if (!head.ok) return;
       } catch {
         return;
@@ -664,7 +664,7 @@ class EnhancedLokiDB {
     const endpoint = `/api/cache/sync/${operation.collection}`;
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , operation: operation.type,
         data: operation.data,

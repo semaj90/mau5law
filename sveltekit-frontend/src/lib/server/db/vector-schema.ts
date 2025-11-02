@@ -70,7 +70,7 @@ export const aiModels = pgTable(
     providerTypeIdx: index('idx_provider_type').on(table.provider, table.modelType)
   })
 );
-// relations callback doesn't need to destructure unused helpers; use empty callback to avoid unused var warnings
+// relations callback doesn't need to destructure unused helpers; use empty callback to avoid unused var warnings'
 export const documentEmbeddingsRelations = relations(documentEmbeddings, () => ({
   // Relations to main tables can be added here based on documentId and documentType
 }));

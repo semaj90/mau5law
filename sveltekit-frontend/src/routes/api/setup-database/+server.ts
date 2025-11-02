@@ -14,7 +14,7 @@ export const GET: RequestHandler = async () => {
     return json({ success: true, healthy: health, stats });
   } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('❌ Database health check error:', message);
+    console.error('❌ Database health check error:', message);'
     return json({ success: false, error: message }, { status: 500 });
   }
 };
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({ success: true, message: 'Database setup completed' });
         } catch (setupErr: any) {
           const setupMsg = setupErr instanceof Error ? setupErr.message : String(setupErr);
-          console.error('❌ Setup error:', setupMsg);
+          console.error('❌ Setup error:', setupMsg);'
           return json({ success: false, error: setupMsg }, { status: 500 });
         }
       default: return json(
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('❌ Database maintenance error:', message);
+    console.error('❌ Database maintenance error:', message);'
     return json(
       {
         success: false,
@@ -113,7 +113,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     );
   } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('❌ Database deletion error:', message);
+    console.error('❌ Database deletion error:', message);'
     return json(
       {
         success: false,

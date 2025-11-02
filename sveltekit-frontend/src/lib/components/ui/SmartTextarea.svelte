@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class';
+<!-- @migration-task Error while migrating Svelte code: Unexpected, keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, keyword: 'class' -->
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { CommandMenu } from "./CommandMenu.svelte";
   interface Props {
@@ -13,9 +13,9 @@ https://svelte.dev/e/js_parse_error -->
     className?: string; // renamed from `class`
     triggerChar?: string;
     // onCommandSelect was unused — removed
-    onInput?: (data: { value: string; target: HTMLTextAreaElement }) => void;
+    onInput?: (data: { value: string;, target: HTMLTextAreaElement }) => void;
     onKeydown?: (e: KeyboardEvent) => void;
-    onCommandInsert?: (data: { text: string }) => void;
+    onCommandInsert?: (data: {, text: string }) => void;
     onBlur?: (e: FocusEvent) => void;
     onFocus?: (e: FocusEvent) => void;
   }
@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
     onInput?.({ value, target });
   }
   function handleKeydown(e: KeyboardEvent) {
-    // Don't interfere with command menu navigation
+    // Don't interfere with command menu navigation'
     if (
       showCommandMenu &&
       ["ArrowUp", "ArrowDown", "Enter", "Escape"].includes(e.key)
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
     showCommandMenu = false;
   }
   function handleBlur(e: FocusEvent) {
-    // Don't close command menu immediately to allow clicking on it
+    // Don't close command menu immediately to allow clicking on it'
     setTimeout(() => {
       if (!document.activeElement?.closest(".command-menu")) {
         showCommandMenu = false;
@@ -134,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-<div class={className}>
+<div, class={className}>
   <textarea
     bind:this={textarea}
     bind:value={value}
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
       style="position: absolute; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index:9999;"
       role="listbox"
     >
-      <!-- CommandMenu API may vary; provide a callback prop that CommandMenu can call -->
+      <!-- CommandMenu API may vary; provide a callback prop that CommandMenu can, call -->
       <CommandMenu {triggerChar} onselect={(e) => insertCommandText(e.detail?.text ?? e.detail ?? '')} onclose={closeCommandMenu} />
     {/if}
 </div>

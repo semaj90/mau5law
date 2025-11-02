@@ -88,12 +88,12 @@ type NESRLAction = {
 // Add a narrow RabbitMQ-like type to avoid `any`
 type RabbitMQLike = {
   // typical Node/EventEmitter style
-  on?: (event: string, handler: (...args: any[]) => void) => void;
-  addListener?: (event: string, handler: (...args: any[]) => void) => void;
+  on?: (event: string;, handler: (...args: any[]) => void) => void;
+  addListener?: (event: string;, handler: (...args: any[]) => void) => void;
   // common subscribe API (some libs)
-  subscribe?: (event: string, handler: (...args: any[]) => void) => void;
+  subscribe?: (event: string;, handler: (...args: any[]) => void) => void;
   // alternative naming
-  subscribeEvent?: (event: string; handler: (...args: any[]) => void) => void;
+  subscribeEvent?: (event: string;, handler: (...args: any[]) => void) => void;
   // allow extra optional members but keep them typed
   [key: string]: any;
 };
@@ -119,7 +119,7 @@ export class RecommendationOrchestrator {
       error: null,
       lastUpdate: Date.now(),
       nesRLStats: null,
-      userActivity: 'active` });
+      userActivity: 'active` });'`
     this.initializeServices();
   }
   /**
@@ -592,7 +592,7 @@ export class RecommendationOrchestrator {
   public markUserActive() {
     this.updateUserActivity('active');
   }
-  public updateDetectiveContext(context: Partial<typeof this.detectiveContext>) {
+  public updateDetectiveContext(context: Partial<typeof, this.detectiveContext>) {
     this.detectiveContext = { ...this.detectiveContext, ...context };
   }
 }

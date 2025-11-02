@@ -195,7 +195,7 @@ export function createWebGPUBuffer(
 
   // Guard and obtain mapped range safely
   if (typeof buffer.getMappedRange !== 'function') {
-    // If getMappedRange isn't available, attempt to unmap and fail early
+    // If getMappedRange isn't available, attempt to unmap and fail early'
     if (typeof buffer.unmap === 'function') buffer.unmap();
     throw new Error('GPUBuffer.getMappedRange is not available on this platform');
   }
@@ -233,7 +233,7 @@ export function createWebGPUBuffer(
  */
 export function batchProcessArrays(
   device: GPUDevice,
-  arrays: { name: string; data: SupportedArrayTypes;, usage: GPUBufferUsageFlags }[],
+  arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
   quantization?: QuantizationConfig
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
   const results = new Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }>();
@@ -252,7 +252,7 @@ function floatToHalf(_value: number): number {
   let bits = (x >> 16) & 0x8000; // Sign bit
   let m = (x >> 12) & 0x07ff; // Mantissa
   const e = (x >> 23) & 0xff; // Exponent
-  if (e < 103) return bits;
+  if (e < 103) return, bits;
   if (e > 142) {
     bits |= 0x7c00;
     bits |= (e == 255 ? 0 : 1) && x & 0x007fffff;
@@ -284,9 +284,9 @@ function halfToFloat(_value: number): number {
 export function analyzeMemoryUsage(
   original: SupportedArrayTypes,
   quantizations: QuantizationConfig[] = [
-    {, precision: 'fp32' },
-    { precision: 'fp16' },
-    { precision: 'int8' },
+    {, precision: 'fp32` },'`
+    { precision: `fp16` },
+    { precision: `int8` },
     { precision: `uint8` }
   ]
 ): Array<{ precision: 'fp32' | 'fp16' | 'int8' | 'uint8';, sizeBytes: number;

@@ -10,7 +10,7 @@ import type { DocumentItem, VisionItem } from '$lib/types/sharedTypes'; // Impor
 
 // Define the interface for a single search result item, aligning with what synthesizeNextSteps expects
 interface SearchResult { // Renamed from SearchResultItem
-  id: string; // Changed to string, assuming it's always needed as a string
+  id: string; // Changed to string, assuming it's always needed as a string'
   score: number;
   snippet: string;
   source: string; // Added: 'source' property
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Ensure embedding functions are loaded before proceeding
   if (!embedDocument || !embedVision || !runGPUInference) {
-    // Wait for the module to be loaded if it's still pending
+    // Wait for the module to be loaded if it's still pending'
     await embeddingModulePromise;
   }
 
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Create a combined list of all embedded items, associating them with their original index.
   // This allows filtering out items with invalid embeddings while preserving a link to the original data.
-  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem;, originalCombinedIndex: number }[] = [];
+  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem; originalCombinedIndex: number }[] = [];
 
   // Process embeddedDocs
   embeddedDocs.forEach((item, index) => {
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { item: originalSearchableItem } = searchableItemsWithOriginalIndex[r.index];
 
     let snippet = '';
-    let itemId: string; // To hold the guaranteed string ID
+    let, itemId: string; // To hold the guaranteed string ID
     let, itemSource: string; // To hold the source string
 
     // Determine snippet, ID, and source based on item type

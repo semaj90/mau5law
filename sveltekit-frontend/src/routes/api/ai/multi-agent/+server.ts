@@ -122,7 +122,7 @@ let crewaiTeam: CrewAILegalTeam | null = null;
 // Load memory configurations
 // Configuration for low-memory setups (placeholder)
 type MemoryProfileName = 'ultra_low_memory' | 'low_memory' | 'balanced' | 'high_performance';
-type MemoryProfile = { max_tokens: number;, batch_size: number };
+type MemoryProfile = { max_tokens: number; batch_size: number };
 
 const lowMemoryConfigs: { ultra_low_memory: MemoryProfile;, low_memory: MemoryProfile;
   low_memory_profiles: Record<MemoryProfileName, MemoryProfile>;
@@ -183,11 +183,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const requestData: MultiAgentRequest = await request.json();
     // Validate request
     if (!requestData.query) {
-      return json({ error: `Query is required` }, { status: 400 });
+      return json({ error: 'Query is required` }, { status: 400 });'`
     }
     // Initialize AI systems with appropriate memory profile
     initializeAISystems(requestData.memoryProfile, requestData.useVLLM);
-    const sessionId = `multi_agent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}';
+    const sessionId = `multi_agent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}';'`
     const startTime = Date.now();
     const results: MultiAgentResponse['results'] = {};
     let totalTokens = 0;
@@ -258,8 +258,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       );
     }
   } catch (error: any) {
-    console.error('Multi-agent API error:', error);
-    return json({ error: `Invalid request format` }, { status: 400 });
+    console.error('Multi-agent API error: ', error);'
+    return json({ error: 'Invalid request format` }, { status: 400 });'`
   }
 };
 async function runAutogenAnalysis(request: MultiAgentRequest, _sessionId: string): Promise<AutogenResponse> {
@@ -336,7 +336,7 @@ Based on both agent teams, the key findings indicate:
 Autogen Confidence: ${autogenResult.confidence}
 CrewAI Average Confidence: ${crewAiAvg.toFixed(2)}
 Combined Confidence: ${(((autogenResult.confidence || 0) + crewAiAvg) / 2).toFixed(2)}
-`;
+`;`
   return {
     synthesizedAnalysis: combinedAnalysis,
     convergentFindings: findCommonThemes(autogenResult, crewaiResult),
@@ -444,7 +444,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       return json(agentInfo);
     }
     default: return json(
-        { error: `Invalid action. Available, actions: status, memory_profiles, agents` },
+        { error: 'Invalid action. Available, actions: status, memory_profiles, agents` },'`
         { status: 400 }
       );
   }

@@ -12,7 +12,7 @@ export async function createEmbedding(prompt: string, model = 'embeddinggemma:la
   try {
     const res = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({ model, prompt })
     });
     if (!res.ok) throw new Error(`Ollama embeddings HTTP ${res.status}`);
@@ -29,13 +29,13 @@ export async function chat(messages: ChatMessage[], opts: ChatCompletionOptions 
   try {
     const res = await fetch(`${OLLAMA_URL}/v1/chat/completions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({ model, messages, temperature: opts.temperature ?? 0.2, stream: false })
     });
     if (!res.ok) throw new Error(`Ollama chat HTTP ${res.status}`);
     return await res.json();
   } catch (err) {
-    console.error('[ollama-client] Chat error:', err);
+    console.error('[ollama-client] Chat error:', err);'
     throw err;
   }
 }

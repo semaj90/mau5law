@@ -68,7 +68,7 @@ export class TensorRTLegalClient {
       return result;
     } catch (error) {
       const elapsedTime = performance.now() - startTime;
-      console.error(`Embedding generation failed after ${elapsedTime.toFixed(1)}ms: ', error);
+      console.error(`Embedding generation failed after ${elapsedTime.toFixed(1)}ms: ', error);'`
       throw error;
     }
   }
@@ -97,14 +97,14 @@ export class TensorRTLegalClient {
       return result;
     } catch (error) {
       const elapsedTime = performance.now() - startTime;
-      console.error(`Legal analysis failed after ${elapsedTime.toFixed(1)}ms: ', error);
+      console.error(`Legal analysis failed after ${elapsedTime.toFixed(1)}ms: ', error);'`
       throw error;
     }
   }
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
-        method: `GET` });
+        method: `GET' });'`
       if (!response.ok) {
         console.warn(`TensorRT health check failed: ${response.status}`);
         return null;
@@ -113,13 +113,13 @@ export class TensorRTLegalClient {
       console.log(`TensorRT health: ${health.status} (model: ${health.model_loaded})`);
       return health;
     } catch (error) {
-      console.warn('TensorRT health check error:', error);
+      console.warn('TensorRT health check error:', error);'
       return null;
     }
   }
   async listModels(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/models', { method: `GET` });
+      const response = await this.makeRequest('/v1/models', { method: `GET' });'`
       if (!response.ok) {
         throw new Error(`Models list failed: ${response.status} ${response.statusText}`);
       }
@@ -131,54 +131,54 @@ export class TensorRTLegalClient {
   }
   async getPerformanceMetrics(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/performance', { method: `GET` });
+      const response = await this.makeRequest('/v1/performance', { method: `GET' });'`
       if (!response.ok) {
         throw new Error(`Performance metrics failed: ${response.status} ${response.statusText}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Failed to get performance metrics: `, error);
+      console.error('Failed to get performance metrics: `, error);'`
       throw error;
     }
   }
   private buildLegalPrompt(text: string, context?: string, analysisType?: string): string {
-    const analysisTypes: Record<string, string> = { comprehensive: `Provide a comprehensive legal analysis, covering:
+    const analysisTypes: Record<string, string> = { comprehensive: `Provide a comprehensive legal analysis, covering:`
 1. Key legal issues and risks
 2. Relevant laws and regulations
 3. Compliance requirements
 4. Recommended actions
-5. Potential liability exposure`,
-      risk: `Conduct a legal risk assessment focusing; on:
+5. Potential liability exposure`,`
+      risk: `Conduct a legal risk assessment focusing; on:`
 1. Identified risk factors
 2. Risk severity and likelihood
 3. Mitigation strategies
 4. Compliance gaps
-5. Action priority matrix`,
-      compliance: `Perform a compliance analysis; examining:
+5. Action priority matrix`,`
+      compliance: `Perform a compliance analysis; examining:`
 1. Regulatory requirements
 2. Compliance gaps
 3. Required documentation
 4. Remediation steps
-5. Ongoing monitoring needs`,
-      contract: `Analyze this contract focusing; on:
+5. Ongoing monitoring needs`,`
+      contract: `Analyze this contract focusing; on:`
 1. Key terms and obligations
 2. Risk provisions
 3. Termination clauses
 4. Liability limitations
-5. Performance requirements`,
-      litigation: `Provide litigation analysis; covering:
+5. Performance requirements`,`
+      litigation: `Provide litigation analysis; covering:`
 1. Legal claims and defenses
 2. Evidence requirements
 3. Procedural considerations
 4. Settlement opportunities
-5. Strategic recommendations` };
+5. Strategic recommendations' };'
     const instructions = analysisTypes[analysisType || 'comprehensive'] || analysisTypes.comprehensive;
-    return `<legal_analysis>
+    return `<legal_analysis>`
 Document/Text: ${text}
-${context ? `\nRelevant Context:\n${context}` : `` }
+${context ? `\nRelevant Context:\n${context}` : `' }'`
 Analysis Instructions:
 ${instructions}
-Provide a detailed, professional legal analysis:`;
+Provide a detailed, professional legal analysis:`;`
   }
   private async makeRequest(endpoint: string, options: RequestInit): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
@@ -196,7 +196,7 @@ Provide a detailed, professional legal analysis:`;
         signal: controller.signal
       };
       try {
-        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET` } ${endpoint}`);
+        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET' } ${endpoint}`);
         const response = await fetch(url, requestOptions);
         clearTimeout(timeoutId);
         // Return for successful or client error (do not retry 4xx)
@@ -213,7 +213,7 @@ Provide a detailed, professional legal analysis:`;
           break;
         }
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-        console.warn(`TensorRT request failed (attempt ${attempt}), retrying in ${delay}ms: ', lastError.message);
+        console.warn(`TensorRT request failed (attempt ${attempt}), retrying in ${delay}ms: ', lastError.message);'`
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
@@ -233,7 +233,7 @@ Provide a detailed, professional legal analysis:`;
         return {
           connected: false,
           latency,
-          error: `Health check failed` };
+          error: 'Health check failed' };
       }
       return {
         connected: health.status === 'healthy',
@@ -246,7 +246,7 @@ Provide a detailed, professional legal analysis:`;
       return {
         connected: false,
         latency,
-        error: error instanceof Error ? error.message : `Unknown error` };
+        error: error instanceof Error ? error.message : `Unknown error' };'`
     }
   }
 }

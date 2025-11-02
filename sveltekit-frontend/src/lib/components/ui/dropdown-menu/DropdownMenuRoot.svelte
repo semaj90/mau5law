@@ -1,6 +1,6 @@
-<script lang="ts">
+<script, lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-  // note: bits-ui's exported types vary by version; avoid relying on a specific RootProps
+  // note: bits-ui's exported types vary by version; avoid relying on a specific RootProps'
   import { cn } from '$lib/utils.js';
   import type { Snippet } from 'svelte';
   // Minimal, permissive props shape used at runtime by the dropdown creator.
@@ -33,16 +33,16 @@
     }
   })();
 </script>
-<button use:trigger {...$trigger} class={cn(className)}>
+<button, use:trigger {...$trigger} class={cn(className)}>
   {#if children}
     {@render children()}
   {:else}
     Open Menu
   {/if}
 </button>
-<div class={cn(className)}>
+<div, class={cn(className)}>
   {#if $open}
-    <div use:menu>
+    <div, use:menu>
       {#if children}
         {@render children()}
       {/if}

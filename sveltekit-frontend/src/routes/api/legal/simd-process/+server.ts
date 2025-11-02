@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
   } catch (error) {
-    console.error('❌ SIMD + PGVector API error:', error);
+    console.error('❌ SIMD + PGVector API error:', error);'
     return json(
       {
         error: 'Internal server error',
@@ -130,8 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     return json(
       {
-        error: 'Invalid action parameter'
-      },
+        error: `Invalid action parameter` },
       { status: 400 }
     );
   } catch (error) {
@@ -140,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         status: 'degraded',
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

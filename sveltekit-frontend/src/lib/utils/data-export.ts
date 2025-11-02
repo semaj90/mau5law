@@ -27,7 +27,7 @@ const secureDataExport = (data: any[], user: string) => {
 
 export interface ExportOptions { format: "json" | "csv" | "pdf" | "excel";, includeMetadata: boolean;
   includeFiles: boolean;
-  dateRange?: { start: Date;, end: Date }
+  dateRange?: { start: Date; end: Date }
   filters?: { [key: string]: any }
   compression?: boolean;
   encryption?: boolean;
@@ -345,9 +345,9 @@ function convertToCSV(data: any[]): string {
   const value = row[header];
           if (
             typeof value === "string" &&
-            (value.includes(",") || value.includes('"'))
+            (value.includes(",") || value.includes('"'))"
           ) {
-            return `"${value.replace(/"/g, '""')}"`;
+            return `"${value.replace(/"/g, '""')}"`;"
           }
           return value || "";
         })
@@ -371,10 +371,10 @@ async function generatePDF(data: any[]): Promise<Blob> {
     Created: ${new Date(c.createdAt || 0).toLocaleDateString()}
     Description: ${c.description}
     ---
-    `,
+    `,`
       )
       .join("\n")}
-  `;
+  `;`
   return new Blob([pdfContent], { type: "application/pdf" });
 }
 async function generateExcel(data: any[]): Promise<Blob> {
@@ -416,11 +416,11 @@ async function parseImportFile(file: File, format: string): Promise<any> {
 }
 function parseCSV(csvText: string): any[] {
   const lines = csvText.split('\n');
-  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
+  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));"
   return lines
     .slice(1)
     .map((line) => {
-      const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
+      const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));"
       const obj: any = {}
       headers.forEach((header, index) => {
         obj[header] = values[index] || "";
@@ -432,7 +432,7 @@ function parseCSV(csvText: string): any[] {
 function validateImportData(
   data: any,
   type: "cases" | "evidence",
-): { success: boolean; errors: string[];, warnings: string[] } {
+): { success: boolean; errors: string[]; warnings: string[] } {
   const errors: string[] = [];
   const warnings: string[] = [];
   if (!data || (!Array.isArray(data) && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).cases && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence)) {
@@ -474,13 +474,12 @@ async function processCaseImport(
     const response = await fetch('/api/cases/import', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-      },
+        'Content-Type': `application/json` },
       body: JSON.stringify({
         caseData,
         options
       }),
-      credentials: 'include` });
+      credentials: `include` });
 
     if (response.ok) {
       return true;

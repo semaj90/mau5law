@@ -71,7 +71,7 @@ const CACHE_CONFIG = {
     autosaveInterval: 5000, // 5 seconds
     autoload: true,
     throttledSaves: true,
-    serializationMethod: 'pretty` },
+    serializationMethod: 'pretty' },
   // Redis settings
   redis: {
     host: 'localhost',
@@ -257,7 +257,7 @@ export class LokiRedisCache extends EventEmitter {
           this.subscriber.on('pmessage', (_pattern: string, channel: string, message: string) => {
             this.handleRedisMessage(message, channel).catch(error => {
               const errMessage = error instanceof Error ? error.message : String(error);
-              console.error('Redis message handler error:', errMessage);
+              console.error('Redis message handler error:', errMessage);'
             });
           });
         }
@@ -270,7 +270,7 @@ export class LokiRedisCache extends EventEmitter {
             if (channel === 'legal_ai:search:invalidate') {
               this.invalidateSearchCache(JSON.parse(message)).catch(error => {
                 const errMessage = error instanceof Error ? error.message : String(error);
-                console.error('Search invalidation error:', errMessage);
+                console.error('Search invalidation error:', errMessage);'
               });
             }
           });
@@ -284,7 +284,7 @@ export class LokiRedisCache extends EventEmitter {
   }
   private async handleRedisMessage(message: string, _channel: string): Promise<void> {
     try {
-      const data: { operation: string;, documentId: string; document?: CachedDocument } = JSON.parse(message);
+      const data: { operation: string; documentId: string; document?: CachedDocument } = JSON.parse(message);
       if (!data || !data.operation || !data.documentId) return;
       const { documentId, operation, document } = data;
       // Update local Loki cache based on Redis changes
@@ -322,7 +322,7 @@ export class LokiRedisCache extends EventEmitter {
         accessCount: 1,
         cacheLocation: 'loki',
         compressed: false,
-        syncStatus: 'synced` };
+        syncStatus: 'synced' };
       // Store in Loki.js first (fastest access)
       await this.storeLokiDocument(cachedDoc);
       // Store in Redis for distribution
@@ -382,7 +382,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Redis storage failed for ${document.id}: ', message);
+      console.error(`❌ Redis storage failed for ${document.id}: ', message);'`
     }
   }
   private shouldUseNESMemory(document: CachedDocument): boolean {
@@ -408,7 +408,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ NES storage failed for ${document.id}: ', message);
+      console.error(`❌ NES storage failed for ${document.id}: ', message);'`
     }
   }
   private selectNESBank(document: CachedDocument): string {
@@ -490,7 +490,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Redis get error for ${documentId}: ', message);
+      console.error(`❌ Redis get error for ${documentId}: ', message);'`
     }
     return null;
   }
@@ -506,11 +506,11 @@ export class LokiRedisCache extends EventEmitter {
           accessCount: nesDoc.accessCount || 1,
           cacheLocation: 'nes',
           compressed: nesDoc.compressed || false,
-          syncStatus: 'synced` } as CachedDocument;
+          syncStatus: 'synced' } as CachedDocument;
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ NES get error for ${documentId}: ', message);
+      console.error(`❌ NES get error for ${documentId}: ', message);'`
     }
     return null;
   }
@@ -649,7 +649,7 @@ export class LokiRedisCache extends EventEmitter {
   }
   private async evictLokiDocuments(): Promise<void> {
     // Find least recently used documents across all collections
-    const candidates: { collection: Collection<CachedDocument>;, document: CachedDocument }[], = [];
+    const candidates: { collection: Collection<CachedDocument>; document: CachedDocument }[], = [];
     for (const collection of this.collections.values()) {
       if (!collection) continue;
       try {
@@ -818,7 +818,7 @@ export class LokiRedisCache extends EventEmitter {
       this.stats.redis.operations++;
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Redis set error for ${key}: ', message);
+      console.error(`❌ Redis set error for ${key}: ', message);'`
     }
   }
   async clear(): Promise<void> {

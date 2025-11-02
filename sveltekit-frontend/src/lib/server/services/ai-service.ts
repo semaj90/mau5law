@@ -42,7 +42,7 @@ type NewEmbeddingCache = { id: string;, textHash: string;
   // Drizzle insert expects a concrete non-optional string for this column.
   // We store embeddings as JSON strings, so make this a required string.
   embedding: string;
-  // Make `model` required to match the schema's non-nullable insert expectation.
+  // Make `model` required to match the schema's non-nullable insert expectation.'
   model: string;
   // createdAt should be a string timestamp and required for insertion.
   createdAt: string;
@@ -62,7 +62,7 @@ export class AIService {
     userId: string,
     caseId?: string,
     options: AIQueryOptions = {}
-  ): Promise<{ response: string; confidence: number;, contextUsed: string[]; queryId?: string }> {
+  ): Promise<{ response: string; confidence: number; contextUsed: string[]; queryId?: string }> {
     const startTime = Date.now();
     const {
       model = 'gemma3-legal',
@@ -145,7 +145,7 @@ export class AIService {
    */
   async analyzeEvidence(evidenceId: string, content: string, evidenceType: string): Promise<AIAnalysisResult> {
     try {
-      const systemPrompt = `You are a legal AI assistant specialized in evidence analysis.
+      const systemPrompt = `You are a legal AI assistant specialized in evidence analysis.`
 Analyze the following ${evidenceType} evidence and provide:
 1. A concise summary (2-3 sentences)
 2. Relevant tags for legal categorization
@@ -160,7 +160,7 @@ Format your response as JSON with the following structure:
   "entities": ["entity1", "entity2"],
   "keywords": ["keyword1", "keyword2"],
   "recommendations": ["recommendation1", "recommendation2"]
-}`;
+}`;`
       const response = await this.ollama.generateCompletion(content, {
         systemPrompt,
         temperature: 0.3,
@@ -245,18 +245,18 @@ Format your response as JSON with the following structure:
     queryEmbedding: number[],
     userId?: string,
     limit = 5
-  ): Promise<Array<{ query: string; response: string;, similarity: number }>> {
+  ): Promise<Array<{ query: string; response: string; similarity: number }>> {
     try {
       // Simplified: return recent queries for the user or a global sample.
       if (userId) {
         const rows = (await db.execute(
           sql`SELECT query, response, 0.0 as similarity FROM user_ai_queries WHERE user_id = ${userId} ORDER BY created_at DESC LIMIT ${limit}`
-        )) as Array<{ query: string; response: string;, similarity: number }>;
+        )) as Array<{ query: string; response: string; similarity: number }>;
         return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
       } else {
         const rows = (await db.execute(
           sql`SELECT query, response, 0.0 as similarity FROM user_ai_queries ORDER BY created_at DESC LIMIT ${limit}`
-        )) as Array<{ query: string; response: string;, similarity: number }>;
+        )) as Array<{ query: string; response: string; similarity: number }>;
         return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
       }
     } catch (error: any) {
@@ -286,7 +286,7 @@ Format your response as JSON with the following structure:
       const cached = rows[0] as EmbeddingCacheRow | undefined;
       if (cached && cached.embedding) {
         const embField = cached.embedding;
-        // If stored as a JSON string, parse it; otherwise assume it's already a number[].
+        // If stored as a JSON string, parse it; otherwise assume it's already a number[].'
         if (typeof embField === 'string') {
           return JSON.parse(embField) as number[];
         }
@@ -317,10 +317,10 @@ Format your response as JSON with the following structure:
     userId: string;
     caseId?: string;
     query: string;
-    response: string;
-    model: string;
-    confidence: number;
-    processingTime: number;
+   , response: string;
+   , model: string;
+   , confidence: number;
+   , processingTime: number;
    , contextUsed: string[];
     embedding?: number[]; // accept number[] here, convert for DB below
     isSuccessful?: boolean;
@@ -381,7 +381,7 @@ Format your response as JSON with the following structure:
     confidence: number
   ): Promise<void> {
     try {
-      // Build a strongly typed array so Drizzle's insert overloads accept it.
+      // Build a strongly typed array so Drizzle's insert overloads accept it.'
       const tagData: NewAutoTag[] = tags.map(t => ({
         id: generateIdFromEntropySize(10),
         entityId,
@@ -396,7 +396,7 @@ Format your response as JSON with the following structure:
       await db.insert(autoTags).values(tagData);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Auto-tag generation failed: `, msg);
+      console.error('Auto-tag generation failed: `, msg);'`
       throw error;
     }
   }

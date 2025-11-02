@@ -448,7 +448,7 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
 async function checkServiceHealth(
   serviceId: string,
   port: number
-): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }> {
+): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }> {
   const startTime = Date.now();
   try {
     const url = `http://localhost:${port}/health`;
@@ -493,8 +493,7 @@ function buildServiceGraph(): ServiceGraph {
       edges.push({
         source: id,
         target: dep,
-        type: 'depends_on'
-      });
+        type: `depends_on` });
     }
   }
 
@@ -529,7 +528,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       const healthResults = await Promise.allSettled(healthPromises);
-      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }>();
+      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }>();
 
       healthResults.forEach((result) => {
         if (result.status === 'fulfilled') {
@@ -549,9 +548,9 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json(graph);
   } catch (error) {
-    console.error('Service graph error:', error);
+    console.error('Service graph error: ', error);'
     return json(
-      { error: 'Failed to generate service graph' },
+      { error: `Failed to generate service graph` },
       { status: 500 }
     );
   }
@@ -572,7 +571,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Return dependency analysis for specific service
       const service = graph.nodes.find(n => n.id === serviceId);
       if (!service) {
-        return json({ error: 'Service not found' }, { status: 404 });
+        return json({ error: `Service not found` }, { status: 404 });
       }
 
       const analysis = analyzeDependencies(graph, serviceId, depth);
@@ -596,7 +595,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .slice(0, 10)
     });
   } catch (error) {
-    console.error('Service analysis error:', error);
+    console.error('Service analysis error: ', error);'
     return json(
       { error: `Failed to analyze services` },
       { status: 500 }

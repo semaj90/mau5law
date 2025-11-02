@@ -145,7 +145,7 @@ export class RabbitMQManager extends EventEmitter {
   private async setupQueueBindings(): Promise<void> {
     if (!this.channel) return;
     const bindings = [
-      // Cache invalidation
+      // Cache invalidation,
       {
         queue: this.queues.cache_invalidate,
         exchange: this.exchanges.cache_invalidation,
@@ -160,24 +160,21 @@ export class RabbitMQManager extends EventEmitter {
       {
         queue: this.queues.evidence_process,
         exchange: this.exchanges.document_processing,
-        routingKey: 'evidence.*'
-      },
+        routingKey: `evidence.*` },
       // Vector operations
       {
         queue: this.queues.vector_index,
         exchange: this.exchanges.vector_updates,
-        routingKey: 'vector.index.*'
-      },
+        routingKey: `vector.index.*` },
       {
         queue: this.queues.chat_context,
         exchange: this.exchanges.vector_updates,
-        routingKey: 'chat.context.*'
-      },
+        routingKey: `chat.context.*` },
       // Analytics
       {
         queue: this.queues.analytics_track,
         exchange: this.exchanges.analytics,
-        routingKey: `analytics.*` },
+        routingKey: `analytics.*` }
     ];
     for (const binding of bindings) {
       await this.channel.bindQueue(binding.queue, binding.exchange, binding.routingKey);
@@ -210,7 +207,7 @@ export class RabbitMQManager extends EventEmitter {
       timestamp: Date.now()
     });
   }
-  async publishDocumentProcessing(data: { document_id: string;, content: string;
+  async publishDocumentProcessing(data: {, document_id: string;, content: string;
    , document_type: string;
     case_id?: string;
   }): Promise<void> {
@@ -220,8 +217,8 @@ export class RabbitMQManager extends EventEmitter {
       timestamp: Date.now(),
       priority: `normal` });
   }
-  async publishEvidenceProcessing(data: { evidence_id: string;, content: string;
-    case_id: string;
+  async publishEvidenceProcessing(data: {, evidence_id: string;, content: string;
+   , case_id: string;
    , priority: 'low' | 'normal' | 'high';
   }): Promise<void> {
     if (!this.isReady()) return;
@@ -231,7 +228,7 @@ export class RabbitMQManager extends EventEmitter {
       timestamp: Date.now()
     });
   }
-  async publishVectorUpdate(data: { type: 'index' | 'similarity' | 'cache';, collection: string;
+  async publishVectorUpdate(data: {, type: 'index' | 'similarity' | 'cache';, collection: string;
    , id: string;
     embedding?: number[];
     metadata?: any;
@@ -243,9 +240,9 @@ export class RabbitMQManager extends EventEmitter {
       timestamp: Date.now()
     });
   }
-  async publishChatContext(data: { user_id: string;, session_id: string;
-    message: string;
-    embedding: number[];
+  async publishChatContext(data: {, user_id: string;, session_id: string;
+   , message: string;
+   , embedding: number[];
    , context_type: 'new' | 'update';
   }): Promise<void> {
     if (!this.isReady()) return;
@@ -284,7 +281,7 @@ export class RabbitMQManager extends EventEmitter {
         console.log(`📤 Published to ${exchange}:${routingKey}`);
       }
     } catch (error: any) {
-      console.error(`❌ Publish failed for ${exchange}:${routingKey}: ', this.formatError(error));
+      console.error(`❌ Publish failed for ${exchange}:${routingKey}: ', this.formatError(error));'`
     }
   }
   // helper to format unknown errors
@@ -320,7 +317,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       this.channel.ack(msg as any);
     } catch (error: any) {
-      console.error('❌ Cache invalidation error:', this.formatError(error));
+      console.error('❌ Cache invalidation error:', this.formatError(error));'
       this.safeNack(msg);
     }
   }
@@ -366,8 +363,7 @@ export class RabbitMQManager extends EventEmitter {
            , title: docData.title,
             description: content.substring(0, 200),
             keywords: [],
-            jurisdiction: 'Unknown'
-          },
+            jurisdiction: `Unknown` },
           cacheTimestamp: Date.now(),
           accessCount: 1,
           cacheLocation: 'loki',
@@ -396,7 +392,7 @@ export class RabbitMQManager extends EventEmitter {
       });
       this.channel.ack(msg as any);
     } catch (error: any) {
-      console.error('❌ Document embedding error:', this.formatError(error));
+      console.error('❌ Document embedding error:', this.formatError(error));'
       this.safeNack(msg);
     }
   }
@@ -409,7 +405,7 @@ export class RabbitMQManager extends EventEmitter {
         this.safeNack(msg);
         return;
       }
-      const { evidence_id, content, case_id, priority, evidence_type = 'document` } = data;
+      const { evidence_id, content, case_id, priority, evidence_type = 'document` } = data;'`
       console.log(`🔍 Processing evidence: ${evidence_id} (${priority})`);
       // Generate embedding using Gemma
       const embedding = await this.embeddings.embedQuery(content);
@@ -459,8 +455,7 @@ export class RabbitMQManager extends EventEmitter {
            , title: `Evidence ${evidence_id}`,
             description: content.substring(0, 200),
             keywords: [],
-            jurisdiction: 'Unknown'
-          },
+            jurisdiction: `Unknown` },
           cacheTimestamp: Date.now(),
           accessCount: 1,
           cacheLocation: 'loki',
@@ -469,7 +464,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       this.channel.ack(msg as any);
     } catch (error: any) {
-      console.error('❌ Evidence processing error:', this.formatError(error));
+      console.error('❌ Evidence processing error:', this.formatError(error));'
       this.safeNack(msg);
     }
   }
@@ -522,7 +517,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       this.channel.ack(msg as any);
     } catch (error: any) {
-      console.error('❌ Vector indexing error:', this.formatError(error));
+      console.error('❌ Vector indexing error:', this.formatError(error));'
       this.safeNack(msg);
     }
   }
@@ -580,7 +575,7 @@ export class RabbitMQManager extends EventEmitter {
       console.log(`✅ Stored chat context for session ${session_id}`);
       this.channel.ack(msg as any);
     } catch (error: any) {
-      console.error('❌ Chat context error:', this.formatError(error));
+      console.error('❌ Chat context error:', this.formatError(error));'
       this.safeNack(msg);
     }
   }
@@ -590,7 +585,7 @@ export class RabbitMQManager extends EventEmitter {
       const data = this.parseMessage(msg);
       if (!data) {
         console.warn('⚠️ Analytics: empty/invalid message');
-        // don't requeue analytics to avoid poison loops
+        // don't requeue analytics to avoid poison loops'
         this.channel.nack(msg as any, false, false);
         return;
       }
@@ -647,8 +642,8 @@ export class RabbitMQManager extends EventEmitter {
       console.log(`✅ Analytics tracked for ${eventType}`);
       this.channel.ack(msg as any);
     } catch (error: any) {
-      console.error('❌ Analytics tracking error:', this.formatError(error));
-      this.channel?.nack?.(msg as any, false, false); // Don't requeue analytics
+      console.error('❌ Analytics tracking error:', this.formatError(error));'
+      this.channel?.nack?.(msg as any, false, false); // Don't requeue analytics'
     }
   }
   // Helper methods
@@ -669,7 +664,7 @@ export class RabbitMQManager extends EventEmitter {
       try {
         await (this.redisService as any).del(key);
       } catch (error: any) {
-        console.warn(`Failed to delete key ${key}: ', this.formatError(error));
+        console.warn(`Failed to delete key ${key}: ', this.formatError(error));'`
       }
     }
   }
@@ -689,7 +684,7 @@ export class RabbitMQManager extends EventEmitter {
         }
         console.log(`Invalidated ${keys.length} keys matching pattern: ${pattern}`);
       } catch (error: any) {
-        console.warn(`Pattern invalidation failed for ${pattern}: ', this.formatError(error));
+        console.warn(`Pattern invalidation failed for ${pattern}: ', this.formatError(error));'`
       }
     }
   }
@@ -722,11 +717,11 @@ export class RabbitMQManager extends EventEmitter {
   }
   // Error handlers with reconnection logic
   private handleConnectionError(error: Error): void {
-    console.error('❌ RabbitMQ connection error:', error.message);
+    console.error('❌ RabbitMQ connection error:', error.message);'
     this.emit('connection_lost');
   }
   private handleChannelError(error: Error): void {
-    console.error('❌ RabbitMQ channel error:', error.message);
+    console.error('❌ RabbitMQ channel error:', error.message);'
     this.channel = null;
   }
   private async attemptReconnect(): Promise<void> {
@@ -743,7 +738,7 @@ export class RabbitMQManager extends EventEmitter {
         this.reconnectAttempts = 0;
         console.log('✅ RabbitMQ reconnected successfully');
       } catch (error: any) {
-        console.error('❌ Reconnection failed:', this.formatError(error));
+        console.error('❌ Reconnection failed: `, this.formatError(error));'`
         this.attemptReconnect();
       }
     }, delay);

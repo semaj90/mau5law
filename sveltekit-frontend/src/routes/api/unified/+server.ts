@@ -8,7 +8,7 @@ import type { Document } from '$lib/types';
  */
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-// Use default imports for services that don't provide named exports
+// Use default imports for services that don't provide named exports'
 import unifiedSearchService from '$lib/server/services/unified-search-service.js';
 import * as neo4jServiceModule from '$lib/server/services/neo4j-service.js';
 
@@ -41,7 +41,7 @@ type Neo4jServiceType = {
   // now strongly-typed to return Recommendation[] or null
   getRecommendations?: (documents: any[]) => Promise<Recommendation[] | null>;
   // bulkSyncDocuments now returns a typed SyncResult or null
-  bulkSyncDocuments?: (documents: {, id: string }[], opts?: { force?: boolean }) => Promise<SyncResult | null>;
+  bulkSyncDocuments?: (documents: {;, id: string }[], opts?: { force?: boolean }) => Promise<SyncResult | null>;
   getCachedRecommendations?: (key: string) => Promise<Recommendation[] | null>;
   setCachedRecommendations?: (key: string, value: Recommendation[] | null) => Promise<void>;
   getDocumentNetworkAnalysis?: (ids: any[]) => Promise<unknown>;
@@ -107,8 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
             extractedEntities: metadata?.extractedEntities || [],
             keyTerms: metadata?.keyTerms || [],
             userId: metadata?.userId,
-            priority: metadata?.priority || 'normal'
-          }
+            priority: metadata?.priority || 'normal` }'`
         });
 
         // Async Neo4j sync if document ingestion succeeded
@@ -151,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'No file provided` },
+              error: `No file provided` },
             { status: 400 }
           );
         }
@@ -168,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
           content = fileBuffer.toString('utf8');
         } else {
           // Defer heavy OCR/parsing to ingestion pipeline; include original filename for context
-          content = `__binary_file__:${file.originalName || 'uploaded_file` }`;
+          content = `__binary_file__:${file.originalName || 'uploaded_file` }`;'`
         }
 
         // Use the existing ingestDocument API on UnifiedSearchService rather than a non-existent processUploadedFile
@@ -203,7 +202,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Query text or vector required` },
+              error: `Query text or vector required` },
             { status: 400 }
           );
         }
@@ -212,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
           text: query.text,
           vector: query.vector,
           filters: {
-            category: filters?.category,
+           , category: filters?.category,
             tags: filters?.tags,
             userId: filters?.userId,
             dateRange: filters?.dateRange,
@@ -330,12 +329,12 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document ID required` },
+              error: `Document ID required` },
             { status: 400 }
           );
         }
 
-        const cacheKey = `similar:${documentId}:${threshold ?? 0.7}:${limit ?? 10}`;
+        const cacheKey = `similar:${documentId}:${threshold ?? 0.7}:${limit ?? 10}';'`
         let similarDocs = await cache.get(cacheKey);
         if (!similarDocs) {
           similarDocs = {
@@ -385,7 +384,7 @@ export const POST: RequestHandler = async ({ request }) => {
         try {
           syncResultRaw = await neo4jService.bulkSyncDocuments(documents, { force: !!force });
         } catch (err) {
-          console.warn('Neo4j bulkSyncDocuments error:', err);
+          console.warn('Neo4j bulkSyncDocuments error:', err);'
           return json(
             { success: false, error: 'Neo4j sync failed', details: err instanceof Error ? err.message : String(err) },
             { status: 502 }
@@ -420,12 +419,12 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Document IDs array required` },
+              error: 'Document IDs array required' },
             { status: 400 }
           );
         }
 
-        const cacheKey = `recommendations:${documentIds.join(',')}:${types?.join(',') || 'all` }`;
+        const cacheKey = 'recommendations:${documentIds.join(',')}:${types?.join(',') || 'all` }`;
 
         // Try cached recommendations if available
         let recommendations: Recommendation[] | null = null;
@@ -491,8 +490,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Neo4j network analysis not available'
-            },
+              error: `Neo4j network analysis not available` },
             { status: 503 }
           );
         }
@@ -523,7 +521,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           workflow: dashboardData.workflow,
           jobs: {
-            active: dashboardData.jobs.active.length,
+           , active: dashboardData.jobs.active.length,
             completed: dashboardData.jobs.stats.byState?.completed || 0,
             failed: dashboardData.jobs.stats.byState?.failed || 0,
             total: dashboardData.jobs.stats.total
@@ -543,7 +541,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Documents array required` },
+              error: `Documents array required` },
             { status: 400 }
           );
         }
@@ -561,7 +559,7 @@ export const POST: RequestHandler = async ({ request }) => {
           try {
             const result = await ingestionService.submitDocument(
               // replace deprecated substr(...) with slice(...) to keep same behaviour
-              doc.id || `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+              doc.id || `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}','`
               doc.chunks || [doc.content],
               {
                 ...metadata,
@@ -660,7 +658,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
   } catch (error) {
-    console.error('❌ Unified API error:', error);
+    console.error('❌ Unified API error:', error);'
     return json(
       {
         success: false,
@@ -681,7 +679,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 307,
         headers: {
          , Location: '/api/unified',
-          'Content-Type': 'application/json` }
+          'Content-Type': `application/json` }
       });
     }
 
@@ -743,7 +741,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error) {
-    console.error('❌ Unified API GET error:', error);
+    console.error('❌ Unified API GET error:', error);'
     return json(
       {
         success: false,
@@ -756,7 +754,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // small helper to test for callable functions on the service
-function isFunction<T extends (...args: any[]) => unknown>(v: any): v is T {
+function isFunction<T, extends (...args: any[]) => unknown>(v: any): v is T {
   return typeof v === 'function';
 }
 

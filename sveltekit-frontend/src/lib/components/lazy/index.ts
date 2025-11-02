@@ -17,8 +17,8 @@ export {
   type LazyLoadPreset
 } from '$lib/utils/intersection-observer.js';
 // Lazy loading components
-export { default as LazyLoader } from './LazyLoader.svelte';
-export { default as LazyChart } from './LazyChart.svelte';
-export { default as LazyAIAnalysis } from './LazyAIAnalysis.svelte';
+export { default, as LazyLoader } from './LazyLoader.svelte';
+export { default, as LazyChart } from './LazyChart.svelte';
+export { default, as LazyAIAnalysis } from './LazyAIAnalysis.svelte';
 // Re-export the main LazyLoader as the primary export
-export { default as default } from './LazyLoader.svelte';
+export { default, as default } from './LazyLoader.svelte';

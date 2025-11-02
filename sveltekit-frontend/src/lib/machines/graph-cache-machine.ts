@@ -26,20 +26,20 @@ export interface GraphCacheContext { query: string | null;, params: Record<stri
   maxRetries: number;
 }
 export type GraphCacheEvent =
-  | { type: 'QUERY';, query: string; params?: Record<string, unknown> }
-  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source'];, latency: number }
-  | { type: 'CACHE_MISS';, queryHash: string }
-  | { type: 'WASM_RESULT'; result: any;, latency: number }
-  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source'];, latency: number }
-  | { type: 'BACKGROUND_REFRESH';, queryHash: string }
-  | { type: 'REFRESH_COMPLETE';, result: any }
-  | { type: 'REFRESH_FAILED';, error: string }
+  | { type: 'QUERY'; query: string; params?: Record<string, unknown> }
+  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source']; latency: number }
+  | { type: 'CACHE_MISS'; queryHash: string }
+  | { type: 'WASM_RESULT'; result: any; latency: number }
+  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source']; latency: number }
+  | { type: 'BACKGROUND_REFRESH'; queryHash: string }
+  | { type: 'REFRESH_COMPLETE'; result: any }
+  | { type: 'REFRESH_FAILED'; error: string }
   | { type: 'ENABLE_BACKGROUND_REFRESH' }
   | { type: 'DISABLE_BACKGROUND_REFRESH' }
   | { type: 'RESET_TELEMETRY' }
   | { type: 'GET_TELEMETRY' }
   | { type: 'WORKER_READY' }
-  | { type: 'WORKER_ERROR';, error: string }
+  | { type: 'WORKER_ERROR'; error: string }
   | { type: 'INVALIDATE_CACHE'; key?: string }
   | { type: 'IDLE_CALLBACK' }
   | { type: 'RETRY' };
@@ -90,7 +90,7 @@ export const graphCacheMachine = createMachine(
           DISABLE_BACKGROUND_REFRESH: { actions: 'disableBackgroundRefresh' },
           INVALIDATE_CACHE: { actions: 'invalidateCache' },
           IDLE_CALLBACK: [
-            {
+            {,
               target: 'backgroundRefreshing',
               guard: 'shouldBackgroundRefresh'
             },
@@ -111,7 +111,7 @@ export const graphCacheMachine = createMachine(
             entry: ['notifyCacheHit', 'updateTelemetry'],
             after: {
               100: [
-                {
+                {,
                   target: '#graphCache.backgroundRefreshing',
                   guard: 'isStaleResult'
                 },
@@ -139,7 +139,7 @@ export const graphCacheMachine = createMachine(
                     actions: 'setAuthoritativeResult'
                   },
                   REFRESH_FAILED: [
-                    {
+                    {,
                       target: 'authoritativeQuery',
                       guard: 'canRetry',
                       actions: 'incrementRetry'
@@ -152,7 +152,7 @@ export const graphCacheMachine = createMachine(
                 },
                 after: {
                   10000: [
-                    {
+                    {,
                       target: 'authoritativeQuery',
                       guard: 'canRetry',
                       actions: 'incrementRetry'
@@ -197,11 +197,11 @@ export const graphCacheMachine = createMachine(
         }
       },
       error: {
-        entry: 'notifyError',
+       , entry: 'notifyError',
         on: {
-          RETRY: [
-            {
-              target: 'querying',
+         , RETRY: [
+            {,
+             , target: 'querying',
               cond: 'canRetry',
               actions: 'incrementRetry'
             },
@@ -212,7 +212,7 @@ export const graphCacheMachine = createMachine(
           QUERY: 'querying'
         },
         after: {
-          5000: 'idle', // Auto-recover after 5 seconds
+         , 5000: 'idle', // Auto-recover after 5 seconds
         }
       }
     }
@@ -251,7 +251,7 @@ export const graphCacheMachine = createMachine(
                 }
                 case 'worker_error': {
                   const err = (payload as { type: 'worker_error';, error: string }).error;
-                  console.error('Worker error:', err);
+                  console.error('Worker error:', err);'
                   break;
                 }
                 default:
@@ -458,10 +458,10 @@ type WorkerQueryResultData = {
 };
 type WorkerToMainMessage =
   | { type: 'worker_ready' }
-  | { type: 'worker_error';, error: string }
-  | { type: 'query_result';, data: WorkerQueryResultData }
-  | { type: 'query_result_authoritative';, data: WorkerQueryResultData }
+  | { type: 'worker_error'; error: string }
+  | { type: 'query_result'; data: WorkerQueryResultData }
+  | { type: 'query_result_authoritative'; data: WorkerQueryResultData }
   | { type: 'refresh_complete'; data?: WorkerQueryResultData }
-  | { type: 'log';, message: string; level?: 'info' | 'warn' | 'error` }
+  | { type: 'log'; message: string; level?: 'info' | 'warn' | 'error` }'`
   // allow safe unknown extension points from worker
   | { type: string; [k: string]: any };

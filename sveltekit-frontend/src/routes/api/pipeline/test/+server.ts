@@ -43,7 +43,7 @@ async function redisPing(): Promise<boolean> {
     }
     return false;
   } catch (err) {
-    console.warn('redisPing error:', err);
+    console.warn('redisPing error:', err);'
     return false;
   }
 }
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ownerType: 'evidence',
+       , ownerType: 'evidence',
         ownerId: 'health-check-test',
         event: 'upsert',
         data: {, healthCheck: true }
@@ -166,7 +166,7 @@ async function testEvidenceProcessing(_testData?: Record<string, unknown>): Prom
   const testEvidenceList = await db
     .insert(evidence)
     .values([
-      {
+      {,
         title: `Contract Document ${testId}`,
         description: 'Employment contract with indemnification clause',
         evidenceType: 'document',
@@ -274,14 +274,14 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
     // Test WebGPU service
     const webgpuResponse = await fetch('/api/webgpu/test', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , operation: 'generate_text',
         input: testText,
         fallback: true
       })
     });
-    let webgpuResult: { success: boolean;, device: string } = { success: false, device: `none` };
+    let webgpuResult: { success: boolean; device: string } = { success: false, device: `none` };
     if (webgpuResponse.ok) {
       webgpuResult = await webgpuResponse.json();
     }
@@ -326,7 +326,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            ownerType: 'evidence',
+           , ownerType: 'evidence',
             ownerId: testEvidence.id,
             event: 'upsert',
             data: {, stressTest: true, index: i }

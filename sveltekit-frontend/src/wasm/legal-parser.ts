@@ -342,7 +342,7 @@ function detectDocumentType(content: string): string {
 // === Summary Generation ===
 function generateSummary(content: string): string {
   // Extract first 200 characters as basic summary
-  if (content.length <= 200) return content;
+  if (content.length <= 200) return, content;
   let summary = substring(content, 0, 200);
   const lastSpace = summary.lastIndexOf(' ');
   if (lastSpace > 150) {
@@ -356,28 +356,28 @@ function generateSummary(content: string): string {
  */ function parseLegalDocument(jsonText: string): LegalDocument {
    const doc = new LegalDocument();
    // Simple JSON parsing - extract key fields
-   // In a full implementation, you'd use a proper JSON parser
+   // In a full implementation, you'd use a proper JSON parser'
    // Extract basic fields using pattern matching
    const idMatch = indexOf(jsonText, '"id"');
    if (idMatch >= 0) {
-     const start = indexOf(jsonText, '"', idMatch + 4) + 1;
-     const end = indexOf(jsonText, '"', start);
+     const start = indexOf(jsonText, '"', idMatch + 4) + 1;"
+     const end = indexOf(jsonText, '"', start);"
      if (end > start) {
        doc.id = substring(jsonText, start, end);
      }
    }
    const titleMatch = indexOf(jsonText, '"title"');
    if (titleMatch >= 0) {
-     const start = indexOf(jsonText, '"', titleMatch + 7) + 1;
-     const end = indexOf(jsonText, '"', start);
+     const start = indexOf(jsonText, '"', titleMatch + 7) + 1;"
+     const end = indexOf(jsonText, '"', start);"
      if (end > start) {
        doc.title = substring(jsonText, start, end);
      }
    }
    const contentMatch = indexOf(jsonText, '"content"');
    if (contentMatch >= 0) {
-     const start = indexOf(jsonText, '"', contentMatch + 9) + 1;
-     const end = indexOf(jsonText, '"', start);
+     const start = indexOf(jsonText, '"', contentMatch + 9) + 1;"
+     const end = indexOf(jsonText, '"', start);"
      if (end > start) {
        doc.content = substring(jsonText, start, end);
      }
@@ -414,7 +414,7 @@ function generateSummary(content: string): string {
      globalResult.errorMessage = 'Empty JSON text';
      return false;
    }
-   // Check if it's an array or single document
+   // Check if it's an array or single document'
    if (jsonText.charCodeAt(0) == 91) {
      // '[' - JSON array
      // Simple array parsing - split by: '},{' pattern
@@ -424,13 +424,13 @@ function generateSummary(content: string): string {
        // Fix array boundaries
        if (i == 0) {
          docJson = substring(docJson, 1); // Remove leading: '['
-       }
+       },
        if (i == docs.length - 1) {
          docJson = substring(docJson, 0, docJson.length - 1); // Remove trailing: ']'
        }
        // Ensure proper JSON object format
        if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading: '{'
-       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: ' }'
+       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: ` }'`
        const doc = parseLegalDocument(docJson);
        globalResult.documents.push(doc);
        globalResult.totalChunks++;
@@ -513,7 +513,7 @@ export function getMemoryUsage(): i32 {
 // Add a typed descriptor for expected global helpers (avoid `any`)
 type WasmGlobals = {
   load8_u?: (ptr: number) => number;
-  store8?: (ptr: number; value: number) => void;
+  store8?: (ptr: number;, value: number) => void;
   __wasm_memory_bytes__?: Uint8Array;
   heap?: { alloc?: (size: number) => number; free?: (ptr: number) => void };
   [key: string]: any;

@@ -54,7 +54,7 @@ class GPULiveProcessor {
       }
       // update map entry
       this.processes.set(processId, process);
-    }, 1000) as ReturnType<typeof setInterval>;
+    }, 1000) as ReturnType<typeof, setInterval>;
   }
 
   getProcess(processId: string): GPULiveProcess | undefined {
@@ -121,14 +121,13 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             success: false,
-            error: 'Invalid action'
-          },
+            error: `Invalid action` },
           { status: 400 }
         );
       }
     }
   } catch (error: any) {
-    console.error('GPU Live Processing error:', error);
+    console.error('GPU Live Processing error:', error);'
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -150,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: 'Process not found` },
+            error: `Process not found` },
           { status: 404 }
         );
       }
@@ -166,7 +165,7 @@ export const GET: RequestHandler = async ({ url }) => {
       });
     }
   } catch (error: any) {
-    console.error('GPU Live Processing GET error:', error);
+    console.error('GPU Live Processing GET error:', error);'
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {

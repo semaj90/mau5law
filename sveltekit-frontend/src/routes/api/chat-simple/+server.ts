@@ -20,7 +20,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { readBodyFast } from '$lib/server/utils/json-fast';
 import { generateChatResponse } from '$lib/server/services';
 
-type ChatMessage = { role: 'user' | 'assistant' | 'system';, content: string };
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 type ChatSimpleRequest = { messages?: ChatMessage[] } | unknown;
 
 function isChatMessageArray(x: any): x is ChatMessage[] {
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
-    console.error('❌ chat-simple error:', error.message);
+    console.error('❌ chat-simple error:', error.message);'
     return json({ error: error.message }, { status: 500 });
   }
 };

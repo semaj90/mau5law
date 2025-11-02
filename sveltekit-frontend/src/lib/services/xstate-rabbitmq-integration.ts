@@ -73,7 +73,7 @@ export const documentProcessingMachine = createMachine({
   id: 'documentProcessing',
   initial: 'idle',
   context: {
-    documentId: '',
+   , documentId: '',
     processingSteps: ['ocr', 'embedding', 'summarization'],
     currentStep: 0,
     results: {},
@@ -81,7 +81,7 @@ export const documentProcessingMachine = createMachine({
     maxRetries: 3
   } as DocumentWorkflowContext,
 
-  states: { idle: {, on: { UPLOAD_DOCUMENT: {, target: 'uploading',
+  states: {, idle: {, on: {, UPLOAD_DOCUMENT: {, target: 'uploading',
           actions: assign({
            , documentId: ({ event }) => event.data.documentId,
             originalName: ({ event }) => event.data.originalName,
@@ -241,7 +241,7 @@ export const documentProcessingMachine = createMachine({
     },
 
     failed: { on: {, RETRY: [
-          {
+          {,
             target: 'queued',
             guard: ({ context }) => context.retryCount < context.maxRetries,
             actions: assign({ retryCount: ({ context }) => context.retryCount + 1 })
@@ -290,7 +290,7 @@ export class RabbitMQXStateConsumer {
     });
 
     actor.subscribe(snapshot => {
-      console.log(`📊 Document ${documentId} state: ', snapshot.value);
+      console.log(`📊 Document ${documentId} state: ', snapshot.value);'`
 
       // Broadcast state changes via WebSocket orchestrator
       this.broadcastStateChange(documentId, snapshot.value as string, snapshot.context);
@@ -303,7 +303,7 @@ export class RabbitMQXStateConsumer {
   }
 
   /**
-   * Send event to specific document's actor
+   * Send event to specific document's actor'
    */
   sendEventToActor(documentId: string, event: DocumentWorkflowEvent) {
     const actor = this.actors.get(documentId);
@@ -333,7 +333,7 @@ export class RabbitMQXStateConsumer {
     };
 
     // Broadcast via WebSocket (implement in backend)
-    console.log('📡 Broadcasting state change:', message);
+    console.log('📡 Broadcasting state change: `, message);'`
   }
 
   /**
@@ -389,7 +389,7 @@ export const rabbitmqXStateConsumer = new RabbitMQXStateConsumer();
 /**
  * Example: Process a document with RabbitMQ + XState
  *
- * ```typescript
+ * ```typescript`
  * // Create actor for document
  * const actor = rabbitmqXStateConsumer.createDocumentActor('doc-123');
  *
@@ -409,7 +409,7 @@ export const rabbitmqXStateConsumer = new RabbitMQXStateConsumer();
  *
  * actor.send({
  *   type: 'OCR_COMPLETED',
- *   data: {, text: 'Extracted text...' }
+ *   data: {, text: `Extracted text...` }
  * });
  *
  * actor.send({

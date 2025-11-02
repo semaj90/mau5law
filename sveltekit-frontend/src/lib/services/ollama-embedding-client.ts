@@ -21,7 +21,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: this.embeddingModel,
           prompt: text
@@ -49,7 +49,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: this.completionModel,
           prompt: prompt,

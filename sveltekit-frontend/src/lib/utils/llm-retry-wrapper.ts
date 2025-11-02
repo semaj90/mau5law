@@ -35,7 +35,7 @@ const todoAutogen = {
     console.warn(`Performance issue: ${type}`, details);
   },
   logLLMMisfire: async (details: LogDetails) => {
-    console.warn('LLM misfire: `, details);
+    console.warn('LLM misfire: `, details);'`
   }
 };
 
@@ -75,7 +75,7 @@ const retryLLMCall = async <T>(fn: () => Promise<T>, model: string, prompt: stri
  * Enhanced LLM wrapper with retry logic and TODO generation
  */
 export class OllamaRetryWrapper {
-  // made public so callers don't need casts
+  // made public so callers don't need casts'
   public readonly baseUrl: string;
   private failureCount = 0;
   private lastSuccessTime = Date.now();
@@ -106,7 +106,7 @@ export class OllamaRetryWrapper {
         try {
           const response = await fetch(`${this.baseUrl}/api/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': `application/json' },
+            headers: { 'Content-Type': `application/json` },
             signal: controller.signal,
             body: JSON.stringify({
               model,
@@ -179,11 +179,11 @@ export class OllamaRetryWrapper {
   /**
    * Health check for Ollama service
    */
-  async healthCheck(): Promise<{ status: string;, details: Record<string, unknown> }> {
+  async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: { 'Content-Type': `application/json' }
+        headers: { 'Content-Type': `application/json` }
       });
       if (!response.ok) {
         throw new Error(`Health check failed: ${response.status}`);
@@ -271,7 +271,7 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
   try {
     const response = await fetch(`${ollamaWrapper.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },
+      headers: { 'Content-Type': `application/json` },
       signal: controller.signal,
       body: JSON.stringify({
         model,
@@ -308,7 +308,7 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
             yield parsed;
           }
         } catch {
-          // not JSON — yield raw chunk if it's non-empty
+          // not JSON — yield raw chunk if it's non-empty'
           if (cleaned) yield cleaned;
         }
       }

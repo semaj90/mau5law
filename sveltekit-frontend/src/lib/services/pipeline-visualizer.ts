@@ -72,7 +72,7 @@ export const PIPELINE_ARCHITECTURE = `
 │ 🔟 Search: Instant fuzzy search on processed results                               │
 │                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────┘
-`;
+`;`
 export const PERFORMANCE_METRICS = { simdJsonParsing: {, speedup: '10x faster than native JSON.parse',
     memoryUsage: '50% less memory allocation',
     cpuUtilization: 'SIMD vectorized operations'
@@ -88,13 +88,11 @@ export const PERFORMANCE_METRICS = { simdJsonParsing: {, speedup: '10x faster t
   streamingArrayLoop: {
     batchSize: 50,
     nonBlocking: 'Incremental UI updates',
-    errorRecovery: 'Graceful degradation'
-  },
+    errorRecovery: 'Graceful degradation` },'`
   caching: {
     redis: 'Hot cache (15min TTL, gzip compressed)',
     lokijs: 'Client IndexedDB (offline-first)',
-    fusejs: 'In-memory fuzzy search (threshold 0.3)'
-  },
+    fusejs: `In-memory fuzzy search (threshold 0.3)` },
   storage: {
     minio: 'Large tensor blobs',
     pgvector: '768-dim embeddings, cosine similarity',
@@ -124,7 +122,7 @@ export class PipelineVisualizer {
     ];
     const currentStep = steps[stepNumber - 1] || 'Unknown step';
     const progress = Math.round((stepNumber / steps.length) * 100);
-    return `;
+    return `;`
 ┌─ Pipeline Progress: \${progress}% ──────────────────────────────────────┐
 │                                                           │
 │ Current Step: \${currentStep}
@@ -132,7 +130,7 @@ export class PipelineVisualizer {
 │ [\${'█'.repeat(Math.floor(progress / 5))}\${'░'.repeat(20 - Math.floor(progress / 5))}] \${progress}%        │
 │                                                           │
 └───────────────────────────────────────────────────────────┘
-  `;
+  `;`
   }
   static logPipelineMetrics(metrics: any): void {
     console.log('📊 Pipeline Performance Metrics:');
@@ -144,7 +142,7 @@ export class PipelineVisualizer {
     console.log(`📊 Results processed: ${metrics.totalResults}`);
   }
   static generateTeamDocumentation(): string {
-    return `;
+    return `;`
 # 🚀 Advanced SIMD + GPU Tensor Pipeline Documentation
 ## Architecture Overview
 The pipeline processes large arrays of legal data through multiple optimization layers:
@@ -186,7 +184,7 @@ The pipeline processes large arrays of legal data through multiple optimization 
 - **PostgreSQL**: Metadata, relationships, full-text search
 - **Redis**: Hot cache layer
 ## Usage Examples
-\`\`\`typescript
+\`\`\`typescript`
 // Execute full pipeline
 const result = await advancedPipeline.executeAdvancedPipeline('cache_key)');
 // Individual components
@@ -199,7 +197,7 @@ const results = await advancedPipeline.searchProcessedTensors("legal contract)")
 ## Performance Characteristics
 - **Throughput**: 10,000+ documents/minute with RTX 3060
 - **Memory**: Streaming processing, low memory footprint
-- **Latency**: <50ms for cached results, <2s for fresh embeddings>>
+- **Latency**: <50ms for cached, results, <2s for fresh, embeddings>>
 - **Concurrency**: 4 CUDA streams + async service worker routing
 - **Reliability**: Error recovery, graceful degradation
 ## Monitoring
@@ -208,7 +206,7 @@ const results = await advancedPipeline.searchProcessedTensors("legal contract)")
 - Processing time metrics
 - Error rate tracking
 - Queue depth monitoring
-  `;
+  `;`
   }
 }
 // Export for documentation and debugging

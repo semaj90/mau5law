@@ -21,16 +21,16 @@ type ProcessDocumentPayload = {
 
 type GenerateEmbeddingsPayload = { text: string; model?: string };
 type SIMDParsePayload = { buffer: ArrayBuffer };
-type IndexVectorsPayload = { documentId: string;, embedding: Float32Array };
+type IndexVectorsPayload = { documentId: string; embedding: Float32Array };
 type SearchSimilarityPayload = { queryEmbedding: Float32Array; limit?: number; threshold?: number };
 
 // Renamed to avoid collision with global/ambient WorkerMessage types
 type IngestionWorkerMessage =
-  | { id: string; type: 'process_document';, payload: ProcessDocumentPayload }
-  | { id: string; type: 'generate_embeddings';, payload: GenerateEmbeddingsPayload }
-  | { id: string; type: 'simd_parse';, payload: SIMDParsePayload }
-  | { id: string; type: 'index_vectors';, payload: IndexVectorsPayload }
-  | { id: string; type: 'search_similarity';, payload: SearchSimilarityPayload };
+  | { id: string; type: 'process_document'; payload: ProcessDocumentPayload }
+  | { id: string; type: 'generate_embeddings'; payload: GenerateEmbeddingsPayload }
+  | { id: string; type: 'simd_parse'; payload: SIMDParsePayload }
+  | { id: string; type: 'index_vectors'; payload: IndexVectorsPayload }
+  | { id: string; type: 'search_similarity'; payload: SearchSimilarityPayload };
 
 // Generic, typed worker response payload
 type WorkerResponse<T = Record<string, unknown>> = { id: string | null;, success: boolean;
@@ -61,13 +61,13 @@ interface AdvancedEvidenceAnalyzer {
 
 interface EvidenceGraphService {
   updateEvidenceGraph?(
-    meta: { id: string;, summary: string; caseId?: string | null },
+    meta: {, id: string; summary: string; caseId?: string | null },
     entities: Array<{, name: string; type?: string | null }>,
     edges: any[]
   ): Promise<void>;
   // some modules may export a callable shape
   (
-    meta: { id: string;, summary: string; caseId?: string | null },
+    meta: {, id: string; summary: string; caseId?: string | null },
     entities: Array<{, name: string; type?: string | null }>,
     edges: any[]
   ): Promise<void>;
@@ -97,8 +97,8 @@ class VectorEmbeddingCache {
   async retrieve(k: string) {
     return this.c.get(k) ?? null;
   }
-  async search(q: Float32Array, opts: {, limit: number; threshold: number }) {
-    const out: Array<{ key: string;, similarity: number }> = [];
+  async search(q: Float32Array, opts: {, limit: number;, threshold: number }) {
+    const out: Array<{ key: string; similarity: number }> = [];
     for (const [k, v] of this.c.entries()) {
       if (!v || v.length !== q.length) continue;
       let dot = 0,
@@ -136,7 +136,7 @@ class RAGIngestionWorker {
     // If already an ArrayBuffer, return as-is
     if (input instanceof ArrayBuffer) return input;
 
-    // If it's a view (Uint8Array / Buffer / etc.), handle safely
+    // If it's a view (Uint8Array / Buffer / etc.), handle safely'
     if (ArrayBuffer.isView(input)) {
       const view = input as Uint8Array;
 
@@ -164,7 +164,7 @@ class RAGIngestionWorker {
         return u.slice().buffer;
       }
 
-      // If it's iterable (e.g., Buffer in some runtimes), convert to Array first
+      // If it's iterable (e.g., Buffer in some runtimes), convert to Array first'
       if (input && typeof input === 'object' && Symbol.iterator in Object(input)) {
         const arr = Array.from(input as Iterable<number>);
         const u = new Uint8Array(arr);
@@ -181,8 +181,8 @@ class RAGIngestionWorker {
 
   // safe entity extraction
   private extractEntity(item: any): { name: string; type?: string | null } {
-    if (!item) return { name: 'unknown', type: 'unknown' };
-    if (typeof item === 'string') return { name: item, type: 'unknown' };
+    if (!item) return { name: 'unknown', type: 'unknown` };'`
+    if (typeof item === 'string') return { name: item, type: `unknown` };
     if (typeof item === 'object') {
       const obj = item as Record<string, unknown>;
       const name = String(obj['text'] ?? obj['name'] ?? obj['value'] ?? 'unknown');
@@ -325,14 +325,14 @@ class RAGIngestionWorker {
         try {
           await fetch(VECTOR_INDEX_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json` },'`
             body: JSON.stringify({ id, embedding: Array.from(emb) })
           });
         } catch (e: any) {
           console.warn('vector push failed', e);
         }
       }
-      this.post({ id, success: true, stage: 'embedding', status: 'completed' });
+      this.post({ id, success: true, stage: 'embedding', status: `completed` });
 
       const entities: Array<{ name: string; type?: string | null }> = [];
       const entityEntry = analysis?.analyses?.find(a => a.type === 'entities');
@@ -344,7 +344,7 @@ class RAGIngestionWorker {
 
       // rename sim variable to explicit typed name to avoid implicit any
       if (NEO4J_CREATE_SIMILARITY_LINKS) {
-        const simResults: Array<{ key: string;, similarity: number }> = await this.cache.search(emb, {
+        const simResults: Array<{ key: string; similarity: number }> = await this.cache.search(emb, {
           limit: 5,
           threshold: 0.85
         });
@@ -363,10 +363,10 @@ class RAGIngestionWorker {
       if (this.services.evidenceGraphService) {
         try {
           const svc = this.services.evidenceGraphService as EvidenceGraphService;
-          // If it's an object exposing updateEvidenceGraph, call it.
+          // If it's an object exposing updateEvidenceGraph, call it.'
           if (svc && typeof (svc as { updateEvidenceGraph?: any }).updateEvidenceGraph === 'function') {
             await (
-              svc as { updateEvidenceGraph: (, meta: { id: string;, summary: string; caseId?: string | null },
+              svc as { updateEvidenceGraph: (, meta: {, id: string;, summary: string; caseId?: string | null },
                   entities: Array<{, name: string; type?: string | null }>,
                   edges: any[]
                 ) => Promise<void>;
@@ -379,7 +379,7 @@ class RAGIngestionWorker {
           } else if (typeof svc === 'function') {
             // Callable shape
             const callable = svc as unknown as (
-              meta: { id: string;, summary: string; caseId?: string | null },
+              meta: {, id: string; summary: string; caseId?: string | null },
               entities: Array<{, name: string; type?: string | null }>,
               edges: any[]
             ) => Promise<void>;

@@ -60,7 +60,7 @@ class AdvancedResultCache {
     const averageDataSizeBytes = this.store.size > 0
       ? [...this.store.values()].reduce((s, e) => s + e.sizeBytes, 0) / this.store.size
       : 0;
-    // Utilization is a heuristic here since we're in-memory only
+    // Utilization is a heuristic here since we're in-memory only'
     const utilizationPercentage = Math.min(100, (this.store.size / 1000) * 100);
     return {
       overall: {

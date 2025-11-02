@@ -72,7 +72,7 @@ async function embedWithLocal(text: string, model?: string): Promise<number[]> {
   };
   const resp = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify(body)
   });
   if (!resp.ok) {
@@ -97,7 +97,7 @@ async function embedWithNomic(text: string, model?: string): Promise<number[]> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}' },
+          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}` },
         body: JSON.stringify({
           text,
           model: model || EMBEDDING_CONFIG.defaultModel
@@ -197,7 +197,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
     try {
       const resp = await fetch(batchUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, model: modelName, input: texts })
       });
       if (resp.ok) {
@@ -294,7 +294,7 @@ export async function embeddingFunction(text: string): Promise<any> {
   const chunks = await splitter.splitText(text);
   const vectors = await embeddings.embedDocuments(chunks);
 
-  // Flatten & reduce into single average vector (using the first chunk's embedding for simplicity)
+  // Flatten & reduce into single average vector (using the first chunk's embedding for simplicity)'
   const embedding = vectors[0];
   const keywords = await extractKeywords(text);
 

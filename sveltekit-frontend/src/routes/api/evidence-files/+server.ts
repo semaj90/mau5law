@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
         title: rec.title
       });
     } catch (error) {
-      console.error('Download error:', error);
+      console.error('Download error:', error);'
       return json({ success: false, error: 'Failed to generate download URL' }, { status: 500 });
     }
   }
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!results.length) return json({ success: false, error: 'Not found' }, { status: 404 });
       return json({ success: true, record: results[0] });
     } catch (error) {
-      console.error('Get evidence error:', error);
+      console.error('Get evidence error:', error);'
       return json({ success: false, error: 'Failed to retrieve evidence' }, { status: 500 });
     }
   }
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .limit(limit);
     return json({ success: true, items: results });
   } catch (error) {
-    console.error('List evidence error:', error);
+    console.error('List evidence error:', error);'
     return json({ success: false, error: 'Failed to list evidence' }, { status: 500 });
   }
 };
@@ -121,14 +121,14 @@ export const POST: RequestHandler = async ({ request }) => {
       .returning({ id: evidence.id, createdAt: evidence.createdAt });
     return json({ success: true, record: newEvidence[0], upload });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Upload error:', error);'
     return json({ success: false, error: 'Failed to upload evidence' }, { status: 500 });
   }
 };
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const id = url.searchParams.get('id');
-    if (!id) return json({ success: false, error: 'id required' }, { status: 400 });
+    if (!id) return json({ success: false, error: `id required` }, { status: 400 });
     // Get file info before deletion
     const evidenceToDelete = await db
       .select({
@@ -139,12 +139,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
       .where(eq(evidence.id, id))
       .limit(1);
     if (!evidenceToDelete.length) {
-      return json({ success: false, error: 'Not found' }, { status: 404 });
+      return json({ success: false, error: `Not found` }, { status: 404 });
     }
     // Delete from database
     const deletedEvidence = await db.delete(evidence).where(eq(evidence.id, id)).returning({ id: evidence.id });
     if (!deletedEvidence.length) {
-      return json({ success: false, error: 'Failed to delete from database' }, { status: 500 });
+      return json({ success: false, error: `Failed to delete from database` }, { status: 500 });
     }
     // Delete from storage
     const fileName = evidenceToDelete[0].fileName;
@@ -154,7 +154,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     return json({ success: true, id });
   } catch (error) {
-    console.error('Delete error:', error);
+    console.error('Delete error: ', error);'
     return json({ success: false, error: `Failed to delete evidence` }, { status: 500 });
   }
 };

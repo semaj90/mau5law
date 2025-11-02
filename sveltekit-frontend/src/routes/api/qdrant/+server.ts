@@ -1,13 +1,13 @@
 import { json } from '@sveltejs/kit';
 import { qdrant } from '$lib/server/vector/qdrant';
 import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimit';
-import { productionLogger as logger } from '$lib/server/production-logger';
+import { productionLogger, as logger } from '$lib/server/production-logger';
 import { dev } from '$app/environment';
 import type { RequestHandler } from './$types.js';
 import { getUserId } from '$lib/server/auth/utils';
 import os from 'os'; // Import the: 'os' module
 
-// Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.
+// Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.'
 // Define a minimal local type for collection info to avoid the: "Cannot use namespace as a type" error.
 type QdrantCollectionInfo = {
   name: string;
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             collection,
             message: 'PostgreSQL sync implementation needed',
             batchSize,
-            windowsOptimized: process.platform === 'win32` };
+            windowsOptimized: process.platform === 'win32` };'`
           break;
         }
         default:
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           executionTime,
           filters,
           performance: {
-            platform: process.platform,
+           , platform: process.platform,
             batchSize,
             limit,
             rateLimit: {
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     }
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    logger.error('Qdrant sync error:', normalizeError(error));
+    logger.error('Qdrant sync error:', normalizeError(error));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -385,10 +385,10 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         return json({
           success: true,
           data: {
-            status: 'healthy',
+           , status: 'healthy',
             collections,
             currentCollection: {
-              name: collection, // Added comma
+             , name: collection, // Added comma
               ...collectionInfo,
               windowsOptimized: process.platform === 'win32'
             },
@@ -412,7 +412,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       }
     }
   } catch (error: any) {
-    logger.error('Qdrant GET error:', error instanceof Error ? error : new Error(String(error)));
+    logger.error('Qdrant GET error:', error instanceof Error ? error : new Error(String(error)));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -459,8 +459,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
       return json(
         {
           success: false,
-          error: 'Admin privileges required for collection management'
-        },
+          error: `Admin privileges required for collection management` },
         { status: 403 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -501,14 +500,14 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     return json({
       success: true,
       data: {
-        message: 'Collection '${name}' created successfully with Windows optimizations`,
+       , message: 'Collection '${name}' created successfully with Windows optimizations`,'`
         collection: name, // Added comma
         config: {
           vectorSize,
           distance,
           windowsOptimized: process.platform === 'win32',
           optimizations: {
-            platform: process.platform,
+           , platform: process.platform,
             memoryMappingThreshold: collectionConfig.optimizers_config.memmap_threshold,
             segmentConfiguration: collectionConfig.optimizers_config.default_segment_number,
             flushInterval: collectionConfig.optimizers_config.flush_interval_sec
@@ -523,7 +522,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    logger.error('Qdrant collection creation error:', error instanceof Error ? error : new Error(String(error)));
+    logger.error('Qdrant collection creation error:', error instanceof Error ? error : new Error(String(error)));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -570,8 +569,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Admin privileges required for collection deletion'
-        },
+          error: `Admin privileges required for collection deletion` },
         { status: 403 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -591,9 +589,8 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Cannot delete protected; collection: '${collection}`. Use forceDelete=true with confirmationToken to override.`,
-          hint: 'Protected collections require explicit confirmation'
-        },
+          error: 'Cannot delete protected; collection: `${collection}`. Use forceDelete=true with confirmationToken to override.`,'`
+          hint: `Protected collections require explicit confirmation` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -603,8 +600,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         {
           success: false,
           error: 'Confirmation token required for force deletion',
-          hint: 'Add confirmationToken with collection name to confirm'
-        },
+          hint: `Add confirmationToken with collection name to confirm` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -631,7 +627,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     return json({
       success: true,
       data: {
-        message: 'Collection '${collection}' deleted successfully`,
+       , message: 'Collection '${collection}' deleted successfully`,'`
         collection,
         forced: forceDelete, // Added comma
         result, // Added comma
@@ -644,7 +640,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    logger.error('Qdrant collection deletion error:', error instanceof Error ? error : new Error(String(error)));
+    logger.error('Qdrant collection deletion error:', error instanceof Error ? error : new Error(String(error)));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -670,7 +666,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
 function normalizeError(err: any): Error {
   // Prefer existing Error instances
   if (err instanceof Error) return err;
-  // If it's a string, wrap it
+  // If it's a string, wrap it'
   if (typeof err === 'string') return new Error(err);
   // Try to JSON stringify other objects, fallback to toString
   try {

@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
       ...healthResult,
       performance: metrics,
       activeRequests: {
-        count: activeRequests.length,
+       , count: activeRequests.length,
         requests: activeRequests.map(req => ({
          , id: req.id,
           type: req.type,
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
       endpoints: {
         fullTest: '/api/ai/test-orchestrator?test=full',
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
-        healthCheck: '/api/ai/test-orchestrator` }
+        healthCheck: '/api/ai/test-orchestrator' }
     });
   } catch (error) {
     return json(
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const temperatureRaw = testRequest['temperature'];
     const maxTokensRaw = testRequest['maxTokens'];
 
-    // Validate and narrow the incoming: "type" to the bridge's union type
+    // Validate and narrow the incoming: "type" to the bridge's union type'
     type AllowedRequestType = LLMBridgeRequestImported['type'];
     const allowedRequestTypes = new Set<AllowedRequestType>([
       'chat',
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const temperature = typeof temperatureRaw === 'number' ? temperatureRaw : 0.3;
     const maxTokens = typeof maxTokensRaw === 'number' ? maxTokensRaw : 200;
 
-    // Narrow the incoming model & priority strings to the bridge's union types
+    // Narrow the incoming model & priority strings to the bridge's union types'
     type AllowedModel = LLMBridgeRequestImported['options']['model'];
     type AllowedPriority = LLMBridgeRequestImported['options']['priority'];
 
@@ -284,7 +284,7 @@ function getRoutingReason(orchestratorUsed: string, taskType: string, requestedO
 }
 function getPerformanceGrade(latency: number): string {
   if (latency < 100) return 'A+ (Excellent)';
-  if (latency < 300) return 'A (Very Good)';
+  if (latency < 300) return 'A (Very, Good)';
   if (latency < 500) return 'B (Good)';
   if (latency < 1000) return 'C (Fair)';
   if (latency < 2000) return 'D (Poor)';
@@ -327,6 +327,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization` }
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization' }
   });
 };

@@ -48,7 +48,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         const policy = {
           Version: '2012-10-17',
           Statement: [
-            {
+            {,
               Effect: 'Allow',
               Principal: { AWS: ['*'] },
               Action: ['s3:GetObject'],
@@ -65,7 +65,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
       }
     } catch (bucketError) {
-      console.error('MinIO bucket setup error:', bucketError);
+      console.error('MinIO bucket setup error:', bucketError);'
       return json({ error: 'Storage initialization failed' }, { status: 500 });
     }
     // Generate pre-signed URL for upload
@@ -85,8 +85,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         processingStatus: 'pending',
         metadata: {
          , uploadedAt: new Date().toISOString(),
-          uploadMethod: 'presigned'
-        }
+          uploadMethod: `presigned` }
       })
       .returning();
     return json({
@@ -103,18 +102,18 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
     });
   } catch (error: any) {
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
-    console.error('Presigned URL generation error:', errForLog);
+    console.error('Presigned URL generation error:', errForLog);'
     if (error instanceof z.ZodError) {
       return json({ error: 'Invalid request data', details: error.errors }, { status: 400 });
     }
-    return json({ error: 'Internal server error' }, { status: 500 });
+    return json({ error: `Internal server error` }, { status: 500 });
   }
 }
 // Optional: GET method to check upload status
 export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Response> {
   const fileId = url.searchParams.get('fileId');
   if (!fileId) {
-    return json({ error: 'File ID required' }, { status: 400 });
+    return json({ error: `File ID required` }, { status: 400 });
   }
   try {
     const [document] = await db.select().from(documents).where(eq(documents.uuid, fileId)).limit(1);
@@ -133,9 +132,9 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
         await db.update(documents).set({ fileSize }).where(eq(documents.id, document.id));
       }
     } catch (statError) {
-      // File doesn't exist yet or access error
+      // File doesn't exist yet or access error'
       const msg = statError instanceof Error ? statError.message : String(statError);
-      console.warn(`File ${document.minioPath} not accessible: ', msg);
+      console.warn(`File ${document.minioPath} not accessible: ', msg);'`
     }
     return json({ document: {, id: document.id,
         uuid: document.uuid,
@@ -149,7 +148,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
     });
   } catch (error: any) {
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
-    console.error('Upload status check error:', errForLog);
+    console.error('Upload status check error: ', errForLog);'
     return json({ error: `Internal server error` }, { status: 500 });
   }
 }

@@ -44,13 +44,13 @@ export interface SemanticAnalysis { embedding: number[];, legalEntities: LegalE
   keyTopics: string[];
   complexity: number;
   sentiment: 'positive' | 'negative' | 'neutral';
-  similarDocuments: Array<{ id: string; similarity: number;, title: string }>;
+  similarDocuments: Array<{ id: string; similarity: number; title: string }>;
 }
 
 export interface LegalReasoning { summary: string;, riskAssessment: { overallRisk: 'low' | 'medium' | 'high' | 'critical';, details: string;
   };
   legalPrinciples: string[];
-  precedentAnalysis: { relevantCases: Array<{ id: string; title: string;, relevance: number }>;
+  precedentAnalysis: { relevantCases: Array<{ id: string; title: string; relevance: number }>;
     summary: string;
   };
 }
@@ -86,7 +86,7 @@ const enhancedAIAnalysis = {
 
 // Mock grpcAIOrchestrator service
 const grpcAIOrchestrator = {
-  async healthCheck(): Promise<{ healthy: boolean;, services: Record<string, boolean> }> {
+  async healthCheck(): Promise<{ healthy: boolean; services: Record<string, boolean> }> {
     console.warn('MOCK: grpcAIOrchestrator.healthCheck called');
     return {
       healthy: true,
@@ -269,7 +269,7 @@ export class LegalDocumentStreamService {
       }
       // Assuming enhancedAIAnalysis internally uses OllamaGetEndpoint() or similar for Ollama URL resolution
       const semanticAnalysis = await enhancedAIAnalysis.analyzeDocument(document);
-      // Stream entities as they're found
+      // Stream entities as they're found'
       this.emitEvent(connectionId, {
         eventType: 'entities_extracted',
         timestamp: new Date().toISOString(),
@@ -320,8 +320,7 @@ export class LegalDocumentStreamService {
           documentId: document.id,
           data: {
             similarDocuments: semanticAnalysis.similarDocuments,
-            topSimilarity: Math.max(...semanticAnalysis.similarDocuments.map((d: {, similarity: number }) => d.similarity)) // Added type for: 'd'
-          }
+            topSimilarity: Math.max(...semanticAnalysis.similarDocuments.map((d: {, similarity: number }) => d.similarity)) // Added type for: `d` }
         });
       }
       // Analysis complete
@@ -333,7 +332,7 @@ export class LegalDocumentStreamService {
         data: {
           semanticAnalysis,
           reasoning,
-          complete: true
+          complete: true;
         },
         progress: {
           current: includeReasoning ? 4 : 3,
@@ -343,7 +342,7 @@ export class LegalDocumentStreamService {
         performance: {
           processingTime,
           throughput: 1 / (processingTime / 1000),
-          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
+          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024;
         }
       });
       // Update connection stats
@@ -353,14 +352,14 @@ export class LegalDocumentStreamService {
       this.updateStatistics(processingTime, true);
       console.log(`✅ Document ${document.id} analysis streamed successfully (${processingTime}ms)`);
     } catch (error) {
-      console.error(`❌ Document streaming failed for ${document.id}: ', error);
+      console.error(`❌ Document streaming failed for ${document.id}: ', error);'`
       this.emitEvent(connectionId, {
         eventType: 'error',
         timestamp: new Date().toISOString(),
         documentId: document.id,
         error: {
           code: 'ANALYSIS_FAILED',
-          message: String(error)
+          message: String(error);
         }
       });
       this.updateStatistics(Date.now() - startTime, false);
@@ -386,7 +385,7 @@ export class LegalDocumentStreamService {
     const {
       batchSize = this.config.batchSize,
       parallelProcessing = true,
-      priorityOrder = 'fifo` } = batchOptions;
+      priorityOrder = 'fifo` } = batchOptions;'`
     const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`; // Changed substr to slice
     console.log(`📦 Starting batch stream: ${batchId} with ${documents.length} documents`);
     // Sort documents by priority
@@ -409,7 +408,7 @@ export class LegalDocumentStreamService {
         data: {
           currentBatch: batchIndex + 1,
           totalBatches: batches.length,
-          batchSize: batch.length
+          batchSize: batch.length;
         }
       });
       if (parallelProcessing && this.activeAnalyses.size < this.config.maxConcurrentAnalyses) {
@@ -428,7 +427,7 @@ export class LegalDocumentStreamService {
           try {
             await this.streamDocument(connectionId, document, { streamProgress: false });
           } catch (error) {
-            console.warn(`Sequential processing failed for ${document.id}: ', error);
+            console.warn(`Sequential processing failed for ${document.id}: ', error);'`
             // Continue with next document
           }
         }
@@ -518,7 +517,7 @@ export class LegalDocumentStreamService {
         try {
           callback(event);
         } catch (error) {
-          console.error('Event listener error:', error);
+          console.error('Event listener error:', error);'
         }
       });
     }

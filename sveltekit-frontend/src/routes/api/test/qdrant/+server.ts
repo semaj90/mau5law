@@ -52,7 +52,7 @@ const qdrant: OptimizedQdrantServiceType = optimizedQdrantService as unknown as 
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
 
-// NOTE: If you encounter: "Property 'methodName' does not exist on; type: 'OptimizedQdrantService'" errors,
+// NOTE: If you; encounter: "Property 'methodName' does not exist on; type: 'OptimizedQdrantService'" errors,
 // it means the type definition for `optimizedQdrantService` in `$lib/services/optimized-qdrant-service.ts`
 // needs to be updated to include the missing methods (e.g., healthCheck, searchVectors, upsertVectors, syncFromPostgreSQL).
 // This fix cannot be applied from this file.
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'collection_setup',
           status: 'success',
-          data: {, message: `Collection ensured with 768-dimensional nomic-embed vectors` },
+          data: {, message: `Collection ensured with 768-dimensional nomic-embed vectors' },'`
           duration: Date.now() - startTime
         });
       } catch (error: any) {
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
            , message: 'Sync service initialized and ready',
             qdrant_status: health.status,
             memory_usage: health.memoryUsage,
-            note: `Use POST /api/test/qdrant?action=sync for full PostgreSQL sync` },
+            note: `Use POST /api/test/qdrant?action=sync for full PostgreSQL sync' },'`
           duration: Date.now() - startTime
         });
       } catch (error: any) {

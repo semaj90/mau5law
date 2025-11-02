@@ -28,7 +28,7 @@ declare global {
         // Add other user properties as needed, e.g., roles, name
       };
       // Database client (Drizzle ORM)
-      db?: import('drizzle-orm/node-postgres').NodePgDatabase<typeof import('$lib/server/db/schema-postgres')>;
+      db?: import('drizzle-orm/node-postgres').NodePgDatabase<typeof, import('$lib/server/db/schema-postgres')>;
       // Redis cache service
       redis?: import('$lib/server/cache/redis').CacheService;
       // RabbitMQ channel (optional)

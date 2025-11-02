@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
        , timestamp: new Date().toISOString(),
         queryId: response.queryId,
-        systemVersion: '2.0.0-enhanced-rag` }
+        systemVersion: '2.0.0-enhanced-rag' }
     });
   } catch (error: any) {
     console.error('❌ Enhanced RAG Query Error:', error);

@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       gpu_utilized: false
     });
   } catch (err: any) {
-    console.error('GPU proxy error:', getErrorMessage(err));
+    console.error('GPU proxy error:', getErrorMessage(err));'
     const body: ErrorBody = { message: 'GPU proxy failed', details: getErrorMessage(err) };
     return error(500, body);
   }

@@ -89,7 +89,7 @@ export class GemmaEmbeddingService {
   private providers: EmbeddingProvider[] = [];
   private metrics = new Map<string, EmbeddingMetrics>();
   private cache = new EmbeddingCache();
-  private rateLimiters = new Map<string, { requests: number;, lastReset: number }>();
+  private rateLimiters = new Map<string, { requests: number; lastReset: number }>();
 
   constructor() {
     this.initializeProviders();
@@ -105,7 +105,7 @@ export class GemmaEmbeddingService {
       endpoint: primaryEndpoint,
       headers: {
         'Content-Type': 'application/json',
-        ...(process.env.GEMMA_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_API_KEY}' } : {})
+        ...(process.env.GEMMA_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_API_KEY}' } : {})'`
       },
       timeout: parseInt(process.env.GEMMA_TIMEOUT || '30000', 10),
       maxBatchSize: parseInt(process.env.GEMMA_BATCH_SIZE || '32', 10),
@@ -118,7 +118,7 @@ export class GemmaEmbeddingService {
         endpoint: process.env.GEMMA_FALLBACK_ENDPOINT,
         headers: {
           'Content-Type': 'application/json',
-          ...(process.env.GEMMA_FALLBACK_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_FALLBACK_API_KEY}' } : {})
+          ...(process.env.GEMMA_FALLBACK_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_FALLBACK_API_KEY}' } : {})'`
         },
         timeout: 30000,
         maxBatchSize: 16,
@@ -132,7 +132,7 @@ export class GemmaEmbeddingService {
         endpoint: 'https://api.openai.com/v1/embeddings',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}' },
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}' },'`
         timeout: 30000,
         maxBatchSize: 2048,
         rateLimit: 3000
@@ -244,7 +244,7 @@ export class GemmaEmbeddingService {
         this.updateMetrics(provider.name, texts.length, 0, Date.now() - Date.now()); // latency updated in callProvider separately
         return embeddings;
       } catch (err) {
-        console.warn(`Provider ${provider.name} failed: ', err);
+        console.warn(`Provider ${provider.name} failed: ', err);'`
         this.updateMetrics(provider.name, texts.length, 1, 0);
         continue;
       }

@@ -26,7 +26,7 @@ function getEnhancedRAGConfig() {
     return {
       wsUrl: `ws://localhost:${registryEntry.port}${registryEntry.endpoint}`,
       httpUrl: `http://localhost:${registryEntry.port}`,
-      source: `registry` };
+      source: `registry' };'`
   }
 
   // Fallback to environment variables
@@ -36,8 +36,7 @@ function getEnhancedRAGConfig() {
     return {
       wsUrl: `ws://localhost:${envPort}/ws/${envUUID}`,
       httpUrl: `http://localhost:${envPort}`,
-      source: 'env'
-    };
+      source: 'env' };
   }
 
   // Final fallback to hardcoded values
@@ -45,7 +44,7 @@ function getEnhancedRAGConfig() {
   return {
     wsUrl: 'ws://localhost:8094/ws/legal-search-client',
     httpUrl: 'http://localhost:8094',
-    source: `fallback` };
+    source: `fallback' };'`
 }
 
 const RAG_CONFIG = getEnhancedRAGConfig();
@@ -144,7 +143,7 @@ export class RealTimeSearchService {
   private _natsConnection: any = null;
   private ws: WebSocket | null = null;
   // This property is intended for future NATS integration as per instructions,
-  // hence it's currently declared but not fully utilized.
+  // hence it's currently declared but not fully utilized.'
   // TODO: Implement NATS connection for real-time messaging in future (placeholder for now)
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
@@ -191,7 +190,7 @@ export class RealTimeSearchService {
         console.log('✅ WebSocket connection established');
       } catch (wsError) {
         console.warn('⚠️ WebSocket connection failed, falling back to HTTP-only mode:', wsError);
-        // Don't throw - allow the service to work with HTTP fallback
+        // Don't throw - allow the service to work with HTTP fallback'
       }
 
       // Initialize NATS connection for real-time messaging
@@ -208,7 +207,7 @@ export class RealTimeSearchService {
         ...s,
         isConnected,
         connectionStatus: isConnected ? 'connected' : 'error',
-        error: isConnected ? null : `Using HTTP-only search (real-time unavailable)` }));
+        error: isConnected ? null : `Using HTTP-only search (real-time unavailable)' }));'`
 
       if (isConnected) {
         console.log('🔗 Real-time search connections established');
@@ -224,7 +223,7 @@ export class RealTimeSearchService {
         connectionStatus: 'error',
         isConnected: false
       }));
-      // Don't attempt reconnection for initialization failures
+      // Don't attempt reconnection for initialization failures'
     }
   }
 
@@ -240,14 +239,14 @@ export class RealTimeSearchService {
           this.ws = null;
         }
 
-        // Check if we've exceeded max reconnection attempts
+        // Check if we've exceeded max reconnection attempts'
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
           console.warn('⚠️ Max WebSocket reconnection attempts reached. Using HTTP fallback.');
           this.state.update(s => ({
             ...s,
             isConnected: false,
             connectionStatus: 'error',
-            error: `WebSocket unavailable - using HTTP fallback` }));
+            error: 'WebSocket unavailable - using HTTP fallback' }));
           reject(new Error('Max reconnection attempts exceeded'));
           return;
         }
@@ -271,7 +270,7 @@ export class RealTimeSearchService {
 
         this.ws.onclose = event => {
           console.log(
-            `🔌 WebSocket disconnected (code: ${event.code}, reason: ${event.reason || 'No reason provided` })`
+            `🔌 WebSocket disconnected (code: ${event.code}, reason: ${event.reason || 'No reason provided' })`
           );
           this.state.update(s => ({ ...s, isConnected: false, connectionStatus: 'disconnected' }));
 
@@ -282,12 +281,12 @@ export class RealTimeSearchService {
         };
 
         this.ws.onerror = error => {
-          console.error('❌ WebSocket error:', error instanceof Error ? error.message : String(error));
-          // Don't reject immediately - let onclose handle reconnection
+          console.error('❌ WebSocket error:', error instanceof Error ? error.message : String(error));'
+          // Don't reject immediately - let onclose handle reconnection'
           this.state.update(s => ({
             ...s,
             connectionStatus: 'error',
-            error: `WebSocket connection failed - retrying or using HTTP fallback` }));
+            error: 'WebSocket connection failed - retrying or using HTTP fallback' }));
         };
 
         // Timeout after 5 seconds
@@ -308,7 +307,7 @@ export class RealTimeSearchService {
           { once: true }
         );
       } catch (error: any) {
-        console.error('❌ WebSocket connection error:', error instanceof Error ? error.message : String(error));
+        console.error('❌ WebSocket connection error:', error instanceof Error ? error.message : String(error));'
         reject(error);
       }
     });
@@ -321,7 +320,7 @@ export class RealTimeSearchService {
       // Since we're in a browser environment, we'll use WebSocket-based NATS
       console.log('📡 Connecting to NATS via WebSocket...');
       // TODO: Implement full NATS connection using NATS_WS_URL
-      // For now, we'll just log its intended use to resolve the unused variable warning.
+      // For now, we'll just log its intended use to resolve the unused variable warning.'
       // Example: const natsClient = new Nats.connect({ servers: [NATS_WS_URL] });
       // This allows immediate testing with the existing Enhanced RAG WebSocket
       console.log(`NATS connection intended for: ${NATS_WS_URL}`);
@@ -437,13 +436,13 @@ export class RealTimeSearchService {
           searchId,
           query,
           options: {
-            categories: options.categories || ['cases', 'evidence', 'documents'],
+           , categories: options.categories || ['cases', 'evidence', 'documents'],
             vectorSearch: options.vectorSearch !== false,
             includeAI: options.includeAI !== false,
             streamResults: true,
             legalContext: options.legalContext || {
              , jurisdiction: 'federal',
-              practiceAreas: `all` }
+              practiceAreas: `all' }'`
           }
         })
       );
@@ -485,7 +484,7 @@ export class RealTimeSearchService {
       try {
         const response = await fetch(endpoint, {
           method: 'GET',
-          headers: { 'Content-Type': `application/json` }
+          headers: { 'Content-Type': `application/json' }'`
         });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -495,7 +494,7 @@ export class RealTimeSearchService {
         this.state.update(s => ({ ...s, results, isSearching: false }));
         return results;
       } catch (error: any) {
-        console.warn(`❌ Endpoint ${endpoint} failed: ', error instanceof Error ? error.message : String(error));
+        console.warn(`❌ Endpoint ${endpoint} failed: ', error instanceof Error ? error.message : String(error));'`
         lastError = error as Error;
         continue;
       }
@@ -553,7 +552,7 @@ export class RealTimeSearchService {
       this.state.update(s => ({
         ...s,
         error: 'Real-time connection unavailable - using standard search',
-        connectionStatus: `error` }));
+        connectionStatus: `error' }));'`
       return;
     }
 
@@ -586,7 +585,7 @@ export class RealTimeSearchService {
   // Get fallback results when all else fails
   private async getFallbackResults(query: string): Promise<SearchResult[]> {
     return [
-      {
+      {,
         id: `fallback-${Date.now()}`,
         title: `Fallback; search: ${query}`,
         type: 'document' as const,

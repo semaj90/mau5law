@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!legalDocuments) {
       console.warn('Legal documents table not available, returning mock data');
       return json([
-        {
+        {,
           id: 'doc-1',
           title: 'Motion to Dismiss - Case 2024-001',
           documentType: 'motion',
@@ -189,7 +189,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const documentId = params?.id;
     if (!documentId) {
-      return json({ error: 'Document ID is required' }, { status: 400 });
+      return json({ error: `Document ID is required` }, { status: 400 });
     }
     // Handle case where schema is not available
     if (!legalDocuments) {
@@ -200,11 +200,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
     const deleteResult = await db.delete(legalDocuments).where(eq(legalDocuments.id, documentId)).returning();
     const deletedDocument = Array.isArray(deleteResult) ? deleteResult[0] : deleteResult;
     if (!deletedDocument) {
-      return json({ error: 'Document not found' }, { status: 404 });
+      return json({ error: `Document not found` }, { status: 404 });
     }
     return json({ success: true });
   } catch (error: any) {
-    console.error('Error deleting legal document:', error);
+    console.error('Error deleting legal document: `, error);'`
     return json({ error: `Failed to delete legal document` }, { status: 500 });
   }
 };

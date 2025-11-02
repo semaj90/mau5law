@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   } catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
-    console.error('Case summary generation error:', error);
+    console.error('Case summary generation error:', error);'
     return json(
       {
         success: false,
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     const caseId = url.searchParams.get('caseId');
     if (!caseId) {
       return json(
-        { success: false, error: 'caseId is required' },
+        { success: false, error: `caseId is required` },
         { status: 400 } // Corrected json() syntax
       );
     }
@@ -165,12 +165,11 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
   } catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
-    console.error('Case summary retrieval error:', error);
+    console.error('Case summary retrieval error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error'
-      } as CaseSummaryResponse,
+        error: error instanceof Error ? error.message : `Internal server error` } as CaseSummaryResponse,
       { status: 500 } // Corrected json() syntax
     );
   }
@@ -181,7 +180,7 @@ async function gatherCaseData(caseId: string, includeEvidence: boolean, includeT
   if (includeEvidence) {
     // Placeholder evidence data
     data.evidence = [
-      {
+      {,
         id: '1',
         content: 'Evidence item 1',
         metadata: {}, // Corrected metadata type syntax
@@ -198,7 +197,7 @@ async function gatherCaseData(caseId: string, includeEvidence: boolean, includeT
     // Placeholder timeline data
     const eventContent = 'Case created';
     data.timeline = [
-      {
+      {,
         date: new Date(),
         event: eventContent,
         type: 'system',
@@ -219,7 +218,7 @@ CASE; ID: ${caseData.caseId}
 EVIDENCE DATA: ${evidenceText.substring(0, 1000)}
 TIMELINE DATA: ${timelineText.substring(0, 500)}
 Generate a ${depth} analysis with a structured summary.
-`;
+`;`
     const response = await ollamaService.generateResponse(analysisPrompt, {
       model: 'gemma3-legal:latest',
       max_tokens: 2000,
@@ -237,7 +236,7 @@ Generate a ${depth} analysis with a structured summary.
     return generateFallbackSummary(caseData);
   } catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
-    console.error('AI summary generation error:', error);
+    console.error('AI summary generation error:', error);'
     return generateFallbackSummary(caseData);
   }
 }

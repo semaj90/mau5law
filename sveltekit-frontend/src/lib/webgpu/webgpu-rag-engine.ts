@@ -87,7 +87,7 @@ export class WebGPURAGEngine {
 
       // Error handling
       this.device.addEventListener('uncapturederror', event => {
-        console.error('WebGPU uncaptured error:', event.error);
+        console.error('WebGPU uncaptured error:', event.error);'
       });
 
       // Load WASM module for CUDA interop
@@ -144,20 +144,20 @@ export class WebGPURAGEngine {
     // Create bind group layout for similarity computation
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {
-          binding: 0,
+        {,
+         , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' }
+          buffer: {, type: 'storage' }
         },
         {
           binding: 3,
@@ -185,20 +185,20 @@ export class WebGPURAGEngine {
 
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {
-          binding: 0,
+        {,
+         , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' }
+          buffer: {, type: 'storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' }
+          buffer: {, type: 'storage' }
         },
         {
           binding: 3,
@@ -225,20 +225,20 @@ export class WebGPURAGEngine {
 
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {
-          binding: 0,
+        {,
+         , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' }
+          buffer: {, type: 'storage' }
         },
         {
           binding: 3,
@@ -265,30 +265,30 @@ export class WebGPURAGEngine {
 
     const bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {
+        {,
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage' }
         },
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' }
+          buffer: {, type: 'storage` }'`
         },
         {
           binding: 4,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'uniform' }
+          buffer: {, type: `uniform` }
         },
       ]
     });
@@ -356,9 +356,9 @@ export class WebGPURAGEngine {
     const bindGroup = this.device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        { binding: 0, resource: { buffer: inputBuffer } },
-        { binding: 1, resource: { buffer: queryBuffer } },
-        { binding: 2, resource: { buffer: resultBuffer } },
+        {, binding: 0, resource: {, buffer: inputBuffer } },
+        { binding: 1, resource: {, buffer: queryBuffer } },
+        { binding: 2, resource: {, buffer: resultBuffer } },
         { binding: 3, resource: {, buffer: configBuffer } }
       ]
     });
@@ -400,7 +400,7 @@ export class WebGPURAGEngine {
     documentEmbeddings: Float32Array,
     numClusters: number,
     maxIterations: number = 100
-  ): Promise<{ centroids: Float32Array;, assignments: Uint32Array }> {
+  ): Promise<{ centroids: Float32Array; assignments: Uint32Array }> {
     if (!this.device || !this.computePipelines.has('clustering')) {
       throw new Error('WebGPU not initialized or clustering pipeline not available');
     }
@@ -432,9 +432,9 @@ export class WebGPURAGEngine {
     const bindGroup = this.device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        { binding: 0, resource: { buffer: documentBuffer } },
-        { binding: 1, resource: { buffer: centroidBuffer } },
-        { binding: 2, resource: { buffer: assignmentBuffer } },
+        {, binding: 0, resource: {, buffer: documentBuffer } },
+        { binding: 1, resource: {, buffer: centroidBuffer } },
+        { binding: 2, resource: {, buffer: assignmentBuffer } },
         { binding: 3, resource: {, buffer: configBuffer } }
       ]
     });

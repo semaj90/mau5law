@@ -3,16 +3,16 @@
  * Generates a small integration layer over the existing db client, qdrant and minio helpers
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { db as lazyDb } from './client.js';
+import { db, as lazyDb } from './client.js';
 import * as schema from './schema-unified.js';
 import { sql } from 'drizzle-orm/sql';
 // intentionally not importing pgvector helper type here
 import { qdrantClient } from '$lib/services/qdrant-client';
-import { Client as MinioClient } from 'minio';
+import { Client, as MinioClient } from 'minio';
 import { eq } from './utils.js';
 // Safe runtime config placeholder (falls back to undefined so calls like _CFG?.X work)
 const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
-// Lazy-load project's cache/redis helper at runtime.
+// Lazy-load project's cache/redis helper at runtime.'
 // Returns undefined when the module cannot be found or fails to import.
 let _cacheInitialized = $state<boolean>(false);
 let _cache: any = undefined;
@@ -126,7 +126,7 @@ export async function storeEmbedding(
     // ignore cache write errors
   }
 }
-// MinIO helper using project's Minio usage patterns (create client if library not exported centrally)
+// MinIO helper using project's Minio usage patterns (create client if library not exported centrally)'
 function makeMinioClient(): MinioClient {
   const endpoint = _CFG?.MINIO_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost:9000';
   const accessKey = _CFG?.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin';

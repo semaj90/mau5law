@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import { writeFile } from 'fs/promises';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 /**
  * Demo-friendly evidence upload endpoint
  * Works without authentication for development/demo purposes
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const caseId = url.searchParams.get('caseId') || 'demo-case';
     // For demo purposes, return some sample evidence items
     const sampleEvidence = [
-      {
+      {,
         id: 'sample-1',
         type: 'document',
         title: 'Contract Agreement.pdf',
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list evidence` },
+        error: error instanceof Error ? error.message : 'Failed to list evidence' },
       { status: 500 }
     );
   }

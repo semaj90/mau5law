@@ -4,7 +4,7 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import { analytics } from '../database/connection.js';
 // Enhanced Qdrant integration for legal AI platform
 export class QdrantManager {
-  private client: InstanceType<typeof QdrantClient>;
+  private client: InstanceType<typeof, QdrantClient>;
   private readonly collections = {
     documents: 'legal_documents',
     cases: 'legal_cases',
@@ -18,7 +18,7 @@ export class QdrantManager {
   // Initialize all collections with proper vector configurations
   async initializeCollections() {
     const collectionConfigs = [
-      {
+      {,
         name: this.collections.documents,
         vectors: { content: {, size: 1536, distance: 'Cosine' }, // OpenAI embeddings
           summary: { size: 768, distance: 'Cosine' }, // Sentence transformers
@@ -51,13 +51,13 @@ export class QdrantManager {
         console.log(`✅ Qdrant collection created: ${config.name}`);
       } catch (error: any) {
         if (!error.message.includes('already exists')) {
-          console.error(`❌ Failed to create collection ${config.name}: ', error);
+          console.error(`❌ Failed to create collection ${config.name}: ', error);'`
         }
       }
     }
   }
   // Hybrid semantic search combining PostgreSQL metadata + Qdrant vectors
-  async hybridSearch(params: { query: string;, queryEmbedding: number[];
+  async hybridSearch(params: {, query: string;, queryEmbedding: number[];
    , collection: keyof typeof this.collections;
     filters?: any;
     limit?: number;
@@ -107,7 +107,7 @@ export class QdrantManager {
         }
       }
     } catch (error: any) {
-      console.error('Qdrant hybrid search error:', error);
+      console.error('Qdrant hybrid search error:', error);'
       throw new Error(`Qdrant search failed: ${error.message}`);
     }
   }
@@ -155,15 +155,15 @@ export class QdrantManager {
         totalUpserted += batch.length;
         console.log(`📝 Upserted ${batch.length} points to ${collectionName}`);
       } catch (error: any) {
-        console.error(`❌ Batch upsert failed for ${collectionName}: ', error);
+        console.error(`❌ Batch upsert failed for ${collectionName}: ', error);'`
       }
     }
     return { upserted: totalUpserted }
   }
   // Document embedding storage with metadata
-  async storeDocument(_document: { id: string;, title: string;
-    content: string;
-    contentEmbedding: number[];
+  async storeDocument(_document: {, id: string;, title: string;
+   , content: string;
+   , contentEmbedding: number[];
     summaryEmbedding?: number[];
    , metadata: any;
   }) {
@@ -257,7 +257,7 @@ export class QdrantManager {
         optimizer_status: info.optimizer_status
       }
     } catch (error: any) {
-      console.error(`Failed to get collection info for ${collection}: ', error);
+      console.error(`Failed to get collection info for ${collection}: ', error);'`
       return null;
     }
   }

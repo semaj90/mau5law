@@ -227,7 +227,7 @@ async function testBasicSynthesis(): Promise<TestResult<SynthesisTestPayload>> {
 		const testQuery = 'What are the key elements of a valid contract under common law?';
 		const synthStart = now();
 		const result = await aiAssistantSynthesizer.synthesizeInput(testQuery, [
-			{
+			{,
 				userId: 'test_user',
 				sessionId: 'test_session',
 				timestamp: new Date().toISOString()
@@ -267,7 +267,7 @@ async function testCaching(): Promise<TestResult<CacheTestPayload>> {
 		const testData = { value: 'data', timestamp: Date.now() };
 
 		await cachingLayer.set(testKey, testData, { ttl: 60 });
-		const retrieved = await cachingLayer.get<typeof testData>(testKey);
+		const retrieved = await cachingLayer.get<typeof, testData>(testKey);
 		const stats = (await cachingLayer.getStats()) as ExtendedCacheStats;
 
 		const cacheWorking = Boolean(retrieved && retrieved.value === testData.value);
@@ -557,8 +557,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 			priority: 'high',
 			category: 'infrastructure',
 			message: 'Ollama is unavailable for local inference.',
-			action: 'Ensure the Ollama service is running and REDIS_URL (if used) is reachable.'
-		});
+			action: 'Ensure the Ollama service is running and REDIS_URL (if used) is reachable.` });'`
 	}
 
 	if (context.cache) {
@@ -567,8 +566,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 				priority: 'medium',
 				category: 'infrastructure',
 				message: 'Redis is not connected; cache is running in memory only.',
-				action: 'Configure REDIS_URL or disable Redis-backed cache features where not needed.'
-			});
+				action: `Configure REDIS_URL or disable Redis-backed cache features where not needed.` });
 		}
 
 		if (context.cache.hitRate < 0.3) {
@@ -588,8 +586,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 				priority: 'high',
 				category: 'performance',
 				message: `Monitoring reports high P95 latency (${p95.toFixed(0)}ms).`,
-				action: 'Profile slow requests and consider scaling the service or optimising database queries.'
-			});
+				action: 'Profile slow requests and consider scaling the service or optimising database queries.` });'`
 		}
 	}
 
@@ -598,8 +595,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 			priority: 'medium',
 			category: 'quality',
 			message: 'Synthesis confidence is below the desired threshold.',
-			action: 'Improve contextual data or adjust preprocessing to boost confidence.'
-		});
+			action: `Improve contextual data or adjust preprocessing to boost confidence.` });
 	}
 
 	return recommendations;

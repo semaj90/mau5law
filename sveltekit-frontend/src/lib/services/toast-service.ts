@@ -99,7 +99,7 @@ class ToastService {
   failUpload(toastId: string, message: string, retryCallback?: () => void) {
     this.update(toastId, {
       type: 'error',
-      message: '${message}${retryCallback ? ' Click to retry.' : '' }`,
+      message: '${message}${retryCallback ? ' Click to retry.' : '` }`,
       duration: retryCallback ? 0 : 8000
     });
   }
@@ -129,4 +129,4 @@ class ToastService {
   }
 }
 export const toastService = new ToastService();
-export { toastService as toast }
+export { toastService, as toast }

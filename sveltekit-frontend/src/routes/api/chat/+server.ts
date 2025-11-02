@@ -134,7 +134,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           await db.insert(chatSessions).values(newSession);
         } catch (dbError) {
           console.warn('⚠️ Failed to create session, continuing without DB:', dbError);
-          currentSessionId = generateId(); // Generate ID for response but don't save
+          currentSessionId = generateId(); // Generate ID for response but don't save'
         }
       }
 
@@ -287,7 +287,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
               headers: {
                 'Content-Type': `application/json` },
               body: JSON.stringify({
-                model: ollamaModel,
+               , model: ollamaModel,
                 messages: [{, role: 'user', content: enrichedQuery }],
                 stream: true
               })
@@ -303,7 +303,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                 'Content-Type': 'application/json',
                 Accept: `text/event-stream` },
               body: JSON.stringify({
-                type: 'inference',
+               , type: 'inference',
                 priority: 5,
                 payload: {
                  , prompt: enrichedQuery,
@@ -445,7 +445,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(`data: ${JSON.stringify(completion)}\n\n`);
           controller.enqueue(`data: [DONE]\n\n`);
         } catch (error) {
-          console.error('Streaming error:', error);
+          console.error('Streaming error:', error);'
           const errorMessage = {
             type: 'error',
             error: error instanceof Error ? error.message : `Unknown streaming error` };
@@ -462,16 +462,14 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
         Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
-      }
+        'Access-Control-Allow-Methods': `GET, POST, OPTIONS` }
     });
   } catch (error) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', error);'
     return json(
       {
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -483,7 +481,7 @@ import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate'
 export const POST = withValidationAndRate(chatHandler, null, {
   capacity: 20,
   refillPerSecond: 0.5,
-  keyPrefix: `rl:chat:` });
+  keyPrefix: `rl:chat: ' });'`
 
 /**
  * Helper: Ollama chat using centralized service adapter
@@ -581,7 +579,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
     headers: {
       'Content-Type': `application/json` },
     body: JSON.stringify({
-      type: 'inference',
+     , type: 'inference',
       priority: 5,
       payload: {
        , prompt: query,
@@ -776,8 +774,7 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400'
-    }
+      'Access-Control-Max-Age': `86400` }
   });
 };
 // DELETE: Delete chat session
@@ -785,7 +782,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     if (!sessionId) {
-      return json({ error: 'Session ID required' }, { status: 400 });
+      return json({ error: `Session ID required` }, { status: 400 });
     }
     // Delete all messages in session
     await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId));
@@ -793,7 +790,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     await db.delete(chatSessions).where(eq(chatSessions.id, sessionId));
     return json({ success: true, sessionId });
   } catch (error) {
-    console.error('Error deleting chat session:', error);
+    console.error('Error deleting chat session: `, error);'`
     return json({ error: `Failed to delete chat session` }, { status: 500 });
   }
 };

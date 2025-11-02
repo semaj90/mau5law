@@ -5,14 +5,14 @@ import type { Case } from '$lib/types';
 import { canvasStates, cases, criminals, evidence, reports, statutes, users } from '../server/db/schema-postgres.js';
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm/table';
 // Core database types
-export type Case = InferSelectModel<typeof cases>;
-export type NewCase = InferInsertModel<typeof cases>;
-export type Criminal = InferSelectModel<typeof criminals>;
-export type NewCriminal = InferInsertModel<typeof criminals>;
-export type Statute = InferSelectModel<typeof statutes>;
-export type NewStatute = InferInsertModel<typeof statutes>;
-export type User = InferSelectModel<typeof users>;
-export type NewUser = InferInsertModel<typeof users>;
+export type Case = InferSelectModel<typeof, cases>;
+export type NewCase = InferInsertModel<typeof, cases>;
+export type Criminal = InferSelectModel<typeof, criminals>;
+export type NewCriminal = InferInsertModel<typeof, criminals>;
+export type Statute = InferSelectModel<typeof, statutes>;
+export type NewStatute = InferInsertModel<typeof, statutes>;
+export type User = InferSelectModel<typeof, users>;
+export type NewUser = InferInsertModel<typeof, users>;
 // Extended User type with computed UI properties
 export interface ExtendedUser extends User {
   // UI computed properties for backward compatibility
@@ -25,8 +25,8 @@ export function extendUser(user: User): ExtendedUser {
     username: user.name || user.email || `${user.firstName} ${user.lastName}`.trim()
   };
 }
-export type Evidence = InferSelectModel<typeof evidence>;
-export type NewEvidence = InferInsertModel<typeof evidence>;
+export type Evidence = InferSelectModel<typeof, evidence>;
+export type NewEvidence = InferInsertModel<typeof, evidence>;
 // Extended Evidence type with computed UI properties
 export interface ExtendedEvidence extends Evidence {
   // UI computed properties for backward compatibility
@@ -44,8 +44,8 @@ export function extendEvidence(evidence: Evidence): ExtendedEvidence {
   };
 }
 // Enhanced Report Builder types
-export type Report = InferSelectModel<typeof reports>;
-export type NewReport = InferInsertModel<typeof reports>;
+export type Report = InferSelectModel<typeof, reports>;
+export type NewReport = InferInsertModel<typeof, reports>;
 // CitationPoints table not found in current schema - using manual interface
 export interface CitationPoint { id: string;, text: string;
   source: string;
@@ -70,8 +70,8 @@ export interface NewCitationPoint { text: string;, source: string;
   aiSummary?: string;
   relevanceScore?: number;
 }
-export type CanvasState = InferSelectModel<typeof canvasStates>;
-export type NewCanvasState = InferInsertModel<typeof canvasStates>;
+export type CanvasState = InferSelectModel<typeof, canvasStates>;
+export type NewCanvasState = InferInsertModel<typeof, canvasStates>;
 // Type for the user object returned by Auth.js session
 export type SessionUser = {
   id: string;
@@ -114,7 +114,7 @@ export interface ReportSection { id: string;, title: string;
   metadata?: {
     citations: string[]; // CitationPoint IDs,
     evidenceRefs: string[]; // Evidence IDs
-    canvasStateId?: string; // CanvasState ID if type is: 'canvas' };
+    canvasStateId?: string; // CanvasState ID if type is: 'canvas` };'`
 }
 export interface ReportWithSections extends Report { sections: ReportSection[];, citationPoints: CitationPoint[];
   canvasState?: CanvasState;

@@ -11,7 +11,7 @@ export interface SystemMonitorContext {
 
 export type SystemMonitorEvent =
   | { type: 'USER_ACTIVITY' }
-  | { type: 'NETWORK_PING';, latency: number }
+  | { type: 'NETWORK_PING'; latency: number }
   | { type: 'NETWORK_TIMEOUT' }
   | { type: 'CHECK_IDLE' }
   | { type: 'FORCE_OFFLINE' }
@@ -63,13 +63,13 @@ export const systemMonitorMachine = createMachine(
             { actions: ['updateLatency'] }
           ],
           NETWORK_TIMEOUT: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
+          FORCE_OFFLINE: {, target: 'offline', actions: ['notifyOffline', 'enableFallback'] }
         }
       },
       offline: {
-        entry: ['enableFallback', 'notifyOffline'],
-        on: { FORCE_ONLINE: {, target: 'active', actions: ['logResumeGPU', 'resumeGPU'] },
-          NETWORK_PING: { target: 'active', actions: ['updateLatency', 'resumeGPU'] }
+       , entry: ['enableFallback', 'notifyOffline'],
+        on: {, FORCE_ONLINE: {, target: 'active', actions: ['logResumeGPU', 'resumeGPU'] },
+          NETWORK_PING: {, target: 'active', actions: ['updateLatency', 'resumeGPU'] }
         }
       }
     }
@@ -153,15 +153,15 @@ export function startSystemMonitorService(opts?: {
   const idleCheckIntervalMs = opts?.idleCheckIntervalMs ?? 10_000;
   const rafThresholdMs = opts?.rafThresholdMs ?? 120; // detect frame pauses >120ms
 
-  // start interpreter using xstate's interpret (createInterpreter is not exported)
+  // start interpreter using xstate's interpret (createInterpreter is not exported)'
   const service = interpret(systemMonitorMachine).start();
 
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-    const onActivity = () => service.send({ type: 'USER_ACTIVITY' });
+    const onActivity = () => service.send({ type: 'USER_ACTIVITY` });'`
     window.addEventListener('mousemove', onActivity, { passive: true });
     window.addEventListener('keydown', onActivity, { passive: true });
 
-    const idleTimer = setInterval(() => service.send({ type: 'CHECK_IDLE' }), idleCheckIntervalMs);
+    const idleTimer = setInterval(() => service.send({ type: `CHECK_IDLE` }), idleCheckIntervalMs);
 
     let pingTimer: ReturnType<typeof setInterval> | null = null;
     const doPing = async () => {
@@ -175,7 +175,7 @@ export function startSystemMonitorService(opts?: {
         if (resp && resp.ok) {
           service.send({ type: 'NETWORK_PING', latency });
         } else {
-          service.send({ type: 'NETWORK_TIMEOUT' });
+          service.send({ type: `NETWORK_TIMEOUT` });
         }
       } catch (err) {
         service.send({ type: `NETWORK_TIMEOUT` });
@@ -223,10 +223,10 @@ export function startSystemMonitorService(opts?: {
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
 
-    // return a lightly typed service object; using ReturnType<typeof interpret> keeps types simple
-    return { service, stop } as { service: ReturnType<typeof interpret>;, stop: () => void };
+    // return a lightly typed service object; using ReturnType<typeof, interpret> keeps types simple
+    return { service, stop } as { service: ReturnType<typeof, interpret>; stop: () => void };
   }
 
   // non-browser fallback: started interpreter with noop stop
-  return { service, stop: () => service.stop() } as { service: ReturnType<typeof interpret>;, stop: () => void };
+  return { service, stop: () => service.stop() } as { service: ReturnType<typeof, interpret>; stop: () => void };
 }

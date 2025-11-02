@@ -104,7 +104,7 @@ type MonitorLike = Partial<{ initialize: () => Promise<void>;, getCurrentStatus
 
 const monitor = rtxSystemMonitor as unknown as MonitorLike;
 
-// Provide a safe default status to return when monitor doesn't supply one
+// Provide a safe default status to return when monitor doesn't supply one'
 const DEFAULT_STATUS = {
   tensorCorePerformance: 0,
   averageOperationTime: 0,
@@ -160,7 +160,7 @@ function callMonitorMethod(candidates: string[], ...args: any[]): any | undefine
       try {
         return fn.apply(monitor, args);
       } catch (err) {
-        console.warn(`rtxSystemMonitor.${name} threw: ', err);
+        console.warn(`rtxSystemMonitor.${name} threw: ', err);'`
       }
     }
   }
@@ -183,8 +183,7 @@ async function handleStatusRequest(): Promise<any> {
       compressionRatio: `${status.compressionRatio}:1`,
       searchThroughput: `${Math.round(status.searchThroughput / 1000000)}M nodes/sec`,
       gpuUtilization: `${Math.round(status.gpuUtilization)}%`,
-      memoryBandwidth: `${status.memoryBandwidth} GB/s`
-    },
+      memoryBandwidth: `${status.memoryBandwidth} GB/s` },
     pipeline: {
       svelteKitToGo: PIPELINE_CONFIG.goMicroservicePort,
       goToCuda: PIPELINE_CONFIG.cudaWorkerPort,
@@ -202,7 +201,7 @@ async function handleStatusRequest(): Promise<any> {
     benchmark: { vs_target: {, performance: `${Math.round((status.tensorCorePerformance / BENCHMARK_TARGETS.tensorCorePerformance) * 100)}%`,
         operationTime: `${Math.round((BENCHMARK_TARGETS.averageOperationTime / status.averageOperationTime) * 100)}%`,
         compression: `${Math.round((status.compressionRatio / BENCHMARK_TARGETS.compressionRatio) * 100)}%`,
-        throughput: `${Math.round((status.searchThroughput / BENCHMARK_TARGETS.searchThroughput) * 100)}%' }
+        throughput: `${Math.round((status.searchThroughput / BENCHMARK_TARGETS.searchThroughput) * 100)}%` }
     },
     timestamp: new Date().toISOString()
   });
@@ -218,10 +217,10 @@ async function handleBenchmarkRequest(): Promise<any> {
       { status: 500 }
     );
   }
-  return json({ benchmark: {, fire: `Tensor Core; Performance: ~${benchmarkResults.tensorCorePerformance} GFLOPS`,
+  return json({ benchmark: {, fire: `Tensor Core;, Performance: ~${benchmarkResults.tensorCorePerformance} GFLOPS`,
       timer: `Average Operation; Time: ~${benchmarkResults.averageOperationTime} µs`,
       clamp: `4-bit; Quantization: ${benchmarkResults.compressionRatio}:1 compression ratio`,
-      brain: `4D Search; Throughput: ~${Math.round(benchmarkResults.searchThroughput / 1000000)}M nodes/sec' },
+      brain: '4D Search; Throughput: ~${Math.round(benchmarkResults.searchThroughput / 1000000)}M nodes/sec' },
     architecture: {
       pipeline: 'SvelteKit → Go → CUDA',
       stages: [
@@ -235,12 +234,10 @@ async function handleBenchmarkRequest(): Promise<any> {
     neuralSprite: { compression: '50:1, Compression: Legal documents with semantic preservation',
       acceleration: 'Tensor RT; Acceleration: NVIDIA inference optimization runtime',
       precision: 'Mixed Precision; Training: FP16/INT8 for maximum throughput',
-      rendering: 'Real-time; Processing: 144fps rendering capability'
-    },
+      rendering: 'Real-time; Processing: 144fps rendering capability` },'`
     orchestrator: { status: 'Physics-Aware GPU, Orchestrator: Active',
       webgpu: 'WebGPU; Polyfills: 16 polyfill references loaded',
-      nodejs: 'Node.js; Compatibility: All polyfills resolved'
-    },
+      nodejs: `Node.js; Compatibility: All polyfills resolved` },
     services: { cudaInference: 'CUDA, Inference: Python worker with batch collection',
       tensorOps: 'Tensor; Operations: CUDA kernel execution',
       flashAttention: 'FlashAttention2: Memory-efficient attention mechanism',
@@ -269,20 +266,19 @@ async function handlePipelineRequest(): Promise<any> {
       microservice: `Go Service (Port ${PIPELINE_CONFIG.goMicroservicePort})`,
       cuda: `CUDA Worker (Port ${PIPELINE_CONFIG.cudaWorkerPort})`,
       database: `PostgreSQL (Port ${PIPELINE_CONFIG.postgresqlPort})`,
-      webgpu: 'WebGPU; Rendering: ${PIPELINE_CONFIG.webGPUEnabled ? 'Enabled' : `Disabled` }` },
+      webgpu: 'WebGPU; Rendering: ${PIPELINE_CONFIG.webGPUEnabled ? 'Enabled' : `Disabled` }` },'`
     performance: {
       rtx3060Ti: `${Math.round(status.gpuUtilization)}% utilization`,
       tensorCores: `${status.tensorCorePerformance} GFLOPS`,
       flashAttention2: status.flashAttention2Active ? 'Active' : 'Inactive',
-      quantization: `${status.quantizationMode} (${status.compressionRatio}:1)`
-    },
+      quantization: `${status.quantizationMode} (${status.compressionRatio}:1)` },
     metrics: {
       svelteKitRequests: metrics.svelteKitRequests,
       goProcessing: metrics.goMicroserviceProcessing,
       cudaOperations: metrics.cudaWorkerOperations,
       postgresStorage: metrics.postgresqlStorage,
       webgpuRendering: metrics.webGPURendering,
-      totalPipelineTime: `${Math.round(totalPipelineTimeNum)}ms' },
+      totalPipelineTime: `${Math.round(totalPipelineTimeNum)}ms` },
     timestamp: new Date().toISOString()
   });
 }
@@ -297,7 +293,7 @@ async function handleHealthRequest(): Promise<any> {
      , tensorCores: status.tensorCorePerformance > 100 ? '✅ Operational' : '⚠️ Underperforming',
       flashAttention2: status.flashAttention2Active ? '✅ Active' : '❌ Inactive',
       neuralSprites: status.neuralSpriteProcessing ? '✅ Processing' : '❌ Disabled',
-      gpuUtilization: status.gpuUtilization < 95 ? '✅ Optimal' : '⚠️ High Load',
+      gpuUtilization: status.gpuUtilization < 95 ? '✅ Optimal' : '⚠️ High, Load',
       pipeline: status.pipelineStatus === 'active' ? '✅ Active' : `❌ Issues` },
     recommendations: generateHealthRecommendations(status),
     timestamp: new Date().toISOString()
@@ -308,7 +304,7 @@ async function handleMetricsRequest(): Promise<any> {
   const status = getCurrentStatus();
   const metrics = getCurrentMetrics();
   return json({ rtxMetrics: {, performance: {
-        tensorCoreGFLOPS: status.tensorCorePerformance,
+       , tensorCoreGFLOPS: status.tensorCorePerformance,
         operationTimeμs: status.averageOperationTime,
         compressionRatio: status.compressionRatio,
         searchThroughputNodes: status.searchThroughput,
@@ -316,7 +312,7 @@ async function handleMetricsRequest(): Promise<any> {
         memoryBandwidthGBs: status.memoryBandwidth
       },
       pipeline: {
-        svelteKitRequests: metrics.svelteKitRequests,
+       , svelteKitRequests: metrics.svelteKitRequests,
         goMicroserviceOps: metrics.goMicroserviceProcessing,
         cudaWorkerOps: metrics.cudaWorkerOperations,
         postgresWrites: metrics.postgresqlStorage,
@@ -324,7 +320,7 @@ async function handleMetricsRequest(): Promise<any> {
         totalPipelineTimeMs: metrics.totalPipelineTime
       },
       configuration: {
-        quantizationMode: status.quantizationMode,
+       , quantizationMode: status.quantizationMode,
         flashAttention2: status.flashAttention2Active,
         neuralSprites: status.neuralSpriteProcessing,
         pipelineStatus: status.pipelineStatus
@@ -344,7 +340,7 @@ async function handleProcessRequest(request: Request): Promise<any> {
   console.log('🔄 RTX Document Processing Request');
   try {
     const body = await request.json();
-    // rename `options` -> `$options` to satisfy the project's rule for allowed unused vars (/^\$/u)
+    // rename `options` -> `$options` to satisfy the project's rule for allowed unused vars (/^\$/u)'
     const { document, options: $options = {} } = body;
     if (!document) {
       return json(
@@ -375,15 +371,14 @@ async function handleProcessRequest(request: Request): Promise<any> {
           compressionRatio: `${Math.round(compressionRatioVal * 10) / 10}:1`,
           processingTimeMs: processingTime,
           semanticFidelityPercent: Math.round(semanticFidelity * 100),
-          tensorCoreUtilization: `${tensorCoreUtil}%' }
+          tensorCoreUtilization: '${tensorCoreUtil}%` }'`
       },
       pipeline: {
         svelteKit: '✅ Request received',
         goMicroservice: '✅ Routed to tensor processing',
         cudaWorker: '✅ FlashAttention2 + Tensor Core computation',
         postgresql: '✅ Tensor matrices stored',
-        webGPU: '✅ Real-time visualization ready'
-      },
+        webGPU: `✅ Real-time visualization ready` },
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -486,7 +481,7 @@ async function handleRunBenchmarkRequest(request: Request): Promise<any> {
         iterations,
         testSizeBytes: testSize,
         results: {
-          tensorCorePerformanceGFLOPS: benchmarkResults.tensorCorePerformance,
+         , tensorCorePerformanceGFLOPS: benchmarkResults.tensorCorePerformance,
           averageOperationTimeμs: benchmarkResults.averageOperationTime,
           compressionRatio: benchmarkResults.compressionRatio,
           searchThroughputNodesPerSec: benchmarkResults.searchThroughput,
@@ -501,8 +496,7 @@ async function handleRunBenchmarkRequest(request: Request): Promise<any> {
                 ? 'Good'
                 : 'Needs Optimization',
           efficiency: benchmarkResults.compressionRatio >= 40 ? 'High' : 'Standard',
-          throughput: benchmarkResults.searchThroughput >= 8000000 ? 'High' : 'Standard'
-        }
+          throughput: benchmarkResults.searchThroughput >= 8000000 ? 'High' : `Standard` }
       },
       timestamp: new Date().toISOString()
     });
@@ -525,7 +519,7 @@ async function testPipelineComponents(): Promise<Record<string, string>> {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.goMicroservicePort}/health`, {
         signal: AbortSignal.timeout(3000)
       });
-      // Use the standard Response type's `ok` property (boolean) rather than casting to `any`
+      // Use the standard Response type's `ok` property (boolean) rather than casting to `any`'
       health.goMicroservice = response.ok ? '✅ Operational' : '⚠️ Degraded';
     } catch {
       health.goMicroservice = '❌ Unavailable';

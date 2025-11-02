@@ -75,14 +75,14 @@ export interface LegalAIContext { user: {, id: string | null;
   };
 }
 export type LegalAIEvent =
-  | { type: 'AUTH.LOGIN'; credentials: { email: string;, password: string } }
+  | { type: 'AUTH.LOGIN'; credentials: { email: string; password: string } }
   | { type: 'AUTH.LOGOUT' }
-  | { type: 'AUTH.REGISTER';, userData: RegistrationData }
+  | { type: 'AUTH.REGISTER'; userData: RegistrationData }
   | { type: 'CASES.LOAD'; filters?: Partial<LegalAIContext['cases']['filters']> }
   | { type: 'CASES.SELECT'; case Case }
-  | { type: 'CASES.CREATE';, caseData: Partial<Case> }
-  | { type: 'CASES.SEARCH';, query: string }
-  | { type: 'AI.QUERY';, prompt: string; context?: Record<string, unknown> }
+  | { type: 'CASES.CREATE'; caseData: Partial<Case> }
+  | { type: 'CASES.SEARCH'; query: string }
+  | { type: 'AI.QUERY'; prompt: string; context?: Record<string, unknown> }
   | { type: 'SYSTEM.CHECK_STATUS' };
 const initialContext: LegalAIContext = { user: {, id: null,
     email: null,
@@ -137,7 +137,7 @@ const initialContext: LegalAIContext = { user: {, id: null,
   }
 };
 export const legalAIMachine = setup({
-  types: {} as { context: LegalAIContext;, events: LegalAIEvent;
+  types: {} as {, context: LegalAIContext;, events: LegalAIEvent;
   },
   actions: {, updateSystem: assign({, system: ({ event }) =>
         (event as unknown as DoneActorEvent<LegalAIContext['system']>).output || initialContext.system
@@ -248,7 +248,7 @@ export const legalAIMachine = setup({
       }
     }),
     authenticateUser: fromPromise(
-      async ({ input }: { input: {, credentials: {, email: string; password: string } } }): Promise<AuthResponse> => {
+      async ({ input }: { input: {, credentials: {, email: string;, password: string } } }): Promise<AuthResponse> => {
         try {
           const response = await productionServiceClient.makeRequest('/api/auth/login', input.credentials, {
             timeout: 15000,
@@ -265,7 +265,7 @@ export const legalAIMachine = setup({
             throw new Error(response.error || 'Authentication failed');
           }
         } catch (error: any) {
-          console.error('Authentication error:', error);
+          console.error('Authentication error:', error);'
           throw new Error('Authentication service unavailable');
         }
       }
@@ -321,7 +321,7 @@ export const legalAIMachine = setup({
           throw new Error(response.error || 'AI query failed');
         }
       } catch (error: any) {
-        console.error('AI query error:', error);
+        console.error('AI query error:', error);'
         throw new Error('AI service unavailable');
       }
     })
@@ -331,19 +331,19 @@ export const legalAIMachine = setup({
   initial: 'initializing',
   context: initialContext,
   states: { initializing: {, invoke: {
-        src: 'checkSystemStatus',
+       , src: 'checkSystemStatus',
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['updateSystem']
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: ['setSystemError']
         }
       }
     },
     idle: {
-      on: {
+     , on: {
         'AUTH.LOGIN': 'authenticating',
         'AUTH.REGISTER': 'registering',
         'CASES.LOAD': 'loadingCases',

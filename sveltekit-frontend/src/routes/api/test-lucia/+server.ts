@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ request }) => {
       const result = await adapter.getSessionAndUser('test-session-id-that-does-not-exist');
       console.log('Adapter result:', result);
     } catch (error: any) {
-      console.error('Adapter error:', error.message);
+      console.error('Adapter error:', error.message);'
       console.error('Adapter error query:', error.query);
       console.error('Adapter error cause:', error.cause?.message);
     }

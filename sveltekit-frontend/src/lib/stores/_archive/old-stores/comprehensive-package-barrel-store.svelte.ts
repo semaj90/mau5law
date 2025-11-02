@@ -10,11 +10,11 @@ const createPackageBarrelStore = () => {
       features: ['runes', 'snippets', 'effects']
     },
     sveltekit: {
-      version: '2.0',
+     , version: '2.0',
       features: ['forms', 'navigation', 'stores']
     },
     database: {
-      postgres: true,
+     , postgres: true,
       redis: true,
       vector: true
     },
@@ -69,7 +69,7 @@ const createPackageBarrelStore = () => {
       }
     },
 
-    ai: { ollama: {, generate: async (_options: {, model: string; prompt: string }) => {
+    ai: {, ollama: {, generate: async (_options: {, model: string;, prompt: string }) => {
           console.log('Mock ollama generate:', options);
           return {
             model: options.model,
@@ -77,7 +77,7 @@ const createPackageBarrelStore = () => {
             done: true
           };
         },
-        embeddings: async (_options: {, model: string; prompt: string }) => {
+        embeddings: async (_options: {, model: string;, prompt: string }) => {
           console.log('Mock ollama embeddings:', options);
           return { embedding: Array.from({, length: 384 }, () => Math.random())
           };
@@ -90,7 +90,7 @@ const createPackageBarrelStore = () => {
           return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
             id: `result-${i}`,
             score: Math.random(),
-            content: `Mock result ${i} for query: ${query}' }));
+            content: `Mock result ${i} for query: ${query}` }));
         }
       }
     },
@@ -130,7 +130,7 @@ const createPackageBarrelStore = () => {
       }
     },
 
-    updateConfig: (updates: Partial<typeof config>) => {
+    updateConfig: (updates: Partial<typeof, config>) => {
       Object.assign(config, updates);
     },
 

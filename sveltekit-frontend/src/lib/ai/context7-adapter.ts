@@ -24,9 +24,9 @@ export async function performContext7Search(_options: {
   const impl = await ensureContext7Ready();
   if (!impl || typeof (impl as { performSearch?: (...args: any[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub
-    const results = [] as { id: string; content: string;, score: number }[];
+    const results = [] as { id: string; content: string; score: number }[];
     for (let i = 0; i < (options.maxResults || 5); i++) {
-      results.push({ id: `mock-${i}`, content: 'Mock search result; for: '${options.query}' (#${i})`, score: 0.5 });
+      results.push({ id: `mock-${i}`, content: 'Mock search result;, for: '${options.query}' (#${i})`, score: 0.5 });'`
     }
     return results;
   }
@@ -39,7 +39,7 @@ export const context7AgentOrchestrator = {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as any).triggerAgent !== 'function') {
       // mock behavior: echo back a completed trigger
-      return { ...trigger, result: 'Mocked trigger for ${trigger.todoId || 'unknown' }`, status: 'completed' };
+      return { ...trigger, result: 'Mocked trigger for ${trigger.todoId || 'unknown` }`, status: 'completed` };'`
     }
     return (impl as any).triggerAgent(trigger);
   },

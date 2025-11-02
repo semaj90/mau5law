@@ -5,7 +5,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const page = Number(url.searchParams.get('page') ?? '1');
   const limit = Number(url.searchParams.get('limit') ?? '10');
   const data = [
-    {
+    {,
       id: 'rec-1',
       caseId,
       type: 'legal_strategy',

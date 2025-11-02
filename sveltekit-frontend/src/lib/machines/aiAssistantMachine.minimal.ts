@@ -14,24 +14,24 @@ export interface AIAssistantContext {
   [key: string]: any;
 }
 export type AIAssistantEvent =
-  | { type: 'SEND_MESSAGE';, message: string; useContext7?: boolean }
-  | { type: 'SET_MODEL';, model: string }
+  | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean }
+  | { type: 'SET_MODEL'; model: string }
   | { type: 'CHECK_SERVICE_HEALTH' }
-  | { type: 'ANALYZE_WITH_CONTEXT7';, query: string }
+  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string }
   | { type: 'CLEAR_CONVERSATION' }
-  | { type: 'done.invoke.checkHealth';, output: any };
+  | { type: 'done.invoke.checkHealth'; output: any };
 // Use generics so XState knows the context and event types
 export const aiAssistantMachine = createMachine({
   id: 'aiAssistant',
   initial: 'idle',
   context: {
-    response: '',
+   , response: '',
     conversation: [],
     model: 'gemma3-legal:latest',
     isProcessing: false,
     error: null
   } as AIAssistantContext,
-  states: { idle: {, on: { SEND_MESSAGE: {, target: 'processing',
+  states: {, idle: {, on: {, SEND_MESSAGE: {, target: 'processing',
           actions: assign({
            , isProcessing: true,
             error: null
@@ -70,14 +70,13 @@ export const aiAssistantMachine = createMachine({
           target: 'idle',
           actions: assign({
             isProcessing: false,
-            response: 'Processing complete'
-          })
+            response: `Processing complete` })
         },
         onError: {
           target: 'idle',
           actions: assign({
             isProcessing: false,
-            error: 'Processing failed` })
+            error: `Processing failed` })
         }
       }
     },

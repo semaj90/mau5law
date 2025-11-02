@@ -67,7 +67,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       }
     });
   } catch (error) {
-    console.error('AI query API error:', error);
+    console.error('AI query API error:', error);'
     if (error instanceof z.ZodError) {
       return json(
         {
@@ -107,7 +107,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       }
     });
   } catch (error) {
-    console.error('Similar queries API error:', error);
+    console.error('Similar queries API error:', error);'
     return json({ error: 'Failed to get query suggestions' }, { status: 500 });
   }
 };

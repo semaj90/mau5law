@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import '$lib/styles/tooltip-global.css';
   import * as TooltipPrimitive from "bits-ui/tooltip";
@@ -65,7 +65,7 @@
   );
 </script>
 <TooltipPrimitive.Root {delayDuration}>
-  <TooltipPrimitive.Trigger class="legal-ai-tooltip-trigger">
+  <TooltipPrimitive.Trigger, class="legal-ai-tooltip-trigger">
     {#if children}
       {@render children()}
     {/if}
@@ -79,26 +79,26 @@
     transitionConfig={{ duration 150, start: 0.95 }}
   >
     {#if isLoadingDocs}
-      <div class="flex items-center gap-2">
-        <div class="animate-spin w-3 h-3 border border-amber-400 border-t-transparent rounded-full"></div>
+      <div class="flex items-center, gap-2">
+        <div class="animate-spin w-3 h-3 border border-amber-400 border-t-transparent, rounded-full"></div>
         Loading documentation...
       </div>
     {:else if showDocumentation && documentationContent}
-      <div class="context7-documentation">
-        <div class="text-xs text-amber-300 mb-1 uppercase tracking-wide">
+      <div, class="context7-documentation">
+        <div class="text-xs text-amber-300 mb-1 uppercase, tracking-wide">
           {docCategory} • {docKey}
         </div>
-        <div class="whitespace-pre-wrap text-xs leading-relaxed">
+        <div class="whitespace-pre-wrap text-xs, leading-relaxed">
           {@html documentationContent.slice(0, 300)}{documentationContent.length > 300 ? '...' : ''}
         </div>
         {#if docCategory && docKey}
-          <div class="mt-2 pt-2 border-t border-amber-500/20">
-            <span class="text-xs text-amber-300">Press Ctrl+K for full docs</span>
+          <div class="mt-2 pt-2 border-t, border-amber-500/20">
+            <span class="text-xs, text-amber-300">Press Ctrl+K for full docs</span>
           {/if}
       </div>
     {:else}
       {displayContent}
     {/if}
-    <TooltipPrimitive.Arrow class={showDocumentation ? 'fill-slate-800' : 'fill-amber-400'} />
+    <TooltipPrimitive.Arrow, class={showDocumentation ? 'fill-slate-800' : 'fill-amber-400'} />
   </TooltipPrimitive.Content>
 </TooltipPrimitive.Root>;

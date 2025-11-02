@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ SSR Chat error:', error);
+    console.error('❌ SSR Chat error:', error);'
     return json(
       {
         success: false,
@@ -70,12 +70,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Missing sessionId or message` },
+        error: 'Missing sessionId or message' },
       { status: 400 }
     );
   }
   try {
-    console.log(`💬 Streaming chat for session: ${sessionId}`);
+    console.log(`💬 Streaming chat for session: ${sessionId}');'`
     // Create streaming response
     const stream = await ssrChatAssistant.streamChatResponse(
       sessionId,
@@ -88,13 +88,12 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      }
+        'Access-Control-Allow-Headers': 'Content-Type' }
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     // Corrected: Moved catch block to follow try
-    console.error('❌ Chat streaming error:', error);
+    console.error('❌ Chat streaming error:', error);'
     return json(
       {
         success: false,
@@ -112,12 +111,12 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Missing required parameters` },
+        error: 'Missing required parameters' },
       { status: 400 }
     );
   }
   try {
-    console.log(`📝 Updating feedback for interaction: ${interactionId}`);
+    console.log(`📝 Updating feedback for interaction: ${interactionId}');'`
     // TODO: Implement feedback update in SSR chat assistant
     // await ssrChatAssistant.updateInteractionFeedback(sessionId, interactionId, feedback)
     // If feedback is very positive or negative, trigger QLoRA retraining
@@ -133,7 +132,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ Feedback update error:', error);
+    console.error('❌ Feedback update error:', error);'
     return json(
       {
         success: false,
@@ -152,7 +151,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Missing sessionId parameter` },
+        error: 'Missing sessionId parameter' },
       { status: 400 }
     );
   }
@@ -192,7 +191,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ Session analytics error:', error);
+    console.error('❌ Session analytics error:', error);'
     return json(
       {
         success: false,
@@ -211,12 +210,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Missing sessionId parameter` },
+        error: 'Missing sessionId parameter' },
       { status: 400 }
     );
   }
   try {
-    console.log(`🗑️ Deleting chat session: ${sessionId}`);
+    console.log(`🗑️ Deleting chat session: ${sessionId}');'`
     // TODO: Implement session cleanup in SSR chat assistant
     // await ssrChatAssistant.deleteSession(sessionId, cleanup)
     return json({
@@ -228,7 +227,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ Session deletion error:', error);
+    console.error('❌ Session deletion error:', error);'
     return json(
       {
         success: false,

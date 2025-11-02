@@ -18,14 +18,14 @@ function getUserId(locals: any): string {
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals?.user) {
-      return json({ error: 'Not authenticated' }, { status: 401 });
+      return json({ error: `Not authenticated` }, { status: 401 });
     }
     if (!db) {
-      return json({ error: 'Database not available' }, { status: 500 });
+      return json({ error: `Database not available` }, { status: 500 });
     }
     const reportId = params.reportId;
     if (!reportId) {
-      return json({ error: 'Report ID is required' }, { status: 400 });
+      return json({ error: `Report ID is required` }, { status: 400 });
     }
     // Check if report exists
     const reportResult = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       options: exportOptions,
       estimatedPages: 10,
       fileSize: '~2.5MB',
-      downloadUrl: `/api/reports/${encodeURIComponent(reportId)}/export/pdf/download?token=${Date.now()}' };
+      downloadUrl: `/api/reports/${encodeURIComponent(reportId)}/export/pdf/download?token=${Date.now()}` };
     return json({
       success: true,
       message: 'PDF export initiated successfully',
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   } catch (error: any) {
     // Narrow unknown to a safe message instead of using `any`
     const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : String(error);
-    console.error('Error initiating PDF export:', errorMessage);
+    console.error('Error initiating PDF export: `, errorMessage);'`
     return json({ error: `Failed to initiate PDF export` }, { status: 500 });
   }
 };

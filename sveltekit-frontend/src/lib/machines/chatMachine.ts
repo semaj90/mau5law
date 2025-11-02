@@ -21,15 +21,15 @@ export interface ChatContext { messages: ChatMessage[];, error: string | null;
 }
 // Machine Events
 type ChatEvent =
-  | { type: 'SUBMIT';, message: string }
+  | { type: 'SUBMIT'; message: string }
   | { type: 'RESET' }
-  | { type: 'UPDATE_SETTINGS';, settings: Partial<ChatSettings> }
-  | { type: 'STREAM_CHUNK';, chunk: string }
+  | { type: 'UPDATE_SETTINGS'; settings: Partial<ChatSettings> }
+  | { type: 'STREAM_CHUNK'; chunk: string }
   | { type: 'STREAM_DONE' }
   | { type: 'RETRY' };
 // Stream chat service
 const streamChatService = fromPromise(
-  async ({ input }: { input: {, messages: ChatMessage[]; settings: ChatSettings } }) => {
+  async ({ input }: { input: {, messages: ChatMessage[];, settings: ChatSettings } }) => {
     const { messages, settings } = input;
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
@@ -57,17 +57,17 @@ export const chatMachine = createMachine({
     events: {} as ChatEvent
   },
   context: {
-    messages: [],
+   , messages: [],
     error: null,
     status: 'idle',
     settings: {
-      model: 'gemma3-legal',
+     , model: 'gemma3-legal',
       temperature: 0.3,
       maxTokens: 500
     }
   },
   initial: 'idle',
-  states: { idle: {, on: { SUBMIT: {, target: 'loading',
+  states: {, idle: {, on: {, SUBMIT: {, target: 'loading',
           actions: assign({
            , messages: ({ context, event }) => [
               ...context.messages,
@@ -75,13 +75,11 @@ export const chatMachine = createMachine({
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }, // Placeholder for streaming
             ],
             error: null,
-            status: 'loading'
-          })
+            status: 'loading` })'`
         },
         RESET: { actions: assign({, messages: [],
             error: null,
-            status: 'idle'
-          })
+            status: `idle` })
         },
         UPDATE_SETTINGS: { actions: assign({, settings: ({ context, event }) => ({
               ...context.settings,
@@ -137,15 +135,13 @@ export const chatMachine = createMachine({
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }
             ],
             error: null,
-            status: 'loading'
-          })
+            status: 'loading` })'`
         },
         RETRY: {
           target: 'loading',
           actions: assign({
             error: null,
-            status: 'loading'
-          })
+            status: `loading` })
         },
         RESET: {
           target: 'idle',
@@ -159,5 +155,5 @@ export const chatMachine = createMachine({
   }
 });
 // Export types for use in components
-export type ChatMachineState = StateFrom<typeof chatMachine>;
-export type ChatMachineActor = ReturnType<typeof createActor>;
+export type ChatMachineState = StateFrom<typeof, chatMachine>;
+export type ChatMachineActor = ReturnType<typeof, createActor>;

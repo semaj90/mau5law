@@ -1,5 +1,5 @@
-<!-- Enhanced Chat Component with bits-ui, shadcn-svelte integration -->
-<script lang="ts">
+<!-- Enhanced Chat Component with bits-ui, shadcn-svelte, integration -->
+<script, lang="ts">
 	import 'uno.css';
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { createMachine, assign } from 'xstate';
@@ -133,27 +133,27 @@
 
 </script>
 
-<div class="enhanced-chat-container flex flex-col h-full max-w-4xl mx-auto p-4 space-y-4">
+<div class="enhanced-chat-container flex flex-col h-full max-w-4xl mx-auto p-4, space-y-4">
 	<!-- Header -->
-	<div class="chat-header flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
-		<div class="flex items-center space-x-3">
-			<div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-			<h2 class="text-xl font-semibold text-gray-800">Legal AI Assistant</h2>
+	<div class="chat-header flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg, border">
+		<div class="flex items-center, space-x-3">
+			<div class="w-3 h-3 rounded-full bg-green-500, animate-pulse"></div>
+			<h2 class="text-xl font-semibold, text-gray-800">Legal AI Assistant</h2>
 			{#if (chatState as any).context?.confidence}
-				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
+				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700">
 					Confidence: {Math.round(((chatState as any).context.confidence ?? 0) * 100)}%
 				</span>
 			{/if}
 		</div>
 
-		<div class="flex items-center space-x-2">
+		<div class="flex items-center, space-x-2">
 			<select
 				id="model-select"
 				onchange={(e) => send({ type: 'SET_MODEL', model: (e.currentTarget as HTMLSelectElement).value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 			>
 				{#each Array.isArray(models) ? models : [] as m}
-					<option value={m.value}>{m.label}</option>
+					<option, value={m.value}>{m.label}</option>
 				{/each}
 			</select>
 		</div>
@@ -165,43 +165,43 @@
 		bind:this={chatContainer}
 	>
 		{#if (chatState as any).context?.messages?.length === 0}
-			<div class="p-6 text-center text-gray-600">
-				<h3 class="text-lg font-medium text-gray-900 mb-2">Welcome to Legal AI</h3>
-				<p class="text-gray-500">Ask about legal documents, contracts, or cases.</p>
+			<div class="p-6 text-center, text-gray-600">
+				<h3 class="text-lg font-medium text-gray-900, mb-2">Welcome to Legal AI</h3>
+				<p, class="text-gray-500">Ask about legal documents, contracts, or cases.</p>
 			</div>
 		{:else}
 			{#each (chatState as any).context.messages as message (message.id)}
-				<div class={cn('message-item mb-4 flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
+				<div class={cn('message-item mb-4, flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
 					<div
 						class={cn(
 							'message-bubble max-w-[70%] rounded-lg px-4 py-3 shadow-sm',
 							message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'
 						)}
 					>
-						<div class="message-content whitespace-pre-wrap">{message.content}</div>
-						<div class="text-xs text-gray-400 mt-1 text-right">{new Date(message.timestamp).toLocaleTimeString()}</div>
+						<div class="message-content, whitespace-pre-wrap">{message.content}</div>
+						<div class="text-xs text-gray-400 mt-1, text-right">{new Date(message.timestamp).toLocaleTimeString()}</div>
 					</div>
 				</div>
 			{/each}
 		{/if}
 
 		{#if $chatState.matches('sending')}
-			<div class="loading-message flex justify-start mb-4">
-				<div class="message-bubble max-w-[70%] rounded-lg px-4 py-3 bg-gray-100 border">
-					<div class="flex items-center space-x-2">
-						<div class="typing-indicator flex space-x-1">
-							<div class="w-2 h-2 rounded-full bg-gray-400 animate-pulse"></div>
-							<div class="w-2 h-2 rounded-full bg-gray-400 animate-pulse"></div>
-							<div class="w-2 h-2 rounded-full bg-gray-400 animate-pulse"></div>
+			<div class="loading-message flex justify-start, mb-4">
+				<div class="message-bubble max-w-[70%] rounded-lg px-4 py-3 bg-gray-100, border">
+					<div class="flex items-center, space-x-2">
+						<div class="typing-indicator flex, space-x-1">
+							<div class="w-2 h-2 rounded-full bg-gray-400, animate-pulse"></div>
+							<div class="w-2 h-2 rounded-full bg-gray-400, animate-pulse"></div>
+							<div class="w-2 h-2 rounded-full bg-gray-400, animate-pulse"></div>
 						</div>
-						<span class="text-sm text-gray-600">AI is thinking...</span>
+						<span class="text-sm, text-gray-600">AI is thinking...</span>
 					</div>
 				</div>
 			{/if}
 	</div>
 
 	<!-- Input -->
-	<div class="flex items-center space-x-3">
+	<div class="flex items-center, space-x-3">
 		<textarea
 			class="flex-1 border rounded-md px-3 py-2 resize-none"
 			placeholder="Type a message..."

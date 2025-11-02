@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return handleBatchSummary(summaryRequest, userId);
     }
   } catch (error: any) {
-    console.error('Summaries API error:', error);
+    console.error('Summaries API error:', error);'
     return json(
       {
         error: 'Failed to generate summary',
@@ -133,7 +133,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         // Send initial status
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'status',
               message: 'Starting AI summary generation...',
               progress: 0
@@ -144,7 +144,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         const llmOutput = await getLocalLLMOutputStreaming(request, chunk => {
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'llm_chunk',
                 content: chunk,
                 progress: 33
@@ -155,7 +155,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         // Step 2: Enhanced RAG
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'status',
               message: 'Retrieving relevant documents...',
               progress: 50
@@ -166,7 +166,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         // Step 3: User Activity
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'status',
               message: 'Analyzing user activity patterns...',
               progress: 75
@@ -177,7 +177,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         // Step 4: Final synthesis
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'status',
               message: 'Synthesizing final summary...',
               progress: 90
@@ -193,7 +193,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         // Send final result
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'complete',
               result: synthesizedResult,
               progress: 100
@@ -204,7 +204,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
       } catch (error: any) {
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'error',
               error: error?.message || String(error)
             })}\n\n`
@@ -220,8 +220,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control'
-    }
+      'Access-Control-Allow-Headers': `Cache-Control` }
   });
 }
 
@@ -250,8 +249,8 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       sourceContent = '';
   }
   // Prepare prompt based on depth
-  const depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of:',
-    comprehensive: 'Provide a detailed analysis and comprehensive summary; of:',
+  const depthPrompts: Record<string, string> = { quick: 'Provide a concise 2-3 sentence summary, of: `,'`
+    comprehensive: `Provide a detailed analysis and comprehensive summary; of: `,
     forensic: `Conduct a thorough forensic analysis with legal implications; for:` };
   const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
   // Use chunking for large content
@@ -260,7 +259,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
   let combinedResponse = '';
   let totalTokens = 0;
   for (const chunk of chunks) {
-    const promptText = chunk.length < sourceContent.length ? `${prompt} (Part of larger document): ${chunk}` : prompt;
+    const promptText = chunk.length < sourceContent.length ? `${prompt} (Part of larger, document): ${chunk}` : prompt;
     const response = await ollamaService.generateResponse(promptText, {
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.3,
@@ -289,12 +288,12 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   switch (request.type) {
     case 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
-      searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || '` }`.substring(0, 200);
+      searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || '` }`.substring(0, 200);'`
       break;
     }
     case 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
-      searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || '` }`.substring(0, 200);
+      searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || '` }`.substring(0, 200);'`
       break;
     }
     default:
@@ -316,7 +315,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       id: doc.id,
       content: doc.content ?? doc.payload?.content ?? '',
       relevance: doc.score ?? doc.relevance ?? 0,
-      source: doc.source ?? 'vector_db` }));
+      source: doc.source ?? 'vector_db` }));'`
   // Generate context summary using the most relevant docs
   const contextContent = relevantDocs.map(doc => doc.content).join('\n\n');
   const contextSummaryResp = await ollamaService.generateResponse(
@@ -390,7 +389,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
   ]);
 
   // Build a Fuse instance for simple string matching against recentQueries
-  // Use Fuse<string> (no `any`) and don't pass object keys since items are strings.
+  // Use Fuse<string> (no `any`) and don't pass object keys since items are strings.'
   const fuse = new Fuse<string>(recentQueries, {
     threshold: 0.6,
     includeScore: true
@@ -416,11 +415,11 @@ async function synthesizeOutputs({
   userActivity,
   request
 }: { llmOutput: AILLMOutput;, ragOutput: EnhancedRAGOutput | null;
-  userActivity: UserActivityContext | null;
+ , userActivity: UserActivityContext | null;
  , request: SummaryRequest;
 }): Promise<SynthesizedOutput> {
   // Update XState machine with collected data
-  summaryService.send({ type: 'SYNTHESIZE_INSIGHTS' });
+  summaryService.send({ type: `SYNTHESIZE_INSIGHTS` });
 
   type WeightKey = 'llm' | 'rag' | 'userActivity';
   const weights: Record<WeightKey, number> = {
@@ -457,7 +456,7 @@ async function synthesizeOutputs({
     actionItems,
     confidence,
     sources: [
-      {
+      {,
         type: 'llm',
         contribution: weights.llm,
         details: {
@@ -468,7 +467,7 @@ async function synthesizeOutputs({
       },
       ...(ragOutput
         ? [
-            {
+            {,
               type: 'rag' as const,
               contribution: weights.rag,
               details: {
@@ -480,7 +479,7 @@ async function synthesizeOutputs({
         : []),
       ...(userActivity
         ? [
-            {
+            {,
               type: 'user_activity' as const,
               contribution: weights.userActivity,
               details: {
@@ -629,7 +628,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // Add a small runtime-normalizer to avoid casting to `any`
-function normalizeLLMResponse(resp: any): { content: string;, tokens: number } {
+function normalizeLLMResponse(resp: any): { content: string; tokens: number } {
   if (!resp || typeof resp !== 'object') {
     return { content: String(resp ?? ''), tokens: 0 };
   }

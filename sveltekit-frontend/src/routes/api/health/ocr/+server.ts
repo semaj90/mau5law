@@ -3,7 +3,7 @@ import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 interface OCRHealthDetails { service: string, status: 'operational' | 'degraded' | 'offline'
-  port?: number
+  port?: number;
   endpoint: string
   features?: string[]
   performance?: { avgProcessingTime: number, documentsProcessed: number; errorRate: number
@@ -13,8 +13,7 @@ interface OCRHealthDetails { service: string, status: 'operational' | 'degraded
 }
 interface OCRHealthResponse {
   status: 'healthy' | 'degraded' | 'unhealthy',
-  timestamp: string; ocr: OCRHealthDetails
-  metadata: { checkDuration: number;, environment: string
+  timestamp: string; ocr: OCRHealthDetails; metadata: { checkDuration: number;, environment: string
   }
 }
 
@@ -144,7 +143,7 @@ export const GET: RequestHandler = async () => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development` }
+        environment: process.env.NODE_ENV || 'development` }'`
     };
     console.log(`✅ OCR health check completed in ${checkDuration}ms - Status: ${overallStatus}`);
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
@@ -171,15 +170,13 @@ export const GET: RequestHandler = async () => {
         message: getErrorMessage(err),
         metadata: {
           checkDuration,
-          environment: process.env.NODE_ENV || 'development'
-        }
+          environment: process.env.NODE_ENV || 'development` }'`
       },
       {
         status: 503,
         headers: {
           'Content-Type': 'application/json',
-          'X-Health-Check': 'failed'
-        }
+          'X-Health-Check': `failed` }
       }
     );
   }
@@ -260,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Default to performing the same check as GET (avoid calling GET() without an event)
     const ocrHealth = await performOCRHealthCheck();
     const overallStatus = determineOverallStatus(ocrHealth);
-    const checkDuration = 0; // caller didn't require timing here; keep 0 or compute if needed
+    const checkDuration = 0; // caller didn't require timing here; keep 0 or compute if needed'
     const timestamp = new Date().toISOString();
     const response = {
       status: overallStatus,
@@ -268,8 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development'
-      }
+        environment: process.env.NODE_ENV || 'development` }'`
     };
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, { status: httpStatus });

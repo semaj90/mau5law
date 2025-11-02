@@ -43,7 +43,7 @@ export interface KeyboardNavigationParams {
 export function accessibleClick(
   element: HTMLElement,
   params: AccessibleClickParams
-): { update: (params: AccessibleClickParams) => void;, destroy: () => void } {
+): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
   let currentParams = params;
   function handleInteraction(event: Event) {
     if (currentParams.disabled) return;
@@ -106,7 +106,7 @@ export function accessibleClick(
 export function focusManagement(
   element: HTMLElement,
   params: FocusManagementParams = {}
-): { update: (params: FocusManagementParams) => void;, destroy: () => void } {
+): { update: (params: FocusManagementParams) => void; destroy: () => void } {
   let currentParams = params;
   let previouslyFocused: HTMLElement | null = null;
   let focusableElements: HTMLElement[] = [];
@@ -185,7 +185,7 @@ export function focusManagement(
       border-radius: 0 0 4px 4px;
       z-index: 1000;
       transition: top 0.2s;
-    `;
+    `;`
     skipLink.addEventListener('focus', () => {
       skipLink.style.top = '0';
     });
@@ -225,7 +225,7 @@ export function focusManagement(
 export function ariaState(
   element: HTMLElement,
   params: ARIAStateParams
-): { update: (params: ARIAStateParams) => void;, destroy: () => void } {
+): { update: (params: ARIAStateParams) => void; destroy: () => void } {
   let currentParams = params;
   function updateARIA() {
     // Role
@@ -282,7 +282,7 @@ export function ariaState(
 export function keyboardNavigation(
   element: HTMLElement,
   params: KeyboardNavigationParams
-): { update: (params: KeyboardNavigationParams) => void;, destroy: () => void } {
+): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
   let currentParams = params;
   function handleKeydown(event: KeyboardEvent) {
     const handler = currentParams.keys[event.key];
@@ -319,7 +319,7 @@ export function keyboardNavigation(
 export function liveRegion(
   element: HTMLElement,
   params: LiveRegionParams = {}
-): { update: (params: LiveRegionParams) => void; announce: (message: string) => void;, destroy: () => void } {
+): { update: (params: LiveRegionParams) => void; announce: (message: string) => void; destroy: () => void } {
   let currentParams = { politeness: 'polite', atomic: false, relevant: 'additions', ...params };
   function setupLiveRegion() {
     element.setAttribute('aria-live', currentParams.politeness || 'polite');
@@ -337,11 +337,11 @@ export function liveRegion(
         width: 1px;
         height: 1px;
         overflow: hidden;
-      `;
+      `;`
     }
   }
   function announce(message: string) {
-    // Clear and then set the message to ensure it's announced
+    // Clear and then set the message to ensure it's announced'
     element.textContent = '';
     requestAnimationFrame(() => {
       element.textContent = message;
@@ -388,7 +388,7 @@ export function liveRegion(
           width: 1px;
           height: 1px;
           overflow: hidden;
-        `;
+        `;`
         document.body.appendChild(announcer);
       }
       announcer.setAttribute('aria-live', priority);
@@ -417,7 +417,7 @@ export function liveRegion(
         width: 1px;
         height: 1px;
         overflow: hidden;
-      `;
+      `;`
       document.body.appendChild(descElement);
     }
     descElement.textContent = text;
@@ -446,7 +446,7 @@ export function liveRegion(
     const focusAction = focusManagement(element, {
       trapFocus: true,
       restoreFocus: true,
-      initialFocus: '[role="button"], button, [tabindex="0"]` });
+      initialFocus: '[role="button"], button, [tabindex="0"]' });
     const ariaAction = ariaState(element, {
       role: 'dialog',
       hidden: false,

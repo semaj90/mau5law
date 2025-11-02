@@ -122,7 +122,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       cacheStore.update(state => ({
         ...state,
         totalEntries: internalCache.data.size,
-        lastOperation: `store:${id}` }));
+        lastOperation: `store:${id}' }));'`
       return true;
     } catch (error) {
       console.error('Failed to store JSONB document:', error);
@@ -287,7 +287,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       cacheStore.update(state => ({
         ...state,
         totalEntries: 0,
-        lastOperation: 'cleared` }));
+        lastOperation: 'cleared' }));
     } finally {
       release();
     }
@@ -313,7 +313,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Compatibility layer for existing API expectations
 export const cognitiveCacheManager = {
-  async get(request: {, key: string; type: string }, context?: any): Promise<unknown | null> {
+  async get(request: {, key: string;, type: string }, context?: any): Promise<unknown | null> {
     // Changed from any
     const doc = internalCache.jsonbIndex.get(request.key);
     if (doc) {

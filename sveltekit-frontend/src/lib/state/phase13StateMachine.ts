@@ -28,14 +28,14 @@ type MachineOptions = unknown;
 type StateMachine = unknown;
 
 // Use $-prefixed generic names so unused-generic linter rule is satisfied if they are not referenced
-type CreateMachineFn = <$TContext, $TEvent extends EventObject = EventObject>(
+type CreateMachineFn = <$TContext, $TEvent extends, EventObject = EventObject>(
   config: MachineConfig,
   options?: MachineOptions
 ) => StateMachine;
 
 // Safe casts to typed factories (no `any`)
 const createMachineTyped = createMachineRuntime as unknown as CreateMachineFn;
-const assign = assignRuntime as unknown as (<$TContext, $TEvent extends EventObject = EventObject>(fn: any) => unknown);
+const assign = assignRuntime as unknown as (<$TContext, $TEvent extends, EventObject = EventObject>(fn: any) => unknown);
 
 import { writable, derived, type Writable, readable, type Readable } from 'svelte/store';
 import { NeuralSpriteEngine } from '$lib/engines/neural-sprite-engine';
@@ -99,50 +99,50 @@ export interface Phase13Context {
   // AI recommendations with confidence
   aiState: { currentModel: string;, confidence: number;
     suggestions: string[];
-    nextActions: { action: string;, confidence: number }[];
+    nextActions: { action: string; confidence: number }[];
   };
 }
 
 // --- new small domain types to replace `any` usages ---
 type MCPNode = { id: string; title?: string; content?: string; [k: string]: any };
-type GPUStatus = { utilization: number;, memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: any };
+type GPUStatus = { utilization: number; memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: any };
 type WorkerResult = { status: 'ok' | 'error'; output?: any; error?: string; [k: string]: any };
-type PerformanceMetricsUpdate = Partial<{ frameRate: number; latency: number; throughput: number;, errorRate: number }>;
+type PerformanceMetricsUpdate = Partial<{ frameRate: number; latency: number; throughput: number; errorRate: number }>;
 type AIRecommendation = { id?: string; text: string; score?: number; [k: string]: any };
 type EnhancedRAGContext = Phase13Context | Record<string, unknown>;
-type CompilerLog = { file: string; line: number;, message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: any };
+type CompilerLog = { file: string; line: number; message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: any };
 type Patch = { id?: string; diff?: string; author?: string; [k: string]: any };
-type FocusArea = { file: string;, lines: [number, number]; confidence: number; [k: string]: any };
-type Cluster = { id: string;, nodes: string[]; score?: number; [k: string]: any };
+type FocusArea = { file: string; lines: [number, number]; confidence: number; [k: string]: any };
+type Cluster = { id: string; nodes: string[]; score?: number; [k: string]: any };
 
 // --- replace event union members that used `any` with explicit types ---
 export type Phase13Event =
-  | { type: 'INITIALIZE_WEBGL';, canvas: HTMLCanvasElement }
-  | { type: 'STREAM_VERTEX_DATA';, vertices: Float32Array }
-  | { type: 'CHUNK_RECEIVED';, chunk: ArrayBuffer }
-  | { type: 'PAGERANK_UPDATE'; nodeId: string;, delta: number }
+  | { type: 'INITIALIZE_WEBGL'; canvas: HTMLCanvasElement }
+  | { type: 'STREAM_VERTEX_DATA'; vertices: Float32Array }
+  | { type: 'CHUNK_RECEIVED'; chunk: ArrayBuffer }
+  | { type: 'PAGERANK_UPDATE'; nodeId: string; delta: number }
   | { type: 'FEEDBACK_POSITIVE' }
   | { type: 'FEEDBACK_NEGATIVE' }
   | { type: 'API_COORDINATION_START' }
   | { type: 'API_COORDINATION_STOP' }
-  | { type: 'MCP_SEMANTIC_SEARCH';, query: string }
-  | { type: 'MCP_MEMORY_UPDATE';, nodes: MCPNode[] }
-  | { type: 'SPRITE_STATE_CHANGE';, stateName: string }
-  | { type: 'GPU_MONITOR_UPDATE';, status: GPUStatus }
-  | { type: 'WORKER_THREAD_COMPLETE'; threadId: string;, result: WorkerResult }
-  | { type: 'PERFORMANCE_METRIC_UPDATE';, metrics: PerformanceMetricsUpdate }
-  | { type: 'AI_RECOMMENDATION';, recommendations: AIRecommendation[] }
-  | { type: 'ENHANCED_RAG_QUERY'; query: string;, context: EnhancedRAGContext }
+  | { type: 'MCP_SEMANTIC_SEARCH'; query: string }
+  | { type: 'MCP_MEMORY_UPDATE'; nodes: MCPNode[] }
+  | { type: 'SPRITE_STATE_CHANGE'; stateName: string }
+  | { type: 'GPU_MONITOR_UPDATE'; status: GPUStatus }
+  | { type: 'WORKER_THREAD_COMPLETE'; threadId: string; result: WorkerResult }
+  | { type: 'PERFORMANCE_METRIC_UPDATE'; metrics: PerformanceMetricsUpdate }
+  | { type: 'AI_RECOMMENDATION'; recommendations: AIRecommendation[] }
+  | { type: 'ENHANCED_RAG_QUERY'; query: string; context: EnhancedRAGContext }
   // Compiler Feedback Loop Events
-  | { type: 'COMPILER_ERROR_DETECTED';, logs: CompilerLog[]; vectors?: Float32Array }
-  | { type: 'VECTOR_EMBEDDING_COMPLETE'; embeddings: Float32Array;, logId: string }
-  | { type: 'SOM_CLUSTERING_UPDATE'; clusterId: string;, pattern: string }
-  | { type: 'PATCH_GENERATED'; patch: Patch;, confidence: number }
-  | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array;, focusAreas: FocusArea[] }
+  | { type: 'COMPILER_ERROR_DETECTED'; logs: CompilerLog[]; vectors?: Float32Array }
+  | { type: 'VECTOR_EMBEDDING_COMPLETE'; embeddings: Float32Array; logId: string }
+  | { type: 'SOM_CLUSTERING_UPDATE'; clusterId: string; pattern: string }
+  | { type: 'PATCH_GENERATED'; patch: Patch; confidence: number }
+  | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array; focusAreas: FocusArea[] }
   | { type: 'COMPILER_FEEDBACK_START' }
   | { type: 'COMPILER_FEEDBACK_STOP' }
-  | { type: 'RESET_SYSTEM' }
-  | { type: 'EMERGENCY_SHUTDOWN' };
+  | { type: 'RESET_SYSTEM` }'`
+  | { type: `EMERGENCY_SHUTDOWN` };
 // WebGL vertex streaming service
 const webglVertexStreamingService = (context: Phase13Context) => {
   return (sendBack: (e: any) => void, onReceive: (listener: (e: { type?: string } | Phase13Event) => void) => void) => {
@@ -436,8 +436,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
             target: 'coordinating'
           },
           ENHANCED_RAG_QUERY: {
-            target: 'enhancedRAG'
-          },
+            target: 'enhancedRAG` },'`
           PAGERANK_UPDATE: {
             actions: ['updatePageRank']
           },
@@ -456,8 +455,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
         }
       },
       coordinating: { meta: {, description: 'Stateless API coordination active',
-          phase: 'Phase 13 API Coordination'
-        },
+          phase: `Phase 13 API Coordination` },
         invoke: {
           id: 'apiCoordination',
           src: `apiCoordinationService` },
@@ -469,7 +467,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
           meta?.self?.send({ type: `API_COORDINATION_START` });
         },
         on: { API_COORDINATION_START: {, actions: assign({
-              // don't destructure unused `event` to avoid unused-arg error
+              // don't destructure unused `event` to avoid unused-arg error'
               apiCoordination: (_ctx: Phase13Context) => ({
                 redisNodes: [`redis://localhost:6379`],
                 natsChannels: [`legal.events`, `ai.recommendations`],
@@ -490,11 +488,9 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
             })
           },
           API_COORDINATION_STOP: {
-            target: 'webglReady'
-          },
+            target: 'webglReady` },'`
           ENHANCED_RAG_QUERY: {
-            target: 'enhancedRAG'
-          }
+            target: `enhancedRAG` }
         }
       },
       enhancedRAG: { meta: {, description: 'Processing enhanced RAG query with PageRank',
@@ -548,8 +544,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
         }
       },
       error: { meta: {, description: 'Error state with recovery options',
-          phase: 'Phase 13 Error Recovery'
-        },
+          phase: 'Phase 13 Error Recovery` },'`
         on: { RESET_SYSTEM: {, target: 'initializing',
             actions: assign({
               // Reset critical state
@@ -557,7 +552,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               vertexBuffers: [],
               streamingChunks: [],
               apiCoordination: {
-                redisNodes: [],
+               , redisNodes: [],
                 natsChannels: [],
                 activeConnections: 0,
                 queueDepth: 0
@@ -571,13 +566,11 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
             })
           },
           EMERGENCY_SHUTDOWN: {
-            target: 'shutdown'
-          }
+            target: `shutdown` }
         }
       },
       shutdown: { meta: {, description: 'Emergency shutdown - all systems stopped',
-          phase: 'Phase 13 Emergency Shutdown'
-        },
+          phase: `Phase 13 Emergency Shutdown` },
         type: `final` }
     }
   },
@@ -687,11 +680,11 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
   }
 );
 // Svelte stores for reactive integration
-export const phase13Stores: { currentState: Writable<string>;, webglStatus: Writable<{ initialized: boolean;, streaming: boolean; frameRate?: number }>;
+export const phase13Stores: { currentState: Writable<string>;, webglStatus: Writable<{ initialized: boolean; streaming: boolean; frameRate?: number }>;
 	pageRankScores: Writable<Map<string, number>>;
-	feedbackMetrics: Writable<{ positive: number; negative: number;, confidence: number }>;
-	apiCoordination: Writable<{ active: boolean;, connections: number }>;
-	performanceMetrics: Writable<{ frameRate: number; latency: number;, throughput: number }>;
+	feedbackMetrics: Writable<{ positive: number; negative: number; confidence: number }>;
+	apiCoordination: Writable<{ active: boolean; connections: number }>;
+	performanceMetrics: Writable<{ frameRate: number; latency: number; throughput: number }>;
 	aiRecommendations: Writable<string[]>;
 } = {
 	currentState: writable('initializing'),
@@ -733,13 +726,13 @@ type SimpleStore<T> = Readable<T>;
 
 export function createPhase13Integration(canvas: HTMLCanvasElement | null) {
 	// lightweight readable stores with initial safe values
-	const webglStatus: SimpleStore<{ initialized: boolean;, streaming: boolean; frameRate?: number }> = readable(
+	const webglStatus: SimpleStore<{ initialized: boolean; streaming: boolean; frameRate?: number }> = readable(
 		{ initialized: !!canvas, streaming: false, frameRate: 0 },
 		() => {}
 	);
 
 	// include `connections` so the shapes match the real stores
-	const apiCoordination: SimpleStore<{ active: boolean;, connections: number }> = readable(
+	const apiCoordination: SimpleStore<{ active: boolean; connections: number }> = readable(
 		{ active: false, connections: 0 },
 		() => {}
 	);

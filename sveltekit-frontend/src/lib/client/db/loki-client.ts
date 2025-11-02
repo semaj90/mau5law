@@ -36,7 +36,7 @@ function init() {
 function coll() {
   return db.getCollection<EditorCacheDocument>('editorCache') || db.addCollection<EditorCacheDocument>('editorCache')
 }
-export function saveDraft(entry: { reportId: string, caseId: string; content: any
+export function saveDraft(entry: {, reportId: string, caseId: string;, content: any;
  , html: string
   wordCount?: number
   characterCount?: number

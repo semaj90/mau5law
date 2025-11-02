@@ -9,8 +9,8 @@ import type { User } from '$lib/types';
  * - Dynamic QLoRA model creation based on usage patterns
  */
 import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
-import { qloraOllamaOrchestrator as $qloraOllamaOrchestrator } from './qlora-ollama-orchestrator.js';
-import { predictiveAssetEngine as $predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
+import { qloraOllamaOrchestrator, as $qloraOllamaOrchestrator } from './qlora-ollama-orchestrator.js';
+import { predictiveAssetEngine, as $predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 // FlatBuffer-like serialization structure
 interface ContextVector { userId: string;, sessionId: string;
   timestamp: number;
@@ -475,12 +475,12 @@ export class AutoencoderContextSwitcher {
     await new Promise(resolve => setTimeout(resolve, 500));
     return `wasm_${modelId}_${Date.now()}`;
   }
-  private analyzeContextClusters(_modelId: string): { coherence: number; uniqueness: number;, domain: string } {
+  private analyzeContextClusters(_modelId: string): { coherence: number; uniqueness: number; domain: string } {
     // Mock analysis - parameter intentionally unused, prefixed with _
     return {
       coherence: 0.85,
       uniqueness: 0.72,
-      domain: 'specialized_contract_analysis` };
+      domain: 'specialized_contract_analysis' };
   }
   private extractTrainingData(
     _modelId: string,
@@ -587,7 +587,7 @@ class QUICProtocolServer {
   async start(): Promise<void> {
     console.log('⚡ QUIC server started');
   }
-  async sendLoadCommand(_command: Record<string, unknown>): Promise<{ success: boolean;, latency: number }> {
+  async sendLoadCommand(_command: Record<string, unknown>): Promise<{ success: boolean; latency: number }> {
     // Simulate ultra-low latency QUIC communication
     await new Promise(resolve => setTimeout(resolve, 5)); // 5ms latency
     return { success: true, latency: 5 };

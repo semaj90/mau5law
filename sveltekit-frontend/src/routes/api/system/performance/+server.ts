@@ -28,7 +28,7 @@ export interface LegalAiPlatformMetrics { services: {, healthy: number;
       deletes: number;
     };
   };
-  ai: { modelsLoaded: number;, inferenceSpeed: number; // tokens per second,
+  ai: { modelsLoaded: number;, inferenceSpeed: number; // tokens per second
     queueDepth: number;
     averageLatency: number;
   };
@@ -85,6 +85,11 @@ setInterval(() => {
     eventLoopUtilization = Math.min(100, eventLoopDelay / 10); // Simple utilization calculation
   });
 }, 1000);
+
+// Constants for memory conversion
+const MB = 1024 * 1024;
+const GB = 1024 * MB;
+
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now();
   const detailed = url.searchParams.get('detailed') === 'true';
@@ -116,9 +121,9 @@ export const GET: RequestHandler = async ({ url }) => {
           idle: 100 - Math.round((cpuUsage.user + cpuUsage.system) / 10000)
         },
         memory: {
-          total: Math.round(totalMemory / 1024 / 1024 / 1024),
-          free: Math.round(freeMemory / 1024 / 1024 / 1024),
-          used: Math.round(usedMemory / 1024 / 1024 / 1024),
+          total: Math.round(totalMemory / GB),
+          free: Math.round(freeMemory / GB),
+          used: Math.round(usedMemory / GB),
           percentage: Math.round(memoryPercentage)
         },
         disk: {
@@ -129,10 +134,10 @@ export const GET: RequestHandler = async ({ url }) => {
       application: {
         nodeUptime: Math.floor(nodeUptime),
         memoryUsage: {
-          heapUsed: Math.round(processMemory.heapUsed / 1024 / 1024),
-          heapTotal: Math.round(processMemory.heapTotal / 1024 / 1024),
-          external: Math.round(processMemory.external / 1024 / 1024),
-          rss: Math.round(processMemory.rss / 1024 / 1024)
+          heapUsed: Math.round(processMemory.heapUsed / MB),
+          heapTotal: Math.round(processMemory.heapTotal / MB),
+          external: Math.round(processMemory.external / MB),
+          rss: Math.round(processMemory.rss / MB)
         },
         eventLoop: {
           delay: Math.round(eventLoopDelay),
@@ -165,7 +170,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Cache-Control': 'public, max-age=30', // 30-second cache
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     productionLogger.error(`Performance metrics collection failed: ${message}`);
     return json(
@@ -199,7 +204,7 @@ async function gatherPlatformMetrics(_detailed: boolean): Promise<LegalAiPlatfor
         free: 5392
       },
       temperature: 72, // Celsius
-      performance: 'optimal` },
+      performance: 'optimal' },
     database: { connections: {, active: 8,
         idle: 12,
         max: 100
@@ -317,27 +322,22 @@ function calculatePerformanceScore(metrics: PerformanceMetrics): number {
   // Service health impact
   const serviceHealthPercentage =
     (metrics.legal_ai_platform.services.healthy / metrics.legal_ai_platform.services.total) * 100;
-  if (serviceHealthPercentage < 70) {
-    score -= 25;
-  } else if (serviceHealthPercentage < 85) {
-    score -= 15;
-  }
-  // GPU temperature penalty
-  if (metrics.legal_ai_platform.gpu.temperature > 85) {
-    score -= 10;
-  } else if (metrics.legal_ai_platform.gpu.temperature > 80) {
-    score -= 5;
-  }
-  // Database performance penalty (slow queries)
-  if (metrics.legal_ai_platform.database.queryPerformance.slowQueries > 10) {
-    score -= 10;
-  } else if (metrics.legal_ai_platform.database.queryPerformance.slowQueries > 2) {
-    score -= 5;
-  }
-  // AI queue depth penalty
-  if (metrics.legal_ai_platform.ai.queueDepth > 10) {
-    score -= 5;
-  }
-  // Ensure score is not below 0
-  return Math.max(0, Math.round(score));
+  if (serviceHealthPercentage < 70) score -= 20;
+  else if (serviceHealthPercentage < 85) score -= 10;
+  else if (serviceHealthPercentage < 95) score -= 5;
+
+  // GPU performance impact
+  if (metrics.legal_ai_platform.gpu.utilization > 90) score -= 10;
+  else if (metrics.legal_ai_platform.gpu.utilization > 80) score -= 5;
+
+  // AI inference speed impact
+  if (metrics.legal_ai_platform.ai.inferenceSpeed < 100) score -= 10;
+  else if (metrics.legal_ai_platform.ai.inferenceSpeed < 150) score -= 5;
+
+  // Caching hit rate impact
+  if (metrics.legal_ai_platform.caching.hitRate < 70) score -= 10;
+  else if (metrics.legal_ai_platform.caching.hitRate < 85) score -= 5;
+
+  // Ensure score doesn't go below 0'
+  return Math.max(0, score);
 }

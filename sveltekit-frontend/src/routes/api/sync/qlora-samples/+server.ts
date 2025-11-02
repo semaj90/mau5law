@@ -35,7 +35,7 @@ const hmmSomEngine = {
 
 // Small helper types and functions to satisfy TS checks
 type MockDoc = { id?: string; type?: string; [k: string]: any };
-type BatchJob = { jobId: string; documentId: string;, config: Record<string, unknown>; variation?: number };
+type BatchJob = { jobId: string; documentId: string; config: Record<string, unknown>; variation?: number };
 
 function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
               mockData: true
             });
           } catch (err: any) {
-            console.warn(`Failed to generate prediction for doc ${doc.id}: ', err?.message || err);
+            console.warn(`Failed to generate prediction for doc ${doc.id}: ', err?.message || err);'`
           }
         }
 
@@ -238,7 +238,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
   } catch (error: any) {
-    console.error('❌ QLoRA samples API error:', error);
+    console.error('❌ QLoRA samples API error:', error);'
     return json(
       {
         error: 'QLoRA samples operation failed',
@@ -267,7 +267,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({ error: `documentId and config required for training` }, { status: 400 });
         }
         const trainingResult = {
-          jobId: `training_job_${Date.now()}',
+          jobId: 'training_job_${Date.now()}',
           documentId,
           config,
           status: 'training',
@@ -365,7 +365,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
   } catch (error: any) {
-    console.error('❌ QLoRA samples POST API error:', error);
+    console.error('❌ QLoRA samples POST API error:', error);'
     return json(
       {
         error: 'POST operation failed',

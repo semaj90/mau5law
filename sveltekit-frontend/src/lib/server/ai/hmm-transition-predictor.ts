@@ -24,7 +24,7 @@ export interface TransitionObservation { from: string;, to: string;
 export interface TransitionPrediction { state: string;, probability: number;
   support: number;
 }
-export interface HMMPredictorSnapshot { states: string[];, transitions: Array<{ from: string; to: string; probability: number;, count: number }>;
+export interface HMMPredictorSnapshot { states: string[];, transitions: Array<{ from: string; to: string; probability: number; count: number }>;
 }
 // Single unified predictor (combines Redis-backed ops + in-memory fallback)
 export class HMMTransitionPredictor {

@@ -92,8 +92,7 @@ class WorkerPool {
                 serializedSize: serialized.length,
                 compressionRatio: JSON.stringify(data).length / serialized.length,
                 processingTime,
-                method: 'worker'
-              }
+                method: `worker` }
             }
           } catch (error) {
             return {
@@ -103,7 +102,7 @@ class WorkerPool {
                 serializedSize: 0,
                 compressionRatio: 1,
                 processingTime: performance.now() - start,
-                method: `worker` }
+                method: `worker' }'`
             }
           }
         }
@@ -112,13 +111,13 @@ class WorkerPool {
         const result = JSONSerializer.serialize(data, options);
         parentPort.postMessage({ id, ...result });
       });
-    `;
+    `;`
     const worker = new Worker(workerCode, { eval: true });
     worker.on('message', (result: SerializationResult) => {
       this.handleWorkerResult(worker, result);
     });
     worker.on('error', error => {
-      console.error('Worker error:', error);
+      console.error('Worker error:', error);'
       this.replaceWorker(worker);
     });
     return worker;
@@ -268,7 +267,7 @@ class WorkerPool {
       console.log(`🎯 GPU serialization completed for task ${task.id}`);
       return result;
     } catch (error) {
-      console.warn(`GPU serialization failed, falling back to worker: ', error);
+      console.warn(`GPU serialization failed, falling back to worker: ', error);'`
       return await this.workerPool.execute(task);
     }
   }
@@ -321,8 +320,7 @@ class WorkerPool {
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
           processingTime,
-          method: 'cpu'
-        }
+          method: `cpu' }'`
       };
     } catch (error) {
       const processingTime = performance.now() - start;
@@ -334,9 +332,8 @@ class WorkerPool {
           serializedSize: 2,
           compressionRatio: 1,
           processingTime,
-          method: 'cpu'
-        },
-        error: error instanceof Error ? error.message : `Unknown serialization error` };
+          method: `cpu` },
+        error: error instanceof Error ? error.message : `Unknown serialization error' };'`
     }
   }
   /**
@@ -351,7 +348,7 @@ class WorkerPool {
     const promises = items.map((item, index) => {
       return this.serialize(item, {
         ...batchOptions,
-        // Remove priority as it's not a valid option
+        // Remove priority as it's not a valid option'
         // Distribute workload across batch
       });
     });

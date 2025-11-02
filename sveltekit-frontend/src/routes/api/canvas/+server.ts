@@ -44,12 +44,11 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Canvas state saved successfully'
     });
   } catch (error: any) {
-    console.error('Canvas save error:', error);
+    console.error('Canvas save error:', error);'
     return json(
       {
         error: 'Failed to save canvas state',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+        details: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }
@@ -58,14 +57,14 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const caseId = url.searchParams.get('caseId');
     if (!caseId) {
-      return json({ error: 'Case ID is required' }, { status: 400 });
+      return json({ error: `Case ID is required` }, { status: 400 });
     }
     const canvasState = await db.select().from(canvasStates).where(eq(canvasStates.caseId, caseId)).limit(1);
     return json({
       canvasState: canvasState[0] || null
     });
   } catch (error: any) {
-    console.error('Canvas load error:', error);
+    console.error('Canvas load error:', error);'
     return json(
       {
         error: 'Failed to load canvas state',

@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
       service: 'langextract-ollama'
     });
   } catch (error: any) {
-    console.error('LangExtract API error:', error);
+    console.error('LangExtract API error:', error);'
     const message =
       error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error occurred';
     return json(
@@ -141,27 +141,27 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       status: {
-        ollama_available: isAvailable, // <-- fixed missing comma
-        available_models: models, // <-- fixed missing comma
+        ollama_available: isAvailable, // <-- fixed missing, comma
+        available_models: models, // <-- fixed missing, comma
         service_url: 'http://localhost:11434',
         langextract_version: 'latest'
       },
       capabilities: {
-        document_types: ['contract', 'case_law', 'statute', 'evidence', 'motion', 'brief'],
+       , document_types: ['contract', 'case_law', 'statute', 'evidence', 'motion', 'brief'],
         extraction_types: ['entities', 'summary', 'key_terms', 'obligations', 'risks', 'dates'],
         actions: ['extract', 'contract_terms', 'case_citations', 'dates', 'summary', 'risks', 'batch']
       },
-      examples: { contract_extraction: {, method: 'POST',
+      examples: {, contract_extraction: {, method: 'POST',
           url: '/api/legal-ai/langextract',
           body: {
-            action: 'contract_terms',
+           , action: 'contract_terms',
             text: 'This Agreement is entered into on January 15, 2024...',
             documentType: 'contract',
             model: 'gemma2:2b'
           }
         },
         case_citation_extraction: {
-          method: 'POST',
+         , method: 'POST',
           url: '/api/legal-ai/langextract',
           body: {
            , action: 'case_citations',
@@ -175,22 +175,21 @@ export const GET: RequestHandler = async () => {
           body: {
             action: 'batch',
             requests: [
-              {
+              {,
                 text: 'Contract text...',
                 documentType: 'contract',
-                extractionType: 'obligations'
-              },
+                extractionType: `obligations` },
               {
                 text: 'Case law text...',
                 documentType: 'case_law',
-                extractionType: 'entities` },
+                extractionType: `entities` }
             ]
           }
         }
       }
     });
   } catch (error: any) {
-    console.error('LangExtract status error:', error);
+    console.error('LangExtract status error:', error);'
     return json(
       {
         success: false,

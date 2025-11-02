@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Perform semantic search locally using generateEmbeddings (gpuEmbeddingService has no semanticSearch)
-    type SearchResult = { document: string; score: number;, index: number };
+    type SearchResult = { document: string; score: number; index: number };
 
     const embedStart = performance.now();
     // Safe guard to detect a string: 'model' property without using `any`
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: Date.now()
     });
   } catch (error) {
-    console.error('Semantic search API error:', error);
+    console.error('Semantic search API error:', error);'
     return json(
       {
         error: 'Failed to perform semantic search',
@@ -165,20 +165,19 @@ export const GET: RequestHandler = async () => {
       documents: { type: 'string[]', required: true, description: 'Array of documents to search' },
       threshold: { type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
       topK: { type: 'number', required: false, default: 10, description: 'Maximum number of results' },
-      useGPU: { type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' }
+      useGPU: {, type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration` }'`
     },
     response: {
-      success: 'boolean',
+     , success: 'boolean',
       query: 'string',
       results: [
-        {
-          document: 'string',
+        {,
+         , document: 'string',
           score: 'number',
-          index: 'number'
-        },
+          index: `number` }
       ],
       metadata: {
-        documentCount: 'number',
+       , documentCount: 'number',
         resultsFound: 'number',
         threshold: 'number',
         topK: 'number',

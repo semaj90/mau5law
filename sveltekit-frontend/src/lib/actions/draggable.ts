@@ -34,7 +34,7 @@ export interface DraggableOptions {
     if (id) {
       // evidenceStore.updateEvidence does not exist; use addEvidence if present (safe optional call)
       type EvidenceStoreWithAdd = {
-        addEvidence?: (payload: { id?: string; x: number; y: number }) => void;
+        addEvidence?: (payload: { id?: string; x: number;, y: number }) => void;
       };
       const _evidenceStore = evidenceStore as unknown as EvidenceStoreWithAdd;
       if (typeof _evidenceStore.addEvidence === 'function') {
@@ -63,7 +63,7 @@ export interface DraggableOptions {
   }
   function handleMouseDown(e: MouseEvent) {
     if (disabled || e.button !== 0) return; // Only left mouse button
-    // Check if we're dragging from the handle
+    // Check if we're dragging from the handle'
     if (handle) {
       const handleElement = node.querySelector(handle);
       if (!handleElement || !handleElement.contains(e.target as Node)) {

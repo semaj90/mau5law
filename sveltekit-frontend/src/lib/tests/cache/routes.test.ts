@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { POST as handleCacheGet } from '../../../routes/api/cache/redis/get/+server';
-import { POST as handleCacheSet } from '../../../routes/api/cache/redis/set/+server';
+import { POST, as handleCacheGet } from '../../../routes/api/cache/redis/get/+server';
+import { POST, as handleCacheSet } from '../../../routes/api/cache/redis/set/+server';
 
 function makeReq(body: any, headers: Record<string,string> = {}) {
   return { request: {, json: async () => body,
@@ -13,7 +13,7 @@ describe('cache routes (basic)', () => {
   it('set then get returns value', async () => {
   const setRes = await handleCacheSet(makeReq({ key: 'x1', value: {, a: 1 } }));
     // SvelteKit json response has .status and .body or .json(); we check status via .status
-    // postSet returns a Response-like object (json helper) - for simplicity, check it's defined
+    // postSet returns a Response-like object (json helper) - for simplicity, check it's defined'
     expect(setRes).toBeDefined();
 
   const getRes = await handleCacheGet(makeReq({ key: 'x1' }));

@@ -115,15 +115,15 @@ interface QdrantSearchResultItem {
 
 // Define a type for Qdrant filter conditions
 type QdrantFilterCondition =
-  | { key: string;, match: {, value: string } }
-  | { key: string;, match: {, any: string[] } };
+  | { key: string; match: {, value: string } }
+  | { key: string; match: {, any: string[] } };
 
 // ============================================================================
 // Function Definitions for gemma3-legal:latest
 // ============================================================================
 
 const LEGAL_FUNCTIONS = [
-  {
+  {,
     name: 'extract_legal_entities',
     description: 'Extract persons of interest, parties, and their relationships from legal text',
     parameters: {
@@ -215,7 +215,7 @@ const LEGAL_FUNCTIONS = [
 // ============================================================================
 
 function buildLegalAnalysisPrompt(documentText: string, metadata: LegalDocumentMetadata): string {
-  return `You are an expert legal AI assistant analyzing legal documents. You have access to the following functions:
+  return `You are an expert legal AI assistant analyzing legal documents. You have access to the following functions:`
 
 ${JSON.stringify(LEGAL_FUNCTIONS, null, 2)}
 
@@ -225,7 +225,7 @@ Document Metadata:
 -; Title: ${metadata.title}
 - Type: ${metadata.documentType}
 - Jurisdiction: ${metadata.jurisdiction || 'Not specified'}
-- Case Number: ${metadata.caseNumber || 'Not specified'}
+- Case Number: ${metadata.caseNumber || 'Not specified` }'`
 
 Document Text:
 ${documentText.slice(0, 8000)}
@@ -238,7 +238,7 @@ Please analyze this document and answer the following:
 4. HOW did it unfold? (Methodology, evidence chain, legal arguments)
 5. EVIDENCE: What evidence was presented? (Physical, documentary, testimonial, expert)
 
-${metadata.documentType === 'verdict' ? '6. VERDICT: What was the outcome and reasoning?' : ''}
+${metadata.documentType === 'verdict' ? '6. VERDICT: What was the outcome and reasoning?' : `` }
 ${metadata.documentType === 'sentence' ? '7. SENTENCING: What penalties were imposed?' : `` }
 
 Use function calls to:
@@ -248,7 +248,7 @@ Use function calls to:
 - generate_recommendations: to provide strategic insights
 - compare_outcomes: to compare with similar cases
 
-Provide a structured, comprehensive analysis with citations and confidence scores.`;
+Provide a structured, comprehensive analysis with citations and confidence scores.`;`
 }
 
 // ============================================================================
@@ -357,7 +357,7 @@ export async function compareWithRAGDocuments(
   console.log(`✅ Found ${similarCases.length} similar cases using vector + tag search`);
 
   // Step 4: Generate AI recommendations using agentic function calling
-  const recommendationsPrompt = `Based on the following case analysis and similar precedents, provide strategic legal recommendations:
+  const recommendationsPrompt = `Based on the following case analysis and similar precedents, provide strategic legal recommendations:`
 
 Current case ${JSON.stringify(analysis, null, 2)}
 
@@ -371,7 +371,7 @@ Generate recommendations for:
 4. Risk assessment
 5. Outcome predictions
 
-Use the generate_recommendations and compare_outcomes functions to provide detailed, actionable insights.`;
+Use the generate_recommendations and compare_outcomes functions to provide detailed, actionable insights.`;`
 
   const recommendationsResponse: AIResponse = await runAIAgent(recommendationsPrompt, true, 'ollama');
 
@@ -440,11 +440,11 @@ async function searchSimilarCases(
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        vector: embedding, // embeddinggemma vector
+       , vector: embedding, // embeddinggemma vector
         limit: filters.limit || 10,
         filter: mustFilters.length > 0 ? {, must: mustFilters } : undefined,
         with_payload: true,
-        with_vector: false, // Don't return the large vector in response
+        with_vector: false, // Don't return the large vector in response'
         score_threshold: 0.5, // Only return cases with >50% similarity
       })
     });
@@ -489,7 +489,7 @@ function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInt
   const poiSection = aiResponse.match(/(?:WHO|PERSONS OF INTEREST)[:\s]+([\s\S]*?)(?:\n\n|WHO|WHAT|WHY|HOW)/i);
   if (!poiSection) return [];
 
-  // Parse AI's extracted persons
+  // Parse AI's extracted persons'
   const personMatches = poiSection[1].matchAll(/(?:^|\n)-?\s*([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\s*\(([^)]+)\)/gm);
 
   return Array.from(personMatches).map(match => ({
@@ -515,7 +515,7 @@ function parseRole(roleStr: string): PersonOfInterest['role'] {
 
 function extractParties(
   aiResponse: string // Removed unused 'text' parameter
-): Array<{ name: string; type: 'individual' | 'corporate' | 'government';, role: string }> {
+): Array<{ name: string; type: 'individual' | 'corporate' | 'government'; role: string }> {
   const partiesSection = aiResponse.match(/(?:PARTIES)[:\s]+([\s\S]*?)(?:\n\n|WHAT)/i);
   if (!partiesSection) return [];
 
@@ -543,8 +543,7 @@ function extractParties(
       return {
         name: line.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)?.[1] || 'Unknown',
         type: partyType,
-        role: lowerCaseLine.includes('plaintiff') ? 'plaintiff' : 'defendant'
-      };
+        role: lowerCaseLine.includes('plaintiff') ? 'plaintiff' : `defendant` };
     });
 }
 
@@ -635,7 +634,7 @@ function extractLegalArguments(aiResponse: string): string[] {
 
 function extractPhysicalEvidence(
   aiResponse: string
-): Array<{ type: string; description: string; relevance: number;, admissible: boolean }> {
+): Array<{ type: string; description: string; relevance: number; admissible: boolean }> {
   const physicalMatch = aiResponse.match(/(?:PHYSICAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|DOCUMENTARY|TESTIMONIAL)/i);
   if (!physicalMatch) return [];
 
@@ -680,7 +679,7 @@ function extractExpertOpinions(aiResponse: string): string[] {
     .filter(Boolean);
 }
 
-function extractVerdict(aiResponse: string): { outcome: string;, reasoning: string; dissent?: string } {
+function extractVerdict(aiResponse: string): { outcome: string; reasoning: string; dissent?: string } {
   const verdictMatch = aiResponse.match(/(?:VERDICT)[:\s]+([\s\S]*?)(?:\n\n|$)/i);
   if (!verdictMatch) return { outcome: 'Not specified', reasoning: `` };
 

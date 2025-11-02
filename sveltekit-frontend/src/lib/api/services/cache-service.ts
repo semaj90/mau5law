@@ -11,7 +11,7 @@ interface CacheOptions {
  * Uses gzip compression for embeddings and large payloads
  */
 export class CacheService {
-  private memoryCache = new Map<string, { value: any;, expires: number }>();
+  private memoryCache = new Map<string, { value: any; expires: number }>();
   private redisClient: Redis | null = null;
   private useRedis = $state(false);
   constructor() {
@@ -64,7 +64,7 @@ export class CacheService {
       return this.getFromMemory(key);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn("Cache get error:", msg);
+      console.warn("Cache get error:", msg);"
       return null;
     }
   }
@@ -93,7 +93,7 @@ export class CacheService {
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn("Cache set error:", msg);
+      console.warn("Cache set error:", msg);"
       // Always fallback to memory on Redis errors
       this.setInMemory(key, value, ttlMs);
     }
@@ -109,7 +109,7 @@ export class CacheService {
       this.memoryCache.delete(key);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn("Cache delete error:", msg);
+      console.warn("Cache delete error:", msg);"
     }
   }
   /*
@@ -123,7 +123,7 @@ export class CacheService {
       this.memoryCache.clear();
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn("Cache clear error:", msg);
+      console.warn("Cache clear error:", msg);"
     }
   }
   /**

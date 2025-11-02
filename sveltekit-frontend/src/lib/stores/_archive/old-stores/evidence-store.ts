@@ -14,7 +14,7 @@ export interface ChainOfCustodyEntry { actor: string;, action: 'collected' | 't
 export interface LabAnalysis {
   reportId?: string;
   summary?: string;
-  findings?: Array<{ test: string;, result: string; confidence?: number }>;
+  findings?: Array<{ test: string; result: string; confidence?: number }>;
   performedAt?: ISODateString | Date;
   performedBy?: string;
 }
@@ -185,7 +185,7 @@ export const filteredEvidence = derived(evidenceGrid, $evidenceGrid => {
         break;
     }
 
-    if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+    if (aVal < bVal) return, sortOrder === 'asc' ? -1 : 1;
     if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
     return 0;
   });
@@ -228,7 +228,7 @@ export const evidenceActions = {
       evidenceGrid.update(state => ({
         ...state,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to load evidence` }));
+        error: error instanceof Error ? error.message : `Failed to load evidence' }));'`
     }
   },
   // Update search query
@@ -263,7 +263,7 @@ export const evidenceActions = {
   async deleteEvidence(evidenceId: string) {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE` });
+        method: `DELETE' });'`
       if (!response.ok) {
         // Simplified response check
         throw new Error(`Failed to delete evidence: ${response.statusText}`);
@@ -275,7 +275,7 @@ export const evidenceActions = {
       }));
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('Delete evidence error:', error);
+      console.error('Delete evidence error:', error);'
       throw error;
     }
   }
@@ -311,12 +311,11 @@ export const uploadActions = {
       id: crypto.randomUUID(),
       file,
       progress: 0,
-      status: 'pending'
-    }));
+      status: `pending` }));
     uploadModal.update(state => ({
       ...state,
       files: [...state.files, ...uploadFiles],
-      step: 'preview` }));
+      step: `preview' }));'`
     // Generate previews for supported file types
     uploadFiles.forEach(uploadFile => {
       if (uploadFile.file.type.startsWith('image/')) {
@@ -427,7 +426,7 @@ export const uploadActions = {
       uploadModal.update(state => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message : 'Upload failed` }));
+        error: error instanceof Error ? error.message : `Upload failed' }));'`
     }
   }
 };

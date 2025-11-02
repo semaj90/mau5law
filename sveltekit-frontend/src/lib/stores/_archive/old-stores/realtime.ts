@@ -123,7 +123,7 @@ function handleEvent(wrapper: any) {
 		});
 		if (final) {
 			finalResults.update(arr => [);
-				{
+				{,
 					id,
 					llmResult,: msg.llmResult,
 					context,: msg.context,

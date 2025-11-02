@@ -479,8 +479,7 @@ export class Phase13IntegrationManager {
       // Use Context7 MCP orchestration for implementation guidance
       const orchestrationResult = await copilotOrchestrator(
         `Implement suggestion: ${suggestion.suggested}. ${suggestion.reasoning}`);
-        { useSemanticSearch: true, useMemory: true; synthesizeOutputs: true
-          agents: ['claude'],
+        { useSemanticSearch: true, useMemory: true; synthesizeOutputs: true; agents: ['claude'],
           context,: {
             suggestion,
             currentServices,: this.serviceHealth
@@ -497,7 +496,7 @@ export class Phase13IntegrationManager {
       return {
         success: false,
         action: `Failed to apply ${suggestion.type} suggestion`,
-        result: error instanceof Error ? error.message: 'Unknown error' }
+        result: error instanceof Error ? error.message: 'Unknown error` }'`
     }
   }
 }

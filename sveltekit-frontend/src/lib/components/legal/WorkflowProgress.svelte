@@ -2,7 +2,7 @@
 Workflow Progress Component
 Visual progress indicator for the Evidence Chain of Custody workflow
 -->
-<script lang="ts">
+<script, lang="ts">
   interface Props {
     progress: number;
     stage: string;
@@ -84,80 +84,80 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     }
   }
 </script>
-<div class="workflow-progress bg-white border border-gray-200 rounded-lg p-6">
-  <!-- Overall Progress -->
-  <div class="mb-8">
-    <div class="flex items-center justify-between mb-3">
+<div class="workflow-progress bg-white border border-gray-200 rounded-lg, p-6">
+  <!-- Overall, Progress -->
+  <div, class="mb-8">
+    <div class="flex items-center justify-between, mb-3">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Evidence Custody Progress</h3>
-        <p class="text-sm text-gray-600">
-          Current Stage: <span class="font-medium">{stageName}</span>
+        <h3 class="text-lg font-semibold, text-gray-900">Evidence Custody Progress</h3>
+        <p class="text-sm, text-gray-600">
+          Current Stage: <span, class="font-medium">{stageName}</span>
         </p>
       </div>
-      <div class="text-right">
-        <div class="text-3xl font-bold text-blue-600">{progress}%</div>
-        <div class="text-sm text-gray-500">Complete</div>
+      <div, class="text-right">
+        <div class="text-3xl font-bold, text-blue-600">{progress}%</div>
+        <div class="text-sm, text-gray-500">Complete</div>
       </div>
     </div>
-    <!-- Overall Progress Bar -->
-    <div class="relative">
-      <Progress value={progress} class="h-3" />
-      <!-- Progress percentage label -->
+    <!-- Overall Progress, Bar -->
+    <div, class="relative">
+      <Progress, value={progress} class="h-3" />
+      <!-- Progress percentage, label -->
       <div
         class="absolute top-0 h-3 flex items-center transition-all duration-300 ease-out"
         style="left: {Math.min(Math.max(progress - 5, 0), 90)}%"
       >
-        <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-sm whitespace-nowrap">
+        <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-sm, whitespace-nowrap">
           {progress}%
         </div>
       </div>
     </div>
   </div>
-  <!-- Stage Progress Visualization -->
-  <div class="space-y-6">
-    <h4 class="font-medium text-gray-900 mb-4">Workflow Stages</h4>
-    <!-- Desktop View: Horizontal Timeline -->
-    <div class="hidden lg:block">
-      <div class="relative">
-        <!-- Connecting Lines -->
-        <div class="absolute top-6 left-0 right-0 h-1 bg-gray-200 rounded"></div>
-        <!-- Dynamic Progress Line -->
+  <!-- Stage Progress, Visualization -->
+  <div, class="space-y-6">
+    <h4 class="font-medium text-gray-900, mb-4">Workflow Stages</h4>
+    <!-- Desktop View: Horizontal, Timeline -->
+    <div class="hidden, lg:block">
+      <div, class="relative">
+        <!-- Connecting, Lines -->
+        <div class="absolute top-6 left-0 right-0 h-1 bg-gray-200, rounded"></div>
+        <!-- Dynamic Progress, Line -->
         <div
           class="absolute top-6 left-0 h-1 bg-blue-400 rounded transition-all duration-500 ease-out"
           style="width: {(progress / 100) * 100}%"
         ></div>
-        <!-- Stage Nodes -->
-        <div class="relative flex justify-between">
+        <!-- Stage, Nodes -->
+        <div class="relative flex, justify-between">
           {#each workflowStages as stageItem, index}
             {@const status = getStageStatus(stageItem.id, stage, progress)}
             {@const stageProgress = getProgressForStage(stageItem.id, stage, progress)}
             {@const SvelteComponent = getStageIcon(status)}
-            <div class="flex flex-col items-center">
-              <!-- Stage Circle -->
+            <div class="flex flex-col, items-center">
+              <!-- Stage, Circle -->
               <div
                 class={`
                 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300
                 ${getStageColor(status)}
                 ${status === 'current' ? 'animate-pulse' : ''}
-              `}
+              `}`
               >
-                <div class="w-5 h-5">
+                <div class="w-5, h-5">
   <SvelteComponent />
               </div>
-              <!-- Stage Info -->
-              <div class="mt-3 text-center max-w-20">
+              <!-- Stage, Info -->
+              <div class="mt-3 text-center, max-w-20">
                 <div
                   class={`
                   text-xs font-medium mb-1
                   ${status === 'current' ? 'text-blue-600' : status === 'completed' ? 'text-green-600' : 'text-gray-500'}
-                `}
+                `}`
                 >
                   {stageItem.name}
                 </div>
-                <!-- Mini Progress Bar for Current Stage -->
+                <!-- Mini Progress Bar for Current, Stage -->
                 {#if status === 'current'}
-                  <div class="w-16 mx-auto">
-                    <Progress value={stageProgress} class="h-1" />
+                  <div class="w-16, mx-auto">
+                    <Progress, value={stageProgress} class="h-1" />
                   {/if}
               </div>
             </div>
@@ -165,56 +165,56 @@ Visual progress indicator for the Evidence Chain of Custody workflow
         </div>
       </div>
     </div>
-    <!-- Mobile View: Vertical Timeline -->
-    <div class="lg:hidden space-y-4">
+    <!-- Mobile View: Vertical, Timeline -->
+    <div class="lg:hidden, space-y-4">
       {#each workflowStages as stageItem, index}
         {@const status = getStageStatus(stageItem.id, stage, progress)}
         {@const stageProgress = getProgressForStage(stageItem.id, stage, progress)}
         {@const nextStage = workflowStages[index + 1]}
         {@const SvelteComponent_1 = getStageIcon(status)}
-        <div class="relative flex items-start space-x-4">
-          <!-- Vertical Connector (except for last item) -->
+        <div class="relative flex items-start, space-x-4">
+          <!-- Vertical Connector (except for last, item) -->
           {#if nextStage}
-            <div class="absolute left-6 top-12 bottom-0 w-0.5 bg-gray-200"></div>
+            <div class="absolute left-6 top-12 bottom-0 w-0.5, bg-gray-200"></div>
             <div
               class={`
                 absolute left-6 top-12 w-0.5 transition-all duration-300
                 ${status === 'completed' ? 'bg-green-400 bottom-0' : status === 'current' ? 'bg-blue-400' : 'bg-gray-200'}
-              `}
+              `}`
               style={status === 'current' ? `height: ${stageProgress}%` : ''}
             >{/if}
-          <!-- Stage Circle -->
+          <!-- Stage, Circle -->
           <div
             class={`
             relative z-10 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300
             ${getStageColor(status)}
             ${status === 'current' ? 'animate-pulse' : ''}
-          `}
+          `}`
           >
-            <div class="w-5 h-5">
-  <SvelteComponent _1  />
+            <div class="w-5, h-5">
+  <SvelteComponent, _1  />
           </div>
-          <!-- Stage Content -->
-          <div class="flex-1 pb-4">
+          <!-- Stage, Content -->
+          <div class="flex-1, pb-4">
             <div
               class={`
               font-medium mb-1
               ${status === 'current' ? 'text-blue-600' : status === 'completed' ? 'text-green-600' : 'text-gray-500'}
-            `}
+            `}`
             >
               {stageItem.name}
             </div>
-            <p class="text-sm text-gray-600 mb-2">{stageItem.description}</p>
-            <!-- Stage Progress Bar -->
+            <p class="text-sm text-gray-600, mb-2">{stageItem.description}</p>
+            <!-- Stage Progress, Bar -->
             {#if status === 'current'}
-              <div class="max-w-xs">
-                <Progress value={stageProgress} class="h-2" />
-                <div class="text-xs text-gray-500 mt-1">{Math.round(stageProgress)}% complete</div>
+              <div, class="max-w-xs">
+                <Progress, value={stageProgress} class="h-2" />
+                <div class="text-xs text-gray-500, mt-1">{Math.round(stageProgress)}% complete</div>
               </div>
             {:else if status === 'completed'}
-              <div class="text-xs text-green-600 font-medium">✓ Completed</div>
+              <div class="text-xs text-green-600, font-medium">✓ Completed</div>
             {:else}
-              <div class="text-xs text-gray-500">Pending{/if}
+              <div class="text-xs, text-gray-500">Pending{/if}
           </div>
         </div>
       {/each}

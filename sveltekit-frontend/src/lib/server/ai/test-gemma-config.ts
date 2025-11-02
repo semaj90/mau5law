@@ -36,7 +36,7 @@ export async function testGemmaConfiguration(): Promise<any> {
     console.log(`   ❌ Embedding generation failed: ${(error as Error).message}`);
   }
   // 4. Display available functions
-  console.log('\n4️⃣ Available Legal Functions: `);
+  console.log('\n4️⃣ Available Legal Functions: `);'`
   LEGAL_FUNCTIONS.forEach((func, i) => {
     console.log(`   ${i + 1}. ${func.name} - ${func.description}`);
   });

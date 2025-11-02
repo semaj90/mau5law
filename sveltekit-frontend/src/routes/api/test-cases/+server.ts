@@ -276,14 +276,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Parse and validate request body
     const body = await request.json();
     // narrow the validatedData type for TypeScript
-    const validatedData = createCaseSchema.parse(body) as z.infer<typeof createCaseSchema>;
+    const validatedData = createCaseSchema.parse(body) as z.infer<typeof, createCaseSchema>;
 
     // Generate unique ID and timestamps
     const caseId = randomUUID();
     const now = new Date();
     // Generate embedding for case content (title + description) using pgvector
     // use nullish coalescing to preserve empty-string descriptions if provided
-    const caseContent = `${validatedData.title} ${validatedData.description ?? '` }`;
+    const caseContent = `${validatedData.title} ${validatedData.description ?? '` }`;'`
     let caseEmbedding: number[] | null = null;
 
     try {
@@ -452,12 +452,12 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     const { user } = await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     if (!caseId) {
-      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
+      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID` }));'`
     }
     // Parse and validate request body
     const body = await request.json();
     // narrow the validatedData type for TypeScript
-    const validatedData = updateCaseSchema.parse(body) as z.infer<typeof updateCaseSchema>;
+    const validatedData = updateCaseSchema.parse(body) as z.infer<typeof, updateCaseSchema>;
     const now = new Date();
     // Check if user has permission to update this case
     const assignedCol = getCasesAssignedColumn();
@@ -473,7 +473,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       .where(eq(cases.id, caseId))
       .limit(1);
     if (existingCase.length === 0) {
-      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
     }
     type CaseRecord = { id: string;, title: string;
       createdBy: string;
@@ -540,7 +540,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       id: randomUUID(),
       caseId: caseId,
       type: 'case_updated',
-      description: 'Case updated by ${user.email}. Changed: ${changedFields.join(', ')}`,
+      description: 'Case updated by ${user.email}. Changed: ${changedFields.join(', ')}`,'`
       userId: user.id,
       timestamp: now,
       metadata: {
@@ -629,7 +629,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     const { user } = await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     if (!caseId) {
-      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
+      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID` }));'`
     }
     // Check if user has permission to delete this case
     const assignedCol = getCasesAssignedColumn();
@@ -646,7 +646,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       .where(eq(cases.id, caseId))
       .limit(1);
     if (existingCase.length === 0) {
-      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
     }
     const caseRecord = existingCase[0];
     // Only case creator or admin can delete cases
@@ -664,7 +664,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     if (protectedStatuses.includes(caseRecord.status) && user.role !== 'admin') {
       throw error(
         400,
-        makeHttpErrorPayload({ message: 'Cannot delete case with, status: '${caseRecord.status}'. Please close the case first or contact an administrator.`,
+        makeHttpErrorPayload({ message: 'Cannot delete case with, status: '${caseRecord.status}'. Please close the case first or contact an administrator.`,'`
           code: `CASE_STATUS_PROTECTED` })
       );
     }
@@ -684,7 +684,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         },
         deletedBy: user.id,
         deletedByEmail: user.email,
-        isAdmin: user.role === 'admin` }
+        isAdmin: user.role === 'admin` }'`
     });
     // Delete related data in proper order (maintain referential integrity)
     // Resolve tables at runtime to perform deletions (avoid missing-export compile errors)
@@ -713,7 +713,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     deleteResults.forEach((result, index) => {
       if (result.status === 'rejected') {
         const tableName = ['timeline', 'activities', 'documents'][index];
-        console.warn(`Failed to delete ${tableName} for case ${caseId}: ', result.reason);
+        console.warn(`Failed to delete ${tableName} for case ${caseId}: ', result.reason);'`
       }
     });
     // Delete the case itself
@@ -750,7 +750,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       success: true,
       message: `Case "${caseRecord.title}" deleted successfully`,
       data: {
-        id: caseId,
+       , id: caseId,
         title: caseRecord.title,
         caseNumber: caseRecord.caseNumber,
         deletedBy: {
@@ -762,8 +762,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         relatedDataDeleted: {
           timeline: deleteResults[0].status === 'fulfilled',
           activities: deleteResults[1].status === 'fulfilled',
-          documents: deleteResults[2].status === 'fulfilled'
-        }
+          documents: deleteResults[2].status === 'fulfilled` }'`
       }
     });
   } catch (err: any) {
@@ -778,7 +777,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
 function getUserDisplayName(user: any): string {
   if (typeof user === 'object' && user !== null && ('firstName' in user || 'lastName' in user || 'email' in user)) {
     const u = user as { firstName?: string; lastName?: string; email?: string };
-    const fullName = `${u.firstName ?? ''} ${u.lastName ?? '` }`.trim();
+    const fullName = `${u.firstName ?? ''} ${u.lastName ?? '` }`.trim();'`
     return fullName || u.email || 'Unknown User';
   }
   return 'Unknown User';

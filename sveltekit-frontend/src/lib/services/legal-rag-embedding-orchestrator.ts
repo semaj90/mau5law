@@ -9,7 +9,7 @@ import { db } from '$lib/server/db/client'; // Import Drizzle client
 import * as schema from '$lib/server/db/schema'; // Import Drizzle schema
 import { eq } from 'drizzle-orm'; // Import Drizzle utility for equality checks
 
-// Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js
+// Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js'
 // This is a common pattern for vector search services.
 declare module './multi-embedding-vector-service.js' {
   export interface SearchQuery {
@@ -43,7 +43,7 @@ export interface SearchOptions {
   query_type?: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
   jurisdiction_filter?: string;
   practice_area_filter?: string;
-  date_range?: { start: Date;, end: Date };
+  date_range?: { start: Date; end: Date };
   max_results?: number;
   include_related_cases?: boolean;
   include_statutory_authority?: boolean;
@@ -118,7 +118,7 @@ class LegalRAGEmbeddingOrchestrator {
   // Removed in-memory caches, now using Redis as per instructions
   // private caseCache: Map<string, LegalCase> = new Map();
   // private lawCache: Map<string, LegalLaw> = new Map();
-  // private ragCache: Map<string, { context: RAGContext;, timestamp: Date }> = new Map();
+  // private ragCache: Map<string, { context: RAGContext; timestamp: Date }> = new Map();
 
   constructor() {
     // The constructor no longer initializes in-memory maps.
@@ -205,8 +205,8 @@ class LegalRAGEmbeddingOrchestrator {
     const cachedRaw = await redis.get(cacheKey);
     if (cachedRaw) {
       try {
-        const cached = JSON.parse(cachedRaw) as { context: RAGContext;, timestamp: string };
-        if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5 minutes TTL
+        const cached = JSON.parse(cachedRaw) as { context: RAGContext; timestamp: string };
+        if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5 minutes, TTL
           return cached.context;
         }
       } catch (parseError) {
@@ -261,7 +261,7 @@ class LegalRAGEmbeddingOrchestrator {
       await redis.set(cacheKey, JSON.stringify({ context: ragContext, timestamp: new Date().toISOString() }), 'EX', 300); // 5 minutes TTL
       return ragContext;
     } catch (error) {
-      console.error('Legal RAG retrieval error:', error);
+      console.error('Legal RAG retrieval error:', error);'
       throw error;
     }
   }

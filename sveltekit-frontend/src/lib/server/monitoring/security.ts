@@ -15,10 +15,10 @@ function logError(message: string, data?: any): void {
 export interface RateLimitEntry { count: number;, resetTime: number;
   blocked: boolean;
 }
-export interface SecurityConfig { rateLimits: {, general: { requests: number;, windowMs: number };
-    auth: { requests: number;, windowMs: number };
-    api: { requests: number;, windowMs: number };
-    upload: { requests: number;, windowMs: number };
+export interface SecurityConfig { rateLimits: {, general: { requests: number; windowMs: number };
+    auth: { requests: number; windowMs: number };
+    api: { requests: number; windowMs: number };
+    upload: { requests: number; windowMs: number };
   };
   jwt: { accessTokenExpiry: string;, refreshTokenExpiry: string;
   };
@@ -99,7 +99,7 @@ class SecurityManager {
     // Content Security Policy
     headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws:, wss:;"
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self', data:; connect-src 'self', ws:, wss:;"
     );
     // Other security headers
     headers.set('X-Content-Type-Options', 'nosniff');
@@ -157,4 +157,4 @@ export const securityManager = new SecurityManager();
   }
   return null; // Continue processing
 }
-export { config as securityConfig };
+export { config, as securityConfig };

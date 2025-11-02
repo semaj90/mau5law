@@ -117,19 +117,18 @@ export class ShaderCacheManager {
           label: `render_pipeline_${id}`,
           layout: 'auto',
           vertex: {
-            module: shaderModule,
-            entryPoint: config.type === 'vertex' ? config.entryPoint : 'main'
-          },
+           , module: shaderModule,
+            entryPoint: config.type === 'vertex' ? config.entryPoint : `main' },'`
           fragment:
             config.type === 'fragment'
               ? {
-                  module: shaderModule,
+                 , module: shaderModule,
                   entryPoint: config.entryPoint,
-                  targets: [{ format: 'bgra8unorm' }]
+                  targets: [{, format: `bgra8unorm` }]
                 }
               : undefined,
           primitive: {
-           , topology: `triangle-list` }
+           , topology: `triangle-list' }'`
         });
         bindGroupLayout = (pipeline as GPURenderPipeline).getBindGroupLayout(0);
       }
@@ -202,7 +201,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let input_val = input[index];
   let normalized = tanh(input_val * 0.1); // Activation
   output[index] = normalized;
-}`;
+}`;`
       case 'similarity':
         return `
 @group(0) @binding(0) var<storage, read> embeddings_a: array<f32>;
@@ -229,7 +228,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   let cosine_sim = dot_product / (sqrt(norm_a) * sqrt(norm_b));
   similarities[pair_idx] = cosine_sim;
-}`;
+}`;`
       case 'simd_parse':
         return `
 @group(0) @binding(0) var<storage, read> raw_data: array<u32>;
@@ -252,7 +251,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   parsed_tensors[base_idx + 1u] = byte1;
   parsed_tensors[base_idx + 2u] = byte2;
   parsed_tensors[base_idx + 3u] = byte3;
-}`;
+}`;`
       default:
         throw new Error(`Unknown tensor; operation: ${operation}`);
     }
@@ -334,12 +333,12 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       // Use existing embedding service
       const response = await fetch('/api/ocr/langextract', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , text: embeddingText,
           model: 'nomic-embed-text',
           tags: ['shader', 'webgpu', ...metadata.tags],
-          type: `shader` })
+          type: `shader' })'`
       });
       if (response.ok) {
         const data = await response.json();
@@ -424,7 +423,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 averageExecutionTime: 0,
                 description: query.text,
                 tags: query.tags || [],
-                operation: `query` });
+                operation: `query' });'`
               embeddingSimilarity = this.calculateCosineSimilarity(shaderData.embedding, queryEmbedding);
               relevanceScore += embeddingSimilarity * 0.7;
             } catch (error) {

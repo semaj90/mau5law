@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 /**
  * Redis Vector Service for caching and vector operations
  */
@@ -100,7 +100,7 @@ export class RedisVectorService {
     try {
       const data = await this.redis.hget(`vector:${id}`, 'data');
       if (!data) return null;
-      const vectorData = JSON.parse(data) as { id: string; vector: number[];, payload: any; metadata?: any };
+      const vectorData = JSON.parse(data) as { id: string; vector: number[]; payload: any; metadata?: any };
       return {
         id: vectorData.id,
         vector: vectorData.vector,

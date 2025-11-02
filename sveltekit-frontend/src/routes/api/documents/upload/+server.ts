@@ -1,6 +1,6 @@
 import type { User } from '$lib/types';
 import { json } from '@sveltejs/kit'
-import { v4 as uuidv4 } from 'uuid'
+import { v4, as uuidv4 } from 'uuid'
 import { db } from '$lib/server/db'
 import { documents, document_processing } from '$lib/server/db/schema-postgres'
 import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabbitmq-service'
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         body: uploadFormData,
         headers: {
           'X-Request-ID': documentId,
-          'X-User-ID': userId || 'anonymous` }
+          'X-User-ID': userId || 'anonymous` }'`
       });
       if (!uploadResponse.ok) {
         throw new Error(`Upload service error: ${uploadResponse.statusText}`);
@@ -112,13 +112,12 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'File uploaded successfully and queued for processing',
           s3Key: uploadResult.s3Key,
           processingStatus: 'queued',
-          jobQueueStatus: jobPublished ? 'published' : 'failed'
-        },
+          jobQueueStatus: jobPublished ? 'published' : 'failed' },
         { status: 202 }
       );
     } catch (uploadError: any) {
       const errorMessage = uploadError instanceof Error ? uploadError.message : String(uploadError);
-      console.error('Upload service error:', errorMessage);
+      console.error('Upload service error:', errorMessage);'
       // Update document status to failed
       await db
         .update(documents)
@@ -138,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
   } catch (error: any) {
-    console.error('Document upload error:', error);
+    console.error('Document upload error:', error);'
     return json(
       {
         error: 'Internal server error',
@@ -174,9 +173,9 @@ export const GET: RequestHandler = async ({ url }) => {
         .limit(100);
       return json({ documents: userDocuments });
     }
-    return json({ error: `Missing required parameters` }, { status: 400 });
+    return json({ error: 'Missing required parameters` }, { status: 400 });'`
   } catch (error: any) {
-    console.error('Document retrieval error:', error);
+    console.error('Document retrieval error:', error);'
     return json(
       {
         error: 'Failed to retrieve documents',

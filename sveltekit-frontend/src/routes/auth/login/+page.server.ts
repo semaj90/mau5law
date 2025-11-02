@@ -68,11 +68,11 @@ export const actions: Actions = {
       throw redirect(302, '/ai/dashboard');
 
     } catch (error: any) {
-      // Handle redirect properly - don't treat it as an error
+      // Handle redirect properly - don't treat it as an error'
       if (error.status === 302) {
         throw error;
       }
-      console.error('Login error:', error);
+      console.error('Login error:', error);'
       return fail(500, { error: 'An error occurred during login. Please try again.' });
     }
   }

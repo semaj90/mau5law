@@ -15,7 +15,7 @@ class InMemoryQueue extends EventEmitter {
   private messages: Map<string, QueueMessage[]> = new Map();
   private processing: Set<string> = new Set();
   private deadLetter: Map<string, QueueMessage[]> = new Map();
-  private stats: Map<string, { processed: number;, failed: number }> = new Map();
+  private stats: Map<string, { processed: number; failed: number }> = new Map();
   constructor(private options: QueueOptions = {}) {
     super();
     this.options = {
@@ -115,7 +115,7 @@ class InMemoryQueue extends EventEmitter {
           }
         }
       } catch (error) {
-        console.error(`❌ Consumer error:`, error);
+        console.error(`❌ Consumer error:`, error);`
       }
       // Continue processing
       setImmediate(processMessage);
@@ -216,7 +216,7 @@ export class WorkflowQueue extends InMemoryQueue {
       id: workflowId,
       state: initialState,
       history: [{, state: initialState, timestamp: Date.now() }],
-      status: 'active' });
+      status: 'active` });'`
     await this.rpush(
       'workflow_queue',
       JSON.stringify({

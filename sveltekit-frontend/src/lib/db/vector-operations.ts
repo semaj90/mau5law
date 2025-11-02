@@ -109,7 +109,7 @@ const ERR = {
   INVALID_INPUT: 'INVALID_INPUT',
   NOT_FOUND: 'NOT_FOUND',
   DB_ERROR: 'DB_ERROR',
-  RATE_LIMIT: 'RATE_LIMIT` } as const;
+  RATE_LIMIT: 'RATE_LIMIT' } as const;
 
 function validateEmbedding(embedding: any, minDim = 16, maxDim = 4096) {
   if (!Array.isArray(embedding) || embedding.length === 0) {
@@ -215,9 +215,9 @@ export class LegalVectorService {
   /**
    * Store document with embedding from gemma3-legal:latest
    */
-  async storeDocumentWithEmbedding(document: { title: string;, content: string;
-    documentType: string;
-    embedding: number[]; // From TensorRT-LLM gemma3-legal:latest
+  async storeDocumentWithEmbedding(document: {, title: string;, content: string;
+   , documentType: string;
+   , embedding: number[]; // From TensorRT-LLM gemma3-legal:latest
     practiceArea?: string;
     jurisdiction?: string;
     caseId?: string;
@@ -311,7 +311,7 @@ export class LegalVectorService {
     const threshold = typeof options.threshold === 'number' ? options.threshold : 0.7;
     const limit = validatePositiveInt(options.limit, 10);
 
-    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector` })`;
+    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector' })`;'`
 
     const baseSelect = this.database
       .select({
@@ -383,7 +383,7 @@ export class LegalVectorService {
         .update(legalDocuments)
         .set({ lastAccessedAt: sql`NOW()` })
         .where(
-          sql`${legalDocuments.id} IN (${sql.join(
+          sql`${legalDocuments.id} IN (${sql.join(`
             documentIds.map(id => sql`${id}`),
             sql`, `
           )})`
@@ -434,7 +434,7 @@ export class LegalVectorService {
         .update(legalAnalysisCache)
         .set({
           accessCount: sql`${legalAnalysisCache.accessCount} + 1`,
-          lastAccessedAt: sql`NOW()` })
+          lastAccessedAt: sql`NOW()' })'`
         .where(eq(legalAnalysisCache.id, results[0].id));
 
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
@@ -446,12 +446,12 @@ export class LegalVectorService {
   /**
    * Store legal analysis in cache
    */
-  async storeCachedAnalysis(analysis: { inputHash: string;, promptText: string;
+  async storeCachedAnalysis(analysis: {, inputHash: string;, promptText: string;
     contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
     analysisType: string;
-    analysisContent: string;
+   , analysisContent: string;
     analysisEmbedding?: number[];
-    processingTimeMs: number;
+   , processingTimeMs: number;
    , tokenCount: number;
     expiresInHours?: number;
   }) {
@@ -499,7 +499,7 @@ export class LegalVectorService {
         practiceAreas: sql<Record<string, number>>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`,
         avgProcessingTime: sql<number>`AVG(${legalDocuments.processingTimeMs})`,
         totalFileSize: sql<number>`SUM(${legalDocuments.fileSize})`,
-        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL: '24 hours')` })
+        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL: '24 hours')' })'`
       .from(legalDocuments)
       .where(eq(legalDocuments.documentStatus, 'active'));
 
@@ -516,10 +516,10 @@ export class LegalVectorService {
       limit?: number;
       // Restrict filters to allowed keys and concrete types
       filters?: Partial<{ documentType: string;, practiceArea: string;
-        jurisdiction: string;
-        caseId: string;
-        clientId: string;
-        confidentialityLevel: string;
+       , jurisdiction: string;
+       , caseId: string;
+       , clientId: string;
+       , confidentialityLevel: string;
        , excludeDocumentIds: number[];
       }>;
     }>
@@ -598,7 +598,7 @@ export class LegalVectorService {
           .set({
             embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`,
             modelVersion,
-            updatedAt: sql`NOW()` })
+            updatedAt: sql`NOW()' })'`
           .where(eq(legalDocuments.id, id))
           .returning({ id: legalDocuments.id, title: legalDocuments.title });
 

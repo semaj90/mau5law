@@ -72,7 +72,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Registration error:', error);'
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Registration failed'
@@ -93,7 +93,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', error);'
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Login failed'
@@ -112,7 +112,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Session validation error:', error);
+      console.error('Session validation error:', error);'
       return {
         valid: false,
         error: error instanceof Error ? error.message : 'Session validation failed'
@@ -130,7 +130,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Session refresh error:', error);
+      console.error('Session refresh error:', error);'
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Session refresh failed'
@@ -148,7 +148,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error);'
       return {
         success: false,
         message: error instanceof Error ? error.message : 'Logout failed'
@@ -166,7 +166,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Get profile error:', error);
+      console.error('Get profile error:', error);'
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get profile'
@@ -185,7 +185,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Update profile error:', error);
+      console.error('Update profile error:', error);'
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to update profile'
@@ -203,7 +203,7 @@ export class QuicAuthClient {
       });
       return await response.json();
     } catch (error) {
-      console.error('Token validation error:', error);
+      console.error('Token validation error:', error);'
       return {
         valid: false,
         error: error instanceof Error ? error.message : 'Token validation failed'
@@ -227,8 +227,7 @@ export class QuicAuthClient {
     if (this.useHttp3) {
       options.headers = {
         ...options.headers,
-        'Alt-Svc': 'h3=":4433"; ma=86400'
-      };
+        'Alt-Svc': 'h3=":4433"; ma=86400` };'`
     }
     return fetch(url, options);
   }
@@ -266,7 +265,7 @@ export function clearSessionCookies(event: RequestEvent): void {
   event.cookies.set('session_id', '', clearOptions);
   event.cookies.set('session', '', clearOptions);
   // Also try delete method
-  event.cookies.delete('session_id', { path: '/' });
+  event.cookies.delete('session_id', { path: `/` });
   event.cookies.delete('session', { path: `/` });
 }
 // Export singleton instance

@@ -24,7 +24,7 @@ const handler: RequestHandler = async ({ request }) => {
     return json({ success: true, count: results.length, results });
   } catch (err) {
     const mapped = mapErrorToHttp(err);
-    if (mapped.status === 500) console.error('❌ /api/vector/search error:', err);
+    if (mapped.status === 500) console.error('❌ /api/vector/search error:', err);'
     return json(mapped.body, { status: mapped.status });
   }
 };

@@ -314,7 +314,7 @@ export type FusionMethod = 'weighted' | 'rrf';
 // ============================================================================
 // CONFIGURATION VALIDATOR
 // ============================================================================
-export function validateConfig(): { valid: boolean;, errors: string[] } {
+export function validateConfig(): { valid: boolean; errors: string[] } {
 	const errors: string[] = [];
 
 	// Validate at least one AI provider is available

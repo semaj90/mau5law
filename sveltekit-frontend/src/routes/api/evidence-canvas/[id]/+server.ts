@@ -149,10 +149,9 @@ export const GET: RequestHandler = async ({ params }) => {
       success: true,
       canvas,
       cached: false,
-      source: 'database'
-    });
+      source: 'database' });
   } catch (err) {
-    console.error('Canvas load error:', err);
+    console.error('Canvas load error:', err);'
     if (err && typeof err === 'object' && 'status' in err) {
       // rethrow SvelteKit HttpError
       throw err as unknown as Error;
@@ -180,14 +179,14 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     const { canvas_json, metadata: incomingMetadata, name, annotations } = payload ?? {};
 
     if (!canvas_json) {
-      return json({ error: `Missing required, field: canvas_json` }, { status: 400 });
+      return json({ error: 'Missing required, field: canvas_json` }, { status: 400 });'`
     }
 
     const existingCanvasRaw = await db.select().from(canvasStates).where(eq(canvasStates.id, id)).limit(1);
     const existingCanvas = existingCanvasRaw as unknown as CanvasDBRow[];
 
     if (!existingCanvas.length) {
-      throw error(404, `Canvas with ID ${id} not found');
+      throw error(404, `Canvas with ID ${id} not found');'`
     }
 
     const updatedCanvasRowsRaw = await db
@@ -257,7 +256,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       updated_at: updatedCanvas.updatedAt ?? new Date().toISOString()
     });
   } catch (err) {
-    console.error('Canvas update error:', err);
+    console.error('Canvas update error:', err);'
     if (err && typeof err === 'object' && 'status' in err) {
       throw err as unknown as Error;
     }
@@ -301,7 +300,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
     invalidateCanvasCache(id);
     console.log(
-      `🗑️  Canvas deleted: ${deletedCanvas[0]?.name ?? '<unknown>` } (${id}) with ${deletedAnnotations.length} annotations`
+      `🗑️  Canvas deleted: ${deletedCanvas[0]?.name ?? '<unknown>` } (${id}) with ${deletedAnnotations.length} annotations`'`
     );
 
     return json({
@@ -313,7 +312,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
-    console.error('CanvasDeleteHandler error:', err);
+    console.error('CanvasDeleteHandler error:', err);'
     if (err && typeof err === 'object' && 'status' in err) {
       throw err as unknown as Error;
     }

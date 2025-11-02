@@ -114,7 +114,7 @@ export class PgVectorIndexingService {
           ${doc.documentId},
           ${doc.metadata?.documentType || null},
           ${doc.metadata?.confidentialityLevel || 'public'},
-          ${doc.modelUsed || 'embeddinggemma:latest` },
+          ${doc.modelUsed || 'embeddinggemma:latest` },'`
           ${this.dimensions},
           NOW(),
           NOW()
@@ -123,7 +123,7 @@ export class PgVectorIndexingService {
           content = ${doc.content},
           metadata = ${JSON.stringify(doc.metadata || {})},
           updated_at = NOW()
-      `);
+      `);`
       // Store embedding in vector table
       await this.db.execute(sql`
         INSERT INTO embeddings (
@@ -143,12 +143,12 @@ export class PgVectorIndexingService {
           ${doc.documentId},
           ${doc.chunkId || doc.id},
           ${doc.embeddingType},
-          ${doc.modelUsed || 'embeddinggemma:latest` },
+          ${doc.modelUsed || 'embeddinggemma:latest` },'`
           ${JSON.stringify(doc.metadata || {})},
           NOW()
         )
         ON CONFLICT DO NOTHING
-      `);
+      `);`
       return doc.id;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -174,7 +174,7 @@ export class PgVectorIndexingService {
       const chunksValues = docs
         .map(
           doc =>
-            `(
+            `(`
               '${this.escape(doc.id)}',
               '${this.escape(doc.content)}',
               '${this.escape(JSON.stringify(doc.metadata || {}))}',
@@ -198,13 +198,13 @@ export class PgVectorIndexingService {
             content = EXCLUDED.content,
             metadata = EXCLUDED.metadata,
             updated_at = NOW()
-        `));
+        `));`
       }
       // Batch insert embeddings
       const embeddingValues = docs
         .map(
           doc =>
-            `(
+            `(`
               gen_random_uuid(),
               '${this.escape(doc.content)}',
               '${this.vectorToString(doc.embedding)}'::vector,
@@ -224,7 +224,7 @@ export class PgVectorIndexingService {
             model_used, metadata, created_at
           ) VALUES ${embeddingValues}
           ON CONFLICT DO NOTHING
-        `));
+        `));`
       }
       return {
         inserted,
@@ -272,7 +272,7 @@ export class PgVectorIndexingService {
           e.embedding_type as: "embeddingType"
         FROM embeddings e
         WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
-      `;
+      `;`
       // Add optional filters
       if (options.documentType) {
         query += ` AND e.embedding_type = '${this.escape(options.documentType)}'`;
@@ -281,9 +281,9 @@ export class PgVectorIndexingService {
         query += ` AND e.metadata->>'caseId' = '${this.escape(options.caseId)}'`;
       }
       if (options.confidentialityLevel) {
-        query += ` AND e.metadata->>'confidentialityLevel' = '${this.escape(
+        query += ` AND e.metadata->>'confidentialityLevel' = '${this.escape('`
           options.confidentialityLevel
-        )}'`;
+        )}'`;'`
       }
       query += ` ORDER BY e.vector <-> '${vectorStr}'::vector LIMIT ${limit}`;
       const results = (await this.db.execute(
@@ -330,7 +330,7 @@ export class PgVectorIndexingService {
             ${vectorWeight} * (1 - (e.vector <-> '${vectorStr}'::vector)) +
             ${keywordWeight} * (
               CASE
-                WHEN e.content ILIKE: '%${keyword ? this.escape(keyword) : `` }%'
+                WHEN e.content ILIKE: `%${keyword ? this.escape(keyword) : `` }%'`
                 THEN 1.0
                 ELSE 0.0
               END
@@ -341,7 +341,7 @@ export class PgVectorIndexingService {
           e.embedding_type as: "embeddingType"
         FROM embeddings e
         WHERE 1=1
-      `;
+      `;`
       if (keyword) {
         query += ` AND (e.content ILIKE: '%${this.escape(keyword)}%' OR e.vector <-> '${vectorStr}'::vector < 0.5)`;
       }
@@ -367,12 +367,12 @@ export class PgVectorIndexingService {
       const embedResult = await this.db.execute(sql`
         DELETE FROM embeddings
         WHERE document_id = ${documentId}
-      `);
+      `);`
       // Delete from document_chunks table
       await this.db.execute(sql`
         DELETE FROM document_chunks
         WHERE document_id = ${documentId}
-      `);
+      `);`
       return Array.isArray(embedResult) ? embedResult.length : 0;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -394,7 +394,7 @@ export class PgVectorIndexingService {
           (SELECT COUNT(*) FROM document_chunks) as total_chunks,
           (SELECT COUNT(*) FROM embeddings) as total_embeddings,
           (SELECT AVG(embedding_dimension) FROM document_chunks) as avg_dimension
-      `));
+      `));`
       const row = (stats as unknown[])[0] as { total_documents: number;, total_chunks: number;
         total_embeddings: number;
         avg_dimension: number;
@@ -424,7 +424,7 @@ export class PgVectorIndexingService {
         CREATE INDEX IF NOT EXISTS embedding_vector_hnsw_idx
         ON embeddings USING hnsw (vector vector_cosine_ops)
         WITH (m = 16, ef_construction = 64)
-      `));
+      `));`
       console.log('HNSW index created successfully');
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -441,7 +441,7 @@ export class PgVectorIndexingService {
    * Escape SQL strings to prevent injection
    */
   private escape(str: string): string {
-    return str.replace(/'/g, "''");
+    return str.replace(/'/g, "''");'
   }
 }
 /**

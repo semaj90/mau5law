@@ -61,7 +61,7 @@ export interface OCRWorkerConfig { id: string;, worker: TesseractExtendedWorker
 // Define a new interface for OCR tasks to simplify the processingQueue type
 export interface OCRTask { imagePath: string;, options: ProcessingOptions;
   pageIndex: number;
-  resolve: (value: {, text: string; confidence: number }) => void;
+  resolve: (value: {, text: string;, confidence: number }) => void;
   reject: (reason?: any) => void;
 }
 
@@ -276,7 +276,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           fileSize: 0,
           mimeType: 'application/pdf',
           pageCount: pageImages.length,
-          language: options.language || 'eng` },
+          language: options.language || 'eng' },
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
@@ -314,7 +314,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           filename: path.basename(filePath),
           fileSize: 0,
           mimeType: this.getMimeType(filePath),
-          language: options.language || 'eng` },
+          language: options.language || 'eng' },
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
@@ -332,7 +332,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string;, confidence: number }> {
+  ): Promise<{ text: string; confidence: number }> {
     if (!this.initialized) {
       return new Promise((resolve, reject) => {
         this.processingQueue.push({ imagePath, options, pageIndex, resolve, reject });
@@ -346,7 +346,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     imagePath: string,
     options: ProcessingOptions,
     pageIndex: number
-  ): Promise<{ text: string;, confidence: number }> {
+  ): Promise<{ text: string; confidence: number }> {
     const workerCfg = this.getAvailableWorker();
     if (!workerCfg) {
       // This case should ideally be handled by the queue, but as a fallback
@@ -360,7 +360,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         await worker.setParameters({
           tessedit_pageseg_mode: (options.psm ?? 6) as number,
           tessedit_ocr_engine_mode: (options.oem ?? 3) as number,
-          preserve_interword_spaces: '1` });
+          preserve_interword_spaces: '1' });
       }
       if (options.language && options.language !== workerCfg.language) {
         await worker.loadLanguage(options.language);
@@ -426,7 +426,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       .replace(/\r\n/g, '\n')
       .replace(/\s+/g, ' ')
       .replace(/\n\s*\n/g, '\n')
-      .replace(new RegExp('[^\\w\\s.:!?\'"(){}$%&/*+=<>|\\\\@#^_`~-]', 'g'), '')
+      .replace(new RegExp('[^\\w\\s.:!?\'"(){}$%&/*+=<>|\\\\@#^_`~-]', 'g'), '')"`
       .trim();
   }
 
@@ -471,7 +471,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
   private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> {
     // Renamed: 'options'; to: '_options'
-    // This is a mock implementation. In a real scenario, you'd use a library
+    // This is a mock implementation. In a real scenario, you'd use a library'
     // like: 'pdf-poppler'; or: 'imagemagick' to convert PDF pages to images.
     console.warn(`Simulating PDF conversion for ${filePath}. This is a placeholder.`);
     const numPages = 3; // Simulate a 3-page PDF

@@ -125,7 +125,7 @@ export class JobCacheService {
   }
   // Health and Monitoring
   async getJobStats(): Promise<any> {
-    // This is a simplified version - in production you'd scan keys
+    // This is a simplified version - in production you'd scan keys'
     return {
       totalJobs: 0,
       activeJobs: 0,

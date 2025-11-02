@@ -110,9 +110,9 @@ interface Context7Client {
 
 type GPUCacheInterface = {
   // optional variations we might encounter
-  store?: (id: string, text: string, embedding: Float32Array) => Promise<void>;
-  add?: (id: string, text: string, embedding: Float32Array) => Promise<void>;
-  put?: (id: string, text: string; embedding: Float32Array) => Promise<void>;
+  store?: (id: string, text: string;, embedding: Float32Array) => Promise<void>;
+  add?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
+  put?: (id: string; text: string;, embedding: Float32Array) => Promise<void>;
   semanticSearch?: (embedding: Float32Array, limit?: number) => Promise<Array<{ id: string; content?: string }>>;
   search?: (embedding: Float32Array, opts?: { limit?: number }) => Promise<Array<{ id: string; content?: string }>>;
   optimizeCache?: () => Promise<void>;
@@ -159,9 +159,9 @@ export class EvidenceSystemIntegration {
   private postgresConfig: PostgreSQLConfig;
   private redisConfig: RedisConfig;
   private context7Config: Context7Config;
-  private minioClient: MinIOClient; // <- typed instead of `any`
+  private minioClient: MinIOClient; // <- typed instead, of `any`
   private postgresClient: PostgresClient;
-  private redisClient: RedisClient; // <- typed instead of `any`
+  private redisClient: RedisClient; // <- typed instead, of `any`
   private context7Client: Context7Client | null = null;
   private metrics: SystemMetrics;
   private isInitialized: boolean = false;
@@ -210,7 +210,7 @@ export class EvidenceSystemIntegration {
       console.log('✅ System integration initialized successfully');
       return true;
     } catch (error) {
-      console.error('❌ System integration initialization failed: `, error);
+      console.error('❌ System integration initialization failed: `, error);'`
       return false;
     }
   }
@@ -224,12 +224,12 @@ export class EvidenceSystemIntegration {
       this.minioClient = {
         bucketExists: async (_bucket: string) => true,
         makeBucket: async (_bucket: string) => true,
-        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: `mock-etag` }),
+        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: `mock-etag' }),'`
         getObject: async (_bucket: string, _name: string) => new Blob(),
         removeObject: async (_bucket: string, _name: string) => true,
         listObjects: async (_bucket: string, _prefix?: string) => []
       };
-      // Create buckets if they don't exist
+      // Create buckets if they don't exist'
       for (const bucket of Object.values(this.minioConfig.buckets)) {
         const exists = await this.minioClient.bucketExists(bucket);
         if (!exists) {
@@ -273,13 +273,13 @@ export class EvidenceSystemIntegration {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-      `);
+      `);`
       // Create vector similarity index
       await this.postgresClient.query(`
         CREATE INDEX CONCURRENTLY IF NOT EXISTS evidence_embedding_idx
         ON evidence_documents USING ivfflat (embedding vector_cosine_ops)
         WITH (lists = 100);
-      `);
+      `);`
       this.metrics.postgresHealth = true;
       console.log(`✅ PostgreSQL connected with pgvector on port ${this.postgresConfig.port}`);
     } catch (error) {
@@ -300,11 +300,11 @@ export class EvidenceSystemIntegration {
         del: async (..._keys: string[]) => 0,
         exists: async (..._keys: string[]) => 0,
         keys: async (_pattern: string) => [],
-        flushdb: async () => 'OK` };
+        flushdb: async () => 'OK' };
       this.metrics.redisHealth = true;
       console.log(`✅ Redis connected on port ${this.redisConfig.port}`);
     } catch (error) {
-      console.error('❌ Redis initialization failed: `, error);
+      console.error('❌ Redis initialization failed: `, error);'`
       throw error;
     }
   }
@@ -315,19 +315,19 @@ export class EvidenceSystemIntegration {
   private async initializeContext7(): Promise<void> {
     try {
       // Provide a typed mock implementation (no `any`)
-      this.context7Client = { resolveLibraryId: async (name: string) => ({, id: `/org/${name}` }),
+      this.context7Client = { resolveLibraryId: async (name: string) => ({, id: `/org/${name}' }),'`
         getLibraryDocs: async (_libraryId: string, options?: Record<string, unknown>) => ({
           content: 'Mock semantic search content...',
           metadata: {, tokens: (options?.tokens as number) || 1000 }
         }),
         semanticSearch: async (_query: string, _options?: Record<string, unknown>) => ({
           results: [
-            {
-              id: 'mock-doc-1',
+            {,
+             , id: 'mock-doc-1',
               title: 'Mock Legal Document',
               content: 'Mock content for semantic search...',
               similarity: 0.95,
-              metadata: {, source: `context7` }
+              metadata: {, source: `context7' }'`
             },
           ]
         })
@@ -351,7 +351,7 @@ export class EvidenceSystemIntegration {
       } else if (typeof cache.put === 'function') {
         await cache.put(id, text, embedding);
       } else {
-        // No-op if underlying cache doesn't support storing from this interface
+        // No-op if underlying cache doesn't support storing from this interface'
         console.debug('GPU cache store not available on this implementation (skipping)');
       }
     } catch (e) {
@@ -405,7 +405,7 @@ export class EvidenceSystemIntegration {
         SELECT id, title, content, embedding, metadata
         FROM evidence_documents
         LIMIT 1000
-      `)) as unknown as PgQueryResult<EvidenceRow>; // cast via unknown to satisfy strict type narrowing
+      `)) as unknown as PgQueryResult<EvidenceRow>; // cast via unknown to satisfy strict type narrowing`
       // Load into GPU cache
       for (const row of result.rows || []) {
         if (row.embedding && Array.isArray(row.embedding)) {
@@ -429,7 +429,7 @@ export class EvidenceSystemIntegration {
     try {
       // 1. Generate unique file ID
       const fileId = this.generateId();
-      const filePath = `cases/${caseId}/evidence/${fileId}-${(file as File & { name?: string }).name ?? 'file` }`;
+      const filePath = `cases/${caseId}/evidence/${fileId}-${(file as File & { name?: string }).name ?? 'file' }`;
       // 2. Upload to MinIO
       await this.minioClient.putObject(this.minioConfig.buckets.evidence, filePath, file);
       // 3. Extract text content (simulate OCR/text extraction)
@@ -461,7 +461,7 @@ export class EvidenceSystemIntegration {
         INSERT INTO evidence_documents
         (id, case_id, title, content, file_path, file_size, mime_type, embedding, metadata)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      `,
+      `,`
         [
           fileId,
           caseId,
@@ -555,7 +555,7 @@ export class EvidenceSystemIntegration {
               AND 1 - (embedding <=> $1) > $3
             ORDER BY embedding <=> $1
             LIMIT $4
-          `,
+          `,`
             [Array.from(queryEmbedding), caseId ?? null, threshold, limit - results.length]
           )) as unknown as PgQueryResult<EvidenceRow>; // cast via unknown first
           results.push(
@@ -658,7 +658,7 @@ export class EvidenceSystemIntegration {
     // TypedArray / DataView -> create a copied Uint8Array (ensures an ArrayBuffer-backed view)
     if (ArrayBuffer.isView(raw)) {
       const view = raw as ArrayBufferView;
-      // Use the view's buffer/offset/length to create a copy without any `any` casts
+      // Use the view's buffer/offset/length to create a copy without any `any` casts'
       try {
         return new Uint8Array(view.buffer, view.byteOffset, view.byteLength).slice();
       } catch {
@@ -962,8 +962,7 @@ export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: P
         evidence: 'evidence-files',
         documents: 'legal-documents',
         media: 'media-files',
-        cache: 'cache-storage'
-      }
+        cache: 'cache-storage' }
     },
     postgres: {
       host: 'localhost',
@@ -979,7 +978,7 @@ export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: P
       port: 4005,
       password: process.env.REDIS_PASSWORD,
       db: 0,
-      keyPrefix: `legal-ai` },
+      keyPrefix: `legal-ai' },'`
     context7: {
       mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080',
       apiKey: process.env.CONTEXT7_API_KEY,

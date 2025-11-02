@@ -16,15 +16,15 @@ type PipelineContext = { documents: Document[];, jobs: ProcessingJob[];
   error: string | null;
 };
 
-type UploadSuccessEvent = { type: 'UPLOAD_SUCCESS';, jobs: ProcessingJob[] };
-type UploadErrorEvent = { type: 'UPLOAD_ERROR';, error: string };
-type ProcessingSuccessEvent = { type: 'PROCESSING_SUCCESS';, job: ProcessingJob };
-type ProcessingErrorEvent = { type: 'PROCESSING_ERROR';, error: string };
-type SearchEvent = { type: 'SEARCH';, query: string };
-type SearchSuccessEvent = { type: 'SEARCH_SUCCESS';, results: SearchResult[] };
-type SearchErrorEvent = { type: 'SEARCH_ERROR';, error: string };
-type JobsFetchedEvent = { type: 'JOBS_FETCHED';, jobs: ProcessingJob[] };
-type FetchErrorEvent = { type: 'FETCH_ERROR';, error: string };
+type UploadSuccessEvent = { type: 'UPLOAD_SUCCESS'; jobs: ProcessingJob[] };
+type UploadErrorEvent = { type: 'UPLOAD_ERROR'; error: string };
+type ProcessingSuccessEvent = { type: 'PROCESSING_SUCCESS'; job: ProcessingJob };
+type ProcessingErrorEvent = { type: 'PROCESSING_ERROR'; error: string };
+type SearchEvent = { type: 'SEARCH'; query: string };
+type SearchSuccessEvent = { type: 'SEARCH_SUCCESS'; results: SearchResult[] };
+type SearchErrorEvent = { type: 'SEARCH_ERROR'; error: string };
+type JobsFetchedEvent = { type: 'JOBS_FETCHED'; jobs: ProcessingJob[] };
+type FetchErrorEvent = { type: 'FETCH_ERROR'; error: string };
 type RetryEvent = { type: 'RETRY' };
 type ClearErrorEvent = { type: 'CLEAR_ERROR' };
 
@@ -47,7 +47,7 @@ type PipelineEvent =
 
 // --- Added: local ActionArgs type used by XState action handlers ---
 // Minimal shape matching how this file calls action handlers.
-// Keeps typing narrow and avoids importing or referencing xstate's full ActionArgs type.
+// Keeps typing narrow and avoids importing or referencing xstate's full ActionArgs type.'
 type ActionArgs<C = PipelineContext, E = PipelineEvent> = { context: C;, event: E;
   // allow extra runtime properties XState may pass (like meta, src, _event)
   [key: string]: any;
@@ -61,17 +61,17 @@ type ActionArgs<C = PipelineContext, E = PipelineEvent> = { context: C;, event:
 // Provide a few lightweight overloads to better match common `assign` shapes from xstate
 // so that svelte-check / TypeScript produce fewer false positives while keeping a
 // narrow escape hatch for complex cases.
-function $unsafeAssign<C extends Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C extends, Record<string, unknown>, E extends { type?: string }>(
   mapper: (context: C, event: E) => Partial<C>
-): ReturnType<typeof assign>;
-function $unsafeAssign<C extends Record<string, unknown>, E extends { type?: string }>(
+): ReturnType<typeof, assign>;
+function $unsafeAssign<C extends, Record<string, unknown>, E extends { type?: string }>(
   mapper: Partial<{ [K in keyof C]: (context: C, event: E) => C[K] | Partial<C[K]> }>
-): ReturnType<typeof assign>;
-function $unsafeAssign<C extends Record<string, unknown>, E extends { type?: string }>(
+): ReturnType<typeof, assign>;
+function $unsafeAssign<C extends, Record<string, unknown>, E extends { type?: string }>(
   mapper:
     | ((context: C, event: E) => Partial<C>)
     | Partial<{ [K in keyof C]: (context: C, event: E) => C[K] | Partial<C[K]> }>
-): ReturnType<typeof assign> {
+): ReturnType<typeof, assign> {
   // fallback implementation: cast locally to satisfy xstate typings; kept as a localized escape hatch
   return assign(mapper as unknown as Record<string, unknown>);
 }
@@ -108,9 +108,9 @@ export interface PipelineStats { documentsProcessed: number;, embeddingsGenerat
 }
 
 // Add typed WebSocket message unions to avoid `any`
-type WSJobUpdate = { type: 'job_update';, job: ProcessingJob };
-type WSDocumentProcessed = { type: 'document_processed';, document: Document };
-type WSPipelineStats = { type: 'pipeline_stats';, stats: PipelineStats };
+type WSJobUpdate = { type: 'job_update'; job: ProcessingJob };
+type WSDocumentProcessed = { type: 'document_processed'; document: Document };
+type WSPipelineStats = { type: 'pipeline_stats'; stats: PipelineStats };
 type WSCacheInvalidated = { type: 'cache_invalidated'; pattern?: string };
 type WSUnknown = { type: string; [key: string]: any };
 
@@ -203,14 +203,14 @@ const pipelineMachine = createMachine(
       },
       fetching_jobs: {
         entry: 'fetchJobs',
-        on: { JOBS_FETCHED: {, target: 'idle', actions: 'updateJobs' },
-          FETCH_ERROR: { target: 'error', actions: 'handleError' }
+        on: {, JOBS_FETCHED: {, target: 'idle', actions: 'updateJobs' },
+          FETCH_ERROR: {, target: 'error', actions: `handleError` }
         }
       },
       error: {
-        entry: 'setError',
+       , entry: 'setError',
         on: {
-          RETRY: 'idle',
+         , RETRY: 'idle',
           CLEAR_ERROR: `idle` }
       }
     }
@@ -360,7 +360,7 @@ export class ProductionPipelineService {
         console.log('✅ WebSocket connected');
         connectionStatus.set('connected');
         if (this.reconnectTimer) {
-          // <-- fixed syntax
+          // <-- fixed, syntax
           clearTimeout(this.reconnectTimer);
           this.reconnectTimer = null;
         }
@@ -382,7 +382,7 @@ export class ProductionPipelineService {
       };
 
       this.websocket.onerror = err => {
-        console.error('❌ WebSocket error:', err);
+        console.error('❌ WebSocket error:', err);'
         connectionStatus.set('disconnected');
       };
     } catch (err) {
@@ -484,7 +484,7 @@ export class ProductionPipelineService {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          type: 'crawl',
+         , type: 'crawl',
           url,
           options,
           metadata: {
@@ -518,7 +518,7 @@ export class ProductionPipelineService {
 
       const response = await this.apiCall('/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           filters,

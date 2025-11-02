@@ -471,7 +471,7 @@ class LegalReportsManager {
     try {
       const response = await fetch('/api/graph/neo4j/reports', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           reportId: report.id,
           type: report.type,
@@ -676,7 +676,7 @@ class LegalReportsManager {
         type: 'case_summary',
         jurisdiction: 'Federal',
         sections: [
-          {
+          {,
             id: 'executive-summary',
             title: 'Executive Summary',
             order: 1,
@@ -717,7 +717,7 @@ class LegalReportsManager {
           }
         ],
         variables: [
-          {
+          {,
             name: 'case_name',
             type: 'text',
             required: true,
@@ -748,7 +748,7 @@ class LegalReportsManager {
         type: 'legal_memo',
         jurisdiction: 'Federal',
         sections: [
-          {
+          {,
             id: 'header',
             title: 'Memorandum Header',
             order: 1,
@@ -790,7 +790,7 @@ class LegalReportsManager {
           }
         ],
         variables: [
-          {
+          {,
             name: 'recipient',
             type: 'text',
             required: true,
@@ -800,14 +800,12 @@ class LegalReportsManager {
             name: 'author',
             type: 'text',
             required: true,
-            description: 'Memo author'
-          },
+            description: `Memo author` },
           {
             name: 'legal_question',
             type: 'text',
             required: true,
-            description: 'Legal question to analyze'
-          },
+            description: `Legal question to analyze` },
           {
             name: 'subject',
             type: 'text',
@@ -826,7 +824,7 @@ class LegalReportsManager {
         const compressed = await this.simdCache.stringify(template);
         localStorage.setItem(`${this.templatePrefix}${template.id}`, compressed);
       } catch (error) {
-        console.warn('Failed to save default template:', error);
+        console.warn('Failed to save default template: `, error);'`
       }
     }
     reportTemplates.set(defaultTemplates);

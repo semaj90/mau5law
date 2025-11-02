@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { gemma3Client } from '$lib/gemma3Client';
-import { ai_interactions as aiInteractions } from '$lib/server/db/schema-postgres';
+import { ai_interactions, as aiInteractions } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/drizzle';
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       model: 'gemma3'
     });
   } catch (error) {
-    console.error('Legal analysis API error:', error);
+    console.error('Legal analysis API error:', error);'
     // Return mock legal analysis on failure
     const mockResponse = {
       success: false,

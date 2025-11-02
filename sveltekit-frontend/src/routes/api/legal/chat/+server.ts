@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('Legal chat error:', error);
+    console.error('Legal chat error:', error);'
     return json({ error: 'Failed to process legal analysis request' }, { status: 500 });
   }
 };
@@ -135,14 +135,14 @@ async function findRelevantLegalSources(prompt: string, caseId?: string): Promis
           : like(legalDocuments.content, `%${prompt}%`)
       )
       .limit(5);
-    sources.push(...(documents as unknown as Source[]).map(doc => ({ ...doc, type: 'document' })));
+    sources.push(...(documents as unknown as Source[]).map(doc => ({ ...doc, type: 'document` })));'`
     // Search legal precedents (vector similarity would be ideal here)
     const precedents = await db
       .select()
       .from(legalPrecedents)
       .where(like(legalPrecedents.summary, `%${prompt}%`))
       .limit(3);
-    sources.push(...(precedents as unknown as Source[]).map(prec => ({ ...prec, type: 'precedent' })));
+    sources.push(...(precedents as unknown as Source[]).map(prec => ({ ...prec, type: 'precedent` })));'`
   } catch (error: any) {
     console.warn('Error searching legal sources:', error);
   }
@@ -164,22 +164,22 @@ ${sources
   )
   .join('\n')}
 CASE CONTEXT:
-${context ? JSON.stringify(context, null, 2) : 'No additional context provided' }
+${context ? JSON.stringify(context, null, 2) : 'No additional context provided` }'`
 Please provide:
 1. Legal Analysis (comprehensive analysis of the query)
 2. Confidence Level (0.0-1.0)
 3. Key Recommendations (3-5 actionable items)
 4. Supporting Evidence from the provided sources
 Format your response as structured JSON.
-`;
+`;`
     // In a real implementation, call the Gemma3 Legal model via Ollama
     const analysisResult: AnalysisResult = {
-      analysis: `Based on the legal query and available sources, the analysis indicates several key considerations for the prosecution. The relevant precedents and documents suggest a strong foundation for the case, with particular attention needed to evidence handling and procedural requirements.
+      analysis: `Based on the legal query and available sources, the analysis indicates several key considerations for the prosecution. The relevant precedents and documents suggest a strong foundation for the case, with particular attention needed to evidence handling and procedural requirements.`
 Key legal principles identified:
 - Chain of custody requirements must be strictly maintained
 - All evidence must meet admissibility standards under current jurisdiction
 - Procedural deadlines and notification requirements are critical
-The case appears to have merit based on the documented evidence and applicable legal standards.`,
+The case appears to have merit based on the documented evidence and applicable legal standards.`,`
       confidence: 0.87,
       recommendations: [
         'Review all evidence for chain of custody documentation',

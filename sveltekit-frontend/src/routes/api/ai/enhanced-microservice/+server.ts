@@ -16,7 +16,7 @@ import type { Document } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
@@ -191,7 +191,7 @@ class GoMicroserviceClient {
           method,
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json` },
+            Accept: `application/json` },
           body: body ? JSON.stringify(body) : undefined,
           signal: controller.signal
         });
@@ -365,8 +365,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Query parameter is required for enhanced RAG'
-            },
+              message: `Query parameter is required for enhanced RAG` },
             { status: 400 }
           );
         }
@@ -413,7 +412,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Content parameter is required for legal analysis` },
+              message: `Content parameter is required for legal analysis` },
             { status: 400 }
           );
         }
@@ -515,7 +514,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
     }
   } catch (error: any) {
     const message = getErrorMessage(error);
-    console.error(`API action failed (${action}): ', message);
+    console.error(`API action failed (${action}): ', message);'`
     return json(
       {
         status: 'error',

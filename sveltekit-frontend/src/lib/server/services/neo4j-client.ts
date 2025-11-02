@@ -34,10 +34,10 @@ class Neo4jClientService {
         const name = (entity.name as string) ?? 'Unknown';
         const type = (entity.type as string) ?? 'Entity';
         await session.run(
-          `MERGE (e:Entity {name: $name})
+          `MERGE (e:Entity {name: $name})`
            MERGE (d:Document {id: $docId})
            MERGE (e)-[:MENTIONED_IN]->(d)
-           SET e.type = $type`,
+           SET e.type = $type`,`
           { name, type, docId }
         );
       }
@@ -49,9 +49,9 @@ class Neo4jClientService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(
-        `MATCH (e:Entity)-[r:MENTIONED_IN]->(d:Document)
+        `MATCH (e:Entity)-[r:MENTIONED_IN]->(d:Document)`
          RETURN e, r, d
-         LIMIT $limit`,
+         LIMIT $limit`,`
         { limit }
       );
       return result.records.map(rec => ({

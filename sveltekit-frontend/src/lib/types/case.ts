@@ -52,7 +52,7 @@ export interface CaseFormState { data: CaseForm;, errors: CaseFormValidationErr
   isSubmitting: boolean;
   isValid: boolean;
   isDirty: boolean;
-  touchedFields: Set<keyof CaseForm>;
+  touchedFields: Set<keyof, CaseForm>;
 }
 // Case Timeline and Events
 export interface TimelineEvent { id: string;, caseId: string;

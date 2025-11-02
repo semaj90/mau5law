@@ -29,7 +29,7 @@ interface AugmentedIORedisClient extends IORedisClass {
     ttl: number,
     mode: 'NX' | 'XX'
   ): Promise<'OK' | null>;
-  // Explicitly add the: 'on' method to ensure it's recognized by TypeScript
+  // Explicitly add the: 'on' method to ensure it's recognized by TypeScript'
   on(event: 'reconnecting', listener: (delay: number) => void): this; // Specific overload for: 'reconnecting'
   on(event: 'error', listener: (error: Error) => void): this; // Specific overload for: 'error'
   on(event: string | symbol, listener: (...args: any[]) => void): this; // General overload
@@ -154,7 +154,7 @@ class RedisService {
       this.isConnected = true;
     });
     redis.on('error', (error: Error) => {
-      console.error(`❌ [RedisService] ${name} error: ', error);
+      console.error(`❌ [RedisService] ${name} error: ', error);'`
       this.isConnected = false;
       // Trigger reconnection logic if not already connected and not max attempts
       if (!this.isConnected && this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -350,7 +350,7 @@ class RedisService {
       await client.del(key);
       return true;
     } catch (error) {
-      console.error(`[RedisService] Failed to delete ${key}: ', error);
+      console.error(`[RedisService] Failed to delete ${key}: ', error);'`
       return false;
     }
   }

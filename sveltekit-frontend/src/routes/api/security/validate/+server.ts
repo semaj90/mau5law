@@ -68,13 +68,12 @@ export const POST: RequestHandler = async ({ request }) => {
     response.progress = {
       stage: 'ai_analysis',
       percentage: 25,
-      message: 'Running AI-powered security analysis...'
-    };
+      message: 'Running AI-powered security analysis...` };'`
     // Check against Enhanced RAG service for threat intelligence
     try {
       const ragResponse = await fetch('http://localhost:8094/api/security/check', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           email,
           domain: email.split('@')[1],
@@ -115,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error instanceof Error
         ? `${error.message}${error.stack ? `\n${error.stack}` : `` }`
         : String(error ?? 'Unknown error');
-    console.error('Security validation error:', errMessage);
+    console.error('Security validation error:', errMessage);'
     return json(
       {
         success: false,

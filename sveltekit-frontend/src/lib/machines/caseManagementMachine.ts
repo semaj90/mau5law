@@ -32,21 +32,21 @@ export interface CaseManagementContext {
 }
 // Machine Events
 type CaseManagementEvent =
-  | { type: 'LOAD_CASE';, caseId: string }
-  | { type: 'CREATE_CASE';, caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'> }
-  | { type: 'UPDATE_CASE'; caseId: string;, updates: Partial<CaseData> }
-  | { type: 'DELETE_CASE';, caseId: string }
-  | { type: 'ADD_EVIDENCE'; caseId: string;, evidence: Omit<EvidenceData, 'id' | 'createdAt'> }
-  | { type: 'SEARCH_CASES';, query: string }
-  | { type: 'LOAD_USER_CASES';, userId: string }
-  | { type: 'SET_FILTERS';, filters: Partial<CaseManagementContext['filters']> }
-  | { type: 'SET_PAGE';, page: number }
-  | { type: 'SELECT_CASE';, caseId: string | null }
+  | { type: 'LOAD_CASE'; caseId: string }
+  | { type: 'CREATE_CASE'; caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'> }
+  | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<CaseData> }
+  | { type: 'DELETE_CASE'; caseId: string }
+  | { type: 'ADD_EVIDENCE'; caseId: string; evidence: Omit<EvidenceData, 'id' | 'createdAt'> }
+  | { type: 'SEARCH_CASES'; query: string }
+  | { type: 'LOAD_USER_CASES'; userId: string }
+  | { type: 'SET_FILTERS'; filters: Partial<CaseManagementContext['filters']> }
+  | { type: 'SET_PAGE'; page: number }
+  | { type: 'SELECT_CASE'; caseId: string | null }
   | { type: 'CLEAR_ERROR' }
   | { type: 'RETRY' }
 // Machine Services (MCP Tool Calls) - XState v5 pattern
 const caseManagementServices = {
-  loadCase: async ({ input }: { input: {, context: CaseManagementContext; event: any } }) => {
+  loadCase: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
     const { context, event } = input;
     const caseId = event.caseId ?? context.selectedCaseId;
     if (!caseId) throw new Error('No case ID provided');
@@ -63,13 +63,13 @@ const caseManagementServices = {
     }
     return await response.json();
   },
-  createCase: async ({ input }: { input: {, context: CaseManagementContext; event: any } }) => {
+  createCase: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-        tool: 'cases.createCase',
+       , tool: 'cases.createCase',
         args: {
          , caseData: {
             ...event.caseData,
@@ -83,13 +83,13 @@ const caseManagementServices = {
     }
     return await response.json();
   },
-  updateCase: async ({ input }: { input: {, context: CaseManagementContext; event: any } }) => {
+  updateCase: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-        tool: 'cases.updateCase',
+       , tool: 'cases.updateCase',
         args: {
          , caseId: event.caseId,
           updates: event.updates
@@ -101,13 +101,13 @@ const caseManagementServices = {
     }
     return await response.json();
   },
-  addEvidence: async ({ input }: { input: {, context: CaseManagementContext; event: any } }) => {
+  addEvidence: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-        tool: 'cases.addEvidence',
+       , tool: 'cases.addEvidence',
         args: {
          , caseId: event.caseId,
           evidence: event.evidence
@@ -119,13 +119,13 @@ const caseManagementServices = {
     }
     return await response.json();
   },
-  searchCases: async ({ input }: { input: {, context: CaseManagementContext; event: any } }) => {
+  searchCases: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-        tool: 'cases.searchCases',
+       , tool: 'cases.searchCases',
         args: {
          , query: event.query || context.searchQuery,
           userId: context.userId,
@@ -138,15 +138,15 @@ const caseManagementServices = {
     }
     return await response.json();
   },
-  loadUserCases: async ({ input }: { input: {, context: CaseManagementContext; event: any } }) => {
+  loadUserCases: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-        tool: 'cases.getUserCases',
+       , tool: 'cases.getUserCases',
         args: {
-          userId: event.userId || context.userId,
+         , userId: event.userId || context.userId,
           options: {
            , limit: context.pagination.limit,
             offset: (context.pagination.page - 1) * context.pagination.limit,
@@ -176,21 +176,21 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
     isLoading: false,
     error: null,
     pagination: {
-      page: 1,
+     , page: 1,
       limit: 20,
       totalCount: 0
     },
     userId: '', // Will be set when machine is spawned
   },
-  states: { idle: {, on: {
-        LOAD_CASE: 'loadingCase',
+  states: {, idle: {, on: {
+       , LOAD_CASE: 'loadingCase',
         CREATE_CASE: 'creatingCase',
         UPDATE_CASE: 'updatingCase',
         ADD_EVIDENCE: 'addingEvidence',
         SEARCH_CASES: 'searchingCases',
         LOAD_USER_CASES: 'loadingUserCases',
         SET_FILTERS: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
            , filters: ({ context, event }) => ({ ...context.filters, ...event.filters })
           })
@@ -242,7 +242,7 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
         src: 'createCase',
         input: ({ context, event }) => ({ context, event }),
         onDone: [
-          {
+          {,
             target: 'loadingUserCases',
             guard: ({ event }) => event.output.success,
             actions: assign({
@@ -272,7 +272,7 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
         src: 'updateCase',
         input: ({ context, event }) => ({ context, event }),
         onDone: [
-          {
+          {,
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
             actions: assign({ isLoading: false })
@@ -299,7 +299,7 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
         src: 'addEvidence',
         input: ({ context, event }) => ({ context, event }),
         onDone: [
-          {
+          {,
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
             actions: assign({ isLoading: false })
@@ -323,7 +323,7 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
     },
     searchingCases: { entry: assign({, isLoading: true,
         error: null,
-        searchQuery: ({ event }) => event.query || '` }),
+        searchQuery: ({ event }) => event.query || '' }),
       invoke: {
         src: 'searchCases',
         input: ({ context, event }) => ({ context, event }),
@@ -390,4 +390,4 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
   }
 });
 // Export types
-export type CaseManagementState = StateFrom<typeof caseManagementMachine>;
+export type CaseManagementState = StateFrom<typeof, caseManagementMachine>;

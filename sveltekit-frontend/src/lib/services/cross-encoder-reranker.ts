@@ -181,7 +181,7 @@ export class CrossEncoderReranker {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: 'llama3.1',
+         , model: 'llama3.1',
           prompt,
           stream: false,
           options: {, temperature: 0.1, top_p: 0.9, max_tokens: 256 }
@@ -218,13 +218,13 @@ export class CrossEncoderReranker {
     return Promise.resolve(scores);
   }
 
-  private buildScoringPrompt(pairs: Array<{, query: string; passage: string }>): string {
+  private buildScoringPrompt(pairs: Array<{, query: string;, passage: string }>): string {
     const examples = pairs.map((pair, i) => `Passage ${i + 1}: "${pair.passage.substring(0, 300)}..."`).join('\n');
-    return `You are a legal document relevance scorer. Rate how well each passage answers the query on a scale of 0.0 to 1.0.
+    return `You are a legal document relevance scorer. Rate how well each passage answers the query on a scale of 0.0 to 1.0.`
 Query: "${pairs[0]?.query ?? '' }"
 ${examples}
 Provide only the scores in order, separated by commas. Example: 0.85, 0.23, 0.67
-Scores: ';
+Scores: ';'
   }
 
   private parseScoresFromResponse(response: string, expectedCount: number): number[] {
@@ -292,7 +292,7 @@ Scores: ';
     this.modelCache.clear();
   }
 
-  getCacheStats(): { scoreCache: number;, modelCache: number } {
+  getCacheStats(): { scoreCache: number; modelCache: number } {
     return { scoreCache: this.scoreCache.size, modelCache: this.modelCache.size };
   }
 }
@@ -321,8 +321,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc1',
           title: 'Contract Formation Requirements',
           documentType: 'contract',
-          content: 'A valid contract requires offer, acceptance, and consideration.'
-        }
+          content: 'A valid contract requires offer, acceptance, and consideration.` }'`
       },
       {
         id: 'doc2',
@@ -334,8 +333,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc2',
           title: 'Employment Termination',
           documentType: 'case',
-          content: 'Employment can be terminated with proper notice.'
-        }
+          content: `Employment can be terminated with proper notice.` }
       },
       {
         id: 'doc3',

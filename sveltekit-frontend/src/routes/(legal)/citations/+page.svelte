@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   import { Button } from '$lib/components/ui/core.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card.svelte';
@@ -49,20 +49,20 @@ import type { Case } from '$lib/types';
 
 <svelte:head>
   <title>Legal Citations | YoRHa Legal AI</title>
-  <meta name="description" content="Legal citation management and validation system" />
+  <meta name="description" content="Legal citation management and validation, system" />
 </svelte:head>
 
-<div class="citations-page">
-  <div class="page-header">
+<div, class="citations-page">
+  <div, class="page-header">
     <h1>📝 Legal Citations</h1>
     <p>Manage and validate legal citations with AI assistance</p>
   </div>
 
-  <!-- Search and Filters -->
-  <Card.Root class="search-card">
+  <!-- Search and, Filters -->
+  <Card.Root, class="search-card">
     <CardContent>
-      <div class="search-controls">
-        <div class="search-input">
+      <div, class="search-controls">
+        <div, class="search-input">
           <input
             type="text"
             bind:value={searchQuery}
@@ -70,68 +70,68 @@ import type { Case } from '$lib/types';
             class="search-field"
           />
         </div>
-        <div class="filter-controls">
-          <select bind:value={citationType} class="citation-type-select">
-            <option value="all">All Types</option>
-            <option value="case">Case Citations</option>
-            <option value="statute">Statute Citations</option>
-            <option value="regulation">Regulation Citations</option>
+        <div, class="filter-controls">
+          <select, bind:value={citationType} class="citation-type-select">
+            <option, value="all">All Types</option>
+            <option, value="case">Case Citations</option>
+            <option, value="statute">Statute Citations</option>
+            <option, value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button.Root onclick={handleSearch} class="search-button">🔍 Search</Button.Root>
+        <Button.Root, onclick={handleSearch} class="search-button">🔍 Search</Button.Root>
       </div>
     </CardContent>
   </Card.Root>
 
-  <!-- Citations Results -->
+  <!-- Citations, Results -->
   {#if loading}
-    <div class="loading-state">
-      <div class="loading-spinner"></div>
+    <div, class="loading-state">
+      <div, class="loading-spinner"></div>
       <p>Loading citations...</p>
     </div>
   {:else if citations.length === 0}
-    <div class="empty-state">
-      <div class="empty-icon">📝</div>
+    <div, class="empty-state">
+      <div, class="empty-icon">📝</div>
       <h3>No citations found</h3>
       <p>Try adjusting your search criteria or add new citations</p>
     </div>
   {:else}
-    <div class="citations-grid">
+    <div, class="citations-grid">
       {#each Array.isArray(citations) ? citations : [] as citation}
-        <Card.Root class="citation-card">
+        <Card.Root, class="citation-card">
           <CardHeader>
-            <CardTitle class="citation-type">
+            <CardTitle, class="citation-type">
               {citation.citationType.toUpperCase()}
               {#if citation.isKeyAuthority}
-                <span class="key-authority-badge">KEY</span>
+                <span, class="key-authority-badge">KEY</span>
               {/if}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div class="formatted-citation">
+            <div, class="formatted-citation">
               {citation.formattedCitation}
             </div>
 
             {#if citation.quotedText}
-              <blockquote class="quoted-text">
+              <blockquote, class="quoted-text">
                 "{citation.quotedText}"
               </blockquote>
             {/if}
 
             {#if citation.legalPrinciple}
-              <div class="legal-principle">
+              <div, class="legal-principle">
                 <strong>Legal Principle:</strong>
                 {citation.legalPrinciple}
               </div>
             {/if}
 
-            <div class="citation-footer">
-              <div class="relevance-score">
+            <div, class="citation-footer">
+              <div, class="relevance-score">
                 Relevance: {Math.round(parseFloat(citation.relevanceScore) * 100)}%
               </div>
-              <div class="citation-actions">
-                <Button.Root size="sm" class="copy-button">📋 Copy</Button.Root>
-                <Button.Root size="sm" class="edit-button">✏️ Edit</Button.Root>
+              <div, class="citation-actions">
+                <Button.Root, size="sm" class="copy-button">📋 Copy</Button.Root>
+                <Button.Root, size="sm" class="edit-button">✏️ Edit</Button.Root>
               </div>
             </div>
           </CardContent>

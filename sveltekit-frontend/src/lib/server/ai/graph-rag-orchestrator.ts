@@ -22,7 +22,7 @@ const DEFAULT_EXPAND = 2;
 // --- Initialize Clients ---
 // Qdrant URL and client are handled by the resilient qdrant-client module
 // typed neo4j driver alias (derived from runtime function)
-type Neo4jDriver = ReturnType<typeof neo4j.driver>;
+type Neo4jDriver = ReturnType<typeof, neo4j.driver>;
 let neo4jDriver: Neo4jDriver | null = null;
 if (NEO4J_URI && NEO4J_USER && NEO4J_PASSWORD) {
   try {
@@ -55,7 +55,7 @@ const enhancedCachingOptimizerRankingHook = async (results: RagResult[]): Promis
 type CollectionsListResponse = {
   collections?: Array<{ name: string }>;
 };
-type CreateCollectionBody = { vectors: {;, size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' };
+type CreateCollectionBody = { vectors: {; size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' };
   // optional additional fields used by some SDKs
   replication?: number;
   on_disk?: boolean;
@@ -92,10 +92,10 @@ type PointsApiShape = {
 type QdrantLike = {
   // high-level client methods some versions expose
   getCollections?: () => Promise<CollectionsListResponse>;
-  createCollection?: (name: string, body: CreateCollectionBody) => Promise<unknown>;
-  createPayloadIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
-  createFieldIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
-  search?: (collectionName: string; body: SearchRequestBody) => Promise<SearchHit[]>;
+  createCollection?: (name: string;, body: CreateCollectionBody) => Promise<unknown>;
+  createPayloadIndex?: (collectionName: string;, body: PayloadIndexBody) => Promise<unknown>;
+  createFieldIndex?: (collectionName: string;, body: PayloadIndexBody) => Promise<unknown>;
+  search?: (collectionName: string;, body: SearchRequestBody) => Promise<SearchHit[]>;
   // nested APIs
   collectionsApi?: CollectionsApiShape;
   collections?: { get?: () => Promise<CollectionsListResponse> };
@@ -175,7 +175,7 @@ export async function initQdrantIndexes(): Promise<void> {
     const exists = cols?.collections?.some((c: {, name: string }) => c.name === COLLECTION);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrantCreateCollection(COLLECTION, { vectors: {, size: vectorSize, distance: `Cosine` } });
+      await qdrantCreateCollection(COLLECTION, { vectors: {, size: vectorSize, distance: `Cosine' } });'`
       console.log(`✅ Created Qdrant collection: ${COLLECTION}`);
     }
     // Payload indexes
@@ -214,13 +214,13 @@ function normalizeWeights(items: Array<{, id: string; weight?: number }>) {
 async function queryPostgresGraph(
   query: string,
   pool: Pool
-): Promise<Array<{ id: string; weight: number;, content: string }>> {
+): Promise<Array<{ id: string; weight: number; content: string }>> {
   try {
     const client = await pool.connect();
     const res = await client.query(
-      `SELECT * FROM edges
+      `SELECT * FROM edges`
        WHERE source_node_name ILIKE $1 OR target_node_name ILIKE $1
-       LIMIT 5;`,
+       LIMIT 5;`,`
       [`%${query}%`]
     );
     client.release();
@@ -231,7 +231,7 @@ async function queryPostgresGraph(
     return (res.rows as PostgresEdgeRow[]).map(r => ({
       id: String(r.target_node_id ?? ''),
       weight: Number(r.weight ?? 0),
-      content: r.relation ?? '` }));
+      content: r.relation ?? '' }));
   } catch (error) {
     console.error('[graph-rag] Postgres query failed:', error);
     return [];
@@ -292,7 +292,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   if (baseHits.length === 0) return [];
   const baseIds = baseHits.map(h => h.id);
   // 3️⃣ Graph expansion
-  let neighbors: { id: string;, weight: number }[] = [];
+  let neighbors: { id: string; weight: number }[] = [];
   if (neo4jDriver) {
     const session = neo4jDriver.session();
     try {
@@ -301,7 +301,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
         WHERE n.id IN $ids
         RETURN m.id AS id, r.weight AS weight
         LIMIT $limit
-      `;
+      `;`
       const result = await session.run(cypher, {
         ids: baseIds,
         limit: expand * limit

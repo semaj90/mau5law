@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
@@ -53,7 +53,7 @@ import type { Document } from '$lib/types';
       currentPath = nav?.to?.url?.pathname ?? window.location.pathname;
     }) as unknown as (() => void) | void;
 
-    // Return cleanup that only calls unsubscribe if it's actually a function.
+    // Return cleanup that only calls unsubscribe if it's actually a function.'
     return () => {
       if (typeof maybeUnsub === 'function') {
         maybeUnsub();
@@ -64,40 +64,40 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>AI Assistant | YoRHa Legal AI</title>
-  <meta name="description" content="Advanced AI-powered legal analysis and chat interface" />
+  <meta name="description" content="Advanced AI-powered legal analysis and chat, interface" />
 </svelte:head>
 
-<div class="ai-layout">
-  <!-- AI Header -->
-  <header class="ai-header">
-    <div class="ai-brand">
-      <span class="ai-icon">🤖</span>
-      <h1 class="ai-title">AI-Powered Legal Analysis</h1>
-      <span class="ai-badge">YoRHa Platform</span>
+<div, class="ai-layout">
+  <!-- AI, Header -->
+  <header, class="ai-header">
+    <div, class="ai-brand">
+      <span, class="ai-icon">🤖</span>
+      <h1, class="ai-title">AI-Powered Legal Analysis</h1>
+      <span, class="ai-badge">YoRHa Platform</span>
     </div>
 
-    <!-- AI Navigation -->
-    <nav class="ai-nav">
+    <!-- AI, Navigation -->
+    <nav, class="ai-nav">
       {#each Array.isArray(aiRoutes) ? aiRoutes : [] as route}
         <a
           href={route.href}
           class="ai-nav-item"
           class:active={currentPath === route.href || currentPath.startsWith(route.href + '/')}
         >
-          <span class="ai-nav-icon">{route.icon}</span>
-          <span class="ai-nav-text">{route.name}</span>
+          <span, class="ai-nav-icon">{route.icon}</span>
+          <span, class="ai-nav-text">{route.name}</span>
         </a>
       {/each}
     </nav>
   </header>
 
-  <!-- AI Content -->
-  <main class="ai-content">
-    <div class="ai-container">
+  <!-- AI, Content -->
+  <main, class="ai-content">
+    <div, class="ai-container">
       {#if children}
         {@render children()}
       {:else}
-        <div class="ai-placeholder">
+        <div, class="ai-placeholder">
           <h2>🤖 AI System Ready</h2>
           <p>Select an AI tool from the navigation above.</p>
         </div>
@@ -105,16 +105,16 @@ import type { Document } from '$lib/types';
     </div>
   </main>
 
-  <!-- AI Footer -->
-  <footer class="ai-footer">
-    <div class="ai-footer-content">
-      <div class="ai-info">
-        <span class="ai-current">Current: <strong>{currentPath}</strong></span>
-        <span class="ai-separator">•</span>
-        <span class="ai-tech">Cyberpunk Theme • AI-Powered Legal Analysis</span>
+  <!-- AI, Footer -->
+  <footer, class="ai-footer">
+    <div, class="ai-footer-content">
+      <div, class="ai-info">
+        <span, class="ai-current">Current: <strong>{currentPath}</strong></span>
+        <span, class="ai-separator">•</span>
+        <span, class="ai-tech">Cyberpunk Theme • AI-Powered Legal Analysis</span>
       </div>
-      <div class="ai-controls">
-        <a href="/" class="ai-main-btn">← Main App</a>
+      <div, class="ai-controls">
+        <a, href="/" class="ai-main-btn">← Main App</a>
       </div>
     </div>
   </footer>

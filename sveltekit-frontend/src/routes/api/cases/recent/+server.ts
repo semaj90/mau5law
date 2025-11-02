@@ -5,7 +5,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Mock recent cases data - replace with actual database query
     const recentCases = [
-      {
+      {,
         id: '1',
         title: 'Robbery Investigation',
         status: 'active',

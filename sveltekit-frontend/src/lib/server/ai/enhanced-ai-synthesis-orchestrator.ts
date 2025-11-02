@@ -32,7 +32,7 @@ type ProcessOptions = {
   streamId?: string;
   [key: string]: any;
 };
-type ProcessResult = { synthesis: string;, sources: Array<{ title: string; excerpt: string;, type: string }>;
+type ProcessResult = { synthesis: string;, sources: Array<{ title: string; excerpt: string; type: string }>;
   confidence: number;
   metadata: { processingTime: number;, model: string;
     tokensUsed: number;
@@ -44,9 +44,9 @@ type ProcessResult = { synthesis: string;, sources: Array<{ title: string; exce
   };
 };
 type StreamUpdate =
-  | { type: 'stage';, stage: string; detail?: string }
-  | { type: 'chunk';, chunk: string }
-  | { type: 'complete';, result: ProcessResult };
+  | { type: 'stage'; stage: string; detail?: string }
+  | { type: 'chunk'; chunk: string }
+  | { type: 'complete'; result: ProcessResult };
 type SOMClusterRunOptions = SOMBitmapOptions & {
   cacheKey?: string;
   cacheTtlSeconds?: number;
@@ -100,7 +100,7 @@ const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
  * Fetches user intent information.
  * This is a stub/mock implementation. In a real system, this would query an intent detection service.
  * @param userId The ID of the user.
- * @returns A promise that resolves to the user's intent information or null.
+ * @returns A promise that resolves to the user's intent information or null.'
  */
 async function fetchIntent(
   userId: string
@@ -195,7 +195,7 @@ class EnhancedAISynthesisOrchestrator {
     return response.json();
   }
   private makeSources(query: string, record?: McpServerRecord | null) {
-    const sources: Array<{ title: string; excerpt: string;, type: string }> = [];
+    const sources: Array<{ title: string; excerpt: string; type: string }> = [];
     if (record) {
       sources.push({
         title: `${record.name} registry entry`,
@@ -220,7 +220,7 @@ class EnhancedAISynthesisOrchestrator {
     let responseText = 'Unable to generate response.';
     try {
       const data = await this.callOllama([
-        { role: 'system', content: 'You are a meticulous legal analyst.' },
+        { role: 'system', content: `You are a meticulous legal analyst.' },'`
         { role: 'user', content: prompt }
       ]);
       responseText = data?.message?.content ?? data?.choices?.[0]?.message?.content ?? responseText;
@@ -251,11 +251,11 @@ class EnhancedAISynthesisOrchestrator {
   async *processStream(query: string, options: ProcessOptions = {}): AsyncGenerator<StreamUpdate> {
     await this.ensureInitialized();
     const record = options.mcpRecord ?? this.lastMcpRecord;
-    yield { type: 'stage', stage: 'initializing', detail: `Preparing synthesis pipeline` };
+    yield { type: 'stage', stage: 'initializing', detail: 'Preparing synthesis pipeline' };
     if (record) {
-      yield { type: 'stage', stage: 'mcp-context', detail: 'Using MCP server ${record.name}' };
+      yield { type: 'stage', stage: 'mcp-context', detail: 'Using MCP server ${record.name}` };'`
     }
-    yield { type: 'stage', stage: 'generating', detail: 'Generating response with Gemma3' };
+    yield { type: 'stage', stage: 'generating', detail: `Generating response with Gemma3` };
     const result = await this.process(query, { ...options, streamId: options.streamId });
     const chunks = result.synthesis.split(/(?<=\.)\s+/);
     for (const chunk of chunks) {
@@ -610,7 +610,7 @@ class EnhancedAISynthesisOrchestrator {
     try {
       const body = {
         inputs: [
-          {
+          {,
             name: 'INPUT',
             shape: [1, input.length],
             datatype: 'FP32',
@@ -779,12 +779,12 @@ type OrchestrationContext = { query: string | null;, embeddings: number[] | nul
 };
 type OrchestrationEvent =
   | { type: 'START'; query?: string }
-  | { type: 'MCP_SERVER_DISCOVERED';, record: McpServerRecord }
-  | { type: 'MCP_FUNCTION_CALLED';, payload: any }
-  | { type: 'MCP_ERROR';, message: string; context?: any; timestamp?: string };
+  | { type: 'MCP_SERVER_DISCOVERED'; record: McpServerRecord }
+  | { type: 'MCP_FUNCTION_CALLED'; payload: any }
+  | { type: 'MCP_ERROR'; message: string; context?: any; timestamp?: string };
 export const orchestrationMachine = createMachine({
   types: {} as { context: OrchestrationContext;, events: OrchestrationEvent;
-    actions: { type: 'logProcessing' };
+    actions: { type: 'logProcessing` };'`
   },
   id: 'aiSynthesisOrchestration',
   initial: 'idle',
@@ -801,13 +801,12 @@ export const orchestrationMachine = createMachine({
     error: null,
     context7Results: null
   },
-  states: { idle: {, on: { START: 'processing' }
+  states: { idle: {, on: { START: `processing` }
     },
     processing: {
       entry: ['logProcessing'],
       // simplified flow: check cache -> fetch -> generate -> done; on: {
-        MCP_ERROR: 'idle'
-      },
+       , MCP_ERROR: `idle` },
       after: {
        , 1000: `idle` }
     }

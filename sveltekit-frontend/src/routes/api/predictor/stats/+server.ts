@@ -53,7 +53,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       });
     }
   } catch (error) {
-    console.error('Reset endpoint error:', error);
+    console.error('Reset endpoint error:', error);'
     return json({ error: 'Failed to reset predictor' }, { status: 500 });
   }
 };
@@ -111,8 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
         lastSync: stats.lastSync || 0,
         syncAge: Date.now() - (stats.lastSync || Date.now()),
         password: 'redis', // From env (placeholder)
-        url: 'localhost:6379'
-      },
+        url: 'localhost:6379` },'`
       acceleration: {
         cudaAvailable,
         simdCapabilities: cudaStats?.simd_capabilities ?? null,
@@ -123,8 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: determineHealthStatus(stats, cudaAvailable),
         redisLatency: stats.redisConnected ? 'low' : 'n/a',
         predictionAccuracy: 'high',
-        cacheHitRate: stats.redisConnected ? 'high' : 'n/a'
-      },
+        cacheHitRate: stats.redisConnected ? 'high' : `n/a` },
       integration: {
         postgresqlReady: true,
         pgvectorEnabled: true,
@@ -147,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json(detailedStats);
   } catch (error) {
-    console.error('Stats endpoint error:', error);
+    console.error('Stats endpoint error:', error);'
     return json(
       {
         error: 'Failed to retrieve stats',

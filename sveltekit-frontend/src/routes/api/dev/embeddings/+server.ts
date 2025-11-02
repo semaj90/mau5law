@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 import { dev } from '$app/environment';
 import { db } from '$lib/server/db';
 // Adjust the table/import names to match your schema; this tries common names used in this repo
-import { embeddingCache as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
+import { embeddingCache, as embeddingTable } from '$lib/server/db/schema-postgres-enhanced';
 // Optional Qdrant config
 const QDRANT_URL = process.env.QDRANT_URL || import.meta.env.QDRANT_URL || '';
 
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     let qdrant: { ok?: boolean; status?: number; error?: string } | null = null;
     if (QDRANT_URL) {
       try {
-        const resp = await fetch(`${QDRANT_URL}/collections/legal_evidence`, { method: 'GET' });
+        const resp = await fetch(`${QDRANT_URL}/collections/legal_evidence`, { method: 'GET` });'`
         qdrant = { ok: resp.ok, status: resp.status };
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);

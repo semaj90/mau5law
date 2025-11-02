@@ -53,7 +53,7 @@ export interface PgvectorSearchResponse { success: boolean;, query: string;
  * @returns Promise with search results and timing information
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const results = await pgvectorSearch({
  *   query: 'employment contract termination',
  *   limit: 10,
@@ -78,7 +78,7 @@ export async function pgvectorSearch(
     const response = await fetch('/api/search-pgvector-optimized', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({
        , query: request.query,
         limit: request.limit ?? 10,
@@ -106,7 +106,7 @@ export async function pgvectorSearch(
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('pgvector search error:', errorMessage);
+    console.error('pgvector search error:', errorMessage);'
 
     return {
       success: false,
@@ -126,7 +126,7 @@ export async function pgvectorSearch(
       metadata: {
         timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
-        indexType: 'HNSW` },
+        indexType: 'HNSW' },
       error: errorMessage
     };
   }
@@ -228,7 +228,7 @@ export async function pgvectorSearchHealth(): Promise<{ healthy: boolean;, stat
     if (!response.ok) {
       return {
         healthy: false,
-        status: `HTTP ${response.status}` };
+        status: `HTTP ${response.status}' };'`
     }
 
     const data = await response.json();

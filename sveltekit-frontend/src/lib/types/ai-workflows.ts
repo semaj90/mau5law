@@ -152,11 +152,11 @@ export interface WorkflowContext { documentId: string;, userId: string;
 export type WorkflowStatus = 'idle' | 'processing' | 'embedding' | 'analyzing' | 'completed' | 'failed';
 
 export type WorkflowEvent =
-  | { type: 'START_PROCESSING'; documentId: string;, userId: string }
-  | { type: 'EMBEDDING_COMPLETE';, embeddings: VectorEmbedding[] }
-  | { type: 'ANALYSIS_COMPLETE';, analysis: LegalAnalysisResult }
-  | { type: 'COMPLETE';, result: WorkflowResult }
-  | { type: 'ERROR';, error: string }
+  | { type: 'START_PROCESSING'; documentId: string; userId: string }
+  | { type: 'EMBEDDING_COMPLETE'; embeddings: VectorEmbedding[] }
+  | { type: 'ANALYSIS_COMPLETE'; analysis: LegalAnalysisResult }
+  | { type: 'COMPLETE'; result: WorkflowResult }
+  | { type: 'ERROR'; error: string }
   | { type: 'RESET' };
 
 // ============================================================================

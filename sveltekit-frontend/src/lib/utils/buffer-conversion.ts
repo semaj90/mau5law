@@ -210,10 +210,10 @@ export const BufferDebugUtils = {
       ...info,
       preview:
         data instanceof Float32Array
-          ? `[${Array.from(data.slice(0, 5))
-              .map(n => n.toFixed(3))
+          ? `[${Array.from(data.slice(0, 5))`
+              .map(n => n.toFixed(3)),
               .join(', ')}...]`
-          : `${info.byteLength} bytes' });
+          : `${info.byteLength} bytes` });
   }
 };
 /**

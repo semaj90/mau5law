@@ -79,7 +79,7 @@ export class MCPContext7EmbeddingIntegration {
   private embeddingService?: GemmaEmbeddingService;
   private vectorService?: PgVectorIndexingService;
   private isAvailable = $state(false);
-  private workerPool: Map<string, { busy: boolean;, tasksCompleted: number }> = new Map();
+  private workerPool: Map<string, { busy: boolean; tasksCompleted: number }> = new Map();
   constructor(
     config: MCPContext7Config,
     embeddingService?: GemmaEmbeddingService,
@@ -177,7 +177,7 @@ export class MCPContext7EmbeddingIntegration {
     try {
       const response = await fetch(`${this.config.baseUrl}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           texts,
           workerId,
@@ -223,7 +223,7 @@ export class MCPContext7EmbeddingIntegration {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...request,
-          model: request.model || 'gemma3:latest` }),
+          model: request.model || 'gemma3:latest` }),'`
         timeout: this.config.timeout
       });
       if (!response.ok) {

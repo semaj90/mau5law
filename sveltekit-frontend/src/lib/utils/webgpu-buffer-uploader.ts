@@ -146,7 +146,7 @@ export class WebGPUBufferUploader {
     const stagingBuffer = this.device.createBuffer({
       size: quantizedData.byteLength,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'webgpu-downloader-staging` });
+      label: `webgpu-downloader-staging` });
     // Copy data from GPU buffer to staging buffer
     const commandEncoder = this.device.createCommandEncoder();
     commandEncoder.copyBufferToBuffer(buffer, 0, stagingBuffer, 0, quantizedData.byteLength);
@@ -185,7 +185,7 @@ export class WebGPUBufferUploader {
         size: `${(quantizedData.byteLength / 1024).toFixed(2)} KB`,
         downloadTime: `${downloadTime.toFixed(2)}ms`,
         dequantizationTime: `${dequantizationTime.toFixed(2)}ms`,
-        totalTime: `${(downloadTime + dequantizationTime).toFixed(2)}ms` });
+        totalTime: `${(downloadTime + dequantizationTime).toFixed(2)}ms' });'`
     }
     return result;
   }
@@ -226,8 +226,7 @@ export class WebGPUBufferUploader {
       dataArray.map((data, index) =>
         this.uploadBuffer(data, {
           ...options,
-          label: options.label ? `${options.label}_${index}` : `batch_${index}`
-        })
+          label: options.label ? `${options.label}_${index}` : `batch_${index}` })
       )
     );
     if (options.debugMode) {
@@ -243,7 +242,7 @@ export class WebGPUBufferUploader {
         bufferCount: results.length,
         totalOriginalSize: `${(totalOriginalSize / 1024).toFixed(2)} KB`,
         totalUploadedSize: `${(totalUploadedSize / 1024).toFixed(2)} KB`,
-        averageCompressionRatio: `${(totalOriginalSize / totalUploadedSize).toFixed(2)}x` });
+        averageCompressionRatio: `${(totalOriginalSize / totalUploadedSize).toFixed(2)}x' });'`
     }
     return results;
   }
@@ -329,7 +328,7 @@ export class WebGPUBufferUploader {
         legal_critical: 'fp32',
         legal_standard: 'fp16',
         legal_compressed: 'int8_symmetric',
-        legal_storage: 'int8_asymmetric` } as const;
+        legal_storage: 'int8_asymmetric' } as const;
       return profileModes[quantization as LegalAIProfile] as QuantizationMode;
     }
     return quantization as QuantizationMode;

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { User } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';
@@ -37,47 +37,47 @@ import type { User } from '$lib/types';
   <title>Admin Panel | YoRHa Legal AI</title>
 </svelte:head>
 
-<div class="admin-layout">
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="brand-icon">⚖️</div>
+<div, class="admin-layout">
+  <aside, class="sidebar">
+    <div, class="sidebar-header">
+      <div, class="brand-icon">⚖️</div>
       <div>
-        <div class="brand-title">Admin Panel</div>
-        <div class="brand-subtitle">YoRHa Legal AI</div>
+        <div, class="brand-title">Admin Panel</div>
+        <div, class="brand-subtitle">YoRHa Legal AI</div>
       </div>
     </div>
 
-    <div class="user-block">
-      <div class="user-avatar">{(data.user?.email ?? 'User').slice(0, 2).toUpperCase()}</div>
+    <div, class="user-block">
+      <div, class="user-avatar">{(data.user?.email ?? 'User').slice(0, 2).toUpperCase()}</div>
       <div>
-        <div class="user-email">{data.user?.email ?? 'admin@example.com'}</div>
-        <div class="user-role">{data.user?.role ?? 'Administrator'}</div>
+        <div, class="user-email">{data.user?.email ?? 'admin@example.com'}</div>
+        <div, class="user-role">{data.user?.role ?? 'Administrator'}</div>
       </div>
     </div>
 
-    <nav class="nav-list">
+    <nav, class="nav-list">
       {#each Array.isArray(navItems) ? navItems : [] as item}
-        <a href={item.href} class:active={isActive($page.url.pathname, item.href)}>
-          <span class="nav-icon">{item.icon}</span>
-          <span class="nav-label">{item.label}</span>
+        <a, href={item.href} class:active={isActive($page.url.pathname, item.href)}>
+          <span, class="nav-icon">{item.icon}</span>
+          <span, class="nav-label">{item.label}</span>
         </a>
       {/each}
     </nav>
   </aside>
 
-  <main class="content">
-    <header class="content-header">
+  <main, class="content">
+    <header, class="content-header">
       <div>
         <h1>Administrative Console</h1>
         <p>Manage users, system configuration, and compliance for the platform.</p>
       </div>
     </header>
 
-    <section class="content-body">
+    <section, class="content-body">
       {#if children}
         {@render children()}
       {:else}
-        <div class="placeholder">
+        <div, class="placeholder">
           <h2>Welcome to the Admin Console</h2>
           <p>Select a section from the sidebar to get started.</p>
         </div>

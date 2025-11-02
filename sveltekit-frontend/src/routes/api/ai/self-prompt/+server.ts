@@ -29,10 +29,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest',
-        prompt: `As a legal AI assistant for prosecutors, generate 4 helpful question suggestions for case ${caseId} in the ${currentPhase} phase.
-Context: ${context}
-Phase: ${currentPhase}
+       , model: 'gemma3-legal:latest',
+        prompt: `As a legal AI assistant for prosecutors, generate 4 helpful question suggestions for case ${caseId} in the ${currentPhase} phase.`
+Context: ${context}, Phase: ${currentPhase}
 Focus on practical prosecutor, needs:
 - Evidence strength assessment
 - Legal strategy development
@@ -40,7 +39,7 @@ Focus on practical prosecutor, needs:
 - Precedent research
 - Defense preparation
 Return only 4 concise, actionable questions as a JSON array:
-["Question 1", "Question 2", "Question 3", "Question 4"]`,
+["Question 1", "Question 2", "Question 3", "Question 4"]`,`
         stream: false
       })
     });
@@ -72,7 +71,7 @@ Return only 4 concise, actionable questions as a JSON array:
     }
   } catch (error: any) {
     console.error('Self-prompt generation failed:', error);
-    return json({ error: 'Failed to generate suggestions' }, { status: 500 });
+    return json({ error: 'Failed to generate suggestions` }, { status: 500 });'`
   }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

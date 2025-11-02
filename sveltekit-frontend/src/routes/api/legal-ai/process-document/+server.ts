@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 
 import {
   queueDocumentProcessing,
@@ -21,7 +21,7 @@ export interface ProcessingOptions { extract_entities: boolean;, generate_summa
   store_in_database: boolean;
   use_gemma3_legal: boolean;
 }
-// Define a more specific type for the Go server's response to /process-document
+// Define a more specific type for the Go server's response to /process-document'
 export interface GoProcessDocumentResponse { success: boolean;, document_id: string;
   summary?: string;
   entities?: LegalEntity[];
@@ -55,7 +55,7 @@ export interface GoServerHealthResponse {
   status: string;
   message?: string;
   timestamp?: string;
-  // Add other fields if known from the Go server's /health endpoint
+  // Add other fields if known from the Go server's /health endpoint'
 }
 
 // Configuration
@@ -146,9 +146,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Explicitly type as Response
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify({
-          document_id: documentId,
+         , document_id: documentId,
           content: body.content,
           document_type: body.document_type || 'evidence',
           case_id: body.case_id,
@@ -186,22 +186,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
       });
     } catch (fetchError: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Direct processing error:', fetchError);
+      console.error('❌ Direct processing error:', fetchError);'
       return json(
         {
           error: 'Processing failed',
-          details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
-        },
+          details: fetchError instanceof Error ? fetchError.message : 'Unknown error' },
         { status: 503 }
       );
     }
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ API endpoint error:', error);
+    console.error('❌ API endpoint error:', error);'
     return json(
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }
@@ -215,7 +214,7 @@ export const GET: RequestHandler = async () => {
       // Explicitly type as Response
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': `application/json' }'`
     });
     if (!response.ok) {
       // Access properties directly from Response

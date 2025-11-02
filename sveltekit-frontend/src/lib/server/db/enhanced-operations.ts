@@ -61,7 +61,7 @@ export class DbCaseOperations {
       .offset(offset);
     // Get total count
     const totalQuery = await db
-      .select({ count: sql<number>`cast(count(*) as integer)` })
+      .select({ count: sql<number>`cast(count(*) as integer)' })'`
       .from(cases)
       .where(whereClause);
     return {
@@ -85,7 +85,7 @@ export class DbCaseOperations {
    * Create new case
    */
   static async create(data: {
-    title: string;
+   , title: string;
     description?: string;
     priority?: string;
     status?: string;
@@ -114,10 +114,10 @@ export class DbCaseOperations {
    */
   static async update(
     id: string,
-    data: Partial<{ title: string;, description: string;
-      priority: string;
-      status: string;
-      location: string;
+    data: Partial<{, title: string;, description: string;
+     , priority: string;
+     , status: string;
+     , location: string;
      , jurisdiction: string;
     }>,
     userId: string
@@ -160,7 +160,7 @@ export class DbEvidenceOperations {
       .limit(limit)
       .offset(offset);
     const totalQuery = await db
-      .select({ count: sql<number>`cast(count(*) as integer)` })
+      .select({ count: sql<number>`cast(count(*) as integer)' })'`
       .from(evidence)
       .where(whereClause);
     return {

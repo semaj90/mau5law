@@ -31,14 +31,14 @@ export const GET: RequestHandler = async () => {
       }
     } catch (e: any) {
       const msg = e instanceof Error ? e.message : String(e);
-      console.log('Delete method error:', msg);
+      console.log('Delete method error:', msg);'
       deleteResult = { error: msg };
     }
     const end = performance.now();
     return json({
       success: true,
       redis: {
-        healthy: isHealthy,
+       , healthy: isHealthy,
         connected: stats.connected,
         status: stats.status
       },
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
         valueMatches: getValue === testValue
       },
       timing: {
-       , totalTime: `${(end - start).toFixed(2)}ms' },
+       , totalTime: `${(end - start).toFixed(2)}ms` },
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {

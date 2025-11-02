@@ -125,7 +125,7 @@ interface TaggingRule {
  * using Qdrant vector database with automatic tagging.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const tagger = new QdrantAutoTagger();
  * await tagger.initialize();
  *
@@ -160,7 +160,7 @@ export class QdrantAutoTagger {
    */
   private initializeTaggingRules(): TaggingRule[] {
     return [
-      // TypeScript error families
+      // TypeScript error families,
       { name: 'ts-syntax', pattern: /TS1\d{3}/, tags: ['typescript', 'syntax', 'parser'], priority: 10 },
       { name: 'ts-type', pattern: /TS2\d{3}/, tags: ['typescript', 'type-system', 'type-error'], priority: 10 },
       { name: 'ts-module', pattern: /TS7\d{3}/, tags: ['typescript', 'module-resolution', 'imports'], priority: 10 },
@@ -230,11 +230,11 @@ export class QdrantAutoTagger {
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ vectors: {, size: collectionConfig.vectorSize,
+        body: JSON.stringify({, vectors: {, size: collectionConfig.vectorSize,
             distance: collectionConfig.distance,
             // Scalar quantization for 4x memory savings
             quantization_config: collectionConfig.quantization
-              ? { scalar: {, type: 'int8',
+              ? {, scalar: {, type: 'int8',
                     quantile: 0.99,
                     always_ram: true
                   }
@@ -242,7 +242,7 @@ export class QdrantAutoTagger {
               : undefined
           },
           optimizers_config: {
-            default_segment_number: 2,
+           , default_segment_number: 2,
             memmap_threshold: 20000,
             indexing_threshold: 10000
           },
@@ -283,7 +283,7 @@ export class QdrantAutoTagger {
       { field: 'category', type: 'keyword' },
       { field: 'source', type: 'keyword' },
       { field: 'tags', type: 'keyword' },
-      { field: 'errorFamily', type: 'keyword' },
+      { field: 'errorFamily', type: `keyword` },
       { field: 'filePattern', type: `keyword` }
     ];
 
@@ -474,7 +474,7 @@ export class QdrantAutoTagger {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          vector: params.queryVector,
+         , vector: params.queryVector,
           limit: params.limit || 10,
           with_payload: true,
           with_vector: false,

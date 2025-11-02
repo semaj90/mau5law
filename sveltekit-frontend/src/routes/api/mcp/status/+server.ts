@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     let clusterMetrics = null;
     try {
       // This would normally read from a file or database
-      // For demo purposes, we'll provide sample data
+      // For demo purposes, we'll provide sample data'
       clusterStatus = 'validated';
       clusterMetrics = {
         totalRequests: 220,
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       Object.values(integrationReadiness).filter(item => item.length) >= 3 ? 'operational' : 'partial';
     // Enhanced MCP Tools Status
     const mcpToolsStatus = [
-      {
+      {,
         id: 'enhanced_rag_query',
         name: 'Enhanced RAG Query',
         status: mcpServerStatus === 'online' ? 'available' : 'offline'

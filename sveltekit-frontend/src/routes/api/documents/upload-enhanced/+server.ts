@@ -38,8 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'File size exceeds 50MB limit'
-        },
+          error: `File size exceeds 50MB limit` },
         { status: 400 }
       );
     }
@@ -58,11 +57,11 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Unsupported file type. Supported; formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
+          error: `Unsupported file type. Supported; formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
         { status: 400 }
       );
     }
-    console.log(`📄 Processing document upload: ${file.name} (${file.size} bytes)`);
+    console.log(`📄 Processing document upload: ${file.name} (${file.size} bytes)');'`
     // Process the document upload with enhanced LangChain RAG
     const rawResult = await legalRAG.uploadDocument(file.name, {
       file,
@@ -83,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (resultTyped.success) {
       console.log(
-        `✅ Document processed successfully: ${resultTyped.documentId ?? 'unknown` } (${resultTyped.chunks ?? 0} chunks)`
+        `✅ Document processed successfully: ${resultTyped.documentId ?? 'unknown` } (${resultTyped.chunks ?? 0} chunks)`'`
       );
       return json({
         success: true,
@@ -99,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       });
     } else {
-      console.error(`❌ Document processing failed: ${resultTyped.error ?? 'unknown error` }`);
+      console.error(`❌ Document processing failed: ${resultTyped.error ?? 'unknown error` }`);'`
       return json(
         {
           success: false,
@@ -112,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     // Normalize unknown error to a string message
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Enhanced document upload error:', errorMessage);
+    console.error('Enhanced document upload error:', errorMessage);'
     return json(
       {
         success: false,
@@ -158,8 +157,7 @@ export const GET: RequestHandler = async () => {
       documentClassification: 'Legal-specific ML classification',
       semanticIndexing: 'Vector-based semantic chunking',
       searchIntegration: 'Real-time enhanced search integration',
-      confidenceScoring: 'AI-powered quality assessment'
-    },
+      confidenceScoring: `AI-powered quality assessment` },
     apiVersion: '2.0',
-    processingEngine: 'LangChain RAG + Enhanced Semantic Search` });
+    processingEngine: `LangChain RAG + Enhanced Semantic Search` });
 };

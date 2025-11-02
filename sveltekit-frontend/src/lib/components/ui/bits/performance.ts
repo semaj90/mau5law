@@ -135,7 +135,7 @@ export class VirtualScrollManager {
   setTotalItems(count: number): void {
     this.totalItems = count;
   }
-  getVisibleRange(): { start: number; end: number;, offset: number } {
+  getVisibleRange(): { start: number; end: number; offset: number } {
     const { itemHeight, bufferSize, overscan } = this.options;
     const startIndex = Math.floor(this.scrollTop / itemHeight);
     const endIndex = Math.min(
@@ -189,7 +189,7 @@ export function createDebouncedSearch<T>(
 /**
  * Memoization utility for expensive computations
  */
-export function memoize<Args extends unknown[], Return>(
+export function memoize<Args extends, unknown[], Return>(
   fn: (...args: Args) => Return,
   keyFn?: (...args: Args) => string,
 ): (...args: Args) => Return {
@@ -315,7 +315,7 @@ export function analyzeBundleSize(): BundleAnalysis {
     totalSize: 245000, // 245KB
     gzippedSize: 89000, // 89KB
     components: [
-      {
+      {,
         name: "Button",
         size: 12000,
         dependencies: ["bits-ui", "lucide-svelte"],
@@ -341,7 +341,7 @@ export function analyzeBundleSize(): BundleAnalysis {
       }
     ],
     duplicates: [
-      {
+      {,
         module: "lucide-svelte",
         count: 3,
         size: 8000

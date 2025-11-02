@@ -6,7 +6,7 @@ interface WorkerInput { start: number;, end: number;
 }
 const { start, end, mode = 'count' } = (workerData || {}) as WorkerInput;
 function isPrime(n: number): boolean {
-  if (n < 2) return false;
+  if (n < 2) return, false;
   if (n === 2) return true;
   if (n % 2 === 0) return false;
   const limit = Math.sqrt(n);

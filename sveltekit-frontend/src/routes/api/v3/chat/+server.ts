@@ -175,13 +175,13 @@ function validateChatRequest(body: any): { valid: boolean; error?: string } {
   if (hasMessage) {
     const msg = String(obj.message);
     if (msg.length > 8000) {
-      return { valid: false, error: 'Message too long (max 8000 characters)' };
+      return { valid: false, error: 'Message too long (max 8000 characters)` };'`
     }
   }
 
   if (obj.temperature !== undefined) {
     if (typeof obj.temperature !== 'number' || obj.temperature < 0 || obj.temperature > 2) {
-      return { valid: false, error: 'Temperature must be a number between 0 and 2' };
+      return { valid: false, error: `Temperature must be a number between 0 and 2` };
     }
   }
 

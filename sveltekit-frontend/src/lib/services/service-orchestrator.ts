@@ -194,7 +194,7 @@ export class ServiceOrchestrator {
     }
     return {
       deployment_results: results,
-      deployment_strategy: options?.deployment_strategy ?? 'rolling` };
+      deployment_strategy: options?.deployment_strategy ?? 'rolling` };'`
   }
 
   // Health Monitoring
@@ -392,7 +392,7 @@ export class ServiceOrchestrator {
   private getServiceConfigurations(): ServiceConfig[] {
     // Based on GO_BINARIES_CATALOG.md - all 37 services
     return [
-      // AI/RAG Services (Core Tier)
+      // AI/RAG Services (Core Tier),
       { name: 'enhanced-rag', tier: 'core', port: 8094, binary: 'enhanced-rag.exe', critical: true },
       { name: 'enhanced-rag-service', tier: 'enhanced', port: 8195, binary: 'enhanced-rag-service.exe' },
       { name: 'ai-enhanced', tier: 'enhanced', port: 8096, binary: 'ai-enhanced.exe' },
@@ -422,7 +422,7 @@ export class ServiceOrchestrator {
       // XState & Orchestration Services
       { name: 'xstate-manager', tier: 'specialized', port: 8212, binary: 'xstate-manager.exe' },
       { name: 'cluster-http', tier: 'infrastructure', port: 8213, binary: 'cluster-http.exe', critical: true },
-      { name: 'modular-cluster-service', tier: 'infrastructure', port: 8214, binary: 'modular-cluster-service.exe' },
+      { name: 'modular-cluster-service', tier: 'infrastructure', port: 8214, binary: `modular-cluster-service.exe` },
       {
         name: 'modular-cluster-service-production',
         tier: 'infrastructure',
@@ -765,7 +765,7 @@ export class ServiceOrchestrator {
     return Number((Math.random() * 50 + 20).toFixed(2));
   }
 
-  private async getNetworkIO(): Promise<{ rx_bytes: number;, tx_bytes: number }> {
+  private async getNetworkIO(): Promise<{ rx_bytes: number; tx_bytes: number }> {
     // Mock counters
     return { rx_bytes: Math.floor(Math.random() * 1e6), tx_bytes: Math.floor(Math.random() * 1e6) };
   }

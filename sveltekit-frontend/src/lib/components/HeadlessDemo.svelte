@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
@@ -21,12 +21,12 @@ import type { Case } from '$lib/types';
     selectOpen = false;
   }
 </script>
-<div class="space-y-4">
-  <h2 class="text-xl font-semibold">Headless UI Components Demo</h2>
-  <!-- Basic Button -->
-  <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"> Primary Action Button </button>
-  <!-- Simple Select -->
-  <div class="space-y-4 relative">
+<div, class="space-y-4">
+  <h2 class="text-xl, font-semibold">Headless UI Components Demo</h2>
+  <!-- Basic, Button -->
+  <button class="bg-blue-600 text-white px-4 py-2 rounded, hover:bg-blue-700"> Primary Action Button </button>
+  <!-- Simple, Select -->
+  <div class="space-y-4, relative">
     <button
       onclick={toggleSelect}
       class="border border-gray-300 rounded px-4 py-2 w-full text-left"
@@ -40,14 +40,14 @@ import type { Case } from '$lib/types';
         transitionfade={{ duration 150 }}
       >
         {#each Array.isArray(items) ? items : [] as item}
-          <div class="p-2 hover:bg-gray-100 cursor-pointer" role="button" tabindex="0" onclick={() => selectItem(item)}>
+          <div class="p-2 hover:bg-gray-100, cursor-pointer" role="button" tabindex="0" onclick={() => selectItem(item)}>
             {item}
           </div>
         {/each}
       {/if}
   </div>
-  <!-- Dialog Trigger -->
-  <button onclick={toggleDialog} class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+  <!-- Dialog, Trigger -->
+  <button onclick={toggleDialog} class="bg-green-600 text-white px-4 py-2 rounded, hover:bg-green-700">
     Open Case Details Dialog
   </button>
   <!-- Dialog -->
@@ -62,15 +62,15 @@ import type { Case } from '$lib/types';
         aria-labelledby="dialog-title"
         aria-describedby="dialog-desc"
       >
-        <h3 id="dialog-title" class="text-lg font-semibold mb-4">Case Management System</h3>
-        <p id="dialog-desc" class="text-gray-600 mb-6">
+        <h3 id="dialog-title" class="text-lg font-semibold, mb-4">Case Management System</h3>
+        <p id="dialog-desc" class="text-gray-600, mb-6">
           This is a demo of simple UI components integrated with Tailwind styling for legal case management.
         </p>
-        <div class="flex gap-2 justify-end">
-          <button onclick={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+        <div class="flex gap-2, justify-end">
+          <button onclick={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded, hover:bg-gray-600">
             Cancel
           </button>
-          <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"> Save Changes </button>
+          <button class="bg-blue-600 text-white px-4 py-2 rounded, hover:bg-blue-700"> Save Changes </button>
         </div>
       </div>
     {/if}

@@ -45,7 +45,7 @@ export class EmbeddingAdapter {
     return h >>> 0;
   }
   // small seeded PRNG (mulberry32) returning floats in [0,1)
-  private mulberry32(seed: number) {
+  private mulberry32(seed: number) {,
     return function () {
       let t = (seed += 0x6d2b79f5) >>> 0;
       t = Math.imul(t ^ (t >>> 15), t | 1);

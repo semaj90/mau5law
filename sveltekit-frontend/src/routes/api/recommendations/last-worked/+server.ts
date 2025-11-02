@@ -1,7 +1,7 @@
 import type { Case } from '$lib/types';
 /**
  * 💼 Last Worked On Items API
- * Returns user's recent work activity with time tracking
+ * Returns user's recent work activity with time tracking'
  */
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
@@ -39,7 +39,7 @@ const mockWorkHistory: WorkItem[] = [
     status: 'in-progress',
     priority: 0,
     activities: [
-      {
+      {,
         timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         action: 'reviewed',
         duration: 45,
@@ -70,7 +70,7 @@ const mockWorkHistory: WorkItem[] = [
     status: 'review',
     priority: 0,
     activities: [
-      {
+      {,
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 67,
@@ -100,7 +100,7 @@ const mockWorkHistory: WorkItem[] = [
     status: 'in-progress',
     priority: 0,
     activities: [
-      {
+      {,
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         action: 'edited',
         duration: 78,
@@ -131,7 +131,7 @@ const mockWorkHistory: WorkItem[] = [
     status: 'review',
     priority: 0,
     activities: [
-      {
+      {,
         timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         action: 'reviewed',
         duration: 89,
@@ -161,7 +161,7 @@ const mockWorkHistory: WorkItem[] = [
     status: 'in-progress',
     priority: 0,
     activities: [
-      {
+      {,
         timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
         action: 'opened',
         duration: 145,
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10');
   const type = url.searchParams.get('type') as WorkItem['type'] | null;
   const status = url.searchParams.get('status') as WorkItem['status'] | null;
-  const cacheKey = `last-worked-${limit}-${type || 'all'}-${status || 'all` }`;
+  const cacheKey = `last-worked-${limit}-${type || 'all'}-${status || 'all` }`;'`
   try {
     // Check cache first
     const cached = await multiLayerCache.get<WorkItem[]>(cacheKey);
@@ -272,8 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required; fields: itemId, action'
-        },
+          error: 'Missing required; fields: itemId, action` },'`
         { status: 400 }
       );
     }
@@ -283,8 +282,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Work item not found'
-        },
+          error: `Work item not found` },
         { status: 404 }
       );
     }
@@ -319,11 +317,11 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error recording work activity:', error);
+    console.error('Error recording work activity: `, error);'`
     return json(
       {
         success: false,
-        error: 'Failed to record work activity` },
+        error: `Failed to record work activity` },
       { status: 500 }
     );
   }

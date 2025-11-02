@@ -1,5 +1,5 @@
-<!-- Test page for Simple File Upload with RAG integration -->
-<script lang="ts">
+<!-- Test page for Simple File Upload with RAG, integration -->
+<script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
@@ -96,38 +96,38 @@ import type { Document } from '$lib/types';
 <svelte:head>
   <title>Enhanced File Upload Test - Legal AI System</title>
 </svelte:head>
-<div class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6">Enhanced File Upload Test</h1>
-  <!-- System Status Display (fixed) -->
+<div class="container mx-auto, p-6">
+  <h1 class="text-3xl font-bold, mb-6">Enhanced File Upload Test</h1>
+  <!-- System Status, Display (fixed) -->
   {#if serviceEntries().length > 0}
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-5, gap-4">
       {#each serviceEntries() as [service, status]}
-        <div class="text-center">
-          <div class="font-medium capitalize">{service}</div>
-          <div class={status.healthy ? 'text-sm text-green-600' : 'text-sm text-red-600'}>
+        <div, class="text-center">
+          <div class="font-medium, capitalize">{service}</div>
+          <div class={status.healthy ? 'text-sm text-green-600' : 'text-sm, text-red-600'}>
             {status.healthy ? '✓ Online' : '✗ Offline'}
           </div>
         </div>
       {/each}
     </div>
   {:else}
-    <div class="text-gray-500">Loading system status...</div>
+    <div, class="text-gray-500">Loading system status...</div>
   {/if}
-  <!-- Simple File Upload Component (UnoCSS attributify) -->
-  <!-- Converted UnoCSS attributify props to class to satisfy TS HTMLProps -->
-  <div class="mb-8 border border-gray-200 rounded-lg p-4">
-    <!-- fixed Svelte event binding -->
-    <SimpleFileUpload onuploadcomplete={handleUploadComplete} />
+  <!-- Simple File Upload Component (UnoCSS, attributify) -->
+  <!-- Converted UnoCSS attributify props to class to satisfy TS, HTMLProps -->
+  <div class="mb-8 border border-gray-200 rounded-lg, p-4">
+    <!-- fixed Svelte event, binding -->
+    <SimpleFileUpload, onuploadcomplete={handleUploadComplete} />
   </div>
-  <!-- Upload Results -->
+  <!-- Upload, Results -->
   {#if uploadResults.length > 0}
-    <div class="mt-8">
-      <h2 class="text-xl font-semibold mb-4">Upload Results</h2>
-      <div class="space-y-4">
+    <div, class="mt-8">
+      <h2 class="text-xl font-semibold, mb-4">Upload Results</h2>
+      <div, class="space-y-4">
         {#each Array.isArray(uploadResults) ? uploadResults : [] as result}
-          <div class="p-4 border rounded-lg bg-white shadow-sm">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-medium">
+          <div class="p-4 border rounded-lg bg-white, shadow-sm">
+            <div class="flex justify-between items-start, mb-2">
+              <h3, class="font-medium">
                 {(
                   result as {
                     filename?: any;
@@ -155,7 +155,7 @@ import type { Document } from '$lib/types';
               </span>
             </div>
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).documentId}
-              <p class="text-sm text-gray-600 mb-1">
+              <p class="text-sm text-gray-600, mb-1">
                 Document ID: {(
                   result as {
                     filename?: any;
@@ -169,7 +169,7 @@ import type { Document } from '$lib/types';
               </p>
             {/if}
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size}
-              <p class="text-sm text-gray-600 mb-1">
+              <p class="text-sm text-gray-600, mb-1">
                 Size: {(
                   // ensure: 'size' is numeric for the division to satisfy TypeScript
                   (Number((result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size) / 1024)
@@ -177,10 +177,10 @@ import type { Document } from '$lib/types';
               </p>
             {/if}
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).embeddingGenerated}
-              <p class="text-sm text-green-600">✓ Embeddings generated</p>
+              <p class="text-sm, text-green-600">✓ Embeddings generated</p>
             {/if}
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}
-              <p class="text-sm text-red-600">
+              <p class="text-sm, text-red-600">
                 Error: {(
                   result as {
                     filename?: any;
@@ -198,10 +198,10 @@ import type { Document } from '$lib/types';
       </div>
     </div>
   {/if}
-  <!-- Debug Information -->
-  <div class="mt-8 p-4 bg-gray-50 rounded-lg">
-    <h2 class="text-lg font-semibold mb-2">Debug Information</h2>
-    <div class="text-sm space-y-1">
+  <!-- Debug, Information -->
+  <div class="mt-8 p-4 bg-gray-50, rounded-lg">
+    <h2 class="text-lg font-semibold, mb-2">Debug Information</h2>
+    <div class="text-sm, space-y-1">
       <p><strong>PostgreSQL:</strong> localhost:5432 (Native Windows)</p>
       <p><strong>Redis:</strong> localhost:6379 (Native Windows)</p>
       <p><strong>Qdrant:</strong> localhost:6333 (Native Windows)</p>
@@ -211,7 +211,7 @@ import type { Document } from '$lib/types';
     </div>
   </div>
 </div>
-<!-- Replaced raw CSS with UnoCSS utilities (no <style> needed).
+<!-- Replaced raw CSS with UnoCSS, utilities (no <style> needed).
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
   Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->

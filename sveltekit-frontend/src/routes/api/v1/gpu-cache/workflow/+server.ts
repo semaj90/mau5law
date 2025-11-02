@@ -93,7 +93,7 @@ type BaseOptimization = {
 };
 
 type BinaryOptimizationProvider = {
-  optimizeForLegalWorkflow?: (
+  optimizeForLegalWorkflow?: (;
     workflowType: LegalWorkflowType;
   ) => Promise<BaseOptimization | null> | BaseOptimization | null;
   retrieveShader?: (key: string) => Promise<{ sourceCode?: string; [k: string]: any } | null>;
@@ -123,9 +123,9 @@ type WebGPUDetail = {
   error?: string;
 };
 
-type ApplyResults = { encoding: { applied: number; failed: number;, details: EncodingDetail[] };
-  nesCache: { applied: number; failed: number;, details: NesDetail[] };
-  webgpu: { applied: number; failed: number;, details: WebGPUDetail[] };
+type ApplyResults = { encoding: { applied: number; failed: number; details: EncodingDetail[] };
+  nesCache: { applied: number; failed: number; details: NesDetail[] };
+  webgpu: { applied: number; failed: number; details: WebGPUDetail[] };
 };
 
 // POST /api/v1/gpu-cache/workflow/optimize
@@ -144,14 +144,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
       workflowContext,
-      optimization = 'balanced'
-    }: {
+      optimization = 'balanced' }: {
       workflowContext: LegalWorkflowContext;
       optimization?: 'speed' | 'compression' | 'balanced' | 'security';
     } = await request.json();
 
     if (!workflowContext || !workflowContext.type) {
-      return json({ error: `Missing workflow context or type` }, { status: 400 });
+      return json({ error: 'Missing workflow context or type` }, { status: 400 });'`
     }
 
     // Try to obtain base optimization metadata from the shader cache; fallback if method missing
@@ -207,7 +206,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   } catch (err: any) {
     const errorMsg = err instanceof Error ? err.message : String(err);
-    console.error('Workflow optimization error:', errorMsg);
+    console.error('Workflow optimization error:', errorMsg);'
     return json(
       {
         error: 'Failed to optimize workflow',
@@ -251,7 +250,7 @@ export const GET: RequestHandler = async ({ url }) => {
     );
   } catch (err: any) {
     const errorMsg = err instanceof Error ? err.message : String(err);
-    console.error('Workflow profiles error:', errorMsg);
+    console.error('Workflow profiles error:', errorMsg);'
     return json(
       {
         error: 'Failed to retrieve workflow profiles',
@@ -321,7 +320,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (applyToNES) {
       try {
         const memoryStats = nesCacheOrchestrator.getMemoryStats();
-        // Include a snapshot of memoryStats in the details so it's not unused
+        // Include a snapshot of memoryStats in the details so it's not unused'
         results.nesCache.details.push({ memoryStatsSnapshot: memoryStats });
 
         // Optimize memory allocation based on workflow requirements
@@ -391,14 +390,14 @@ export const PUT: RequestHandler = async ({ request }) => {
           overallSuccessRate:
             totalApplied + totalFailed === 0
               ? '0.0%'
-              : `${((totalApplied / (totalApplied + totalFailed)) * 100).toFixed(1)}%' },
+              : `${((totalApplied / (totalApplied + totalFailed)) * 100).toFixed(1)}%` },
         timestamp: new Date().toISOString()
       },
       { status: 200 }
     );
   } catch (err: any) {
     const errorMsg = err instanceof Error ? err.message : String(err);
-    console.error('Workflow application error:', errorMsg);
+    console.error('Workflow application error:', errorMsg);'
     return json(
       {
         error: 'Failed to apply workflow optimizations',

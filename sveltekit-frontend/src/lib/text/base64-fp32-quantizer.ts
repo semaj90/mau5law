@@ -376,7 +376,7 @@ export class Base64FP32Quantizer {
       await enhancedCachingRevolutionaryBridge.processUnifiedQuery({
         query: cacheKey,
         type: 'query',
-        options: {, cacheStrategy: `enhanced_first` }
+        options: {, cacheStrategy: `enhanced_first' }'`
       });
     } catch (error) {
       console.warn('⚠️ Cache storage failed:', error);
@@ -391,7 +391,7 @@ export class Base64FP32Quantizer {
   ): Promise<GemmaOutputQuantization> {
     const startTime = performance.now();
     try {
-      // Base64 encode the model output if it's not already
+      // Base64 encode the model output if it's not already'
       const base64Output = btoa(modelOutput);
       // Quantize the output
       const quantizationResult = await this.quantizeGemmaOutput(base64Output, options);
@@ -529,5 +529,5 @@ export async function processGemmaResponse(
     quantizationBits: 8,
     scalingMethod: 'sigmoid',
     targetLength: 2048,
-    cacheStrategy: `aggressive` });
+    cacheStrategy: `aggressive' });'`
 }

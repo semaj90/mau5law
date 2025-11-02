@@ -196,7 +196,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     }
     const data: AiApiResponse = await response.json();
     if (verbose) console.log('Ollama version data:', data);
-    return `Ollama service healthy, version: ${data.version || 'unknown` }`;
+    return `Ollama service healthy, version: ${data.version || 'unknown` }`;'`
   });
   // Test 2: Model Availability
   await runTest(tests, 'Model Availability Check', async () => {
@@ -253,12 +253,12 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       Return a JSON object with this exact structure:
       {"status": "success", "message": "test completed", "number": 42}
       Return only the JSON, no other text.
-    `;
+    `;`
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest',
+       , model: 'gemma3-legal:latest',
         prompt,
         stream: false,
         options: {
@@ -480,7 +480,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
       })
     });
     if (verbose) console.log('Memory Graph Read response status:', response.status);
-    // If endpoint doesn't exist, this is expected for now
+    // If endpoint doesn't exist, this is expected for now'
     if (response.status === 404) {
       return 'Memory graph endpoint not implemented yet (expected)';
     }
@@ -494,9 +494,9 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Memory Relation Creation', async () => {
     const response = await fetch('/api/mcp/memory/create-relations', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
-        source: 'test-user',
+       , source: 'test-user',
         target: 'test-search',
         relationType: 'performed-search',
         properties: {
@@ -505,7 +505,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
       })
     });
     if (verbose) console.log('Memory Relation Creation response status:', response.status);
-    // If endpoint doesn't exist, this is expected for now
+    // If endpoint doesn't exist, this is expected for now'
     if (response.status === 404) {
       return 'Memory relation endpoint not implemented yet (expected)';
     }
@@ -535,12 +535,12 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Semantic Search Service', async () => {
     const response = await fetch('/api/semantic-search', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
        , query: `legal document contract analysis` })
     });
     if (verbose) console.log('Semantic Search Service response status:', response.status);
-    // If endpoint doesn't exist, this is expected for now
+    // If endpoint doesn't exist, this is expected for now'
     if (response.status === 404) {
       return 'Semantic search endpoint not implemented yet (expected)';
     }
@@ -570,7 +570,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       }
       return `Qdrant connected, ${(data.result as { collections: any[] }).collections.length} collections available`;
     } catch (error: any) {
-      if (verbose) console.error('Qdrant connection error:', (error as Error).message);
+      if (verbose) console.error('Qdrant connection error:', (error as Error).message);'
       return 'Qdrant vector database not available (may be expected)';
     }
   });
@@ -658,7 +658,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Quick health checks
     const checks = await Promise.allSettled([
-      // AI Service
+      // AI Service,
       fetch('http://localhost:11434/api/version', {
         signal: AbortSignal.timeout(3000)
       }).then((r: Response) => ({ ai: r.ok })),
@@ -666,7 +666,10 @@ export const GET: RequestHandler = async () => {
       fetch('/api/ai/find', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({, query: 'health check', useAI: false })
+        body: JSON.stringify({
+         , query: 'health check',
+          useAI: false
+        })
       }).then((r: Response) => ({ findApi: r.ok }))
     ]);
     const results = checks.map(check => (check.status === 'fulfilled' ? check.value : { error: true }));

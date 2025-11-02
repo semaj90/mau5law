@@ -1,7 +1,7 @@
 import type { Case } from '$lib/types';
 /*
   NOTE: This module contained many complex implementations that caused parse errors during
-  automated fixes. For now we've replaced the file with a compact, well-typed stub that
+  automated fixes. For now we've replaced the file with a compact, well-typed stub that'
   preserves the public API shapes (types and a minimal class). Restore full logic manually
   if needed.
 */
@@ -19,6 +19,8 @@ import { safeStart, safeStop } from '$lib/utils/xstate-compat';
 import { recommendationMachine } from '$lib/machines/recommendation-routing-machine'; // Fix: Corrected machine import path
 import { advancedCache } from '$lib/services/advanced_cache_manager.js'; // Fix: Using enterprise production cache implementation
 
+const RECOMMENDATION_WORKER_PATH = '/workers/recommendation-worker.ts'; // Fix: Added worker path
+
 export interface RecommendationContext {
   userQuery: string;
   legalDomain?: string;
@@ -26,7 +28,8 @@ export interface RecommendationContext {
   priority?: 'low' | 'medium' | 'high';
 }
 
-export interface Recommendation { id: string;, type: string;
+export interface Recommendation { id: string;
+, type: string;
   confidence: number;
   content: string;
   reasoning?: string;
@@ -36,35 +39,38 @@ export interface Recommendation { id: string;, type: string;
   requiredExpertise?: string[];
 }
 
-export interface DidYouMeanSuggestion { originalQuery: string;, suggestedQuery: string;
+export interface DidYouMeanSuggestion { originalQuery: string;
+, suggestedQuery: string;
   confidence: number;
   reasoning: string;
   improvements: string[];
   legalTerms: string[];
 }
 
-export interface LegalKnowledge { related_terms: string[];, common_issues: string[];
+export interface LegalKnowledge { related_terms: string[];
+, common_issues: string[];
   expert_areas: string[];
 }
 
 export interface RecommendationMachineContext {
   userContext?: UserFeedbackContext;
   currentRecommendations: FeedbackRecommendation[];
-  cacheStore: Map<string, StoredRecommendation[] | UserPattern[]> | null;
   workerClient: Worker | null;
-  llmChain: RunnableSequence | null;
+  readonly llmChain: RunnableSequence | null; // Changed to readonly
   isProcessing: boolean;
-  error: string | null;
+  error: { message: string; details?: any } | null;
 }
 
-interface StoredRecommendation extends FeedbackRecommendation { userId: string;, createdAt: Date | string;
+interface StoredRecommendation extends FeedbackRecommendation { userId: string;
+, createdAt: Date | string;
   temporary: boolean;
   viewed: boolean;
   dismissed: boolean;
   viewedAt?: Date | string;
 }
 
-interface UserPattern { userId: string;, type: string;
+interface UserPattern { userId: string;
+, type: string;
   frequency: number;
   firstSeen: Date | string;
   lastSeen: Date | string;
@@ -74,7 +80,7 @@ export class AIRecommendationEngine {
   private recommendations: Writable<Recommendation[]> = writable([]);
   private queryHistory: Writable<string[]> = writable([]);
   private userPatterns: Writable<Map<string, number>> = writable(new Map());
-  private llmChain: RunnableSequence | null = null;
+  private readonly llmChain: RunnableSequence | null = null; // Changed to readonly
   private legalKnowledgeBase = new Map<string, LegalKnowledge>();
   private legalTermCorrections = new Map<string, string[]>([
     ['liability', ['liable', 'responsibilty']],
@@ -111,6 +117,7 @@ export class AIRecommendationEngine {
 
   private legalPatterns = [
     {
+,
       pattern: /\b(contract|agreement|deal|terms)\b/i,
       domain: 'contract',
       suggestions: ['contract review', 'clause analysis', 'risk assessment']
@@ -139,7 +146,7 @@ export class AIRecommendationEngine {
       pattern: /\b(employee|employment|HR|workplace|termination)\b/i,
       domain: 'employment',
       suggestions: ['policy review', 'compliance check', 'risk assessment']
-    }
+    },
   ];
   // --- new: partial streaming internals ---
   private partialRecommendationsInternal: Recommendation[] = [];
@@ -166,7 +173,11 @@ export class AIRecommendationEngine {
   private emitPartial(): void {
     const snapshot = [...this.partialRecommendationsInternal];
     for (const l of this.partialListeners) {
-      try { l(snapshot); } catch { /* swallow listener errors */ }
+      try {
+        l(snapshot);
+      } catch {
+        /* swallow listener errors */
+      }
     }
   }
   // --- end new ---
@@ -252,9 +263,7 @@ export class AIRecommendationEngine {
     }
 
     // Sort, limit and finalize
-    const sortedRecommendations = recommendations
-      .sort((a, b) => b.confidence - a.confidence)
-      .slice(0, 8);
+    const sortedRecommendations = recommendations.sort((a, b) => b.confidence - a.confidence).slice(0, 8);
 
     // Cache the results
     await advancedCache.set(cacheKey, sortedRecommendations, {
@@ -272,10 +281,7 @@ export class AIRecommendationEngine {
     return sortedRecommendations;
   }
   // Generate: "Did You Mean" suggestions with legal context
-  async generateDidYouMeanSuggestions(
-    query: string,
-    domain: string
-  ): Promise<DidYouMeanSuggestion | null> {
+  async generateDidYouMeanSuggestions(query: string, domain: string): Promise<DidYouMeanSuggestion | null> {
     const cacheKey = `dym_${this.hashString(query)}_${domain}`;
     const cached = (await advancedCache.get(cacheKey)) as DidYouMeanSuggestion | null;
     if (cached) return cached;
@@ -284,12 +290,11 @@ export class AIRecommendationEngine {
     let suggestedQuery = query;
     for (const [correctTerm, alternatives] of this.legalTermCorrections.entries()) {
       for (const alternative of alternatives) {
-        if (query.toLowerCase().includes(alternative.toLowerCase()) &&
-            !query.toLowerCase().includes(correctTerm.toLowerCase())) {
-          suggestedQuery = suggestedQuery.replace(
-            new RegExp(alternative, 'gi'),
-            correctTerm
-          );
+        if (
+          query.toLowerCase().includes(alternative.toLowerCase()) &&
+          !query.toLowerCase().includes(correctTerm.toLowerCase())
+        ) {
+          suggestedQuery = suggestedQuery.replace(new RegExp(alternative, 'gi'), correctTerm);
           correctedTerms.push(`"${alternative}" → "${correctTerm}"`);
         }
       }
@@ -328,7 +333,7 @@ export class AIRecommendationEngine {
       reasoning: `Enhanced query with ${correctedTerms.length + improvements.length} improvements`,
       improvements: [...correctedTerms, ...improvements],
       legalTerms
-    }
+    };
     // Cache the suggestion
     await advancedCache.set(cacheKey, suggestion, {
       priority: 'medium',
@@ -396,7 +401,7 @@ export class AIRecommendationEngine {
           id: `domain_${expertise}_${Date.now()}`,
           type: 'suggestion',
           confidence,
-          content: 'Consider ${expertise.replace('_', ' ')} approach`,
+          content: `Consider ${expertise.replace('_', ' ')} approach`,
           reasoning: `Relevant to ${context.legalDomain} domain`,
           riskLevel: this.assessRiskLevel(expertise),
           actionable: true,
@@ -414,17 +419,15 @@ export class AIRecommendationEngine {
     const query = context.userQuery.toLowerCase();
     // Find similar queries in history
     const similarQueries = Array.from(patterns.entries())
-      .filter(([historicalQuery, frequency]) =>
-        frequency > 1 && this.calculateSimilarity(query, historicalQuery) > 0.6
-      )
+      .filter(([historicalQuery, frequency]) => frequency > 1 && this.calculateSimilarity(query, historicalQuery) > 0.6)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3);
     for (const [similarQuery, frequency] of similarQueries) {
       recommendations.push({
         id: `pattern_${Date.now()}_${Math.random()}`,
         type: 'suggestion',
-        confidence: 0.6 + (frequency * 0.05),
-        content: `Based on your; history: "${similarQuery}"`,
+        confidence: 0.6 + frequency * 0.05,
+        content: `Based on your history: "${similarQuery}"`,
         reasoning: `Similar to ${frequency} previous queries`,
         riskLevel: 'low',
         actionable: true,
@@ -440,8 +443,8 @@ export class AIRecommendationEngine {
     // High-risk indicators
     const riskIndicators = [
       { terms: ['sue', 'lawsuit', 'court', 'litigation'], risk: 'critical', action: 'immediate legal consultation' },
-      { terms: ['deadline', 'statute of limitations', 'time limit'], risk: 'high', action: 'urgency assessment' },
-      { terms: ['breach', 'violation', 'non-compliance'], risk: 'high', action: 'risk mitigation planning' },
+      { terms: ['deadline', 'statute of limitations', 'time limit'], risk: 'high', action: `urgency assessment` },
+      { terms: ['breach', 'violation', 'non-compliance'], risk: 'high', action: `risk mitigation planning` },
       { terms: ['penalty', 'fine', 'damages', 'liability'], risk: 'medium', action: `liability assessment` }
     ] as const;
     for (const indicator of riskIndicators) {
@@ -504,7 +507,7 @@ export class AIRecommendationEngine {
       intellectual_property: ['patent', 'trademark', 'copyright', 'infringement', 'license'],
       employment: ['termination', 'discrimination', 'harassment', 'wage', 'benefit'],
       general: ['jurisdiction', 'precedent', 'statute', 'common law', 'due process']
-    }
+    };
     return domainTerms[domain] || domainTerms.general;
   }
   private calculateDomainConfidence(query: string, expertise: string): number {
@@ -537,7 +540,7 @@ export class AIRecommendationEngine {
       'precedent_research': '30-90 minutes',
       'regulatory_review': '25-50 minutes',
       'risk_assessment': '15-35 minutes',
-      'audit_preparation': `45-120 minutes` }
+      'audit_preparation': `45-120 minutes` };
     return timeMapping[expertise] || '10-30 minutes';
   }
   private calculateSimilarity(str1: string, str2: string): number {
@@ -548,33 +551,35 @@ export class AIRecommendationEngine {
     return (longer.length - distance) / longer.length;
   }
   private levenshteinDistance(str1: string, str2: string): number {
-    const matrix = Array(str2.length + 1).fill(null).map(() =>
-      Array(str1.length + 1).fill(null)
-    );
+    const matrix = Array(str2.length + 1)
+      .fill(null)
+      .map(() => Array(str1.length + 1).fill(null));
     for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
     for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
     for (let j = 1; j <= str2.length; j++) {
       for (let i = 1; i <= str1.length; i++) {
         const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
-        matrix[j][i] = Math.min(
-          matrix[j][i - 1] + 1,
-          matrix[j - 1][i] + 1,
-          matrix[j - 1][i - 1] + indicator
-        );
+        matrix[j][i] = Math.min(matrix[j][i - 1] + 1, matrix[j - 1][i] + 1, matrix[j - 1][i - 1] + indicator);
       }
     }
     return matrix[str2.length][str1.length];
   }
   private hashContext(context: RecommendationContext): string {
-    return btoa(JSON.stringify({
-      query: context.userQuery,
-      domain: context.legalDomain,
-      role: context.userRole,
-      priority: context.priority
-    })).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+    return btoa(
+      JSON.stringify({
+        query: context.userQuery,
+        domain: context.legalDomain,
+        role: context.userRole,
+        priority: context.priority
+      })
+    )
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .substring(0, 32);
   }
   private hashString(str: string): string {
-    return btoa(str).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+    return btoa(str)
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .substring(0, 16);
   }
   // Public API methods
   getRecommendations() {
@@ -599,7 +604,7 @@ export class AIRecommendationEngine {
       activeRecommendations: recommendations.length,
       highConfidenceRecs: recommendations.filter((r: Recommendation) => r.confidence > 0.7).length,
       actionableRecs: recommendations.filter((r: Recommendation) => r.actionable).length
-    }
+    };
   }
   // === NEW ENHANCED INTEGRATION METHODS ===
   /**
@@ -618,12 +623,12 @@ export class AIRecommendationEngine {
             type: 'RECOMMENDATIONS_GENERATED',
             data: event.data
           });
-        }
-        this.workerClient.onerror = (error) => {
+        };
+        this.workerClient.onerror = error => {
           console.error('❌ Recommendation Worker error:', error);
-          this.interpreter.send({ type: 'ERROR', data: {, message: error.message } });
-        }
-      } catch (error: any) {
+          this.interpreter.send({ type: 'ERROR', data: { message: error.message } });
+        };
+      } catch (error: unknown) {
         console.error('❌ Service Worker registration failed:', error);
       }
     }
@@ -634,8 +639,8 @@ export class AIRecommendationEngine {
   private async initializeLangChain() {
     try {
       const llm = new ChatOllama({
-        baseUrl: "http://localhost:11437",
-        model: "gemma3-legal",
+        baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434', // Use env var or standard fallback
+        model: 'gemma3-legal',
         temperature: 0.7,
         topK: 40,
         topP: 0.9
@@ -643,7 +648,7 @@ export class AIRecommendationEngine {
       const prompt = PromptTemplate.fromTemplate(`
         You are an AI recommendation engine for a Legal AI Platform specializing in user experience optimization.
         User Context:
-        -; Role: {userRole}
+        - Role: {userRole}
         - Experience: {experienceLevel}
         - Device: {deviceType}
         - Legal Domain: {legalDomain}
@@ -659,21 +664,21 @@ export class AIRecommendationEngine {
         5. Time-saving shortcuts and advanced features
         Format as JSON array, with: id, type, title, description, relevance (0-1), category, actionable (boolean).
         Limit to 5 most relevant recommendations.
-        Response: ');
+        Response: `);
       const parser = new StringOutputParser();
       this.llmChain = RunnableSequence.from([
         prompt,
-        // The ChatOllama runtime doesn't strictly match the RunnableLike generic constraint.
-        // Use a narrow suppression here to keep runtime behavior while avoiding a type error.
-        // @ts-expect-error - coerce ChatOllama to RunnableLike with a generic config shape
-        llm as unknown as RunnableLike<unknown, unknown, Record<string, unknown>>,
-        parser
+        llm as any, // Simplified cast to bypass complex generic issues
+        parser,
       ]);
       console.log('✅ LangChain.js initialized with Ollama gemma3-legal');
       this.interpreter.send({ type: `INITIALIZED` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Failed to initialize LangChain.js: ', error);
-      this.interpreter.send({ type: 'ERROR', data: {, message: error instanceof Error ? error.message : String(error) } });
+      this.interpreter.send({
+        type: 'ERROR',
+        data: { message: error instanceof Error ? error.message : String(error) }
+      });
     }
   }
   /**
@@ -743,9 +748,12 @@ export class AIRecommendationEngine {
       }
       // Fallback to existing system if LangChain not available
       return this.getFallbackLegalRecommendations(userContext, query, legalDomain);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Enhanced recommendation generation failed:', error);
-      this.interpreter.send({ type: 'ERROR', data: {, message: error instanceof Error ? error.message : String(error) } });
+      this.interpreter.send({
+        type: 'ERROR',
+        data: { message: error instanceof Error ? error.message : String(error) }
+      });
       return [];
     }
   }
@@ -769,74 +777,17 @@ export class AIRecommendationEngine {
         deviceType: userContext.deviceType,
         legalDomain,
         userQuery: query,
-        userPatterns: userPatterns.map(p => `${p.type}: ${p.frequency} times)`).join(', '),
-        recentInteractions: recentInteractions.slice(-5).map(i =>
-          `${i.type} at ${new Date(i.createdAt).toISOString()}`
-        ).join(', ')
+        userPatterns: userPatterns.map(p => `${p.type}: ${p.frequency} times`).join(', '),
+        recentInteractions: recentInteractions
+          .slice(-5)
+          .map(i => `${i.type} at ${new Date(i.createdAt).toISOString()}`)
+          .join(', ')
       });
       return this.parseLangChainRecommendations(response);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ LangChain AI recommendation failed:', error);
       return this.getFallbackLegalRecommendations(userContext, query, legalDomain);
     }
-  }
-  /**
-   * Get user patterns from cache store
-   */
-  private getUserPatternsFromCache(userId: string): UserPattern[] {
-    const patterns = this.userPatternsStore.get(userId) || [];
-    return patterns
-      .sort((a: UserPattern, b: UserPattern) => b.frequency - a.frequency)
-      .slice(0, 10);
-  }
-  /**
-   * Get recent interactions from cache store
-   */
-  private getRecentInteractionsFromCache(userId: string): StoredRecommendation[] {
-    const interactions = this.recommendationsStore.get(userId) || [];
-    return interactions
-      .sort((a: StoredRecommendation, b: StoredRecommendation) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 20);
-  }
-  /**
-   * Store recommendations in cache store
-   */
-  private storeRecommendationsInCache(userId: string, recommendations: FeedbackRecommendation[]) {
-    // Get existing recommendations
-    const existingRecs = this.recommendationsStore.get(userId) || [];
-    // Remove old temporary recommendations
-    const filteredRecs = existingRecs.filter((rec: StoredRecommendation) => !rec.temporary);
-    // Add new recommendations
-    const newRecs: StoredRecommendation[] = recommendations.map(rec => ({
-      ...rec,
-      userId,
-      createdAt: new Date(),
-      temporary: true,
-      viewed: false,
-      dismissed: false
-    }));
-    this.recommendationsStore.set(userId, [...filteredRecs, ...newRecs]);
-    // Update user patterns
-    const existingPatterns = this.userPatternsStore.get(userId) || [];
-    const patternMap = new Map<string, UserPattern>(existingPatterns.map((p: UserPattern) => [p.type, p]));
-    recommendations.forEach(rec => {
-      const existing = patternMap.get(rec.category);
-      if (existing) {
-        existing.frequency += 1;
-        existing.lastSeen = new Date();
-      } else {
-        patternMap.set(rec.category, {
-          userId,
-          type: rec.category,
-          frequency: 1,
-          firstSeen: new Date(),
-          lastSeen: new Date()
-        });
-      }
-    });
-    this.userPatternsStore.set(userId, Array.from(patternMap.values()));
-    // Persist to localStorage
-    this.persistToStorage();
   }
   /**
    * Parse LangChain.js response into recommendations
@@ -864,13 +815,15 @@ export class AIRecommendationEngine {
           description: rec.description || '',
           relevance: Math.min(Math.max(rec.relevance || 0.5, 0), 1),
           category: rec.category || 'general',
-          action: rec.actionable ? {
-            type: 'navigate',
-            target: rec.action_target || '/'
-          } : undefined
+          action: rec.actionable
+            ? {
+                type: 'navigate',
+                target: rec.action_target || '/'
+              }
+            : undefined
         })) as FeedbackRecommendation[];
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to parse LangChain recommendations:', error);
     }
     return this.getFallbackLegalRecommendations();
@@ -888,7 +841,7 @@ export class AIRecommendationEngine {
         id: 'fallback_search',
         type: 'tip',
         title: 'Advanced Legal Search',
-        description: 'Use legal operators; like: "AND", "OR", "NEAR" for precise results',
+        description: 'Use legal operators like: "AND", "OR", "NEAR" for precise results',
         relevance: 0.8,
         category: 'search'
       },
@@ -917,54 +870,46 @@ export class AIRecommendationEngine {
         title: 'Litigation Strategy Tool',
         description: 'Generate case strategies based on similar precedents',
         relevance: 0.95,
-        category: `litigation` });
+        category: 'litigation'
+      });
     }
     return baseRecs;
   }
   /**
    * Get current XState machine state
    */
-  getEngineState() {
-		try {
-			const snap = this.readActorSnapshot(this.interpreter);
-			if (!snap) return 'unknown';
+  getEngineState(): unknown {
+    try {
+      const snap = this.readActorSnapshot(this.interpreter);
+      if (!snap) return 'unknown';
 
-			// If snapshot is an object, perform safe runtime checks before property access
-			if (snap && typeof snap === 'object') {
-				const s = snap as Record<string, unknown>;
-				// Use hasOwnProperty + typed Record access instead of casting to any
-				if (Object.prototype.hasOwnProperty.call(s, 'value')) {
-					const val = s['value'];
-					if (val !== undefined) return val;
-				}
-				if (Object.prototype.hasOwnProperty.call(s, 'state')) {
-					const st = s['state'];
-					if (st !== undefined) return st;
-				}
-				if (Object.prototype.hasOwnProperty.call(s, 'snapshot')) {
-					const ss = s['snapshot'];
-					if (ss !== undefined) return ss;
-				}
-			}
+      // If snapshot is an object, it should have a `value` property for the state.
+      if (typeof snap === 'object' && snap !== null && 'value' in snap) {
+        return (snap as { value: unknown }).value;
+      }
 
-			// If snapshot is a primitive or other shape, try to return a readable representation
-			if (typeof snap === 'string') return snap;
-			try {
-				const str = JSON.stringify(snap);
-				return str && str !== '{}' ? str : 'unknown';
-			} catch {
-				return 'unknown';
-			}
-		} catch (err) {
-			console.warn('getEngineState failed', err);
-			return 'unknown';
-		}
-	}
+      // If snap is a primitive (e.g., string state value was returned directly)
+      if (typeof snap === 'string') return snap;
+
+      // As a fallback, try to stringify the snapshot if it's a complex object'
+      // without a clear `.value` property.
+      try {
+        const str = JSON.stringify(snap);
+        return str && str !== '{}' ? str : 'unknown';
+      } catch {
+        return 'unknown';
+      }
+    } catch (err) {
+      console.warn('getEngineState failed', err);
+      return 'unknown';
+    }
+  }
+
   /**
    * Safely read a snapshot from various XState actor/interpreter shapes.
    * Supports: actor.getSnapshot(), actor.state, actor.snapshot, and defensive fallbacks.
    */
-  private readActorSnapshot(actor: Actor<AnyStateMachine> | undefined): any {
+  private readActorSnapshot(actor: Actor<AnyStateMachine> | undefined): unknown {
     if (!actor) return null;
     try {
       // xstate v5 actors/interpreters often expose getSnapshot()
@@ -983,7 +928,11 @@ export class AIRecommendationEngine {
       }
       // fallback: if actor is callable, try invoking
       if (typeof actor === 'function') {
-        try { return (actor as unknown as () => unknown)(); } catch { /* ignore */ }
+        try {
+          return (actor as unknown as () => unknown)();
+        } catch {
+          /* ignore */
+        }
       }
     } catch {
       // swallow errors and return null

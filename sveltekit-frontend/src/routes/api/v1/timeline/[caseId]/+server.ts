@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         timeline: timelineEvents,
         statistics,
         case: {
-          id: caseData.id,
+         , id: caseData.id,
           title: caseData.title,
           status: caseData.status
         }
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       }
     });
   } catch (err: any) {
-    console.error('Timeline GET error:', err);
+    console.error('Timeline GET error:', err);'
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId);
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Verify case exists and user has access
     const [caseData] = await db.runtime().select().from(cases).where(eq(cases.id, caseId)).limit(1);
     if (!caseData) {
-      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
     }
     const timelineEventId = generateId(15);
     const newEvent = {
@@ -218,9 +218,8 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       {
         success: true,
         data: {
-          event: insertedEvent,
-          message: 'Timeline event added successfully'
-        },
+         , event: insertedEvent,
+          message: `Timeline event added successfully` },
         meta: {
          , userId: getUserId(locals),
           caseId,
@@ -231,7 +230,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       { status: 201 }
     );
   } catch (err: any) {
-    console.error('Timeline POST error:', err);
+    console.error('Timeline POST error:', err);'
     if (err instanceof z.ZodError) {
       return error(
         400,

@@ -10,24 +10,24 @@ interface RabbitMQServiceEvents {
   // Index signature to satisfy `Record<string, any[]>` constraint on CustomEventEmitter
   [event: string]: any[];
   connected: [];
-  messagePublished: [{ documentId: string;, routingKey: string }];
+  messagePublished: [{ documentId: string; routingKey: string }];
 }
 // A simple, type-safe event emitter implementation
-// This replaces Node.js's EventEmitter to avoid direct dependency on: 'events' module
-// and provides explicit type safety for RabbitMQService's events.
-class CustomEventEmitter<Events extends Record<string, any[]>> {
+// This replaces Node.js's EventEmitter to avoid direct dependency on: 'events' module'
+// and provides explicit type safety for RabbitMQService's events.'
+class CustomEventEmitter<Events extends, Record<string, any[]>> {
   private listeners: { [K in keyof Events]?: ((...args: Events[K]) => void)[] } = {};
-  on<K extends keyof Events>(eventName: K, listener: (...args: Events[K]) => void): void {
+  on<K extends keyof, Events>(eventName: K, listener: (...args: Events[K]) => void): void {
     if (!this.listeners[eventName]) {
       this.listeners[eventName] = [];
     }
     this.listeners[eventName]?.push(listener);
   }
-  off<K extends keyof Events>(eventName: K, listener: (...args: Events[K]) => void): void {
+  off<K extends keyof, Events>(eventName: K, listener: (...args: Events[K]) => void): void {
     if (!this.listeners[eventName]) return;
     this.listeners[eventName] = this.listeners[eventName]?.filter(l => l !== listener);
   }
-  emit<K extends keyof Events>(eventName: K, ...args: Events[K]): void {
+  emit<K extends keyof, Events>(eventName: K, ...args: Events[K]): void {
     this.listeners[eventName]?.forEach(listener => listener(...args));
   }
 }
@@ -90,8 +90,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
     caseEmbedding: 'legal_ai.case.embedding',
     embeddingBulk: 'legal_ai.embedding.bulk',
     documentIndexing: 'legal_ai.document.indexing',
-    documentAnalysisAI: 'legal_ai.document.analysis'
-  };
+    documentAnalysisAI: 'legal_ai.document.analysis` };'`
   private exchanges = {
     legal: 'legal.direct',
     legalTopic: 'legal.topic',
@@ -262,7 +261,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
           consumerCount: queueInfo.consumerCount
         };
       } catch (error) {
-        stats[key] = { error: `Queue not found` };
+        stats[key] = { error: 'Queue not found` };'`
       }
     }
     return stats;

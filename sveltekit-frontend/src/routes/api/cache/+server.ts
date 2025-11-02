@@ -170,8 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Key-data map is required for batch_set operation'
-            },
+              error: `Key-data map is required for batch_set operation` },
             { status: 400 }
           );
         }
@@ -203,7 +202,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Keys array and dataUrl are required for warm operation` },
+              error: `Keys array and dataUrl are required for warm operation` },
             { status: 400 }
           );
         }
@@ -215,7 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
             if (!response.ok) return null;
             return await response.json();
           } catch (error: any) {
-            console.warn(`Failed to load data for key ${key}: ', error);
+            console.warn('Failed to load data for key ${key}: ', error);
             return null;
           }
         };
@@ -280,8 +279,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Cache storage failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -305,8 +303,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: 'Failed to clear all caches',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
+          details: error instanceof Error ? error.message : `Unknown error` },
         { status: 500 }
       );
     }
@@ -315,7 +312,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Key parameter is required` },
+        error: `Key parameter is required` },
       { status: 400 }
     );
   }
@@ -338,7 +335,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Cache deletion failed',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

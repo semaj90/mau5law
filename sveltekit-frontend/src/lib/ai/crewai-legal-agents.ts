@@ -48,12 +48,12 @@ export const legalAgents: LegalAgent[] = [
     role: 'Primary Document Reviewer',
     expertise: ['contract-law', 'risk-assessment', 'compliance'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts; for:
+    systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts; for:`
     - Key terms and obligations
     - Risk factors and liability exposure
     - Compliance with applicable laws
     - Missing or problematic clauses
-    Provide structured analysis with confidence scores.`,
+    Provide structured analysis with confidence scores.`,`
     maxTokens: 2000,
     temperature: 0.1
   },
@@ -63,12 +63,12 @@ export const legalAgents: LegalAgent[] = [
     role: 'Compliance Verification',
     expertise: ['regulatory-compliance', 'industry-standards', 'legal-requirements'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus; on:
+    systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus; on:`
     - Regulatory compliance violations
     - Industry standard adherence
     - Legal requirement gaps
     - Recommended corrective actions
-    Flag all potential compliance issues with severity ratings.`,
+    Flag all potential compliance issues with severity ratings.`,`
     maxTokens: 1800,
     temperature: 0.05
   },
@@ -78,12 +78,12 @@ export const legalAgents: LegalAgent[] = [
     role: 'Risk Analysis',
     expertise: ['risk-management', 'liability-analysis', 'litigation-prevention'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a legal risk assessment expert. Evaluate documents; for:
+    systemPrompt: `You are a legal risk assessment expert. Evaluate documents; for:`
     - Potential litigation risks
     - Financial exposure
     - Operational risks
     - Mitigation strategies
-    Quantify risks where possible with probability assessments.`,
+    Quantify risks where possible with probability assessments.`,`
     maxTokens: 1500,
     temperature: 0.2
   },
@@ -115,7 +115,7 @@ export class CrewAILegalReviewSystem {
           responses.push((result as { status?: any; value?: any; reason?: any }).value);
         } else {
           console.error(
-            `Agent ${assignedAgents[index]} failed: ',
+            `Agent ${assignedAgents[index]} failed: ','`
             (result as { status?: any; value?: any; reason?: any }).reason
           );
           responses.push({
@@ -157,7 +157,7 @@ export class CrewAILegalReviewSystem {
         new HumanMessage(`
 Document Review Task:
 -; Type: ${task.reviewType}
-- Priority: ${task.priority}
+-, Priority: ${task.priority}
 -, Context: ${JSON.stringify(task.context, null, 2)}
 Document Content:
 ${task.documentContent}
@@ -169,7 +169,7 @@ Please provide your analysis in the following JSON format:
   "riskLevel": "low|medium|high",
   "confidence": 0.0-1.0
 }
-        `),
+        `),`
       ];
       const response = await ollama.invoke(messages);
       const responseText = (response as { content?: any }).content.toString();
@@ -186,7 +186,7 @@ Please provide your analysis in the following JSON format:
         processingTime: Date.now() - startTime
       };
     } catch (error: any) {
-      console.error(`Error processing with agent ${agentId}: ', error);
+      console.error(`Error processing with agent ${agentId}: ', error);'`
       return {
         agentId,
         taskId: task.taskId,

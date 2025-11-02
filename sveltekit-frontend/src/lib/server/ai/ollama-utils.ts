@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
 /**
  * Retrieves the Ollama API endpoint from environment variables or falls back to a default.
- * Follows the project guideline to prefer process.env (or SvelteKit's $env) and central helpers.
+ * Follows the project guideline to prefer process.env (or SvelteKit's $env) and central helpers.'
  * @returns The Ollama API endpoint URL.
  */
 export function getOllamaEndpoint(): string {

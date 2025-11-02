@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return await handleClusterOverview();
     }
   } catch (err: any) {
-    console.error('Cluster API Error:', err);
+    console.error('Cluster API Error: `, err);'`
     throw error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, 'Invalid cluster action');
     }
   } catch (err: any) {
-    console.error('Cluster Action Error:', err);
+    console.error('Cluster Action Error: `, err);'`
     throw error(500, `Cluster action failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
@@ -107,8 +107,7 @@ async function handleServicesStatus(): Promise<Response> {
       'xstate-manager': {
         status: health['xstate-manager'] ? 'running' : 'down',
         port: 8212,
-        description: 'State Management'
-      }
+        description: `State Management` }
     }
   };
   return json({
@@ -138,7 +137,7 @@ async function handleMetrics(): Promise<Response> {
 
   return json({ performance: {, tiers: performance,
       overall: {
-        avg_latency: avgLatency,
+       , avg_latency: avgLatency,
         avg_success_rate: avgSuccess,
         total_endpoints: perfCount
       }
@@ -168,8 +167,7 @@ async function handleClusterOverview(): Promise<Response> {
       protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
       tiers: ['Core Services', 'Enhanced Services', 'Specialized Services', 'Infrastructure'],
       load_balancing: 'Round Robin',
-      failover: 'Automatic'
-    },
+      failover: `Automatic` },
     endpoints: {
       health: '/api/v1/cluster/health',
       services: '/api/v1/cluster/services',

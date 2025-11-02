@@ -158,8 +158,7 @@ export class EnhancedLegalSearchService {
             idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata'
-          },
+            metadataColumnName: 'metadata` },'`
           distanceStrategy: 'cosine' as any
         }
         // Initialize PGVector store
@@ -279,7 +278,7 @@ export class EnhancedLegalSearchService {
         ? await vectorStore.similaritySearch(query, options.maxResults || 20)
         : await vectorStore.similaritySearch(query, options.maxResults || 20);
       for (const doc of searchResults) {
-        const score = 0.8; // Default score since we don't have scores from similaritySearch
+        const score = 0.8; // Default score since we don't have scores from similaritySearch'
         if (score >= this.config.similarityThreshold) {
           results.push({
             id: doc.metadata?.id || `vec_${Date.now()}_${Math.random()}`,

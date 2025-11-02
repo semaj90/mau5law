@@ -30,10 +30,10 @@ export interface EnhancedLegalCaseContext { currentCase: LegalCase | null;, evi
   error: string | null;
 }
 export type EnhancedLegalCaseEvent =
-  | { type: 'LOAD_CASE';, caseId: string }
-  | { type: 'CREATE_CASE';, data: CaseForm }
-  | { type: 'ADD_EVIDENCE'; caseId: string;, evidence: EvidenceInput }
-  | { type: 'START_AI_ANALYSIS';, caseId: string }
+  | { type: 'LOAD_CASE'; caseId: string }
+  | { type: 'CREATE_CASE'; data: CaseForm }
+  | { type: 'ADD_EVIDENCE'; caseId: string; evidence: EvidenceInput }
+  | { type: 'START_AI_ANALYSIS'; caseId: string }
   | { type: 'RESET' };
 const initialContext: EnhancedLegalCaseContext = {
   currentCase: null,
@@ -48,10 +48,10 @@ export const enhancedLegalCaseMachine = createMachine(
   {
     id: 'enhancedLegalCase',
     initial: 'initializing',
-    types: {} as { context: EnhancedLegalCaseContext;, events: EnhancedLegalCaseEvent;
+    types: {} as {, context: EnhancedLegalCaseContext;, events: EnhancedLegalCaseEvent;
     },
     context: initialContext,
-    states: { initializing: {, entry: assign({, loading: () => true }),
+    states: {, initializing: {, entry: assign({, loading: () => true }),
         invoke: {
           src: 'initializeSystem',
           onDone: { target: 'idle', actions: assign({ loading: () => false }) },
@@ -156,7 +156,7 @@ export const enhancedLegalCaseMachine = createMachine(
       createCase: fromPromise(async ({ input }: { input: {, data: CaseForm } }) => {
         return { id: 'new_case', title: '', ...input.data };
       }),
-      addEvidence: fromPromise(async ({ input }: { input: {, caseId: string; evidence: EvidenceInput } }) => {
+      addEvidence: fromPromise(async ({ input }: {, input: {, caseId: string;, evidence: EvidenceInput } }) => {
         return { id: 'evidence_' + Math.random().toString(36).slice(2), ...input.evidence };
       }),
       startAIAnalysis: fromPromise(async ({ input }: { input: {, caseId: string } }) => {

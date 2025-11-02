@@ -139,14 +139,14 @@ export class EmbeddingGemmaService {
     const contextualText = `[${entityType.toUpperCase()}] ${entityValue}`;
     return this.embed(contextualText, {
       ...options,
-      embeddingType: `entity` });
+      embeddingType: `entity' });'`
   }
   /**
    * Generate conversation summary embedding
    */
   async embedSummary(
     summary: string,
-    metadata: { sessionId: string;, turnCount: number;
+    metadata: {, sessionId: string;, turnCount: number;
      , currentState: number;
     },
     options: EmbeddingOptions = {}
@@ -182,7 +182,7 @@ export class EmbeddingGemmaService {
     queryText: string,
     candidateTexts: string[],
     topK: number = 5
-  ): Promise<Array<{ text: string; score: number;, index: number }>> {
+  ): Promise<Array<{ text: string; score: number; index: number }>> {
     // Generate embeddings
     const queryResult = await this.embed(queryText);
     const candidateResults = await this.embedBatch(candidateTexts);
@@ -202,7 +202,7 @@ export class EmbeddingGemmaService {
     try {
       const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
           model,
           prompt: text

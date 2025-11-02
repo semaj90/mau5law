@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     if (body.vector1.length !== body.vector2.length) {
       return json(
-        { error: `Vector length, mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions' } as VectorSimilarityResponse,
+        { error: 'Vector length, mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions' } as VectorSimilarityResponse,
         { status: 400 }
       );
     }
@@ -85,8 +85,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Ensure elements are numbers
     for (let i = 0; i < body.vector1.length; i++) {
-      if (typeof body.vector1[i] !== 'number' || typeof body.vector2[i] !== 'number') {
-        return json({ error: `All vector elements must be numbers` } as VectorSimilarityResponse, { status: 400 });
+      if (typeof body.vector1[i] !== 'number' || typeof body.vector2[i] !== 'number`) {'`
+        return json({ error: 'All vector elements must be numbers` } as VectorSimilarityResponse, { status: 400 });'`
       }
     }
 

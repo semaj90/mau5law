@@ -46,8 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(health, {
           headers: {
             'X-Worker-Health': health.status,
-            'Cache-Control': 'no-cache'
-          }
+            'Cache-Control': 'no-cache` }'`
         });
       }
       case 'stats': {
@@ -80,15 +79,14 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           status: 'success',
           data: {
-            worker: {
+           , worker: {
               ...workerStats,
               health: healthStatus
             },
             endpoints: {
              , health: '/api/workers/rabbitmq?action=health',
               stats: '/api/workers/rabbitmq?action=stats',
-              queues: '/api/workers/rabbitmq?action=queues'
-            }
+              queues: `/api/workers/rabbitmq?action=queues` }
           }
         });
       }
@@ -259,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'simulate_load': {
         // Simulate various types of legal AI processing jobs
         const loadTestJobs = [
-          {
+          {,
             queueName: QUEUES.DOCUMENT_PROCESSING,
             message: {
               documentId: `doc-${Date.now()}`,
@@ -281,7 +279,7 @@ export const POST: RequestHandler = async ({ request }) => {
               evidenceId: `evidence-${Date.now()}`,
               type: 'document_analysis',
               caseId: `case-${Date.now()}`,
-              priority: `high` }
+              priority: 'high' }
           },
         ];
         const loadResults = await Promise.all(
@@ -308,7 +306,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             status: 'error',
-            error: {, message: 'Unknown, action: ${action}' }
+            error: {, message: 'Unknown, action: ${action}` }'`
           },
           { status: 400 }
         );
@@ -335,7 +333,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { config } = body;
     // For now, return configuration update status
-    // In a full implementation, this would update the running worker's config
+    // In a full implementation, this would update the running worker's config'
     return json({
       status: 'success',
       message: 'Worker configuration updated',
@@ -385,7 +383,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       default: return json(
           {
             status: 'error',
-            error: {, message: 'Action required for DELETE operation' }
+            error: {, message: `Action required for DELETE operation` }
           },
           { status: 400 }
         );

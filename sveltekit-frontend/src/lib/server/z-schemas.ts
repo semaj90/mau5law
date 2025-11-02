@@ -15,8 +15,8 @@ export const cuidSchema = z.string().regex(cuidRegex, 'Expected CUID-style ID');
 
 export const uuidSchema = z.string().regex(uuidRegex, 'Expected UUID format');
 
-export type FlexibleId = z.infer<typeof flexibleIdSchema>;
-export type CUID = z.infer<typeof cuidSchema>;
+export type FlexibleId = z.infer<typeof, flexibleIdSchema>;
+export type CUID = z.infer<typeof, cuidSchema>;
 
 export default {
   flexibleIdSchema,

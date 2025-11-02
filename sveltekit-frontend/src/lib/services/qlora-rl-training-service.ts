@@ -124,7 +124,7 @@ export class QLoRAReinforcementLearningService {
     input: string,
     actualOutput: string,
     userFeedback: 'positive' | 'negative' | 'neutral',
-    context: InteractionContext // Changed: 'any'; to: 'InteractionContext'
+    context: InteractionContext //; Changed: 'any'; to: 'InteractionContext'
   ): Promise<TrainingExample> {
     const example: TrainingExample = {
       id: `train_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Replaced: 'substr(2, 9)' with: 'slice(2, 11)'
@@ -296,7 +296,7 @@ export class QLoRAReinforcementLearningService {
   /**
    * Update model performance metrics
    */
-  private async updateModelPerformance(results: { accuracyImprovement: number;, averageReward: number;
+  private async updateModelPerformance(results: {, accuracyImprovement: number;, averageReward: number;
    , lossReduction: number;
   }): Promise<void> {
     // Update accuracy with exponential moving average
@@ -335,7 +335,7 @@ export class QLoRAReinforcementLearningService {
     const diversityScore = (this.dataFlywheel.size / 10) * 100; // Max 10 categories
     // Recent accuracy trend
     const recentExamples = allExamples
-      .filter(e => Date.now() - e.timestamp < 3600000) // Last hour
+      .filter(e => Date.now() - e.timestamp < 3600000) // Last, hour
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 20);
     const recentAccuracy = recentExamples.length > 0

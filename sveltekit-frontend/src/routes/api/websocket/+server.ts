@@ -275,7 +275,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
     return new Response('WebSocket connection required', { status: 426 });
   }
   try {
-    // In a real implementation, you'd handle the WebSocket upgrade here
+    // In a real implementation, you'd handle the WebSocket upgrade here'
     // This is a placeholder since SvelteKit handles WebSocket differently
     return new Response(
       JSON.stringify({
@@ -292,16 +292,15 @@ export const GET: RequestHandler = async ({ request, url }) => {
         instructions: {
          , connect: 'ws://localhost:5173/api/websocket',
           subscribe: 'Send: {"action": "subscribe", "types": ["processing", "ai_results"]}',
-          unsubscribe: 'Send: {"action": "unsubscribe", "types": ["processing"]}'
-        }
+          unsubscribe: `Send: {"action": "unsubscribe", "types": ["processing"]}` }
       }),
       {
         headers: {
-          'Content-Type': 'application/json` }
+          'Content-Type': `application/json` }
       }
     );
   } catch (error: any) {
-    console.error('WebSocket setup error:', error);
+    console.error('WebSocket setup error:', error);'
     return new Response('WebSocket setup failed', { status: 500 });
   }
 };

@@ -1,6 +1,6 @@
 import { QdrantVectorService } from './qdrant-vector';
 // Minimal adapter that normalizes various Qdrant client method names.
-// It uses `any` and runtime checks so callers don't need to know the exact client API.
+// It uses `any` and runtime checks so callers don't need to know the exact client API.'
 export async function upsertVector(
   id: string,
   vector: number[],

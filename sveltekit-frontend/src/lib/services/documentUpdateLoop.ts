@@ -1,7 +1,7 @@
 // Document Update Loop Service
 // Auto re-embed and re-rank on document changes with intelligent diff detection
 import { db } from '$lib/server/db';
-import { legalDocuments as documents, documentVectors, queryVectors } from '$lib/server/db/schema-unified';
+import { legalDocuments, as documents, documentVectors, queryVectors } from '$lib/server/db/schema-unified';
 import { eq, sql, desc } from 'drizzle-orm';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { OllamaEmbeddings } from '@langchain/ollama';
@@ -276,7 +276,7 @@ export class DocumentUpdateLoop {
     console.log(`🏆 Re-ranking queries affected by document: ${documentId}`);
     const rerankingJobs: RerankingJob[] = []; // Declare rerankingJobs here for scope
     try {
-      // Fetch recent queries (last 7 days). We'll filter by clickedResults in JS to avoid
+      // Fetch recent queries (last 7 days). We'll filter by clickedResults in JS to avoid'
       // using SQL JSON operators that caused parser issues.
       const recentQueries = (await db
         .select({
@@ -341,7 +341,7 @@ export class DocumentUpdateLoop {
 
       let improvement = 0;
 
-      // Score based on the affected document's new rank
+      // Score based on the affected document's new rank'
       if (newDocIndex !== -1) {
         // If the document is in the top 5, give a higher score
         if (newDocIndex < 5) {
@@ -371,7 +371,7 @@ export class DocumentUpdateLoop {
         improvement: improvement
       };
     } catch (error: any) {
-      console.error(`❌ Failed to re-rank single query ${queryRecord.id}: ', formatError(error));
+      console.error(`❌ Failed to re-rank single query ${queryRecord.id}: ', formatError(error));'`
       return null;
     }
   }
@@ -397,7 +397,7 @@ export class DocumentUpdateLoop {
         console.log('No changes detected');
       }
     } catch (error) {
-      console.error('Debug re-embed error:', formatError(error));
+      console.error('Debug re-embed error:', formatError(error));'
     }
   }
 }

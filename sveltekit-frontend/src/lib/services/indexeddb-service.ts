@@ -8,13 +8,12 @@ export interface CachedDocument extends RAGObject {
   lastUpdated?: number
 }
 
-export interface SearchResult { query: string, results: RAGObject[]; timestamp: number
-  executionTime: number;
+export interface SearchResult { query: string, results: RAGObject[]; timestamp: number; executionTime: number;
 }
 
 export interface UserInteraction { id: string, type: 'search' | 'view' | 'edit' | 'ai_query'
   query?: string
-  documentId?: string
+  documentId?: string;
   timestamp: number;
   metadata?: Record<string, unknown>
 }

@@ -5,7 +5,7 @@ declare module '$lib/services/latency-logger' {
 }
 
 declare module '$lib/services/system-monitor-client' {
-  export function startSystemMonitorClient(opts?: any): { push: (e: any) => void;, stop: () => void };
+  export function startSystemMonitorClient(opts?: any): { push: (e: any) => void; stop: () => void };
   const _default: any;
   export default _default;
 }

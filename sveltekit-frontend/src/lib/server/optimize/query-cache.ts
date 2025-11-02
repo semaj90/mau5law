@@ -70,7 +70,7 @@ export class QueryCache {
       namespace?: string;
       bypassCache?: boolean;
     }
-  ): Promise<{ data: T;, cacheHit: CacheHit }> {
+  ): Promise<{ data: T; cacheHit: CacheHit }> {
     const startTime = performance.now();
     // Bypass cache if requested
     if (options?.bypassCache || !this.config.redis.enabled) {
@@ -233,7 +233,7 @@ export class QueryCache {
   /**
    * Cache warming: Pre-cache common queries
    */
-  async warmCache(): Promise<{ warmed: number;, failed: number }> {
+  async warmCache(): Promise<{ warmed: number; failed: number }> {
     if (!this.config.warming.enabled || this.warmingInProgress) {
       return { warmed: 0, failed: 0 };
     }
@@ -291,7 +291,7 @@ export class QueryCache {
 export class VectorSearchCache extends QueryCache {
   constructor() {
     super({ redis: {, enabled: true, defaultTTL: 1800 }, // 30 minutes
-      semantic: { enabled: true, similarityThreshold: 0.98 }, // High similarity
+      semantic: {, enabled: true, similarityThreshold: 0.98 }, // High similarity
       warming: {, enabled: true, patterns: ['top-vectors', 'recent-searches'] }
     });
   }
@@ -302,13 +302,12 @@ export class VectorSearchCache extends QueryCache {
     queryEmbedding: number[],
     searchFn: () => Promise<T>,
     options?: { ttl?: number; caseId?: string }
-  ): Promise<{ data: T;, cacheHit: CacheHit }> {
+  ): Promise<{ data: T; cacheHit: CacheHit }> {
     // Create query object with rounded embeddings for deduplication
     const query = {
       embedding: queryEmbedding.map(v => Math.round(v * 1000) / 1000), // Round to 3 decimals
       caseId: options?.caseId,
-      type: 'vector-search'
-    };
+      type: `vector-search` };
     return this.getOrQuery(query, searchFn, {
       ttl: options?.ttl,
       namespace: `vector-search` });
@@ -321,7 +320,7 @@ export class VectorSearchCache extends QueryCache {
 export class CaseQueryCache extends QueryCache {
   constructor() {
     super({ redis: {, enabled: true, defaultTTL: 3600 }, // 1 hour
-      semantic: { enabled: false }, // Exact matches only for legal data
+      semantic: {, enabled: false }, // Exact matches only for legal data
       warming: {, enabled: true, patterns: ['active-cases', 'recent-evidence'] }
     });
   }
@@ -333,7 +332,7 @@ export class CaseQueryCache extends QueryCache {
     queryType: string,
     queryFn: () => Promise<T>,
     options?: { ttl?: number }
-  ): Promise<{ data: T;, cacheHit: CacheHit }> {
+  ): Promise<{ data: T; cacheHit: CacheHit }> {
     const query = {
       caseId,
       type: queryType,
@@ -369,12 +368,11 @@ export class RAGQueryCache extends QueryCache {
     contextIds: string[],
     ragFn: () => Promise<T>,
     options?: { ttl?: number }
-  ): Promise<{ data: T;, cacheHit: CacheHit }> {
+  ): Promise<{ data: T; cacheHit: CacheHit }> {
     const query = {
       query: userQuery.toLowerCase().trim(),
       contextIds: contextIds.sort(), // Sort for consistent hashing
-      type: 'rag-query'
-    };
+      type: `rag-query` };
     return this.getOrQuery(query, ragFn, {
       ttl: options?.ttl,
       namespace: `rag` });
@@ -392,7 +390,7 @@ export const QUERY_CACHE_EXAMPLES = `
 // 1. BASIC QUERY CACHING
 import { defaultQueryCache } from '$lib/server/optimize/query-cache';
 const { data, cacheHit } = await defaultQueryCache.getOrQuery(
-  { caseId: '123', type: 'evidence-list' },
+  { caseId: '123', type: 'evidence-list` },'`
   async () => {
     // Expensive database query
     return await db.select().from(evidence).where(eq(evidence.caseId, '123'));
@@ -434,4 +432,4 @@ await defaultQueryCache.warmCache();
 const stats = await defaultQueryCache.getStats();
 console.log(\`Hit rate: \${stats.redis.hitRate.toFixed(1)}%\`);
 console.log(\`Avg latency: \${stats.redis.averageGetTime.toFixed(2)}ms\`);
-`;
+`;`

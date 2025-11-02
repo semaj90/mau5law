@@ -26,7 +26,7 @@ export class LegalAILogic {
       confidence: Math.random(),
       entities: [],
       themes: [],
-      summary: `Analysis of ${document.title}` }
+      summary: `Analysis of ${document.title}' }'`
   }
   static categorizeEvidence(evidence: EvidenceItem[]): Record<string, EvidenceItem[]> {
     // Pure categorization logic

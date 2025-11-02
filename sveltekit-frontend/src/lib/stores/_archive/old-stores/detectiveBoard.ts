@@ -21,7 +21,7 @@ export interface AIContext { evidenceItems: Array<{, id: string;
     title: string;
     type: string;
     content: string;
-    metadata?: EvidenceMetadata; // was `any' }>;
+    metadata?: EvidenceMetadata; // was `any` }>;
   caseInfo: { id: string;, title: string;
     description?: string;
     status?: string;
@@ -101,7 +101,7 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
         ...contextUpdates
       }
     };
-    // Update current context if it's active
+    // Update current context if it's active'
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
     return {
       ...contexts,
@@ -134,7 +134,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     // Send to AI service (integrate with your existing AI infrastructure)
     const response = await fetch('/api/ai/assistant', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         caseId,
         message: prompt,
@@ -165,10 +165,10 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     }
     return assistantMessage;
   } catch (error) {
-    console.error('AI assistant error:', error);
+    console.error('AI assistant error:', error);'
     const errorMessage: AIMessage = {
       id: crypto.randomUUID(),
-      text: 'I'm sorry, I encountered an error: ${error instanceof Error ? error.message : `Unknown error` }`,
+      text: 'I'm sorry, I encountered an error: ${error instanceof Error ? error.message : `Unknown error` }`,`
       type: 'assistant',
       timestamp: Date.now(),
       confidence: 0

@@ -3,7 +3,7 @@
  * Based on NVIDIA vk_compute_mipmaps - Vulkan-style compute shader approach
  * Features: Multi-level generation, NVIDIA RTX optimization, memory streaming
  */
-/// <reference types="@webgpu/types" />
+/// <reference, types="@webgpu/types" />
 import { yorhaWebGPU } from './YoRHaWebGPUMath.js';
 
 // Add a typed interface for the external helper instead of using `any`
@@ -22,7 +22,7 @@ export interface MipmapConfig { maxMipLevels: number;, filterMode: 'linear' | '
   enableStreaming: boolean;
   maxTextureSize: number;
 }
-export interface MipmapChainResult { mipLevels: { width: number;, height: number }[];
+export interface MipmapChainResult { mipLevels: { width: number; height: number }[];
   totalGenerationTime: number;
   memoryUsed: number;
   optimization: { levelsGenerated: number;, streamingUsed: boolean;
@@ -208,7 +208,7 @@ export class YoRHaMipmapShaders {
       chunkSize: options.chunkSize ?? 1024,
       concurrentStreams: options.concurrentStreams ?? 1,
       memoryBudget: options.memoryBudget ?? 64 * 1024 * 1024,
-      priority: options.priority ?? 'balanced` };
+      priority: options.priority ?? 'balanced` };'`
 
     const sourceWidth = sourceTexture.width || 1024;
     const sourceHeight = sourceTexture.height || 1024;
@@ -221,7 +221,7 @@ export class YoRHaMipmapShaders {
 
     const start = performance.now();
     let memoryUsed = 0;
-    const mipLevels: { width: number;, height: number }[] = [];
+    const mipLevels: { width: number; height: number }[] = [];
 
     // For demonstration we generate the first mip level by processing chunks
     for (let y = 0; y < sourceHeight; y += chunkSize) {
@@ -320,7 +320,7 @@ export class YoRHaMipmapShaders {
         color = color * 0.25;
         textureStore(targetTexture, coord, color);
       }
-    `;
+    `;`
   }
   /**
    * Bilinear filter shader - balanced quality/performance
@@ -341,7 +341,7 @@ export class YoRHaMipmapShaders {
         let color = textureSampleLevel(sourceTexture, linearSampler, uv, 0.0);
         textureStore(targetTexture, coord, color);
       }
-    `;
+    `;`
   }
   /**
    * Gaussian filter shader - high quality, slower
@@ -378,7 +378,7 @@ export class YoRHaMipmapShaders {
         }
         textureStore(targetTexture, coord, color);
       }
-    `;
+    `;`
   }
   /**
    * RTX-optimized shader with tensor core acceleration hints
@@ -412,7 +412,7 @@ export class YoRHaMipmapShaders {
         filteredColor = clamp(filteredColor, vec4<f32>(0.0), vec4<f32>(1.0));
         textureStore(targetTexture, coord, filteredColor);
       }
-    `;
+    `;`
   }
   /**
    * Multi-level batch shader for parallel mip generation
@@ -472,7 +472,7 @@ export class YoRHaMipmapShaders {
           textureStore(mipLevel4, baseCoord, color4 / 16.0);
         }
       }
-    `;
+    `;`
   }
   /**
    * Cleanup resources

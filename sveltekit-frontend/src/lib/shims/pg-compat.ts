@@ -38,7 +38,7 @@ export class Pool {
     this.client = null;
   }
 
-  private ensureClient(): ReturnType<typeof postgres> {
+  private ensureClient(): ReturnType<typeof, postgres> {
     if (!this.client) {
       const conn =
         this.connectionString ||
@@ -62,7 +62,7 @@ export class Pool {
       try {
         fn(...args);
       } catch (e) {
-        console.warn(`Error in event listener for ${event}: ', e);
+        console.warn(`Error in event listener for ${event}: ', e);'`
       }
     });
   }

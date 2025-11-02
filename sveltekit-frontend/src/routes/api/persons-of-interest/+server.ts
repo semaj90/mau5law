@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Build where conditions
     const conditions = [];
     if (searchQuery) {
-      conditions.push(sql`${personsOfInterest.name} LIKE ${'%' + searchQuery + '%` }`);
+      conditions.push(sql`${personsOfInterest.name} LIKE ${'%' + searchQuery + '%` }`);'`
     }
     if (threatLevel) {
       conditions.push(eq(personsOfInterest.threatLevel, threatLevel));
@@ -178,21 +178,19 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Person of interest not found'
-        },
+          error: 'Person of interest not found` },'`
         { status: 404 }
       );
     }
     return json({
       success: true,
-      message: 'Person of interest deleted successfully'
-    });
+      message: `Person of interest deleted successfully` });
   } catch (error) {
-    console.error('Error deleting person of interest:', error);
+    console.error('Error deleting person of interest: `, error);'`
     return json(
       {
         success: false,
-        error: 'Failed to delete person of interest` },
+        error: `Failed to delete person of interest` },
       { status: 500 }
     );
   }

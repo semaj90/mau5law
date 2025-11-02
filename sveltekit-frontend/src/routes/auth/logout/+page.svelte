@@ -2,7 +2,7 @@
 Logout Route - Handles user logout
 TODO: Implement logout functionality, clear session, redirect to login
 -->
-<script lang="ts">
+<script, lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   // Svelte 5 runes are auto-imported
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
@@ -31,7 +31,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 		}
 	}
 	$effect(() => {
-		// Auto-logout in 3 seconds if user doesn't cancel
+		// Auto-logout in 3 seconds if user doesn't cancel'
 		const timer = setTimeout(handleLogout, 3000);
 		return () => clearTimeout(timer);
 	});
@@ -42,14 +42,14 @@ TODO: Implement logout functionality, clear session, redirect to login
 	showBackButton={true}
 >
 	{#snippet children()}
-		<Card.Root class="nes-container is-rounded max-w-md mx-auto">
-			<CardContent class="p-8 text-center">
-				<div class="mb-6">
-					<div class="text-4xl mb-4">👋</div>
-					<h2 class="nes-text is-primary text-lg mb-2">
+		<Card.Root class="nes-container is-rounded max-w-md, mx-auto">
+			<CardContent class="p-8, text-center">
+				<div, class="mb-6">
+					<div class="text-4xl, mb-4">👋</div>
+					<h2 class="nes-text is-primary text-lg, mb-2">
 						Signing Out
 					</h2>
-					<p class="nes-text is-disabled text-sm">
+					<p class="nes-text is-disabled, text-sm">
 						{#if isLoggingOut}
 							Logging you out...
 						{:else}
@@ -58,7 +58,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 					</p>
 				</div>
 				{#if !isLoggingOut}
-					<div class="flex justify-center gap-4">
+					<div class="flex justify-center, gap-4">
 						<Button.Root
 							class="nes-btn is-error"
 							onclick={handleLogout}
@@ -73,8 +73,8 @@ TODO: Implement logout functionality, clear session, redirect to login
 							Cancel
 					</div>
 				{:else}
-					<div class="animate-pulse">
-						<div class="nes-text is-primary">Redirecting...</div>
+					<div, class="animate-pulse">
+						<div class="nes-text, is-primary">Redirecting...</div>
 					</div>
 				{/if}
 			</div.Content>

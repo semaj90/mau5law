@@ -9,7 +9,7 @@
   - Customizable switch styles and effects
   - Integration with YoRHa design system
 -->
-<script lang="ts">
+<script, lang="ts">
 
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -51,7 +51,7 @@
   const { enableSpringPhysics } = $props<{ enableSpringPhysics: boolean }>()
   const { animationDuration } = $props<{ animationDuration: number }>()
   const { springTension } = $props<{ springTension: number }>()
-  const { ondispatch } = $props<{ ondispatch: ((_event: { checked: boolean }>() value?: string }) => void) | undefined;
+  const { ondispatch } = $props<{ ondispatch: ((_event: {, checked: boolean }>() value?: string }) => void) | undefined;
   // avoid using the reserved word `class` as an exported identifier
   const { className } = $props<{ className: string }>()
 
@@ -220,7 +220,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
-      `;
+      `;`
       container.appendChild(particle);
       setTimeout(() => particle.remove(), 700);
     }
@@ -278,11 +278,11 @@
         trackBackground: `
           linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 50%, ${isOn ? stateColors.shadow : '#0d1117'} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,${isOn ? 0.2 : 0.1}) 0%, transparent 50%)
-        `,
+        `,`
         knobBackground: `
           linear-gradient(145deg, ${stateColors.highlight} 0%, ${stateColors.base} 30%, ${stateColors.shadow} 70%, ${stateColors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)
-        `,
+        `,`
         knobShadow: `
           0 ${depth}px 0 ${stateColors.shadow},
           inset 0 3px 0 rgba(255,255,255,0.4),
@@ -326,7 +326,7 @@
           opacity: 0;
         }
       }
-    `;
+    `;`
     document.head.appendChild(particleStyleElement);
   });
 
@@ -338,7 +338,7 @@
 
 </script>
 
-<div class={"n64-switch-container " + className}>
+<div, class={"n64-switch-container " + className}>
   <div
     bind:this={switchElement}
     class={
@@ -370,7 +370,7 @@
       --glow-intensity: ${glowIntensity};
       --animation-duration: ${animationDuration}ms;
       --spring-tension: ${springTension};
-    `}
+    `}`
     role="switch"
     tabindex={disabled ? -1 : 0}
     aria-checked={checked}
@@ -386,24 +386,24 @@
     onmouseleave={handleUnhover}
     onkeydown={handleKeyDown}
   >
-    <div class="switch-track" style={`width: ${sizeStyles.width}px; height: ${sizeStyles.height}px;`}>
-      <div class="switch-knob" style={`width: ${sizeStyles.knobSize}px; height: ${sizeStyles.knobSize}px;`}>
+    <div, class="switch-track" style={`width: ${sizeStyles.width}px; height: ${sizeStyles.height}px;`}>
+      <div, class="switch-knob" style={`width: ${sizeStyles.knobSize}px; height: ${sizeStyles.knobSize}px;`}>
         {#if enableLighting}
-          <div class="knob-lighting">{/if}
+          <div, class="knob-lighting">{/if}
         {#if enableReflections}
-          <div class="knob-reflection">{/if}
+          <div, class="knob-reflection">{/if}
         {#if loading}
-          <div class="knob-loading">
-            <div class="n64-spinner"></div>
+          <div, class="knob-loading">
+            <div, class="n64-spinner"></div>
           {/if}
       </div>
       {#if enableFog}
-        <div class="track-fog">{/if}
+        <div, class="track-fog">{/if}
       {#if enableToggleGlow && checked}
-        <div class="toggle-glow">{/if}
+        <div, class="toggle-glow">{/if}
     </div>
 
-    <!-- Hidden input for form handling -->
+    <!-- Hidden input for form, handling -->
     <input
       type="checkbox"
       name={name}
@@ -418,12 +418,12 @@
   </div>
 
   {#if label || description}
-    <div class="switch-content">
+    <div, class="switch-content">
       {#if label}
-        <label id="switch-label" class="switch-label" for={id}>{label}</label>
+        <label, id="switch-label" class="switch-label" for={id}>{label}</label>
       {/if}
       {#if description}
-        <div id="switch-description" class="switch-description">{description}{/if}
+        <div, id="switch-description" class="switch-description">{description}{/if}
     {/if}
 </div>
 

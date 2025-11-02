@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 /**
  * Comprehensive Error Handler and Logger
  * Production-ready error handling, logging, and monitoring for the Legal AI Platform
@@ -74,7 +74,7 @@ class ProductionLogger implements Logger {
       await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , level: 'error',
           message,
@@ -92,7 +92,7 @@ class ProductionLogger implements Logger {
       await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , level: 'warn',
           message,
@@ -109,7 +109,7 @@ class ProductionLogger implements Logger {
       await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , level: 'info',
           message,
@@ -269,7 +269,7 @@ class ErrorHandler {
       await fetch('/api/v2/monitoring/errors', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify(report)
       });
     } catch (err: any) {

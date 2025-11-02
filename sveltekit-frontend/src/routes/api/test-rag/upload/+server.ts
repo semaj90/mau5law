@@ -82,13 +82,13 @@ async function extractTextFromFile(
         embedding: first.embedding || undefined
       };
     } catch (error: any) {
-      console.error('[Test RAG] GPU OCR service error: ', error);
+      console.error('[Test RAG] GPU OCR service error: ', error);'
       return {
-        text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.` };
+        text: '[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.' };
     }
   }
 
-  throw new Error(`Unsupported file type: ${fileType}`);
+  throw new Error('Unsupported file type: ${fileType}');
 }
 
 const handler: RequestHandler = async ({ request, fetch }) => {
@@ -99,7 +99,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
     const files = formData.getAll('files') as File[];
 
     if (files.length === 0) {
-      return json({ error: `No files uploaded` }, { status: 400 });
+      return json({ error: 'No files uploaded` }, { status: 400 });'`
     }
 
     for (const file of files) {
@@ -212,7 +212,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       } catch (fileErr: any) {
         result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
-        console.error(`❌ [Test RAG] Failed to process file ${file.name}: ', fileErr);
+        console.error(`❌ [Test RAG] Failed to process file ${file.name}: ', fileErr);'`
       }
 
       results.push(result);
@@ -233,7 +233,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         storage: `✅ PostgreSQL pgvector + Qdrant` }
     });
   } catch (error: any) {
-    console.error('[Test RAG] Upload error:', error);
+    console.error('[Test RAG] Upload error:', error);'
     return json(
       { error: 'Upload failed', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
@@ -270,13 +270,13 @@ export const GET: RequestHandler = async () => {
         .from(testRagDocuments)
         .limit(1)) as Array<{ count: number }>;
       const embCountRows = (await db
-        .select({ count: sql<number>`COUNT(*)' })
+        .select({ count: sql<number>`COUNT(*)` })
         .from(testRagEmbeddings)
         .limit(1)) as Array<{ count: number }>;
       docCount = Array.isArray(docCountRows) && docCountRows[0] ? Number(docCountRows[0].count) : 0;
       embCount = Array.isArray(embCountRows) && embCountRows[0] ? Number(embCountRows[0].count) : 0;
     } catch (countErr) {
-      console.warn('[Test RAG] Failed to read table counts:', countErr);
+      console.warn('[Test RAG] Failed to read table counts: `, countErr);'`
       // leave docCount and embCount as -1 to indicate unknown
     }
 

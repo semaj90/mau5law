@@ -7,7 +7,7 @@ import { QdrantClient, type Filter } from '@qdrant/js-client-rest';
 // Attempt dynamic import of optional SOM implementation, fallback to a lightweight stub.
 // This prevents startup/import-time crashes if: './som-clustering.js' is not present.
 type LegalDocumentSOM = {
-  cluster(vector: number[]): Promise<{ x: number; y: number;, confidence: number }>;
+  cluster(vector: number[]): Promise<{ x: number; y: number; confidence: number }>;
 };
 
 class FallbackLegalDocumentSOM implements LegalDocumentSOM {
@@ -74,16 +74,16 @@ export interface SearchStats { totalResults: number;, searchTimeMs: number;
   memoryUsage: number;
 }
 
-type EvidenceSelect = InferSelectModel<typeof evidence>;
-type CaseSelect = InferSelectModel<typeof cases>;
-type LegalDocumentSelect = InferSelectModel<typeof legalDocuments>;
+type EvidenceSelect = InferSelectModel<typeof, evidence>;
+type CaseSelect = InferSelectModel<typeof, cases>;
+type LegalDocumentSelect = InferSelectModel<typeof, legalDocuments>;
 
 export class OptimizedQdrantService {
   private client: QdrantClient;
   private config: Required<QdrantConfig>;
   private somCluster?: LegalDocumentSOM; // LegalDocumentSOM - commenting out missing type
   private nesCache?: NESCacheOrchestrator;
-  private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number;, stats: SearchStats }>();
+  private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number; stats: SearchStats }>();
   private batchQueue: Array<QdrantPoint> = [];
   private memoryUsage = 0;
   private processingBatch = $state(false);
@@ -112,7 +112,7 @@ export class OptimizedQdrantService {
     }
     if (this.config.enableSOMClustering) {
       // Try to dynamically import an optional SOM implementation.
-      // If it doesn't exist, use a minimal fallback implementation so searches still work.
+      // If it doesn't exist, use a minimal fallback implementation so searches still work.'
       try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-var-requires
         const mod = await import('./som-clustering.js').catch(() => null);
@@ -149,13 +149,13 @@ export class OptimizedQdrantService {
             distance: 'Cosine'
           },
           optimizers_config: {
-            default_segment_number: 4,
+           , default_segment_number: 4,
             max_segment_size: 20000,
             memmap_threshold: 10000,
             indexing_threshold: 20000
           },
           hnsw_config: {
-            m: 16,
+           , m: 16,
             ef_construct: 200,
             full_scan_threshold: 10000
           },
@@ -185,7 +185,7 @@ export class OptimizedQdrantService {
       useCache?: boolean;
       enableSOM?: boolean;
     } = {}
-  ): Promise<{ results: VectorSearchResult[];, stats: SearchStats }> {
+  ): Promise<{ results: VectorSearchResult[]; stats: SearchStats }> {
     const startTime = Date.now();
     const limit = options.limit || 10;
     const threshold = options.threshold || 0.7;
@@ -216,7 +216,7 @@ export class OptimizedQdrantService {
         // Search within the identified cluster first
         searchResults = await this.searchInCluster(queryVector, clusterResult, limit, options.filter);
       }
-      // Fallback to standard vector search if SOM didn't find enough results
+      // Fallback to standard vector search if SOM didn't find enough results'
       if (searchResults.length < limit) {
         const searchParams: QdrantSearchParams = {
           vector: queryVector,
@@ -249,7 +249,7 @@ export class OptimizedQdrantService {
       return { results, stats };
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Qdrant search error:', error);
+      console.error('❌ Qdrant search error:', error);'
       if (error instanceof Error) {
         // Type guard for accessing error.message
         throw new Error(`Vector search failed: ${error.message}`);
@@ -260,7 +260,7 @@ export class OptimizedQdrantService {
   /**
    * Batch upsert vectors with memory optimization
    */
-  async upsertVectors(vectors: Array<QdrantPoint>): Promise<{ success: number;, errors: number }> {
+  async upsertVectors(vectors: Array<QdrantPoint>): Promise<{ success: number; errors: number }> {
     if (this.config.enableBatching) {
       // Add to batch queue
       this.batchQueue.push(...vectors);
@@ -283,7 +283,7 @@ export class OptimizedQdrantService {
       batchSize?: number;
       sinceTimestamp?: Date;
     } = {}
-  ): Promise<{ synced: number; errors: number;, duration: number }> {
+  ): Promise<{ synced: number; errors: number; duration: number }> {
     const startTime = Date.now();
     const batchSize = _options.batchSize || BATCH_SIZE;
     let synced = 0;
@@ -317,7 +317,7 @@ export class OptimizedQdrantService {
   // Private helper methods
   private async searchInCluster(
     queryVector: number[],
-    clusterResult: { x: number; y: number;, confidence: number },
+    clusterResult: { x: number; y: number; confidence: number },
     limit: number,
     filter?: Filter // Using: 'any' as a pragmatic workaround for Filter type import issues
   ): Promise<QdrantScoredPoint[]> {
@@ -478,8 +478,8 @@ export class OptimizedQdrantService {
     } while (batch.length === batchSize);
   }
   private async processVectorStream(
-    stream: AsyncIterable<unknown[]>, // Changed: 'any[]' to: 'unknown[]'; type: 'evidence' | 'case' | 'legal_document'
-  ): Promise<{ synced: number;, errors: number }> {
+    stream: AsyncIterable<unknown[]>, // Changed: 'any[]'; to: 'unknown[]'; type: 'evidence' | 'case' | 'legal_document'
+  ): Promise<{ synced: number; errors: number }> {
     let synced = 0;
     let errors = 0;
     for await (const batch of stream) {
@@ -536,7 +536,7 @@ export class OptimizedQdrantService {
     }
     return { synced, errors };
   }
-  private async upsertBatch(vectors: Array<QdrantPoint>): Promise<{ success: number;, errors: number }> {
+  private async upsertBatch(vectors: Array<QdrantPoint>): Promise<{ success: number; errors: number }> {
     try {
       const points: QdrantPoint[] = vectors.map(v => ({
         id: v.id,
@@ -550,11 +550,11 @@ export class OptimizedQdrantService {
       return { success: vectors.length, errors: 0 };
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Batch upsert error:', error);
+      console.error('❌ Batch upsert error:', error);'
       return { success: 0, errors: vectors.length };
     }
   }
-  private async processBatch(): Promise<{ success: number;, errors: number }> {
+  private async processBatch(): Promise<{ success: number; errors: number }> {
     if (this.processingBatch || this.batchQueue.length === 0) {
       return { success: 0, errors: 0 };
     }

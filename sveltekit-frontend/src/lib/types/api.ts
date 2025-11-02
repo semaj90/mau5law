@@ -607,7 +607,7 @@ export interface ClusterMetrics {
   events: any[];
   workers: any[];
   deferredQueue: any[];
-} // <-- added missing closing brace
+} // <-- added missing closing, brace
 
 // Performance Metrics Interface
 export interface PerformanceMetrics { protocols: {, QUIC: string;
@@ -818,14 +818,14 @@ export interface APIErrorResponse extends APIResponse {
 }
 // Protocol Router for Multi-Protocol Service Access
 export interface ProtocolRouter {
-  route<T extends keyof ServiceEndpoints>(
+  route<T extends keyof, ServiceEndpoints>(
     service: T,
     endpoint: string,
     options?: RequestInit & { protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket' }
   ): Promise<Response>;
   healthCheck(service: keyof ServiceEndpoints): Promise<HealthCheckResult>;
   getOptimalProtocol(service: keyof ServiceEndpoints): 'http' | 'grpc' | 'quic' | 'websocket';
-  getServiceConfig<T extends keyof ServiceEndpoints>(service: T): ServiceEndpoints[T];
+  getServiceConfig<T extends keyof, ServiceEndpoints>(service: T): ServiceEndpoints[T];
   getAllServices(): any[];
 }
 

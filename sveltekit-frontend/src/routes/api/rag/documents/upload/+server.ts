@@ -17,8 +17,8 @@ import { auth } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
 import { eq } from 'drizzle-orm';
-import { Client as MinioClient } from 'minio';
-import { v4 as uuidv4 } from 'uuid';
+import { Client, as MinioClient } from 'minio';
+import { v4, as uuidv4 } from 'uuid';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
@@ -68,7 +68,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 /**
- * Helper: Process document with OCR if it's an image
+ * Helper: Process document with OCR if it's an image'
  */
 async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
   // Check if file is an image
@@ -303,7 +303,7 @@ export const POST: RequestHandler = async (event) => {
         processingStatus: 'completed',
         chunks: createdChunks.length,
         hasOCR: ocrText.length > 0,
-        embeddingModel: 'embeddinggemma:latest' }
+        embeddingModel: 'embeddinggemma:latest` }'`
     });
   } catch (error) {
     console.error('Error uploading document:', error);

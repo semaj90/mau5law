@@ -21,7 +21,7 @@ export class DynamicWebSocketClient<T = unknown> {
   private config: Required<WSClientConfig<T>>;
   private reconnectAttempts = 0;
   private status: WSConnectionStatus = 'disconnected';
-  private keepaliveTimer?: ReturnType<typeof setInterval>;
+  private keepaliveTimer?: ReturnType<typeof, setInterval>;
 
   constructor(config: WSClientConfig<T>) {
     this.config = {
@@ -41,7 +41,7 @@ export class DynamicWebSocketClient<T = unknown> {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
 
-    // If endpoint starts with /ws/, it's a UUID-based path from registry
+    // If endpoint starts with /ws/, it's a UUID-based path from registry'
     if (this.config.endpoint.startsWith('/ws/')) {
       return `${protocol}//${host}${this.config.endpoint}`;
     }

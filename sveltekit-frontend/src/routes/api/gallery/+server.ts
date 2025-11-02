@@ -46,8 +46,8 @@ export interface GalleryItem { id: string;, type: 'evidence' | 'document' | 'im
 type RequestHandler = SvelteKitRequestHandler; // Changed to remove incorrect generic arguments
 
 export interface GalleryResponse { items: GalleryItem[];, totalCount: number;
-  categories: Array<{ name: string;, count: number }>; // FIXED: Changed Array<any> to specific type; filters: { types: string[]; // ADDED comma, cases: Array<{ id: string;, title: string }>; // ADDED type for cases // ADDED comma
-    users: Array<{ id: string;, name: string }>; // ADDED type for users
+  categories: Array<{ name: string; count: number }>; // FIXED: Changed Array<any> to specific type; filters: { types: string[]; // ADDED comma, cases: Array<{ id: string; title: string }>; // ADDED type for cases // ADDED comma
+    users: Array<{ id: string; name: string }>; // ADDED type for users
   };
   pagination: { page: number; // ADDED comma, pageSize: number; // ADDED comma
     totalPages: number;
@@ -104,10 +104,10 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       getUsers(),
     ])) as [
       // ADDED type assertion for Promise.all results
-      { items: GalleryItem[];, total: number },
-      { items: GalleryItem[];, total: number },
-      { items: GalleryItem[];, total: number },
-      Array<{ name: string;, count: number }>, // FIXED: Changed Array<any> to specific type
+      { items: GalleryItem[]; total: number },
+      { items: GalleryItem[]; total: number },
+      { items: GalleryItem[]; total: number },
+      Array<{ name: string; count: number }>, // FIXED: Changed Array<any> to specific type
       CaseSelect[],
       UserSelect[],
     ];
@@ -152,8 +152,8 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       }
     });
   } catch (err) {
-    console.error('Gallery API error:', err);
-    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error' }`);
+    console.error('Gallery API error:', err);'
+    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
   }
 };
 async function getEvidenceItems(
@@ -463,8 +463,8 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     }
     throw error(400, 'Invalid action');
   } catch (err) {
-    console.error('Gallery POST error:', err);
-    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
+    console.error('Gallery POST error:', err);'
+    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
   }
 };
 async function handleBulkDelete(ids: string[]): Promise<void> {

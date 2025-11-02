@@ -3,7 +3,7 @@
  * Lightweight vector/matrix/tensor utilities with optional WebGPU acceleration.
  */
 // Import WebGPU types
-/// <reference types="@webgpu/types" />
+/// <reference, types="@webgpu/types" />
 import type { LegalDocument as MemoryLegalDocument } from '$lib/memory/nes-memory-architecture';
 export interface WebGPUMathConfig { preferWebGPU: boolean;, fallbackToWebGL: boolean;
   enableProfiling: boolean;
@@ -37,7 +37,7 @@ export interface BenchmarkResults { webGPUSupported: boolean;, vectorOpsPerSeco
 // Add new types for texture/legal-document processing
 type MipmapLevelDescriptor =
   | GPUTexture
-  | { width: number;, height: number; bytesPerPixel?: number; estimatedSize?: number };
+  | { width: number; height: number; bytesPerPixel?: number; estimatedSize?: number };
 
 type MipmapChainResult = {
   // accept either real GPUTexture objects or simple width/height descriptors returned by alternate implementations
@@ -125,7 +125,7 @@ export class YoRHaWebGPUMath {
         // Vector addition
         output.data[index] = inputA.data[index] + inputB.data[index];
       }
-    `;
+    `;`
     // Matrix operations shader
     const matrixOpsShader = `
       struct MatrixData {
@@ -143,7 +143,7 @@ export class YoRHaWebGPUMath {
         // Matrix multiplication
         output.data[index] = inputA.data[index] * inputB.data[index];
       }
-    `;
+    `;`
     // Physics simulation shader
     const physicsShader = `
       struct Particle { position: vec3<f32>;, velocity: vec3<f32>;
@@ -176,7 +176,7 @@ export class YoRHaWebGPUMath {
         // Store back
         particles.particles[index] = particle;
       }
-    `;
+    `;`
     // Layout computation shader
     const layoutShader = `
       struct LayoutNode { position: vec3<f32>;, size: vec3<f32>;
@@ -223,7 +223,7 @@ export class YoRHaWebGPUMath {
         }
         layout.nodes[index] = node;
       }
-    `;
+    `;`
     // Create compute pipelines
     this.computePipelines.set(
       'vectorOps',
@@ -248,8 +248,7 @@ export class YoRHaWebGPUMath {
       this.device.createComputePipeline({
         layout: 'auto',
         compute: {, module: this.device.createShaderModule({, code: physicsShader }),
-          entryPoint: 'main'
-        }
+          entryPoint: `main` }
       })
     );
     this.computePipelines.set(
@@ -257,7 +256,7 @@ export class YoRHaWebGPUMath {
       this.device.createComputePipeline({
         layout: 'auto',
         compute: {, module: this.device.createShaderModule({, code: layoutShader }),
-          entryPoint: 'main` }
+          entryPoint: `main` }
       })
     );
   }
@@ -634,13 +633,13 @@ export class YoRHaWebGPUMath {
         let estimatedMemory = 0;
         for (const lvl of rawLevels) {
           if (!lvl) continue;
-          // If it's a GPUTexture
+          // If it's a GPUTexture'
           if (isGPUTexture(lvl)) {
             mipLevels.push(lvl);
             continue;
           }
 
-          // If it's a simple descriptor with width/height -> synthesize GPUTexture
+          // If it's a simple descriptor with width/height -> synthesize GPUTexture'
           if (isLevelDescriptor(lvl) && this.device) {
             try {
               const desc: GPUTextureDescriptor = { size: {, width: lvl.width, height: lvl.height, depthOrArrayLayers: 1 },
@@ -733,7 +732,7 @@ function isGPUTexture(x: any): x is GPUTexture {
     typeof (x as { createView?: any }).createView === 'function'
   );
 }
-function isLevelDescriptor(x: any): x is { width: number;, height: number; bytesPerPixel?: number } {
+function isLevelDescriptor(x: any): x is { width: number; height: number; bytesPerPixel?: number } {
   return (
     typeof x === 'object' &&
     x !== null &&

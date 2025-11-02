@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ params }) => {
       }
     });
   } catch (error) {
-    console.error('Detective case API error:', error);
+    console.error('Detective case API error:', error);'
     return json({ success: false, error: 'Failed to retrieve case data', case: null }, { status: 500 });
   }
 };
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       message: 'Case updated successfully'
     });
   } catch (error) {
-    console.error('Detective case update error:', error);
+    console.error('Detective case update error:', error);'
     return json({ success: false, error: 'Failed to update case data' }, { status: 500 });
   }
 };
@@ -181,7 +181,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
   const mockTimeline: TimelineEvent[] = [
     {
       timestamp: '2024-01-15T10:30:00Z',
-      event: "Threatening email sent to victim from suspect's known email account",
+      event: "Threatening email sent to victim from suspect's known email account",'
       significance: 'HIGH',
       evidenceIds: ['E001', 'E007'],
       correlationScore: 0.92,
@@ -190,7 +190,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     },
     {
       timestamp: '2024-01-18T14:15:00Z',
-      event: "Suspect observed conducting surveillance of victim's workplace",
+      event: "Suspect observed conducting surveillance of victim's workplace",'
       significance: 'HIGH',
       evidenceIds: ['E003', 'E008'],
       correlationScore: 0.87,
@@ -207,7 +207,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     },
     {
       timestamp: '2024-01-25T16:45:00Z',
-      event: "Physical altercation witnessed at victim's residence",
+      event: "Physical altercation witnessed at victim's residence",'
       significance: 'HIGH',
       evidenceIds: ['E004', 'E005'],
       correlationScore: 0.94,
@@ -237,7 +237,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     {
       id: 'E001',
       type: 'DIGITAL',
-      description: "Threatening email with detailed knowledge of victim's schedule and personal information",
+      description: "Threatening email with detailed knowledge of victim's schedule and personal information",'
       relevance: 'HIGH',
       integrity: 'INTACT',
       collectedDate: '2024-01-15T12:00:00Z',
@@ -245,7 +245,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       chainOfCustody: ['Tech. Anderson', 'Det. Martinez', 'Evidence Locker 247'],
       analysisStatus: 'COMPLETE',
       findings:
-        "Email headers confirm origin from suspect's home IP address. Metadata shows creation time consistent with suspect alibi contradictions."
+        "Email headers confirm origin from suspect's home IP address. Metadata shows creation time consistent with suspect alibi contradictions."'
     },
     {
       id: 'E002',
@@ -276,7 +276,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     {
       id: 'E004',
       type: 'PHYSICAL',
-      description: "Security camera footage from victim's residence showing physical altercation",
+      description: "Security camera footage from victim's residence showing physical altercation",'
       relevance: 'HIGH',
       integrity: 'INTACT',
       collectedDate: '2024-01-26T08:00:00Z',
@@ -289,7 +289,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     {
       id: 'E005',
       type: 'FORENSIC',
-      description: "DNA evidence collected from victim's property after altercation",
+      description: "DNA evidence collected from victim's property after altercation",'
       relevance: 'HIGH',
       integrity: 'INTACT',
       collectedDate: '2024-01-26T10:00:00Z',
@@ -309,25 +309,23 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       chainOfCustody: ['Paralegal Davis', 'Det. Martinez', 'Evidence Locker 252'],
       analysisStatus: 'COMPLETE',
       findings:
-        "Records show 3-year pattern of legal disputes, escalating financial stakes, and suspect's consistent pattern of non-compliance with court orders."
+        "Records show 3-year pattern of legal disputes, escalating financial stakes, and suspect's consistent pattern of non-compliance with court orders."'
     },
     {
       id: 'E007',
       type: 'DIGITAL',
-      description: "Social media posts showing suspect's state of mind and threats",
+      description: "Social media posts showing suspect's state of mind and threats",'
       relevance: 'MEDIUM',
       integrity: 'PARTIAL',
       collectedDate: '2024-01-16T15:30:00Z',
       collectedBy: 'Digital Forensics Unit - Tech. Lee',
       chainOfCustody: ['Tech. Lee', 'Det. Martinez', 'Evidence Locker 253'],
       analysisStatus: 'COMPLETE',
-      findings:
-        'Screenshots captured before suspect deleted posts. Content shows escalating anger and veiled threats toward victim. Some posts were deleted before capture.'
-    },
+      findings: `Screenshots captured before suspect deleted posts. Content shows escalating anger and veiled threats toward victim. Some posts were deleted before capture.` },
     {
       id: 'E008',
       type: 'PHYSICAL',
-      description: "Surveillance photos of suspect observing victim's workplace",
+      description: "Surveillance photos of suspect observing victim's workplace",'
       relevance: 'HIGH',
       integrity: 'INTACT',
       collectedDate: '2024-01-19T16:00:00Z',
@@ -335,7 +333,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       chainOfCustody: ['Det. Chen', 'Det. Martinez', 'Evidence Locker 254'],
       analysisStatus: 'COMPLETE',
       findings:
-        "High-resolution photos clearly identify suspect conducting surveillance over 3 separate days. Vehicle license plate matches suspect's registered vehicle."
+        "High-resolution photos clearly identify suspect conducting surveillance over 3 separate days. Vehicle license plate matches suspect's registered vehicle."'
     },
     {
       id: 'E009',
@@ -347,8 +345,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Det. Martinez',
       chainOfCustody: ['Store Manager', 'Det. Martinez', 'Evidence Locker 255'],
       analysisStatus: 'COMPLETE',
-      findings:
-        'Credit card records and store surveillance confirm suspect purchased unusual combination of items consistent with restraint and confinement preparations.` },
+      findings: `Credit card records and store surveillance confirm suspect purchased unusual combination of items consistent with restraint and confinement preparations.` }
   ];
   return {
     case: mockCase,

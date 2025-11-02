@@ -63,7 +63,7 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
     service.stop();
   }
 
-  return { service: service as InterpreterFrom<typeof systemMonitorMachine>, stop };
+  return { service: service as InterpreterFrom<typeof, systemMonitorMachine>, stop };
 }
 
 // Simple programmatic capture API for external modules (e.g., WebGPU graph)
@@ -83,7 +83,7 @@ export async function captureLatency(entry: LatencyEntry): Promise<any> {
       if (endpoint) {
         void fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify(entry)
         }).catch((err) => {
           // non-fatal: remote post failed

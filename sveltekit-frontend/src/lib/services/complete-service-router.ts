@@ -43,7 +43,7 @@ export type ClusterParams = Record<string, unknown>;
 
 export class CompleteServiceRouter {
   private services: Map<string, ServiceEndpoint> = new Map();
-  private healthCache: Map<string, { status: boolean;, timestamp: number }> = new Map();
+  private healthCache: Map<string, { status: boolean; timestamp: number }> = new Map();
   private readonly HEALTH_CACHE_TTL = 30_000; // 30 seconds
 
   constructor() {
@@ -274,23 +274,21 @@ export class CompleteServiceRouter {
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown'
-      },
+        status: 'unknown` },'`
       {
         name: 'simple-api-endpoints',
         port: 8226,
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: 'unknown'
-      },
+        status: `unknown` },
       {
         name: 'main-service',
         port: 8227,
         protocols: ['HTTP'],
         category: 'support',
         health: '/health',
-        status: `unknown` },
+        status: `unknown` }
     ];
 
     // Register all services
@@ -357,7 +355,7 @@ export class CompleteServiceRouter {
       service.status = isHealthy ? 'running' : 'stopped';
       return isHealthy;
     } catch (error: any) {
-      console.warn(`Health check failed for ${serviceName}: ', error);
+      console.warn(`Health check failed for ${serviceName}: ', error);'`
       this.healthCache.set(serviceName, { status: false, timestamp: now });
       if (service) service.status = 'stopped';
       return false;
@@ -454,8 +452,7 @@ export class CompleteServiceRouter {
         success: true,
         data,
         service: serviceName,
-        protocol: 'HTTP'
-      };
+        protocol: `HTTP` };
     } catch (error: any) {
       return {
         success: false,
@@ -589,7 +586,7 @@ export class CompleteServiceRouter {
   getServiceStats() {
     const services = this.getAllServices();
     const stats: { total: number;, byCategory: Record<string, number>;
-      byStatus: { running: number; stopped: number;, unknown: number };
+      byStatus: { running: number; stopped: number; unknown: number };
       byProtocol: Record<string, number>;
     } = {
       total: services.length,

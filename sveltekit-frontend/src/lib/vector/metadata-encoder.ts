@@ -84,7 +84,7 @@ export class VectorMetadataEncoder {
       batchSize: Math.max(config.batchSize ?? 32, 1)
     } as VectorEncodingConfig; // Cast initial assignment
     this.gpuContext = gpuContext;
-    // try initializing GPU resources but don't throw if not available
+    // try initializing GPU resources but don't throw if not available'
     void this.initializeGPUResources();
   }
 
@@ -280,12 +280,12 @@ export class VectorMetadataEncoder {
           output[index] = select(0, 1, scaled > 0.0);
         }
       }
-    `;
+    `;`
     return {
       name: 'VectorQuantization',
       backend: this.gpuContext.getBackendType(),
       compute: computeShader,
-      entryPoint: 'main` };
+      entryPoint: 'main' };
   }
 
   private async preprocessVector(vector: Float32Array, targetDimensions: VectorDimensions): Promise<Float32Array> {
@@ -570,6 +570,6 @@ export class VectorMetadataEncoder {
     // Updated
     return {
       dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 : 512,
-      quantization: metrics.memoryEfficiency < 50 ? 'int4' : 'int8` };
+      quantization: metrics.memoryEfficiency < 50 ? 'int4' : 'int8' };
   }
 }

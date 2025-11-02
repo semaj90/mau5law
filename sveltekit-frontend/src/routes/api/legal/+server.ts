@@ -5,7 +5,7 @@ import { lucia } from '$lib/auth/lucia';
 // Requires node-redis v4+ for createClient and RedisClientType (legacy v3 uses different API)
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
-import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module for server-side variables
+import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module for server-side variables'
 
 // Redis client for coordination with MCP server (node-redis)
 // Use non-null assertion (!) on createClient to satisfy TypeScript, assuming: 'redis' package is correctly installed and exports it.
@@ -13,7 +13,7 @@ const redisClient: RedisClientType = createClient!({
   url: REDIS_URL || 'redis://localhost:6379'
 });
 // connect asynchronously (non-blocking)
-redisClient.connect().catch((err: any) => console.error('Redis connect; error:', err));
+redisClient.connect().catch((err: any) => console.error('Redis connect; error:', err));'
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000';
 interface LegalJobRequest { case_id: string;, messages: LegalMessage[];
@@ -89,8 +89,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
         enable_kv_reuse: true,
-        compression_type: 'float16'
-      },
+        compression_type: 'float16` },'`
       legal_context: {
         case_id: requestData.case_id,
         case_type: requestData.legal_context?.case_type || 'general',
@@ -134,8 +133,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
       result_url: `/api/legal/result/${mcpResult.job_id}` });
   } catch (err: any) {
-    console.error('Legal API error: ', err);
-    // If the error is already a SvelteKit `error' object (has status and message properties),
+    console.error('Legal API error: ', err);'
+    // If the error is already a SvelteKit 'error' object (has status and message properties),
     // re-throw it directly to ensure SvelteKit handles it correctly.
     if (
       typeof err === 'object' &&
@@ -145,7 +144,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       'message' in err &&
       typeof (err as { message: any }).message === 'string'
     ) {
-      const svelteKitError = err as { status: number;, message: string };
+      const svelteKitError = err as { status: number; message: string };
       throw error(svelteKitError.status, svelteKitError.message); // Re-throw the SvelteKit error object directly
     }
     // For any other type of error, throw a generic 500 internal server error.

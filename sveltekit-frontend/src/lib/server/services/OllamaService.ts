@@ -73,13 +73,13 @@ export class OllamaService {
       };
       const res = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(body),
         signal: AbortSignal.timeout(this.timeout)
       });
       if (!res.ok) {
         const text = await res.text().catch(() => '');
-        throw new Error(`Ollama API error: ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);
+        throw new Error(`Ollama API error: ${res.status} ${res.statusText}${text ? ' - ' + text : '` }`);'`
       }
       const data = (await res.json()) as OllamaResponse;
       return data.response ?? '';
@@ -96,13 +96,13 @@ export class OllamaService {
     try {
       const res = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ model, prompt }),
         signal: AbortSignal.timeout(this.timeout)
       });
       if (!res.ok) {
         const text = await res.text().catch(() => '');
-        throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);
+        throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText}${text ? ' - ' + text : '` }`);'`
       }
       const data = (await res.json()) as
         | { embedding?: number[] }

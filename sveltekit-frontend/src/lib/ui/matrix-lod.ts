@@ -45,7 +45,7 @@ export class MatrixLODSystem {
   private hybridGPU: HybridGPUContext | null = null; // Use the defined interface
   private useHybridAcceleration = true;
   // GLSL Shaders for cubic filter blending
-  private vertexShaderSource = `#version 300 es
+  private vertexShaderSource = `#version 300 es`
     in vec4 a_position;
     in vec2 a_texcoord;
     in float a_lodLevel;
@@ -65,8 +65,8 @@ export class MatrixLODSystem {
       float distance = length(screenPos - u_focus.xy);
       v_focusDistance = distance / u_focus.z; // Normalize by focus radius
     }
-  `;
-  private fragmentShaderSource = `#version 300 es
+  `;`
+  private fragmentShaderSource = `#version 300 es`
     precision highp float;
     in vec2 v_texcoord;
     in float v_lodLevel;
@@ -120,7 +120,7 @@ export class MatrixLODSystem {
         }
       #endif
     }
-  `;
+  `;`
   constructor(canvas: HTMLCanvasElement) {
     const gl = canvas.getContext('webgl2');
     if (!gl) {
@@ -179,7 +179,7 @@ export class MatrixLODSystem {
         nesMemoryOptimization: true
       });
 
-      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid' } acceleration`);
+      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid` } acceleration`);'`
     } catch (error) {
       console.warn('⚠️ Hybrid GPU initialization failed or factory not found, using WebGL2 fallback:', error);
       this.useHybridAcceleration = $state(false);
@@ -368,7 +368,7 @@ export class MatrixLODSystem {
         }
         lodLevels[index] = lodLevel;
       }
-    `;
+    `;`
     try {
       // Create AI suggestions buffer
       const aiSuggestionIndices = new Int32Array(componentIds.length);
@@ -469,7 +469,7 @@ export class MatrixLODSystem {
    * Initialize GPU performance metrics
    */ private initializeGPUMetrics(): void {
     // This method is no longer needed as gpuMetrics is initialized in the constructor
-    // Keeping it for now, but it's effectively a no-op after constructor initialization.
+    // Keeping it for now, but it's effectively a no-op after constructor initialization.'
   }
   /**
    * Start performance monitoring loop

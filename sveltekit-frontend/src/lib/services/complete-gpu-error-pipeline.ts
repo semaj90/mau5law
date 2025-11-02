@@ -27,7 +27,7 @@ interface ConcurrentSearchType {
   getErrorStats?: () => Promise<Record<string, number>>;
 }
 
-// <-- Add this new local result type so the compiler knows the shape returned by the GPU processor
+// <-- Add this new local result type so the compiler knows the shape returned by the GPU, processor
 interface FlashAttentionResult {
   fixes?: Array<JsonObject>;
   performance?: {
@@ -231,7 +231,7 @@ export class CompleteGPUErrorPipeline {
     this.pipeline.currentTask = 'Pipeline completed successfully';
     this.pipeline.performance.processing_time = Date.now() - this.pipeline.performance.start_time;
     console.log('🎉 Stage 6: Pipeline completed!');
-    console.log('📊 Final Results: `);
+    console.log('📊 Final Results: `);'`
     console.log(`   - Total errors: ${this.pipeline.errors.total}`);
     console.log(`   - Successfully fixed: ${this.pipeline.errors.fixed}`);
     console.log(`   - Failed fixes: ${this.pipeline.errors.failed}`);
@@ -240,7 +240,7 @@ export class CompleteGPUErrorPipeline {
     console.log(`   - Tokens/second: ${this.pipeline.performance.tokens_per_second.toFixed(1)}`);
   }
 
-  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string;, line: number }> {
+  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string; line: number }> {
     if (!output) return [];
     const errorLines = output
       .split('\n')
@@ -257,12 +257,12 @@ export class CompleteGPUErrorPipeline {
     });
   }
 
-  private generateMockErrors(count: number): Array<{ code: string; message: string; file: string;, line: number }> {
+  private generateMockErrors(count: number): Array<{ code: string; message: string; file: string; line: number }> {
     const errorTypes = [
       { code: 'TS2322', message: "Type 'string' is not assignable to; type: 'number'", category: 'type' },
       { code: 'TS2307', message: "Cannot find; module: 'missing-module'", category: 'import' },
-      { code: 'TS7053', message: 'Element implicitly has; an: "any" type', category: 'type' },
-      { code: 'TS2339', message: "Property 'prop' does not exist", category: 'binding` },
+      { code: 'TS7053', message: 'Element implicitly has; an: "any" type', category: `type` },
+      { code: 'TS2339', message: "Property 'prop' does not exist", category: `binding` },
       { code: 'TS1005', message: "';' expected", category: `syntax` }
     ];
     const limit = Math.min(Math.max(0, Math.floor(count || 0)), 100);
@@ -312,7 +312,7 @@ export class CompleteGPUErrorPipeline {
     const tps = Number(this.pipeline.performance.tokens_per_second ?? 0);
     const documentsIndexed = Number((systemOverview.concurrentSearch as JsonObject)?.documentsIndexed ?? 0);
 
-    return `# 🚀 Legal AI GPU Error Processing Status Report
+    return `# 🚀 Legal AI GPU Error Processing Status Report`
 Generated: ${new Date().toISOString()}
 ## 📊 Pipeline Status
 - Stage: ${this.pipeline.stage}
@@ -341,10 +341,10 @@ ${servicesList}
 ## 🔗 Integration Status
 - Concurrent Search: ${typeof concurrentSearch.searchErrors === 'function' ? '✅ Operational' : '❌'}
 - FlashAttention2: ${typeof flashAttentionProcessor.processLiveErrors === 'function' ? '✅ Operational' : '❌'}
-- Native Services: ${typeof nativeServiceManager.getSystemOverview === 'function' ? '✅ Deployed' : '❌'}
-- GPU Acceleration: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅ Active' : '❌` }
+- Native Services: ${typeof nativeServiceManager.getSystemOverview === 'function' ? '✅ Deployed' : `❌` }
+- GPU Acceleration: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅ Active' : `❌` }
 **Status: ${this.pipeline.stage === 'completed' ? '🎉 COMPLETE' : `🔄 IN PROGRESS` }**
-`;
+`;`
   }
 }
 

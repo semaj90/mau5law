@@ -2,7 +2,7 @@ import { evidence, db } from '$lib/server/db';
 import path from 'path';
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'crypto';
-import { promises as fs } from 'fs';
+import { promises, as fs } from 'fs';
 
 export interface EvidenceRecord { id: string;, title: string;
   description: string;

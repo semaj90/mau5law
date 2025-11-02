@@ -19,7 +19,7 @@ type WASMLLMService = {
 
 type LangChainOllamaService = {
   testConnection(): Promise<boolean>;
-  queryDocuments(query: string; opts: {, maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
+  queryDocuments(query: string; opts: {; maxResults: number;, relevanceThreshold: number }): Promise<QueryResult>;
   processDocument(
     content: string,
     meta?: { documentId?: string; title?: string; type?: string }
@@ -31,7 +31,7 @@ type LangChainOllamaService = {
 
 type NESGPUIntegration = {
   searchLegalDocumentsGPU(
-    query: string; opts: {, limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
+    query: string; opts: {; limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
   ): Promise<LegalDocument[]>;
   ingestLegalDocumentsBinary(docs: LegalDocument[]): Promise<void>;
   getPerformanceStats?(): Promise<unknown>;
@@ -40,7 +40,7 @@ type NESGPUIntegration = {
 };
 
 type VectorOps = {
-  searchDocuments(embedding: Float32Array; threshold: number): Promise<any>;
+  searchDocuments(embedding: Float32Array;, threshold: number): Promise<any>;
   // add additional methods if you rely on them elsewhere
 };
 
@@ -126,7 +126,7 @@ const loadServices = async () => {
     console.warn('Vector operations not available (server import):', error);
   }
 
-  // Best-effort: try to import browser-only modules (may fail silently on server, that's okay)
+  // Best-effort: try to import browser-only modules (may fail silently on server, that's okay)'
   try {
     if (!wasmLLMService) {
       const wasmModule = await import('$lib/wasm/wasm-llm-service.js');
@@ -660,7 +660,7 @@ export class UnifiedAIService {
   private getLangChainModelName(): string {
     const m = this.config.langChainConfig?.model;
     if (typeof m === 'string') return m;
-    // common shapes: { name: 'model-name' } or { id: `model-id` }
+    // common shapes: { name: `model-name` } or { id: `model-id` }
     if (m && typeof m === 'object') {
       const obj = m as Record<string, unknown>;
       const name = obj['name'];

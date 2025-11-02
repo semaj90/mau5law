@@ -73,7 +73,7 @@ function createNotificationStore() {
       ...options,
       type: 'system',
       persistent: options.persistent ?? true,
-      position: options.position || 'center` });
+      position: options.position || 'center` });'`
   }
   // Legal AI specific notifications
   function caseUpdate(message: string, caseId?: string): string {
@@ -109,8 +109,7 @@ function createNotificationStore() {
       title: 'Security Alert',
       icon: '🚨',
       persistent: true,
-      position: 'center'
-    });
+      position: `center` });
   }
   function systemStatus(message: string, isOnline: boolean = true): string {
     return add(message, {

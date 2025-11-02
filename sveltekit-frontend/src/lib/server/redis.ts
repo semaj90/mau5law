@@ -19,7 +19,7 @@ function buildUrlWithPassword(url: string, password?: string) {
     }
     return url;
   } catch {
-    // fallback: naive replace (shouldn't normally happen)
+    // fallback: naive replace (shouldn't normally happen)'
     if (url.startsWith('redis://')) {
       return `redis://:${encodeURIComponent(password)}@${url.slice('redis://'.length)}`;
     }
@@ -34,7 +34,7 @@ function createClientInstance(): RedisClientType {
   // attach lightweight logging for dev
   client.on('error', (err: Error) => console.error('[redis] error', err && err.message));
   client.on('connect', () => console.log('[redis] connected'));
-  // attempt to connect but don't fail creation
+  // attempt to connect but don't fail creation'
   client.connect().catch(err => {
     console.warn('[redis] connect failed (will retry on use)', err && err.message);
   });

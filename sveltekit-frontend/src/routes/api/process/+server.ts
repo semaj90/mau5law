@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${GO_MICROSERVICE_URL}/api/process`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify(documentRequest)
     });
     if (!response.ok) {

@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
 
       default: return json(
-          { error: `Unsupported recommendation, type: ${type}' },
+          { error: 'Unsupported recommendation, type: ${type}' },
           { status: 400 }
         );
     }
@@ -154,16 +154,15 @@ export const POST: RequestHandler = async ({ request }) => {
         entityId,
         count: recommendations.length,
         source: 'database',
-        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined'
-      }
+        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined` }'`
     });
   } catch (error) {
-    console.error('❌ Recommendations error:', error);
+    console.error('❌ Recommendations error:', error);'
     return json(
       {
         error: 'Failed to generate recommendations',
         recommendations: [],
-        metadata: {, type: '', entityId: '', count: 0, source: `error` }
+        metadata: {, type: '', entityId: ``, count: 0, source: `error` }
       },
       { status: 500 }
     );

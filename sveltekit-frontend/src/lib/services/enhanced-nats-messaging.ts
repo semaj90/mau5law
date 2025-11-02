@@ -94,22 +94,22 @@ interface MockConsumer { name: string;, stream: string;
 }
 
 // Enhanced EventEmitter with typed events
-class TypedEventEmitter<T extends Record<string, unknown[]>> {
+class TypedEventEmitter<T extends, Record<string, unknown[]>> {
 	// store handlers with a signature that is compatible with all T[K] (unknown[])
 	// Explicitly type and initialize the Map to avoid parser/type issues
-	private listeners: Map<keyof T, Set<(...args: any[]) => void>> = new Map();
+	private listeners: Map<keyof, T, Set<(...args: any[]) => void>> = new Map();
 
-	on<K extends keyof T>(event: K, fn: (...args: T[K]) => void): void {
+	on<K extends keyof, T>(event: K, fn: (...args: T[K]) => void): void {
 		if (!this.listeners.has(event)) this.listeners.set(event, new Set());
 		// cast fn to the stored signature - safe because we will cast back on emit
 		this.listeners.get(event)!.add(fn as unknown as (...args: any[]) => void);
 	}
-	off<K extends keyof T>(event: K, fn: (...args: T[K]) => void): void {
+	off<K extends keyof, T>(event: K, fn: (...args: T[K]) => void): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
 		set.delete(fn as unknown as (...args: any[]) => void);
 	}
-	emit<K extends keyof T>(event: K, ...args: T[K]): void {
+	emit<K extends keyof, T>(event: K, ...args: T[K]): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
 		set.forEach(fn => {
@@ -117,7 +117,7 @@ class TypedEventEmitter<T extends Record<string, unknown[]>> {
 				// cast args to unknown[] to match stored fn signature
 				(fn as (...a: any[]) => void)(...args as unknown as unknown[]);
 			} catch (error: any) {
-				console.error('Event handler error:', error);
+				console.error('Event handler error:', error);'
 			}
 		});
 	}
@@ -264,7 +264,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			console.log('✅ Enhanced NATS: Connected successfully');
 			return true;
 		} catch (error: any) { // Changed any to unknown
-			console.error('❌ Enhanced NATS: Connection; failed:', error);
+			console.error('❌ Enhanced NATS: Connection;, failed:', error);
 			this.emit('error', error as Error);
 			return false;
 		}
@@ -277,7 +277,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 				try {
 					await subscription.unsubscribe();
 				} catch (error: any) { // Changed any to unknown
-					console.warn(`Warning: Failed to unsubscribe from ${subject}: ', error);
+					console.warn(`Warning: Failed to unsubscribe from ${subject}: ', error);'`
 				}
 			}
 			// Clean up streams and consumers
@@ -334,7 +334,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.emit('message', subject, message);
 		} catch (error: any) { // Changed any to unknown
 			this.metrics.error_count++;
-			console.error(`❌ Enhanced NATS: Publish failed for ${subject}: ', error);
+			console.error(`❌ Enhanced NATS: Publish failed for ${subject}: ', error);'`
 			throw error;
 		}
 	}
@@ -463,7 +463,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			console.log(`👤 Enhanced NATS: Consumer created ${config.name} for stream ${streamName}`);
 			this.emit('consumer_created', streamName, config.name);
 		} catch (error: any) { // Changed any to unknown
-			console.error(`❌ Enhanced NATS: Consumer creation; failed: ', error);
+			console.error(`❌ Enhanced NATS: Consumer creation;, failed: ', error);'`
 			throw error;
 		}
 	}
@@ -507,12 +507,12 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 	}
 	async publishSearchQuery(queryData: MessageData): Promise<void> { // Changed queryData type to MessageData
 		await this.publish(this.subjects.SEARCH_QUERY, queryData, {
-			headers: { 'event_type': 'search_operation', 'priority': 'normal' }
+			headers: { 'event_type': 'search_operation', 'priority': 'normal` }'`
 		});
 	}
 	async publishSystemHealth(healthData: MessageData): Promise<void> { // Changed healthData type to MessageData
 		await this.publish(this.subjects.SYSTEM_HEALTH, healthData, {
-			headers: { 'event_type': 'system_monitoring', 'priority': 'low' }
+			headers: { 'event_type': 'system_monitoring', 'priority': `low` }
 		});
 	}
 	// Subscribe to all legal AI events
@@ -577,7 +577,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 						data: new TextEncoder().encode(JSON.stringify({
 							id: 'mock-message',
 							type: 'mock',
-							data: {, message: 'Mock message' },
+							data: {, message: `Mock message` },
 							timestamp: new Date().toISOString()
 						})),
 						sid: 1, // Added sid for MockMsg

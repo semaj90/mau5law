@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { LegalKMeansClusterer } from '$lib/services/kmeans-clustering';
@@ -61,7 +61,7 @@ async function ensureRedisInstance(): Promise<any> {
   try {
     const mod = (() => {
       try {
-        // require may fail if alias $lib isn't resolvable at runtime; wrap defensively
+        // require may fail if alias $lib isn't resolvable at runtime; wrap defensively'
         return require('$lib/server/redis');
       } catch {
         return null;
@@ -358,7 +358,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Fetch embeddings from multiple sources for redundancy
     let embeddings: number[][] = [];
-    let documentMetadata: Array<{ id: string | number; type: string;, keywords: string[] }> = [];
+    let documentMetadata: Array<{ id: string | number; type: string; keywords: string[] }> = [];
     try {
       // Primary: PostgreSQL - only select id here to avoid referencing non-existent columns
       const pgDocuments = (await db
@@ -381,7 +381,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Merge results with preference for PostgreSQL if embeddings are present at runtime
       const mergedDocuments = new Map<
         string | number,
-        { id: string | number; embedding: number[] | null;, metadata: Record<string, unknown>; source: string }
+        { id: string | number; embedding: number[] | null; metadata: Record<string, unknown>; source: string }
       >();
       // Add PostgreSQL results (inspect for runtime fields if available)
       for (const doc of pgDocuments) {
@@ -439,7 +439,7 @@ export const POST: RequestHandler = async ({ request }) => {
         keywords: (doc.metadata && doc.metadata.keywords) || []
       }));
     } catch (dbError) {
-      console.error('Database retrieval error:', dbError);
+      console.error('Database retrieval error:', dbError);'
       return json(
         {
           success: false,
@@ -481,7 +481,7 @@ export const POST: RequestHandler = async ({ request }) => {
     enum KMeansJobStatus {
       Processing = 'processing',
       Completed = 'completed',
-      Failed = 'failed` }
+      Failed = 'failed` }'`
 
     // Generate cluster job ID (avoid deprecated substr)
     const clusterJobId = randomUUID();
@@ -588,7 +588,7 @@ export const POST: RequestHandler = async ({ request }) => {
               }
             }));
             // Define a type for a Qdrant client that supports our upsert call, to avoid using `any`
-            type QdrantUpsertClient = { upsert: (, collectionName: string; options: { wait?: boolean; points: Array<Record<string, unknown>> }
+            type QdrantUpsertClient = { upsert: (; collectionName: string; options: { wait?: boolean;, points: Array<Record<string, unknown>> }
               ) => Promise<unknown>;
             };
             if (centroidPoints.length > 0) {
@@ -620,7 +620,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           data: {
-            jobId: clusterJobId,
+           , jobId: clusterJobId,
             clusters: results.clusters,
             analysis: results.analysis,
             assignments: results.assignments,
@@ -644,7 +644,7 @@ export const POST: RequestHandler = async ({ request }) => {
               JSON.stringify({
                 jobId: clusterJobId,
                 status: 'failed',
-                error: clusteringError instanceof Error ? clusteringError.message : 'Unknown error` })
+                error: clusteringError instanceof Error ? clusteringError.message : `Unknown error` })
             )
           );
           // Do not close channel; reuse for future jobs
@@ -675,7 +675,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
   } catch (error: any) {
-    console.error('K-Means API error:', error);
+    console.error('K-Means API error:', error);'
     return json(
       {
         success: false,
@@ -786,7 +786,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        clusterId: `cluster_${bestIndex}`,
+       , clusterId: `cluster_${bestIndex}`,
         jobId,
         distance: bestDist
       },
@@ -796,7 +796,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error: any) {
-    console.error('K-Means prediction error:', error);
+    console.error('K-Means prediction error:', error);'
     return json(
       {
         success: false,

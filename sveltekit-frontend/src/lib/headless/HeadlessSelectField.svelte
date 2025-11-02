@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import * as Select from '$lib/components/ui/select/index.js';
   import { FormField } from './FormField.svelte';
@@ -25,7 +25,7 @@
     required?: boolean;
     description?: string;
     class?: string;
-    onChange?: (_event: { name: string; value: string | null }) => void;
+    onChange?: (_event: { name: string;, value: string | null }) => void;
   }
   let {
     name,
@@ -91,17 +91,17 @@
 </script>
 <FormField {name} {errors}>
   {#snippet control()}
-    <div class={className} {...rest}>
-      <SelectRoot bind:value={current} {disabled} onValueChange={handleValueChange}>
+    <div, class={className} {...rest}>
+      <SelectRoot, bind:value={current} {disabled} onValueChange={handleValueChange}>
         <SelectTrigger>
           <SelectValue {placeholder} />
         </SelectTrigger>
         <SelectContent>
           {#if emptyOptionLabel}
-            <SelectItem value="">{emptyOptionLabel}</SelectItem>
+            <SelectItem, value="">{emptyOptionLabel}</SelectItem>
           {/if}
           {#each normalized as opt (opt.value)}
-            <SelectItem value={opt.value}>{opt.label}</SelectItem>
+            <SelectItem, value={opt.value}>{opt.label}</SelectItem>
           {/each}
         </SelectContent>
       </SelectRoot>

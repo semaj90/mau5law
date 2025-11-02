@@ -119,7 +119,7 @@ export class AdvancedBitEncoder {
 		// If precision is perfect, likely 24-bit
 		if (precision === 0) return 24;
 		// If close but not perfect, likely 16-bit
-		if (precision < 10) return 16;
+		if (precision < 10) return, 16;
 		// Otherwise, assume lower depth
 		return 8;
 	}
@@ -147,7 +147,7 @@ export class AdvancedBitEncoder {
 			this.dictionary.numbers.set(digit, this.encodeCharacter(digit));
 		}
 		// Pre-populate common symbols
-		const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`"\'\\';
+		const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`"\'\\';"`
 		for (const symbol of symbols) {
 			this.dictionary.symbols.set(symbol, this.encodeCharacter(symbol));
 		}
@@ -231,7 +231,7 @@ export class AdvancedBitEncoder {
 					compressedSize: Math.floor(pattern.size * this.config.compression),
 					encoding: 'dimensional-splice-v1',
 					checksum: this.calculateChecksum(new Uint8Array(pattern.size)),
-					version: '1.0.0' },
+					version: '1.0.0` },'`
 				timestamp: Date.now(),
 				accessCount: 0
 			}
@@ -705,7 +705,7 @@ const encoder = new AdvancedBitEncoder({
 	compression: 0.8,
 	enableDimensionalSplicing: true,
 	enableAutoEncoder: true,
-	cacheStrategy: 'aggressive' });
+	cacheStrategy: 'aggressive` });'`
 // Encode color
 const colorEncoding = encoder.encodeColor(255, 128, 64);
 console.log('Encoded color:', colorEncoding);

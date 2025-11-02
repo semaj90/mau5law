@@ -43,17 +43,17 @@ export const GET = async (event: RequestEvent) => {
   const u = await getUser(event);
   const userId = extractUserId(u);
   if (!userId) {
-    return json({ error: 'Not authenticated` }, { status: 401 });
+    return json({ error: 'Not authenticated' }, { status: 401 });
   }
   const hash = url.searchParams.get('hash');
   if (!hash) {
-    return json({ error: 'Hash parameter required' }, { status: 400 });
+    return json({ error: `Hash parameter required` }, { status: 400 });
   }
   // Validate hash format (SHA256 should be 64 hex characters)
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
     return json(
       {
-        error: 'Invalid hash format. Expected 64-character hexadecimal string (SHA256)` },
+        error: `Invalid hash format. Expected 64-character hexadecimal string (SHA256)` },
       { status: 400 }
     );
   }
@@ -114,7 +114,7 @@ export const POST = async (event: RequestEvent) => {
   const u = await getUser(event);
   const userId = extractUserId(u);
   if (!userId) {
-    return json({ error: `Not authenticated` }, { status: 401 });
+    return json({ error: 'Not authenticated' }, { status: 401 });
   }
   const body = await request.json().catch(() => null);
   const { hash, evidenceId } = (body ?? {}) as { hash?: any; evidenceId?: any };
@@ -122,7 +122,7 @@ export const POST = async (event: RequestEvent) => {
   // Validate types for incoming fields
   if (typeof hash !== 'string' || !['string', 'number'].includes(typeof evidenceId)) {
     return json(
-      { error: `Invalid request shape. `hash` must be a string and `evidenceId' must be string or number.' },
+      { error: 'Invalid request shape. 'hash' must be a string and 'evidenceId' must be string or number.` },'`
       { status: 400 }
     );
   }
@@ -131,7 +131,7 @@ export const POST = async (event: RequestEvent) => {
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
     return json(
       {
-        error: 'Invalid hash format. Expected 64-character hexadecimal string (SHA256)` },
+        error: `Invalid hash format. Expected 64-character hexadecimal string (SHA256)` },
       { status: 400 }
     );
   }

@@ -63,14 +63,14 @@ export interface CrossSystemInsights {
     importance: number;
   }>;
   // Network patterns
-  networkPatterns: { keyInfluencers: Array<{ poiId: string;, influence: number }>;
-    citationClusters: Array<{ caseIds: string[];, commonCitations: string[] }>;
-    reportThemes: Array<{ theme: string; reportIds: string[];, frequency: number }>;
+  networkPatterns: { keyInfluencers: Array<{ poiId: string; influence: number }>;
+    citationClusters: Array<{ caseIds: string[]; commonCitations: string[] }>;
+    reportThemes: Array<{ theme: string; reportIds: string[]; frequency: number }>;
   };
   // Temporal analysis
-  temporalInsights: { citationTrends: Array<{ period: string; count: number;, types: Record<string, number> }>;
-    reportGeneration: Array<{ period: string; count: number;, templates: Record<string, number> }>;
-    poiActivity: Array<{ period: string; interactions: number;, newPOIs: number }>;
+  temporalInsights: { citationTrends: Array<{ period: string; count: number; types: Record<string, number> }>;
+    reportGeneration: Array<{ period: string; count: number; templates: Record<string, number> }>;
+    poiActivity: Array<{ period: string; interactions: number; newPOIs: number }>;
   };
 }
 // Integration Context
@@ -97,18 +97,18 @@ interface PlatformContext {
   error: string | null;
 }
 type PlatformEvent =
-  | { type: 'LOAD_CASE';, caseId: string }
-  | { type: 'CREATE_CASE';, caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> }
-  | { type: 'UPDATE_CASE'; caseId: string;, updates: Partial<LegalCase> }
-  | { type: 'LINK_ENTITY'; caseId: string; entityType: 'citation' | 'report' | 'poi' | 'document' | 'note';, entityId: string }
-  | { type: 'UNLINK_ENTITY'; caseId: string; entityType: string;, entityId: string }
+  | { type: 'LOAD_CASE'; caseId: string }
+  | { type: 'CREATE_CASE'; caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> }
+  | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<LegalCase> }
+  | { type: 'LINK_ENTITY'; caseId: string; entityType: 'citation' | 'report' | 'poi' | 'document' | 'note'; entityId: string }
+  | { type: 'UNLINK_ENTITY'; caseId: string; entityType: string; entityId: string }
   | { type: 'ANALYZE_CROSS_SYSTEMS' }
-  | { type: 'GENERATE_INSIGHTS';, caseId: string }
+  | { type: 'GENERATE_INSIGHTS'; caseId: string }
   | { type: 'SYNC_ALL_SYSTEMS' }
-  | { type: 'AI_PROCESS'; type: string;, entityIds: string[] }
-  | { type: 'BULK_CASE_OPERATION'; operation: string;, caseIds: string[] }
+  | { type: 'AI_PROCESS'; type: string; entityIds: string[] }
+  | { type: 'BULK_CASE_OPERATION'; operation: string; caseIds: string[] }
   | { type: 'RESET' }
-  | { type: 'ERROR';, error: string }
+  | { type: 'ERROR'; error: string }
 // Legal Platform Integration Machine
 export const legalPlatformMachine = createMachine(
   {
@@ -134,10 +134,10 @@ export const legalPlatformMachine = createMachine(
     },
     states: { idle: {, on: { LOAD_CASE: {, target: 'loading_case' },
           CREATE_CASE: { target: 'creating_case' },
-          LINK_ENTITY: { target: 'linking_entity' },
-          ANALYZE_CROSS_SYSTEMS: { target: 'analyzing_systems' },
-          SYNC_ALL_SYSTEMS: { target: 'syncing_systems' },
-          AI_PROCESS: { target: 'ai_processing' }
+          LINK_ENTITY: {, target: 'linking_entity' },
+          ANALYZE_CROSS_SYSTEMS: {, target: 'analyzing_systems' },
+          SYNC_ALL_SYSTEMS: {, target: 'syncing_systems' },
+          AI_PROCESS: {, target: 'ai_processing' }
         }
       },
       loading_case: {, invoke: {, id: 'loadCase',
@@ -361,7 +361,7 @@ export const legalPlatformMachine = createMachine(
       ),
       // Process AI tasks
       processAITask: fromPromise(
-        async ({ input }: { input: {, type: string; entityIds: string[] } }) => {
+        async ({ input }: { input: {, type: string;, entityIds: string[] } }) => {
           const response = await fetch('/api/ai/process', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
@@ -462,8 +462,8 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
     searchPromises.push(
       fetch('/api/poi/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, type: 'poi' })
+        headers: { 'Content-Type': 'application/json` },'`
+        body: JSON.stringify({ query, type: `poi` })
       }).then(res => res.json()).then(data => ({ type: 'poi', results: data }))
     );
   }
@@ -497,7 +497,7 @@ export async function generateCaseRecommendations(caseId: string): Promise<any> 
   return await response.json();
 }
 // Bulk Operations Across Systems
-export async function bulkCrossSystemOperation(operation: string, entities: Array<{, type: string; id: string }>): Promise<any> {
+export async function bulkCrossSystemOperation(operation: string, entities: Array<{, type: string;, id: string }>): Promise<any> {
   const response = await fetch('/api/platform/bulk', {
     method: 'POST',
     headers: { 'Content-Type': `application/json` },
@@ -508,4 +508,4 @@ export async function bulkCrossSystemOperation(operation: string, entities: Arra
   }
   return await response.json();
 }
-export type LegalPlatformState = StateFrom<typeof legalPlatformMachine>;
+export type LegalPlatformState = StateFrom<typeof, legalPlatformMachine>;

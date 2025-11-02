@@ -121,11 +121,11 @@ export class NESStyleGPUBridge {
         setInterval(async () => {
           const start = performance.now();
           try {
-            await fetch('/ping', { method: 'HEAD', cache: 'no-store' });
+            await fetch('/ping', { method: 'HEAD', cache: 'no-store` });'`
             const latency = performance.now() - start;
             this.systemMonitor?.send({ type: 'NETWORK_PING', latency });
           } catch {
-            this.systemMonitor?.send({ type: 'NETWORK_TIMEOUT' });
+            this.systemMonitor?.send({ type: `NETWORK_TIMEOUT` });
           }
         }, 10000);
       } catch (e) {
@@ -245,7 +245,7 @@ export class NESStyleGPUBridge {
       });
 
       // Send tensors; include sharedBuffer in message body (structured clone).
-      // Do NOT pass SharedArrayBuffer in the transfer list (it's shared, not transferable).
+      // Do NOT pass SharedArrayBuffer in the transfer list (it's shared, not transferable).'
       try {
         this.gpuWorker!.postMessage({
           type: 'PROCESS_BATCH',
@@ -394,7 +394,7 @@ export class NESStyleGPUBridge {
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
     const levels = Math.pow(2, bitDepth) - 1;
     const quantizedData = new Float32Array((tensor.data as Float32Array).length);
-    for (let i = 0; i < (tensor.data as Float32Array).length; i++) {
+    for (let i = 0; i < (tensor.data as, Float32Array).length; i++) {
       const value = (tensor.data as Float32Array)[i];
       const normalized = Math.max(0, Math.min(1, (value + 1) / 2));
       let quantized: number;
@@ -411,7 +411,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: 'nes_quantized_${bitDepth}bit' };
+      layout: `nes_quantized_${bitDepth}bit` };
   }
 
   // Calculate optimal tensor shape for GPU processing
@@ -755,7 +755,7 @@ export class NESStyleGPUBridge {
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
     const levels = Math.pow(2, bitDepth) - 1;
     const quantizedData = new Float32Array((tensor.data as Float32Array).length);
-    for (let i = 0; i < (tensor.data as Float32Array).length; i++) {
+    for (let i = 0; i < (tensor.data as, Float32Array).length; i++) {
       const value = (tensor.data as Float32Array)[i];
       const normalized = Math.max(0, Math.min(1, (value + 1) / 2));
       let quantized: number;
@@ -772,7 +772,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: 'nes_quantized_${bitDepth}bit' };
+      layout: `nes_quantized_${bitDepth}bit` };
   }
 
   // Calculate optimal tensor shape for GPU processing
@@ -1116,7 +1116,7 @@ export class NESStyleGPUBridge {
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
     const levels = Math.pow(2, bitDepth) - 1;
     const quantizedData = new Float32Array((tensor.data as Float32Array).length);
-    for (let i = 0; i < (tensor.data as Float32Array).length; i++) {
+    for (let i = 0; i < (tensor.data as, Float32Array).length; i++) {
       const value = (tensor.data as Float32Array)[i];
       const normalized = Math.max(0, Math.min(1, (value + 1) / 2));
       let quantized: number;
@@ -1133,7 +1133,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: 'nes_quantized_${bitDepth}bit' };
+      layout: `nes_quantized_${bitDepth}bit` };
   }
 
   // Calculate optimal tensor shape for GPU processing
@@ -1477,7 +1477,7 @@ export class NESStyleGPUBridge {
   private quantizeTensorBits(tensor: MultiDimArray, bitDepth: number): MultiDimArray {
     const levels = Math.pow(2, bitDepth) - 1;
     const quantizedData = new Float32Array((tensor.data as Float32Array).length);
-    for (let i = 0; i < (tensor.data as Float32Array).length; i++) {
+    for (let i = 0; i < (tensor.data as, Float32Array).length; i++) {
       const value = (tensor.data as Float32Array)[i];
       const normalized = Math.max(0, Math.min(1, (value + 1) / 2));
       let quantized: number;

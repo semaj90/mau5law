@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
       data: stats
     });
   } catch (error) {
-    console.error('Get session stats error:', error);
+    console.error('Get session stats error:', error);'
 
     return json(
       {

@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import crypto from "crypto";
 import { URL } from "url";
 // Browser polyfills for Node.js modules and enhanced compatibility
@@ -123,18 +123,18 @@ export const enhancedFetch = async (
   }
 }
 // Debounce utility for search and other operations
-export const debounce = <T extends (...args: any[]) => any,>(,
+export const debounce = <T, extends (...args: any[]) => any,>(,
   func,: T;
   wait: number;
 ): ((...args: Parameters<T>) => void), => {
-  let timeout: ReturnType<typeof setTimeout>;
+  let timeout: ReturnType<typeof, setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   }
 }
 // Throttle utility for performance-sensitive operations
-export const throttle = <T extends (...args: any[]) => any,>(,
+export const throttle = <T, extends (...args: any[]) => any,>(,
   func,: T;
   limit: number;
 ): ((...args: Parameters<T>) => void), => {
@@ -155,7 +155,7 @@ export const storage = {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultValue || null;
     } catch (error: any) {
-      console.warn(`Failed to get localStorage item: "${key}": ', error);
+      console.warn(`Failed to get localStorage item: "${key}": ', error);'`
       return defaultValue || null;
     }
   },
@@ -165,7 +165,7 @@ export const storage = {
       localStorage.setItem(key, JSON.stringify(value);
       return true;
     } catch (error: any) {
-      console.warn(`Failed to set localStorage item: "${key}": ', error);
+      console.warn(`Failed to set localStorage item: "${key}": ', error);'`
       return false;
     }
   },
@@ -175,7 +175,7 @@ export const storage = {
       localStorage.removeItem(key);
       return true;
     } catch (error: any) {
-      console.warn(`Failed to remove localStorage item: "${key}": ', error);
+      console.warn(`Failed to remove localStorage item: "${key}": ', error);'`
       return false;
     }
   },

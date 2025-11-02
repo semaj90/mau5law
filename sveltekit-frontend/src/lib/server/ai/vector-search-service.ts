@@ -115,9 +115,9 @@ export class VectorSearchService {
   /**
    * Initialize Vector Search Service
    */
-  constructor(config: { pgvectorUrl: string;, qdrantUrl: string;
+  constructor(config: {, pgvectorUrl: string;, qdrantUrl: string;
     qdrantApiKey?: string;
-    redis: Redis;
+   , redis: Redis;
    , database: PostgresClient; // Corrected type for the constructor parameter
     cacheTtl?: number;
     primaryProvider?: 'pgvector' | 'qdrant';
@@ -167,7 +167,7 @@ export class VectorSearchService {
       }
       this.updateProviderStatus(usedProvider, true, Date.now() - startTime);
     } catch (error) {
-      console.warn(`[VectorSearchService] Primary provider ${this.primaryProvider} failed: ', error);
+      console.warn(`[VectorSearchService] Primary provider ${this.primaryProvider} failed: ', error);'`
       this.updateProviderStatus(usedProvider, false, Date.now() - startTime);
       // Fallback to secondary provider
       const fallbackProvider = this.primaryProvider === 'pgvector' ? 'qdrant' : 'pgvector';
@@ -186,7 +186,7 @@ export class VectorSearchService {
       }
     }
     // Mark results with source
-    results = results.map(r => ({ ...r, source: usedProvider; as: 'pgvector' | 'qdrant' }));
+    results = results.map(r => ({ ...r, source: usedProvider;, as: 'pgvector' | 'qdrant` }));'`
     // Cache results
     await this.redis.set(cacheKey, JSON.stringify(results), 'EX', this.cacheTtl);
     return results;
@@ -296,7 +296,7 @@ export class VectorSearchService {
         WHERE (vector <=> ${JSON.stringify(request.embedding)}::vector) < (1 - ${threshold})
         ORDER BY vector <=> ${JSON.stringify(request.embedding)}::vector
         LIMIT ${limit}
-      `;
+      `;`
       return (
         results as unknown as Array<{ id: string;, content: string;
          , similarity: number;
@@ -366,7 +366,7 @@ export class VectorSearchService {
   /**
    * Index a document in vector store
    */
-  async indexDocument(doc: { id: string;, content: string;
+  async indexDocument(doc: {, id: string;, content: string;
    , embedding: number[];
     metadata?: Record<string, unknown>;
     documentId?: string;
@@ -395,7 +395,7 @@ export class VectorSearchService {
   /**
    * Index document in pgvector
    */
-  private async indexPgVector(doc: { id: string;, content: string;
+  private async indexPgVector(doc: {, id: string;, content: string;
    , embedding: number[];
     metadata?: Record<string, unknown>;
     documentId?: string;
@@ -408,12 +408,12 @@ export class VectorSearchService {
         vector = EXCLUDED.vector,
         metadata = EXCLUDED.metadata,
         updated_at = CURRENT_TIMESTAMP
-    `;
+    `;`
   }
   /**
    * Index document in Qdrant
    */
-  private async indexQdrant(doc: { id: string;, content: string;
+  private async indexQdrant(doc: {, id: string;, content: string;
    , embedding: number[];
     metadata?: Record<string, unknown>;
     documentId?: string;
@@ -425,9 +425,9 @@ export class VectorSearchService {
         'api-key': this.qdrantApiKey
       },
       body: JSON.stringify({
-        points: [
-          {
-            id: doc.id,
+       , points: [
+          {,
+           , id: doc.id,
             vector: doc.embedding,
             payload: {
              , content: doc.content,
@@ -446,7 +446,7 @@ export class VectorSearchService {
    * Batch index documents
    */
   async batchIndex(
-    documents: Array<{ id: string;, content: string;
+    documents: Array<{, id: string;, content: string;
      , embedding: number[];
       metadata?: Record<string, unknown>;
       documentId?: string;
@@ -512,7 +512,7 @@ export class VectorSearchService {
   private startHealthChecks(): void {
     this.healthCheckInterval = setInterval(() => {
       Promise.all([this.checkPgVectorHealth(), this.checkQdrantHealth()]).catch(error => {
-        console.error('[VectorSearchService] Health check error:', error);
+        console.error('[VectorSearchService] Health check error:', error);'
       });
     }, 30000); // Check every 30 seconds
   }
@@ -557,7 +557,7 @@ export class VectorSearchService {
   /**
    * Get service status
    */
-  getStatus(): { pgvector: VectorStoreStatus;, qdrant: VectorStoreStatus } {
+  getStatus(): { pgvector: VectorStoreStatus; qdrant: VectorStoreStatus } {
     return {
       pgvector: this.pgvectorStatus,
       qdrant: this.qdrantStatus

@@ -39,7 +39,7 @@ export interface SemanticAnalysis { documentId: string;, summary: string;
   keyTopics: string[];
   legalEntities: LegalEntity[];
   sentiment: { score: number; // -1 to 1, confidence: number;
-    aspects: { aspect: string;, sentiment: number }[];
+    aspects: { aspect: string; sentiment: number }[];
   }
   complexity: { score: number; // 0 to 1, factors: string[];
     readabilityIndex: number;
@@ -132,7 +132,7 @@ export class EnhancedAIAnalysisService {
    * Extract legal entities using NER with Gemma models
    */
   private async extractLegalEntities(text: string): Promise<LegalEntity[]> {
-    const entityPrompt = `;
+    const entityPrompt = `;`
 Analyze the following legal text and extract all legal entities. Return, a JSON array of entities with, th,e following structure:;
 {
   "type",: "case|statute|precedent|regulation|contract|person|organization",
@@ -151,7 +151,7 @@ Focus on:
 - Parties, attorneys, judges, organizations
 - Contract, terms and provisions
 Text: ${text.substring(0, 4000)}
-Return only the JSON array: ';
+Return only the JSON array: ';'
     try {
       const response = await this.ollamaService.generateCompletion({
         model: 'gemma3-legal:latest',
@@ -187,7 +187,7 @@ Return only the JSON array: ';
    * Generate summary and extract key topics
    */
   private async generateSummaryAndTopics(text: string) {
-    const summaryPrompt = `;
+    const summaryPrompt = `;`
 Analyze this, legal document and provide:
 1., A concise summary (2-3, sentences),
 2., Key topics/themes (3-5, mai,n topics),
@@ -196,7 +196,7 @@ Return in JSON, format:;
   "summary",: "...",
   "topics",: ["topic1", "topic2", "topic3"]
   Document: ${text.substring(0, 3000)}
-JSON Response: ';
+JSON Response: ';'
     try {
       const response = await this.ollamaService.generateCompletion({
         model: 'gemma3-legal:latest',
@@ -254,7 +254,7 @@ JSON Response: ';
       console.log('🔍 Searching for similar documents using vector similarity...');
       // Placeholder implementation - would query actual vector DB
       return [
-        {
+        {,
           documentId: 'similar-doc-1',
           similarity: 0.85,
           relevantSections: ['Section 1', 'Conclusion']
@@ -275,7 +275,7 @@ JSON Response: ';
    */
   private buildReasoningPrompt(text: string, context?: string[]) {
     const contextStr = context ? `\nContext: ${context.join(', ')}` : '';
-    return `;
+    return `;`
 Perform sophisticated legal reasoning analysis on this, document. Analyz,e:
 1., Argument Structure:
    - Identify, premises and conclusions
@@ -291,7 +291,7 @@ Perform sophisticated legal reasoning analysis on this, document. Analyz,e:
 Return structured JSON response with, complete, analysis.
 $,{contextStr}
 Document: ${text.substring(0, 3000)}
-JSON Analysis: ';
+JSON Analysis: ';'
   }
   /**
    * Parse structured reasoning response
@@ -313,7 +313,7 @@ JSON Analysis: ';
         },
         precedentAnalysis: {
           relevantCases: [],
-          trend: 'unclear' }
+          trend: 'unclear` }'`
       }
     }
   }
@@ -324,7 +324,7 @@ JSON Analysis: ';
     // Placeholder implementation - would query legal databases
     return {
       relevantCases: [;
-        {
+        {,
           caseId: 'case-123',
           citation: 'Brown v. Board, 347 U.S. 483 (1954)',
           relevance: 0.89,

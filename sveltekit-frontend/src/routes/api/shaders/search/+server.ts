@@ -27,7 +27,7 @@ export const GET: RequestHandler = async () => {
         }
       },
       examples: [
-        {
+        {,
           description: 'Search for vector similarity shaders',
           query: { text: 'vector similarity', operation: 'vector_similarity' }
         },
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (error: any) {
     const searchTime = performance.now() - startTime;
-    console.error('Shader search error:', error);
+    console.error('Shader search error:', error);'
     return json(
       {
         shaders: [],

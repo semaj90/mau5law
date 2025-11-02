@@ -11,7 +11,7 @@ const mockTaskSystem = { stats: {, totalTasks: 8,
     failedCount: 1
   },
   availableTasks: [
-    {
+    {,
       id: 'implement-user-profile-page',
       title: 'Implement User Profile Page',
       description: 'Create a complete user profile page with authentication, settings, and preferences',
@@ -67,7 +67,7 @@ const mockTaskSystem = { stats: {, totalTasks: 8,
     },
   ],
   recentCompletedTasks: [
-    {
+    {,
       id: 'test-gemma3-embeddings-performance',
       title: 'Test Gemma3 Embeddings Performance',
       description: 'Benchmark and optimize Gemma3 embeddings for legal document search',

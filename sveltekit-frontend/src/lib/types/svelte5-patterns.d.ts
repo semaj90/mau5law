@@ -194,7 +194,7 @@ export interface VectorSearchOptions {
 // Generic Component with Props
 export type EnhancedComponent<TProps = Record<string, never>> = Component<TProps>;
 // Component Props Utility
-export type ExtractProps<TComponent> = TComponent extends Component<infer TProps> ? TProps : never;
+export type ExtractProps<TComponent> = TComponent extends Component<infer, TProps> ? TProps : never;
 // Event Handler Types
 export interface ComponentEventHandlers {
   onClick?: (_event: MouseEvent) => void;
@@ -205,7 +205,7 @@ export interface ComponentEventHandlers {
   onChange?: (_value: any) => void;
 }
 // Snippet with Parameters
-export type ParameterizedSnippet<TParams extends readonly unknown[]> = Snippet<TParams>;
+export type ParameterizedSnippet<TParams extends readonly, unknown[]> = Snippet<TParams>;
 // === STATE MANAGEMENT ===
 // Shared State Pattern for Svelte 5
 export interface SharedState<T> { value: T;, subscribe: (callback: (_value: T) => void) => () => void;

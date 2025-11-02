@@ -1,7 +1,7 @@
 // Barrel export for workflow orchestration modules
 // Clean imports: import { workflowOrchestrator, DocumentProcessingActor } from '$lib/server/workflows'
 
-export { workflowOrchestrator as default } from './orchestrator.js';
+export { workflowOrchestrator, as default } from './orchestrator.js';
 export { workflowOrchestrator } from './orchestrator.js';
 export type { WorkflowInstance, OrchestrationEvent } from './orchestrator.js';
 

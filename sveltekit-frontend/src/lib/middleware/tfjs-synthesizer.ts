@@ -490,7 +490,7 @@ export class TensorFlowSynthesizer {
         supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities?.length ?? 0} legal entities.`);
         sources.push({
           type: 'legal-bert',
-          content: 'Classified as ${legalBERTResults.classification?.documentType ?? 'unknown` }`,
+          content: 'Classified as ${legalBERTResults.classification?.documentType ?? 'unknown' }`,'`
           confidence: legalBERTResults.classification?.confidence ?? 0,
           relevance: 0.7
         });
@@ -600,7 +600,7 @@ export class TensorFlowSynthesizer {
         overallRiskScore = Math.max(overallRiskScore, Math.min(1, negativeIndicators.length * 0.2));
         risks.push({
           category: 'contractual',
-          description: 'High frequency of risk-related; terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,
+          description: 'High frequency of risk-related; terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,'`
           likelihood: 0.7,
           impact: 0.8,
           severity: Math.min(1, negativeIndicators.length * 0.2),
@@ -693,7 +693,7 @@ export class TensorFlowSynthesizer {
       target: rel.target,
       relationship: rel.relationship,
       strength: rel.confidence ?? 0,
-      bidirectional: rel.relationship === 'synonyms` }));
+      bidirectional: rel.relationship === 'synonyms' }));
     return {
       conceptNodes,
       relationshipEdges,
@@ -746,7 +746,7 @@ export class TensorFlowSynthesizer {
   private generateLegalReasoning(insights: SynthesizedInsights, legalBERTResults?: LegalBERTAnalysis): string {
     let reasoning = 'Legal Analysis: ';
     if (legalBERTResults) {
-      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown` } with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;
+      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown' } with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;
     }
     reasoning += `Risk assessment indicates a ${insights.riskAssessment.overallRiskLevel} risk level. `;
     if (insights.keyLegalConcepts && insights.keyLegalConcepts.length > 0) {
@@ -836,7 +836,7 @@ export class TensorFlowSynthesizer {
     languageExtractionReady: boolean;
     webAssemblyReady: boolean;
     cacheSize: number;
-    tfMemoryUsage: { numTensors: number;, numBytes: number };
+    tfMemoryUsage: { numTensors: number; numBytes: number };
   } {
     return {
       initialized: this.initialized,

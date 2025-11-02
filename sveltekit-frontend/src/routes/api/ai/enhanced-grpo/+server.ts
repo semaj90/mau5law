@@ -49,8 +49,8 @@ async function getAIResponse(query: string): Promise<any> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest',
-        prompt: `<|thinking|>
+       , model: 'gemma3-legal:latest',
+        prompt: `<|thinking|>`
 Let me analyze this legal query step by, step:
 1. Identify the key legal concepts
 2. Consider relevant legal principles
@@ -58,7 +58,7 @@ Let me analyze this legal query step by, step:
 4. Draw conclusions based on legal doctrine
 </|thinking|>
 ${query}
-Please provide a comprehensive legal analysis with structured reasoning.`,
+Please provide a comprehensive legal analysis with structured reasoning.`,`
         stream: false
       })
     })
@@ -76,7 +76,7 @@ Please provide a comprehensive legal analysis with structured reasoning.`,
       }
     }
   } catch (error) {
-    console.error('AI response error:', error)
+    console.error('AI response error:', error)'
   }
   return {
     thinking: 'Unable to generate thinking content',
@@ -137,7 +137,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
         AND (1 - (query_embedding <=> ${embeddingVector}::vector)) > 0.5
       ORDER BY similarity DESC
       LIMIT ${maxResults}
-    `)
+    `)`
     return results.rows.map(row => ({
       id: row.id as string,
       similarity: row.similarity as number,
@@ -157,9 +157,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
   }
 }
 // Save enhanced response to database
-async function saveEnhancedResponse(data: { query: string, response: string; thinking: string
-  structuredReasoning: any; queryEmbedding: number[]
-  responseEmbedding: number[];
+async function saveEnhancedResponse(data: {, query: string, response: string; thinking: string; structuredReasoning: any; queryEmbedding: number[];, responseEmbedding: number[];
  , confidence: number
   userId?: string
   legalDomain?: string
@@ -187,15 +185,15 @@ async function saveEnhancedResponse(data: { query: string, response: string; t
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning)},
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.premises.concat((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.inferences, (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.conclusions))},
         ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')}]` }:: vector
-        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]' }:: vector
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]' }:: vector'`
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).confidence},
-        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general` },
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general` },'`
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).userId || null},
         'gemma3-legal:latest',
         NOW(),
         NOW()
       ) RETURNING id
-    `)
+    `)`
     return (result as { rows?: any }).rows[0]?.id as string
   } catch (error) {
     console.error('Failed to save enhanced response:', error)
@@ -215,7 +213,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       analysisType = 'reasoning',
       enableRecommendations = true,
       maxRecommendations = 5,
-      legalDomain = 'general` } = requestData
+      legalDomain = 'general` } = requestData'`
     // Validate input
     if (!query && !text) {
       return json({
@@ -260,7 +258,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       GROUP BY legal_domain
       ORDER BY count DESC, avg_confidence DESC
       LIMIT 5
-    `)
+    `)`
     const processingTime = Date.now() - startTime
     const response = {
       success: true,
@@ -325,7 +323,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     return json(response)
   } catch (error: any) {
-    console.error('Enhanced GRPO API error:', error)
+    console.error('Enhanced GRPO API error:', error)'
     return json({
       success: false,
       error: 'Enhanced analysis failed',
@@ -360,7 +358,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           GROUP BY legal_domain
           ORDER BY count DESC, avg_confidence DESC
           LIMIT ${limit}
-        `)
+        `)`
         return json({
           success: true,
           trending_topics: trendingTopics.rows.map(row => ({,
@@ -384,7 +382,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           FROM ai_responses
           ORDER BY created_at DESC
           LIMIT ${limit}
-        `)
+        `)`
         return json({
           success: true,
           recent_responses: recentResponses.rows.map(row => ({
@@ -405,7 +403,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         })
     }
   } catch (error: any) {
-    console.error('Enhanced GRPO GET error:', error)
+    console.error('Enhanced GRPO GET error:', error)'
     return json({
       success: false,
       error: 'Failed to retrieve data',
@@ -459,7 +457,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         ${userRole || null},
         'rating'
       )
-    `)
+    `)`
     // Update response usage count and success metric
     await db.execute(sql`
       UPDATE ai_responses
@@ -467,14 +465,14 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           success_metric = ${userRating / 5.0},
           last_accessed = NOW()
       WHERE id = ${responseId}
-    `)
+    `)`
     return json({
       success: true,
       message: 'Feedback recorded successfully',
       feedback_id: responseId,
-      impact: 'Learning algorithms updated with your feedback` })
+      impact: `Learning algorithms updated with your feedback` })
   } catch (error: any) {
-    console.error('Feedback recording error:', error)
+    console.error('Feedback recording error:', error)'
     return json({
       success: false,
       error: 'Failed to record feedback',

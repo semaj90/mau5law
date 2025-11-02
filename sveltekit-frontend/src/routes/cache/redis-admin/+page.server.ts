@@ -98,12 +98,12 @@ export const actions: Actions = {
       return { success: true, message: 'Key "${key}" deleted successfully' };
     } catch (err) {
       console.error('Failed to delete Redis key:', err);
-      return fail(500, { error: 'Failed to delete key' });
+      return fail(500, { error: `Failed to delete key` });
     }
   },
   setKey: async ({ request, locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
-      return fail(403, { error: 'Admin privileges required' });
+      return fail(403, { error: `Admin privileges required` });
     }
     const data = await request.formData();
     const key = data.get('key') as string;
@@ -119,10 +119,10 @@ export const actions: Actions = {
         await redisService.set(key, value);
       }
       console.log(`Redis key set by admin: ${key}`);
-      return { success: true, message: 'Key "${key}" set successfully' };
+      return { success: true, message: `Key "${key}" set successfully` };
     } catch (err) {
-      console.error('Failed to set Redis key:', err);
-      return fail(500, { error: 'Failed to set key' });
+      console.error('Failed to set Redis key: `, err);'`
+      return fail(500, { error: `Failed to set key` });
     }
   }
 };

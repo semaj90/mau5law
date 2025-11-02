@@ -50,7 +50,7 @@ export class OllamaClient {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           prompt,
           model,
@@ -103,7 +103,7 @@ export class OllamaClient {
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
-        method: 'GET' });
+        method: 'GET` });'`
       if (!response.ok) {
         return {
           status: 'offline',
@@ -162,7 +162,7 @@ export const ollamaClient = new OllamaClient();
  * USAGE EXAMPLES:
  *
  * // In a Svelte component:
- * <script lang="ts">
+ * <script, lang="ts">
 import type { User } from '$lib/types';
  *   import { ollamaClient } from '$lib/ai/ollama-client';
  *
@@ -179,7 +179,7 @@ import type { User } from '$lib/types';
  *   }
  * </script>
  *
- * <button onclick={() => ask('Explain contract law')}>
+ * <button, onclick={() => ask('Explain contract law')}>
  *   Ask Gemma 3 270M
  * </button>
  *

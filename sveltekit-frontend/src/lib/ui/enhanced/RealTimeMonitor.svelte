@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
 
   export type ServiceHealth = {
@@ -114,49 +114,49 @@
   }
 </script>
 
-<section class="realtime-monitor" aria-live="polite" aria-atomic="true">
-  <header class="header">
+<section, class="realtime-monitor" aria-live="polite" aria-atomic="true">
+  <header, class="header">
     <h3>Go Services Health</h3>
-    <div class="controls">
-      <button onclick={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
+    <div, class="controls">
+      <button, onclick={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
         {#if loading}Refreshing...{:else}Refresh{/if}
       </button>
-      <button onclick={() => { stopPolling(); }} title="Pause updates">Pause</button>
-      <button onclick={() => { startPolling(); }} title="Resume updates">Resume</button>
+      <button, onclick={() => { stopPolling(); }} title="Pause updates">Pause</button>
+      <button, onclick={() => { startPolling(); }} title="Resume updates">Resume</button>
     </div>
   </header>
 
-  <div class="summary">
+  <div, class="summary">
     <span>Services: {services.length}</span>
-    <span class="spacer" />
+    <span, class="spacer" />
     <span>Last: {humanTime(lastUpdated)}</span>
     {#if error}
-      <span class="error">Error: {error}</span>
+      <span, class="error">Error: {error}</span>
     {/if}
   </div>
 
   {#if services.length === 0 && !loading}
-    <div class="empty">No services found.</div>
+    <div, class="empty">No services found.</div>
   {/if}
 
-  <ul class="service-list">
+  <ul, class="service-list">
     {#each services as svc (svc.name)}
-      <li class="service-item">
-        <div class="left">
-          <div class={"badge " + statusClass(svc.status)} aria-hidden="true" />
-          <div class="meta">
-            <div class="name">{svc.name}</div>
-            <div class="sub">
+      <li, class="service-item">
+        <div, class="left">
+          <div, class={"badge " + statusClass(svc.status)} aria-hidden="true" />
+          <div, class="meta">
+            <div, class="name">{svc.name}</div>
+            <div, class="sub">
               {#if svc.baseUrl}
-                <small class="url">{svc.baseUrl}{svc.healthPath ? svc.healthPath : ''}</small>
+                <small, class="url">{svc.baseUrl}{svc.healthPath ? svc.healthPath : ''}</small>
                 <span> • </span>
               {/if}
               <small>{svc.lastChecked ? new Date(svc.lastChecked).toLocaleTimeString() : ''}</small>
             </div>
           </div>
         </div>
-        <div class="right">
-          <div class="latency">{svc.latencyMs ?? '—'} ms</div>
+        <div, class="right">
+          <div, class="latency">{svc.latencyMs ?? '—'} ms</div>
         </div>
       </li>
     {/each}

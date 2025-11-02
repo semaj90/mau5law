@@ -8,14 +8,14 @@ import { gpuShaderCacheOrchestrator } from '$lib/services/gpu-shader-cache-orche
 import { dev } from '$app/environment';
 // Test configuration
 const TEST_SHADERS = [
-  {
+  {,
     key: 'test-legal-vertex-001',
     sourceCode: `
 // Legal document vertex shader for timeline visualization
 @vertex
 fn vs_main(@location(0) position: vec4<f32>) -> @builtin(position) vec4<f32> {
     return position
-}`,
+}`,`
     shaderType: 'wgsl' as const,
     legalContext: {
       documentTypes: ['contract'],
@@ -31,7 +31,7 @@ fn vs_main(@location(0) position: vec4<f32>) -> @builtin(position) vec4<f32> {
 @fragment
 fn fs_main() -> @location(0) vec4<f32> {
     return vec4<f32>(1.0, 0.8, 0.0, 1.0); // Evidence highlight color
-}`,
+}`,`
     shaderType: 'wgsl' as const,
     legalContext: {
       documentTypes: ['evidence'],
@@ -49,7 +49,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     // Compute precedent similarity scores
     let index = global_id.x
     // Processing logic here
-}`,
+}`,`
     shaderType: 'wgsl' as const,
     legalContext: {
       documentTypes: ['precedent'],
@@ -62,7 +62,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { testType = 'comprehensive` } = body;
+    const { testType = 'comprehensive` } = body;'`
     const testResults = {
       testType,
       timestamp: new Date().toISOString(),
@@ -118,10 +118,10 @@ export const POST: RequestHandler = async ({ request }) => {
           testResults.metrics.totalTests > 0
             ? ((testResults.metrics.passedTests / testResults.metrics.totalTests) * 100).toFixed(1) + '%'
             : '0%',
-        executionTime: testResults.metrics.executionTimeMs + 'ms` }
+        executionTime: testResults.metrics.executionTimeMs + 'ms` }'`
     });
   } catch (error: any) {
-    console.error('❌ Shader cache test endpoint error:', error);
+    console.error('❌ Shader cache test endpoint error:', error);'
     return json(
       {
         success: false,
@@ -162,7 +162,7 @@ async function testColdPath(testResults: any): Promise<any> {
       // Clear shader first to ensure cold path
       await gpuShaderCacheOrchestrator.clearCache(shader.key);
       const startTime = Date.now();
-      // This would normally fetch from network, but for testing we'll simulate
+      // This would normally fetch from network, but for testing we'll simulate'
       // by directly calling the internal caching logic
       const result = await simulateColdPath(shader, mockContext);
       const latency = Date.now() - startTime;
@@ -205,7 +205,7 @@ async function testHotPath(testResults: any): Promise<any> {
           details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}` });
         testResults.metrics.passedTests++;
       } else {
-        // Not in cache, which is expected if cold path wasn't run first
+        // Not in cache, which is expected if cold path wasn't run first'
         testResults.results.hotPath.tests.push({
           shader: shader.key,
           success: true,
@@ -233,8 +233,8 @@ async function testPredictivePreloading(testResults: any): Promise<any> {
   testResults.metrics.totalTests++;
   try {
     const workflowSequence = [
-      createMockWorkflowContext('doc-load', { documentType: 'contract', complexity: 'medium' }),
-      createMockWorkflowContext('evidence-view', { documentType: 'evidence', complexity: 'low' }),
+      createMockWorkflowContext('doc-load', { documentType: 'contract', complexity: 'medium` }),'`
+      createMockWorkflowContext('evidence-view', { documentType: 'evidence', complexity: `low` }),
       createMockWorkflowContext('timeline', { documentType: 'precedent', complexity: `expert` })
     ];
     for (const context of workflowSequence) {
@@ -261,9 +261,9 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
     tests: []
   };
   const searchQueries = [
-    {
+    {,
       name: 'semantic_search',
-      query: { semanticQuery: 'legal document timeline visualization' }
+      query: { semanticQuery: `legal document timeline visualization` }
     },
     {
       name: 'context_search',
@@ -387,7 +387,7 @@ function createMockWorkflowContext(step: string, docContext: any) {
       documentType: docContext.documentType || 'contract',
       caseId: 'test-case-001',
       documentSize: 1024000,
-      complexity: docContext.complexity || 'medium` },
+      complexity: docContext.complexity || 'medium` },'`
     timestamp: new Date()
   };
 }

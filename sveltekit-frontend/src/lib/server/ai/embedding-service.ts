@@ -8,7 +8,7 @@ export async function extractText(buffer: ArrayBuffer, mimeType: string): Promis
     if (fileType.includes('text') || fileType.includes('json') || fileType.includes('csv')) {
       return txt;
     }
-    // For PDF and others, we don't implement heavy parsing here; return a stub
+    // For PDF and others, we don't implement heavy parsing here; return a stub'
     return `Binary content (${fileType}) - size ${buffer.byteLength} bytes`;
   } catch (err) {
     console.warn('extractText failed:', err);

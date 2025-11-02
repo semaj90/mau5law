@@ -12,7 +12,7 @@ import { documents, cases, users } from '$lib/db/schema'; // Removed document_ch
 import { documentVectors, queryVectors } from '$lib/db/schema/vectors';
 
 // --- ADJUSTED: lightweight types and adapter to satisfy TS/linter ---
-type UpdateResult = { chunksUpdated: number;, processingTime: number };
+type UpdateResult = { chunksUpdated: number; processingTime: number };
 type RerankJob = { improvement: number; queryId?: string };
 // removed unused RerankResult
 
@@ -24,7 +24,7 @@ type StepResult = {
   expectedPriority?: string;
   priorityMatch?: boolean;
   updateResult?: UpdateResult | null;
-  rerankingResult?: { queriesAffected: number;, avgImprovement: number } | null;
+  rerankingResult?: { queriesAffected: number; avgImprovement: number } | null;
   time?: number;
   error?: string;
 };
@@ -48,17 +48,17 @@ type DocumentInsert = {
   filename?: string;
   filePath?: string;
   content_text: string;
-  user_id: number; // <-- changed: use number to match Drizzle/postgres column type
+  user_id: number; // <-- changed: use number to match Drizzle/postgres column, type
 };
 
 type QueryVectorInsert = { userId: string;, query: string;
-  embedding: number[]; // <-- changed: plain number[] for Drizzle; resultCount: number;
-  clickedResults: Array<{ id: string | number;, score: number }>;
+  embedding: number[]; // <-- changed: plain number[] for, Drizzle; resultCount: number;
+  clickedResults: Array<{ id: string | number; score: number }>;
 };
 
 // Small adapter interface for the subset of DocumentUpdateLoop we use
 type DocumentUpdateLoopAdapter = {
-  queueDocumentUpdate(docId: string | number; content: string): Promise<void>;
+  queueDocumentUpdate(docId: string | number;, content: string): Promise<void>;
   embeddings: {
     embedQuery(query: string): Promise<number[] | Float32Array>;
   };
@@ -244,7 +244,7 @@ class UpdateLoopTester {
         resultCount: 1,
         clickedResults: [{ id: document.id, score: 0.8 }]
       };
-      await db.insert(queryVectors).values(qvInsert); // <-- removed: 'as Insert<typeof queryVectors>'
+      await db.insert(queryVectors).values(qvInsert); // <-- removed: 'as, Insert<typeof, queryVectors>'
       // NOW TEST THE UPDATE LOOP
       const changeDetection = await DUL.detectDocumentChanges(document.id, scenario.modifiedContent);
       let updateResult;
@@ -283,7 +283,7 @@ class UpdateLoopTester {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
         error: err instanceof Error ? err.message : `Scenario failed` };
-      console.error(`❌ Scenario ${scenario.name} failed: ', err);
+      console.error(`❌ Scenario ${scenario.name} failed: ', err);'`
     }
   }
   private generateTestQuery(content: string): string {
@@ -441,7 +441,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({ success: false, error: 'Unknown action' }, { status: 400 });
   } catch (err: any) {
-    console.error('❌ Update loop test error:', err);
+    console.error('❌ Update loop test error:', err);'
     return json(
       {
         success: false,
@@ -464,8 +464,7 @@ export const GET: RequestHandler = async ({ url }) => {
           description: 'Tests the full re-embed + re-rank loop with various document change scenarios',
           endpoints: {
             'POST /': 'Run full test suite or specific scenario',
-            'GET /?action=scenarios': 'List available test scenarios'
-          }
+            'GET /?action=scenarios': 'List available test scenarios` }'`
         }
       });
     }
@@ -482,7 +481,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       });
     }
-    return json({ success: false, error: 'Unknown action' }, { status: 400 });
+    return json({ success: false, error: `Unknown action` }, { status: 400 });
   } catch (err: any) {
     return json(
       {

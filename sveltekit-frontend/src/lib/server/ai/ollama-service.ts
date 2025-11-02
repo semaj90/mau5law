@@ -226,7 +226,7 @@ class EnhancedOllamaService extends EventEmitter {
   }
   // Normalize inputs so callers can pass either a LegalDocument or a DOM Document
   private normalizeToLegalDocument(input: Document | LegalDocument): LegalDocument {
-    // If it's already a LegalDocument (has .content) return as-is
+    // If it's already a LegalDocument (has .content) return as-is'
     if ((input as LegalDocument).content !== undefined) {
       return input as LegalDocument;
     }
@@ -244,7 +244,7 @@ class EnhancedOllamaService extends EventEmitter {
         dateCreated: new Date(),
         dateModified: new Date(),
         // use optional author field as a minimal DOM marker (avoids unknown extra properties)
-        author: `dom` },
+        author: `dom' },'`
       // ensure chunks has the expected type
       chunks: [] as DocumentChunk[]
     } as LegalDocument;
@@ -349,7 +349,7 @@ class EnhancedOllamaService extends EventEmitter {
         status: 'error',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        error: message || 'unknown` };
+        error: message || 'unknown' };
     }
   }
   clearCache() {
@@ -412,7 +412,7 @@ class EnhancedOllamaService extends EventEmitter {
   // Simple smart selection stub (keeps API)
   async smartModelSelection(
     query: string
-  ): Promise<{ selectedModel: string; confidence: number;, reasoning: string[] }> {
+  ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
     const model = await this.selectModelForTask('generation', query);
     return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] };
   }
@@ -424,7 +424,7 @@ class EnhancedOllamaService extends EventEmitter {
   }
   async getEnhancedSystemStatus() {
     const base = await this.getSystemStatus();
-    return { ...base, intelligentFeatures: `stub` };
+    return { ...base, intelligentFeatures: `stub' };'`
   }
 }
 // Export singleton and default class

@@ -18,11 +18,11 @@ type MachineLike = {
  */
 export function createCompatibleActor<
   M extends MachineLike,
-  Opt = unknown // don't assume createActor exposes a second parameter in its TS tuple
+  Opt = unknown // don't assume createActor exposes a second parameter in its TS tuple'
 >(machine: M, options?: Opt) {
   try {
     // First, try normal createActor call
-    return createActor(machine as unknown as Parameters<typeof createActor>[0], options as unknown as Opt);
+    return createActor(machine as unknown as Parameters<typeof, createActor>[0], options as unknown as Opt);
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg && /getInitialSnapshot|logic/.test(msg)) {
@@ -43,7 +43,7 @@ export function createCompatibleActor<
                 : undefined
           }
         };
-        return createActor(adapted as unknown as Parameters<typeof createActor>[0], options as unknown as Opt);
+        return createActor(adapted as unknown as Parameters<typeof, createActor>[0], options as unknown as Opt);
       }
     }
     // not something we can adapt — rethrow

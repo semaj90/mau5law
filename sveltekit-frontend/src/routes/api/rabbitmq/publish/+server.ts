@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     // In a real implementation, this would publish to actual RabbitMQ
-    // For development, we'll simulate the publish operation and log it
+    // For development, we'll simulate the publish operation and log it'
     const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const publishResult = {
       messageId,
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async () => {
           metadata: {
             title: 'Service Agreement',
             file_type: 'pdf',
-            upload_date: '2025-01-20T10:00:00Z` }
+            upload_date: '2025-01-20T10:00:00Z' }
         }
       },
       chunk: {

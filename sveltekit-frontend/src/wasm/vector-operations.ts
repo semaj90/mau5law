@@ -9,12 +9,12 @@
  * Returns value between -1 (opposite) and 1 (identical)
  */
 export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0;
+  if (length <= 0) return, 0.0;
   let dotProduct: f32 = 0.0;
   let normA: f32 = 0.0;
   let normB: f32 = 0.0;
   for (let i = 0; i < length; i++) {
-    const aVal = load<f32>(aPtr + (i << 2)); // i * 4 bytes
+    const aVal = load<f32>(aPtr + (i << 2)); // i * 4, bytes
     const bVal = load<f32>(bPtr + (i << 2));
     dotProduct += aVal * bVal;
     normA += aVal * aVal;
@@ -27,7 +27,7 @@ export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
  * Calculate Euclidean distance between two vectors
  */
 export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return f32.POSITIVE_INFINITY;
+  if (length <= 0) return, f32.POSITIVE_INFINITY;
   let sum: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
@@ -41,7 +41,7 @@ export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
  * Calculate dot product of two vectors
  */
 export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0;
+  if (length <= 0) return, 0.0;
   let result: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
@@ -54,7 +54,7 @@ export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
  * Calculate Manhattan (L1) distance between two vectors
  */
 export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return f32.POSITIVE_INFINITY;
+  if (length <= 0) return, f32.POSITIVE_INFINITY;
   let sum: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
@@ -76,7 +76,7 @@ export function normalize(vectorPtr: usize, length: i32): void {
     norm += val * val;
   }
   norm = Mathf.sqrt(norm);
-  if (norm < 1e-12) return; // Avoid division by zero
+  if (norm < 1e-12) return; // Avoid division by, zero
   // Normalize in place
   for (let i = 0; i < length; i++) {
     const addr = vectorPtr + (i << 2);
@@ -232,7 +232,7 @@ export function dotProductSIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
  * SIMD-optimized cosine similarity
  */
 export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0;
+  if (length <= 0) return, 0.0;
   let dotProduct: f32 = 0.0;
   let normA: f32 = 0.0;
   let normB: f32 = 0.0;
@@ -325,8 +325,8 @@ export function batchVectorChunking(
   while (vectorOffset < numVectors) {
     const currentChunkSize = i32(Math.min(chunkSize, numVectors - vectorOffset));
     // Mark chunk boundaries in results array
-    store<f32>(resultsPtr + (resultOffset << 2), f32(vectorOffset)); // Start index
-    store<f32>(resultsPtr + ((resultOffset + 1) << 2), f32(currentChunkSize)); // Chunk size
+    store<f32>(resultsPtr + (resultOffset << 2), f32(vectorOffset)); // Start, index
+    store<f32>(resultsPtr + ((resultOffset + 1) << 2), f32(currentChunkSize)); // Chunk, size
     vectorOffset += currentChunkSize;
     resultOffset += 2;
     processedChunks++;

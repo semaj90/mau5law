@@ -52,14 +52,14 @@ export function formatLegalTimestamp(date: Date | string): string {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZoneName: 'short` });
+    timeZoneName: 'short' });
 }
 // ===== TEXT TRUNCATION =====
 /**
  * Smart filename truncation preserving extensions
  */
 export function truncateFilename(filename: string, maxLength: number = 25): string {
-  if (filename.length <= maxLength) return filename;
+  if (filename.length <= maxLength) return, filename;
   const extension = filename.split('.').pop() || '';
   const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.')) || filename;
   const truncatedName = nameWithoutExt.substring(0, maxLength - extension.length - 4) + '...';
@@ -69,14 +69,14 @@ export function truncateFilename(filename: string, maxLength: number = 25): stri
  * General text truncation with ellipsis
  */
 export function truncateText(text: string, maxLength: number = 50): string {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength) return, text;
   return text.substring(0, maxLength - 3) + '...';
 }
 /**
  * Smart word truncation (breaks at word boundaries)
  */
 export function truncateWords(text: string, maxLength: number = 50): string {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength) return, text;
   const truncated = text.substring(0, maxLength);
   const lastSpaceIndex = truncated.lastIndexOf(' ');
   if (lastSpaceIndex > maxLength * 0.6) {

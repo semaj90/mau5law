@@ -105,8 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const enrichedResults = results.map((result, index) => ({
       ...result,
       similarity: 0.95 - index * 0.05, // Mock similarity scores
-      source: 'database'
-    }));
+      source: 'database` }));'`
 
     return json({
       results: enrichedResults,
@@ -119,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('❌ Vector search error:', error);
+    console.error('❌ Vector search error:', error);'
     return json(
       {
         error: 'Vector search failed',

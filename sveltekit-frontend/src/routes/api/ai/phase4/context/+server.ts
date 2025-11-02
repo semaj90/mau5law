@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const gameElements = Array.isArray(ai.gameElements) ? (ai.gameElements as unknown[]) : [];
 
     // Use updateMemory flag at least by logging and returning it in processing info
-    console.log(`updateMemory flag for case ${caseId}: ', Boolean(updateMemory));
+    console.log(`updateMemory flag for case ${caseId}: ', Boolean(updateMemory));'`
 
     return json(
       {
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Context-aware AI error:', error);
+    console.error('Context-aware AI error:', error);'
     return json(
       {
         error: 'Failed to generate contextual AI response',
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async ({ url }) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Load case memory error:', error);
-    return json({ error: `Failed to load case memory` }, { status: 500 });
+    console.error('Load case memory error: ', error);'
+    return json({ error: 'Failed to load case memory` }, { status: 500 });'`
   }
 };

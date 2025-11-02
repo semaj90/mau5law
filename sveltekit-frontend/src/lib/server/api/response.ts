@@ -178,7 +178,7 @@ function generateMockFallbackData(errorCode: string): any {
       return {
         ...baseData,
         cases: [
-          {
+          {,
             id: 'mock-case-1',
             caseNumber: 'MOCK-2024-001',
             title: 'Mock Legal Case - Service Fallback',
@@ -191,7 +191,7 @@ function generateMockFallbackData(errorCode: string): any {
           },
         ],
         evidence: [
-          {
+          {,
             id: 'mock-evidence-1',
             title: 'Mock Evidence Document',
             description: 'Mock evidence provided during service fallback',
@@ -212,7 +212,7 @@ function generateMockFallbackData(errorCode: string): any {
       return {
         ...baseData,
         suggested: [
-          {
+          {,
             id: 'mock-suggestion-1',
             title: 'Similar Legal Case',
             description: 'Mock suggestion for similar case',

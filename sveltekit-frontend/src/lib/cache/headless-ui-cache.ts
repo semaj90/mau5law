@@ -304,7 +304,7 @@ export class HeadlessUICache {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': `application/json' }'`
       });
       if (!response.ok) return null;
       const data = await response.json();
@@ -322,13 +322,13 @@ export class HeadlessUICache {
     try {
       await fetch('/api/cache', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           key,
           data: entry.data,
           ttl: entry.ttl,
           version: entry.version,
-          source: `client` })
+          source: `client' })'`
       });
     } catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
@@ -448,7 +448,7 @@ export class HeadlessUICache {
       memoryEntries: this.memoryCache.size,
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
-      lastSync: this.syncTimer ? 'active' : `inactive` };
+      lastSync: this.syncTimer ? 'active' : `inactive' };'`
   }
   /**
    * Clear all caches

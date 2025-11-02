@@ -26,7 +26,7 @@ const handler: RequestHandler = async ({ request }) => {
   } catch (err) {
     const mapped = mapErrorToHttp(err);
     // Log unexpected server errors
-    if (mapped.status === 500) console.error('❌ /api/vector/store error:', err);
+    if (mapped.status === 500) console.error('❌ /api/vector/store error:', err);'
     return json(mapped.body, { status: mapped.status });
   }
 };

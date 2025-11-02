@@ -6,7 +6,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * from Redis Pub/Sub to browser clients using SSE.
  *
  * Usage from client:
- * ```typescript
+ * ```typescript`
  * const eventSource = new EventSource(`/api/workflow-events/${sessionId}`);
  * eventSource.onmessage = (event) => {
  *   const data = JSON.parse(event.data);
@@ -83,7 +83,7 @@ export const GET = async (event: RequestEvent) => {
       // Send initial connection message
       controller.enqueue(
         encoder.encode(
-          `data: ${JSON.stringify({
+          `data: ${JSON.stringify({`
            , type: 'SSE_CONNECTED',
             sessionId,
             timestamp: new Date().toISOString()
@@ -98,7 +98,7 @@ export const GET = async (event: RequestEvent) => {
         console.error(`[SSE] Redis subscribe failed for session ${sessionId}:`, subErr);
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'SSE_ERROR',
               error: 'Redis subscribe failed',
               details: stringifyError(subErr),
@@ -133,7 +133,7 @@ export const GET = async (event: RequestEvent) => {
         try {
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'SSE_ERROR',
                 error: 'Redis connection error',
                 details: stringifyError(err),
@@ -202,10 +202,10 @@ export const GET = async (event: RequestEvent) => {
       }
 
       if (typeof redis.unsubscribe === 'function') {
-        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe; error:', stringifyError(e)));
+        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe; error:', stringifyError(e)));'
       }
       if (typeof redis.quit === 'function') {
-        redis.quit().catch((e: any) => console.warn('[SSE] quit; error:', stringifyError(e)));
+        redis.quit().catch((e: any) => console.warn('[SSE] quit; error:', stringifyError(e)));'
       }
     }
   });

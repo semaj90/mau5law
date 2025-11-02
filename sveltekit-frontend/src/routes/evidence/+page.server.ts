@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     };
   }
   try {
-    // Get case ID from URL params or default to user's cases
+    // Get case ID from URL params or default to user's cases'
     const caseId = url.searchParams.get('caseId');
     let evidenceData;
     if (caseId) {

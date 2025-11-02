@@ -42,11 +42,11 @@ export async function semanticSearch(query: string, options?: any): Promise<any[
   // Implementation placeholder
   return [];
 }
-export async function mcpMemoryReadGraph(): Promise<{ nodes: any[];, edges: any[] }> {
+export async function mcpMemoryReadGraph(): Promise<{ nodes: any[]; edges: any[] }> {
   // Implementation placeholder
   return { nodes: [], edges: [] };
 }
-export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[];, analysis: { [key: string]: any } }> {
+export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[]; analysis: { [key: string]: any } }> {
   // Implementation placeholder
   return { files: [], analysis: {} };
 }

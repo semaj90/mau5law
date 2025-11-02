@@ -62,7 +62,7 @@ const determinismEvaluationService = {
       temperature: 0.1,
       maxTokens: 2048,
       seed: 12345,
-      model: 'gemma3-legal:latest` };
+      model: `gemma3-legal:latest` };
   },
   // simple in-memory stores so the `feedback`, `testResult`, `data` params are used
   _feedbackStore: [] as FeedbackPayload[],
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error)
-    console.error("Evaluation API error:", message)
+    console.error("Evaluation API error:", message)"
     return json(
       { success: false, error: message || "Evaluation operation failed" },
       { status: 500 }
@@ -177,9 +177,9 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error)
-    console.error('Evaluation record error:', message);
+    console.error('Evaluation record error:', message);'
     return json(
-      { success: false, error: message || 'Failed to record evaluation data` },
+      { success: false, error: message || 'Failed to record evaluation data` },'`
       { status: 500 }
     );
   }

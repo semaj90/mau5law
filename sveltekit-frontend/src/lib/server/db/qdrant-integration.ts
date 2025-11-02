@@ -24,9 +24,9 @@ export interface PostgreSQLConfig {
 // QDRANT-POSTGRESQL INTEGRATION SERVICE
 // ============================================================================
 export class QdrantPostgreSQLService {
-  private qdrant: InstanceType<typeof QdrantClient>;
-  private postgres: ReturnType<typeof postgres>;
-  private db: ReturnType<typeof drizzle>;
+  private qdrant: InstanceType<typeof, QdrantClient>;
+  private postgres: ReturnType<typeof, postgres>;
+  private db: ReturnType<typeof, drizzle>;
   constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig) {
     // Initialize Qdrant client
     this.qdrant = new QdrantClient({
@@ -80,7 +80,7 @@ export class QdrantPostgreSQLService {
             distance
           },
           optimizers_config: {
-            default_segment_number: 2,
+           , default_segment_number: 2,
             memmap_threshold: 20000,
             indexing_threshold: 20000
           },
@@ -101,8 +101,7 @@ export class QdrantPostgreSQLService {
           metadata: {
             vectorSize,
             distance,
-            status: 'active'
-          },
+            status: `active` },
           contentHash: crypto.createHash('md5').update(collectionName).digest('hex'),
           createdAt: new Date(),
           updatedAt: new Date()
@@ -113,12 +112,12 @@ export class QdrantPostgreSQLService {
            , metadata: {
               vectorSize,
               distance,
-              status: 'active` },
+              status: `active` },
             updatedAt: new Date()
           }
         });
     } catch (error: any) {
-      console.error(`❌ Failed to ensure collection ${collectionName}: ', error);
+      console.error(`❌ Failed to ensure collection ${collectionName}: ', error);'`
       throw error;
     }
   }
@@ -137,7 +136,7 @@ export class QdrantPostgreSQLService {
           operationType: 'sync',
           entityType: 'document',
           entityId: documentId,
-          status: 'processing` },
+          status: `processing` },
         contentHash: operationId,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -198,7 +197,7 @@ export class QdrantPostgreSQLService {
       console.log(`✅ Synced document ${documentId} to Qdrant`);
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to sync document ${documentId}: ', error);
+      console.error(`❌ Failed to sync document ${documentId}: ', error);'`
       // Attempt to mark operation as failed in vectorMetadata (best-effort)
       try {
         await this.db
@@ -264,17 +263,17 @@ export class QdrantPostgreSQLService {
             AND status = 'active'
           ORDER BY content_embedding <=> ${queryEmbedding}::vector
           LIMIT ${limit}
-        `;
+        `;`
         postgresqlTime = Date.now() - pgStart;
         for (const row of pgResults) {
           results.push({
             id: row.id,
             score: row.similarity,
             document: row as LegalDocument,
-            source: 'postgresql` });
+            source: `postgresql` });
         }
       } catch (error: any) {
-        console.error('PostgreSQL search error:', error);
+        console.error('PostgreSQL search error: ', error);'
       }
     }
     // Qdrant search
@@ -312,12 +311,12 @@ export class QdrantPostgreSQLService {
                 id: rid,
                 score: (result as any).score,
                 document,
-                source: 'qdrant` });
+                source: `qdrant` });
             }
           }
         }
       } catch (error: any) {
-        console.error('Qdrant search error:', error);
+        console.error('Qdrant search error:', error);'
       }
     }
     // Deduplicate and sort results
@@ -415,7 +414,7 @@ export class QdrantPostgreSQLService {
         SELECT COUNT(*) as count
         FROM legal_documents
         WHERE deleted_at IS NULL AND content_embedding IS NOT NULL
-      `;
+      `;`
       syncStatus.totalDocuments = parseInt(totalResult[0].count);
       const syncedResult = await this.postgres`
         SELECT COUNT(*) as count
@@ -423,7 +422,7 @@ export class QdrantPostgreSQLService {
         WHERE deleted_at IS NULL
           AND content_embedding IS NOT NULL
           AND last_synced_to_qdrant IS NOT NULL
-      `;
+      `;`
       syncStatus.syncedDocuments = parseInt(syncedResult[0].count);
       syncStatus.pendingSyncs = syncStatus.totalDocuments - syncStatus.syncedDocuments;
     } catch (error: any) {
@@ -459,7 +458,7 @@ export const createQdrantService = (
   const defaultPostgresConfig: PostgreSQLConfig = {
     connectionString:
       (import.meta.env.DATABASE_URL as string) ||
-      `postgresql://${(import.meta.env.DATABASE_USER as string) || 'legal_admin'}:${(import.meta.env.DATABASE_PASSWORD as string) || '123456'}@${(import.meta.env.DATABASE_HOST as string) || 'localhost'}:${(import.meta.env.DATABASE_PORT as string) || '5433'}/${(import.meta.env.DATABASE_NAME as string) || 'legal_ai_db` }`,
+      `postgresql://${(import.meta.env.DATABASE_USER as string) || 'legal_admin'}:${(import.meta.env.DATABASE_PASSWORD as string) || '123456'}@${(import.meta.env.DATABASE_HOST as string) || 'localhost'}:${(import.meta.env.DATABASE_PORT as string) || '5433'}/${(import.meta.env.DATABASE_NAME as string) || 'legal_ai_db` }`,'`
     ...postgresConfig
   };
   return new QdrantPostgreSQLService(defaultQdrantConfig, defaultPostgresConfig);

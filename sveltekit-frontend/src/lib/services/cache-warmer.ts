@@ -192,7 +192,7 @@ export class LegalCacheWarmer {
   /**
    * Pre-load textures into memory banks
    */
-  private async preloadTextures(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ texturesLoaded: number; memoryUsed: number;, warnings: string[] }> {
+  private async preloadTextures(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ texturesLoaded: number; memoryUsed: number; warnings: string[] }> {
     let texturesLoaded = 0;
     let memoryUsed = 0;
     const warnings: string[] = [];
@@ -261,7 +261,7 @@ export class LegalCacheWarmer {
    * Warm CHR-ROM UI patterns (lightweight placeholder implementation)
    * Returns a minimal result object so callers can sum memory usages and warnings.
    */
-  private async warmChrRomPatterns(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ memoryUsed: number; warnings: string[];, patternsLoaded: number }> {
+  private async warmChrRomPatterns(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ memoryUsed: number; warnings: string[]; patternsLoaded: number }> {
     const warnings: string[] = [];
     let memoryUsed = 0;
     let patternsLoaded = 0;

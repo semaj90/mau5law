@@ -263,13 +263,12 @@ export function createComponentVariant(
       fontFamily: 'var(--nes-font-family, "Courier New", monospace)',
       borderRadius: 'var(--nes-border-radius, 0px)',
       boxShadow: 'var(--nes-shadow, 4px 4px 0px rgba(0, 0, 0, 0.8))',
-      imageRendering: 'pixelated'
-    },
+      imageRendering: `pixelated` },
     minimal: {
       border: 'var(--minimal-border-width, 1px) solid var(--minimal-border, #e5e7eb)',
       fontFamily: 'var(--minimal-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
       borderRadius: 'var(--minimal-border-radius, 0.5rem)',
-      boxShadow: 'var(--minimal-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.1))` },
+      boxShadow: `var(--minimal-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.1))` },
     custom: {}
   }
   return {
@@ -295,7 +294,7 @@ export function withResponsiveStyles(
       Object.entries(styles).forEach(([property, value]) => {
         css += `${property}: ${value} `;
       });
-      css += ` } ';
+      css += ` } ';'`
     }
   });
   return css;
@@ -312,7 +311,7 @@ export function createAccessibleColorPalette(baseColor: string): {
   900: string;
 } {
   // This is a simplified implementation
-  // In production, you'd want a more sophisticated color generation algorithm
+  // In production, you'd want a more sophisticated color generation algorithm'
   return {
     50: `color-mix(in srgb, ${baseColor} 10%, white)`,
     100: `color-mix(in srgb, ${baseColor} 20%, white)`,
@@ -323,7 +322,7 @@ export function createAccessibleColorPalette(baseColor: string): {
     600: `color-mix(in srgb, ${baseColor} 80%, black)`,
     700: `color-mix(in srgb, ${baseColor} 60%, black)`,
     800: `color-mix(in srgb, ${baseColor} 40%, black)`,
-    900: `color-mix(in srgb, ${baseColor} 20%, black)' }
+    900: `color-mix(in srgb, ${baseColor} 20%, black)` }
 }
 export function validateAccessibility(designSystem: DesignSystem): { isValid: boolean;, warnings: string[];
   errors: string[];
@@ -367,7 +366,7 @@ export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem
         colors: {
           ...currentSystem.tokens.colors,
           primary: '#00ff41',
-          secondary: '#ff6b35` }
+          secondary: `#ff6b35` }
       } : currentSystem.tokens;
       applyDesignSystemToDocument({ ...currentSystem, tokens: darkTokens });
     },

@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types.js';
 // Types for upload handling
@@ -72,8 +72,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('❌ Presign error:', error);
-    return json({ error: 'Failed to generate presigned URLs' }, { status: 500 });
+    console.error('❌ Presign error:', error);'
+    return json({ error: `Failed to generate presigned URLs` }, { status: 500 });
   }
 };
 // Complete multipart upload
@@ -84,8 +84,8 @@ export const PUT: RequestHandler = async ({ request }) => {
     // const result = await s3.completeMultipartUpload({
     //   Bucket: 'legal-documents',
     //   Key: uploadId
-    //   UploadId: uploadId
-    //   MultipartUpload: {, Parts: etags }
+    //  , UploadId: uploadId
+    //  , MultipartUpload: {, Parts: etags }
     // }).promise()
     // Update database status
     // await db.update(uploads)
@@ -95,8 +95,8 @@ export const PUT: RequestHandler = async ({ request }) => {
     await triggerProcessingPipeline(uploadId);
     return json({ success: true, uploadId });
   } catch (error: any) {
-    console.error('❌ Complete upload error:', error);
-    return json({ error: 'Failed to complete upload' }, { status: 500 });
+    console.error('❌ Complete upload error: ', error);'
+    return json({ error: `Failed to complete upload` }, { status: 500 });
   }
 };
 async function triggerProcessingPipeline(uploadId: string): Promise<any> {

@@ -3,7 +3,7 @@
  * Handles CPU-intensive cache operations in dedicated threads
  * Supports SIMD acceleration and multi-core parallelism
  */
-/// <reference lib="webworker" />
+/// <reference, lib="webworker" />
 interface CacheWorkerMessage {
   type: 'init' | 'compress' | 'decompress' | 'serialize' | 'deserialize' | 'batch';
   id?: string;
@@ -245,7 +245,7 @@ class CacheWorker {
    * JSON replacer for optimized serialization
    */
   private jsonReplacer(_key: string, value: any): any {
-    // Handle special types that JSON can't serialize natively
+    // Handle special types that JSON can't serialize natively'
     if (value instanceof Float32Array) {
       return {
         __type: 'Float32Array',

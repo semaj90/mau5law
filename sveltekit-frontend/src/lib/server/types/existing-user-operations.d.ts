@@ -39,7 +39,7 @@ declare module '$lib/server/db/existing-user-operations' {
     static validateSession(sessionId: string): Promise<ServiceResult>;
     static logoutUser(sessionId: string, ipAddress?: string): Promise<ServiceResult>;
   }
-  export { ExistingUserAuthService as ExistingUserAuthService };
+  export { ExistingUserAuthService, as ExistingUserAuthService };
 }
 // also declare the .js import path used by routes
 declare module '$lib/server/db/existing-user-operations.js' {

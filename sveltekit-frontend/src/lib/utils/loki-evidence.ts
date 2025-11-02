@@ -311,20 +311,20 @@ export class LokiEvidenceService {
       case 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify(data)
         });
         break;
       case 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify(data)
         });
         break;
       case 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
-          method: `DELETE` });
+          method: `DELETE' });'`
         break;
     }
   }
@@ -355,7 +355,7 @@ export class LokiEvidenceService {
     for (const [id, serverItem] of Array.from(serverMap)) {
       const localItem = localMap.get(id);
       if (!localItem) {
-        // Server has item that local doesn't have - add it
+        // Server has item that local doesn't have - add it'
         this.evidenceCollection.insert(serverItem as LokiEvidence);
       } else {
         // Both have the item - check timestamps and resolve conflict
@@ -368,7 +368,7 @@ export class LokiEvidenceService {
         // If local is newer, keep local version (it will sync to server later)
       }
     }
-    // Remove items that exist locally but not on server (unless they're in sync queue)
+    // Remove items that exist locally but not on server (unless they're in sync queue)'
     const pendingIds = new Set(this.syncQueue?.find({ synced: false }).map(op => op.recordId) || []);
     for (const [id, localItem] of Array.from(localMap)) {
       if (!serverMap.has(id as string) && !pendingIds.has(id as string)) {
@@ -379,7 +379,7 @@ export class LokiEvidenceService {
   // Database maintenance
   public async compactDatabase(): Promise<void> {
     if (!this.db) return;
-    // This is a placeholder - Loki.js doesn't have a direct compact method
+    // This is a placeholder - Loki.js doesn't have a direct compact method'
     // In a real implementation, you might recreate the database with current data
     console.log('Database compaction requested - implement based on Loki.js version');
   }
@@ -413,7 +413,7 @@ class LokiIndexedAdapter {
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains('data')) {
-        db.createObjectStore('data', { keyPath: `id` });
+        db.createObjectStore('data', { keyPath: `id' });'`
       }
     };
   }

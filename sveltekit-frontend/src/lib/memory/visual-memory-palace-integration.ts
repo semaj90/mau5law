@@ -208,8 +208,8 @@ export class VisualMemoryPalaceManager {
       { id: 'corporate', name: 'Corporate Boardroom', anchor: 'polished conference table' },
       { id: 'ip', name: 'IP Vault', anchor: 'secure metal vault door' },
       { id: 'employment', name: 'HR Office', anchor: 'desk with personnel files' },
-      { id: 'evidence', name: 'Evidence Locker', anchor: 'steel evidence shelving' },
-      { id: 'research', name: 'Legal Library', anchor: 'towering law book shelves' },
+      { id: 'evidence', name: 'Evidence Locker', anchor: 'steel evidence shelving` },'`
+      { id: 'research', name: 'Legal Library', anchor: `towering law book shelves` },
       { id: 'archive', name: 'Document Archive', anchor: `endless filing corridors` }
     ];
     practiceAreas.forEach((area, index) => {
@@ -363,7 +363,7 @@ export class VisualMemoryPalaceManager {
       room.accessFrequency++;
       visitedRooms.push(room);
       // In a real implementation, we would load actual documents and patterns
-      // For now, we'll simulate the retrieval
+      // For now, we'll simulate the retrieval'
     }
     const retrievalTime = performance.now() - startTime;
     // Update palace cognitive map
@@ -413,7 +413,7 @@ export class VisualMemoryPalaceManager {
     // Compress query for comparison
     const compressedQuery = this.compress7Bit(query.query);
     palace.rooms.forEach((room, roomId) => {
-      // Check if query matches room's visual anchor or stored documents
+      // Check if query matches room's visual anchor or stored documents'
       const decompressedAnchor = this.decompress7Bit(room.visualAnchor);
       // Simple relevance scoring based on query type
       let relevanceScore = 0;
@@ -451,7 +451,7 @@ export class VisualMemoryPalaceManager {
     return matches / Math.max(len1, len2);
   }
   private planRetrievalPath(rooms: string[], palace: MemoryPalace): string[] {
-    if (rooms.length <= 1) return rooms;
+    if (rooms.length <= 1) return, rooms;
     // Plan optimal path through memory palace using navigation graph
     const path: string[] = [];
     const visited = new Set<string>();
@@ -466,7 +466,7 @@ export class VisualMemoryPalaceManager {
     // Navigate to remaining rooms using shortest path
     while (visited.size < rooms.length) {
       const connections = palace.navigationGraph.get(currentRoom) || [];
-      // Find next unvisited room that's connected or closest
+      // Find next unvisited room that's connected or closest'
       let nextRoom = null;
       for (const roomId of rooms) {
         if (!visited.has(roomId)) {

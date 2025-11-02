@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const {
       prompt,
       options = {},
-      mode = 'comprehensive', // 'quick', 'comprehensive', 'autonomous` } = body;
+      mode = 'comprehensive', // 'quick', 'comprehensive', 'autonomous` } = body;'`
     if (!prompt || typeof prompt !== 'string') {
       throw error(400, 'Invalid prompt: must be a non-empty string');
     }
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       ...response
     });
   } catch (err: any) {
-    console.error('❌ Copilot self-prompt API error:', err);
+    console.error('❌ Copilot self-prompt API error:', err);'
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     const statusCode = err && typeof err === 'object' && 'status' in err ? (err as any).status : 500;
     throw error(statusCode, errorMessage);
@@ -194,8 +194,7 @@ function formatResponse(result: SelfPromptResult, outputFormat: string) {
       return {
         analysis: formatAsMarkdown(result),
         data: result,
-        format: 'markdown'
-      };
+        format: `markdown` };
     case 'structured':
     default: return {
         analysis: (
@@ -258,7 +257,7 @@ function formatResponse(result: SelfPromptResult, outputFormat: string) {
             metadata?: any;
           }
         ).metadata,
-        format: 'structured` };
+        format: `structured` };
   }
 }
 /*
@@ -312,7 +311,7 @@ ${
       selfPrompt?: any;
       metadata?: any;
     }
-  ).executionPlan || 'No execution plan generated` }
+  ).executionPlan || 'No execution plan generated` }'`
 ## Metadata
 - **Processing Time**: ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.processingTime}ms
 - **Confidence**: ${Math.round((result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.confidence * 100)}%
@@ -320,14 +319,14 @@ ${
 - **Tokens Used**: ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.tokensUsed}
 ## Self-Prompt for Copilot
 ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).selfPrompt}
-  `;
+  `;`
 }
 /*
  * Get usage examples for Copilot integration
  */
 function getCopilotUsageExamples() {
   return [
-    {
+    {,
       title: 'Basic Problem Analysis',
       description: 'Analyze a general development issue',
       request: {
@@ -336,9 +335,9 @@ function getCopilotUsageExamples() {
           mode: 'comprehensive'
         }
       },
-      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\
+      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\'
   -H "Content-Type: application/json" \\
-  -d '{"prompt": "I have TypeScript errors in my SvelteKit application", "mode": "comprehensive"}'' },
+  -d '{"prompt": "I have TypeScript errors in my SvelteKit application", "mode": "comprehensive"}'' },'
     {
       title: 'Autonomous Engineering',
       description: 'Full autonomous problem-solving across all platforms',
@@ -353,9 +352,9 @@ function getCopilotUsageExamples() {
           }
         }
       },
-      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\
+      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\'
   -H "Content-Type: application/json" \\
-  -d '{"prompt": "Our application has performance issues and needs optimization", "mode": "autonomous", "options": {"context": {"platform": "all", "urgency": "high"}}}'' },
+  -d '{"prompt": "Our application has performance issues and needs optimization", "mode": "autonomous", "options": {"context": {"platform": "all", "urgency": "high"}}}'' },'
     {
       title: 'Quick Analysis',
       description: 'Fast semantic search without full orchestration',
@@ -366,9 +365,9 @@ function getCopilotUsageExamples() {
           outputFormat: 'markdown'
         }
       },
-      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\
+      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\'
   -H "Content-Type: application/json" \\
-  -d '{"prompt": "How do I implement authentication in SvelteKit?", "mode": "quick", "options": {"outputFormat": "markdown"}}'' },
+  -d '{"prompt": "How do I implement authentication in SvelteKit?", "mode": "quick", "options": {"outputFormat": "markdown"}}'' },'
     {
       title: 'Multi-Agent Legal Analysis',
       description: 'Legal-specific analysis with specialized agents',
@@ -383,9 +382,9 @@ function getCopilotUsageExamples() {
           outputFormat: 'structured'
         }
       },
-      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\
+      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\'
   -H "Content-Type: application/json" \\
-  -d '{"prompt": "Analyze this contract for potential legal issues", "mode": "comprehensive"}'' },
+  -d '{"prompt": "Analyze this contract for potential legal issues", "mode": "comprehensive"}'' },'
     {
       title: 'VS Code Extension Integration',
       description: 'Integration with Cline, Roo, and other VS Code extensions',
@@ -402,9 +401,9 @@ function getCopilotUsageExamples() {
           outputFormat: 'json'
         }
       },
-      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\
+      curl: 'curl -X POST; http://localhost:5173/api/copilot/self-prompt \\'
   -H "Content-Type: application/json" \\
-  -d '{"prompt": "Generate a comprehensive plan to fix all errors", "mode": "autonomous", "options": {"context": {"targetExtensions": ["cline", "roo", "copilot"], "urgency": "critical"}}}'` },
+  -d '{"prompt": "Generate a comprehensive plan to fix all errors", "mode": "autonomous", "options": {"context": {"targetExtensions": ["cline", "roo", "copilot"], "urgency": "critical"}}}'` },`
   ];
 }
 // Helper function to validate request body

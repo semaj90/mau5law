@@ -162,7 +162,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'pgvector_extension',
           status: 'success',
-          data: vectorTest.rows.length > 0 ? { available: true } : {, available: false }
+          data: vectorTest.rows.length > 0 ? {, available: true } : {, available: false }
         });
       } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);

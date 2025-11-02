@@ -1,8 +1,8 @@
-<script context="module" lang="ts">
-  // make TypeScript aware of Svelte's $$restProps (module context for declare)
+<script, context="module" lang="ts">
+  // make TypeScript aware of Svelte's $$restProps (module context for declare)'
   declare const $$restProps: Record<string, any>;
 </script>
-<script lang="ts">
+<script, lang="ts">
   // Use namespace import and resolve components at runtime to avoid brittle typings
   import * as BitsUI from 'bits-ui';
   import { cn } from '$lib/utils.js';
@@ -27,11 +27,11 @@
   const restClass = ( ($$restProps as any)?.class ?? '' ) as string;
   const mergedClassWithRest = cn(mergedClass, restClass);
 </script>
-<svelte:component this={RootComp} class={mergedClassWithRest} {...rest}>
-  <svelte:component this={ViewportComp} class="h-full w-full rounded-[inherit]">
+<svelte:component, this={RootComp} class={mergedClassWithRest} {...rest}>
+  <svelte:component this={ViewportComp} class="h-full w-full, rounded-[inherit]">
     <slot />
   </svelte:component>
-  <svelte:component this={ScrollbarComp} orientation="vertical" />
-  <svelte:component this={ScrollbarComp} orientation="horizontal" />
-  <svelte:component this={CornerComp} />
+  <svelte:component, this={ScrollbarComp} orientation="vertical" />
+  <svelte:component, this={ScrollbarComp} orientation="horizontal" />
+  <svelte:component, this={CornerComp} />
 </svelte:component>

@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 return 'Unknown error';
               }
             })();
-    console.error('GPU orchestration error:', errMsg);
+    console.error('GPU orchestration error:', errMsg);'
     return json(
       {
         error: 'GPU orchestration failed',
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
 async function handleLegalAnalysis(
   data: LegalAnalysisPayload | unknown,
   config: GPUConfig = {}
-): Promise<ReturnType<typeof json>> {
+): Promise<ReturnType<typeof, json>> {
   const { document, context, options } = (data as LegalAnalysisPayload) || {};
   // Build allowed options to pass to orchestrator (avoid unknown props)
   const orchestratorOptions = {
@@ -57,7 +57,7 @@ async function handleLegalAnalysis(
     includeRAG: options?.includeRAG,
     includeGraph: options?.includeGraph,
     generateSummary: options?.generateSummary,
-    // include incoming config so it's actually used (merged with defaults by orchestrator)
+    // include incoming config so it's actually used (merged with defaults by orchestrator)'
     config: {
       useGPU: true,
       ...config
@@ -94,7 +94,7 @@ async function handleLegalAnalysis(
 async function handleDocumentProcessing(
   data: DocumentProcessingPayload | unknown,
   config: GPUConfig = {}
-): Promise<ReturnType<typeof json>> {
+): Promise<ReturnType<typeof, json>> {
   const { files, context, options } = (data as DocumentProcessingPayload) || {};
   const results: OrchestratorResponse[] = [];
   for (const file of files ?? []) {
@@ -148,9 +148,9 @@ type AutosolvePayload = {
 };
 
 type GPUTaskPayload = {
-  taskType?: string; // incoming may be any string; we'll validate below
+  taskType?: string; // incoming may be any string; we'll validate below'
   taskData?: any;
-  priority?: string; // incoming may be any string; we'll validate below
+  priority?: string; // incoming may be any string; we'll validate below'
   context?: Record<string, unknown>;
   [key: string]: any;
 };
@@ -191,7 +191,7 @@ type OrchestratorResponse = {
 async function handleAutosolve(
   data: AutosolvePayload | unknown,
   config: GPUConfig = {}
-): Promise<ReturnType<typeof json>> {
+): Promise<ReturnType<typeof, json>> {
   const { threshold, forceRun, includeClusterMetrics } = (data as AutosolvePayload) || {};
   const result = await mcpGPUOrchestrator.triggerAutosolve({
     threshold: threshold ?? 5,
@@ -260,7 +260,7 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
   });
 }
 
-async function handleClusterStatus(): Promise<ReturnType<typeof json>> {
+async function handleClusterStatus(): Promise<ReturnType<typeof, json>> {
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
   return json({
     cluster: clusterStatus,
@@ -278,7 +278,7 @@ function extractLegalEntities(doc: string) {
   };
 
   // Use a mutable typed Record so the RegExp arrays are seen as RegExp[] (not readonly tuples)
-  const patterns: Record<keyof typeof entities, RegExp[]> = {
+  const patterns: Record<keyof typeof, entities, RegExp[]> = {
     parties: [
       /\b(plaintiff|defendant|appellant|appellee|petitioner|respondent)\b/gi,
       /\b([A-Z][a-z]+ (?:v\.|vs\.|versus) [A-Z][a-z]+)\b/g,
@@ -291,7 +291,7 @@ function extractLegalEntities(doc: string) {
   };
 
   // Iterate keys in a typed way to avoid unsafe casts
-  for (const category of Object.keys(patterns) as Array<keyof typeof patterns>) {
+  for (const category of Object.keys(patterns) as Array<keyof typeof, patterns>) {
     const categoryPatterns = patterns[category];
     for (const pattern of categoryPatterns) {
       const matches = doc.match(pattern) || [];
@@ -322,7 +322,7 @@ async function performRiskAssessment(analysisResult: AnalysisResult): Promise<Ri
   };
   const text = String(analysisResult?.text || analysisResult?.summary || '');
 
-  const riskKeywords: Record<keyof Omit<RiskScores, 'overall'>, string[]> = {
+  const riskKeywords: Record<keyof, Omit<RiskScores, 'overall'>, string[]> = {
     financial: ['liability', 'damages', 'penalty', 'fine', 'cost', 'expense'],
     legal: ['violation', 'breach', 'non-compliance', 'lawsuit', 'litigation'],
     operational: ['disruption', 'delay', 'failure', 'inability', 'restriction'],

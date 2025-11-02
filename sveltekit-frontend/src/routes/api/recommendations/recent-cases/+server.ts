@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Error fetching recent cases:', error);
     // Return mock data with: "failure default to mock" error message
     const mockFallbackCases = [
-      {
+      {,
         id: 'mock-case-001',
         title: 'Mock Employment Dispute',
         status: 'active' as const,
@@ -273,8 +273,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Case not found'
-        },
+          error: `Case not found` },
         { status: 404 }
       );
     }
@@ -295,7 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: 'Invalid action` },
+            error: `Invalid action` },
           { status: 400 }
         );
     }

@@ -266,7 +266,7 @@ export function useRedisForm() {
         lastSubmission = {
           type: 'queued' as const,
           taskId,
-          estimatedTime: '30-45 seconds` };
+          estimatedTime: '30-45 seconds' };
       } else {
         const result = await redisOrchestratorClient.processQuery(queryText, {
           endpoint,

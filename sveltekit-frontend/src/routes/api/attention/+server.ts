@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 /*
  * Kernel Splicing Attention API
  * Advanced CUDA attention mechanism with kernel splicing
- * Optimized for RTX 3060 Ti with <1ms processing
+ * Optimized for RTX 3060 Ti with <1ms, processing
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient';
 import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
@@ -191,22 +191,21 @@ export const GET: RequestHandler = async () => {
       service: 'attention-processing',
       status: 'operational',
       gpu: {
-        model: 'NVIDIA GeForce RTX 3060 Ti',
+       , model: 'NVIDIA GeForce RTX 3060 Ti',
         memory: '8GB',
         utilization: '87%',
         temperature: '72°C'
       },
       cache: {
-        size: stats.size,
+       , size: stats.size,
         hitRate: stats.hitRate,
         memoryUsage: stats.memoryUsage
       },
       performance: {
-        kernelSplicing: '<1ms',
+       , kernelSplicing: '<1ms',
         flashAttention: '<5ms',
         multiHead: '<10ms',
-        basic: '<15ms'
-      },
+        basic: `<15ms` },
       capabilities: [
         'Kernel splicing attention',
         'Flash attention 2.0',
@@ -218,7 +217,7 @@ export const GET: RequestHandler = async () => {
       ],
       endpoints: {
        , process: '/api/attention (POST)',
-        status: '/api/attention (GET)` },
+        status: `/api/attention (GET)` },
       supportedTypes: ['attention', 'multi-head', 'flash-attention', 'kernel-splicing'],
       timestamp: Date.now()
     });
@@ -235,7 +234,7 @@ export const GET: RequestHandler = async () => {
 };
 // Helper functions for different attention types
 async function processKernelSplicingAttention(text: string, options: any): Promise<any> {
-  // Simulate kernel splicing attention with <1ms processing
+  // Simulate kernel splicing attention with <1ms, processing
   const processTime = Math.random() * 0.001;
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),

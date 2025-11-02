@@ -333,7 +333,7 @@ export class GGUFRuntimeService extends EventEmitter {
           this.handleWorkerMessage(workerState.id, _event.data);
         };
         worker.onerror = (error) => {
-          console.error(`Worker ${i} error: ', error);
+          console.error(`Worker ${i} error: ', error);'`
           workerState.status = 'error';
           workerState.errors++;
           this.emit('worker_error', { workerId: workerState.id, error });
@@ -609,7 +609,7 @@ export class GGUFRuntimeService extends EventEmitter {
           });
         }
       }
-    `;
+    `;`
   }
   /**
    * Load model metadata from GGUF file
@@ -1060,7 +1060,7 @@ export class GGUFRuntimeService extends EventEmitter {
         this.handleWorkerMessage(workerId, _event.data);
       };
       newWorker.onerror = (error) => {
-        console.error(`Restarted worker ${workerId} error: ', error);
+        console.error(`Restarted worker ${workerId} error: ', error);'`
         newWorkerState.status = 'error';
         newWorkerState.errors++;
       }
@@ -1070,7 +1070,7 @@ export class GGUFRuntimeService extends EventEmitter {
       await this.loadModelMetadata();
       console.log(`🔄 Worker ${workerId} restarted successfully`);
     } catch (error: any) {
-      console.error(`Failed to restart worker ${workerId}: ', error);
+      console.error(`Failed to restart worker ${workerId}: ', error);'`
       throw error;
     }
   }
@@ -1170,7 +1170,7 @@ export function createGGUFRuntime(config?: Partial<GGUFRuntimeConfig>) {
           overall: $status.loaded && $perf.errorRate < 0.1 && $stats.workersActive > 0,
           model: $status.loaded,
           workers: $stats.workersActive,
-          memory: $perf.memoryUsage < 6144, // Under 6GB
+          memory: $perf.memoryUsage < 6144, // Under, 6GB
           queue: $stats.queueLength < 10,
           errors: $perf.errorRate < 0.05
         })
@@ -1209,8 +1209,7 @@ export const GGUFLegalHelpers = {
      , documentType: 'contract',
       jurisdiction,
       practiceArea: 'contract_law',
-      confidentialityLevel: 'confidential'
-    },
+      confidentialityLevel: 'confidential` },'`
     stopTokens: ['\n\n', '---', 'END_ANALYSIS']
   }),
   // Legal document review with compliance checking
@@ -1279,8 +1278,7 @@ export const GGUFLegalHelpers = {
      , documentType: 'statute',
       jurisdiction: 'federal',
       practiceArea: 'regulatory_compliance',
-      confidentialityLevel: 'public'
-    },
+      confidentialityLevel: 'public` },'`
     stopTokens: ['END_COMPLIANCE', '\n\n\n']
   })
 }

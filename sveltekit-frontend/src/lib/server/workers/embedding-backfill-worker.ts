@@ -1,7 +1,7 @@
 /**
  * Embedding Backfill Worker
  *
- * Automatically generates embeddings for evidence files that don't have them yet.
+ * Automatically generates embeddings for evidence files that don't have them yet.'
  * Integrates with the existing evidence upload pipeline and embedding API.
  */
 import { query } from '$lib/server/db/client.js';
@@ -31,7 +31,7 @@ export class EmbeddingBackfillWorker {
     this.retryCount = options.retryCount || 3;
   }
   /**
-   * Process all evidence files that don't have embeddings yet
+   * Process all evidence files that don't have embeddings yet'
    */
   async processAll(): Promise<BackfillResult> {
     if (this.isRunning) {
@@ -48,7 +48,7 @@ export class EmbeddingBackfillWorker {
         WHERE embeddings IS NULL
         ORDER BY uploaded_at DESC
         LIMIT $1
-      `,
+      `,`
         [this.batchSize]
       );
       console.log(`📋 Found ${evidenceFiles.length} files to process`);
@@ -103,7 +103,7 @@ export class EmbeddingBackfillWorker {
         embeddingResult = await this.generateEmbedding(textContent);
         break;
       } catch (error) {
-        console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}: ', error);
+        console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}: ', error);'`
         if (attempt === this.retryCount) throw error;
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt); // Exponential backoff
       }
@@ -140,7 +140,7 @@ export class EmbeddingBackfillWorker {
           const fileText = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).text();
           textContent += '\n\n' + fileText;
         } catch (error) {
-          console.warn(`Failed to extract text from ${file.object_name}: ', error);
+          console.warn(`Failed to extract text from ${file.object_name}: ', error);'`
         }
         break;
       case 'application/json':
@@ -166,7 +166,7 @@ export class EmbeddingBackfillWorker {
     // Call our embedding API endpoint
     const response = await fetch('http://localhost:5174/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({,
         text: text.substring(0, 50000), // Limit text length
         model: 'mock', // Use mock for testing - change to: 'openai'; or: 'nomic' when ready;
@@ -193,7 +193,7 @@ export class EmbeddingBackfillWorker {
       UPDATE evidence_files
       SET embeddings = $1
       WHERE id = $2
-    `,
+    `,`
       [embeddingVector, fileId]
     );
   }

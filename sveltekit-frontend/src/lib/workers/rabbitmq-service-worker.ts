@@ -8,7 +8,7 @@ import type { Document } from '$lib/types';
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
 import { publishToQueue } from '$lib/server/rabbitmq.js';
 // Removed problematic `import type ...` which caused parser errors in the build.
-// Added a local MessageHandler type so we don't rely on a type-only import.
+// Added a local MessageHandler type so we don't rely on a type-only import.'
 type MessageHandler = (message: any, originalMessage?: any) => Promise<void> | void;
 
 const QUEUE_NAMES = {
@@ -19,7 +19,7 @@ const QUEUE_NAMES = {
   RAG_PROCESSING: 'rag.processing',
   EMAIL_NOTIFICATIONS: 'email.notifications',
   SEARCH_INDEXING: 'search.indexing',
-  CASE_UPDATES: 'case.updates` } as const;
+  CASE_UPDATES: 'case.updates' } as const;
 
 export interface ServiceWorkerConfig {
   enableLogging?: boolean;
@@ -45,15 +45,13 @@ type RabbitMQServiceLike = {
     cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
   subscribe?: (
-    queue: string,
-    cb: (message: any, originalMessage?: any) => Promise<void> | void
+    queue: string; cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
   createConsumer?: (
-    queue: string,
-    cb: (message: any, originalMessage?: any) => Promise<void> | void
+    queue: string; cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
-  on?: (event: string, cb: (...args: any[]) => void) => void;
-  publish?: (exchange: string, routingKey: string; payload: any) => Promise<unknown> | unknown;
+  on?: (event: string;, cb: (...args: any[]) => void) => void;
+  publish?: (exchange: string; routingKey: string;, payload: any) => Promise<unknown> | unknown;
   healthCheck?: () => Promise<unknown>;
 };
 
@@ -276,7 +274,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue(QUEUE_NAMES.SEARCH_INDEXING, {
         ...msg,
         embeddings: 'generated',
-        stage: 'indexing_ready` });
+        stage: 'indexing_ready' });
     });
 
     // Evidence analysis handler
@@ -291,7 +289,7 @@ export class RabbitMQServiceWorker {
         insights: {
           confidence: 0.85,
           keyEntities: ['contract', 'signature', 'date'],
-          summary: 'Legal document analysis completed` }
+          summary: 'Legal document analysis completed' }
       });
     });
 
@@ -331,7 +329,7 @@ export class RabbitMQServiceWorker {
     this.processingStats.avgProcessingTime = (currentAvg * (messageCount - 1) + processingTime) / messageCount;
   }
 
-  getStats(): typeof this.processingStats & { uptime: number;, isRunning: boolean } {
+  getStats(): typeof this.processingStats & { uptime: number; isRunning: boolean } {
     return {
       ...this.processingStats,
       uptime: Date.now() - this.processingStats.startTime,
@@ -339,7 +337,7 @@ export class RabbitMQServiceWorker {
     };
   }
 
-  async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy';, stats: (typeof RabbitMQServiceWorker.prototype)['processingStats'] & { uptime: number;, isRunning: boolean };
+  async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy';, stats: (typeof RabbitMQServiceWorker.prototype)['processingStats'] & { uptime: number; isRunning: boolean };
     rabbitmq: RabbitMQHealth;
   }> {
     // Call healthCheck() if present, then normalize result safely to RabbitMQHealth
@@ -381,7 +379,7 @@ export class RabbitMQServiceWorker {
       const publishResult = await rabbitmqService.publish('workers', queueName, {
         ...message,
         publishedAt: Date.now(),
-        workerVersion: '1.0.0` });
+        workerVersion: '1.0.0' });
       const publishedOk = Boolean(publishResult);
       if (!publishedOk) {
         this.log(`Failed to publish message to ${queueName}`, 'error');

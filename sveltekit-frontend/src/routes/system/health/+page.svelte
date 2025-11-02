@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { writable, get } from 'svelte/store';
 	// prefer the module entry (no .js) and avoid importing TS types from a .js file
@@ -332,11 +332,11 @@
 <svelte:head>
 	<title>System Health Dashboard - Legal AI Platform</title>
 </svelte:head>
-<div class="container mx-auto p-6 max-w-7xl">
-	<div class="flex justify-between items-center mb-8">
+<div class="container mx-auto p-6, max-w-7xl">
+	<div class="flex justify-between items-center, mb-8">
 		<div>
-			<h1 class="text-3xl font-bold text-gray-900">System Health Dashboard</h1>
-			<p class="text-gray-600 mt-1">Legal AI Platform - CUDA GPU Integration Status</p>
+			<h1 class="text-3xl font-bold, text-gray-900">System Health Dashboard</h1>
+			<p class="text-gray-600, mt-1">Legal AI Platform - CUDA GPU Integration Status</p>
 		</div>
 		<button
 			onclick={fetchHealth}
@@ -344,7 +344,7 @@
 			disabled={$loading}
 		>
 			{#if $loading}
-				<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+				<div class="animate-spin rounded-full h-4 w-4 border-b-2, border-white"></div>
 			{:else}
 				🔄
 			{/if}
@@ -352,34 +352,34 @@
 		</button>
 	</div>
 	{#if $error}
-		<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-			<div class="flex items-center gap-2">
-				<span class="text-xl">❌</span>
+		<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg, mb-6">
+			<div class="flex items-center, gap-2">
+				<span, class="text-xl">❌</span>
 				<div>
-					<h3 class="font-semibold">Health Check Failed</h3>
-					<p class="text-sm mt-1">{$error}</p>
+					<h3, class="font-semibold">Health Check Failed</h3>
+					<p class="text-sm, mt-1">{$error}</p>
 				</div>
 			</div>
 		</div>
 	{/if}
 	{#if $healthData}
-		<!-- Overall Status -->
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-			<div class={`p-6 rounded-lg border-2 ${getStatusColor($healthData.overall_status)}`}>
-				<div class="flex items-center gap-3">
-					<span class="text-3xl">{getStatusIcon($healthData.overall_status)}</span>
+		<!-- Overall, Status -->
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-6, mb-8">
+			<div class={`p-6 rounded-lg, border-2 ${getStatusColor($healthData.overall_status)}`}>
+				<div class="flex items-center, gap-3">
+					<span, class="text-3xl">{getStatusIcon($healthData.overall_status)}</span>
 					<div>
-						<h3 class="text-lg font-semibold capitalize">{$healthData.overall_status}</h3>
-						<p class="text-sm opacity-75">Overall System Status</p>
+						<h3 class="text-lg font-semibold, capitalize">{$healthData.overall_status}</h3>
+						<p class="text-sm, opacity-75">Overall System Status</p>
 					</div>
 				</div>
 			</div>
-			<div class="p-6 rounded-lg border-2 border-blue-200 bg-blue-50">
-				<div class="flex items-center gap-3">
-					<span class="text-3xl">📊</span>
+			<div class="p-6 rounded-lg border-2 border-blue-200, bg-blue-50">
+				<div class="flex items-center, gap-3">
+					<span, class="text-3xl">📊</span>
 					<div>
-						<h3 class="text-lg font-semibold text-blue-700">{$healthData.health_percentage}%</h3>
-						<p class="text-sm text-blue-600">
+						<h3 class="text-lg font-semibold, text-blue-700">{$healthData.health_percentage}%</h3>
+						<p class="text-sm, text-blue-600">
 							Services Online ({$healthData.services_online}/{$healthData.services_total})
 						</p>
 					</div>
@@ -388,77 +388,77 @@
 			<div
 				class={`p-6 rounded-lg border-2 ${$healthData.cuda.gpu_ready ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
 			>
-				<div class="flex items-center gap-3">
-					<span class="text-3xl">🎯</span>
+				<div class="flex items-center, gap-3">
+					<span, class="text-3xl">🎯</span>
 					<div>
-						<h3 class={`text-lg font-semibold ${$healthData.cuda.gpu_ready ? 'text-green-700' : 'text-red-700'}`}>
+						<h3 class={`text-lg, font-semibold ${$healthData.cuda.gpu_ready ? 'text-green-700' : 'text-red-700'}`}>
 							{$healthData.cuda.gpu_ready ? 'GPU Ready' : 'GPU Not Available'}
 						</h3>
-						<p class={`text-sm ${$healthData.cuda.gpu_ready ? 'text-green-600' : 'text-red-600'}`}>
+						<p, class={`text-sm ${$healthData.cuda.gpu_ready ? 'text-green-600' : 'text-red-600'}`}>
 							CUDA Worker Status
 						</p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- CUDA Service Details -->
-		<div class="mb-8">
-			<h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
+		<!-- CUDA Service, Details -->
+		<div, class="mb-8">
+			<h2 class="text-2xl font-semibold mb-4 flex items-center, gap-2">
 				<span>⚡</span> CUDA GPU Service
 			</h2>
-			<div class="bg-white rounded-lg border shadow-sm p-6">
-				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-					<div class="text-center">
-						<div class={`text-2xl mb-2 ${$healthData.cuda.service_available ? 'text-green-600' : 'text-red-600'}`}>
+			<div class="bg-white rounded-lg border shadow-sm, p-6">
+				<div class="grid grid-cols-2 md:grid-cols-4, gap-4">
+					<div, class="text-center">
+						<div class={`text-2xl, mb-2 ${$healthData.cuda.service_available ? 'text-green-600' : 'text-red-600'}`}>
 							{$healthData.cuda.service_available ? '✅' : '❌'}
 						</div>
-						<h4 class="font-semibold">Service</h4>
-						<p class="text-sm text-gray-600">{$healthData.cuda.service_available ? 'Running' : 'Offline'}</p>
+						<h4, class="font-semibold">Service</h4>
+						<p class="text-sm, text-gray-600">{$healthData.cuda.service_available ? 'Running' : 'Offline'}</p>
 					</div>
-					<div class="text-center">
-						<div class={`text-2xl mb-2 ${$healthData.cuda.worker_available ? 'text-green-600' : 'text-red-600'}`}>
+					<div, class="text-center">
+						<div class={`text-2xl, mb-2 ${$healthData.cuda.worker_available ? 'text-green-600' : 'text-red-600'}`}>
 							{$healthData.cuda.worker_available ? '🔧' : '❌'}
 						</div>
-						<h4 class="font-semibold">Worker</h4>
-						<p class="text-sm text-gray-600">{$healthData.cuda.worker_available ? 'Available' : 'Not Built'}</p>
+						<h4, class="font-semibold">Worker</h4>
+						<p class="text-sm, text-gray-600">{$healthData.cuda.worker_available ? 'Available' : 'Not Built'}</p>
 					</div>
-					<div class="text-center">
-						<div class={`text-2xl mb-2 ${$healthData.cuda.gpu_ready ? 'text-green-600' : 'text-red-600'}`}>
+					<div, class="text-center">
+						<div class={`text-2xl, mb-2 ${$healthData.cuda.gpu_ready ? 'text-green-600' : 'text-red-600'}`}>
 							{$healthData.cuda.gpu_ready ? '🚀' : '❌'}
 						</div>
-						<h4 class="font-semibold">GPU Ready</h4>
-						<p class="text-sm text-gray-600">{$healthData.cuda.gpu_ready ? 'Yes' : 'No'}</p>
+						<h4, class="font-semibold">GPU Ready</h4>
+						<p class="text-sm, text-gray-600">{$healthData.cuda.gpu_ready ? 'Yes' : 'No'}</p>
 					</div>
-					<div class="text-center">
-						<div class="text-2xl mb-2 text-blue-600">⏱️</div>
-						<h4 class="font-semibold">Response Time</h4>
-						<p class="text-sm text-gray-600">{formatResponseTime($healthData.cuda.response_time)}</p>
+					<div, class="text-center">
+						<div class="text-2xl mb-2, text-blue-600">⏱️</div>
+						<h4, class="font-semibold">Response Time</h4>
+						<p class="text-sm, text-gray-600">{formatResponseTime($healthData.cuda.response_time)}</p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- Services Grid -->
-		<div class="mb-8">
-			<h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
+		<!-- Services, Grid -->
+		<div, class="mb-8">
+			<h2 class="text-2xl font-semibold mb-4 flex items-center, gap-2">
 				<span>🏗️</span> All Services
 			</h2>
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3, gap-4">
 				{#each Array.isArray(displayServicesArray) ? displayServicesArray : [] as service}
-					<div class={`p-4 rounded-lg border-2 ${getStatusColor(service.status)}`}>
-						<div class="flex items-center justify-between mb-2">
-							<h3 class="font-semibold capitalize">{service.name.replace('-', ' ')}</h3>
-							<span class="text-xl">{getStatusIcon(service.status)}</span>
+					<div class={`p-4 rounded-lg, border-2 ${getStatusColor(service.status)}`}>
+						<div class="flex items-center justify-between, mb-2">
+							<h3 class="font-semibold, capitalize">{service.name.replace('-', ' ')}</h3>
+							<span, class="text-xl">{getStatusIcon(service.status)}</span>
 						</div>
-						<div class="space-y-1 text-sm">
-							<p><span class="font-medium">Status:</span> {service.status}</p>
+						<div class="space-y-1, text-sm">
+							<p><span, class="font-medium">Status:</span> {service.status}</p>
 							{#if service.responseTime}
-								<p><span class="font-medium">Response:</span> {formatResponseTime(service.responseTime)}</p>
+								<p><span, class="font-medium">Response:</span> {formatResponseTime(service.responseTime)}</p>
 							{/if}
-							<p class="text-xs opacity-75">Last check: {formatTimestamp(service.lastCheck)}</p>
+							<p class="text-xs, opacity-75">Last check: {formatTimestamp(service.lastCheck)}</p>
 							{#if service.details && typeof service.details === 'object'}
-								<details class="mt-2">
-									<summary class="cursor-pointer text-xs opacity-75">Details</summary>
-									<pre class="text-xs mt-1 opacity-60 overflow-x-auto">{JSON.stringify(
+								<details, class="mt-2">
+									<summary class="cursor-pointer text-xs, opacity-75">Details</summary>
+									<pre class="text-xs mt-1 opacity-60, overflow-x-auto">{JSON.stringify(
 										service.details,
 										null,
 										2
@@ -472,16 +472,16 @@
 		</div>
 		<!-- Recommendations -->
 		{#if $healthData.recommendations.length > 0}
-			<div class="mb-8">
-				<h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
+			<div, class="mb-8">
+				<h2 class="text-2xl font-semibold mb-4 flex items-center, gap-2">
 					<span>💡</span> Recommendations
 				</h2>
-				<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-					<ul class="space-y-2">
+				<div class="bg-blue-50 border border-blue-200 rounded-lg, p-4">
+					<ul, class="space-y-2">
 						{#each Array.isArray($healthData.recommendations) ? $healthData.recommendations : [] as recommendation}
-							<li class="flex items-start gap-2">
-								<span class="text-blue-600 mt-0.5">•</span>
-								<code class="text-sm bg-blue-100 px-2 py-1 rounded">{recommendation}</code>
+							<li class="flex items-start, gap-2">
+								<span class="text-blue-600, mt-0.5">•</span>
+								<code class="text-sm bg-blue-100 px-2 py-1, rounded">{recommendation}</code>
 							</li>
 						{/each}
 					</ul>
@@ -489,48 +489,48 @@
 			</div>
 		{/if}
 		<!-- Summary -->
-		<div class="bg-gray-50 rounded-lg p-4">
-			<h3 class="font-semibold mb-2">Summary</h3>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+		<div class="bg-gray-50 rounded-lg, p-4">
+			<h3 class="font-semibold, mb-2">Summary</h3>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4, text-sm">
 				{#if $healthData.summary.critical_services.length > 0}
 					<div>
-						<h4 class="font-medium text-red-600 mb-1">Critical Services Down:</h4>
-						<ul class="space-y-1">
+						<h4 class="font-medium text-red-600, mb-1">Critical Services Down:</h4>
+						<ul, class="space-y-1">
 							{#each Array.isArray($healthData.summary.critical_services) ? $healthData.summary.critical_services : [] as service}
-								<li class="text-red-700">• {service}</li>
+								<li, class="text-red-700">• {service}</li>
 							{/each}
 						</ul>
 					</div>
 				{/if}
 				{#if $healthData.summary.degraded_services.length > 0}
 					<div>
-						<h4 class="font-medium text-yellow-600 mb-1">Degraded Services:</h4>
-						<ul class="space-y-1">
+						<h4 class="font-medium text-yellow-600, mb-1">Degraded Services:</h4>
+						<ul, class="space-y-1">
 							{#each Array.isArray($healthData.summary.degraded_services) ? $healthData.summary.degraded_services : [] as service}
-								<li class="text-yellow-700">• {service}</li>
+								<li, class="text-yellow-700">• {service}</li>
 							{/each}
 						</ul>
 					</div>
 				{/if}
 				{#if $healthData.summary.offline_services.length > 0}
 					<div>
-						<h4 class="font-medium text-gray-600 mb-1">Offline Services:</h4>
-						<ul class="space-y-1">
+						<h4 class="font-medium text-gray-600, mb-1">Offline Services:</h4>
+						<ul, class="space-y-1">
 							{#each Array.isArray($healthData.summary.offline_services) ? $healthData.summary.offline_services : [] as service}
-								<li class="text-gray-700">• {service}</li>
+								<li, class="text-gray-700">• {service}</li>
 							{/each}
 						</ul>
 					</div>
 				{/if}
 			</div>
-			<p class="text-xs text-gray-500 mt-4">
+			<p class="text-xs text-gray-500, mt-4">
 				Last updated: {formatTimestamp($healthData?.timestamp ?? Date.now())} | Auto-refresh: {Math.round(refreshRate/1000)}s
 			</p>
 		</div>
 	{:else if $loading}
-		<div class="flex items-center justify-center py-12">
-			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-			<span class="ml-2 text-gray-600">Loading health data...</span>
+		<div class="flex items-center justify-center, py-12">
+			<div class="animate-spin rounded-full h-8 w-8 border-b-2, border-blue-600"></div>
+			<span class="ml-2, text-gray-600">Loading health data...</span>
 		</div>
 	{/if}
 </div>

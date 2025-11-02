@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // Check for missing evidence
     const evidenceCountResult = await db
-      .select({ count: sql<number>`count(*)' })
+      .select({ count: sql<number>`count(*)` })
       .from(evidence)
       .where(eq(evidence.caseId, caseId));
     const evidenceTotal = Number(evidenceCountResult?.[0]?.count ?? 0);
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // Check for activities
     const activitiesCountResult = await db
-      .select({ count: sql<number>`count(*)' })
+      .select({ count: sql<number>`count(*)` })
       .from(caseActivities)
       .where(eq(caseActivities.caseId, caseId));
     const activitiesTotal = Number(activitiesCountResult?.[0]?.count ?? 0);
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           const searchResult = await qdrantClient.search('prosecutor_cases', {
             vector: caseEmbedding,
             limit: 5,
-            filter: { must_not: [{, key: 'id', match: {, value: caseId } }] },
+            filter: {, must_not: [{, key: 'id', match: {, value: caseId } }] },
             with_payload: true
           });
 
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // 4. Suggest statutes - type DB result and iterate safely
     if (currentCase.aiTags && Array.isArray(currentCase.aiTags) && currentCase.aiTags.includes('fraud')) {
-      const fraudStatutes: Array<{ id: string;, title: string; code?: string }> = await db
+      const fraudStatutes: Array<{ id: string; title: string; code?: string }> = await db
         .select()
         .from(statutes)
         .where(ilike(statutes.title, '%fraud%'))

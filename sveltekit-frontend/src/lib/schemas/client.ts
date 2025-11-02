@@ -10,7 +10,7 @@ export const evidenceSchema = z.object({
   fileUrl: z.string().url().optional(),
   metadata: z.record(z.unknown()).optional()
 });
-export type EvidenceFormData = z.infer<typeof evidenceSchema>;
+export type EvidenceFormData = z.infer<typeof, evidenceSchema>;
 // Vector search result type (client-safe)
 export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
@@ -24,4 +24,4 @@ export const caseSchema = z.object({
   status: z.enum(['active', 'pending', 'closed']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional()
 });
-export type CaseFormData = z.infer<typeof caseSchema>;
+export type CaseFormData = z.infer<typeof, caseSchema>;

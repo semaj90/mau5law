@@ -24,7 +24,7 @@ export interface RecommendationResult { type: 'query' | 'case' | 'document' | 'l
 
 export interface ChatAnalytics { totalQueries: number;, successRate: number;
   averageProcessingTime: number;
-  topTopics: Array<{ topic: string;, count: number }>;
+  topTopics: Array<{ topic: string; count: number }>;
 
   userSatisfaction: number;
   improvementSuggestions: string[];
@@ -35,10 +35,10 @@ export class UserRecommendationService {
    * Store AI chat interaction with full context for analytics
    */
   async storeAiChatInteraction(params: {
-    userId: string;
+   , userId: string;
     sessionId?: string;
     caseId?: string;
-    query: string;
+   , query: string;
    , response: string;
     embedding?: number[];
     metadata?: { [key: string]: any };
@@ -75,7 +75,7 @@ export class UserRecommendationService {
           .where(eq(ragMessages.sessionId, params.sessionId));
 
         await Promise.all([
-          // User message
+          // User message,
           db.insert(ragMessages).values({
             sessionId: params.sessionId,
             role: 'user',
@@ -190,7 +190,7 @@ export class UserRecommendationService {
           totalQueries: count(userAiQueries.id),
           successfulQueries: sql<number>`COUNT(CASE WHEN is_successful = true THEN 1 END)`,
           avgProcessingTime: sql<number>`AVG(processing_time_ms)`,
-          totalTokens: sql<number>`SUM(tokens_used)' })
+          totalTokens: sql<number>`SUM(tokens_used)` })
         .from(userAiQueries)
         .where(whereCondition);
       const successRate = stats.totalQueries > 0 ? (stats.successfulQueries / stats.totalQueries) * 100 : 0;

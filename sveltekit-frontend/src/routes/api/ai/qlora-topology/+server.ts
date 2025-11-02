@@ -23,7 +23,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import { tritonClient } from '$lib/server/triton-client';
 import { qdrantClient } from '$lib/server/qdrant-client';
 import { db } from '$lib/server/db';
-import { npmSolvedErrors as solvedErrors } from '$lib/server/schema';
+import { npmSolvedErrors, as solvedErrors } from '$lib/server/schema';
 import { sql } from 'drizzle-orm';
 
 // --- Interfaces for Request, Response, and Cache ---
@@ -81,7 +81,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { errors, useCache = true, binaryResponse = false } = body;
 
     if (!errors || !Array.isArray(errors) || errors.length === 0) {
-      return json({ error: `Request body must be a non-empty array of NPMError objects.` }, { status: 400 });
+      return json({ error: 'Request body must be a non-empty array of NPMError objects.` }, { status: 400 });'`
     }
 
     const intelligentTodos = await Promise.all(
@@ -101,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           }
         }
 
-        console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.');
+        console.log(`[Intelligent Todo] Cache MISS for key: ${cacheKey}. Executing RAG pipeline.');'`
 
         // 2. EMBED (Triton Server)
         const errorEmbedding = await tritonClient.getEmbedding(error.errorText);
@@ -123,7 +123,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
           contextText = similarSolutions
             .map(
-              (s: {, rawErrorText: string; solutionText: string }) =>
+              (s: {, rawErrorText: string;, solutionText: string }) =>
                 `SIMILAR ERROR:\n${s.rawErrorText}\nSOLUTION:\n${s.solutionText}`
             )
             .join('\n\n---\n\n');

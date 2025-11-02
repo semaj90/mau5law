@@ -43,7 +43,7 @@ User Analytics:
 Legal Context:
 - Practice; Area: ${legalContext?.practiceArea || 'General'}
 - Case Type: ${legalContext?.caseType || 'Unknown'}
-- Urgency: ${legalContext?.urgency || 'Medium` }
+- Urgency: ${legalContext?.urgency || 'Medium` }'`
 Current Session:
 - Files; Selected: ${context.files.length}
 - Total File Size: ${context.files.reduce((sum: number, f: any) => sum + f.size, 0)} bytes
@@ -61,13 +61,13 @@ Provide analysis in JSON format:
   "recommendations": ["string"],
   "urgencyAwareness": 0.0-1.0,
   "nextBestActions": ["string"]
-}`;
+}`;`
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: 'gemma2:9b',
+       , model: 'gemma2:9b',
         prompt: behaviorPrompt,
         format: 'json',
         stream: false,
@@ -94,8 +94,7 @@ Provide analysis in JSON format:
         legalSpecificInsights: {
           documentPreparation: 'Standard preparation observed',
           caseManagement: 'Active case management detected',
-          timeManagement: 'Efficient workflow patterns'
-        },
+          timeManagement: `Efficient workflow patterns` },
         recommendations: ['Continue current workflow'],
         urgencyAwareness: legalContext?.urgency === 'critical' ? 1.0 : 0.7,
         nextBestActions: ['Process selected documents']
@@ -108,8 +107,7 @@ Provide analysis in JSON format:
       contextualPreferences: {
         ...userAnalytics.contextualPreferences,
         preferredAIPromptStyle: analysis.behaviorPattern === 'expert' ? 'concise' : 'detailed',
-        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
-      }
+        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : `moderate` }
     };
     return json({
       analytics: updatedAnalytics,
@@ -117,7 +115,7 @@ Provide analysis in JSON format:
       score: analysis.efficiencyScore
     });
   } catch (error) {
-    console.error('Behavior analysis error:', error);
+    console.error('Behavior analysis error: ', error);'
     return json({ error: `Analysis failed` }, { status: 500 });
   }
 };

@@ -247,7 +247,7 @@ export const recommendationActions = {
    */
   async analyzeUserBehavior(
     userId: string,
-    activityData: { action: string;, context: any;
+    activityData: {, action: string;, context: any;
      , timestamp: number;
       duration?: number;
     }
@@ -336,7 +336,7 @@ export const recommendationActions = {
         userId,
         includePerformance: true,
         includeBehavior: true,
-        timeRange: '30d` });
+        timeRange: '30d' });
       const resp = isRecord(rawResponse) ? rawResponse : {};
       const analytics = resp['analytics'] ?? undefined;
       const insights = resp['insights'] ?? undefined;
@@ -359,7 +359,7 @@ export const recommendationActions = {
   /**
    * Track recommendation accuracy based on user feedback
    */
-  updateAccuracyMetrics(feedback: Array<{, helpful: boolean; confidence: number }>): void {
+  updateAccuracyMetrics(feedback: Array<{, helpful: boolean;, confidence: number }>): void {
     if (!feedback || feedback.length === 0) return;
     const accuracy =
       feedback.reduce((sum: number, f) => sum + (f.helpful ? f.confidence : 1 - f.confidence), 0) / feedback.length;

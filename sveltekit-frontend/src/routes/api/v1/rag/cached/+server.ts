@@ -84,10 +84,10 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleCacheMetrics();
       case 'warmup':
         return await handleCacheWarmup();
-      default: return json({ error: 'Invalid action., Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
+      default: return json({ error: `Invalid action., Supported: query, ingest, test, metrics, warmup` }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Cached RAG API error:', error);
+    console.error('Cached RAG API error:', error);'
     return json(
       {
         error: 'Internal server error',
@@ -102,23 +102,21 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
   try {
-    // If the runtime-resolved function isn't available, return a clear error response.
+    // If the runtime-resolved function isn't available, return a clear error response.'
     if (typeof enhancedRAGQueryWithCache !== 'function') {
       console.error(
-        'enhancedRAGQueryWithCache not available on $lib/services/enhanced-rag-semantic-analyzer. Available keys:',
+        'enhancedRAGQueryWithCache not available on $lib/services/enhanced-rag-semantic-analyzer. Available keys: `,'`
         Object.keys(EnhancedRagModule as Record<string, unknown>)
       );
       return json(
         {
           success: false,
-          error:
-            'Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer'
-        },
+          error: `Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer` },
         { status: 500 }
       );
     }
 
-    // Safe runtime narrowing: ensure it's a non-null object and has; a: 'query' property
+    // Safe runtime narrowing: ensure it's a non-null object and has; a: 'query' property'
     if (
       queryData == null ||
       typeof queryData !== 'object' ||
@@ -188,7 +186,7 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('RAG query failed: `, error);
+    console.error('RAG query failed: `, error);'`
     return json(
       {
         success: false,
@@ -241,7 +239,7 @@ async function handleDocumentIngestion(documents: any, _options: any): Promise<a
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Document ingestion failed: `, error);
+    console.error('Document ingestion failed: `, error);'`
     return json(
       {
         success: false,
@@ -264,7 +262,7 @@ async function handleCacheTest(_options: any): Promise<any> {
     let results;
     if (testType === 'smoke') {
       const success = await cachingTester.runSmokeTest();
-      results = { success, type: 'smoke' };
+      results = { success, type: `smoke` };
     } else {
       results = await cachingTester.runAllTests();
     }
@@ -289,7 +287,7 @@ async function handleCacheTest(_options: any): Promise<any> {
  */
 async function handleCacheMetrics(): Promise<any> {
   try {
-    // Safe typed view to avoid TypeScript errors if method doesn't exist
+    // Safe typed view to avoid TypeScript errors if method doesn't exist'
     const service = enhancedCachingService as unknown as EnhancedCachingServiceLike;
 
     // Try known metric access patterns, handle both sync and async results
@@ -374,7 +372,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return json({ error: `Invalid action for GET request` }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Cached RAG API GET error:', error);
+    console.error('Cached RAG API GET error:', error);'
     return json(
       {
         error: 'Internal server error',

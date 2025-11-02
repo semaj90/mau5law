@@ -83,9 +83,9 @@ class EventEmitter {
     });
   } // Changed any[] to unknown[], added comment for empty block
 }
-export interface NATSMetricsSnapshot { connection: { status: 'connected' | 'disconnected'; since: number | null;, reconnectAttempts: number };
-  messaging: { published: number; received: number;, subjects: Record<string, string[]> };
-  quic?: { status: 'connected' | 'disconnected'; since: number | null; sent: number;, received: number }; // Added QUIC metrics
+export interface NATSMetricsSnapshot { connection: { status: 'connected' | 'disconnected'; since: number | null; reconnectAttempts: number };
+  messaging: { published: number; received: number; subjects: Record<string, string[]> };
+  quic?: { status: 'connected' | 'disconnected'; since: number | null; sent: number; received: number }; // Added QUIC metrics
 }
 
 // Mock WebTransport interfaces for browser compatibility and development
@@ -200,7 +200,7 @@ export class NATSMessagingService extends EventEmitter {
           }
         }),
         request: async (subject: string, data: Uint8Array, _options?: { timeout: number }): Promise<NATSMessage> => {
-          console.log(`📤 Mock request to ${subject}: ', new TextDecoder().decode(data));
+          console.log(`📤 Mock request to ${subject}: ', new TextDecoder().decode(data));'`
           return {
             subject: subject,
             data: new TextEncoder().encode(
@@ -262,9 +262,9 @@ export class NATSMessagingService extends EventEmitter {
               // Simulate incoming data for mock
               setTimeout(() => {
                 const mockData = new TextEncoder().encode(
-                  '{"type":"quic.data","data":{"message":"hello via QUIC"},"timestamp":"' +
+                  '{"type":"quic.data","data":{"message":"hello via QUIC"},"timestamp":"' +"
                     new Date().toISOString() +
-                    '"}'
+                    '"}'"
                 );
                 controller.enqueue(mockData);
                 this.quicReceivedCount++;
@@ -368,10 +368,10 @@ export class NATSMessagingService extends EventEmitter {
       this.connection.publish(subject, this.jsonCodec.encode(message));
       this.publishedCount++;
       this.sampleSubject(subject, message);
-      console.log(`📤 Published message to ${subject}: ', message);
+      console.log(`📤 Published message to ${subject}: ', message);'`
       this.emit('publish', { subject, message });
     } catch (error: any) {
-      console.error(`❌ Failed to publish to ${subject}: ', error);
+      console.error(`❌ Failed to publish to ${subject}: ', error);'`
       this.emit('error', error);
       throw error;
     }
@@ -448,7 +448,7 @@ export class NATSMessagingService extends EventEmitter {
     if (!this.connection) return;
     this.connection.closed().then(error => {
       if (error) {
-        console.error('🔌 NATS connection closed with error:', error);
+        console.error('🔌 NATS connection closed with error:', error);'
       } else {
         console.log('🔌 NATS connection closed gracefully');
       }
@@ -460,7 +460,7 @@ export class NATSMessagingService extends EventEmitter {
     for await (const msg of subscription) {
       try {
         const message = this.jsonCodec.decode(msg.data); // No need for: 'as LegalAIMessage' due to NATSCodec type
-        console.log(`📨 Received message on ${subject}: ', message);
+        console.log(`📨 Received message on ${subject}: ', message);'`
         // Call all handlers for this subject
         const handlers = this.messageHandlers.get(subject);
         if (handlers) {
@@ -475,7 +475,7 @@ export class NATSMessagingService extends EventEmitter {
         }
       } catch (error: any) {
         // Changed any to unknown
-        console.error(`❌ Error processing message on ${subject}: ', error);
+        console.error(`❌ Error processing message on ${subject}: ', error);'`
       }
     }
   }

@@ -41,24 +41,24 @@ export interface AuthContext { user: User | null;, session: Session | null;
 }
 // Authentication events
 export type AuthEvent =
-  | { type: 'START_LOGIN';, data: LoginData }
-  | { type: 'START_REGISTRATION';, data: RegistrationData }
-  | { type: 'LOGIN_SUCCESS'; data: { user: User;, session: Session } }
-  | { type: 'LOGIN_FAILURE';, data: {, error: string } }
-  | { type: 'REGISTRATION_SUCCESS';, data: {, user: User } }
-  | { type: 'REGISTRATION_FAILURE';, data: {, error: string } }
+  | { type: 'START_LOGIN'; data: LoginData }
+  | { type: 'START_REGISTRATION'; data: RegistrationData }
+  | { type: 'LOGIN_SUCCESS'; data: { user: User; session: Session } }
+  | { type: 'LOGIN_FAILURE'; data: {, error: string } }
+  | { type: 'REGISTRATION_SUCCESS'; data: {, user: User } }
+  | { type: 'REGISTRATION_FAILURE'; data: {, error: string } }
   | { type: 'LOGOUT' }
   | { type: 'SESSION_EXPIRED' }
   | { type: 'REQUIRE_TWO_FACTOR' }
-  | { type: 'TWO_FACTOR_SUCCESS';, data: {, session: Session } }
-  | { type: 'TWO_FACTOR_FAILURE';, data: {, error: string } }
+  | { type: 'TWO_FACTOR_SUCCESS'; data: {, session: Session } }
+  | { type: 'TWO_FACTOR_FAILURE'; data: {, error: string } }
   | { type: 'VERIFY_EMAIL' }
   | { type: 'EMAIL_VERIFIED' }
-  | { type: 'RESET_PASSWORD';, data: {, email: string } }
+  | { type: 'RESET_PASSWORD'; data: {, email: string } }
   | { type: 'PASSWORD_RESET_SENT' }
   | { type: 'ACCOUNT_LOCKED' }
   | { type: 'UNLOCK_ACCOUNT' }
-  | { type: 'UPDATE_PROFILE';, data: Partial<User> }
+  | { type: 'UPDATE_PROFILE'; data: Partial<User> }
   | { type: 'PROFILE_UPDATED' }
   | { type: 'RETRY' };
 export interface LoginData { email: string;, password: string;
@@ -236,7 +236,7 @@ export const authMachine = setup({
   id: 'auth',
   initial: 'idle',
   context: initialContext,
-  states: { idle: {, on: {, START_LOGIN: {, target: 'authenticating',
+  states: {, idle: {, on: {, START_LOGIN: {, target: 'authenticating',
           guard: ({ context }) => !isAccountLocked({ context })
         },
         START_REGISTRATION: 'registering',
@@ -249,7 +249,7 @@ export const authMachine = setup({
         src: 'authenticate',
         input: ({ event }) => (event as { data: LoginData }).data,
         onDone: [
-          {
+          {,
             target: 'requiresTwoFactor',
             guard: ({ event }) => (event as DoneActorEvent<AuthenticateActorOutput>).output?.requiresTwoFactor,
             actions: ['setTwoFactorRequired', 'clearLoading']
@@ -260,7 +260,7 @@ export const authMachine = setup({
           },
         ],
         onError: [
-          {
+          {,
             target: 'locked',
             guard: ({ context }) => isMaxAttemptsReached({ context }),
             actions: ['setLockout', 'setError']
@@ -352,8 +352,7 @@ export const authMachine = setup({
     },
     passwordResetSent: {
       after: {
-        3000: 'idle'
-      }
+        3000: `idle` }
     },
     locked: {
       entry: 'setLockout',
@@ -374,7 +373,7 @@ export const authMachine = setup({
       after: {
         1500: {
           target: 'authenticated',
-          actions: 'clearLoading` }
+          actions: `clearLoading` }
       }
     }
   }

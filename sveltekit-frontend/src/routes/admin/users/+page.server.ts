@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     throw redirect(302, '/login');
   }
   // Check if user is admin (you might want to add an admin role field)
-  // For now, we'll assume the first user is admin
+  // For now, we'll assume the first user is admin'
   const adminCheck = await db.select().from(users).limit(1);
   if (adminCheck.length === 0 || adminCheck[0].id !== getUserId(locals)) {
     throw error(403, 'Admin access required');
@@ -162,14 +162,14 @@ export const actions: Actions = {
     const formData = await request.formData();
     const userId = parseInt(formData.get('userId')?.toString() || '0');
     if (!userId) {
-      return { success: false, error: 'User ID is required' };
+      return { success: false, error: `User ID is required` };
     }
     try {
-      // For now, we don't have a status field, but you could add one to the schema
+      // For now, we don't have a status field, but you could add one to the schema'
       // This is a placeholder for user status management
-      return { success: true, message: 'User status updated' };
+      return { success: true, message: `User status updated` };
     } catch (err) {
-      console.error('Error updating user status:', err);
+      console.error('Error updating user status: `, err);'`
       return { success: false, error: `Failed to update user status` };
     }
   }

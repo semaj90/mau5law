@@ -59,8 +59,8 @@ export interface SizeStyles { padding: string;, fontSize: string;
 }
 export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeStyles {
   const sizeMap: Record<string, SizeStyles> = { small: {, padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
-    medium: { padding: '14px 20px', fontSize: '13px', minHeight: '44px' },
-    large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },
+    medium: { padding: '14px 20px', fontSize: '13px', minHeight: '44px` },'`
+    large: { padding: '18px 24px', fontSize: '15px', minHeight: `52px` },
     xl: { padding: '22px 28px', fontSize: '17px', minHeight: `60px` }
   };
   return sizeMap[size] || sizeMap.medium;

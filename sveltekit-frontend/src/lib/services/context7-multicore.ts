@@ -148,7 +148,7 @@ class Context7MulticoreService extends EventEmitter {
   }
 
   private async checkWorker(_workerId: string, _port: number): Promise<boolean> {
-    // Try a lightweight health check to the worker's /health endpoint.
+    // Try a lightweight health check to the worker's /health endpoint.'
     const url = `http://localhost:${_port}/health`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 2000);
@@ -204,7 +204,7 @@ class Context7MulticoreService extends EventEmitter {
     let healthyCount = 0;
     for (const r of results) {
       if (r.status === 'fulfilled') {
-        // r is narrowed to PromiseFulfilledResult<{ workerId: string;, healthy: boolean }>
+        // r is narrowed to PromiseFulfilledResult<{ workerId: string; healthy: boolean }>
         if (r.value && r.value.healthy) healthyCount++;
       }
     }
@@ -379,8 +379,7 @@ class Context7MulticoreService extends EventEmitter {
       data: { text },
       priority,
       createdAt: new Date(),
-      status: 'queued'
-    };
+      status: 'queued` };'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     this.emit('task_queued', { task });
@@ -398,8 +397,7 @@ class Context7MulticoreService extends EventEmitter {
       data: { jsonString, schema },
       priority,
       createdAt: new Date(),
-      status: 'queued'
-    };
+      status: `queued` };
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     return task;
@@ -433,7 +431,7 @@ class Context7MulticoreService extends EventEmitter {
     }
   }
 
-  getStatus(): { workers: number; queued: number;, active: number } {
+  getStatus(): { workers: number; queued: number; active: number } {
     return { workers: this.workers.size, queued: this.taskQueue.length, active: this.activeTasks.size };
   }
 

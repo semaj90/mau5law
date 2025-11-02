@@ -193,8 +193,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Configuration update failed',
-        error: err instanceof Error ? err.message : 'Unknown error'
-      })
+        error: err instanceof Error ? err.message : 'Unknown error` })'`
     );
   }
 };
@@ -375,7 +374,7 @@ export function getOptimalProtocol(
     reliability?: 'standard' | 'high';
   } = {}
 ): ProtocolType {
-  const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard` } = requirements;
+  const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard` } = requirements;'`
   // Real-time requirements typically need WebSocket
   if (realtime) {
     return 'websocket';

@@ -1,6 +1,6 @@
 /*
  * Cases API Routes with Lucia v3 Authentication
- * GET /api/v1/cases - List user's cases (with pagination)
+ * GET /api/v1/cases - List user's cases (with pagination)'
  * POST /api/v1/cases - Create new case
  */
 import { json, error, type RequestHandler } from '@sveltejs/kit';
@@ -19,7 +19,7 @@ const CasesQuerySchema = z.object({
 });
 /*
  * GET /api/v1/cases
- * List user's cases with pagination and filtering
+ * List user's cases with pagination and filtering'
  */
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
     } catch (queueError) {
       console.error('Failed to queue case synthesis:', queueError);
-      // Don't fail the request, just log the error
+      // Don't fail the request, just log the error'
     }
     return json(
       {
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       );
     }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }));
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED` }));'`
     }
     return error(
       500,

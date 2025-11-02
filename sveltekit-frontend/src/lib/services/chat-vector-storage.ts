@@ -145,7 +145,7 @@ export class ChatVectorStorage {
       await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector;`);
       console.log('✅ pgvector extension ensured.');
 
-      // Create tables if they don't exist
+      // Create tables if they don't exist'
       // Drizzle migrations are the recommended way for schema management in production.
       // For this example, we'll use direct SQL to create tables if they don't exist.
       await db.execute(sql`
@@ -158,7 +158,7 @@ export class ChatVectorStorage {
           message_type VARCHAR(50) NOT NULL,
           metadata JSONB
         );
-      `);
+      `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS chat_embeddings (
           chat_id VARCHAR(256) PRIMARY KEY REFERENCES chat_messages(id) ON DELETE CASCADE,
@@ -168,15 +168,15 @@ export class ChatVectorStorage {
           temporal_context JSONB NOT NULL,
           semantic_hash VARCHAR(256) NOT NULL
         );
-      `);
-      // Create index for vector search if it doesn't exist
+      `);`
+      // Create index for vector search if it doesn't exist'
       await db.execute(sql`
         DO $$ BEGIN
           IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE tablename = 'chat_embeddings' AND indexname = 'chat_embeddings_embedding_idx') THEN
             CREATE INDEX chat_embeddings_embedding_idx ON chat_embeddings USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
           END IF;
         END $$;
-      `);
+      `);`
 
       console.log('📊 Chat vector storage tables and index ensured.');
     } catch (error: any) {
@@ -227,7 +227,7 @@ export class ChatVectorStorage {
       // Use the enhanced caching bridge to get Gemma embeddings
       const result: CachedEmbeddingResult = await enhancedCachingRevolutionaryBridge.getCachedEmbeddingUnified(text, {
         enableSIMDAcceleration: true,
-        compressionLevel: 'medium` });
+        compressionLevel: 'medium' });
       // Check if result has the expected structure for embeddings with explicit checks
       if (result && result.embeddings && result.embeddings.embedding) {
         return result.embeddings.embedding;
@@ -275,7 +275,7 @@ export class ChatVectorStorage {
       // Deterministic fallback: copy embedding into Float32Array and then to base64 string
       return this._float32ArrayToBase64(new Float32Array(embedding));
     } catch (err) {
-      console.error('quantizeEmbedding error:', err);
+      console.error('quantizeEmbedding error:', err);'
       // Ensure consistent return type even on error
       return this._float32ArrayToBase64(new Float32Array(embedding));
     }
@@ -288,7 +288,7 @@ export class ChatVectorStorage {
       return btoa(String.fromCharCode(...bytes));
     } else {
       // Fallback for non-browser environments (e.g., Node.js server-side in SvelteKit)
-      // In a Node.js environment, you'd typically use Buffer.from(bytes).toString('base64');
+      // In a Node.js environment, you'd typically use Buffer.from(bytes).toString('base64');'
       // For now, return a hex representation as a robust fallback if btoa is truly unavailable.
       console.warn('btoa is not available. Returning a hex-encoded string as fallback.');
       return Array.from(bytes)
@@ -336,7 +336,7 @@ export class ChatVectorStorage {
       const b64 = typeof btoa === 'function' ? btoa(joined) : joined; // Buffer.from not available in browser
       return b64.substring(0, 16);
     } catch (err) {
-      console.error('generateSemanticHash error:', err);
+      console.error('generateSemanticHash error:', err);'
       // safe fallback
       return String(Math.abs(this.hashQuery(text))).substring(0, 16);
     }
@@ -379,7 +379,7 @@ export class ChatVectorStorage {
   private async updateUserPatterns(userId: string, _message: ChatMessage): Promise<void> {
     // Update user conversation patterns for better intent prediction
     // In a real implementation, this would analyze _message.content, _message.metadata, etc.
-    // For example, store _message.content or extract keywords to update user's preferred topics.
+    // For example, store _message.content or extract keywords to update user's preferred topics.'
     // console.log(`Analyzing message content for user patterns: ${_message.content.substring(0, 50)}...`);
     console.log(`📊 Updated conversation patterns for user: ${userId}`);
   }
@@ -483,17 +483,17 @@ export class ChatVectorStorage {
             ...row.embedding,
             // Fix: Keep quantizedEmbedding as string as per ChatEmbedding interface.
             // The base64ToFloat32Array conversion is for internal use if Float32Array is needed for calculations,
-            // but the returned object's property should match the interface.
+            // but the returned object's property should match the interface.'
             quantizedEmbedding: row.embedding.quantizedEmbedding
           },
-          reasonForMatch: `Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}` };
+          reasonForMatch: `Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}' };'`
       })
       .sort((a, b) => b.combinedScore - a.combinedScore); // Sort by combined score
   }
   private analyzeIntentPatterns(
     message: string,
     similarMessages: SemanticSearchResult[]
-  ): { intent: string;, confidence: number } {
+  ): { intent: string; confidence: number } {
     const messageLower = message.toLowerCase();
     // Check against legal intent patterns
     let bestIntent = 'general_inquiry';
@@ -673,7 +673,7 @@ export class ChatVectorStorage {
     userId: string,
     query: string,
     options?: {
-      timeRange?: { start: Date;, end: Date };
+      timeRange?: { start: Date; end: Date };
       intentFilter?: string[];
       minSimilarity?: number;
       maxResults?: number;
@@ -725,7 +725,7 @@ export class ChatVectorStorage {
       : eq(chatMessages.userId, userId);
 
     const totalMessages = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })'`
       .from(chatMessages)
       .where(whereClause);
 
@@ -734,7 +734,7 @@ export class ChatVectorStorage {
     const mostCommonIntents = await db
       .select({
         intent: sql<string>`${chatMessages.metadata} ->> 'intent'`, // Corrected Drizzle JSONB access
-        count: sql<number>`count(*)` })
+        count: sql<number>`count(*)' })'`
       .from(chatMessages)
       .where(and(whereClause, sql`${chatMessages.metadata} ->> 'intent'`.isNotNull())) // Corrected Drizzle JSONB access
       .groupBy(sql`${chatMessages.metadata} ->> 'intent'`) // Corrected Drizzle JSONB access
@@ -766,7 +766,7 @@ export class ChatVectorStorage {
       const $result = await db // Renamed to $result to mark as intentionally unused
         .delete(chatMessages)
         .where(and(eq(chatMessages.userId, userId), lte(chatMessages.timestamp, olderThan)));
-      // Drizzle's delete returns a result object, not directly the count.
+      // Drizzle's delete returns a result object, not directly the count.'
       // The actual count might be in result.rowCount or similar depending on driver.
       // For simplicity, returning a placeholder 1 for now.
       return 1; // Return number of deleted records (placeholder)

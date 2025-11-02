@@ -64,7 +64,7 @@ class SelfOrganizingMap {
     }
     return Math.sqrt(sum);
   }
-  private findBestMatchingUnit(input: Float64Array): { x: number; y: number;, distance: number } {
+  private findBestMatchingUnit(input: Float64Array): { x: number; y: number; distance: number } {
     let bestX = 0;
     let bestY = 0;
     let minDistance = Infinity;
@@ -80,7 +80,7 @@ class SelfOrganizingMap {
     }
     return { x: bestX, y: bestY, distance: minDistance }
   }
-  private updateWeights(input: Float64Array, bmu: {, x: number; y: number }): void {
+  private updateWeights(input: Float64Array, bmu: {, x: number;, y: number }): void {
     const time_constant = this.training_iterations / 1000;
     const current_learning_rate = this.learning_rate * Math.exp(-time_constant);
     const current_radius = this.neighborhood_radius * Math.exp(-time_constant);
@@ -102,7 +102,7 @@ class SelfOrganizingMap {
       }
     }
   }
-  train(input: Float64Array): { cluster: number;, confidence: number } {
+  train(input: Float64Array): { cluster: number; confidence: number } {
     const bmu = this.findBestMatchingUnit(input);
     this.updateWeights(input, bmu);
     this.training_iterations++;
@@ -262,7 +262,7 @@ export class RedisSOMapCache extends EventEmitter {
     const max_len = Math.max(len_a, len_b);
     return max_len === 0 ? 1 : 1 - (matrix[len_b][len_a] / max_len);
   }
-  private compressValue(_value: any): { compressed: any; ratio: number;, type: string } {
+  private compressValue(_value: any): { compressed: any; ratio: number; type: string } {
     if (!this.compression_enabled) {
       return { compressed: value, ratio: 1, type: 'none' }
     }
@@ -313,13 +313,13 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return result;
   }
-  private calculatePriorityScore(features: Float64Array, som_result: {, cluster: number; confidence: number }): number {
+  private calculatePriorityScore(features: Float64Array, som_result: {, cluster: number;, confidence: number }): number {
     // Weighted combination of features and SOM results
     const feature_score = features[4] * 0.3 + features[5] * 0.4 + features[6] * 0.2 + som_result.confidence * 0.1;
     return Math.min(Math.max(feature_score, 0), 1);
   }
   // === Redis-Compatible API ===
-  async set(_key: string; value: any;
+  async set(_key: string;, value: any;
    , options: {
       ttl?: number;
       metadata?: Partial<CacheEntry['metadata']>;

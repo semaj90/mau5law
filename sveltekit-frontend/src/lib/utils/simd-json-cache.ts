@@ -33,7 +33,7 @@ class SIMDJSONCache {
   private simdLoaded = $state(false);
   private config: CacheConfig;
   private metrics: ParseMetrics;
-  private cache = new Map<string, { data: any; timestamp: number;, ttl: number }>();
+  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
@@ -107,7 +107,7 @@ class SIMDJSONCache {
     // Create deterministic cache key
     const hash = this.fastHash(data + operation);
     const key = `simd_json:${operation}:${hash}`;
-    // Ensure key doesn't exceed Redis limits
+    // Ensure key doesn't exceed Redis limits'
     return key.length > this.config.maxKeyLength ? key.substring(0, this.config.maxKeyLength) : key;
   }
   private fastHash(str: string): string {
@@ -202,7 +202,7 @@ class SIMDJSONCache {
       // Check Redis cache
       const response = await fetch('/api/cache/get', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, key: _key })
       });
       if (response.ok) {
@@ -282,7 +282,7 @@ class SIMDJSONCache {
       }
     }
     let result: any;
-    let usedSIMD = $state<boolean>(false);
+    let usedSIMD = false;
     try {
       if (this.simdLoaded && this.simdModule) {
         // Use SIMD JSON parser
@@ -330,7 +330,7 @@ class SIMDJSONCache {
       }
     }
     let result: string;
-    let usedSIMD = $state<boolean>(false);
+    let usedSIMD = false;
     try {
       if (this.simdLoaded && this.simdModule) {
         result = this.simdModule.stringify(obj);
@@ -409,9 +409,7 @@ class SIMDJSONCache {
   public getMetrics(): ParseMetrics {
     return { ...this.metrics };
   }
-  public getSIMDStatus(): { loaded: boolean;, available: boolean;
-    performance: string;
-  } {
+  public getSIMDStatus(): { loaded: boolean; available: boolean; performance: string } {
     const simdPerformance =
       this.metrics.simdParses > 0 && this.metrics.nativeParses > 0
         ? `${Math.round((this.metrics.averageNativeTime / this.metrics.averageSIMDTime) * 100) / 100}x faster`
@@ -425,9 +423,7 @@ class SIMDJSONCache {
   public clearCache(): void {
     this.cache.clear();
   }
-  public getCacheStats(): { memoryEntries: number;, hitRate: number;
-    compressionRatio: number;
-  } {
+  public getCacheStats(): { memoryEntries: number; hitRate: number; compressionRatio: number } {
     const hitRate = this.metrics.totalParses > 0 ? this.metrics.cacheHits / this.metrics.totalParses : 0;
     return {
       memoryEntries: this.cache.size,

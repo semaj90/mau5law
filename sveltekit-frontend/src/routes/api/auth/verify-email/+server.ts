@@ -54,13 +54,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       throw error(400, 'Invalid or expired verification code');
     }
 
-    // Update user as email verified (assuming there's an emailVerified field)
+    // Update user as email verified (assuming there's an emailVerified field)'
     // Note: This assumes your users table has an emailVerified boolean field
     await db
       .update(users)
       .set({
         emailVerified: true,
-        updatedAt: sql`now()` })
+        updatedAt: sql`now()' })'`
       .where(eq(users.id, verificationRecord.userId));
 
     // Delete used verification code
@@ -83,12 +83,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms` }
+          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
       }
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Email verification error:', err);
+    console.error('Email verification error:', err);'
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Email verification failed' : 'Internal server error',
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }
+        'X-Error': 'true' }
     });
   }
 };
@@ -176,12 +176,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms` }
+          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
       }
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Verification code generation error:', err);
+    console.error('Verification code generation error:', err);'
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Failed to send verification code' : 'Internal server error',
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }
+        'X-Error': 'true' }
     });
   }
 };

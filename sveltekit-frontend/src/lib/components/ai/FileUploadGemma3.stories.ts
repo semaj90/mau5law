@@ -31,9 +31,9 @@ const meta = {
       }
     }
   }
-} satisfies Meta<typeof FileUploadGemma3>; // <-- fixed: use typeof component
+} satisfies Meta<typeof, FileUploadGemma3>; // <-- fixed: use typeof, component
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof, meta>;
 // Default file upload interface
 export const Default: Story = { args: {, maxFileSize: 10485760, // 10MB
     acceptedTypes: [

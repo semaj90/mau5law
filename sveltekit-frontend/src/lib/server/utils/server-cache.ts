@@ -1,7 +1,7 @@
 // Simple cache implementation - fallback when advanced cache is not available
 class SimpleCacheManager {
-  private cache = new Map<string, { data: any;, expires: number }>();
-  async set(_key: string, data: any, options: { ttl: number } = {, ttl: 24 * 3600 * 1000 }): Promise<void> {
+  private cache = new Map<string, { data: any; expires: number }>();
+  async set(_key: string, data: any, options: {, ttl: number } = {, ttl: 24 * 3600 * 1000 }): Promise<void> {
     this.cache.set(key, {
       data,
       expires: Date.now() + options.ttl

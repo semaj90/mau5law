@@ -47,7 +47,7 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
   }
 }
 
-// Minimal in-memory cache fallback used when a dedicated cache service isn't present.
+// Minimal in-memory cache fallback used when a dedicated cache service isn't present.'
 // Keeps API deterministic for local testing and avoids undefined variable errors.
 const fallbackCacheService = (() => {
   const map = new Map<string, unknown>();
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: `test_type required` }, { status: 400 });
     }
 
-    // use explicit TestResponse type instead of `any'
+    // use explicit TestResponse type instead of `any'`
     const results: TestResponse = {
       test_type,
       iterations,
@@ -125,14 +125,12 @@ export const POST: RequestHandler = async ({ request }) => {
           results.results = {
             simd_available: !!health,
             health: health ?? null,
-            message: health ? 'SIMD service is operational' : 'SIMD service did not return health'
-          };
+            message: health ? 'SIMD service is operational' : 'SIMD service did not return health` };'`
         } catch (error: any) {
           results.results = {
             simd_available: false,
             error: String(error),
-            message: 'SIMD service unavailable - start; with: cd go-microservice && go run simd-server.go'
-          };
+            message: `SIMD service unavailable - start; with: cd go-microservice && go run simd-server.go` };
         }
         break;
       }
@@ -144,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const testData = generateTestData(size);
           try {
             const simdResult = await simdClient.benchmark?.(testData, Math.min(iterations, 100));
-            benchmarkResults[size] = simdResult ?? { message: 'no result' };
+            benchmarkResults[size] = simdResult ?? { message: `no result` };
           } catch (error: any) {
             benchmarkResults[size] = {
               error: String(error),
@@ -221,8 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
           operations.push({
             operation: 'error',
             error: String(error),
-            message: 'Redis/SIMD operations failed'
-          });
+            message: `Redis/SIMD operations failed` });
         }
         results.results = { operations };
         break;
@@ -236,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(results);
   } catch (error: any) {
-    console.error('SIMD test API error:', error);
+    console.error('SIMD test API error:', error);'
     return json({ error: 'Test execution failed', details: String(error) }, { status: 500 });
   }
 };
@@ -251,9 +248,9 @@ export const GET: RequestHandler = async () => {
       'redis_json_operations - Test Redis JSON and SIMD parsing',
     ],
     usage: {
-      method: 'POST',
+     , method: 'POST',
       body: {
-        test_type: 'simd_health | json_parsing_benchmark | cache_performance | redis_json_operations',
+       , test_type: 'simd_health | json_parsing_benchmark | cache_performance | redis_json_operations',
         iterations: 100
       }
     },

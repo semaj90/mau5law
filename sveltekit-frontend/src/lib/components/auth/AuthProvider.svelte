@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   // AuthProvider component - Global authentication context - Svelte 5 compatible
   import { auth  } from '$lib/stores/unified';
@@ -15,7 +15,7 @@
     }
   });
 </script>
-<!-- Provide the authentication context to child components -->
+<!-- Provide the authentication context to child, components -->
 {#if children}
   {@render children()}
 {/if}

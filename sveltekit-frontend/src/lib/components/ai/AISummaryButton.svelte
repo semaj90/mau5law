@@ -1,6 +1,6 @@
-<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- Consider wrapping this component in an ErrorBoundary for better error, handling -->
 <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
     text?: string;
@@ -69,7 +69,7 @@
     }
   }
 </script>
-<!-- Use onclick (Svelte 5) and disable when no input or while loading -->
+<!-- Use onclick (Svelte 5) and disable when no input or while, loading -->
 <button
   type="button"
   aria-label="Get AI summary"
@@ -85,11 +85,11 @@
   {/if}
 </button>
 {#if errorMessage}
-  <div class="space-y-2 error-message" role="status" aria-live="polite">
+  <div class="space-y-2, error-message" role="status" aria-live="polite">
     <strong>Error:</strong> {errorMessage}
   {/if}
 {#if summary}
-  <div class="space-y-4">
-    <div class="space-y-2"><strong>AI Summary</strong></div>
+  <div, class="space-y-4">
+    <div, class="space-y-2"><strong>AI Summary</strong></div>
     <div>{summary}</div>
   {/if}

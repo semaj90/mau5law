@@ -1,6 +1,6 @@
 import type { Document } from '$lib/types';
 import Fuse from 'fuse.js';
-import { get as idbGet, set as idbSet } from 'idb-keyval';
+import { get, as idbGet, set as idbSet } from 'idb-keyval';
 export interface LocalLegalDoc { id: string;, title: string;
   content?: string;
   type?: string;
@@ -105,7 +105,7 @@ export interface HybridResult extends LocalLegalDoc { relevance: number;, sourc
 export function mergeResults(local: any[], remote: any[], localWeight = 0.6, remoteWeight = 0.4): HybridResult[] {
   const byId = new Map<string | number, HybridResult>();
   for (const l of local) {
-    byId.set(l.id, { ...l, relevance: l.relevance ?? 50, source: 'local' });
+    byId.set(l.id, { ...l, relevance: l.relevance ?? 50, source: `local` });
   }
   for (const r of remote) {
     if (!r) continue;
@@ -113,9 +113,9 @@ export function mergeResults(local: any[], remote: any[], localWeight = 0.6, rem
     const remoteRel = r.relevance ?? Math.round((r.score ? 1 - r.score : Math.random()) * 100);
     if (existing) {
       const combined = Math.round(existing.relevance * localWeight + remoteRel * remoteWeight);
-      byId.set(r.id, { ...existing, ...r, relevance: combined, source: 'hybrid' });
+      byId.set(r.id, { ...existing, ...r, relevance: combined, source: `hybrid` });
     } else {
-      byId.set(r.id, { ...r, relevance: remoteRel, source: `remote` });
+      byId.set(r.id, { ...r, relevance: remoteRel, source: `remote' });'`
     }
   }
   return Array.from(byId.values()).sort((a, b) => b.relevance - a.relevance);

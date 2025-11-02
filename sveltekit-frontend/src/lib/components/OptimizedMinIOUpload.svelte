@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 	import { onMount } from 'svelte';
 	import { detectGPUSupport } from '$lib/utils/gpu-capabilities';
 	const { bucket } = $props<{ bucket: string }>()
@@ -28,7 +28,7 @@
 		}, 600);
 	}
 </script>
-<div class="optimized-minio-upload">
+<div, class="optimized-minio-upload">
 	<label>
 		<input
 			type="file"
@@ -39,9 +39,9 @@
 	<button onclick={upload} disabled={!file || status === 'uploading'}>
 		{status === 'uploading' ? 'Uploading…' : 'Upload'}
 	</button>
-	<div class="status">Status: {status}</div>
-	<div class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>
-	<!-- TODO: Implement optimized MinIO multipart upload with hashing offload -->
+	<div, class="status">Status: {status}</div>
+	<div, class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>
+	<!-- TODO: Implement optimized MinIO multipart upload with hashing, offload -->
 </div>
 <style>
 	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem; }

@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types';
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    // Verify we're in primary process
+    // Verify we're in primary process'
     if (!cluster.isPrimary) {
       return json(
         {
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available` },
+          error: 'Cluster manager not available' },
         { status: 503 }
       );
     }
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
       action: 'cluster_scale',
       previousWorkers: currentWorkers,
       newWorkers: workers,
-      initiator: 'admin_api` };
+      initiator: `admin_api' };'`
     console.log('📝 Scaling audit log:', auditLog);
     return json({
       success: true,
@@ -76,12 +76,11 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: Date.now()
     });
   } catch (error: any) {
-    console.error('Cluster scaling error:', error);
+    console.error('Cluster scaling error:', error);'
     return json(
       {
         error: 'Failed to scale cluster',
-        message: error instanceof Error ? error.message : String(error) || 'Unknown error'
-      },
+        message: error instanceof Error ? error.message : String(error) || 'Unknown error` },'`
       { status: 500 }
     );
   }
@@ -110,7 +109,7 @@ export const GET: RequestHandler = async () => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available` },
+          error: 'Cluster manager not available' },
         { status: 503 }
       );
     }
@@ -139,7 +138,7 @@ export const GET: RequestHandler = async () => {
       }))
     });
   } catch (error: any) {
-    console.error('Cluster scaling info error:', error);
+    console.error('Cluster scaling info error:', error);'
     return json(
       {
         error: 'Failed to get scaling information',

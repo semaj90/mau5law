@@ -17,7 +17,7 @@ export const GET: RequestHandler = async () => {
     return json({
       cuda_stats: stats,
       timestamp: Date.now(),
-      source: 'cuda-ai-service` });
+      source: 'cuda-ai-service' });
   } catch (error) {
     return json(
       {

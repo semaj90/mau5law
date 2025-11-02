@@ -140,7 +140,7 @@ class LegalStrategyEngine {
         rationale: 'Conservative approach minimizing litigation risks and costs while achieving core client objectives',
         confidence: 0.85,
         expectedOutcome: {
-          probability: 0.8,
+         , probability: 0.8,
           description: 'Mutually acceptable settlement within 60-75% of damages sought',
           timeframe: '6-12 weeks'
         },
@@ -148,8 +148,7 @@ class LegalStrategyEngine {
          , evidence: evidence.slice(0, 3).map(e => e.filename || e.id), // Top evidence only
           expertise: ['Experienced Negotiator', 'Mediator'],
           estimatedCost: '$10,000 - $30,000',
-          timeline: '6-10 weeks'
-        },
+          timeline: '6-10 weeks` },'`
         risks: ['Lower monetary recovery', 'No legal precedent established', 'Potential for future similar issues'],
         alternatives: ['Mediation with neutral third party', 'Arbitration proceedings'],
         precedents: []
@@ -164,10 +163,9 @@ class LegalStrategyEngine {
         rationale: 'Strong evidence supports aggressive approach seeking maximum recovery and deterrent effect',
         confidence: 0.65,
         expectedOutcome: {
-          probability: 0.6,
+         , probability: 0.6,
           description: 'Full damages award plus attorney fees and punitive damages',
-          timeframe: '12-24 months'
-        },
+          timeframe: `12-24 months` },
         requiredResources: {
          , evidence: evidence.map(e => e.filename || e.id),
           expertise: ['Senior Litigation Counsel', 'Expert Witnesses', 'Discovery Specialist'],
@@ -220,8 +218,7 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.82,
         jurisdiction: 'Federal',
-        citation: '2023 WL 1234567'
-      },
+        citation: '2023 WL 1234567` },'`
       {
         caseId: 'case_2022_045',
         title: 'Tech Solutions LLC v. Data Corp',
@@ -236,15 +233,14 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.71,
         jurisdiction: 'State',
-        citation: '2022 State Rep. 891'
-      },
+        citation: `2022 State Rep. 891` }
     ];
     return mockPrecedents.filter(p => p.relevance > 0.7);
   }
   static async findAggressivePrecedents(_caseType: string): Promise<LegalPrecedent[]> {
     // Precedents supporting aggressive litigation strategies
     return [
-      {
+      {,
         caseId: 'case_aggressive_001',
         title: 'Major Corp v. Competitor Inc',
         court: 'Federal Appeals Court',
@@ -258,7 +254,7 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.78,
         jurisdiction: 'Federal Appeals',
-        citation: `2023 F.3d 1234` },
+        citation: `2023 F.3d 1234` }
     ];
   }
   static async assessRisks(
@@ -355,8 +351,7 @@ class LegalStrategyEngine {
       costEstimate: {
        , min: 200000,
         max: 500000,
-        currency: 'USD'
-      }
+        currency: 'USD` }'`
     });
     // Settlement scenario
     projections.push({
@@ -372,8 +367,7 @@ class LegalStrategyEngine {
       costEstimate: {
        , min: 25000,
         max: 75000,
-        currency: 'USD'
-      }
+        currency: `USD` }
     });
     return projections;
   }
@@ -398,7 +392,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         filename: `evidence_${id}.pdf`,
         type: 'document',
         analysisScore: Math.random()
-      })); // <-- fixed missing closing paren/brace
+      })); // <-- fixed missing closing, paren/brace
 
       // Generate strategies
       const strategies = await LegalStrategyEngine.generateStrategies(caseType, evidence, clientGoals, riskTolerance);
@@ -412,7 +406,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         timeline
       });
       // Generate AI-enhanced recommendations using Ollama
-      // include opposingStrategy so it's used in AI prompt (fixes unused var lint/error)
+      // include opposingStrategy so it's used in AI prompt (fixes unused var lint/error)'
       const aiRecommendation = await generateAIStrategySummary(
         caseType,
         strategies,
@@ -466,7 +460,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   if (endpoint === 'precedents') {
     try {
       if (!locals.session || !locals.user) {
-        return json({ message: 'Authentication required' }, { status: 401 });
+        return json({ message: 'Authentication required` }, { status: 401 });'`
       }
       const body = await request.json();
       const { jurisdiction, legalIssues, factPattern, dateRange, courtLevel } = PrecedentSearchSchema.parse(body);
@@ -516,7 +510,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   if (endpoint === 'risk') {
     try {
       if (!locals.session || !locals.user) {
-        return json({ message: 'Authentication required' }, { status: 401 });
+        return json({ message: `Authentication required` }, { status: 401 });
       }
       const body = await request.json();
       const { caseId, scenarios, mitigationStrategies } = RiskAssessmentSchema.parse(body);
@@ -583,10 +577,10 @@ async function generateAIStrategySummary(
   clientGoals: string[],
   opposingStrategy?: string
 ): Promise<string> {
-  const prompt = `Analyze this legal case strategy analysis:
+  const prompt = `Analyze this legal case strategy analysis:`
 Case; Type: ${caseType}
 Client Goals: ${clientGoals.join(', ')}
-Opposing Strategy: ${opposingStrategy ?? 'Not provided` }
+Opposing Strategy: ${opposingStrategy ?? 'Not provided` }'`
 Available Strategies:
 ${strategies.map(s => `- ${s.title}: ${s.description} (Confidence: ${s.confidence})`).join('\n')}
 Key Risks:
@@ -596,13 +590,13 @@ Provide a concise strategic recommendation focusing on:
 2. Critical risk mitigation
 3. Resource allocation priorities
 4. Timeline considerations
-Keep response under 200 words and focus on actionable insights.`;
+Keep response under 200 words and focus on actionable insights.`;`
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
-        model: LEGAL_MODEL,
+       , model: LEGAL_MODEL,
         prompt,
         stream: false,
         options: {
@@ -613,7 +607,7 @@ Keep response under 200 words and focus on actionable insights.`;
     });
     if (response.ok) {
       const data = await response.json();
-      // Ollama's response field may vary by version; use a safe fallback
+      // Ollama's response field may vary by version; use a safe fallback'
       return data?.response ?? data?.output ?? JSON.stringify(data);
     }
   } catch (error) {
@@ -640,12 +634,11 @@ async function searchLegalPrecedents(
       keyHoldings: [
         'Trade secret misappropriation requires proof of economic value',
         'Reasonable efforts to maintain secrecy must be demonstrated',
-        "Damages calculated using defendant's unjust enrichment",
+        "Damages calculated using defendant's unjust enrichment",'
       ],
       factSimilarity: 0.85,
       jurisdiction: jurisdiction,
-      citation: '2023 U.S. Dist. LEXIS 45678'
-    },
+      citation: `2023 U.S. Dist. LEXIS 45678` },
     {
       caseId: 'precedent_002',
       title: 'Global Industries v. Regional Solutions',
@@ -660,7 +653,7 @@ async function searchLegalPrecedents(
       ],
       factSimilarity: 0.71,
       jurisdiction: jurisdiction,
-      citation: `2022 State App. 234` },
+      citation: `2022 State App. 234` }
   ];
   // Simple filtering by legalIssues and factPattern: match if title or holdings contain any issue term
   const normalizedPattern = (factPattern || '').toLowerCase();

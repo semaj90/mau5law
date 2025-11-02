@@ -16,12 +16,12 @@ export interface RAGContext { query: string;, results: RAGResult[];
   optimizationLevel: 'basic' | 'enhanced' | 'neural';
 }
 export type RAGEvent =
-  | { type: 'SEARCH_START';, query: string }
-  | { type: 'SEARCH_SUCCESS';, results: RAGResult[]; cacheStatus?: 'miss' | 'hit' | 'partial' } // Added cacheStatus to event
-  | { type: 'SEARCH_ERROR';, error: string }
+  | { type: 'SEARCH_START'; query: string }
+  | { type: 'SEARCH_SUCCESS'; results: RAGResult[]; cacheStatus?: 'miss' | 'hit' | 'partial' } // Added cacheStatus to event
+  | { type: 'SEARCH_ERROR'; error: string }
   | { type: 'RETRY' }
   | { type: 'OPTIMIZE' }
-  | { type: 'CACHE_HIT';, results: RAGResult[] }
+  | { type: 'CACHE_HIT'; results: RAGResult[] }
   | { type: 'RESET' };
 const initialRAGContext: RAGContext = {
   query: '',
@@ -48,8 +48,8 @@ export const ragStateMachine = createMachine({
   },
   initial: 'idle',
   context: initialRAGContext,
-  states: { // Correctly define the: 'states' object; idle: { on: {, SEARCH_START: {
-          target: 'searching',
+  states: { // Correctly define the: 'states' object; idle: {, on: {, SEARCH_START: {
+         , target: 'searching',
           actions: assign({
            , query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
@@ -105,7 +105,7 @@ export const ragStateMachine = createMachine({
         },
         RETRY: {
           target: 'searching',
-          cond: ({ context }) => context.retryCount < 3, // Correct context access for guard
+          cond: ({ context }) => context.retryCount < 3, // Correct context access for, guard
           actions: assign({
             retryCount: ({ context }) => context.retryCount + 1, // Correct context access for action
             error: null

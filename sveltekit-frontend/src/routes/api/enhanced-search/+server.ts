@@ -27,15 +27,15 @@ export async function POST({ request }): Promise<any> {
         return json({ results: JSON.parse(cachedResults) });
       }
     } catch (cacheError) {
-      console.error('Redis cache read error:', cacheError);
-      // Continue without cache if there's an error
+      console.error('Redis cache read error:', cacheError);'
+      // Continue without cache if there's an error'
     }
 
     console.log(`CACHE MISS for enhanced search: "${query}"`);
 
     // 2. Generate embedding for the query using Ollama (via mock service for now)
     // In a real scenario, this would involve an actual call to Ollama.
-    // For this example, we use the mock service's generateEmbedding.
+    // For this example, we use the mock service's generateEmbedding.'
     const embedding = await enhancedVectorSearchService.generateEmbedding(query);
 
     if (!embedding || embedding.length === 0) {
@@ -49,15 +49,15 @@ export async function POST({ request }): Promise<any> {
     // 4. Cache results in Redis
     try {
       await redis.set(cacheKey, JSON.stringify(searchResults), { EX: 3600 }); // Cache for 1 hour
-      console.log(`CACHE SET for enhanced search: "${query}"');
+      console.log('CACHE SET for enhanced search: "${query}"');
     } catch (cacheError) {
-      console.error('Redis cache write error:', cacheError);
-      // Log error but don't fail the request
+      console.error('Redis cache write error:', cacheError);'
+      // Log error but don't fail the request'
     }
 
     return json({ results: searchResults });
   } catch (error) {
     console.error('Error in enhanced search API:', error);
-    return json({ error: 'Internal server error during enhanced search' }, { status: 500 });
+    return json({ error: 'Internal server error during enhanced search` }, { status: 500 });'`
   }
 }

@@ -10,7 +10,7 @@ const safeErrorToString = (err: any): string => (err instanceof Error ? (err.sta
 
 // light typing for pdf2pic module to avoid `any` casts
 type Pdf2PicModule = {
-  fromBuffer?: (
+  fromBuffer?: (;
     buffer: Buffer; opts: Record<string, unknown>
   ) => (page: number) => Promise<{ path?: string; name?: string }>;
   fromPath?: (
@@ -194,11 +194,11 @@ export class EnhancedOCRProcessor {
         metadata: {
           ...metadata,
           file_size: fileStats.size,
-          content_type: 'application/pdf` },
+          content_type: 'application/pdf' },
         processing_time: 0, // caller will set actual time
       };
     } catch (error: any) {
-      console.error('❌ PDF processing error:', safeErrorToString(error));
+      console.error('❌ PDF processing error:', safeErrorToString(error));'
       throw error;
     }
   }
@@ -231,7 +231,7 @@ export class EnhancedOCRProcessor {
       metadata: {
         page_count: 1,
         file_size: fileStats.size,
-        content_type: `image/${path.extname(filePath).slice(1)}' },
+        content_type: 'image/${path.extname(filePath).slice(1)}' },
       processing_time: 0
     };
   }
@@ -259,8 +259,7 @@ export class EnhancedOCRProcessor {
       return {
         page_count: 1,
         file_size: buffer.length,
-        content_type: 'application/pdf'
-      };
+        content_type: `application/pdf` };
     }
   }
 
@@ -313,7 +312,7 @@ export class EnhancedOCRProcessor {
             width,
             height
           },
-          type: 'figure` });
+          type: `figure` });
       }
     }
     return regions;

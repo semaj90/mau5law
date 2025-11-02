@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 import type { InferInsertModel } from 'drizzle-orm/pg-core'; // Import InferInsertModel from pg-core
 
 // Define a type for the document updates
-type DocumentUpdate = Partial<InferInsertModel<typeof documentMetadata>>;
+type DocumentUpdate = Partial<InferInsertModel<typeof, documentMetadata>>;
 
 // Real Document API Endpoint - No Mock Data
 // GET /api/documents/[id] - Get a specific document

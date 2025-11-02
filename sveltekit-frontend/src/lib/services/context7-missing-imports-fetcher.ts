@@ -174,7 +174,7 @@ export class Context7MissingImportsFetcher {
       // Simulate MCP Context7 server call
       const response = await fetch(`${this.mcpServerUrl}/context7/get-library-docs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , context7CompatibleLibraryID: libraryId,
           topics: topics.join('|'),
@@ -192,7 +192,7 @@ export class Context7MissingImportsFetcher {
       const topicsMeta = topics;
       return {
         library: libraryId.split('/').pop() || libraryId,
-        content: '# ${libraryId} Documentation\n\nDocumentation for ${topics.join(', ')} topics.`,
+        content: '# ${libraryId} Documentation\n\nDocumentation for ${topics.join(', ')} topics.`,'`
         metadata: {
           tokenCount: 1000,
           topics: topicsMeta,
@@ -412,7 +412,7 @@ export class Context7MissingImportsFetcher {
 - \`$effect\`: Handle side effects
 - \`$props\`: Component properties
 - \`$bindable\`: Two-way binding
-      `,
+      `,`
       examples: [],
       bestPractices: [
         'Use $state for reactive variables',
@@ -436,7 +436,7 @@ export class Context7MissingImportsFetcher {
 - \`eq\`, \`ne\`, \`gt\`, \`gte\`, \`lt\`, \`lte\`: Comparison operators
 - \`inArray\`, \`notInArray\`: Array operators
 - \`like\`, \`ilike\`: Pattern matching
-      `,
+      `,`
       examples: [],
       bestPractices: [
         'Use typed column functions',
@@ -457,7 +457,7 @@ export class Context7MissingImportsFetcher {
 - \`createActor\`: Create machine instance
 - \`assign\`: Update context
 - \`spawn\`: Create child actors
-      `,
+      `,`
       examples: [],
       bestPractices: [
         'Use createMachine for state definitions',

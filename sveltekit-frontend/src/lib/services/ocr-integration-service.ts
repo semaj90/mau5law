@@ -31,7 +31,7 @@ export class OCRIntegrationService {
   private tensorProcessor?: OCRTensorProcessor;
   private initialized = $state(false);
   private workerPool: Worker[] = [];
-  private activeJobs = new Map<string, { resolve: Function; reject: Function;, startTime: number }>();
+  private activeJobs = new Map<string, { resolve: Function; reject: Function; startTime: number }>();
 
   constructor() {
     // Initialize client-side processor if in browser
@@ -81,7 +81,7 @@ export class OCRIntegrationService {
   }
 
   private handleWorkerError(error: ErrorEvent) {
-    console.error('OCR Worker error:', error);
+    console.error('OCR Worker error:', error);'
   }
 
   private async initializeClientProcessor() {
@@ -215,7 +215,7 @@ export class OCRIntegrationService {
 
       return result;
     } catch (error) {
-      console.error(`❌ OCR processing failed with ${selectedMethod}: ', error);
+      console.error(`❌ OCR processing failed with ${selectedMethod}: ', error);'`
 
       // Intelligent fallback chain (avoid infinite recursion)
       if (selectedMethod !== 'agentic_controller') {
@@ -253,7 +253,7 @@ export class OCRIntegrationService {
 
   private async processWithWasm(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
   ): Promise<OCRResult> {
     if (!this.tensorProcessor || !this.initialized) {
       throw new Error('WASM processor not initialized');
@@ -292,7 +292,7 @@ export class OCRIntegrationService {
 
   private async processWithCuda(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
   ): Promise<OCRResult> {
     // Call CUDA service worker endpoint
     const formData = new FormData();
@@ -341,7 +341,7 @@ export class OCRIntegrationService {
 
   private async processWithAgentic(
     imageData: any,
-    options: { confidenceThreshold: number;, enableEmbedding: boolean;
+    options: {, confidenceThreshold: number;, enableEmbedding: boolean;
      , startTime: number;
       evidenceId?: number;
     }
@@ -357,7 +357,7 @@ export class OCRIntegrationService {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          action: 'analyze-image',
+         , action: 'analyze-image',
           data: {, imagePath: imageData }
         })
       });
@@ -424,7 +424,7 @@ export class OCRIntegrationService {
     try {
       const response = await fetch('/api/v1/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , text: text,
           model: `embeddinggemma:latest` })
@@ -560,7 +560,7 @@ export class OCRIntegrationService {
    */
   private async processWithWorkerPool(
     imageData: any,
-    options: { method: string; confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
+    options: { method: string; confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
   ): Promise<OCRResult> {
     return new Promise((resolve, reject) => {
       // Find available worker or queue if all busy
@@ -604,7 +604,7 @@ export class OCRIntegrationService {
    */
   private async processWithConcurrentGPU(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
   ): Promise<OCRResult> {
     // Check GPU queue status via Redis
     const queueLength = await this.getGPUQueueLength();
@@ -698,7 +698,7 @@ export class OCRIntegrationService {
     try {
       await fetch('/api/v1/cache/redis', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , action: 'set',
           key: cacheKey,
@@ -741,7 +741,7 @@ export class OCRIntegrationService {
 
       throw new Error('MinIO upload failed');
     } catch (error) {
-      console.error('MinIO upload error:', error);
+      console.error('MinIO upload error:', error);'
       throw error;
     }
   }

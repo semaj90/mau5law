@@ -1,5 +1,5 @@
-<!-- Evidence Management Layout - Legal AI Evidence Processing -->
-<script lang="ts">
+<!-- Evidence Management Layout - Legal AI Evidence, Processing -->
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';
 
@@ -23,34 +23,34 @@
   let currentPath = $derived($page.url.pathname);
 </script>
 
-<div class="evidence-layout">
-  <header class="evidence-header">
-    <div class="evidence-brand">
-      <span class="evidence-icon">🧾</span>
-      <h1 class="evidence-title">Evidence Management</h1>
-      <span class="evidence-badge">Legal AI Platform</span>
+<div, class="evidence-layout">
+  <header, class="evidence-header">
+    <div, class="evidence-brand">
+      <span, class="evidence-icon">🧾</span>
+      <h1, class="evidence-title">Evidence Management</h1>
+      <span, class="evidence-badge">Legal AI Platform</span>
     </div>
 
-    <nav class="evidence-nav">
+    <nav, class="evidence-nav">
       {#each Array.isArray(evidenceRoutes) ? evidenceRoutes : [] as route}
         <a
           href={route.href}
           class="evidence-nav-item"
           class:active={currentPath === route.href || currentPath.startsWith(`${route.href}/`)}
         >
-          <span class="evidence-nav-icon">{route.icon}</span>
-          <span class="evidence-nav-text">{route.name}</span>
+          <span, class="evidence-nav-icon">{route.icon}</span>
+          <span, class="evidence-nav-text">{route.name}</span>
         </a>
       {/each}
     </nav>
   </header>
 
-  <main class="evidence-content">
-    <div class="evidence-container">
+  <main, class="evidence-content">
+    <div, class="evidence-container">
       {#if children}
         {@render children()}
       {:else}
-        <div class="evidence-placeholder">
+        <div, class="evidence-placeholder">
           <h2>🧠 Evidence Processing Ready</h2>
           <p>Select an evidence management tool from the navigation above.</p>
         </div>
@@ -58,17 +58,17 @@
     </div>
   </main>
 
-  <footer class="evidence-footer">
-    <div class="evidence-footer-content">
-      <div class="evidence-info">
-        <span class="evidence-current">
+  <footer, class="evidence-footer">
+    <div, class="evidence-footer-content">
+      <div, class="evidence-info">
+        <span, class="evidence-current">
           Current: <strong>{currentPath}</strong>
         </span>
-        <span class="evidence-separator">•</span>
-        <span class="evidence-tech">AI-Powered Evidence Analysis</span>
+        <span, class="evidence-separator">•</span>
+        <span, class="evidence-tech">AI-Powered Evidence Analysis</span>
       </div>
-      <div class="evidence-controls">
-        <a href="/" class="evidence-main-btn">← Main App</a>
+      <div, class="evidence-controls">
+        <a, href="/" class="evidence-main-btn">← Main App</a>
       </div>
     </div>
   </footer>

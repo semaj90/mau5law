@@ -104,7 +104,7 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
   const endpoint = resolveEndpoint(backend, mode);
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({
       model,
       input: texts
@@ -135,7 +135,7 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
 export async function generateEmbedding(
   text: string,
   options?: Omit<EmbedRequest, 'texts'>
-): Promise<{ embedding: number[]; source: string;, cacheHit: boolean }> {
+): Promise<{ embedding: number[]; source: string; cacheHit: boolean }> {
   const { embeddings, source, cacheHit } = await generateEmbeddings({
     texts: [text],
     model: options?.model,

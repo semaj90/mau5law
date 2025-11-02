@@ -131,7 +131,7 @@ export class DLQMonitor {
         msg.retryAttempts.push({
           attemptNumber,
           timestamp: new Date().toISOString(),
-          errorMessage: 'Retry failed` });
+          errorMessage: 'Retry failed' });
 
         // Requeue to DLQ for another attempt
         nack(true);

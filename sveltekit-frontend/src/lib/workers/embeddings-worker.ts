@@ -60,7 +60,7 @@ class EmbeddingsWorker {
       };
 
       const wasmModule = await WebAssembly.instantiate(wasmBytes, imports);
-      // Cast via `unknown` to satisfy TypeScript when Exports doesn't fully overlap.
+      // Cast via `unknown` to satisfy TypeScript when Exports doesn't fully overlap.'
       this.wasmModule = wasmModule.instance.exports as unknown as WASMEmbeddings;
       // Runtime sanity checks to catch mismatched/partial exports early.
       if (
@@ -83,7 +83,7 @@ class EmbeddingsWorker {
       throw error;
     }
   }
-  private copyStringToWasm(text: string): { ptr: number;, length: number } {
+  private copyStringToWasm(text: string): { ptr: number; length: number } {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
@@ -186,23 +186,23 @@ const embeddingsWorker = new EmbeddingsWorker();
 // Well-typed incoming message envelope
 type WorkerIncomingMessage =
   | { type: 'initialize'; id?: string }
-  | { type: 'generate_embedding'; id?: string;, data: EmbeddingRequest }
-  | { type: 'generate_batch_embeddings'; id?: string;, data: BatchEmbeddingRequest }
-  | { type: 'preprocess_text'; id?: string;, data: {, text: string; startTime?: number } }
+  | { type: 'generate_embedding'; id?: string; data: EmbeddingRequest }
+  | { type: 'generate_batch_embeddings'; id?: string; data: BatchEmbeddingRequest }
+  | { type: 'preprocess_text'; id?: string; data: {, text: string; startTime?: number } }
   | { type: 'ping'; id?: string };
 
 // Outgoing message shapes
 type WorkerOutgoingMessage =
-  | { type: 'initialized'; id?: string;, success: true }
-  | { type: 'embedding_result'; id?: string;, data: EmbeddingResponse }
+  | { type: 'initialized'; id?: string; success: true }
+  | { type: 'embedding_result'; id?: string; data: EmbeddingResponse }
   | {
       type: 'batch_embedding_result';
       id?: string;
-      data: { success: true; embeddings: number[][]; count: number;, processingTime: number };
+      data: { success: true; embeddings: number[][]; count: number; processingTime: number };
     }
-  | { type: 'preprocess_result'; id?: string;, data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
-  | { type: 'pong';, timestamp: number }
-  | { type: 'error'; id?: string;, error: string };
+  | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
+  | { type: 'pong'; timestamp: number }
+  | { type: 'error'; id?: string; error: string };
 
 self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessage>) => {
   const msg = event.data;
@@ -274,7 +274,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
     }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    console.error('❌ Worker error:', errorMessage);
+    console.error('❌ Worker error:', errorMessage);'
     // msg may not always have an id; extract gracefully
     const maybeId = msg && typeof (msg as any).id === 'string' ? (msg as any).id : undefined;
     (self as DedicatedWorkerGlobalScope).postMessage({

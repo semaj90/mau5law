@@ -62,7 +62,7 @@ export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app')
 /**
  * Validate database configuration
  */
-export function validateDatabaseConfig(): { valid: boolean;, errors: string[] } {
+export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
   const config = getDatabaseConfig();
   const errors: string[] = [];
   if (!config.host) errors.push('Database host is required');

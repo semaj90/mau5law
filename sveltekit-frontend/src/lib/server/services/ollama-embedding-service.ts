@@ -36,7 +36,7 @@ async function loadLocalOllamaClient(): Promise<any> {
 async function fetchEmbeddingAPI(text: string): Promise<number[]> {
   const res = await fetch(`${API_URL}/api/embeddings`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({, model: EMBEDDING_MODEL, prompt: text })
   });
   if (!res.ok) throw new Error(`Ollama embedding failed: ${res.statusText}`);

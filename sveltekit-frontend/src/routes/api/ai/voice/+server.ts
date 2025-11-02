@@ -32,7 +32,7 @@ export async function POST({ request }): Promise<any> {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Voice API error:', error);
+    console.error('Voice API error:', error);'
     return json(
       {
         success: false,

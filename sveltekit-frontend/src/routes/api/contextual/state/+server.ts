@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
       data: state
     });
   } catch (error) {
-    console.error('Get contextual state error:', error);
+    console.error('Get contextual state error:', error);'
 
     return json(
       {
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data: updatedState
     });
   } catch (error) {
-    console.error('Update contextual state error:', error);
+    console.error('Update contextual state error:', error);'
 
     return json(
       {
@@ -119,7 +119,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       message: 'Contextual state cleared'
     });
   } catch (error) {
-    console.error('Clear contextual state error:', error);
+    console.error('Clear contextual state error:', error);'
 
     return json(
       {

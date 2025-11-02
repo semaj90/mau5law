@@ -37,7 +37,7 @@ type AuthModule = {
   validateAuthSession?: (req: any) => Promise<AuthSession | null>;
 };
 
-// Export the handler so it's used by SvelteKit and avoids: "assigned but never used"
+// Export the handler so it's used by SvelteKit and avoids: "assigned but never used"'
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Validate authentication (resilient)
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     let textContent = '';
     try {
       if (file.type === 'application/pdf') {
-        // PDF text extraction (you'd implement this with pdf-parse or similar)
+        // PDF text extraction (you'd implement this with pdf-parse or similar)'
         textContent = await extractPDFText(buffer);
       } else if (file.type.startsWith('text/')) {
         textContent = new TextDecoder().decode(buffer);
@@ -89,7 +89,7 @@ You are an expert legal AI assistant analyzing documents for evidence and legal 
 Document: ${file.name}
 Case Context: ${JSON.stringify(legalContext)}
 Practice Area: ${legalContext.practiceArea || 'General'}
-Urgency: ${legalContext.urgency || 'Medium'}
+Urgency: ${legalContext.urgency || 'Medium` }'`
 Please analyze this document and provide:
 1. A comprehensive summary
 2. Key legal entities (people, organizations, dates, monetary amounts)
@@ -112,14 +112,14 @@ Respond in JSON format with the following structure:
   "riskFactors": ["string"],
   "suggestedTags": ["string"],
   "confidence": 0.0-1.0
-}`;
+}`;`
     // Call Ollama API
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: model,
+       , model: model,
         prompt: legalAnalysisPrompt,
         format: 'json',
         stream: false,
@@ -160,11 +160,11 @@ Respond in JSON format with the following structure:
         analysisModel: model,
         analysisType,
         chainOfCustody: [
-          {
+          {,
             timestamp: uploadedAt,
             actor: userId,
             action: 'uploaded_and_analyzed',
-            details: `Analyzed with ${model} at ${Number(analysisResult?.confidence ?? 0) * 100}% confidence` },
+            details: `Analyzed with ${model} at ${Number(analysisResult?.confidence ?? 0) * 100}% confidence` }
         ]
       };
 
@@ -177,7 +177,7 @@ Respond in JSON format with the following structure:
           $1, $2, $3, $4, $5,
           $6, $7, $8, $9::jsonb, $10, $11::jsonb
         )
-      `,
+      `,`
         [
           documentId,
           file.name,
@@ -217,7 +217,7 @@ Respond in JSON format with the following structure:
               `
                 INSERT INTO embeddings (id, document_id, embedding, content, metadata, created_at)
                 VALUES ($1, $2, $3::jsonb, $4, $5::jsonb, $6)
-              `,
+              `,`
               [
                 nanoid(),
                 documentId,
@@ -250,7 +250,7 @@ Respond in JSON format with the following structure:
       confidence: analysisResult.confidence
     });
   } catch (error) {
-    console.error('Legal document analysis error:', error);
+    console.error('Legal document analysis error: ', error);'
     return json({ error: `Analysis failed` }, { status: 500 });
   }
 };
@@ -305,7 +305,7 @@ async function performOCR(buffer: ArrayBuffer): Promise<string> {
   try {
     // dynamic import Tesseract with safe typings (avoid `any`)
     type OcrLogger = { status?: string; progress?: number };
-    type WorkerShape = { recognize: (blob: Blob) => Promise<{ data: {;, text: string } }>;
+    type WorkerShape = { recognize: (blob: Blob) => Promise<{ data: {; text: string } }>;
       terminate: () => Promise<void>;
     };
     type CreateWorkerFn = (opts?: { logger?: (m: OcrLogger) => void }) => Promise<WorkerShape>;

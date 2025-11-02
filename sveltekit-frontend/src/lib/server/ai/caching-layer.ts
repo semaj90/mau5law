@@ -3,7 +3,7 @@ import LRU from "lru-cache";
 import * as crypto from "crypto";
 // Fix LRUCache import for CommonJS compatibility
 const LRUCache = LRU;
-// Define Redis interface since we don't have the actual Redis client
+// Define Redis interface since we don't have the actual Redis client'
 export interface RedisPipeline {
   set(_key: string, value: string): RedisPipeline;
   expire(_key: string, seconds: number): RedisPipeline;
@@ -34,9 +34,9 @@ export interface CacheStats { hits: number;, misses: number;
 }
 class CachingLayer {
   private redis: Redis | null = null;
-  private lruCache: InstanceType<typeof LRUCache>;
+  private lruCache: InstanceType<typeof, LRUCache>;
   private stats: CacheStats;
-  private hotCache: Map<string, { data: any; hits: number;, lastAccess: number }>;
+  private hotCache: Map<string, { data: any; hits: number; lastAccess: number }>;
   private cacheConfig = {
     maxMemory: 512 * 1024 * 1024, // 512MB max memory
     maxItems: 10000,
@@ -194,7 +194,7 @@ class CachingLayer {
               keys.push(...(Array.isArray(result) ? result : [result].filter(Boolean));
             }
           } catch (e: any) {
-            // Fallback to empty keys if method doesn't exist
+            // Fallback to empty keys if method doesn't exist'
           }
           if (keys && keys.length > 0) {
             // Remove from Redis - handle array properly

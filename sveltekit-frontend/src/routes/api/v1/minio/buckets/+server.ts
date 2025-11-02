@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     );
   } catch (error) {
-    console.error('Bucket listing error:', error);
+    console.error('Bucket listing error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to list buckets',
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     );
   } catch (error) {
-    console.error('Bucket management error:', error);
+    console.error('Bucket management error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to manage buckets',
@@ -234,7 +234,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json` }'`
         }
       );
     }
@@ -250,11 +250,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }),
       {
         status: deleted ? 200 : 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': `application/json` }
       }
     );
   } catch (error) {
-    console.error('Bucket deletion error:', error);
+    console.error('Bucket deletion error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to delete bucket',

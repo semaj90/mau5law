@@ -36,7 +36,7 @@ export class LegalStrategyEngine {
     const seed = evidenceIds.length + strategyType.length;
 
     // deterministic pseudo-random fractional value in [0,1)
-    function pr(n: number) {
+    function pr(n: number) {,
       return Math.abs(Math.sin(seed + n) * 10000) % 1;
     }
 

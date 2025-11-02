@@ -3,7 +3,7 @@
  * Comprehensive NLP service integrating Legal-BERT, Gemma, RAG/KAG, OCR, and Redis caching
  */
 import { EventEmitter } from "events";
-import { createClient as createRedisClient } from '$lib/server/cache/redis'; // Import Redis client
+import { createClient, as createRedisClient } from '$lib/server/cache/redis'; // Import Redis client
 import { enhancedVectorSearchService } from '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
 import { createWorkerPool, getWorkerPool, type OcrPayload } from '$lib/workers/legal-ai-worker-pool'; // Import worker pool
 import { AutoTokenizer } from "@xenova/transformers"; // New import for tokenizer
@@ -26,20 +26,20 @@ interface ONNXModelConfig { modelPath: string;, providerOptions: {
     executionMode: 'sequential' | 'parallel';
     logSeverityLevel: number;
   }
-  inputSpec: { inputIds: { name: string; type: string;, shape: number[] }
-    attentionMask: { name: string; type: string;, shape: number[] }
-    tokenTypeIds?: { name: string; type: string;, shape: number[] }
+  inputSpec: { inputIds: { name: string; type: string; shape: number[] }
+    attentionMask: { name: string; type: string; shape: number[] }
+    tokenTypeIds?: { name: string; type: string; shape: number[] }
   }
-  outputSpec: { lastHiddenState: { name: string; type: string;, shape: number[] }
-    poolerOutput?: { name: string; type: string;, shape: number[] }
-    logits?: { name: string; type: string;, shape: number[] }
+  outputSpec: { lastHiddenState: { name: string; type: string; shape: number[] }
+    poolerOutput?: { name: string; type: string; shape: number[] }
+    logits?: { name: string; type: string; shape: number[] }
   }
 }
-interface LegalEntityExtractionResult { entities: Array<{ text: string; label: string; confidence: number; start: number;, end: number }>;
+interface LegalEntityExtractionResult { entities: Array<{ text: string; label: string; confidence: number; start: number; end: number }>;
   processingTime: number;
   modelUsed: string;
 }
-interface LegalClassificationResult { predictions: Array<{ label: string;, confidence: number }>;
+interface LegalClassificationResult { predictions: Array<{ label: string; confidence: number }>;
   topPrediction: { label: string;, confidence: number;
   };
   processingTime: number;
@@ -51,7 +51,7 @@ interface LegalEmbeddingResult { embeddings: number[];, dimensions: number;
 }
 
 type OnnxOutput = Record<string, { data: ArrayLike<number> }>;
-type TritonOutput = { name: string;, data: ArrayLike<number> }[];
+type TritonOutput = { name: string; data: ArrayLike<number> }[];
 
 interface ModelInputs { input_ids: {, data: ArrayLike<number> };
   attention_mask: { data: ArrayLike<number> };
@@ -69,7 +69,7 @@ interface IntentResult { intent: string;, confidence: number;
 }
 
 // New interface for RAG context
-interface RAGContext { query: string;, documents: Array<{ id: string; text: string;, score: number }>;
+interface RAGContext { query: string;, documents: Array<{ id: string; text: string; score: number }>;
   graphData?: Array<Record<string, unknown>>; // Placeholder for KAG
   processingTime: number;
   cached: boolean;
@@ -103,7 +103,7 @@ export class GalbertService extends EventEmitter {
     return {
       modelPath: './models/legal-bert-onnx/model.onnx',
       providerOptions: [
-        {
+        {,
           name: 'CPUExecutionProvider',
           deviceType: 'CPU'
         },
@@ -298,8 +298,7 @@ export class GalbertService extends EventEmitter {
       return {
         ...result,
         processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)'
-      };
+        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)` };'`
     }
 
     try {
@@ -357,8 +356,7 @@ export class GalbertService extends EventEmitter {
       return {
         ...result,
         processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)'
-      };
+        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)` };'`
     }
 
     try {
@@ -412,7 +410,7 @@ export class GalbertService extends EventEmitter {
 Analyze the following text and classify its intent. Return JSON: {"intent": "...", "confidence": 0-1}.
 Possible intents: legal_question, document_summary, evidence_upload, general_query, data_extraction.
 Text: ${prompt}
-`;
+`;`
       const intentResponse = await this.generateGemmaResponseInternal(intentPrompt, true); // Use internal method to avoid infinite recursion
       const intentResult: IntentResult = JSON.parse(intentResponse.response);
 
@@ -458,7 +456,7 @@ Text: ${prompt}
 Analyze the following text and classify its intent. Return JSON: {"intent": "...", "confidence": 0-1}.
 Possible intents: legal_question, document_summary, evidence_upload, general_query, data_extraction.
 Text: ${prompt}
-`;
+`;`
       // For intent, we need a non-streaming response.
       const intentResponse = await this.generateGemmaResponseInternal(intentPrompt, true);
       const intentResult: IntentResult = JSON.parse(intentResponse.response);
@@ -483,7 +481,7 @@ Text: ${prompt}
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: model,
+         , model: model,
           prompt: fullPrompt,
           stream: true, // Enable streaming
           options: {
@@ -557,7 +555,7 @@ Text: ${prompt}
       await redisClient.publish(channel, JSON.stringify(finalPayload));
       this.emit('redis-publish-complete', { channel, ...finalPayload });
     } catch (error) {
-      console.error(`Error streaming and publishing to Redis channel ${channel}: ', error);
+      console.error(`Error streaming and publishing to Redis channel ${channel}: ', error);'`
       const errorPayload = {
         error: 'Streaming failed',
         details: error instanceof Error ? error.message : String(error)
@@ -583,7 +581,7 @@ Text: ${prompt}
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: model,
+         , model: model,
           prompt: prompt,
           stream: false,
           options: {
@@ -683,7 +681,7 @@ Text: ${prompt}
    */
   private async prepareONNXInputs(tokens: ModelInputs): Promise<{ [key: string]: unknown }> {
     const batchSize = 1;
-    const seqLength = tokens.input_ids.data.length; // Access data from Xenova's Tensor
+    const seqLength = tokens.input_ids.data.length; // Access data from Xenova's Tensor'
     const paddedLength = Math.min(seqLength, 512);
 
     const inputIdsArray = Array.from(tokens.input_ids.data).slice(0, paddedLength);
@@ -751,7 +749,7 @@ Text: ${prompt}
     _outputs: Record<string, unknown>,
     _originalText: string,
     _tokens: ModelInputs
-  ): Array<{ text: string; label: string; confidence: number; start: number;, end: number }> {
+  ): Array<{ text: string; label: string; confidence: number; start: number; end: number }> {
     // This is a simplified implementation
     // In production, you would:
     // 1. Apply softmax to get probabilities
@@ -771,7 +769,7 @@ Text: ${prompt}
    */
   private processClassificationOutputs(
     _outputs: Record<string, unknown>
-  ): Array<{ label: string;, confidence: number }> {
+  ): Array<{ label: string; confidence: number }> {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },
@@ -789,7 +787,7 @@ Text: ${prompt}
       if (!Array.isArray(outputs)) {
         console.warn('Triton output was not an array, returning random embeddings.');
         // In a production TensorRT environment, returning random data is undesirable.
-        // It's better to throw an error if the expected output is missing.
+        // It's better to throw an error if the expected output is missing.'
         throw new Error('Triton output format unexpected, cannot extract embeddings.');
       }
       const poolerOutput = outputs.find(
@@ -798,7 +796,7 @@ Text: ${prompt}
       if (poolerOutput && poolerOutput.data) {
         return Array.from(poolerOutput.data as number[]);
       }
-      // If pooler_output is not found from Triton, it's a critical failure for TensorRT.
+      // If pooler_output is not found from Triton, it's a critical failure for TensorRT.'
       throw new Error('Triton output for pooler_output not found, cannot extract embeddings.');
     } else {
       if (Array.isArray(outputs)) {

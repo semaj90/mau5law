@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import { Select } from 'bits-ui';
   interface Props {
@@ -8,9 +8,9 @@
   }
   let { children, class: className = '', ...rest }: Props = $props();
 </script>
-<Select.Trigger class="space-y-4 {className}" {...rest}>
+<Select.Trigger, class="space-y-4 {className}" {...rest}>
   <slot />
-  <!-- No {#snippet children()} usage to avoid slot/snippet conflict -->
+  <!-- No {#snippet children()} usage to avoid slot/snippet, conflict -->
 </Select.Trigger>
 <style>
 /* @unocss-include */ {}

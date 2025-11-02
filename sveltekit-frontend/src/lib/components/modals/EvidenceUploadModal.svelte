@@ -1,5 +1,5 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<script, lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   import { Button } from '$lib/components/ui/Button.svelte';
@@ -51,18 +51,18 @@
   }
 </script>
 <Dialog.Root open={isOpen} onOpenChange={(open) => !open && closeModal()}>
-  <Dialog.Content class="max-w-3xl">
+  <Dialog.Content, class="max-w-3xl">
     <Dialog.Header>
-      <Dialog.Title class="flex items-center gap-2">
-        <Upload class="h-5 w-5" />
+      <Dialog.Title class="flex items-center, gap-2">
+        <Upload class="h-5, w-5" />
         Upload Evidence
       </Dialog.Title>
       <Dialog.Description>
         Upload images, documents, audio, and video files for your case.
       </Dialog.Description>
     </Dialog.Header>
-    <div class="grid gap-4 py-4">
-      <!-- File Drop Zone -->
+    <div class="grid gap-4, py-4">
+      <!-- File Drop, Zone -->
       <div
         role="button"
         tabindex={0}
@@ -76,9 +76,9 @@
         onclick={() => fileInput?.click()}
         onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInput?.click()}
       >
-        <Upload class="h-12 w-12 text-gray-400" />
-        <h3 class="mt-4 text-lg font-medium">Drop files here or click to browse</h3>
-        <p id="evidence-dropzone-instructions" class="mt-1 text-sm text-gray-500">
+        <Upload class="h-12 w-12, text-gray-400" />
+        <h3 class="mt-4 text-lg, font-medium">Drop files here or click to browse</h3>
+        <p id="evidence-dropzone-instructions" class="mt-1 text-sm, text-gray-500">
           Support for images, documents, audio, and video files
         </p>
         <Button.Root
@@ -98,31 +98,31 @@
           onchange={handleFileSelect}
         />
       </div>
-      <!-- File List -->
+      <!-- File, List -->
       {#if files.length > 0}
-        <div class="space-y-2">
-          <h3 class="text-sm font-medium">Files ({files.length})</h3>
-          <div class="max-h-64 overflow-y-auto space-y-2 pr-2">
+        <div, class="space-y-2">
+          <h3 class="text-sm, font-medium">Files ({files.length})</h3>
+          <div class="max-h-64 overflow-y-auto space-y-2, pr-2">
             {#each files as file (file.id)}
               {#if file?.file}
-                <div class="flex items-center justify-between p-2 border rounded-lg">
-                  <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div class="flex-shrink-0">
+                <div class="flex items-center justify-between p-2 border, rounded-lg">
+                  <div class="flex items-center gap-3 flex-1, min-w-0">
+                    <div, class="flex-shrink-0">
                       {#if file.status === 'completed'}
-                        <CheckCircle class="h-5 w-5 text-green-500" />
+                        <CheckCircle class="h-5 w-5, text-green-500" />
                       {:else if file.status === 'error'}
-                        <AlertCircle class="h-5 w-5 text-red-500" />
+                        <AlertCircle class="h-5 w-5, text-red-500" />
                       {:else if file.status === 'uploading' || file.status === 'processing'}
-                        <Loader2 class="h-5 w-5 animate-spin" />
+                        <Loader2 class="h-5 w-5, animate-spin" />
                       {:else}
-                        <File class="h-5 w-5 text-gray-500" />
+                        <File class="h-5 w-5, text-gray-500" />
                       {/if}
                     </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium truncate">
+                    <div class="flex-1, min-w-0">
+                      <p class="text-sm font-medium, truncate">
                         {file.file?.name || 'Unknown file'}
                       </p>
-                      <p class="text-xs text-gray-500">
+                      <p class="text-xs, text-gray-500">
                         {file.file?.size ? formatFileSize(file.file.size) : 'Unknown size'}
                         {#if file.status === 'uploading'}
                           • {Math.round(file.progress || 0)}% uploaded
@@ -135,25 +135,25 @@
                         {/if}
                       </p>
                       {#if file.status === 'uploading' && file.progress && file.progress > 0}
-                        <div class="w-full bg-gray-200 rounded-full h-1 mt-1">
+                        <div class="w-full bg-gray-200 rounded-full h-1, mt-1">
                           <div
                             class="bg-primary h-1 rounded-full"
                             style="width: {file.progress}%"
                           ></div>
                         {/if}
                       {#if file.error}
-                        <p class="text-xs text-red-500 mt-1">{file.error}</p>
+                        <p class="text-xs text-red-500, mt-1">{file.error}</p>
                       {/if}
                     </div>
                   </div>
-                  <div class="ml-4 flex-shrink-0">
+                  <div class="ml-4, flex-shrink-0">
                     <Button.Root
                       class="bits-btn"
                       variant="ghost"
                       size="icon"
                       onclick={() => removeFile(file.id)}
                     >
-                      <X class="h-4 w-4" />
+                      <X class="h-4, w-4" />
                     </Button.Root>
                   </div>
                 {/if}
@@ -162,7 +162,7 @@
         {/if}
     </div>
     <Dialog.Footer>
-      <div class="flex-1 text-sm text-gray-600">
+      <div class="flex-1 text-sm, text-gray-600">
         {#if activeUploads.length > 0}
           Processing {activeUploads.length} file{activeUploads.length !== 1 ? 's' : ''}...
         {:else if completedUploads.length > 0}
@@ -172,12 +172,12 @@
           Ready to upload files
         {/if}
       </div>
-      <div class="flex gap-2">
-        <Button.Root class="bits-btn" variant="outline" onclick={() => closeModal()}>
+      <div class="flex, gap-2">
+        <Button.Root, class="bits-btn" variant="outline" onclick={() => closeModal()}>
           {activeUploads.length > 0 ? 'Continue in Background' : 'Close'}
         </Button.Root>
         {#if completedUploads.length > 0}
-          <Button.Root class="bits-btn" onclick={() => onViewEvidence(completedUploads)}
+          <Button.Root, class="bits-btn" onclick={() => onViewEvidence(completedUploads)}
             >View Evidence</Button
           >
         {/if}

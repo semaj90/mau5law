@@ -9,14 +9,14 @@ import type {
   AITask,
   AITaskResult
 } from './types.js';
-type StartProcessing = { type: 'START_PROCESSING';, task: AITask }
-type ProcessingProgress = { type: 'PROCESSING_PROGRESS';, progress: number }
+type StartProcessing = { type: 'START_PROCESSING'; task: AITask }
+type ProcessingProgress = { type: 'PROCESSING_PROGRESS'; progress: number }
 type CancelProcessing = { type: 'CANCEL_PROCESSING' }
 type RetryProcessing = { type: 'RETRY_PROCESSING' }
 type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any }
 export const aiProcessingMachine = createMachine({
     id: "aiProcessing",
-    types: {} as { context: AIProcessingContext;, events: AnyEvt;
+    types: {} as {, context: AIProcessingContext;, events: AnyEvt;
     },
     context: {
      , userId: undefined,
@@ -112,7 +112,7 @@ export const aiProcessingMachine = createMachine({
         entry: ["logError"],
         on: {
           RETRY_PROCESSING: [
-            {
+            {,
               target: "processing",
               guard: "canRetry",
               actions: assign({

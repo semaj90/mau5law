@@ -193,8 +193,7 @@ class UnifiedOCRService {
         filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0,
-        device: 'cuda'
-      }
+        device: 'cuda' }
     };
   }
 
@@ -223,7 +222,7 @@ class UnifiedOCRService {
         filename: file.name,
         fileType: file.type,
         textLength: result.text.length,
-        device: 'cpu` }
+        device: `cpu' }'`
     };
   }
 
@@ -303,7 +302,7 @@ class UnifiedOCRService {
     minioStorage: boolean;
   }> {
     const results = await Promise.allSettled([
-      // GPU OCR health
+      // GPU OCR health,
       fetchFn(`${this.GPU_OCR_URL}/health`, { signal: AbortSignal.timeout(5000) }).then(r => r.ok),
       // CUDA OCR health
       fetchFn(`${this.CUDA_OCR_URL}?action=health`, { signal: AbortSignal.timeout(5000) }).then(r => r.ok),

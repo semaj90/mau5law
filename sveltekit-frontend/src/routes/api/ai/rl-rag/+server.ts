@@ -10,7 +10,7 @@ import type { Document } from '$lib/types';
  * - Redis caching with Nintendo-style memory banks
  *
  * GPU Stack:
- * - Client: WebAssembly +; Gemma:270m SIMD parser
+ * -; Client: WebAssembly +; Gemma:270m SIMD parser
  * - Server: RTX Tensor Cores + CUDA service worker +; Gemma3:legal-latest
  * - Embeddings: Gemma embeddings for consistency
  *
@@ -88,14 +88,13 @@ export const POST: RequestHandler = redisOptimized(
   { cacheKey: (request: Request) => `rl-rag:${JSON.stringify({, url: request.url })}`,
     ttl: REDIS_CACHE_TTL,
     memoryBank: 'PRG_ROM',
-    category: 'conservative'
-  },
+    category: 'conservative` },'`
   async ({ request }) => {
     const startTime = performance.now();
     try {
       const body = (await request.json()) as RAGRequest;
       if (!body?.query || body.query.trim().length === 0) {
-        return json({ error: 'Query is required' }, { status: 400 });
+        return json({ error: `Query is required` }, { status: 400 });
       }
       const {
         query,
@@ -179,9 +178,9 @@ async function preprocessQuerySIMD(query: string): Promise<string> {
 }
 
 // GPU-accelerated vector similarity search with Gemma embeddings
-async function performCudaVectorSearch(params: { query: string;, context: string[];
-  max_results: number;
-  use_gpu: boolean;
+async function performCudaVectorSearch(params: {, query: string;, context: string[];
+ , max_results: number;
+ , use_gpu: boolean;
  , legal_filter: LegalFilter;
 }): Promise<RAGResultItem[]> {
   try {
@@ -258,8 +257,8 @@ async function performCudaVectorSearch(params: { query: string;, context: strin
 }
 
 // Knowledge Graph Service fallback (8099)
-async function fallbackKnowledgeGraphSearch(params: { query: string;, context: string[];
-  max_results: number;
+async function fallbackKnowledgeGraphSearch(params: {, query: string;, context: string[];
+ , max_results: number;
  , legal_filter: LegalFilter;
 }): Promise<RAGResultItem[]> {
   try {
@@ -301,8 +300,8 @@ async function fallbackKnowledgeGraphSearch(params: { query: string;, context: 
 }
 
 // PostgreSQL + pgvector fallback
-async function fallbackPostgreSQLSearch(params: { query: string;, context: string[];
-  max_results: number;
+async function fallbackPostgreSQLSearch(params: {, query: string;, context: string[];
+ , max_results: number;
  , legal_filter: LegalFilter;
 }): Promise<RAGResultItem[]> {
   // In production, this would query PostgreSQL 17 with pgvector (Drizzle ORM)
@@ -407,8 +406,7 @@ export const GET: RequestHandler = async () => {
       models: {
         primary: GEMMA_MODEL,
         embedding: EMBEDDING_MODEL,
-        client_parser: 'gemma:270m-simd'
-      },
+        client_parser: `gemma:270m-simd` },
       services: {
         cuda_service_8097: cudaAvailable,
         legal_extraction_8098: extractionAvailable,

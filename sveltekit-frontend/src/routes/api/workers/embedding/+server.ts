@@ -102,7 +102,7 @@ async function getQueueInfo(): Promise<Response> {
     const queueNames = [QUEUES.DOCUMENT_EMBEDDING, QUEUES.CASE_EMBEDDING];
 
     // Define a concrete type for queue entries to avoid `any`
-    type QueueInfo = { name: string;, status: string };
+    type QueueInfo = { name: string; status: string };
 
     const queueInfo: Record<string, QueueInfo> = {};
 
@@ -295,15 +295,13 @@ async function testWorker(request: Request): Promise<Response> {
           entity_id: 'test-doc-' + Date.now(),
           text_content:
             'This is a test document for embedding generation. It contains legal content about contracts and agreements.',
-          embedding_type: 'content'
-        };
+          embedding_type: 'content` };'`
         break;
       case 'case':
         testPayload = {
           entity_type: 'case',
           entity_id: 'test-case-' + Date.now(),
-          text_content: 'Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.'
-        };
+          text_content: `Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.` };
         break;
       default:
         testPayload = {

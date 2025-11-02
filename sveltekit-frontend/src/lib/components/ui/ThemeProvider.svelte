@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { setContext } from 'svelte';
   import type { Snippet } from 'svelte';
   interface Props {
@@ -32,6 +32,6 @@
   }
 </style>
 
-<div class={"theme-provider " + theme}>
+<div, class={"theme-provider " + theme}>
   <slot />
 </div>

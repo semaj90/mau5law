@@ -99,8 +99,8 @@ function buildStructuredDocument(ocrData: OCRData, text: string) {
 function extractSections(text: string) {
   if (!text) return [];
   const lines = text.split('\n');
-  const sections: Array<{ title: string; content: string; startLine: number;, endLine: number }> = [];
-  let current: { title: string; content: string;, startLine: number } | null = null;
+  const sections: Array<{ title: string; content: string; startLine: number; endLine: number }> = [];
+  let current: { title: string; content: string; startLine: number } | null = null;
 
   lines.forEach((line, index) => {
     const trimmed = line.trim();

@@ -316,7 +316,7 @@ class LegalCitationsManager {
     try {
       // Generate embeddings
       const embeddingResult = await this.workerPool.generateEmbeddings(
-        `${citation.citation} ${citation.title} ${citation.summary || '` }`,
+        `${citation.citation} ${citation.title} ${citation.summary || '` }`,'`
         'embeddinggemma:latest'
       );
       if (embeddingResult.success) {
@@ -324,7 +324,7 @@ class LegalCitationsManager {
       }
       // Enhance with legal analysis
       const analysisResult = await this.workerPool.analyzeDocument(
-        `Citation: ${citation.citation}\nTitle: ${citation.title}\nSummary: ${citation.summary || 'No summary available` }`,
+        `Citation: ${citation.citation}\nTitle: ${citation.title}\nSummary: ${citation.summary || 'No summary available` }`,'`
         'legal_citation_analysis',
         'gemma3:legal-latest'
       );
@@ -374,7 +374,7 @@ class LegalCitationsManager {
   // Index citation in RAG system
   private async indexInRAG(citation: LegalCitation): Promise<void> {
     try {
-      const content = `${citation.citation}\n${citation.title}\n${citation.summary || ''}\nKey Holdings: ${citation.keyHoldings?.join(', ') || 'None` }`;
+      const content = `${citation.citation}\n${citation.title}\n${citation.summary || ''}\nKey Holdings: ${citation.keyHoldings?.join(', ') || 'None` }`;'`
       const response = await fetch('/api/rag/index/citations', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
@@ -504,7 +504,7 @@ class LegalCitationsManager {
       // Use external validation service
       const response = await fetch('/api/citations/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, citation: citation.citation, type: citation.type })
       });
       if (response.ok) {
@@ -515,10 +515,10 @@ class LegalCitationsManager {
         await this.saveCitation(citation);
         return result;
       }
-      return { valid: false, error: 'Validation service unavailable' }
+      return { valid: false, error: `Validation service unavailable` }
     } catch (error) {
-      console.error('Citation validation failed:', error);
-      return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      console.error('Citation validation failed: `, error);'`
+      return { valid: false, error: error instanceof Error ? error.message : `Unknown error` }
     }
   }
   // Get citation by ID
@@ -555,7 +555,7 @@ class LegalCitationsManager {
         body: JSON.stringify(citation)
       });
     } catch (error) {
-      console.warn('Failed to sync citation to server:', error);
+      console.warn('Failed to sync citation to server: `, error);'`
     }
   }
   // Remove citation
@@ -571,7 +571,7 @@ class LegalCitationsManager {
     }
   }
   // Bulk import citations
-  async importCitations(citationsData: any[]): Promise<{ success: number; failed: number;, errors: string[] }> {
+  async importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
     const result = { success: 0, failed: 0, errors: [] as string[] }
     for (const data of citationsData) {
       try {
@@ -635,7 +635,7 @@ export async function validateCitation(citationId: string): Promise<{ valid: boo
 export async function removeCitation(citationId: string): Promise<void> {
   await citationsManager.removeCitation(citationId);
 }
-export async function importCitations(citationsData: any[]): Promise<{ success: number; failed: number;, errors: string[] }> {
+export async function importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
   return citationsManager.importCitations(citationsData);
 }
 export function setCitationFilter(filter: Partial<CitationFilters>): void {

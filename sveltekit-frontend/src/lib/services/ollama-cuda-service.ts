@@ -186,7 +186,7 @@ class OllamaCudaService {
                 baseUrl: this.baseUrl,
                 headers: {
                   'Content-Type': 'application/json',
-                  'User-Agent': `legal-ai-sveltekit/1.0.0` }
+                  'User-Agent': `legal-ai-sveltekit/1.0.0' }'`
               })
             : null;
 
@@ -263,7 +263,7 @@ class OllamaCudaService {
               try {
                 const resp = await fetch(url, {
                   method: 'POST',
-                  headers: { 'Content-Type': `application/json` },
+                  headers: { 'Content-Type': `application/json' },'`
                   body: JSON.stringify(body)
                 });
                 if (!resp.ok) {
@@ -322,7 +322,7 @@ class OllamaCudaService {
               try {
                 const resp = await fetch(url, {
                   method: 'POST',
-                  headers: { 'Content-Type': `application/json` },
+                  headers: { 'Content-Type': `application/json' },'`
                   body: JSON.stringify({, model: this.model, input: texts })
                 });
                 if (!resp.ok) continue;
@@ -457,7 +457,7 @@ class OllamaCudaService {
       console.log(`✅ Model ${modelName} loaded in ${loadTime}ms`);
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to load model ${modelName}: ', safeErrorToString(error));
+      console.error(`❌ Failed to load model ${modelName}: ', safeErrorToString(error));'`
       return false;
     }
   }

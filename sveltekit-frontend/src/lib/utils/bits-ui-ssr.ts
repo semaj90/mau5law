@@ -168,20 +168,20 @@ export async function submitForm<T>(
 /**
  * Batch data loader for complex Bits UI components
  */
-export async function loadBatchData<T extends Record<string, unknown>>(
-  endpoints: Record<keyof T, string>
-): Promise<Record<keyof T, unknown>> {
+export async function loadBatchData<T extends, Record<string, unknown>>(
+  endpoints: Record<keyof, T, string>
+): Promise<Record<keyof, T, unknown>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
       // treat fetched payload as unknown and preserve success/data shape
-      const response = await fetchSSRData<unknown>(endpoint, { method: 'GET' });
+      const response = await fetchSSRData<unknown>(endpoint, { method: 'GET` });'`
       return [key, response && response.success ? response.data : null] as const;
     } catch {
       return [key, null] as const;
     }
   });
   const results = await Promise.all(promises);
-  return Object.fromEntries(results) as Record<keyof T, unknown>;
+  return Object.fromEntries(results) as Record<keyof, T, unknown>;
 }
 /**
  * Type-safe data validator for runtime checks
@@ -213,7 +213,7 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
         const searchResults = await searchFn(query);
         results = searchResults;
       } catch (error) {
-        console.error('Search error:', error);
+        console.error('Search error:', error);'
         results = [];
       } finally {
         searching = false;

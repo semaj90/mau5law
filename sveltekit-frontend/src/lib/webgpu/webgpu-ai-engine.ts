@@ -41,10 +41,10 @@ export interface CustomAILibrary {
     splice(
       data: Float32Array,
       kernelSize: number;
-    ): { data: Float32Array; attentionScore: number;, startIndex: number }[];
+    ): { data: Float32Array; attentionScore: number; startIndex: number }[];
   };
   ModularSwitch: {
-    switch(moduleName: string, config: any): { switched: boolean; module: string;, config: any };
+    switch(moduleName: string, config: any): { switched: boolean; module: string; config: any };
     getActive(): string;
   };
   T5Accelerator: {
@@ -179,7 +179,7 @@ export class WebGPUAIEngine {
    * Create optimized compute shader for kernel attention
    */
   private createKernelAttentionShader(): string {
-    return `;
+    return `;`
       struct Params {
         inputSize: u32,
         outputSize: u32,
@@ -208,13 +208,13 @@ export class WebGPUAIEngine {
         // Normalize output
         output[index] = select(0.0, sum / weightSum, weightSum > 0.0);
       }
-    `;
+    `;`
   }
   /**
    * Create T5-style transformer shader
    */
   private createT5TransformerShader(): string {
-    return `;
+    return `;`
       struct T5Params {
         sequenceLength: u32,
         hiddenSize: u32,
@@ -247,7 +247,7 @@ export class WebGPUAIEngine {
         }
         output[inputOffset] = attentionSum;
       }
-    `;
+    `;`
   }
   /**
    * Process dimensional array with kernel attention
@@ -273,17 +273,16 @@ export class WebGPUAIEngine {
       });
       const bindGroupLayout = device.createBindGroupLayout({
         entries: [
-          { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-          { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-          { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
-          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform' } }
+          {, binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
+          { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
+          { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'storage' } },
+          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform` } }'`
         ]
       });
       pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
         compute: {
           module: shaderModule,
-          entryPoint: 'kernelAttention'
-        }
+          entryPoint: `kernelAttention` }
       });
       this.shaderCache.set(shaderKey, pipeline);
     }
@@ -470,7 +469,7 @@ export class WebGPUAIEngine {
     cuttingEdge: string[];
   } {
     const recentJobs = computationHistory.filter(
-      job => Date.now() - job.createdAt < 86400000 // Last 24 hours
+      job => Date.now() - job.createdAt < 86400000 // Last 24, hours
     );
     return {
       pickUpWhereLeftOff:

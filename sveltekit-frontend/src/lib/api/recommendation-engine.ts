@@ -35,7 +35,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
     const response = await fetch(`/api/recommendations/recent-cases?limit=${limit}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': `application/json' }'`
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -49,7 +49,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
     console.error('Failed to fetch recent cases:', error);
     // Return fallback data to prevent UI from breaking
     return [
-      {
+      {,
         id: 'fallback-1',
         title: 'Sample Case #1',
         status: 'active',
@@ -64,8 +64,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
           practiceArea: 'General Practice',
           daysOpen: 30,
           documentCount: 25,
-          lastActivity: 'Document review'
-        }
+          lastActivity: 'Document review' }
       },
     ];
   }
@@ -81,7 +80,7 @@ export async function updateCaseRecommendation(
     const response = await fetch('/api/recommendations/recent-cases', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
         caseId,
         action
@@ -105,7 +104,7 @@ export async function searchCases(query: string, limit: number = 10): Promise<Re
     const response = await fetch('/api/recommendations/search', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
         query,
         limit
@@ -134,7 +133,7 @@ export async function getContextualRecommendations(context: {
     const response = await fetch('/api/recommendations/contextual', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify(context)
     });
     if (!response.ok) {

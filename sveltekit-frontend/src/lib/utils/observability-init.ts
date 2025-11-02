@@ -132,7 +132,7 @@ function setupPerformanceMonitoring() {
             size:
               typeof r.transferSize === 'number' && r.transferSize > 0
                 ? `${Math.round(r.transferSize / 1024)}KB`
-                : 'unknown` }))
+                : 'unknown' }))
         );
       }
     }, 2000);
@@ -157,7 +157,7 @@ function extractRouteId(): string {
   if (pathname === '/') return '/(app)';
   if (pathname.startsWith('/api/')) return pathname;
   if (pathname.includes('[')) return pathname; // Already parameterized
-  // Convert pathname to route-like format
+  // Convert pathname to route-like format,
   return pathname.replace(/\/\d+/g, '/[id]').replace(/\/[^/]+\.(json|html|xml)$/, '/[file]');
 }
 // Svelte store getter fallback

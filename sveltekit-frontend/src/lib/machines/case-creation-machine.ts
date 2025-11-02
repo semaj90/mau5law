@@ -20,7 +20,7 @@ export const caseCreationMachine = createMachine(
     id: 'caseCreation',
     initial: 'idle',
     // types removed to avoid inline TS assertion parsing issues with esbuild
-    context: { formData: {, title: '',
+    context: {, formData: {, title: '',
         description: '',
         priority: 'medium',
         status: 'open'
@@ -31,10 +31,10 @@ export const caseCreationMachine = createMachine(
       isAutoSaving: false,
       retryCount: 0
     },
-    states: { idle: {, on: {
-          START_CREATION: 'editing',
+    states: {, idle: {, on: {
+         , START_CREATION: 'editing',
           UPDATE_FORM: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
              , formData: ({ event }) => ({ ...event.data })
             })
@@ -115,7 +115,7 @@ export const caseCreationMachine = createMachine(
             })
           },
           onError: [
-            {
+            {,
               guard: ({ context }) => context.retryCount < 3,
               target: 'retrying',
               actions: assign({
@@ -136,8 +136,7 @@ export const caseCreationMachine = createMachine(
           1000: 'submitting'
         },
         on: {
-          RETRY: 'submitting'
-        }
+          RETRY: `submitting` }
       },
       completed: {
         type: 'final',
@@ -146,7 +145,7 @@ export const caseCreationMachine = createMachine(
             actions: assign({ formData: {, title: '',
                 description: '',
                 priority: 'medium',
-                status: 'open` },
+                status: `open` },
               validationErrors: {} as any,
               createdCase: null,
               error: null,

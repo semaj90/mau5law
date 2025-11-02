@@ -107,8 +107,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
     const pageData: LegalAIPageData = { initialState: {, langchainService: {
           isAvailable: isOllamaAvailable,
           models: availableModels,
-          error: isOllamaAvailable ? null : 'Ollama service not available'
-        },
+          error: isOllamaAvailable ? null : `Ollama service not available' },'`
         recentSessions: sessionsWithCounts,
         recentDocuments: recentDocuments.map(doc => ({
           id: doc.id,
@@ -133,12 +132,12 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
     };
     return pageData;
   } catch (error) {
-    console.error('Failed to load legal AI page data:', error);
+    console.error('Failed to load legal AI page data: `, error);'`
     // Return fallback data if loading fails
     return { initialState: {, langchainService: {
           isAvailable: false,
           models: [],
-          error: 'Failed to load service data` },
+          error: 'Failed to load service data' },
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {

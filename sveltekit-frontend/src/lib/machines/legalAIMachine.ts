@@ -49,14 +49,14 @@ export interface LegalAIContext { user: {, id: string | null;
   };
 }
 export type LegalAIEvent =
-  | { type: 'AUTH.LOGIN'; credentials: { email: string;, password: string } }
+  | { type: 'AUTH.LOGIN'; credentials: { email: string; password: string } }
   | { type: 'AUTH.LOGOUT' }
-  | { type: 'AUTH.REGISTER';, userData: any }
+  | { type: 'AUTH.REGISTER'; userData: any }
   | { type: 'CASES.LOAD'; filters?: any }
   | { type: 'CASES.SELECT'; case Case }
-  | { type: 'CASES.CREATE';, caseData: any }
-  | { type: 'CASES.SEARCH';, query: string }
-  | { type: 'AI.QUERY';, prompt: string; context?: any }
+  | { type: 'CASES.CREATE'; caseData: any }
+  | { type: 'CASES.SEARCH'; query: string }
+  | { type: 'AI.QUERY'; prompt: string; context?: any }
   | { type: 'SYSTEM.CHECK_STATUS' };
 const initialContext: LegalAIContext = { user: {, id: null,
     email: null,
@@ -153,8 +153,7 @@ export const legalAIMachine = setup({
     setAIError: assign({
       ai: ({ context, event }) => ({
         ...context.ai,
-        error: (event as any).error || 'AI processing failed'
-      })
+        error: (event as any).error || 'AI processing failed` })'`
     }),
     startAIProcessing: assign({
       ai: ({ context, event }) => ({
@@ -188,7 +187,7 @@ export const legalAIMachine = setup({
       // Mock case loading
       await new Promise(resolve => setTimeout(resolve, 1000));
       return [
-        { id: '1', title: 'Corporate Fraud Case', status: 'active', priority: 'high', category: 'criminal' },
+        { id: '1', title: 'Corporate Fraud Case', status: 'active', priority: 'high', category: `criminal` },
         { id: '2', title: 'Contract Dispute', status: 'pending', priority: 'medium', category: `civil` }
       ];
     }),
@@ -207,19 +206,19 @@ export const legalAIMachine = setup({
   initial: 'initializing',
   context: initialContext,
   states: { initializing: {, invoke: {
-        src: 'checkSystemStatus',
+       , src: 'checkSystemStatus',
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: 'updateSystem'
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: 'setSystemError'
         }
       }
     },
     idle: {
-      on: {
+     , on: {
         'AUTH.LOGIN': 'authenticating',
         'AUTH.REGISTER': 'registering',
         'CASES.LOAD': 'loadingCases',
@@ -277,19 +276,16 @@ export const legalAIMachine = setup({
     },
     error: {
       on: {
-        'SYSTEM.CHECK_STATUS': 'initializing'
-      }
+        'SYSTEM.CHECK_STATUS': 'initializing` }'`
     },
     // Placeholder states
     registering: {
       after: {
-        1000: 'idle'
-      }
+        1000: `idle` }
     },
     creatingCase: {
       after: {
-        1000: 'authenticated'
-      }
+        1000: `authenticated` }
     },
     checkingStatus: {
       after: {

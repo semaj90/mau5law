@@ -1,5 +1,5 @@
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import crypto from 'crypto';
 /**
  * Enhanced Copilot Self-Prompt Wrapper Utility
@@ -54,7 +54,7 @@ function getFastApiUrl(): string {
 }
 
 // Service implementation for CrewAI-based legal case analysis
-const analyzeLegalCaseWithCrew = async (caseData: { prompt: string;, documents: any[];
+const analyzeLegalCaseWithCrew = async (caseData: {, prompt: string;, documents: any[];
  , jurisdiction: string;
 }): Promise<Record<string, unknown>> => {
   const controller = new AbortController();
@@ -76,7 +76,7 @@ const analyzeLegalCaseWithCrew = async (caseData: { prompt: string;, documents:
     }
 
     console.error(`CrewAI analysis request failed: ${response.status} ${response.statusText}`);
-    return { analysis: 'failed', error: 'API returned status ${response.status}' };
+    return { analysis: 'failed', error: `API returned status ${response.status}` };
   } catch (error: any) {
     clearTimeout(timeoutId);
     if (error instanceof Error) {
@@ -85,7 +85,7 @@ const analyzeLegalCaseWithCrew = async (caseData: { prompt: string;, documents:
         return { analysis: 'failed', error: `Request timed out` };
       }
       console.error('CrewAI service is unavailable:', error.message);
-      return { analysis: 'failed`, error: 'Service; unavailable: ${error.message}' };
+      return { analysis: `failed`, error: `Service; unavailable: ${error.message}` };
     }
     console.error('An unknown error occurred during CrewAI analysis:', error);
     return { analysis: 'failed', error: `Unknown error` };
@@ -156,7 +156,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
     await client.set(cacheKey, JSON.stringify(results), { EX: 3600 });
     return results;
   } catch (err: any) {
-    console.error('Redis cache error:', err);
+    console.error('Redis cache error:', err);'
     // Fallback to direct semantic search if cache fails
     return [];
   }
@@ -235,7 +235,7 @@ export async function copilotSelfPrompt(
     useAutonomousEngineering = true,
     enableSelfSynthesis = true,
     context = {},
-    outputFormat = 'structured` } = options;
+    outputFormat = 'structured` } = options;'`
   let contextResults: SemanticSearchResult[] = [];
   let memoryResults: MemoryResult[] = [];
   let agentResults: AgentResult[] = [];
@@ -432,7 +432,7 @@ async function orchestrateMultiAgentAnalysis(
     const crewaiResult = await analyzeLegalCaseWithCrew({
       prompt,
       documents: [],
-      jurisdiction: context?.jurisdiction || 'federal` });
+      jurisdiction: context?.jurisdiction || 'federal` });'`
     results.push({
       source: 'crewai',
       type: 'task_based_analysis',
@@ -473,7 +473,7 @@ Please provide a comprehensive synthesis that:
 5. Highlights critical issues or opportunities
 6. Recommends best practices and optimizations
 Format your response as a structured analysis with clear sections and actionable insights.
-  `;
+  `;`
   try {
     const synthesisTask: AITask = {
       id: crypto.randomUUID(),
@@ -521,7 +521,7 @@ ${prompt}
 2. Implement recommended solutions
 3. Test thoroughly before deployment
 4. Monitor system performance post-implementation
-  `;
+  `;`
 }
 /**
  * Generate actionable next steps
@@ -688,7 +688,7 @@ As an AI assistant, what specific actions should I take next to best help with t
 4. Long-term maintenance considerations
 5. Cross-platform compatibility (webapp, desktop, mobile)
 ${formatInstruction}
-  `;
+  `;`
 }
 // RAG Copilot Self-Prompting Utility
 export class CopilotSelfPrompt {

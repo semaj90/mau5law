@@ -68,7 +68,7 @@ class TauriLLMService {
 	private async getInvoke(): Promise<InvokeFn | null> {
 		if (this.invokeFn) return this.invokeFn;
 		try {
-			// Try to dynamically import Tauri's invoke
+			// Try to dynamically import Tauri's invoke'
 			const tauri = await import('@tauri-apps/api/tauri');
 			this.invokeFn = tauri.invoke as InvokeFn;
 			return this.invokeFn;
@@ -144,7 +144,7 @@ class TauriLLMService {
 			if (model) model.isLoaded = !!res;
 			return !!res;
 		} catch (err) {
-			console.error(`Failed to load model ${modelId}: ', err);
+			console.error(`Failed to load model ${modelId}: ', err);'`
 			return false;
 		}
 	}
@@ -189,7 +189,7 @@ class TauriLLMService {
 							maxTokens: optimal.maxTokens ?? 2048
 						}
 					});
-					// don't set chat model id here (model registry may differ)
+					// don't set chat model id here (model registry may differ)'
 					console.log(`Gemma3 model initialization attempted: ${optimal.modelPath}`);
 				}
 			}
@@ -201,7 +201,7 @@ class TauriLLMService {
 	// Web fallback initialization
 	private async initializeWebFallback(): Promise<void> {
 		this.availableModels = [
-			{
+			{,
 				id: 'web-llm-fallback',
 				name: 'Web LLM (Browser-based)',
 				type: 'chat',
@@ -324,7 +324,7 @@ class TauriLLMService {
 	}
 
 	private getLegalSystemPrompt(): string {
-		return `You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review.
+		return `You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review.`
 Your capabilities include:
 - Analyzing legal documents and evidence
 - Providing citations and legal precedents
@@ -336,7 +336,7 @@ Guidelines:
 - Cite specific sources when making legal references
 - Indicate confidence levels in your analysis
 - Distinguish between facts and legal interpretations
-- Provide clear, professional language suitable for legal professionals`;
+- Provide clear, professional language suitable for legal professionals`;`
 	}
 
 	async getModelMetrics(modelId: string): Promise<any> {
@@ -354,7 +354,7 @@ Guidelines:
 			if (model) model.isLoaded = false;
 			return !!res;
 		} catch (err) {
-			console.error(`Failed to unload model ${modelId}: ', err);
+			console.error(`Failed to unload model ${modelId}: ', err);'`
 			return false;
 		}
 	}
@@ -367,7 +367,7 @@ Guidelines:
 		return this.availableModels;
 	}
 
-	getCurrentModels(): { embedding: string | null;, chat: string | null } {
+	getCurrentModels(): { embedding: string | null; chat: string | null } {
 		return { embedding: this.currentEmbeddingModel, chat: this.currentChatModel };
 	}
 

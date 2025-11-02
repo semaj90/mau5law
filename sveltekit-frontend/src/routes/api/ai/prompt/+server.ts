@@ -28,7 +28,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     // Mock AI response - replace with actual AI/LLM integration
     const mockResponses = [
-      `Based on your query about: "${prompt}", here are some key legal considerations:
+      `Based on your query about: "${prompt}", here are some key legal considerations:`
 1. **Relevant Statutes**: This case may fall under PC 211 (Robbery) or PC 459 (Burglary) depending on the specific circumstances.
 2. **Evidence Requirements**:
    - Document all physical evidence thoroughly
@@ -39,8 +39,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
    - Miranda rights must be properly administered
    - Search warrants may be required for certain evidence
    - Time limitations apply for filing charges
-**Recommendation**: Review the evidence carefully and consider consulting with the legal department for complex constitutional issues.`,
-      `Regarding "${prompt}", the legal analysis suggests:
+**Recommendation**: Review the evidence carefully and consider consulting with the legal department for complex constitutional issues.`,`
+      `Regarding "${prompt}", the legal analysis suggests:`
 **Constitutional; Considerations:**
 - Fourth Amendment protections apply to search and seizure
 - Due process requirements must be met throughout
@@ -55,8 +55,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 **Timeline Considerations:**
 - Statute of limitations varies by charge type
 - Speedy trial requirements must be met
-- Discovery deadlines are critical`,
-      `Analysis of: "${prompt}":
+- Discovery deadlines are critical`,`
+      `Analysis of: "${prompt}":`
 **Case Strength Assessment:**
 - Evidence appears substantial but requires expert testimony
 - Witness credibility will be key factor
@@ -69,7 +69,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 - Defense may challenge evidence admissibility
 - Potential constitutional issues with search procedures
 - Witness availability concerns
-**Success Probability**: Based on current evidence, prosecution has strong foundation but should prepare for vigorous defense.`,
+**Success Probability**: Based on current evidence, prosecution has strong foundation but should prepare for vigorous defense.`,`
     ];
     // removed unused response assignment
     return json({
@@ -79,7 +79,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Error processing AI prompt:', error);
-    return json({ error: 'Failed to process AI prompt' }, { status: 500 });
+    return json({ error: 'Failed to process AI prompt` }, { status: 500 });'`
   }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

@@ -87,7 +87,7 @@ async function lexicalCandidates(query: string, limit: number): Promise<any> {
     WHERE term % ${query}
     ORDER BY score DESC
     LIMIT ${limit}
-  `;
+  `;`
   return (rows as any[]).map(r => ({
     term: r.term as string,
     score: Number(r.score),
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'query required' }), { status: 400 })
   }
   const redis = getRedisService()
-  const key = 'dym:v2:${query.toLowerCase()}:${limit}:${userId || 'anon' }:${includeAI}`
+  const key = 'dym:v2:${query.toLowerCase()}:${limit}:${userId || 'anon` }:${includeAI}`
   const cached = await redis.getCache(key)
   if (cached) {
     return new Response(JSON.stringify({
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
   // Track term usage (fire and forget)
   try {
     if (sql) {
-      await sql`SELECT increment_search_term(${query}, ${query})' }
+      await sql`SELECT increment_search_term(${query}, ${query})` }
   } catch (e) {
     console.warn('increment_search_term failed', e)
   }
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Safe invoker: call a method on intentPredictionSystem only if it exists,
   // returning null otherwise. This avoids TS errors when the implementation
-  // doesn't expose the named methods.
+  // doesn't expose the named methods.'
   function callIntentMethod<T>(methodName: string, ...args: any[]): Promise<T | null> {
     const fn = (intentPredictionSystem as any)?.[methodName];
     if (typeof fn === 'function') {
@@ -199,8 +199,8 @@ export const POST: RequestHandler = async ({ request }) => {
     taskSuggestionsPromise,
     userInsightsPromise,
   ]) as [
-    Awaited<ReturnType<typeof lexicalCandidates>>,
-    Awaited<ReturnType<typeof semanticCandidates>>,
+    Awaited<ReturnType<typeof, lexicalCandidates>>,
+    Awaited<ReturnType<typeof, semanticCandidates>>,
     { didYouMean?: DidYouMeanSuggestion[] } | null,
     unknown,
     UserLearningInsights | null
@@ -274,6 +274,6 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   return new Response(JSON.stringify(responseData), {
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': `application/json` }
   })
 }

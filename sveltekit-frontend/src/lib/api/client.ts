@@ -118,7 +118,7 @@ class EnhancedApiClient {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
             message: `HTTP ${response.status}: ${response.statusText}`,
-            code: 'HTTP_ERROR` }));
+            code: 'HTTP_ERROR' }));
           throw new ApiClientError(
             errorData.message || `HTTP ${response.status}`,
             response.status,
@@ -141,7 +141,7 @@ class EnhancedApiClient {
       } catch (error: any) {
         this.abortControllers.delete(requestId);
         if (error instanceof ApiClientError) {
-          // Don't retry client errors (4xx)
+          // Don't retry client errors (4xx)'
           if (error.statusCode >= 400 && error.statusCode < 500) {
             throw error;
           }
@@ -151,7 +151,7 @@ class EnhancedApiClient {
         } else {
           lastError = new NetworkError('Network request failed', error as Error);
         }
-        // Don't retry on the last attempt
+        // Don't retry on the last attempt'
         if (attempt === maxRetries) {
           break;
         }

@@ -114,7 +114,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
   return result;
 }
 function checkForEnhance(form: HTMLFormElement): boolean {
-  // Check if form uses SvelteKit's enhance action
+  // Check if form uses SvelteKit's enhance action'
   return (
     form.hasAttribute('data-sveltekit-enhanced') ||
     form.hasAttribute('use:enhance') ||
@@ -232,8 +232,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'accessibility',
       message: 'Form lacks accessibility features like live regions or fieldsets',
-      fix: 'Add aria-live regions for error announcements and fieldsets for grouping'
-    });
+      fix: 'Add aria-live regions for error announcements and fieldsets for grouping` });'`
   }
   // Error handling and UX (15 points)
   if (result.hasErrorHandling) {
@@ -243,8 +242,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'No error handling elements detected',
-      fix: 'Add error message elements with role="alert" or aria-live="polite"'
-    });
+      fix: `Add error message elements with role="alert" or aria-live="polite"` });
   }
   if (result.hasLoadingStates) {
     score += 7;
@@ -318,9 +316,9 @@ ${results
     result => `
 ### ${result.formId}
 - **Score**: ${result.compliance.score}/100 (${result.compliance.level})
-- **Action**: ${result.formAction || 'Missing'}
+- **Action**: ${result.formAction || 'Missing` }'`
 - **Method**: ${result.method}
-- **Uses Enhance**: ${result.usesEnhance ? '✅' : '❌'}
+- **Uses Enhance**: ${result.usesEnhance ? '✅' : `❌` }
 - **Accessibility**: ${result.hasAccessibilityFeatures ? '✅' : `❌` }
 **Issues**:
 ${result.compliance.issues.map((issue: FormIssue) => `- ${issue.type.toUpperCase()}: ${issue.message}`).join('\n')}
@@ -335,10 +333,10 @@ ${result.compliance.recommendations.map((rec: string) => `- ${rec}`).join('\n')}
 3. Test all forms with JavaScript disabled
 4. Implement missing accessibility features
 5. Add comprehensive error handling
-`;
+`;`
 }
 // Progressive enhancement validator for Svelte components
-export function createProgressiveForm<T extends Record<string, unknown> = Record<string, unknown>>(
+export function createProgressiveForm<T extends, Record<string, unknown> = Record<string, unknown>>(
   config: Partial<ProgressiveEnhancementConfig> = {}
 ) {
   const finalConfig = { ...DEFAULT_PE_CONFIG, ...config };

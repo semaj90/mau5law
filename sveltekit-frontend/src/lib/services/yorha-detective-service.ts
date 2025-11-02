@@ -121,7 +121,7 @@ export class YoRHaDetectiveService {
       const response = await fetch(`${this.enhancedRAGUrl}/api/rag`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify(ragRequest)
       });
       if (response.ok) {
@@ -135,10 +135,10 @@ export class YoRHaDetectiveService {
             'Cross-reference with similar cases',
             'Verify legal precedents'
           ],
-          reasoning: `Analysis completed using ${data.data.metadata.model_used} in ${data.data.metadata.query_time}ms' }
+          reasoning: `Analysis completed using ${data.data.metadata.model_used} in ${data.data.metadata.query_time}ms` }
       }
     } catch (error: any) {
-      console.error('Enhanced RAG service error:', error);
+      console.error('Enhanced RAG service error:', error);'
     }
     // Fallback response
     return {
@@ -151,7 +151,7 @@ export class YoRHaDetectiveService {
         'Review legal precedents',
         'Consult with legal experts'
       ],
-      reasoning: 'Analysis based on available case data and legal knowledge base' }
+      reasoning: 'Analysis based on available case data and legal knowledge base` }'`
   }
   /**
    * Upload evidence file to the system
@@ -180,12 +180,12 @@ export class YoRHaDetectiveService {
         const error = await response.text();
         return {
           success: false, // Changed: ';' to: ',',
-          error: `Upload; failed: ${error}' }
+          error: `Upload; failed: ${error}` }
       }
     } catch (error: any) {
-      console.error('Upload service error:', error);
+      console.error('Upload service error:', error);'
       return {
-        success: false, // Changed: ';' to: ',',
+        success: false, // Changed: ';` to: `,`,'`
         error: `Upload service; unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
       }
     }
@@ -200,13 +200,13 @@ export class YoRHaDetectiveService {
         search_type: 'semantic',
         filters: {
           ...filters,
-          entity_type: 'case' },
+          entity_type: 'case` },'`
         max_results: 20
       }
       const response = await fetch(`${this.enhancedRAGUrl}/api/search`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify(searchRequest)
       });
       if (response.ok) { // Fixed syntax
@@ -214,7 +214,7 @@ export class YoRHaDetectiveService {
         return data.results || [];
       }
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Search service error:', error);
+      console.error('Search service error:', error);'
     }
     // Fallback to empty results
     return [];
@@ -249,7 +249,7 @@ export class YoRHaDetectiveService {
         ]
       }
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Case insights error:', error);
+      console.error('Case insights error:', error);'
       // Fallback insights
       return {
         summary: `Analysis for case ${caseId} is in progress. Initial review suggests standard investigative procedures are being followed.`,
@@ -305,7 +305,7 @@ export class YoRHaDetectiveService {
     try {
       // Check Kratos server (gRPC health check)
       // A lightweight lookup can serve as a health check for the gRPC service
-      // We use a dummy embedding as the actual value doesn't matter for a health check
+      // We use a dummy embedding as the actual value doesn't matter for a health check'
       const dummyEmbedding = new Float32Array(1536).fill(0.1); // Common embedding size
       await lookupSemanticCache(dummyEmbedding); // This will throw if the gRPC server is down
       results.kratosServer = true;

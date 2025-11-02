@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED` }));
     }
     // Parse request body
     const body = await request.json();
@@ -122,8 +122,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       meta: {
         userId: getUserId(locals),
         timestamp: new Date().toISOString(),
-        action: 'pattern_detection_completed'
-      }
+        action: `pattern_detection_completed` }
     });
   } catch (err: any) {
     console.error('Error in pattern detection:', err);
@@ -221,7 +220,7 @@ async function detectSuspiciousPatterns(
     results.summary = generatePatternSummary(results);
     return results;
   } catch (error) {
-    console.error('Pattern detection error:', error);
+    console.error('Pattern detection error:', error);'
     return {
       ...results,
       error: 'Pattern detection failed',
@@ -284,29 +283,29 @@ async function detectLocationPatterns(
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {
+      {,
         id: `location_${Date.now()}`,
         type: 'location',
         subtype: 'geographical_clustering',
         description: 'Evidence concentrated in specific geographic areas',
         confidence: 0.76,
         locations: [
-          { lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District' },
-          { lat: 40.7589, lon: -73.9851, count: 3, name: 'Upper West Side' }
+          { lat: 40.7128, lon: -74.006, count: 5, name: 'Manhattan District` },'`
+          { lat: 40.7589, lon: -73.9851, count: 3, name: `Upper West Side` }
         ],
         radius: '2.5 km',
-        significance: `high` } as Pattern,
+        significance: `high` } as Pattern
     ],
     anomalies: [
-      {
+      {,
         id: `location_anomaly_${Date.now()}`,
         type: 'location',
         subtype: 'geographic_outlier',
         description: 'Single evidence item far from cluster',
         confidence: 0.69,
-        location: { lat: 40.6892, lon: -74.0445, name: 'Brooklyn' },
+        location: { lat: 40.6892, lon: -74.0445, name: `Brooklyn` },
         distance: '15.2 km from cluster center',
-        severity: `low` } as Anomaly,
+        severity: `low` } as Anomaly
     ],
     confidence: 0.73
   };
@@ -322,7 +321,7 @@ async function detectBehavioralPatterns(
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {
+      {,
         id: `behavior_${Date.now()}`,
         type: 'behavior',
         subtype: 'consistent_methodology',
@@ -330,17 +329,17 @@ async function detectBehavioralPatterns(
         confidence: 0.91,
         characteristics: ['Similar approach patterns', 'Consistent tool usage', 'Repeated sequence of actions'],
         occurrences: Math.max(2, Math.floor((evidence || []).length * 0.4)),
-        significance: `very_high` } as Pattern,
+        significance: `very_high` } as Pattern
     ],
     anomalies: [
-      {
+      {,
         id: `behavior_anomaly_${Date.now()}`,
         type: 'behavior',
         subtype: 'deviation',
         description: 'Unusual deviation from established pattern',
         confidence: 0.74,
         context: 'Different methodology used in one instance',
-        severity: `medium` } as Anomaly,
+        severity: `medium` } as Anomaly
     ],
     confidence: 0.88
   };
@@ -356,7 +355,7 @@ async function detectCommunicationPatterns(
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {
+      {,
         id: `comm_${Date.now()}`,
         type: 'communication',
         subtype: 'frequency_pattern',
@@ -364,10 +363,10 @@ async function detectCommunicationPatterns(
         confidence: 0.67,
         intervals: ['Every 2 hours', 'Daily at 9 AM', 'Weekly on Fridays'],
         channels: ['Email', 'Phone', 'Messaging'],
-        significance: `medium` } as Pattern,
+        significance: `medium` } as Pattern
     ],
     anomalies: [
-      {
+      {,
         id: `comm_anomaly_${Date.now()}`,
         type: 'communication',
         subtype: 'silence_period',
@@ -375,7 +374,7 @@ async function detectCommunicationPatterns(
         confidence: 0.71,
         duration: '48 hours',
         context: 'Expected communication did not occur',
-        severity: `medium` } as Anomaly,
+        severity: `medium` } as Anomaly
     ],
     confidence: 0.69
   };
@@ -391,7 +390,7 @@ async function detectFinancialPatterns(
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {
+      {,
         id: `financial_${Date.now()}`,
         type: 'financial',
         subtype: 'transaction_pattern',
@@ -400,10 +399,10 @@ async function detectFinancialPatterns(
         amounts: ['$500.00', '$1,000.00', '$250.00'],
         frequency: 'Weekly',
         accounts: ['Account A', 'Account B'],
-        significance: `high` } as Pattern,
+        significance: `high` } as Pattern
     ],
     anomalies: [
-      {
+      {,
         id: `financial_anomaly_${Date.now()}`,
         type: 'financial',
         subtype: 'unusual_amount',
@@ -411,7 +410,7 @@ async function detectFinancialPatterns(
         confidence: 0.83,
         amount: '$5,000.00',
         context: 'Amount 10x larger than typical pattern',
-        severity: `high` } as Anomaly,
+        severity: `high` } as Anomaly
     ],
     confidence: 0.81
   };
@@ -427,7 +426,7 @@ async function detectDigitalPatterns(
 ): Promise<DetectionPart> {
   return {
     patterns: [
-      {
+      {,
         id: `digital_${Date.now()}`,
         type: 'digital',
         subtype: 'access_pattern',
@@ -436,10 +435,10 @@ async function detectDigitalPatterns(
         systems: ['System A', 'Database B', 'Application C'],
         times: ['Business hours', 'After hours access'],
         methods: ['Standard login', 'API access'],
-        significance: `high` } as Pattern,
+        significance: `high` } as Pattern
     ],
     anomalies: [
-      {
+      {,
         id: `digital_anomaly_${Date.now()}`,
         type: 'digital',
         subtype: 'unauthorized_access',
@@ -448,7 +447,7 @@ async function detectDigitalPatterns(
         system: 'Restricted Database',
         time: '2024-01-01T02:30:00Z',
         method: 'Direct database connection',
-        severity: `very_high` } as Anomaly,
+        severity: `very_high` } as Anomaly
     ],
     confidence: 0.89
   };

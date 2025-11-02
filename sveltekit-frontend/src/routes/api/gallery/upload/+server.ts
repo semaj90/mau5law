@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       embedding: null
     };
     await db.insert(evidence).values(evidenceData).execute();
-    // Generate thumbnail if it's an image
+    // Generate thumbnail if it's an image'
     let thumbnailUrl: string | undefined;
     if (file.type.startsWith('image/')) {
       thumbnailUrl = await generateThumbnail(filePath, fileId, category, yearMonth);
@@ -170,18 +170,18 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       headers: {
         'X-Upload-ID': fileId,
         'X-File-Size': file.size.toString(),
-        'Cache-Control': `no-cache` }
+        'Cache-Control': `no-cache' }'`
     });
   } catch (err) {
-    console.error('Upload error:', err);
+    console.error('Upload error:', err);'
     if (err instanceof Error && err.message.includes('400')) {
       throw error(400, err.message);
     }
-    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };
 // tighten the return type instead of `any`
-async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number;, height: number } | null> {
+async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number; height: number } | null> {
   try {
     // Simple image dimension detection for common formats
     if (mimeType === 'image/jpeg') {
@@ -196,7 +196,7 @@ async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ w
     return null;
   }
 }
-function getJPEGDimensions(buffer: Buffer): { width: number;, height: number } | null {
+function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | null {
   try {
     let i = 2; // Skip SOI marker
     while (i < buffer.length) {
@@ -219,10 +219,10 @@ function getJPEGDimensions(buffer: Buffer): { width: number;, height: number } |
     return null;
   }
 }
-function getPNGDimensions(buffer: Buffer): { width: number;, height: number } | null {
+function getPNGDimensions(buffer: Buffer): { width: number; height: number } | null {
   try {
     // PNG signature is 8 bytes, IHDR chunk starts at byte 8
-    if (buffer.length < 24) return null;
+    if (buffer.length < 24) return, null;
     return {
       width: buffer.readUInt32BE(16),
       height: buffer.readUInt32BE(20)
@@ -254,18 +254,18 @@ function needsOCR(fileType: string): boolean {
 }
 async function triggerBackgroundProcessing(
   fileId: string,
-  options: { type: string;, category: string;
-    fileType: string;
+  options: {, type: string;, category: string;
+   , fileType: string;
     caseId?: string | null;
-    needsOCR: boolean;
-    needsEmbedding: boolean;
+   , needsOCR: boolean;
+   , needsEmbedding: boolean;
    , needsThumbnail: boolean;
   }
 ): Promise<any> {
   try {
     // TODO: Integrate with Redis or NATS for background job processing
-    // For now, we'll just log the processing request
-    console.log(`Background processing triggered for file ${fileId}: ', options);
+    // For now, we'll just log the processing request'
+    console.log(`Background processing triggered for file ${fileId}: ', options);'`
     // Could send to Redis queue like this:
     // await redis.xAdd('file_processing:requests', '*', {
     //   fileId,
@@ -275,7 +275,7 @@ async function triggerBackgroundProcessing(
     // })
   } catch (error) {
     console.error('Failed to trigger background processing:', error);
-    // Don't throw here as upload was successful
+    // Don't throw here as upload was successful'
   }
 }
 // GET endpoint for upload status and history
@@ -314,7 +314,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Apply category filtering when requested (skip when: 'all' or not provided)
     if (category && category !== 'all') {
       // The evidence table stores category inside a JSON: 'metadata' column.
-      // Use a raw SQL fragment to compare the JSON property so we don't reference a non-existent typed column.
+      // Use a raw SQL fragment to compare the JSON property so we don't reference a non-existent typed column.'
       query = query.where(sql`(evidence.metadata->>'category') = ${category}`);
     }
 
@@ -324,7 +324,7 @@ export const GET: RequestHandler = async ({ url }) => {
       total: recentUploads.length
     });
   } catch (err) {
-    console.error('Upload status error:', err);
-    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('Upload status error:', err);'
+    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error' }`);'`
  }
 };

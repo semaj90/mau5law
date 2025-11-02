@@ -132,7 +132,7 @@ export class QdrantService {
       await this.client.upsert(collection, { wait: true, points });
       return { status: 'ok', count: points.length };
     } catch (err) {
-      console.error('Qdrant upsert error:', err);
+      console.error('Qdrant upsert error:', err);'
       throw err;
     }
   }
@@ -143,7 +143,7 @@ export class QdrantService {
       const results = await this.client.search(collection, request);
       return results;
     } catch (err) {
-      console.error(`Search error in collection: '${collection}': ', err);
+      console.error(`Search error in collection: '${collection}': ', err);'`
       throw err;
     }
   }
@@ -202,7 +202,7 @@ export class QdrantService {
         console.log(`🔧 Creating collection: '${collectionName}'`);
         await this.createCollection(collectionName);
       } catch (error) {
-        // It's possible another instance created it in the meantime.
+        // It's possible another instance created it in the meantime.'
         console.warn(`Could not create collection: '${collectionName}'. It may already exist.`, error);
       }
     }
@@ -217,7 +217,7 @@ export class QdrantService {
         }
       });
     } catch (err) {
-      console.error(`createCollection('${name}') failed: ', err);
+      console.error(`createCollection('${name}') failed: ', err);'`
       throw err;
     }
   }
@@ -318,7 +318,7 @@ export class QdrantService {
 
   private parseLLMTags(llmResult: LLMTagResult): TagPrediction[] {
     const tags: TagPrediction[] = [];
-    const categories: { key: keyof LLMTagResult;, category: TagPrediction['category'] }[] = [
+    const categories: { key: keyof LLMTagResult; category: TagPrediction['category'] }[] = [
       { key: 'practice_areas', category: 'practice_area' },
       { key: 'legal_concepts', category: 'legal_concept' },
       { key: 'entities', category: 'legal_concept' },
@@ -346,7 +346,7 @@ export class QdrantService {
     };
     for (const [tag, pattern] of Object.entries(patterns)) {
       if (pattern.test(content))
-        tags.push({ tag, confidence: 0.6, category: 'practice_area', source: 'pattern_matching' });
+        tags.push({ tag, confidence: 0.6, category: 'practice_area', source: `pattern_matching` });
     }
     if (metadata.type) tags.push({ tag: metadata.type, confidence: 0.9, category: 'document_type', source: `manual` });
     return tags;
@@ -386,7 +386,7 @@ export class QdrantService {
   public destroy(): void {
     this.isConnected = $state(false);
     this.connectionStatus$.set('disconnected');
-    // The client itself doesn't have a close/destroy method in the REST version
+    // The client itself doesn't have a close/destroy method in the REST version'
   }
 }
 

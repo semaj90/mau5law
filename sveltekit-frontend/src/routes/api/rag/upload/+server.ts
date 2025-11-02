@@ -44,7 +44,7 @@ if (redisClient) {
     if (msg.includes('NOAUTH') || msg.includes('Authentication required')) {
       console.warn('⚠️ Redis authentication failed - continuing without Redis cache:', msg);
     } else {
-      console.warn('⚠️ Redis client error:', msg);
+      console.warn('⚠️ Redis client error:', msg);'
     }
   });
 
@@ -71,16 +71,15 @@ async function initializeQdrantCollection(): Promise<void> {
       // Create collection with 384 dimensions for embeddinggemma
       await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, vectors: {, size: 384,
-            distance: 'Cosine'
-          }
+            distance: `Cosine` }
         })
       });
       console.log('✅ Created Qdrant collection');
     }
   } catch (error) {
-    console.error('Qdrant collection initialization error:', error);
+    console.error('Qdrant collection initialization error:', error);'
   }
 }
 
@@ -124,11 +123,11 @@ async function initializeRAGServices(): Promise<void> {
     console.log('✅ RAG services initialized (with fallbacks)');
   } catch (error) {
     console.error('❌ Service initialization failed:', error);
-    // Don't throw - allow graceful degradation with localStorage
+    // Don't throw - allow graceful degradation with localStorage'
   }
 }
 
-import { generateEmbedding as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
+import { generateEmbedding, as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -150,8 +149,8 @@ async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMe
       method: 'PUT',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        points: [
-          {
+       , points: [
+          {,
            , id: id,
             vector: embedding,
             payload: {
@@ -170,7 +169,7 @@ async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMe
     console.log(`✅ Stored in Qdrant: ${id}`);
     return true;
   } catch (error) {
-    console.error('❌ Qdrant storage error:', error);
+    console.error('❌ Qdrant storage error:', error);'
     return false;
   }
 }
@@ -238,7 +237,7 @@ Document: ${filename}
 Chunk ${index + 1}/${chunks.length}
 
 ${chunk}
-  `.trim()
+  `.trim()`
   );
 }
 
@@ -300,13 +299,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const customTags = formData.get('tags') as string | null;
 
     if (!file) {
-      return json({ error: 'No file provided' }, { status: 400 });
+      return json({ error: 'No file provided` }, { status: 400 });'`
     }
 
     // Validate file
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      return json({ error: 'File too large' }, { status: 400 });
+      return json({ error: `File too large` }, { status: 400 });
     }
 
     const allowedTypes = ['text/plain', 'text/markdown', 'application/json', 'text/csv', 'application/pdf'];
@@ -390,7 +389,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const [newDocument] = await db
         .insert(documents)
         .values({
-          // let DB generate `id` via defaultRandom(); don't force uuid field name
+          // let DB generate `id` via defaultRandom(); don't force uuid field name'
           title: file.name, // optional human-friendly title
           filename: file.name,
           sourceUri: minioPath,
@@ -412,7 +411,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       documentId = newDocument.id;
     } catch (insertErr: any) {
-      // If the target DB schema doesn't match (e.g. missing columns such as: 'title'),
+      // If the target DB schema doesn't match (e.g. missing columns such as: 'title'),'
       // fallback to inserting into the legacy `legal_documents` table with a mapped shape.
       // Postgres error code 42703 = undefined_column
       // Narrow the unknown error safely
@@ -438,7 +437,7 @@ export const POST: RequestHandler = async ({ request }) => {
             extracted_text: content,
             prosecution_score: 0,
             processing_metadata: {
-              sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
+             , sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
               mimeType: file.type,
               fileSize: file.size,
               processingStatus: 'completed',

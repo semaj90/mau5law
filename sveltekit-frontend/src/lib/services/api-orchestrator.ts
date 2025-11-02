@@ -93,8 +93,8 @@ export interface MultiProtocolRequestOptions {
 export class APIOrchestrator {
   private static instance: APIOrchestrator;
   private serviceEndpoints: ServiceEndpoints;
-  private healthCache: Map<string, { result: HealthCheckResult;, timestamp: number }> = new Map();
-  private requestMetrics: Map<string, { count: number; totalTime: number;, errors: number }> = new Map();
+  private healthCache: Map<string, { result: HealthCheckResult; timestamp: number }> = new Map();
+  private requestMetrics: Map<string, { count: number; totalTime: number; errors: number }> = new Map();
 
   // NEW: simple per-service circuit breaker state
   private circuitBreakers: Map<
@@ -105,7 +105,7 @@ export class APIOrchestrator {
   // NEW: in-memory response cache (simple, process-local)
   private responseCache: Map<
     string,
-    { data: any;, headers: Record<string, string>; status: number; expires: number }
+    { data: any; headers: Record<string, string>; status: number; expires: number }
   > = new Map();
 
   private constructor() {
@@ -330,7 +330,7 @@ export class APIOrchestrator {
   /**
    * Route request to optimal service with protocol selection
    */
-  async routeRequest<T extends keyof ServiceEndpoints>(
+  async routeRequest<T extends keyof, ServiceEndpoints>(
     service: T,
     endpoint: string,
     options: MultiProtocolRequestOptions = {}
@@ -387,7 +387,7 @@ export class APIOrchestrator {
             return fallbackResponse;
           }
         } catch (fallbackError) {
-          console.error(`Fallback failed for ${String(service)}: ', fallbackError);
+          console.error(`Fallback failed for ${String(service)}: ', fallbackError);'`
         }
       }
       this.recordMetrics(String(service), Date.now() - startTime, true);
@@ -593,7 +593,7 @@ export class APIOrchestrator {
   /**
    * Get all services with their configurations
    */
-  getAllServices(): Array<{ name: string; config: ServiceEndpoint;, protocols: string[] }> {
+  getAllServices(): Array<{ name: string; config: ServiceEndpoint; protocols: string[] }> {
     return Object.entries(this.serviceEndpoints).map(([name, config]) => ({
       name,
       config,
@@ -698,7 +698,7 @@ export class APIOrchestrator {
 
 // Exported helper: derive Ollama endpoints from env or defaults.
 // Use this helper from other modules instead of hardcoding Ollama URLs.
-export function getOllamaEndpoint(): { primary: string; secondary: string;, embeddings: string } {
+export function getOllamaEndpoint(): { primary: string; secondary: string; embeddings: string } {
 	// Prefer explicit env vars, then docker-specific vars, then local defaults.
 	const primary =
 		(process.env.OLLAMA_URL as string | undefined) ??

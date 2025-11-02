@@ -35,11 +35,11 @@ interface SharedWorkerPoolInterface {
   getQueuedJobIds?(): string[]; // Make it optional if not always present
 }
 
-// Define a type for the userDocuments table rows using Drizzle's inferSelect.
+// Define a type for the userDocuments table rows using Drizzle's inferSelect.'
 // This assumes `userDocuments` is a Drizzle table definition imported from `$lib/server/index.js`.
 // The actual columns and their types will be inferred from the Drizzle schema.
 // Augment the inferred type to explicitly include 'jobId', 'metadata', 'contentType', and 'completedAt'
-// as they are used in the code but might not be fully inferred by Drizzle's $inferSelect for JSONB or nullable columns.
+// as they are used in the code but might not be fully inferred by Drizzle's $inferSelect for JSONB or nullable columns.'
 type UserDocument = typeof userDocuments.$inferSelect & {
   jobId?: string | null; // Assuming jobId might be stored directly or null
   metadata?: DocumentMetadata | null; // Explicitly add metadata
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
 
       let parsedMetadata: DocumentMetadata = {};
       // Drizzle typically handles JSONB columns as objects directly.
-      // If `doc.metadata` is already an object, use it. Otherwise, try parsing if it's a string.
+      // If `doc.metadata` is already an object, use it. Otherwise, try parsing if it's a string.'
       if (typeof doc.metadata === 'string') {
         try {
           parsedMetadata = JSON.parse(doc.metadata);
@@ -200,10 +200,10 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
       success: true,
       jobId,
       status: 'not-found',
-      error: 'Job not found in queue or database` };
+      error: 'Job not found in queue or database' };
     return json(responseData);
   } catch (err) {
-    console.error('Job status check error:', err);
+    console.error('Job status check error:', err);'
     const errorResponseData: JobStatusResponse = {
       success: false,
       jobId: params.jobId || 'unknown',

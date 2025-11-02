@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
         {
           status: 'unhealthy',
           cuda_available: false,
-          error: 'CUDA server not responding` },
+          error: 'CUDA server not responding' },
         { status: 503 }
       );
     }

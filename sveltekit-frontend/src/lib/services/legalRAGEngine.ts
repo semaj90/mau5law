@@ -67,7 +67,7 @@ export interface LegalRAGOptions {
   jurisdiction?: string;
   caseType?: string;
   requirePrecedent?: boolean;
-  timeRange?: { start: Date;, end: Date };
+  timeRange?: { start: Date; end: Date };
   riskThreshold?: number;
   useSemanticSearch?: boolean;
   useContext7?: boolean;
@@ -78,7 +78,7 @@ export interface LegalRAGOptions {
 }
 
 // NEW: Define a shared type for raw search results from vector databases
-type RawSearchResult = Array<{ document: LegalDocument;, originalScore: number }>;
+type RawSearchResult = Array<{ document: LegalDocument; originalScore: number }>;
 
 export class LegalRAGEngine {
   constructor(
@@ -86,7 +86,7 @@ export class LegalRAGEngine {
     private ollama: OllamaService
   ) {
     // Production Readiness Note:
-    // The: 'qdrant' client; and: 'ollama' service should be instantiated elsewhere
+    //; The: 'qdrant' client; and: 'ollama' service should be instantiated elsewhere
     // (e.g., in a central client factory or dependency injection setup)
     // and configured to respect environment variables for their endpoints.
     // For example, QdrantClient should use process.env.QDRANT_URL || 'http://localhost:6333',
@@ -176,7 +176,7 @@ export class LegalRAGEngine {
       // Convert to RAGSearchResult format
       const searchResults: RAGSearchResult[] = rawSearchResults.map(result => ({
         ...result,
-        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match` }));
+        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match` }));'`
 
       // Apply custom legal reranker
       const rerankedResults = this.rerank(searchResults, {
@@ -222,7 +222,7 @@ export class LegalRAGEngine {
         .orderBy(sql`distance`) // Order by distance (ascending for closest)
         .limit(limit);
 
-      return resultsWithDistance.map((r: {, doc: LegalDocument; distance: number }) => ({
+      return resultsWithDistance.map((r: {, doc: LegalDocument;, distance: number }) => ({
         document: r.doc,
         originalScore: 1 - r.distance, // Convert distance to similarity score
       }));
@@ -373,7 +373,7 @@ export class LegalRAGEngine {
       );
     }
     if (options.jurisdiction) {
-      // Prioritize exact matches but don't exclude others
+      // Prioritize exact matches but don't exclude others'
       const exactMatches = filtered.filter((r: RAGSearchResult) => r.jurisdictionMatch); // Changed from any
       const otherMatches = filtered.filter((r: RAGSearchResult) => !r.jurisdictionMatch); // Changed from any
       filtered = [...exactMatches, ...otherMatches];
@@ -389,7 +389,7 @@ export class LegalRAGEngine {
     } catch (error: any) {
       // Changed from any
       console.error('Error generating embedding:', error);
-      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error` }`);
+      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error` }`);'`
     }
   }
   /**
@@ -438,12 +438,12 @@ export class LegalRAGEngine {
   /**
    * Assess legal risk using AI analysis
    */
-  private async assessLegalRisk(content: string, caseType?: string): Promise<{ score: number;, confidence: number }> {
+  private async assessLegalRisk(content: string, caseType?: string): Promise<{ score: number; confidence: number }> {
     // Changed return type from any
     try {
       // Use Ollama for risk assessment
       const riskAnalysis = await this.ollama.generateCompletion(
-        `Analyze the legal risk level of this ${caseType || 'legal` } document on a scale of 0-100.
+        `Analyze the legal risk level of this ${caseType || 'legal` } document on a scale of 0-100.'
         Consider liability, compliance issues, and potential legal exposure.
         Document: ${content.substring(0, 2000)}
         Return only a JSON object with: 'score' (0-100); and: 'confidence' (0-1) properties.`
@@ -484,7 +484,7 @@ export class LegalRAGEngine {
     await this.qdrant.upsert('legal_documents', {
       wait: true,
       points: [
-        {
+        {,
           id,
           vector: embedding,
           payload: metadata
@@ -498,7 +498,7 @@ export class LegalRAGEngine {
   private async generateSummary(content: string): Promise<string> {
     try {
       const response = await this.ollama.generateCompletion(
-        `Provide a concise legal summary of this document in 2-3 sentences:
+        `Provide a concise legal summary of this document in 2-3 sentences:`
         ${content.substring(0, 2000)}`
       );
       return response;
@@ -514,7 +514,7 @@ export class LegalRAGEngine {
   private async generateTags(content: string): Promise<string[]> {
     try {
       const response = await this.ollama.generateCompletion(
-        `Generate 5-7 relevant legal tags for this document. Return only a JSON array of strings:
+        `Generate 5-7 relevant legal tags for this document. Return only a JSON array of strings:`
         ${content.substring(0, 1500)}`
       );
       const tags = JSON.parse(response);

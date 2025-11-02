@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
         hasEmbedding: !!embedding,
         hasLegalAnalysis: !!legalAnalysis,
         isConfidential: documentData.is_confidential,
-        processingStatus: 'completed` },
+        processingStatus: `completed` },
       meta: {
         timestamp: new Date().toISOString(),
         databaseHealth: dbHealth.overall
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: err.message || 'Storage failed` },
+        error: err.message || 'Storage failed` },'`
       { status: err.status || 500 }
     );
   }
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async () => {
     // Count stored documents
     let documentCount = 0;
     try {
-      const [result] = await db.select({ count: sql<number>`count(*)' }).from(legal_documents);
+      const [result] = await db.select({ count: sql<number>`count(*)` }).from(legal_documents);
       documentCount = result?.count || 0;
     } catch (countError) {
       console.warn('[Storage] Failed to count documents:', countError);
@@ -129,16 +129,15 @@ export const GET: RequestHandler = async () => {
         minioIntegration: false, // TODO: Implement MinIO integration; legalAnalysis: true
       },
       database: {
-        status: dbHealth.overall,
+       , status: dbHealth.overall,
         documents: documentCount
       },
       message: 'POST to store legal documents with embeddings and analysis',
       endpoints: {
        , store: 'POST /api/documents/store',
         retrieve: 'GET /api/documents/[id]',
-        search: 'POST /api/documents/search'
-      },
-      version: '3.0.0` });
+        search: `POST /api/documents/search` },
+      version: `3.0.0` });
   } catch (err: any) {
     return json(
       {

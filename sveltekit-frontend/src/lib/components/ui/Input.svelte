@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { HTMLInputAttributes } from 'svelte/elements';
@@ -132,19 +132,19 @@ import type { Message } from '$lib/types';
     ].join(' ')
   );
 </script>
-<div class={containerClasses}>
+<div, class={containerClasses}>
   <!-- Label -->
   {#if label}
-    <label for={inputId} class={labelClasses}>
+    <label, for={inputId} class={labelClasses}>
       {label}
     </label>
   {/if}
-  <!-- Input Container -->
-  <div class={inputContainerClasses}>
-    <!-- Left Icon -->
+  <!-- Input, Container -->
+  <div, class={inputContainerClasses}>
+    <!-- Left, Icon -->
     {#if icon && iconPosition === 'left'}
-      <div class={iconClasses}>
-        <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
+      <div, class={iconClasses}>
+        <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       {/if}
     <!-- Input -->
     {#if type === 'password'}
@@ -205,39 +205,39 @@ import type { Message } from '$lib/types';
         {...restProps}
       />
     {/if}
-    <!-- Right Icon or Status -->
+    <!-- Right Icon or, Status -->
     {#if loading}
-      <div class="space-y-4">
-        <div class="space-y-4"></div>
+      <div, class="space-y-4">
+        <div, class="space-y-4"></div>
       </div>
     {:else if success}
-      <div class="space-y-4">
-        <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
+      <div, class="space-y-4">
+        <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       </div>
     {:else if hasError}
-      <div class="space-y-4">
-        <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
+      <div, class="space-y-4">
+        <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       </div>
     {:else if icon && iconPosition === 'right'}
-      <div class={iconClasses}>
-        <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
+      <div, class={iconClasses}>
+        <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       {/if}
-    <!-- Clear Button -->
+    <!-- Clear, Button -->
     {#if showClearButton}
-      <button type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear input">
-        <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
+      <button type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear, input">
+        <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       </button>
     {/if}
   </div>
-  <!-- Error Message -->
+  <!-- Error, Message -->
   {#if hasError}
-    <p id={errorId} class={hintClasses} role="alert">
+    <p, id={errorId} class={hintClasses} role="alert">
       {error}
     </p>
   {/if}
-  <!-- Hint Text -->
+  <!-- Hint, Text -->
   {#if hint && !hasError}
-    <p id={hintId} class={hintClasses}>
+    <p, id={hintId} class={hintClasses}>
       {hint}
     </p>
   {/if}

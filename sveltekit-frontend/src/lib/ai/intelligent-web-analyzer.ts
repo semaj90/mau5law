@@ -21,7 +21,7 @@ export interface WebElement { id: string;, tagName: string;
 }
 export interface PageChunk { id: string;, content: string;
   elements: WebElement[];
-  position: { start: number;, end: number };
+  position: { start: number; end: number };
   embeddings?: Float32Array;
   semantic_meaning?: string;
   confidence: number;
@@ -34,7 +34,7 @@ export interface UserAnalytics { userId: string;, sessionId: string;
   typingPatterns: { avgSpeed: number; // WPM, commonWords: string[];
     specialization: string[]; // legal, technical, etc.
   };
-  interactionPatterns: { clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number;, speed: number };
+  interactionPatterns: { clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number; speed: number };
     focusAreas: string[]; // element selectors
   };
   caseContext: { activeCases: string[];, currentTask: string;
@@ -225,7 +225,7 @@ export class IntelligentWebAnalyzer {
       p, h1, h2, h3, h4, h5, h6, span, div, article, section,
       input, textarea, button, a, img, video, canvas,
       td, th, li, label, legend, figcaption
-    `);
+    `);`
     // remove unused: 'index' parameter to satisfy lint rules
     meaningfulElements.forEach(el => {
       const rect = el.getBoundingClientRect();
@@ -287,7 +287,7 @@ export class IntelligentWebAnalyzer {
     const markers = elements.map((el, idx) => `[[elem_${idx}]]`);
     const pieces = elements.map((el, idx) => `${markers[idx]} ${el.tagName}: ${el.textContent}`);
     const fullText = pieces.join('\n\n');
-    // Dynamic import to avoid bundling issues in environments that don't need the splitter
+    // Dynamic import to avoid bundling issues in environments that don't need the splitter'
     const { RecursiveCharacterTextSplitter } = await import('langchain/text_splitter');
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 750,
@@ -339,7 +339,7 @@ export class IntelligentWebAnalyzer {
             // Generate new embedding via API
             const response = await fetch('/api/embeddings', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json` },'`
               body: JSON.stringify({
                , text: chunk.content,
                 model: 'nomic-text',
@@ -434,8 +434,8 @@ export class IntelligentWebAnalyzer {
   private debouncePageAnalysis = this.debounce(() => {
     this.analyzeCurrentPage();
   }, 2000);
-  private debounce<T extends (...args: any[]) => unknown>(func: T, wait: number) {
-    let timeout: ReturnType<typeof setTimeout>;
+  private debounce<T, extends (...args: any[]) => unknown>(func: T, wait: number) {
+    let timeout: ReturnType<typeof, setTimeout>;
     return (...args: Parameters<T>): void => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {

@@ -124,15 +124,15 @@ const AI_ASSISTANT_MACHINE_ID = 'aiAssistantMachine'; // As per copilot-instruct
 export type AIAssistantEvent =
   | { type: 'OPEN' }
   | { type: 'CLOSE' }
-  | { type: 'SEND_MESSAGE';, payload: {, content: string; model?: AIModel; caseId?: string } }
-  | { type: 'RECEIVE_MESSAGE';, payload: AIMessage }
-  | { type: 'SET_CASE';, payload: {, caseId: string | null } }
+  | { type: 'SEND_MESSAGE'; payload: {, content: string; model?: AIModel; caseId?: string } }
+  | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
+  | { type: 'SET_CASE'; payload: {, caseId: string | null } }
   // Fallback to allow custom/extension events while still avoiding `any`
   | { type: string; [key: string]: any };
 
 // Function to send events to the AI Assistant XState machine
 export function sendToAIAssistant(event: AIAssistantEvent) {
-  console.log(`[unified.ts] Sending event to AI Assistant machine: ', event);
+  console.log(`[unified.ts] Sending event to AI Assistant machine: ', event);'`
   xstateIntegration.sendEvent(AI_ASSISTANT_MACHINE_ID, event);
 }
 
@@ -156,7 +156,7 @@ const initialState: WebsocketState = {
   dashboardData: { cases: [], evidence: [], stats: {} },
   processingJobs: [],
   recentActivity: [],
-  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },
+  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown` },'`
   activeEditors: {}
 };
 
@@ -197,7 +197,7 @@ export function formatRecentActivity(activity: any): string {
   return `${ts} — ${who}: ${msg}`;
 }
 
-// Note: In a full implementation, you would subscribe to the XState machine's
+// Note: In a full implementation, you would subscribe to the XState machine's'
 // state changes via `xstateIntegration` and update `_user` and `_aiAssistant`
 // writable stores accordingly. This file provides the necessary types and
 // functions for the Svelte component to interact with the stores and XState.

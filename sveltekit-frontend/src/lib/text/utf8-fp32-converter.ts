@@ -52,7 +52,7 @@ export class UTF8ToFP32Converter {
       '\\': 0.05,
       '/': 0.03,
       '~': 0.01,
-      '`': -0.01,
+      '`': -0.01,`
       '^': -0.03,
       '%': -0.05,
       '#': -0.07,
@@ -69,8 +69,8 @@ export class UTF8ToFP32Converter {
       '?': -0.29,
       '.': -0.31,
       ',': -0.33,
-      "'": -0.35,
-      '"': -0.37,
+      "'": -0.35,'
+      '"': -0.37,"
       '(': -0.39,
       ')': -0.41,
       '$': -0.43
@@ -142,8 +142,7 @@ export class UTF8ToFP32Converter {
         const asciiArray = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
           const code = text.charCodeAt(i);
-          asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with: '?'
-        }
+          asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with: '?` }'`
         return asciiArray;
       }
       case 'latin1': {

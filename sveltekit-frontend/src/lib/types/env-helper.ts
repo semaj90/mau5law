@@ -1,10 +1,10 @@
-import { env as privateEnv } from '$env/dynamic/private';
+import { env, as privateEnv } from '$env/dynamic/private';
 import type { EnhancedEnv } from './env-enhanced';
 
 const nodeEnv = typeof process !== 'undefined' ? (process.env as Record<string, string | undefined>) : undefined;
 
 // Minimal runtime implementation for envHelper used by the project.
-// Reads from process.env and SvelteKit's $env/dynamic/private with sensible local-dev / docker fallbacks.
+// Reads from process.env and SvelteKit's $env/dynamic/private with sensible local-dev / docker fallbacks.'
 export const envHelper = {
   get: (key: string, defaultValue?: string): string | undefined => {
     // Prefer Docker/Node env first (if available), then SvelteKit dynamic private env, then provided default

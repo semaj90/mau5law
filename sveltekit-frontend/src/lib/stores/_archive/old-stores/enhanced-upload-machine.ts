@@ -63,25 +63,25 @@ export interface EnhancedUploadContext {
 }
 // Enhanced Event types with OCR and AI processing
 type EnhancedUploadEvent =
-  | { type: 'UPLOAD_FILES'; files: File[];, caseId: string; documentType?: string }
-  | { type: 'PRESIGN_SUCCESS'; uploadId: string; presignedUrls: string[];, metadata: any }
-  | { type: 'PRESIGN_FAILED';, error: string }
-  | { type: 'CHUNK_UPLOADED';, chunkIndex: number }
+  | { type: 'UPLOAD_FILES'; files: File[]; caseId: string; documentType?: string }
+  | { type: 'PRESIGN_SUCCESS'; uploadId: string; presignedUrls: string[]; metadata: any }
+  | { type: 'PRESIGN_FAILED'; error: string }
+  | { type: 'CHUNK_UPLOADED'; chunkIndex: number }
   | { type: 'UPLOAD_COMPLETE' }
-  | { type: 'UPLOAD_FAILED';, error: string }
-  | { type: 'OCR_STARTED';, jobId: string }
-  | { type: 'OCR_PROGRESS';, progress: number }
-  | { type: 'OCR_COMPLETE';, result: any }
-  | { type: 'OCR_FAILED';, error: string }
-  | { type: 'PROCESSING_STARTED'; stage: string;, jobId: string }
-  | { type: 'PROCESSING_PROGRESS'; stage: string;, progress: number }
-  | { type: 'PROCESSING_COMPLETE'; stage: string;, result: any }
-  | { type: 'PROCESSING_FAILED'; stage: string;, error: string }
-  | { type: 'AI_ANALYSIS_COMPLETE'; analysis: string;, confidence: number }
-  | { type: 'NEO4J_STORED';, nodeId: string }
-  | { type: 'RAG_INDEXED';, documentId: string }
-  | { type: 'RABBITMQ_QUEUED';, messageId: string }
-  | { type: 'INDEXING_COMPLETE';, result: any }
+  | { type: 'UPLOAD_FAILED'; error: string }
+  | { type: 'OCR_STARTED'; jobId: string }
+  | { type: 'OCR_PROGRESS'; progress: number }
+  | { type: 'OCR_COMPLETE'; result: any }
+  | { type: 'OCR_FAILED'; error: string }
+  | { type: 'PROCESSING_STARTED'; stage: string; jobId: string }
+  | { type: 'PROCESSING_PROGRESS'; stage: string; progress: number }
+  | { type: 'PROCESSING_COMPLETE'; stage: string; result: any }
+  | { type: 'PROCESSING_FAILED'; stage: string; error: string }
+  | { type: 'AI_ANALYSIS_COMPLETE'; analysis: string; confidence: number }
+  | { type: 'NEO4J_STORED'; nodeId: string }
+  | { type: 'RAG_INDEXED'; documentId: string }
+  | { type: 'RABBITMQ_QUEUED'; messageId: string }
+  | { type: 'INDEXING_COMPLETE'; result: any }
   | { type: 'RETRY' }
   | { type: 'RESET' };
 // Enhanced Upload and processing state machine with comprehensive legal AI pipeline
@@ -92,7 +92,7 @@ export const enhancedUploadMachine = createMachine(
     },
     initial: 'idle',
     context: {
-      caseId: '',
+     , caseId: '',
       files: [],
       presignedUrls: [],
       uploadedChunks: 0,
@@ -102,11 +102,11 @@ export const enhancedUploadMachine = createMachine(
       results: {},
       rabbitMQ: {},
       aiAssistant: {
-        activeModel: 'gemma3:legal-latest'
+       , activeModel: 'gemma3:legal-latest'
       },
       database: {}
     },
-    states: { idle: {, on: { UPLOAD_FILES: {, target: 'requesting_presign',
+    states: {, idle: {, on: {, UPLOAD_FILES: {, target: 'requesting_presign',
             actions: assign({
              , files: ({ event }) => event.files,
               caseId: ({ event }) => event.caseId,
@@ -197,7 +197,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `RabbitMQ queue failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `RabbitMQ queue failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -226,7 +226,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `OCR failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `OCR failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             },
             on: { OCR_PROGRESS: {, actions: assign({
@@ -259,7 +259,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error` }' })
+                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error' }` })
               }
             }
           },
@@ -287,7 +287,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Gemma3 embedding failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `Gemma3 embedding failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -314,7 +314,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `AI analysis failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `AI analysis failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -349,7 +349,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Neo4j storage failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `Neo4j storage failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -377,7 +377,7 @@ export const enhancedUploadMachine = createMachine(
                 target: '#enhanced-upload.error',
                 actions: assign({
                   error: ({ event }) =>
-                    `PostgreSQL storage failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                    `PostgreSQL storage failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -405,7 +405,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `pgvector indexing failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `pgvector indexing failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -440,7 +440,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `RAG integration failed: ${(event.error as any)?.message || 'Unknown error` }` })
+                  error: ({ event }) => `RAG integration failed: ${(event.error as any)?.message || 'Unknown error` }` })'`
               }
             }
           },
@@ -467,7 +467,7 @@ export const enhancedUploadMachine = createMachine(
               onError: {
                 target: '#enhanced-upload.error',
                 actions: assign({
-                  error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error` }' })
+                  error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error' }' })'`
               }
             }
           },
@@ -614,9 +614,9 @@ export const enhancedUploadMachine = createMachine(
         async ({
           input
         }: { input: {, uploadId: string;
-            extractedText: string;
+           , extractedText: string;
             ocrText?: string;
-            embeddings: number[][];
+           , embeddings: number[][];
            , model: string;
           };
         }) => {
@@ -647,10 +647,10 @@ export const enhancedUploadMachine = createMachine(
         async ({
           input
         }: { input: {, uploadId: string;
-            caseId: string;
-            extractedText: string;
+           , caseId: string;
+           , extractedText: string;
             ocrText?: string;
-            aiAnalysis: string;
+           , aiAnalysis: string;
            , metadata: any;
           };
         }) => {
@@ -684,10 +684,10 @@ export const enhancedUploadMachine = createMachine(
         async ({
           input
         }: { input: {, uploadId: string;
-            caseId: string;
-            extractedText: string;
+           , caseId: string;
+           , extractedText: string;
             ocrText?: string;
-            embeddings: number[][];
+           , embeddings: number[][];
            , metadata: any;
             neo4jNodeId?: string;
           };
@@ -725,8 +725,8 @@ export const enhancedUploadMachine = createMachine(
         async ({
           input
         }: { input: {, uploadId: string;
-            embeddings: number[][];
-            postgresqlId: string;
+           , embeddings: number[][];
+           , postgresqlId: string;
            , metadata: any;
           };
         }) => {
@@ -757,10 +757,10 @@ export const enhancedUploadMachine = createMachine(
         async ({
           input
         }: { input: {, uploadId: string;
-            extractedText: string;
+           , extractedText: string;
             ocrText?: string;
-            embeddings: number[][];
-            pgvectorId: string;
+           , embeddings: number[][];
+           , pgvectorId: string;
            , aiAnalysis: string;
           };
         }) => {
@@ -771,7 +771,7 @@ export const enhancedUploadMachine = createMachine(
             body: JSON.stringify({
               uploadId,
               document: {
-                text: extractedText,
+               , text: extractedText,
                 ocrText,
                 aiAnalysis
               },
@@ -794,7 +794,7 @@ export const enhancedUploadMachine = createMachine(
         }
       ),
       // Reuse existing actors
-      requestPresignedUrls: fromPromise(async ({ input }: { input: {, files: File[]; caseId: string } }) => {
+      requestPresignedUrls: fromPromise(async ({ input }: {, input: {, files: File[];, caseId: string } }) => {
         const { files, caseId } = input;
         const file = files[0];
         const chunkSize = 10 * 1024 * 1024; // 10MB chunks
@@ -851,7 +851,7 @@ export const enhancedUploadMachine = createMachine(
           return await completeResponse.json();
         }
       ),
-      processTensorData: fromPromise(async ({ input }: { input: {, uploadId: string; embeddings: number[][] } }) => {
+      processTensorData: fromPromise(async ({ input }: {, input: {, uploadId: string;, embeddings: number[][] } }) => {
         const { uploadId, embeddings } = input;
         const tensorData = embeddings.flat();
         const batchSize = 1;
@@ -862,7 +862,7 @@ export const enhancedUploadMachine = createMachine(
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            job_id: `tensor-${uploadId}`,
+           , job_id: `tensor-${uploadId}`,
             upload_id: uploadId,
             tensor_tile: {
              , tile_id: `${uploadId}-main`,
@@ -881,8 +881,8 @@ export const enhancedUploadMachine = createMachine(
   }
 );
 // Types for Svelte components
-export type EnhancedUploadState = StateFrom<typeof enhancedUploadMachine>;
-export type EnhancedUploadActor = ReturnType<typeof createActor<typeof enhancedUploadMachine>>;
+export type EnhancedUploadState = StateFrom<typeof, enhancedUploadMachine>;
+export type EnhancedUploadActor = ReturnType<typeof, createActor<typeof, enhancedUploadMachine>>;
 // Enhanced Svelte store integration
 function createEnhancedUploadStore() {
   const actor = createActor(enhancedUploadMachine);

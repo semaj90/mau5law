@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       }
     });
   } catch (err) {
-    console.error('Gallery item fetch error:', err);
+    console.error('Gallery item fetch error:', err);'
     if (err instanceof Error && err.message.includes('404')) {
       throw error(404, 'Gallery item not found');
     }
@@ -244,7 +244,7 @@ export const PUT: RequestHandler = async ({ params, request, locals: _locals }) 
       updated: Object.keys(updateFields)
     });
   } catch (err) {
-    console.error('Gallery item update error:', err);
+    console.error('Gallery item update error:', err);'
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
     }
@@ -307,7 +307,7 @@ export const DELETE: RequestHandler = async ({ params, locals: _locals }) => {
       }
     });
   } catch (err) {
-    console.error('Gallery item deletion error:', err);
+    console.error('Gallery item deletion error:', err);'
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
     }
@@ -322,7 +322,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     const pathParts = filePath.split('/')
     const fileName = pathParts.pop()
     const dir = pathParts.join('/')
-    return `${dir}/thumb_${fileName}' }
+    return `${dir}/thumb_${fileName}' }'`
   // For other file types, return type-specific icons
   if (fileType.includes('pdf')) {
     return '/icons/pdf-thumbnail.svg'
@@ -336,7 +336,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   if (fileType.includes('document') || fileType.includes('text')) {
     return '/icons/document-thumbnail.svg'
   }
-  return '/icons/file-thumbnail.svg` }
+  return '/icons/file-thumbnail.svg` }'`
 function generateThumbnailPath(filePath: string): string | null {
   try {
     const pathParts = filePath.split('/')

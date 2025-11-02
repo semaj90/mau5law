@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unsupported; action: ${String(body.action)}' },
+            error: 'Unsupported; action: ${String(body.action)}' },
           { status: 400 }
         );
     }
@@ -124,8 +124,7 @@ export const GET: RequestHandler = async () => {
         service: 'Enhanced NATS Messaging',
         status: 'degraded',
         error: 'Unable to get NATS status',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+        details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 503 }
     );
   }
@@ -218,12 +217,12 @@ async function handleSubscribe(
   if (typeof body.subject !== 'string') {
     throw new Error('Subject (string) is required for subscription');
   }
-  // For HTTP API, we can't maintain persistent subscriptions
+  // For HTTP API, we can't maintain persistent subscriptions'
   return json(
     {
       success: false,
       error: 'HTTP subscriptions not supported',
-      suggestion: 'Use WebSocket endpoint for real-time subscriptions',
+      suggestion: 'Use WebSocket endpoint for real-time subscriptions`,'`
       websocket_url: `/api/v1/nats/ws` },
     { status: 400 }
   );

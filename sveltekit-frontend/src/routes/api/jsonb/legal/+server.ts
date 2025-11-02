@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       context: 'jsonb_legal_api_get',
       requestId: requestId,
       severity: 'high',
-      category: 'api` });
+      category: `api' });'`
     return json(
       {
         success: false,
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       }
       case 'search': {
         const redis = await getRedis();
-        type DocumentSearchRequest = z.infer<typeof DocumentSearchSchema>;
+        type DocumentSearchRequest = z.infer<typeof, DocumentSearchSchema>;
         const searchCriteria: DocumentSearchRequest = DocumentSearchSchema.parse(requestBody);
         const cacheKey = `search:${JSON.stringify(searchCriteria)}`;
 
@@ -327,7 +327,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       }
       case 'concepts': {
         const redis = await getRedis();
-        type ConceptAnalysisRequest = z.infer<typeof ConceptAnalysisSchema>;
+        type ConceptAnalysisRequest = z.infer<typeof, ConceptAnalysisSchema>;
         const { documentIds }: ConceptAnalysisRequest = ConceptAnalysisSchema.parse(requestBody);
         const cacheKey = `concepts:${documentIds.join(',')}`;
 
@@ -379,7 +379,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       }
       case 'similar-cases': {
         const redis = await getRedis();
-        type SimilarCasesRequest = z.infer<typeof SimilarCasesSchema>;
+        type SimilarCasesRequest = z.infer<typeof, SimilarCasesSchema>;
         const { caseId, threshold }: SimilarCasesRequest = SimilarCasesSchema.parse(requestBody);
         const cacheKey = `similar:${caseId}:${threshold}`;
 
@@ -430,7 +430,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         });
       }
       case 'citation-network': {
-        type CitationNetworkRequest = z.infer<typeof CitationNetworkSchema>;
+        type CitationNetworkRequest = z.infer<typeof, CitationNetworkSchema>;
         const { documentId, depth }: CitationNetworkRequest = CitationNetworkSchema.parse(requestBody);
         const citationNetwork = await jsonbLegalService.buildCitationNetwork(documentId, depth);
         const networkDuration = performance.now() - startTime;
@@ -491,7 +491,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       requestId: requestId,
       requestBody: requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
-      category: 'api` });
+      category: `api' });'`
     return json(
       {
         success: false,
@@ -534,7 +534,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
           significance: z.enum(['low', 'medium', 'high', 'critical'])
         })
       });
-      type CaseTimelineEventRequest = z.infer<typeof CaseTimelineEventSchema>;
+      type CaseTimelineEventRequest = z.infer<typeof, CaseTimelineEventSchema>;
       const { caseId, event }: CaseTimelineEventRequest = CaseTimelineEventSchema.parse(requestBody);
       const updatedCase = await jsonbLegalService.addCaseTimelineEvent(caseId, event);
       const duration = performance.now() - startTime;
@@ -564,7 +564,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
           condition: z.string().optional()
         })
       });
-      type EvidenceCustodyTransferRequest = z.infer<typeof EvidenceCustodyTransferSchema>;
+      type EvidenceCustodyTransferRequest = z.infer<typeof, EvidenceCustodyTransferSchema>;
       const { evidenceId, transfer }: EvidenceCustodyTransferRequest = EvidenceCustodyTransferSchema.parse(requestBody);
       const updatedEvidence = await jsonbLegalService.addCustodyTransfer(evidenceId, transfer);
       const duration = performance.now() - startTime;
@@ -588,7 +588,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       const EvidenceVerifySchema = z.object({
         evidenceId: cuidSchema
       });
-      type EvidenceVerifyRequest = z.infer<typeof EvidenceVerifySchema>;
+      type EvidenceVerifyRequest = z.infer<typeof, EvidenceVerifySchema>;
       const { evidenceId }: EvidenceVerifyRequest = EvidenceVerifySchema.parse(requestBody);
 
       type VerifyEvidenceChainFn = (evidenceId: string) => Promise<EvidenceVerificationResult>;
@@ -653,8 +653,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       requestId: requestId,
       requestBody: requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
-      category: 'api'
-    });
+      category: 'api' });
     return json(
       {
         success: false,
@@ -716,7 +715,7 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
       context: 'jsonb_legal_api_patch',
       requestId,
       severity: 'high',
-      category: 'api` });
+      category: `api' });'`
     return json(
       {
         success: false,

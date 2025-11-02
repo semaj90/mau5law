@@ -10,11 +10,11 @@ declare module '$lib/wasm/wasm-llm-service.js' {
 }
 
 declare module '$lib/ai/langchain-ollama-service.js' {
-  // 'LangChainConfig' was defined but never used, so it's removed from the import.
+  // 'LangChainConfig' was defined but never used, so it's removed from the import.'
   import type { QueryResult, ProcessingResult } from '$lib/ai/langchain-ollama-service.js';
   export const langChainOllamaService: {
     testConnection(): Promise<boolean>;
-    queryDocuments(query: string, options: {, maxResults: number; relevanceThreshold: number }): Promise<QueryResult>;
+    queryDocuments(query: string, options: {, maxResults: number;, relevanceThreshold: number }): Promise<QueryResult>;
     processDocument(text: string, meta: Record<string, unknown>): Promise<ProcessingResult>;
     reset?(): void;
     getStats?(): Record<string, unknown> | Promise<Record<string, unknown>>;

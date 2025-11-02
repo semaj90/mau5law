@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 // Avoid types/env modules that may not resolve in static analysis; use process.env at runtime
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const res = await fetch(`${baseUrl}/cluster`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify(body)
     });
     const data = await res.json();

@@ -41,7 +41,7 @@ export async function validateSecurity(
 
   const res = await fetch(`${BASE_URL}/api/security/validate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({
      , email: payload.user.email,
       firstName,

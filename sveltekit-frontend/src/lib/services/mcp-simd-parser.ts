@@ -101,7 +101,7 @@ export interface SIMDParserConfig {
  * and SIMD optimization for large-scale diagnostics.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const parser = new MCPSIMDParser();
  * await parser.initialize({ workers: 8, enableSIMD: true });
  *
@@ -173,7 +173,7 @@ export class MCPSIMDParser {
    * @returns Array of structured error metadata
    *
    * @example
-   * ```typescript
+   * ```typescript`
    * const buildLog = await execSync('npm run check:ultra-fast 2>&1').toString();
    * const errors = await parser.parseViteErrors(buildLog);
    * ```
@@ -188,7 +188,7 @@ export class MCPSIMDParser {
     try {
       const response = await fetch(`${this.mcpServerUrl}/parse`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , logContent: buildLog,
           config: this.config,
@@ -237,7 +237,7 @@ export class MCPSIMDParser {
     try {
       const response = await fetch(`${this.mcpServerUrl}/parse`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , logContent: diagnosticsLog,
           config: this.config,
@@ -285,7 +285,7 @@ export class MCPSIMDParser {
     try {
       const response = await fetch(`${this.mcpServerUrl}/parse`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , logContent: buildLog,
           config: this.config,
@@ -464,17 +464,17 @@ export class MCPSIMDParser {
    *
    * @returns Server health status
    */
-  async healthCheck(): Promise<{ healthy: boolean;, message: string }> {
+  async healthCheck(): Promise<{ healthy: boolean; message: string }> {
     try {
       const response = await fetch(`${this.mcpServerUrl}/health`, {
-        method: `GET` });
+        method: 'GET' });
 
       if (!response.ok) {
         return { healthy: false, message: 'Server returned ${response.status}' };
       }
 
       const data = await response.json();
-      return { healthy: true, message: data.message || 'Server healthy` };
+      return { healthy: true, message: data.message || 'Server healthy` };'`
     } catch (error) {
       return { healthy: false, message: String(error) };
     }

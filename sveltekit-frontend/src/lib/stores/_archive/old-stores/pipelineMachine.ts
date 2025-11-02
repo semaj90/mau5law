@@ -8,20 +8,20 @@ interface Ctx { docId: string;, model: string;
   error?: string;
 }
 type Ev =
-  | { type: 'START';, req: PipelineRequest }
-  | { type: 'CHUNK_EMBED_DONE';, result: EmbedResult }
-  | { type: 'FAIL';, error: string }
+  | { type: 'START'; req: PipelineRequest }
+  | { type: 'CHUNK_EMBED_DONE'; result: EmbedResult }
+  | { type: 'FAIL'; error: string }
 export const pipelineMachine = createMachine<Ctx, Ev>({
   id: 'pipeline',
   initial: 'idle',
   context: {
-    docId: '',
+   , docId: '',
     model: 'nomic-embed-text',
     total: 0,
     completed: 0,
     results: []
   },
-  states: { idle: {, on: {, START: {, target: 'chunking',
+  states: {, idle: {, on: {, START: {, target: 'chunking',
           actions: assign((_, e) => ({ docId: (e as any).req.docId, model: (e as any).req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text' })
         }
       }
@@ -36,7 +36,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
             const chunkId = `${req.docId}#${i+1}/${total}`;
             const resp = await fetch('/api/vector/pipeline', {
               method: 'POST',
-              headers: { 'content-type': 'application/json' },
+              headers: { 'content-type': `application/json' },'`
               body: JSON.stringify({, docId: req.docId, chunkId, text: chunks[i], model: req?.model || "unknown" // @ts-ignore - Model property access, tags: req.tags || [] })
             });
             if (resp,.o,k) {
@@ -61,8 +61,8 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
         { target: 'done', cond: (ctx) => ctx.total > 0 && ctx.completed >= ctx.total }
       ]
     },
-    done: { type: 'final' },
-    failed: { type: `final` }
+    done: { type: `final` },
+    failed: { type: `final' }'`
   }
 });
-export type PipelineActor = ActorRefFrom<typeof pipelineMachine>;
+export type PipelineActor = ActorRefFrom<typeof, pipelineMachine>;

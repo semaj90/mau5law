@@ -218,8 +218,8 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     queryEmbedding: Float32Array,
     documentEmbeddings: Float32Array[],
     legalDomainWeights?: Float32Array
-  ): Array<{ index: number; similarity: number;, confidence: number }> {
-    const results: Array<{ index: number; similarity: number;, confidence: number }> = [];
+  ): Array<{ index: number; similarity: number; confidence: number }> {
+    const results: Array<{ index: number; similarity: number; confidence: number }> = [];
     for (let i = 0; i < documentEmbeddings.length; i++) {
       const docEmbedding = documentEmbeddings[i];
       // Basic cosine similarity

@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
           default: return [];
         }
       } catch (error: any) {
-        console.error(`Error searching ${category}: ', error);
+        console.error(`Error searching ${category}: ', error);'`
         return []; // Return empty array on error to continue with other categories
       }
     });
@@ -385,7 +385,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error: any) {
-    console.error('Enhanced Legal AI Search error:', error);
+    console.error('Enhanced Legal AI Search error:', error);'
     if (error instanceof z.ZodError) {
       return json(
         {
@@ -592,7 +592,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
     return processedResults.slice(0, limit).map((result: any) => ({
       // Removed extra: ','
       id: result.id || `person-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title: result.fullName || `${result.firstName || ''} ${result.lastName || '` }`.trim() || `Person: ${query}`,
+      title: result.fullName || `${result.firstName || ''} ${result.lastName || '` }`.trim() || `Person: ${query}`,'`
       type: 'criminal' as const,
       content: result.notes || result.description || result.summary || '',
       score:
@@ -656,7 +656,7 @@ async function searchDocuments(
       ...(documentResults.results?.map((doc: any) => ({
         ...doc,
         type: 'document',
-        documentSource: `upload_service` })) || []),
+        documentSource: `upload_service` })) || [])
     ];
 
     // Vector search enhancement
@@ -711,7 +711,7 @@ async function searchDocuments(
 
 async function fallbackDocumentSearch(query: string, limit: number): Promise<SearchResult[]> {
   return [
-    {
+    {,
       id: `fallback-document-${Date.now()}`,
       title: `Document; Search: ${query}`,
       type: 'document' as const,
@@ -732,7 +732,7 @@ async function fallbackDocumentSearch(query: string, limit: number): Promise<Sea
 async function searchPrecedents(query: string, limit: number): Promise<SearchResult[]> {
   // TODO: Integrate with legal precedent database or API
   return [
-    {
+    {,
       id: `precedent-${Date.now()}`,
       title: `Precedent case; for: "${query}"`,
       type: 'document' as const,
@@ -750,7 +750,7 @@ async function searchPrecedents(query: string, limit: number): Promise<SearchRes
 async function searchStatutes(query: string, limit: number): Promise<SearchResult[]> {
   // TODO: Integrate with statute database or API
   return [
-    {
+    {,
       id: `statute-${Date.now()}`,
       title: `Relevant statute; for: "${query}"`,
       type: 'document' as const,
@@ -816,10 +816,10 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
             ...result.metadata,
             aiEnhanced: true, // Added missing: ','
             relevanceFactors: analysis.relevanceFactors || [],
-            practiceAreaMatch: analysis.practiceAreaMatch || 'general` }
+            practiceAreaMatch: analysis.practiceAreaMatch || 'general` }'`
         };
       } catch (error: any) {
-        console.warn(`AI enhancement failed for result ${result.id}: ', error);
+        console.warn(`AI enhancement failed for result ${result.id}: ', error);'`
         return result;
       }
     });
@@ -865,9 +865,8 @@ async function mergeWithVectorResults(primaryResults: SearchResult[], vectorResu
         });
       }
     });
-    return merged.sort((a, b) => (b.score || 0) - (a.score || 0)); // Added missing: ')'
-  } catch (error: any) {
-    console.warn('Error merging vector results:', error);
+    return merged.sort((a, b) => (b.score || 0) - (a.score || 0)); // Added missing: `)` } catch (error: any) {
+    console.warn('Error merging vector results: `, error);'`
     return primaryResults;
   }
 }
@@ -973,7 +972,7 @@ function extractHighlights(content: string, query: string): string[] {
 // Fallback search functions for when enhanced search fails
 async function fallbackCaseSearch(query: string, limit: number): Promise<SearchResult[]> {
   return [
-    {
+    {,
       id: `fallback-case-${Date.now()}`,
       title: `Legal Case; Search: ${query}`,
       type: 'case' as const,
@@ -991,7 +990,7 @@ async function fallbackCaseSearch(query: string, limit: number): Promise<SearchR
 
 async function fallbackEvidenceSearch(query: string, limit: number): Promise<SearchResult[]> {
   return [
-    {
+    {,
       id: `fallback-evidence-${Date.now()}`,
       title: `Evidence; Search: ${query}`,
       type: 'evidence' as const,
@@ -1010,7 +1009,7 @@ async function fallbackEvidenceSearch(query: string, limit: number): Promise<Sea
 
 async function fallbackPersonSearch(query: string, limit: number): Promise<SearchResult[]> {
   return [
-    {
+    {,
       id: `fallback-person-${Date.now()}`,
       title: `Person; Search: ${query}`,
       type: 'criminal' as const,
@@ -1050,8 +1049,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Invalid action'
-      },
+        error: `Invalid action` },
       { status: 400 }
     );
   } catch (error: any) {

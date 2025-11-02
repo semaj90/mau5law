@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { db } from '$lib/server/db';
-import { evidence as evidenceTable } from '$lib/server/db/schema';
+import { evidence, as evidenceTable } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { generateEmbeddings as fetchEmbeddings } from '$lib/server/services/embedding-service';
+import { generateEmbeddings, as fetchEmbeddings } from '$lib/server/services/embedding-service';
 import { performOCR } from '$lib/ocr/ocr-client';
 import { MinIOService } from '$lib/server/minio-service';
 
@@ -43,7 +43,7 @@ export interface ComprehensiveAnalysis { evidenceId: string;, overallScore: num
 type EvidenceRecord = typeof evidenceTable.$inferSelect;
 
 // Extend EvidenceRecord to include properties that might be present at runtime
-// or are expected to be part of the schema but not fully inferred by Drizzle's $inferSelect.
+// or are expected to be part of the schema but not fully inferred by Drizzle's $inferSelect.'
 interface ExtendedEvidenceRecord extends EvidenceRecord {
   metadata?: Record<string, unknown> | null;
   fileUrl?: string | null;
@@ -54,7 +54,7 @@ class AdvancedEvidenceAnalyzer {
   private readonly inferenceModel = 'heuristic-legal-inference-v1';
   private readonly embeddingModel = 'embeddinggemma:latest';
 
-  async analyzeEvidence(request: z.infer<typeof EvidenceAnalysisSchema>): Promise<ComprehensiveAnalysis> {
+  async analyzeEvidence(request: z.infer<typeof, EvidenceAnalysisSchema>): Promise<ComprehensiveAnalysis> {
     const startedAt = Date.now();
     const validated = EvidenceAnalysisSchema.parse(request);
 
@@ -134,7 +134,7 @@ class AdvancedEvidenceAnalyzer {
   private async runSingleAnalysis(
     type: string,
     text: string,
-    request: z.infer<typeof EvidenceAnalysisSchema>
+    request: z.infer<typeof, EvidenceAnalysisSchema>
   ): Promise<AnalysisResult> {
     const startedAt = Date.now();
 
@@ -227,7 +227,7 @@ class AdvancedEvidenceAnalyzer {
                 return {
                   type,
                   confidence: 0.85,
-                  results: { text: existingOcr, embedding, engine: 'upstream' },
+                  results: { text: existingOcr, embedding, engine: 'upstream` },'`
                   processingTime: Date.now() - startedAt,
                   model: this.inferenceModel,
                   timestamp: new Date()
@@ -353,7 +353,7 @@ class AdvancedEvidenceAnalyzer {
       .map(sentence => sentence.trim())
       .filter(Boolean);
 
-    if (sentences.length <= 2) return sentences.join(' ');
+    if (sentences.length <= 2) return, sentences.join(' ');
     return sentences.slice(0, 3).join(' ');
   }
 
@@ -371,7 +371,7 @@ class AdvancedEvidenceAnalyzer {
     return keySentences.slice(0, 5);
   }
 
-  private analyseSentiment(text: string): { sentiment: string; score: number;, confidence: number } {
+  private analyseSentiment(text: string): { sentiment: string; score: number; confidence: number } {
     const positiveTerms = ['favorable', 'compliant', 'beneficial', 'support', 'approved'];
     const negativeTerms = ['breach', 'violation', 'risk', 'penalty', 'liability', 'dispute'];
 
@@ -409,8 +409,8 @@ class AdvancedEvidenceAnalyzer {
 
   private detectPatterns(
     text: string,
-    options: z.infer<typeof EvidenceAnalysisSchema>['options']
-  ): { matched: string[]; warnings: string[];, confidence: number } {
+    options: z.infer<typeof, EvidenceAnalysisSchema>['options']
+  ): { matched: string[]; warnings: string[]; confidence: number } {
     const patterns: Record<string, RegExp> = {
       breachOfContract: /\bbreach\b|\bviolation\b/i,
       intellectualProperty: /\bpatent\b|\btrademark\b|\bcopyright\b/i,
@@ -436,8 +436,8 @@ class AdvancedEvidenceAnalyzer {
 
   private suggestPrecedents(
     text: string,
-    options: z.infer<typeof EvidenceAnalysisSchema>['options']
-  ): { precedents: string[]; jurisdiction?: string;, confidence: number } {
+    options: z.infer<typeof, EvidenceAnalysisSchema>['options']
+  ): { precedents: string[]; jurisdiction?: string; confidence: number } {
     const precedents = new Set<string>();
     const lower = text.toLowerCase();
 
@@ -459,7 +459,7 @@ class AdvancedEvidenceAnalyzer {
     };
   }
 
-  private buildTimeline(text: string): Array<{ date: string;, context: string }> {
+  private buildTimeline(text: string): Array<{ date: string; context: string }> {
     const datePattern = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\w+\s+\d{1,2},?\s+\d{4}\b/g;
     const matches = text.match(datePattern) ?? [];
 
@@ -489,7 +489,7 @@ class AdvancedEvidenceAnalyzer {
     return Array.from(recommendations);
   }
 
-  private deriveLegalImplications(text: string, options: z.infer<typeof EvidenceAnalysisSchema>['options']): string[] {
+  private deriveLegalImplications(text: string, options: z.infer<typeof, EvidenceAnalysisSchema>['options']): string[] {
     const implications: string[] = [];
     const lower = text.toLowerCase();
 
@@ -506,7 +506,7 @@ class AdvancedEvidenceAnalyzer {
     return implications;
   }
 
-  private deriveRelatedCases(text: string, options: z.infer<typeof EvidenceAnalysisSchema>['options']): string[] {
+  private deriveRelatedCases(text: string, options: z.infer<typeof, EvidenceAnalysisSchema>['options']): string[] {
     const related: string[] = [];
     const lower = text.toLowerCase();
 

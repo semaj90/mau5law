@@ -3,7 +3,7 @@
 Uses Gemma3 summarization service for converting 200-page legal documents into concise summaries
 Enhanced-bits UI integration with real-time progress and quality metrics
 -->
-<script lang="ts">
+<script, lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   import { Label } from '$lib/components/ui/label';
   import { Button } from '$lib/components/ui/button';
@@ -168,7 +168,7 @@ await checkServiceHealth();
         onSummaryGenerated(summaryResult);
       }
     } catch (error) {
-      console.error('Summarization error:', error);
+      console.error('Summarization error:', error);'
       errorMessage = error instanceof Error ? error.message: 'Summarization failed';
       currentSummary = null;
     } finally {
@@ -206,45 +206,45 @@ await checkServiceHealth();
   }
 </script>
 
-<div class="legal-summarizer container mx-auto p-6 max-w-6xl">
-  <!-- Service Status -->
-  <div class="mb-4">
+<div class="legal-summarizer container mx-auto p-6, max-w-6xl">
+  <!-- Service, Status -->
+  <div, class="mb-4">
     {#if serviceHealth === 'unavailable'}
-      <Alert variant="error">
-        <div class="flex items-center space-x-2">
+      <Alert, variant="error">
+        <div class="flex items-center, space-x-2">
           <span>❌</span>
           <span>Gemma3 Summarization Service is unavailable</span>
         </div>
       </Alert>
     {:else if serviceHealth === 'degraded'}
       <Alert>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center, space-x-2">
           <span>⚠️</span>
           <span>Summarization service is running with degraded performance</span>
         </div>
       </Alert>
     {:else}
       <Alert>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center, space-x-2">
           <span>✅</span>
           <span>Gemma3 Legal Summarization Service is ready</span>
         </div>
       </Alert>
     {/if}
   </div>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Input Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2, gap-6">
+    <!-- Input, Section -->
     <Card>
       <CardHeader>
         <CardTitle>📄 Document Input</CardTitle>
-        <p class="text-muted-foreground">
+        <p, class="text-muted-foreground">
           Upload or paste legal document content for AI-powered summarization
         </p>
       </CardHeader>
-      <CardContent class="space-y-4">
-        <!-- Document Title -->
-        <div class="space-y-2">
-          <Label for="doc-title">Document Title</Label>
+      <CardContent, class="space-y-4">
+        <!-- Document, Title -->
+        <div, class="space-y-2">
+          <Label, for="doc-title">Document Title</Label>
           <input
             id="doc-title"
             type="text"
@@ -253,38 +253,38 @@ await checkServiceHealth();
             class="w-full px-3 py-2 border border-input bg-background rounded-md"
           />
         </div>
-        <!-- Document Type -->
-        <div class="space-y-2">
-          <Label for="doc-type">Document Type</Label>
+        <!-- Document, Type -->
+        <div, class="space-y-2">
+          <Label, for="doc-type">Document Type</Label>
           <select
             id="doc-type"
             bind:value={documentType}
             class="w-full px-3 py-2 border border-input bg-background rounded-md"
           >
             {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
-              <option value={type.value}>{type.label}</option>
+              <option, value={type.value}>{type.label}</option>
             {/each}
           </select>
-          <p class="text-xs text-muted-foreground">
+          <p class="text-xs, text-muted-foreground">
             {documentTypes.find(t => t.value === documentType)?.description}
           </p>
         </div>
-        <!-- Summary Configuration -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <Label for="summary-type">Summary Type</Label>
+        <!-- Summary, Configuration -->
+        <div class="grid grid-cols-2, gap-4">
+          <div, class="space-y-2">
+            <Label, for="summary-type">Summary Type</Label>
             <select
               id="summary-type"
               bind:value={summaryType}
               class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
             >
               {#each Array.isArray(summaryTypes) ? summaryTypes : [] as type}
-                <option value={type.value}>{type.label}</option>
+                <option, value={type.value}>{type.label}</option>
               {/each}
             </select>
           </div>
-          <div class="space-y-2">
-            <Label for="max-length">Target Length (words)</Label>
+          <div, class="space-y-2">
+            <Label, for="max-length">Target Length (words)</Label>
             <input
               id="max-length"
               type="number"
@@ -296,26 +296,26 @@ await checkServiceHealth();
             />
           </div>
         </div>
-        <!-- Focus Areas -->
-        <div class="space-y-2">
+        <!-- Focus, Areas -->
+        <div, class="space-y-2">
           <Label>Focus Areas</Label>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2, gap-2">
             {#each Array.isArray(availableFocusAreas) ? availableFocusAreas : [] as area}
-              <label class="flex items-center space-x-2 text-sm">
+              <label class="flex items-center space-x-2, text-sm">
                 <input
                   type="checkbox"
                   checked={focusAreas.includes(area)}
                   onchange={() => toggleFocusArea(area)}
                   class="rounded border-input"
                 />
-                <span class="capitalize">{area.replace('_', ' ')}</span>
+                <span, class="capitalize">{area.replace('_', ' ')}</span>
               </label>
             {/each}
           </div>
         </div>
-        <!-- Document Content -->
-        <div class="space-y-2">
-          <Label for="doc-content">Document Content</Label>
+        <!-- Document, Content -->
+        <div, class="space-y-2">
+          <Label, for="doc-content">Document Content</Label>
           <textarea
             id="doc-content"
             bind:value={documentContent}
@@ -323,11 +323,11 @@ await checkServiceHealth();
             rows="12"
             class="w-full px-3 py-2 border border-input bg-background rounded-md font-mono text-sm"
           ></textarea>
-          <p class="text-xs text-muted-foreground">
+          <p class="text-xs, text-muted-foreground">
             {documentContent.length.toLocaleString()} characters, ~{Math.ceil(documentContent.length / 5)} words
           </p>
         </div>
-        <!-- Generate Button -->
+        <!-- Generate, Button -->
         <Button.Root
           onclick={generateSummary}
           disabled={isProcessing || !documentContent.trim() || !documentTitle.trim() || serviceHealth === 'unavailable'}
@@ -339,24 +339,24 @@ await checkServiceHealth();
             🤖 Generate AI Summary
           {/if}
         </Button.Root>
-        <!-- Processing Progress -->
+        <!-- Processing, Progress -->
         {#if isProcessing}
-          <div class="space-y-2">
-            <div class="flex justify-between text-sm">
+          <div, class="space-y-2">
+            <div class="flex justify-between, text-sm">
               <span>Processing with Gemma3...</span>
               <span>{Math.round(processingProgress)}%</span>
             </div>
-            <div class="w-full bg-secondary rounded-full h-2">
+            <div class="w-full bg-secondary rounded-full, h-2">
               <div
                 class="bg-primary h-2 rounded-full transition-all duration-300"
                 style="width: {processingProgress}%"
               ></div>
             </div>
           {/if}
-        <!-- Error Message -->
+        <!-- Error, Message -->
         {#if errorMessage}
-          <Alert variant="error">
-            <div class="flex items-center space-x-2">
+          <Alert, variant="error">
+            <div class="flex items-center, space-x-2">
               <span>⚠️</span>
               <span>{errorMessage}</span>
             </div>
@@ -364,134 +364,134 @@ await checkServiceHealth();
         {/if}
       </CardContent>
     </Card>
-    <!-- Results Section -->
+    <!-- Results, Section -->
     <Card>
       <CardHeader>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center, justify-between">
           <div>
             <CardTitle>📊 AI Summary Results</CardTitle>
             {#if currentSummary}
-              <p class="text-muted-foreground">
+              <p, class="text-muted-foreground">
                 Generated in {formatProcessingTime(currentSummary.processing_time)}
               </p>
             {/if}
           </div>
           {#if currentSummary}
-            <Button variant="ghost" size="sm" onclick={copySummary}>
+            <Button, variant="ghost" size="sm" onclick={copySummary}>
               📋 Copy
             </Button>
           {/if}
         </div>
       </CardHeader>
-      <CardContent class="space-y-4">
+      <CardContent, class="space-y-4">
         {#if currentSummary}
-          <!-- Quality Metrics -->
+          <!-- Quality, Metrics -->
           <Card>
-            <CardContent class="p-4">
-              <h4 class="font-medium mb-2">Quality Assessment</h4>
-              <div class="grid grid-cols-2 gap-4 text-sm">
+            <CardContent, class="p-4">
+              <h4 class="font-medium, mb-2">Quality Assessment</h4>
+              <div class="grid grid-cols-2 gap-4, text-sm">
                 <div>
-                  <span class="text-muted-foreground">Relevance:</span>
-                  <span class="{getQualityColor(currentSummary.quality.relevance_score)} font-medium">
+                  <span, class="text-muted-foreground">Relevance:</span>
+                  <span, class="{getQualityColor(currentSummary.quality.relevance_score)} font-medium">
                     {(currentSummary.quality.relevance_score * 100).toFixed(0)}%
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted-foreground">Completeness:</span>
-                  <span class="{getQualityColor(currentSummary.quality.completeness_score)} font-medium">
+                  <span, class="text-muted-foreground">Completeness:</span>
+                  <span, class="{getQualityColor(currentSummary.quality.completeness_score)} font-medium">
                     {(currentSummary.quality.completeness_score * 100).toFixed(0)}%
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted-foreground">Clarity:</span>
-                  <span class="{getQualityColor(currentSummary.quality.clarity_score)} font-medium">
+                  <span, class="text-muted-foreground">Clarity:</span>
+                  <span, class="{getQualityColor(currentSummary.quality.clarity_score)} font-medium">
                     {(currentSummary.quality.clarity_score * 100).toFixed(0)}%
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted-foreground">Overall:</span>
-                  <span class="font-medium">
+                  <span, class="text-muted-foreground">Overall:</span>
+                  <span, class="font-medium">
                     {currentSummary.quality.overall_rating}
                   </span>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <!-- Compression Stats -->
-          <div class="grid grid-cols-3 gap-4 text-center">
-            <div class="bg-blue-50 p-3 rounded-lg border">
-              <div class="text-lg font-semibold text-blue-600">
+          <!-- Compression, Stats -->
+          <div class="grid grid-cols-3 gap-4, text-center">
+            <div class="bg-blue-50 p-3 rounded-lg, border">
+              <div class="text-lg font-semibold, text-blue-600">
                 {currentSummary.original_length_words.toLocaleString()}
               </div>
-              <div class="text-xs text-blue-600">Original Words</div>
+              <div class="text-xs, text-blue-600">Original Words</div>
             </div>
-            <div class="bg-green-50 p-3 rounded-lg border">
-              <div class="text-lg font-semibold text-green-600">
+            <div class="bg-green-50 p-3 rounded-lg, border">
+              <div class="text-lg font-semibold, text-green-600">
                 {currentSummary.summary_length_words.toLocaleString()}
               </div>
-              <div class="text-xs text-green-600">Summary Words</div>
+              <div class="text-xs, text-green-600">Summary Words</div>
             </div>
-            <div class="bg-purple-50 p-3 rounded-lg border">
-              <div class="text-lg font-semibold text-purple-600">
+            <div class="bg-purple-50 p-3 rounded-lg, border">
+              <div class="text-lg font-semibold, text-purple-600">
                 {(currentSummary.compression_ratio * 100).toFixed(1)}%
               </div>
-              <div class="text-xs text-purple-600">Compression</div>
+              <div class="text-xs, text-purple-600">Compression</div>
             </div>
           </div>
-          <!-- Executive Summary -->
+          <!-- Executive, Summary -->
           {#if currentSummary.summary.executive_summary}
-            <div class="space-y-2">
-              <h4 class="font-medium">🎯 Executive Summary</h4>
-              <div class="bg-muted p-4 rounded-lg">
-                <p class="text-sm leading-relaxed">
+            <div, class="space-y-2">
+              <h4, class="font-medium">🎯 Executive Summary</h4>
+              <div class="bg-muted p-4, rounded-lg">
+                <p class="text-sm, leading-relaxed">
                   {currentSummary.summary.executive_summary}
                 </p>
               </div>
             {/if}
-          <!-- Key Points -->
+          <!-- Key, Points -->
           {#if currentSummary.summary.key_points?.length}
-            <div class="space-y-2">
-              <h4 class="font-medium">📌 Key Points</h4>
-              <ul class="space-y-2">
+            <div, class="space-y-2">
+              <h4, class="font-medium">📌 Key Points</h4>
+              <ul, class="space-y-2">
                 {#each Array.isArray(currentSummary.summary.key_points) ? currentSummary.summary.key_points : [] as point}
-                  <li class="flex items-start space-x-2 text-sm">
-                    <span class="text-primary mt-1">•</span>
+                  <li class="flex items-start space-x-2, text-sm">
+                    <span class="text-primary, mt-1">•</span>
                     <span>{point}</span>
                   </li>
                 {/each}
               </ul>
             {/if}
-          <!-- Legal Implications -->
+          <!-- Legal, Implications -->
           {#if currentSummary.summary.legal_implications?.length}
-            <div class="space-y-2">
-              <h4 class="font-medium">⚖️ Legal Implications</h4>
-              <ul class="space-y-2">
+            <div, class="space-y-2">
+              <h4, class="font-medium">⚖️ Legal Implications</h4>
+              <ul, class="space-y-2">
                 {#each Array.isArray(currentSummary.summary.legal_implications) ? currentSummary.summary.legal_implications : [] as implication}
-                  <li class="flex items-start space-x-2 text-sm">
-                    <span class="text-yellow-600 mt-1">⚠️</span>
+                  <li class="flex items-start space-x-2, text-sm">
+                    <span class="text-yellow-600, mt-1">⚠️</span>
                     <span>{implication}</span>
                   </li>
                 {/each}
               </ul>
             {/if}
-          <!-- Full Summary -->
-          <div class="space-y-2">
-            <h4 class="font-medium">📋 Full Summary</h4>
-            <div class="bg-muted p-4 rounded-lg max-h-96 overflow-y-auto">
-              <p class="text-sm leading-relaxed whitespace-pre-wrap">
+          <!-- Full, Summary -->
+          <div, class="space-y-2">
+            <h4, class="font-medium">📋 Full Summary</h4>
+            <div class="bg-muted p-4 rounded-lg max-h-96, overflow-y-auto">
+              <p class="text-sm leading-relaxed, whitespace-pre-wrap">
                 {currentSummary.summary.full_summary}
               </p>
             </div>
           </div>
-          <!-- Model Info -->
-          <div class="text-xs text-muted-foreground pt-2 border-t border-border">
+          <!-- Model, Info -->
+          <div class="text-xs text-muted-foreground pt-2 border-t, border-border">
             Generated by {currentSummary.model} • Document ID: {currentSummary.document_id}
           </div>
         {:else}
-          <div class="text-center py-12 text-muted-foreground">
-            <div class="text-4xl mb-4">🤖</div>
+          <div class="text-center py-12, text-muted-foreground">
+            <div class="text-4xl, mb-4">🤖</div>
             <p>Configure your document and click: "Generate AI Summary" to begin</p>
-            <p class="text-xs mt-2">
+            <p class="text-xs, mt-2">
               Powered by Gemma3 Legal AI • Optimized for legal document analysis
             </p>
           {/if}

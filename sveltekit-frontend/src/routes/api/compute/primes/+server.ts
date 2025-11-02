@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
         durationMs: Math.round(durationMs),
         throughput: Math.round(totalCount / (durationMs / 1000))
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: { 'Content-Type': 'application/json` } }'`
     );
   } catch (error) {
     return new Response(

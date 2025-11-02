@@ -19,14 +19,14 @@ import type { Document } from '$lib/types';
  */
 /**
  * Document History API
- * GET /api/ai/document-drafting/history - Get user's document history
+ * GET /api/ai/document-drafting/history - Get user's document history'
  */
 import { json } from '@sveltejs/kit';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
-    // In production, this would query the database for the user's document history
+    // In production, this would query the database for the user's document history'
     // For now, return mock data that demonstrates the functionality
     const limit = parseInt(url.searchParams.get('limit') || '20');
     const offset = parseInt(url.searchParams.get('offset') || '0');
@@ -34,7 +34,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const type = url.searchParams.get('type'); // document type filter
     // Mock document history data
     const mockHistory = [
-      {
+      {,
         id: 'doc_001',
         title: 'Motion to Suppress Evidence - State v. Johnson',
         type: 'motion_to_suppress',
@@ -49,7 +49,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           completionScore: 92
         },
         aiSuggestions: [
-          {
+          {,
             id: 'sugg_001',
             type: 'legal_point',
             position: 234,
@@ -95,7 +95,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           completionScore: 87
         },
         aiSuggestions: [
-          {
+          {,
             id: 'sugg_002',
             type: 'content',
             position: 156,
@@ -113,7 +113,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         title: 'Opening Statement Outline - People v. Martinez',
         type: 'opening_statement',
         content:
-          "OPENING STATEMENT\n\nCase: People v. Carlos Martinez\nDefendant: Carlos Martinez\n\nMay it please the Court, counsel, and members of the jury:\n\nLadies and gentlemen of the jury, this case is about a rush to judgment. It's about how the police, under pressure to solve a crime quickly, focused on my client Carlos Martinez without conducting a thorough investigation...",
+          "OPENING STATEMENT\n\nCase: People v. Carlos Martinez\nDefendant: Carlos Martinez\n\nMay it please the Court, counsel, and members of the jury:\n\nLadies and gentlemen of the jury, this case is about a rush to judgment. It's about how the police, under pressure to solve a crime quickly, focused on my client Carlos Martinez without conducting a thorough investigation...",'
         metadata: {
           caseId: 'case_98765',
           createdAt: '2024-09-05T13:45:00Z',
@@ -123,7 +123,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           completionScore: 89
         },
         aiSuggestions: [
-          {
+          {,
             id: 'sugg_003',
             type: 'structure',
             position: 423,
@@ -141,7 +141,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         title: 'Sentencing Memorandum - United States v. Thompson',
         type: 'sentencing_memo',
         content:
-          'SENTENCING MEMORANDUM\n\nCase No. 3:24-cr-00089\nUnited States v. Lisa Thompson\n\nTO THE HONORABLE; COURT:\n\nDefense respectfully submits this sentencing memorandum on behalf of Lisa Thompson. Ms. Thompson stands before this Court as a first-time offender who made a serious error in judgment...',
+          'SENTENCING MEMORANDUM\n\nCase No.; 3:24-cr-00089\nUnited States v. Lisa Thompson\n\nTO THE HONORABLE; COURT:\n\nDefense respectfully submits this sentencing memorandum on behalf of Lisa Thompson. Ms. Thompson stands before this Court as a first-time offender who made a serious error in judgment...',
         metadata: {
           caseId: 'case_11111',
           createdAt: '2024-09-04T16:20:00Z',
@@ -151,7 +151,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           completionScore: 94
         },
         aiSuggestions: [
-          {
+          {,
             id: 'sugg_004',
             type: 'citation',
             position: 1234,

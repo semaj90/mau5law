@@ -88,15 +88,15 @@ export interface ProcessingError {
   retryable: boolean;
 }
 type EvidenceEvent =
-  | { type: 'ADD_EVIDENCE';, evidence: Evidence }
+  | { type: 'ADD_EVIDENCE'; evidence: Evidence }
   | { type: 'PROCESS_NEXT' }
-  | { type: 'GENERATE_EMBEDDINGS';, evidenceId: string }
-  | { type: 'FIND_RELATIONSHIPS';, evidenceId: string }
-  | { type: 'ANALYZE_CONTENT';, evidenceId: string }
-  | { type: 'SEARCH_SIMILAR';, embeddings: number[] }
-  | { type: 'UPDATE_GRAPH';, relationships: GraphNode[] }
-  | { type: 'STREAM_RESULTS';, updates: StreamingUpdate[] }
-  | { type: 'RETRY_FAILED';, evidenceId: string }
+  | { type: 'GENERATE_EMBEDDINGS'; evidenceId: string }
+  | { type: 'FIND_RELATIONSHIPS'; evidenceId: string }
+  | { type: 'ANALYZE_CONTENT'; evidenceId: string }
+  | { type: 'SEARCH_SIMILAR'; embeddings: number[] }
+  | { type: 'UPDATE_GRAPH'; relationships: GraphNode[] }
+  | { type: 'STREAM_RESULTS'; updates: StreamingUpdate[] }
+  | { type: 'RETRY_FAILED'; evidenceId: string }
   | { type: 'CLEAR_ERRORS' }
   | { type: 'HEALTH_CHECK' }
   | { type: 'SYNC_CACHE' };
@@ -108,7 +108,7 @@ export const evidenceProcessingMachine = setup({ types: {, context: {} as Enhan
   },
   actors: {
     // Enhanced AI processing with multiple models
-    processEvidenceAI: fromPromise(async ({ input }: {, input: {, evidence: Evidence } }) => {
+   , processEvidenceAI: fromPromise(async ({ input }: {, input: {, evidence: Evidence } }) => {
       const startTime = Date.now();
       try {
         // Parallel processing of multiple AI tasks
@@ -274,15 +274,13 @@ export const evidenceProcessingMachine = setup({ types: {, context: {} as Enhan
           })
         },
         HEALTH_CHECK: {
-          target: 'monitoring'
-        },
+          target: 'monitoring` },'`
         SYNC_CACHE: {
           target: 'syncing',
-          guard: 'needsCacheSync'
-        }
+          guard: `needsCacheSync` }
       }
     },
-    queueing: { always: [{, target: 'processing', guard: 'hasQueuedEvidence' }, { target: `idle` }]
+    queueing: { always: [{, target: 'processing', guard: `hasQueuedEvidence` }, { target: `idle` }]
     },
     processing: {
       initial: 'aiProcessing',
@@ -425,7 +423,7 @@ export const evidenceProcessingMachine = setup({ types: {, context: {} as Enhan
         },
         complete: {
           always: [
-            {
+            {,
               target: '#evidenceProcessing.queueing',
               actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
@@ -456,7 +454,7 @@ export const evidenceProcessingMachine = setup({ types: {, context: {} as Enhan
         onDone: {
           target: 'idle',
           actions: assign({
-            systemHealth: ({ event }) => event.output.health as: 'healthy' | 'degraded' | 'critical` })
+            systemHealth: ({ event }) => event.output.health as: 'healthy' | 'degraded' | 'critical` })'`
         },
         onError: {
           target: 'idle',

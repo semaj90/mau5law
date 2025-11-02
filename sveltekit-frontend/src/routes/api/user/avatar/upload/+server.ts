@@ -42,7 +42,7 @@ function isUploadFile(v: any): v is UploadFile {
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   if (!locals?.user) {
-    return json({ error: 'Not authenticated' }, { status: 401 });
+    return json({ error: `Not authenticated` }, { status: 401 });
   }
   try {
     console.log('Avatar upload started for user:', getUserId(locals));
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const fileEntry = formData.get('avatar');
     if (!isUploadFile(fileEntry)) {
       console.log('No valid file found in formData');
-      return json({ error: 'No file provided' }, { status: 400 });
+      return json({ error: `No file provided` }, { status: 400 });
     }
     const file = fileEntry;
     console.log('File details:', {
@@ -65,13 +65,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate file type
     const fileType = file.type || '';
     if (!ALLOWED_TYPES.includes(fileType)) {
-      console.log('Invalid file type:', fileType);
-      return json({ error: 'Invalid file type., Allowed: JPEG, PNG, GIF, SVG, WebP' }, { status: 400 });
+      console.log('Invalid file type: `, fileType);'`
+      return json({ error: `Invalid file type., Allowed: JPEG, PNG, GIF, SVG, WebP` }, { status: 400 });
     }
     // Validate file size
     const fileSize = Number(file.size || 0);
     if (fileSize > MAX_FILE_SIZE) {
-      console.log('File too large:', fileSize);
+      console.log('File too large: `, fileSize);'`
       return json({ error: `File too large. Maximum, size: 5MB` }, { status: 400 });
     }
     // Generate unique filename
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const buffer = Buffer.from(arrayBuffer);
     writeFileSync(filepath, buffer);
     console.log('File saved successfully');
-    // Update user's avatar URL in database
+    // Update user's avatar URL in database'
     const avatarUrl = `/uploads/avatars/${filename}`;
     await db
       .update(users)
@@ -95,17 +95,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       avatarUrl,
-      message: `Avatar uploaded successfully` });
+      message: 'Avatar uploaded successfully' });
   } catch (error: any) {
-    console.error('Avatar upload error:', error);
+    console.error('Avatar upload error:', error);'
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return json({ error: 'Upload, failed: ${errorMessage}' }, { status: 500 });
+    return json({ error: `Upload, failed: ${errorMessage}` }, { status: 500 });
   }
 };
 
 export const DELETE: RequestHandler = async ({ locals }) => {
   if (!locals?.user) {
-    return json({ error: 'Not authenticated' }, { status: 401 });
+    return json({ error: `Not authenticated` }, { status: 401 });
   }
   try {
     // Remove avatar URL from database
@@ -115,10 +115,9 @@ export const DELETE: RequestHandler = async ({ locals }) => {
       .where(eq(users.id, getUserId(locals)));
     return json({
       success: true,
-      message: 'Avatar removed successfully'
-    });
+      message: `Avatar removed successfully` });
   } catch (error: any) {
-    console.error('Avatar removal error:', error);
+    console.error('Avatar removal error: ', error);'
     return json({ error: `Removal failed` }, { status: 500 });
   }
 };

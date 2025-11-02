@@ -7,13 +7,13 @@ import type { Document } from '$lib/types';
  *
  * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
  */
-/// <reference types="@webgpu/types" />
+/// <reference, types="@webgpu/types" />
 import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js';
 import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
 import type { LODLevel, LODCacheEntry } from '$lib/ai/lod-cache-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
 
-export interface LegalAnalysisResult { confidence: number;, entities: Array<{ text: string; type: string;, confidence: number }>;
+export interface LegalAnalysisResult { confidence: number;, entities: Array<{ text: string; type: string; confidence: number }>;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   summary: string;
   complianceConsiderations?: string[]; // Added this property
@@ -46,15 +46,15 @@ export interface MipmapVisualizationOutput {
   };
 }
 
-// New interface for Ollama's structured JSON response
-export interface OllamaLegalAnalysisResponse { keyLegalEntities: Array<{ text: string; type: string;, confidence: number }>;
+// New interface for Ollama's structured JSON response'
+export interface OllamaLegalAnalysisResponse { keyLegalEntities: Array<{ text: string; type: string; confidence: number }>;
   riskAssessment: 'low' | 'medium' | 'high' | 'critical';
   complianceConsiderations: string[];
   summaryOfMainLegalPoints: string;
 }
 
 interface OllamaServiceType {
-  generateCompletion(prompt: string, options: {, model: string; stream: boolean }): Promise<OllamaLegalAnalysisResponse>;
+  generateCompletion(prompt: string, options: {, model: string;, stream: boolean }): Promise<OllamaLegalAnalysisResponse>;
 }
 
 export interface HeadlessProcessingConfig {
@@ -362,8 +362,7 @@ export class HeadlessLegalProcessorFactory {
       texture,
       width,
       height,
-      format: 'rgba8unorm'
-    };
+      format: 'rgba8unorm' };
   }
   /**
    * Render document content to texture (headless)
@@ -376,16 +375,16 @@ export class HeadlessLegalProcessorFactory {
     // Begin render pass with offscreen target
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [
-        {
+        {,
          , view: renderTarget.texture.createView(),
           clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
           loadOp: 'clear',
-          storeOp: 'store` },
+          storeOp: `store' }'`
       ]
     });
     // Render document visualization using compressed data
     // (This would involve creating a render pipeline and drawing the document)
-    // For now, we'll create a simple visualization based on LOD data
+    // For now, we'll create a simple visualization based on LOD data'
     renderPass.end();
     this.device.queue.submit([commandEncoder.finish()]);
   }
@@ -415,7 +414,7 @@ export class HeadlessLegalProcessorFactory {
   private buildLegalAnalysisPrompt(text: string, lodEntry: LODCacheEntry): string {
     const contextAnchors = lodEntry.vector_metadata?.context_anchors?.join(', ') ?? ''; // Safely access nested properties
     const compressionRatio = lodEntry.cache_metadata?.compression_stats?.compression_ratio ?? 1; // Safely access nested properties
-    return `Analyze this legal document for key entities, risk factors, and compliance issues:
+    return `Analyze this legal document for key entities, risk factors, and compliance issues:`
 Context; Keywords: ${contextAnchors}
 Document Length: ${text.length} characters
 Compression Ratio: ${compressionRatio.toFixed(2)}:1
@@ -426,7 +425,7 @@ Please provide:
 2. Risk assessment (low/medium/high/critical)
 3. Compliance considerations
 4. Summary of main legal points
-Format your response as structured JSON.`;
+Format your response as structured JSON.`;`
   }
   /**
    * Parse legal analysis response into structured format
